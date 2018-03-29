@@ -1,0 +1,20 @@
+- type: parallel
+  steps:
+ 
+  - type: parallel
+    steps:
+      - name: lint
+        service: ssc-client-go
+        command: bash -c "go get golang.org/x/lint/golint && golint --set_exit_status ./..."
+      - name: vet
+        service: ssc-client-go
+        command: bash -c "go vet ./..."
+      - name: build
+        service: ssc-client-go
+        command: bash -c "go build -v ./..."
+
+  - type: parallel
+    steps:
+      - name: test
+        service: ssc-client-go-with-ssc
+        command: bash -c "source ./runtests"

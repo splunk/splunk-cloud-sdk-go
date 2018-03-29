@@ -1,0 +1,10 @@
+ssc-client-go:
+  build:
+    image: ssc-client-go
+    dockerfile: Dockerfile
+
+ssc-client-go-with-ssc:
+  build:
+    image: ssc-client-go
+    dockerfile: Dockerfile
+  encrypted_env_file: env.encrypted
