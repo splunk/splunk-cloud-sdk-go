@@ -7,4 +7,4 @@ ssc-client-go-with-ssc:
   build:
     image: ssc-client-go
     dockerfile: Dockerfile
-  encrypted_env_file: env.encrypted
+  # encrypted_env_file: env.encrypted
