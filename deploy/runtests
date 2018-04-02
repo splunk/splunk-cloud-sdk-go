@@ -1,5 +1,5 @@
 #!/bin/bash
-set +e
-go test -v -covermode=count -coverprofile="codecov.out"  ./...
+
+go test -v -covermode=count -coverprofile="codecov.out"  ./... || exit 1
 
 deploy/codecov  -f "codecov.out"  -F test
