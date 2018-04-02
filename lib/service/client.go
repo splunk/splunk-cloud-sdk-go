@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/splunk/go-splunkd/lib/util"
+	"encoding/base64"
 )
 
 // Declare constants for service package
@@ -46,8 +47,8 @@ type Client struct {
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
-	AuthorizationService *AuthorizationService
-	SearchService        *SearchService
+	//AuthorizationService *AuthorizationService
+	//SearchService        *SearchService
 }
 
 // service provides the interface between client and services
@@ -66,7 +67,12 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	} else {
 		request.SetBasicAuth(c.Auth[0], c.Auth[1])
 	}
-	request.Header.Set("Accept", "application/json")
+	request.Header.Set("Content-Type", "application/json")
+
+	data := []byte(c.Auth[0] + ":" + c.Auth[1])
+	str := base64.StdEncoding.EncodeToString(data)
+
+	request.Header.Set("Authorization", "Basic " + str)
 	return request, nil
 }
 
@@ -81,12 +87,13 @@ func (c *Client) BuildSplunkdURL(queryValues url.Values, urlPathParts ...string)
 	}
 	// Always set json as output format for now
 	queryValues.Set("output_mode", "json")
-	return url.URL{
+	u := url.URL{
 		Scheme:   defaultScheme,
 		Host:     c.Host,
 		Path:     buildPath,
 		RawQuery: queryValues.Encode(),
 	}
+	return u
 }
 
 // Do sends out request and returns HTTP response
@@ -190,8 +197,8 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 func NewDefaultSplunkdClient() *Client {
 	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
 	c := &Client{Auth: defaultAuth, Host: defaultHost, httpClient: httpClient}
-	c.AuthorizationService = &AuthorizationService{client: c}
-	c.SearchService = &SearchService{client: c}
+	//c.AuthorizationService = &AuthorizationService{client: c}
+	//c.SearchService = &SearchService{client: c}
 
 	return c
 }
