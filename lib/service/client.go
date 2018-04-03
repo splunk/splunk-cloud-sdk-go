@@ -127,8 +127,8 @@ func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, erro
 
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
-	//content, err := c.toJSON(body)
-	content, err := c.EncodeRequestBody(body)
+	content, err := c.toJSON(body)
+	//content, err := c.EncodeRequestBody(body)
 	if err != nil {
 		return nil, err
 	}
