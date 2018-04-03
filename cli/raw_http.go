@@ -9,10 +9,14 @@ import (
 )
 
 func main() {
-	url := "https://api.splunknovadev-playground.com/v1/events"
+	//url := "https://api.splunknovadev-playground.com/v1/events"
+	url := "https://api.splunknovadev-playground.com/search/v1/jobs"
 	fmt.Println("URL:>", url)
 
-	var jsonStr = []byte(`[{ "log": "This is my first Nova event", "source": "curl", "entity": "test_api" }]`)
+	//var jsonStr = []byte(`[{ "log": "This is my first Nova event", "source": "curl", "entity": "test_api" }]`)
+
+	var jsonStr = []byte(`[{ "query": "search index = _internal"}]`)
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	// hack

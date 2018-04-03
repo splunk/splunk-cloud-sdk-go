@@ -5,24 +5,22 @@ import (
 	"flag"
 	"time"
 	"fmt"
-	"bytes"
+	//"bytes"
 )
 
 
 const (
-	ClientId = "<REDACTED>"
-	ClientSecret = "<REDACTED>"
+	ClientId = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
+	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
 	BaseURL = "api.splunknovadev-playground.com"
 )
-
-
 
 var (
 	// Initialize parameters needed for communicating with Splunkd
 	user     = flag.String("user", "admin", "Splunk username, defaults to admin")
 	password = flag.String("password", "changed", "Splunk password, defaults to changeme")
 	host     = flag.String("host", "localhost:8089", "Splunkd host, defaults to localhost:8089")
-	search   = flag.String("search", "", "The search spl, defaults to an empty string")
+	search   = flag.String("search", "search index=*", "The search spl, defaults to an empty string")
 	timeout  = flag.Duration("timeout", time.Second*5, "The timeout used for the client, defaults to 5 seconds")
 )
 
@@ -33,25 +31,30 @@ func main() {
 	splunkdClient := service.NewSplunkdClient(
 		"", [2]string{ClientId, ClientSecret}, BaseURL, service.NewSplunkdHTTPClient(*timeout, true))
 
-	url := splunkdClient.BuildSplunkdURL(nil,  "v1", "events")
+	//url := splunkdClient.BuildSplunkdURL(nil,  "v1", "events")
 
-	body := make(map[string]string)
-	body["log"] = "This is my first Nova event"
-	body["source"] = "fake cli"
-	body["entity"] = "test_api"
+	//body := make(map[string]string)
+	//body["log"] = "This is my first Nova event"
+	//body["source"] = "fake cli"
+	//body["entity"] = "test_api"
+	//
+	//resp, err := splunkdClient.Post(url, body)
+	//
+	//if err != nil {
+	//	fmt.Println(resp)
+	//
+	//	defer resp.Body.Close()
+	//	b := new(bytes.Buffer)
+	//	b.ReadFrom(resp.Body)
+	//	fmt.Println(b)
+	//
+	//} else {
+	//	fmt.Println(err)
+	//}
 
-	resp, err := splunkdClient.Post(url, body)
+	jobModel, _ := splunkdClient.SearchService.NewSearch(*search)
 
-	if err != nil {
-		fmt.Println(resp)
+	fmt.Sprintf("sid: %s ", jobModel.Sid)
 
-		defer resp.Body.Close()
-		b := new(bytes.Buffer)
-		b.ReadFrom(resp.Body)
-		fmt.Println(b)
-
-	} else {
-		fmt.Println(err)
-	}
 
 }

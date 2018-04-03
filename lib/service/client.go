@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/splunk/ssc-client-go/lib/util"
-	"encoding/base64"
+	//"encoding/base64"
 )
 
 // Declare constants for service package
@@ -48,7 +48,7 @@ type Client struct {
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
 	//AuthorizationService *AuthorizationService
-	//SearchService        *SearchService
+	SearchService *SearchService
 }
 
 // service provides the interface between client and services
@@ -63,17 +63,11 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 		return nil, err
 	}
 	if c.SessionKey != "" {
-		//request.Header.Add("Authorization", "Splunk "+c.SessionKey)
+		request.Header.Add("Authorization", "Splunk "+c.SessionKey)
+	} else {
+		request.SetBasicAuth(c.Auth[0], c.Auth[1])
 	}
-	//} else {
-	//	request.SetBasicAuth(c.Auth[0], c.Auth[1])
-	//}
 	request.Header.Set("Content-Type", "application/json")
-
-	data := []byte(c.Auth[0] + ":" + c.Auth[1])
-	str := base64.StdEncoding.EncodeToString(data)
-
-	request.Header.Set("Authorization", "Basic " + str)
 	return request, nil
 }
 
@@ -133,7 +127,8 @@ func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, erro
 
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
-	content, err := c.toJSON(body)
+	//content, err := c.toJSON(body)
+	content, err := c.EncodeRequestBody(body)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +200,7 @@ func NewDefaultSplunkdClient() *Client {
 	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
 	c := &Client{Auth: defaultAuth, Host: defaultHost, httpClient: httpClient}
 	//c.AuthorizationService = &AuthorizationService{client: c}
-	//c.SearchService = &SearchService{client: c}
+	c.SearchService = &SearchService{client: c}
 
 	return c
 }
