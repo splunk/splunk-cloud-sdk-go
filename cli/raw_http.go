@@ -15,7 +15,7 @@ func main() {
 
 	//var jsonStr = []byte(`[{ "log": "This is my first Nova event", "source": "curl", "entity": "test_api" }]`)
 
-	var jsonStr = []byte(`[{ "query": "search index = _internal"}]`)
+	var jsonStr = []byte(`{ "query": "search index = _internal"}`)
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
