@@ -5,12 +5,13 @@ import (
 	"flag"
 	"time"
 	"fmt"
+	"bytes"
 )
 
 
 const (
-	ClientId = "REDACTED"
-	ClientSecret = "REDACTED"
+	ClientId = "<REDACTED>"
+	ClientSecret = "<REDACTED>"
 	BaseURL = "api.splunknovadev-playground.com"
 )
 
@@ -29,9 +30,10 @@ func main() {
 	flag.Parse()
 
 	//var err error
-	splunkdClient := service.NewSplunkdClient("", [2]string{ClientId, ClientSecret}, BaseURL, service.NewSplunkdHTTPClient(*timeout, true))
+	splunkdClient := service.NewSplunkdClient(
+		"", [2]string{ClientId, ClientSecret}, BaseURL, service.NewSplunkdHTTPClient(*timeout, true))
 
-	url := splunkdClient.BuildSplunkdURL(nil, "v1", "events")
+	url := splunkdClient.BuildSplunkdURL(nil,  "v1", "events")
 
 	body := make(map[string]string)
 	body["log"] = "This is my first Nova event"
@@ -42,11 +44,14 @@ func main() {
 
 	if err != nil {
 		fmt.Println(resp)
+
+		defer resp.Body.Close()
+		b := new(bytes.Buffer)
+		b.ReadFrom(resp.Body)
+		fmt.Println(b)
+
 	} else {
 		fmt.Println(err)
 	}
-
-
-
 
 }

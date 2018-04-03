@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/splunk/go-splunkd/lib/util"
+	"github.com/splunk/ssc-client-go/lib/util"
 	"encoding/base64"
 )
 
@@ -63,10 +63,11 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 		return nil, err
 	}
 	if c.SessionKey != "" {
-		request.Header.Add("Authorization", "Splunk "+c.SessionKey)
-	} else {
-		request.SetBasicAuth(c.Auth[0], c.Auth[1])
+		//request.Header.Add("Authorization", "Splunk "+c.SessionKey)
 	}
+	//} else {
+	//	request.SetBasicAuth(c.Auth[0], c.Auth[1])
+	//}
 	request.Header.Set("Content-Type", "application/json")
 
 	data := []byte(c.Auth[0] + ":" + c.Auth[1])
@@ -132,7 +133,7 @@ func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, erro
 
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
-	content, err := c.EncodeRequestBody(body)
+	content, err := c.toJSON(body)
 	if err != nil {
 		return nil, err
 	}
@@ -162,6 +163,12 @@ func (c *Client) EncodeRequestBody(content interface{}) ([]byte, error) {
 		}
 	}
 	return nil, nil
+}
+
+// toJSON takes and object and attempts to convert to a JSON string
+func (c *Client) toJSON(data interface{}) ([]byte, error) {
+	marshalContent, err := json.Marshal(data)
+	return []byte(marshalContent), err
 }
 
 // EncodeObject encodes an object into url-encoded string

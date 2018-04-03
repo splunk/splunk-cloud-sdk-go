@@ -16,7 +16,7 @@ func main() {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	// hack
-	data := []byte("<REDACTED>")
+	data := []byte("<REDACTED>:<REDACTED>")
 	str := base64.StdEncoding.EncodeToString(data)
 
 	req.Header.Set("Authorization", "Basic " + str)
@@ -31,6 +31,8 @@ func main() {
 
 	fmt.Println("response Status:", resp.Status)
 	fmt.Println("response Headers:", resp.Header)
+
+	// TODO(dan): this seems like a better way, not sure why we went with def because this is what ReadAll does
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("response Body:", string(body))
 }
