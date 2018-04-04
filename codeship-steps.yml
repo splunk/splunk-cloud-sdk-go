@@ -1,0 +1,20 @@
+- type: parallel
+  steps:
+ 
+  - type: parallel
+    steps:
+      - name: lint
+        service: ssc-client-go
+        command: bash -c "make lint"
+      - name: vet
+        service: ssc-client-go
+        command: bash -c "make vet"
+      - name: build
+        service: ssc-client-go
+        command: bash -c "make build"
+
+  - type: parallel
+    steps:
+      - name: test
+        service: ssc-client-go
+        command: bash -c "source deploy/runtests"
