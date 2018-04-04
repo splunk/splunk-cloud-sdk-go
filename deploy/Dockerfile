@@ -1,10 +1,10 @@
-
-#Starting from the latest Golang image
-FROM golang:1.10
+# Starting from the latest Golang image
+FROM golang:1.10-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
 ENV DEP_VERSION=0.4.1
-RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
+RUN apk add --no-cache curl && \
+    curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
 WORKDIR /go/src/github.com/splunk/ssc-client-go
