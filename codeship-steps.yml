@@ -5,13 +5,13 @@
     steps:
       - name: lint
         service: ssc-client-go
-        command: bash -c "go get golang.org/x/lint/golint && golint --set_exit_status ./..."
+        command: bash -c "make lint"
       - name: vet
         service: ssc-client-go
-        command: bash -c "go vet ./..."
+        command: bash -c "make vet"
       - name: build
         service: ssc-client-go
-        command: bash -c "go build -v ./..."
+        command: bash -c "make build"
 
   - type: parallel
     steps:

@@ -46,8 +46,6 @@ type Client struct {
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
-	AuthorizationService *AuthorizationService
-	SearchService        *SearchService
 }
 
 // service provides the interface between client and services
@@ -190,8 +188,6 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 func NewDefaultSplunkdClient() *Client {
 	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
 	c := &Client{Auth: defaultAuth, Host: defaultHost, httpClient: httpClient}
-	c.AuthorizationService = &AuthorizationService{client: c}
-	c.SearchService = &SearchService{client: c}
 
 	return c
 }
