@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/lib/model"
-	"github.com/splunk/ssc-client-go/lib/util"
+	"io/ioutil"
+	"fmt"
 )
 
 
@@ -10,11 +10,11 @@ import (
 type SearchService service
 
 // NewSearch dispatches a new spl search and returns sid
-func (service *SearchService) NewSearch(spl string) (*model.SearchJob, error) {
-	var job = model.NewSearchJob(service)
-
+func (service *SearchService) NewSearch(spl string) (string, error) {
+	
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs")
 	response, err := service.client.Post(jobURL, map[string]string{"query": spl})
-	err = util.ParseResponse(&job, response, err)
-	return &job, err
+	body, err := ioutil.ReadAll(response.Body)
+	fmt.Println("response Body:", string(body))
+	return string(body), err
 }

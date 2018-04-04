@@ -5,7 +5,6 @@ import (
 	"flag"
 	"time"
 	"fmt"
-	//"bytes"
 )
 
 
@@ -52,9 +51,9 @@ func main() {
 	//	fmt.Println(err)
 	//}
 
-	jobModel, _ := splunkdClient.SearchService.NewSearch(*search)
+	response, _ := splunkdClient.SearchService.NewSearch(*search)
 
-	fmt.Sprintf("sid: %s ", jobModel.Sid)
+	fmt.Sprintf("sid: %s ", response)
 
 
 }
