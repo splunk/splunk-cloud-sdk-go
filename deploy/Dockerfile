@@ -3,7 +3,12 @@ FROM golang:1.10-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
 ENV DEP_VERSION=0.4.1
-RUN apk add --no-cache curl && \
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash && \
+    apk add --no-cache openssh && \
+    apk add --no-cache git && \
+    apk add --no-cache make && \
+    apk add --no-cache curl && \
     curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
