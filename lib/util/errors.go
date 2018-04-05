@@ -19,7 +19,7 @@ func (he *HTTPError) Error() string {
 
 // ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and message
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
-	if response.StatusCode <= 200 || response.StatusCode >= 300 {
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return response, &HTTPError{Status: response.StatusCode, Message: response.Status}
 	}
 	return response, nil

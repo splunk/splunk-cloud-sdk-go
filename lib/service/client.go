@@ -160,7 +160,7 @@ func (c *Client) EncodeRequestBody(content interface{}) ([]byte, error) {
 	return nil, nil
 }
 
-// toJSON takes and object and attempts to convert to a JSON string
+// toJSON takes an object and attempts to convert to a JSON string
 func (c *Client) toJSON(data interface{}) ([]byte, error) {
 	marshalContent, err := json.Marshal(data)
 	return []byte(marshalContent), err

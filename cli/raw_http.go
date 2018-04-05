@@ -20,7 +20,7 @@ func main() {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	// hack
-	data := []byte("<REDACTED>:<REDACTED>")
+	data := []byte("JTFL8nx25M49nO9kfkOf8CCnVcprBZvL:oGwEApgT8Utaqooc5Lf8H1Su9en2bwYyMFRIYmdmiHvvbbfZFcuvAntpi6SMJQx0")
 	str := base64.StdEncoding.EncodeToString(data)
 
 	req.Header.Set("Authorization", "Basic " + str)
