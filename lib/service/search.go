@@ -34,20 +34,19 @@ func (service *SearchService) CreateJob(spl string) (string, error) {
 //
 func (service *SearchService) CreateSyncJob(spl string) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	// TODO(dan): Services are down, using fake data for now.
-	//jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", "sync")
-	//response, err := service.client.Post(jobURL, map[string]string{"query": spl})
-	//body, err := ioutil.ReadAll(response.Body)
-	err := json.Unmarshal([]byte(model.GetFakeJson1()), &searchModel)
+	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", "sync")
+	response, err := service.client.Post(jobURL, map[string]string{"query": spl})
+	body, err := ioutil.ReadAll(response.Body)
+	err = json.Unmarshal(body, &searchModel)
 	return &searchModel, err
 }
 
-
 //
-// FIXME(dan): GET /search/v1/jobs{jobId}
+// FIXME(dan):
+// GET /search/v1/jobs/{jobId}
 // Retrieves a job for a jobId
 //
-func (service *SearchService) GetSearch(jobId string) (string, error) {
+func (service *SearchService) GetJob(jobId string) (string, error) {
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId)
 	response, err := service.client.Get(jobURL)
 	//body, err := ioutil.ReadAll(response.Body)
@@ -55,15 +54,27 @@ func (service *SearchService) GetSearch(jobId string) (string, error) {
 	return "", err
 }
 
-
 //
-// FIXME(dan): DELETE /search/v1/jobs{jobId}
-// Retrieves a job for a jobId
+// FIXME(dan):
+// DELETE /search/v1/jobs/{jobId}
+// Delete a search job by jobId
 //
-func (service *SearchService) DeleteSearch(jobId string) (string, error) {
+func (service *SearchService) DeleteJob(jobId string) (string, error) {
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId)
 	response, err := service.client.Delete(jobURL)
 	//body, err := ioutil.ReadAll(response.Body)
 	fmt.Println("response Body:", response)
 	return "", err
+}
+
+//
+// GET /search/v1/jobs/{jobId}/results
+//
+func (service *SearchService) GetResults(jobId string) (*model.SearchEvents, error) {
+	var searchModel model.SearchEvents
+	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId, "results")
+	response, err := service.client.Get(jobURL)
+	body, err := ioutil.ReadAll(response.Body)
+	err = json.Unmarshal(body, &searchModel)
+	return &searchModel, err
 }
