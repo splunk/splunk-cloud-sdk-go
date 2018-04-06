@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	ClientId     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
-	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
-	Host      = "api.splunknovadev-playground.com"
-	Scheme = "https"
+	ClientId     = "admin"
+	ClientSecret = "changeme"
+	Host      = "localhost:8882/catalog/v1/datasets"
+	Scheme = "http"
 	Timeout      = time.Second * 5
 )
 
@@ -58,12 +58,19 @@ func createSyncJob() *model.SearchEvents {
 	return searchModel
 }
 
+func getDataset() service.Datasets {
+	searchModel := splunkClient.CatalogService.GetDatasets()
+	return searchModel
+}
+
 func getResults(searchId string) *model.SearchEvents {
 	searchModel, _ := splunkClient.SearchService.GetResults(searchId)
 	return searchModel
 }
 
 func main() {
+
+	getDataset()
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////

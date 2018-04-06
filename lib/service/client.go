@@ -45,10 +45,12 @@ type Client struct {
 	Host string
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
-	// Services designed to talk to different parts of Splunk
-	SearchService *SearchService
 	//Scheme or http protocol
 	Scheme string
+
+	// Services designed to talk to different parts of Splunk
+	SearchService *SearchService
+	CatalogService *CatalogService
 }
 
 // service provides the interface between client and services
