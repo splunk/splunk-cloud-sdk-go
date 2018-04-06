@@ -16,8 +16,8 @@ const (
 	Timeout      = time.Second * 5
 )
 
-var splunkClient = service.NewSplunkdClient(
-	"", [2]string{ClientID, ClientSecret}, Host, Scheme, service.NewSplunkdHTTPClient(Timeout, true))
+var splunkClient = service.NewClient(
+	"", [2]string{ClientID, ClientSecret}, Host, Scheme, service.NewHTTPClient(Timeout, true))
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
@@ -47,13 +47,13 @@ func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Highlighted: ", searchModel.Highlighted)
 }
 
-func createJob() string {
-	searchID, _ := splunkClient.SearchService.CreateJob("search index=*")
-	return searchID
+func createJob() (string, string) {
+	jobID, json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
+	return jobID, json
 }
 
 func createSyncJob() *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.CreateSyncJob("search index=*")
+	searchModel, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query:"search index=*"})
 	return searchModel
 }
 
@@ -66,8 +66,9 @@ func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	//searchID := createJob()
-	//fmt.Println(searchID)
+	jobID, json := createJob()
+	fmt.Println(jobID)
+	fmt.Println(json)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id
@@ -78,8 +79,8 @@ func main() {
 	////////////////////////////////////
 	// 2) create a new synchronous search
 	////////////////////////////////////
-	searchModel2 := createSyncJob()
-	printSearchModel(searchModel2)
+	//searchModel2 := createSyncJob()
+	//printSearchModel(searchModel2)
 
 	// TODO(dan): delete, get results for job id
 

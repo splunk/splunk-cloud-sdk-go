@@ -1,17 +1,9 @@
 package model
 
-type searchJobService interface {
-	NewSearch(spl string) (*SearchJob, error)
-}
-
-// SearchJob specifies the fields returned for a /search/jobs/ entry for a specific job
-type SearchJob struct {
-	Sid           string                 `json:"sid"`
-	Content       map[string]interface{} `json:"content"`
-	SearchService searchJobService
-}
-
-// NewSearchJob creates a SearchJob
-func NewSearchJob(service searchJobService) SearchJob {
-	return SearchJob{SearchService: service}
+// PostJobsRequest contains params for creating a search job
+type PostJobsRequest struct {
+	Query    string `json:"query"`   // The SPL query string. (Required)
+	Timeout  int    `json:"timeout"` // Cancel the search after this many seconds of inactivity. Set to 0 to disable timeout. (Default 30)
+	TTL      int    `json:"ttl"`     // The time, in seconds, after the search has completed until the search job expires and results are deleted.
+	Limit    int64  `json:"limit"`   // The number of events to process before the job is automatically finalized. Set to 0 to disable automatic finalization.
 }

@@ -21,7 +21,7 @@ const (
 )
 
 func TestBuildSplunkdURLNoURLPath(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	url := client.BuildSplunkdURL(nil, "")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
@@ -45,7 +45,7 @@ func TestBuildSplunkdURLNoURLPath(t *testing.T) {
 }
 
 func TestBuildSplunkdURLNoHost(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	url := client.BuildSplunkdURL(nil, "services",
 		"search", "jobs")
 
@@ -69,27 +69,27 @@ func TestBuildSplunkdURLNoHost(t *testing.T) {
 	}
 }
 
-func TestNewDefaultSplunkdClient(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+func TestNewDefaultClient(t *testing.T) {
+	client := NewDefaultClient()
 	searchService := &SearchService{client: client}
 	if got, want := client.SessionKey, ""; got != want {
-		t.Errorf("NewDefaultSplunkdClient SessionKey is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient SessionKey is %v, want %v", got, want)
 	}
 	if got, want := client.Auth, defaultAuth; got != want {
-		t.Errorf("NewDefaultSplunkdClient Auth is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient Auth is %v, want %v", got, want)
 	}
 	if got, want := client.Host, defaultHost; got != want {
-		t.Errorf("NewDefaultSplunkdClient Host is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient Host is %v, want %v", got, want)
 	}
 	if got, want := client.httpClient.Timeout, defaultTimeOut; got != want {
-		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient httpClient is %v, want %v", got, want)
 	}
 	if got, want := client.SearchService, searchService; *got != *want {
-		t.Errorf("NewDefaultSplunkdClient SearchService is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient SearchService is %v, want %v", got, want)
 	}
 }
 
-func TestNewSplunkdClient(t *testing.T) {
+func TestNewClient(t *testing.T) {
 	type Auth struct {
 		BasicAuth  [2]string
 		SessionKey string
@@ -97,43 +97,43 @@ func TestNewSplunkdClient(t *testing.T) {
 	var testAuth Auth
 	testAuth.BasicAuth = [2]string{testUser, testPassword}
 	testAuth.SessionKey = testSessionKey
-	testHTTPClient := NewSplunkdHTTPClient(time.Second*10, true)
-	client := NewSplunkdClient(testAuth.SessionKey, testAuth.BasicAuth, testHost, testScheme, testHTTPClient)
+	testHTTPClient := NewHTTPClient(time.Second*10, true)
+	client := NewClient(testAuth.SessionKey, testAuth.BasicAuth, testHost, testScheme, testHTTPClient)
 	searchService := &SearchService{client: client}
 	if got, want := client.SessionKey, testAuth.SessionKey; got != want {
-		t.Errorf("NewDefaultSplunkdClient SessionKey is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient SessionKey is %v, want %v", got, want)
 	}
 	if got, want := client.Auth, testAuth.BasicAuth; got != want {
-		t.Errorf("NewDefaultSplunkdClient Auth is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient Auth is %v, want %v", got, want)
 	}
 	if got, want := client.Host, testHost; got != want {
-		t.Errorf("NewDefaultSplunkdClient Host is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient Host is %v, want %v", got, want)
 	}
 	if got, want := client.httpClient.Timeout, time.Second*10; got != want {
-		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient httpClient is %v, want %v", got, want)
 	}
 	if got, want := client.httpClient.Transport, testHTTPClient.Transport; got != want {
-		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient httpClient is %v, want %v", got, want)
 	}
 	if got, want := client.SearchService, searchService; *got != *want {
-		t.Errorf("NewDefaultSplunkdClient SearchService is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient SearchService is %v, want %v", got, want)
 	}
 }
 
-func TestNewSplunkdHTTPClient(t *testing.T) {
+func TestNewHTTPClient(t *testing.T) {
 	timeout := time.Second * 10
 	skipValidateTLS := true
-	testHTTPClient := NewSplunkdHTTPClient(timeout, skipValidateTLS)
+	testHTTPClient := NewHTTPClient(timeout, skipValidateTLS)
 	if got, want := testHTTPClient.Timeout, timeout; got != want {
-		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient httpClient is %v, want %v", got, want)
 	}
 	if got, want := testHTTPClient.Transport.(*http.Transport).TLSClientConfig.InsecureSkipVerify, skipValidateTLS; got != want {
-		t.Errorf("NewDefaultSplunkdClient httpClient Transport is %v, want %v", got, want)
+		t.Errorf("NewDefaultClient httpClient Transport is %v, want %v", got, want)
 	}
 }
 
 func TestNewRequest(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	body := []byte(`{"test":"This is a test body"}`)
 	expectedBasicAuth := []string{"Basic YWRtaW46Y2hhbmdlbWU="}
 	requestBody := bytes.NewBuffer(body)
@@ -174,7 +174,7 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequesthBasicAuthHeader(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	req, err := client.NewRequest(MethodGet, testURL, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
@@ -186,7 +186,7 @@ func TestNewRequesthBasicAuthHeader(t *testing.T) {
 }
 
 func TestNewRequestSessionKey(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	client.SessionKey = testSessionKey
 	req, err := client.NewRequest(MethodGet, testURL, nil)
 	if err != nil {
@@ -199,7 +199,7 @@ func TestNewRequestSessionKey(t *testing.T) {
 }
 
 func TestNewRequestError(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	client.SessionKey = testSessionKey
 	_, err := client.NewRequest("#~/", testURL, nil)
 	if err == nil {
@@ -208,7 +208,7 @@ func TestNewRequestError(t *testing.T) {
 }
 
 func TestEncodeRequestBodyNil(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	response, err := client.EncodeRequestBody(nil)
 	if len(response) > 0 {
 		t.Errorf("EncodeRequestBody expected to return nil, got %v", response)
@@ -219,7 +219,7 @@ func TestEncodeRequestBodyNil(t *testing.T) {
 }
 
 func TestEncodeRequestBodyString(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	got, err := client.EncodeRequestBody(`{"test":"This is a test body"}`)
 	// expect := []byte(`{"test":"This is a test body"}`)
 	if value := reflect.ValueOf(got); value.Kind() != reflect.Slice {
@@ -231,7 +231,7 @@ func TestEncodeRequestBodyString(t *testing.T) {
 }
 
 func TestTestEncodeRequestBodyMap(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	testData := map[string]string{
 		"testKey": "testValue",
 	}
@@ -245,7 +245,7 @@ func TestTestEncodeRequestBodyMap(t *testing.T) {
 }
 
 func TestTestEncodeRequestBodyStruct(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	type TestModel struct {
 		testID    string
 		testValue string
@@ -264,7 +264,7 @@ func TestTestEncodeRequestBodyStruct(t *testing.T) {
 }
 
 func TestTestEncodeRequestBodyInvalid(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	_, err := client.EncodeRequestBody(123)
 	if err == nil {
 		t.Errorf("EncodeRequestBody expected to raise an error, got %v", err)
@@ -272,7 +272,7 @@ func TestTestEncodeRequestBodyInvalid(t *testing.T) {
 }
 
 func TestEncodeObjectError(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	_, err := client.EncodeObject(math.Inf(1))
 	if err == nil {
 		t.Errorf("EncodeObject expected to raise an error, got %v", err)
@@ -280,7 +280,7 @@ func TestEncodeObjectError(t *testing.T) {
 }
 
 func TestEncodeObjectTypeConversion(t *testing.T) {
-	client := NewDefaultSplunkdClient()
+	client := NewDefaultClient()
 	intVal := 1
 	var float32Val float32 = 0.999
 	testData := map[string]interface{}{

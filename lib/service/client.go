@@ -194,17 +194,17 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 	return []byte(URLValues.Encode()), nil
 }
 
-// NewDefaultSplunkdClient creates a Client with default values
-func NewDefaultSplunkdClient() *Client {
-	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
+// NewDefaultClient creates a Client with default values
+func NewDefaultClient() *Client {
+	httpClient := NewHTTPClient(defaultTimeOut, true)
 	c := &Client{Auth: defaultAuth, Host: defaultHost, Scheme: defaultScheme, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	return c
 }
 
-// NewSplunkdClient creates a Client with custom values passed in
-func NewSplunkdClient(sessionKey string, auth [2]string, host string, scheme string, httpClient *http.Client) *Client {
-	c := NewDefaultSplunkdClient()
+// NewClient creates a Client with custom values passed in
+func NewClient(sessionKey string, auth [2]string, host string, scheme string, httpClient *http.Client) *Client {
+	c := NewDefaultClient()
 	c.Host = host
 	c.SessionKey = sessionKey
 	c.Auth = auth
@@ -215,8 +215,8 @@ func NewSplunkdClient(sessionKey string, auth [2]string, host string, scheme str
 	return c
 }
 
-// NewSplunkdHTTPClient returns a HTTP Client with timeout and tls validation setup
-func NewSplunkdHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
+// NewHTTPClient returns a HTTP Client with timeout and tls validation setup
+func NewHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
 	return &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
