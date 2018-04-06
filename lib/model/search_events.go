@@ -10,6 +10,7 @@ type SearchEvents struct {
 	Highlighted map[string]interface{}   `json:"highlighted"`
 }
 
+// Result contains information about the search
 type Result struct {
 	Bkt          string   `json:"_bkt"`
 	Cd           string   `json:"_cd"`

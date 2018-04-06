@@ -16,6 +16,7 @@ const (
 	testPassword   = "changed"
 	testSessionKey = "123"
 	testHost       = "test:8089"
+	testScheme	   = "https"
 	testURL        = "https://test:8089/test"
 )
 
@@ -97,7 +98,7 @@ func TestNewSplunkdClient(t *testing.T) {
 	testAuth.BasicAuth = [2]string{testUser, testPassword}
 	testAuth.SessionKey = testSessionKey
 	testHTTPClient := NewSplunkdHTTPClient(time.Second*10, true)
-	client := NewSplunkdClient(testAuth.SessionKey, testAuth.BasicAuth, testHost, testHTTPClient)
+	client := NewSplunkdClient(testAuth.SessionKey, testAuth.BasicAuth, testHost, testScheme, testHTTPClient)
 	searchService := &SearchService{client: client}
 	if got, want := client.SessionKey, testAuth.SessionKey; got != want {
 		t.Errorf("NewDefaultSplunkdClient SessionKey is %v, want %v", got, want)

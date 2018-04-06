@@ -7,23 +7,22 @@ import (
 	"time"
 )
 
+// Canned configs for running this example
 const (
-	ClientId     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
+	ClientID     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
 	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
-	Host      = "api.splunknovadev-playground.com"
-	Scheme = "https"
+	Host         = "api.splunknovadev-playground.com"
+	Scheme       = "https"
 	Timeout      = time.Second * 5
 )
 
 var splunkClient = service.NewSplunkdClient(
-	"", [2]string{ClientId, ClientSecret}, Host, Scheme, service.NewSplunkdHTTPClient(Timeout, true))
+	"", [2]string{ClientID, ClientSecret}, Host, Scheme, service.NewSplunkdHTTPClient(Timeout, true))
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
 	fmt.Println("InitOffset: ", searchModel.InitOffset)
 	fmt.Println("Messages: ", searchModel.Messages)
-
-	//fmt.Println("Results: ", searchModel.Results)
 	fmt.Println("Results: ")
 	for _, result := range searchModel.Results {
 		fmt.Println("\tBkt", result.Bkt)
@@ -49,8 +48,8 @@ func printSearchModel(searchModel *model.SearchEvents) {
 }
 
 func createJob() string {
-	searchId, _ := splunkClient.SearchService.CreateJob("search index=*")
-	return searchId
+	searchID, _ := splunkClient.SearchService.CreateJob("search index=*")
+	return searchID
 }
 
 func createSyncJob() *model.SearchEvents {
@@ -58,8 +57,8 @@ func createSyncJob() *model.SearchEvents {
 	return searchModel
 }
 
-func getResults(searchId string) *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.GetResults(searchId)
+func getResults(searchID string) *model.SearchEvents {
+	searchModel, _ := splunkClient.SearchService.GetResults(searchID)
 	return searchModel
 }
 
@@ -67,8 +66,8 @@ func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	//searchId := createJob()
-	//fmt.Println(searchId)
+	//searchID := createJob()
+	//fmt.Println(searchID)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id
