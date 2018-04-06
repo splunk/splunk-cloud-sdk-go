@@ -12,3 +12,14 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+
+# Goland
+.idea/
+debug
+*.iml
+.vscode/
+
+# codeship encrypted files, used by codecov
+codeship.aes
+vendor
+secret.env
