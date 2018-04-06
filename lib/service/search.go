@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/lib/model"
-	"io/ioutil"
 	"encoding/json"
 	"fmt"
+	"github.com/splunk/ssc-client-go/lib/model"
+	"io/ioutil"
 )
 
 // SearchService implements a new service type
@@ -27,7 +27,6 @@ func (service *SearchService) CreateJob(spl string) (string, error) {
 	return data["searchId"], err
 }
 
-
 //
 // POST /search/v1/jobs/sync
 // NewSyncSearch (i.e. one-shot) dispatches a new spl search and returns sid
@@ -42,7 +41,6 @@ func (service *SearchService) CreateSyncJob(spl string) (*model.SearchEvents, er
 }
 
 //
-// FIXME(dan):
 // GET /search/v1/jobs/{jobId}
 // Retrieves a job for a jobId
 //
@@ -51,11 +49,10 @@ func (service *SearchService) GetJob(jobId string) (string, error) {
 	response, err := service.client.Get(jobURL)
 	//body, err := ioutil.ReadAll(response.Body)
 	fmt.Println("response Body:", response)
-	return "", err
+	return "Not Implemented", err
 }
 
 //
-// FIXME(dan):
 // DELETE /search/v1/jobs/{jobId}
 // Delete a search job by jobId
 //
@@ -64,7 +61,7 @@ func (service *SearchService) DeleteJob(jobId string) (string, error) {
 	response, err := service.client.Delete(jobURL)
 	//body, err := ioutil.ReadAll(response.Body)
 	fmt.Println("response Body:", response)
-	return "", err
+	return "Not Implemented", err
 }
 
 //
