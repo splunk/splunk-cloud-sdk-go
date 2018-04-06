@@ -70,7 +70,6 @@ func TestBuildSplunkdURLNoHost(t *testing.T) {
 
 func TestNewDefaultSplunkdClient(t *testing.T) {
 	client := NewDefaultSplunkdClient()
-	authorizationService := &AuthorizationService{client: client}
 	searchService := &SearchService{client: client}
 	if got, want := client.SessionKey, ""; got != want {
 		t.Errorf("NewDefaultSplunkdClient SessionKey is %v, want %v", got, want)
@@ -83,9 +82,6 @@ func TestNewDefaultSplunkdClient(t *testing.T) {
 	}
 	if got, want := client.httpClient.Timeout, defaultTimeOut; got != want {
 		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
-	}
-	if got, want := client.AuthorizationService, authorizationService; *got != *want {
-		t.Errorf("NewDefaultSplunkdClient AuthorizationService is %v, want %v", got, want)
 	}
 	if got, want := client.SearchService, searchService; *got != *want {
 		t.Errorf("NewDefaultSplunkdClient SearchService is %v, want %v", got, want)
@@ -102,7 +98,6 @@ func TestNewSplunkdClient(t *testing.T) {
 	testAuth.SessionKey = testSessionKey
 	testHTTPClient := NewSplunkdHTTPClient(time.Second*10, true)
 	client := NewSplunkdClient(testAuth.SessionKey, testAuth.BasicAuth, testHost, testHTTPClient)
-	authorizationService := &AuthorizationService{client: client}
 	searchService := &SearchService{client: client}
 	if got, want := client.SessionKey, testAuth.SessionKey; got != want {
 		t.Errorf("NewDefaultSplunkdClient SessionKey is %v, want %v", got, want)
@@ -118,9 +113,6 @@ func TestNewSplunkdClient(t *testing.T) {
 	}
 	if got, want := client.httpClient.Transport, testHTTPClient.Transport; got != want {
 		t.Errorf("NewDefaultSplunkdClient httpClient is %v, want %v", got, want)
-	}
-	if got, want := client.AuthorizationService, authorizationService; *got != *want {
-		t.Errorf("NewDefaultSplunkdClient AuthorizationService is %v, want %v", got, want)
 	}
 	if got, want := client.SearchService, searchService; *got != *want {
 		t.Errorf("NewDefaultSplunkdClient SearchService is %v, want %v", got, want)

@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/splunk/ssc-client-go/lib/util"
-	//"encoding/base64"
 )
 
 // Declare constants for service package
@@ -47,8 +46,9 @@ type Client struct {
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
-	//AuthorizationService *AuthorizationService
 	SearchService *SearchService
+	//Scheme or http protocol
+	Scheme string
 }
 
 // service provides the interface between client and services
@@ -82,13 +82,12 @@ func (c *Client) BuildSplunkdURL(queryValues url.Values, urlPathParts ...string)
 	}
 	// Always set json as output format for now
 	queryValues.Set("output_mode", "json")
-	u := url.URL{
-		Scheme:   defaultScheme,
+	return url.URL{
+		Scheme:   c.Scheme,
 		Host:     c.Host,
 		Path:     buildPath,
 		RawQuery: queryValues.Encode(),
 	}
-	return u
 }
 
 // Do sends out request and returns HTTP response
@@ -198,19 +197,18 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 // NewDefaultSplunkdClient creates a Client with default values
 func NewDefaultSplunkdClient() *Client {
 	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
-	c := &Client{Auth: defaultAuth, Host: defaultHost, httpClient: httpClient}
-	//c.AuthorizationService = &AuthorizationService{client: c}
+	c := &Client{Auth: defaultAuth, Host: defaultHost, Scheme: defaultScheme, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
-
 	return c
 }
 
 // NewSplunkdClient creates a Client with custom values passed in
-func NewSplunkdClient(sessionKey string, auth [2]string, host string, httpClient *http.Client) *Client {
+func NewSplunkdClient(sessionKey string, auth [2]string, host string, scheme string, httpClient *http.Client) *Client {
 	c := NewDefaultSplunkdClient()
 	c.Host = host
 	c.SessionKey = sessionKey
 	c.Auth = auth
+	c.Scheme = scheme
 	if httpClient != nil {
 		c.httpClient = httpClient
 	}
