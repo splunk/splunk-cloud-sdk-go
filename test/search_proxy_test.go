@@ -5,20 +5,22 @@ import (
 	"time"
 	"testing"
 	"github.com/splunk/ssc-client-go/lib/model"
+	"fmt"
 )
 
 
 const (
-	ClientId = "admin"
+	ClientID     = "admin"
 	ClientSecret = "changeme"
-	BaseURL = "localhost:32769"
+	BaseURL      = "localhost:32769"
 )
 
 func TestNewSearchJobWithStubby(t *testing.T) {
-	client := service.NewSplunkdClient(
-		"", [2]string{ClientId, ClientSecret}, BaseURL, "http", service.NewSplunkdHTTPClient(time.Second*5, true))
+	client := service.NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	response, _ := client.SearchService.CreateJob("search index=*")
+	response, json,_ := client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
+	fmt.Println("json: ", json)  // TODO(dan): add a test?
 
 	if response != "SEARCH_ID" {
 		t.Errorf("Expected SEARCHID not found in response")
@@ -26,20 +28,20 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 }
 
 func TestGetJobResultsWithStubby(t *testing.T) {
-	client := service.NewSplunkdClient(
-		"", [2]string{ClientId, ClientSecret}, BaseURL, "http", service.NewSplunkdHTTPClient(time.Second*5, true))
+	client := service.NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	client.SearchService.CreateJob("search index=*")
+	client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
 	response, _ := client.SearchService.GetResults("SEARCH_ID")
 
 	ValidateResponse(response, t)
 }
 
 func TestNewSearchJobSyncWithStubby(t *testing.T) {
-	client := service.NewSplunkdClient(
-		"", [2]string{ClientId, ClientSecret}, BaseURL, "http", service.NewSplunkdHTTPClient(time.Second*5, true))
+	client := service.NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	response, _ := client.SearchService.CreateSyncJob("search index=*")
+	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query:"search index=*"})
 
 	ValidateResponse(response, t)
 }
