@@ -26,13 +26,21 @@ build:
 encrypt:
 	@if [ -f deploy/secret.env ]; then \
 		jet encrypt deploy/secret.env deploy/env.encrypted && \
-		printf "Encrypted deploy/secret.env  to deploy/env.encrypted\n"; \
+		printf "Encrypted deploy/secret.env to deploy/env.encrypted\n"; \
+	fi;
+	@if [ -f deploy/shared/secret.env ]; then \
+		jet encrypt deploy/shared/secret.env deploy/shared/env.encrypted && \
+		printf "Encrypted deploy/shared/secret.env to deploy/shared/env.encrypted\n"; \
 	fi;
 
 decrypt:
 	@if [ -f deploy/env.encrypted ]; then \
 		jet decrypt deploy/env.encrypted deploy/secret.env && \
 		printf "Decrypted deploy/env.encrypted to deploy/secret.env\n"; \
+	fi;
+	@if [ -f deploy/shared/env.encrypted ]; then \
+		jet decrypt deploy/shared/env.encrypted deploy/shared/secret.env && \
+		printf "Decrypted deploy/shared/env.encrypted to deploy/shared/env.encrypted\n"; \
 	fi;
 
 install_dep:
