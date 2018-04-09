@@ -1,13 +1,12 @@
 package tests
 
 import (
-	"github.com/splunk/ssc-client-go/lib/service"
-	"time"
-	"testing"
-	"github.com/splunk/ssc-client-go/lib/model"
 	"encoding/json"
+	"github.com/splunk/ssc-client-go/lib/model"
+	"github.com/splunk/ssc-client-go/lib/service"
+	"testing"
+	"time"
 )
-
 
 const (
 	ClientID     = "admin"
@@ -19,13 +18,12 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 	client := service.NewClient(
 		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	response,_ := client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
+	response, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 
 	data := make(map[string]string)
 	err := json.Unmarshal([]byte(response), &data)
 
-
-	if err != nil && data["searchId"] == "SEARCH_ID"{
+	if err != nil && data["searchId"] == "SEARCH_ID" {
 		t.Errorf("Expected SEARCHID not found in response")
 	}
 }
@@ -43,7 +41,7 @@ func TestNewSearchJobSyncWithStubby(t *testing.T) {
 	client := service.NewClient(
 		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query:"search index=*"})
+	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 
 	ValidateResponse(response, t)
 }

@@ -47,13 +47,13 @@ func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Highlighted: ", searchModel.Highlighted)
 }
 
-func createJob() (string) {
-	json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
+func createJob() string {
+	json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 	return json
 }
 
 func createSyncJob() *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query:"search index=*"})
+	searchModel, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 	return searchModel
 }
 
@@ -66,8 +66,8 @@ func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	json := createJob()
-	fmt.Println(json)
+	//json := createJob()
+	//fmt.Println(json)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id
@@ -78,8 +78,8 @@ func main() {
 	////////////////////////////////////
 	// 2) create a new synchronous search
 	////////////////////////////////////
-	//searchModel2 := createSyncJob()
-	//printSearchModel(searchModel2)
+	searchModel2 := createSyncJob()
+	printSearchModel(searchModel2)
 
 	// TODO(dan): delete, get results for job id
 
