@@ -2,10 +2,12 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"math"
 	"net/http"
+	"net/url"
 	"reflect"
 	"testing"
 	"time"
@@ -16,7 +18,8 @@ const (
 	testPassword   = "changed"
 	testSessionKey = "123"
 	testHost       = "test:8089"
-	testScheme	   = "https"
+	testStubbyHost = "ssc-sdk-shared-stubby:8882"
+	testScheme     = "https"
 	testURL        = "https://test:8089/test"
 )
 
@@ -297,5 +300,23 @@ func TestEncodeObjectTypeConversion(t *testing.T) {
 	}
 	if err != nil {
 		t.Errorf("EncodeObject expected to not return error, got %v", err)
+	}
+}
+
+func TestNewStubbyRequest(t *testing.T) {
+	client := NewDefaultClient()
+	resp, _ := client.DoRequest(MethodGet, url.URL{Scheme: "http", Host: testStubbyHost, Path: "/error"}, nil)
+	if resp.StatusCode != 500 {
+		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
+	}
+	defer resp.Body.Close()
+	b := new(bytes.Buffer)
+	b.ReadFrom(resp.Body)
+	content := new(map[string]string)
+	if err := json.NewDecoder(b).Decode(content); err != nil {
+		t.Fatalf("client.DoRequest error unmarshalling response, err: %v", err)
+	}
+	if (*content)["message"] != "Something exploded" {
+		t.Fatalf("client.DoRequest error/ expecting response {\"message\":\"Something exploded\"} Received: %+v", content)
 	}
 }
