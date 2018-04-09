@@ -16,5 +16,5 @@
   - type: parallel
     steps:
       - name: test
-        service: ssc-client-go
+        service: ssc-client-go-with-stubby
         command: bash -c "source deploy/runtests"
