@@ -21,13 +21,16 @@ const (
 	VIEW    DatasetKind = "view"
 	INDEX   DatasetKind = "index"
 	KVSTORE DatasetKind = "kvstore"
+	EXTERN  DatasetKind = "extern"
+	TOPIC   DatasetKind = "topic"
+	CATALOG DatasetKind = "catalog"
 )
 
 type Dataset struct {
 	Id    string      `json:"id"`
 	Name  string      `json:"name"`
-	Rules Rules       `json:"rules"`
 	Kind  DatasetKind `json:"kind"`
+	Rules []string    `json:"rules"`
 	Todo  string      `json:"todo"`
 }
 
@@ -68,10 +71,10 @@ func (c *CatalogService) GetDatasets() (Datasets, error) {
 
 	body, err := ioutil.ReadAll(response.Body)
 
-	var results Datasets
-	err = json.Unmarshal(body, &results)
+	var result Datasets
+	err = json.Unmarshal(body, &result)
 
-	return results, err
+	return result, err
 }
 
 func (c *CatalogService) GetDataset(name string) (Dataset, error) {
