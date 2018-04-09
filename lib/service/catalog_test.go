@@ -1,25 +1,20 @@
-/*
-Package service implements a service client which is used to communicate
-with Splunkd endpoints as well as a collection of services that group
-logically related Splunkd endpoints.
-*/
 package service
 
 import (
-
-	"fmt"
 	"testing"
+	"github.com/stretchr/testify/assert"
 )
 
 
 func Test_dataset(t *testing.T) {
 	var splunkClient = NewSplunkdClient("",
 		[2]string{"admin", "changeme"},
-		"localhost:8882", "https",nil)
+		"localhost:8882", "http", nil)
 
-	//client := &Client{Host:"http://localhost:8882", Auth: [2]string{"admin", "changeme"} }
-	url := splunkClient.CatalogService.GetDatasets()
-	fmt.Print(url)
-	//t.Error("hahah")
+	result, err := splunkClient.CatalogService.GetDataset("ds1")
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result.Id)
+	assert.Equal(t, result.Name, "ds1")
+	//assert.Equal(t, result.Kind, "")
 
 }

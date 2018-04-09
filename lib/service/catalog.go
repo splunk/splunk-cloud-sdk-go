@@ -6,89 +6,86 @@ logically related Splunkd endpoints.
 package service
 
 import (
-	//"bytes"
-	//"crypto/tls"
-	//"encoding/json"
-	//"io"
-	//"net/http"
-	//"net/url"
-	//"path"
-	//"reflect"
-	//"strconv"
-	//"strings"
-	//"time"
-	//
-	//"github.com/splunk/ssc-client-go/lib/util"
-	//"github.com/go-openapi/runtime/client"
 	"net/url"
-	//"path"
-	//"fmt"
+	"io/ioutil"
+	"encoding/json"
 )
 
-const SEARCH_SERVICE_PREFIX string = "/search/v1";
-const EVENT_SERVICE_PREFIX string = "/v1";
 const CATALOG_SERVICE_PREFIX string = "/catalog/v1";
 
 type CatalogService service
 
 type DatasetKind string
+
 const (
-	VIEW DatasetKind ="view"
-	INDEX DatasetKind ="index"
-	KVSTORE DatasetKind ="kvstore"
+	VIEW    DatasetKind = "view"
+	INDEX   DatasetKind = "index"
+	KVSTORE DatasetKind = "kvstore"
 )
 
 type Dataset struct {
-	kind DatasetKind
-	todo string
+	Id    string      `json:"id"`
+	Name  string      `json:"name"`
+	Rules Rules       `json:"rules"`
+	Kind  DatasetKind `json:"kind"`
+	Todo  string      `json:"todo"`
 }
 
 type Datasets []Dataset
 
 type ActionKind string
+
 const (
-	ALIAS ActionKind ="ALIAS"
-	AUTOKV ActionKind ="AUTOKV"
-	REGEX ActionKind ="REGEX"
-	EVAL ActionKind ="EVAL"
-	LOOKUP ActionKind ="LOOKUP"
+	ALIAS  ActionKind = "ALIAS"
+	AUTOKV ActionKind = "AUTOKV"
+	REGEX  ActionKind = "REGEX"
+	EVAL   ActionKind = "EVAL"
+	LOOKUP ActionKind = "LOOKUP"
 )
 
 type Rule struct {
-	name string
-	action []ActionKind
-	match string
-	priority int
-	description string
-
+	Name        string       `json:"name"`
+	Action      []ActionKind `json:"actions"`
+	Match       string       `json:"match"`
+	Priority    int          `json:"priority"`
+	Description string       `json:"description"`
 }
 type Rules []Rule
 
-
-// BuildSplunkdURL creates full Splunkd URL
-func (c *CatalogService) BuildURL(prefix string, path string ) url.URL {
+// creates a catalog URL //todo: move to client.go or other common files
+func (c *CatalogService) BuildURL(prefix string, path string, query string) url.URL {
 	return url.URL{
-		Scheme:   defaultScheme,
-		Path:     CATALOG_SERVICE_PREFIX,
-		RawQuery: path,
-		Host: "localhost:8882",
+		Scheme:   c.client.Scheme,
+		Path:     CATALOG_SERVICE_PREFIX + "/" + path,
+		RawQuery: query,
+		Host:     c.client.Host,
 	}
 }
 
-func (c *CatalogService) GetDatasets() (Datasets) {
-	var ds Dataset = Dataset{VIEW, "dfdsf"};
-	//var url = c.BuildURL(CATALOG_SERVICE_PREFIX,"datasets")
-	//response, err := c.client.Get(url)
+func (c *CatalogService) GetDatasets() (Datasets, error) {
+	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets", "")
+	response, err := c.client.Get(url)
 
+	body, err := ioutil.ReadAll(response.Body)
 
-	//fmt.Print(err)
-	//fmt.Print(response)
-	return Datasets{ds}
+	var results Datasets
+	err = json.Unmarshal(body, &results)
+
+	return results, err
+}
+
+func (c *CatalogService) GetDataset(name string) (Dataset, error) {
+	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+name, "")
+	response, err := c.client.Get(url)
+	body, err := ioutil.ReadAll(response.Body)
+
+	var result Dataset
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
 
 func (c *CatalogService) GetRules() (Rules) {
-	var ds Rule = Rule{"rule1", []ActionKind{LOOKUP},"match",9,"something"};
+	var ds Rule = Rule{"rule1", []ActionKind{LOOKUP}, "match", 9, "something"};
 	return Rules{ds}
 }
-
-
