@@ -5,7 +5,7 @@ import (
 	"time"
 	"testing"
 	"github.com/splunk/ssc-client-go/lib/model"
-	"fmt"
+	"encoding/json"
 )
 
 
@@ -19,10 +19,13 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 	client := service.NewClient(
 		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	response, json,_ := client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
-	fmt.Println("json: ", json)  // TODO(dan): add a test?
+	response,_ := client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
 
-	if response != "SEARCH_ID" {
+	data := make(map[string]string)
+	err := json.Unmarshal([]byte(response), &data)
+
+
+	if err != nil && data["searchId"] == "SEARCH_ID"{
 		t.Errorf("Expected SEARCHID not found in response")
 	}
 }

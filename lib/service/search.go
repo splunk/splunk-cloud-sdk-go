@@ -12,7 +12,7 @@ type SearchService service
 
 // CreateJob dispatch a search and return the jobID
 // POST /search/v1/jobs
-func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, string,error) {
+func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string,error) {
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs")
 	response, err := service.client.Post(jobURL, job)
 	body, err := ioutil.ReadAll(response.Body)
@@ -22,7 +22,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, str
 	//
 	data := make(map[string]string)
 	json.Unmarshal(body, &data)
-	return data["searchId"], string(body), err
+	return string(body), err
 }
 
 // CreateSyncJob Dispatch a search and return the newly created search job synchronously

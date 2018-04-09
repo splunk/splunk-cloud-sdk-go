@@ -47,9 +47,9 @@ func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Highlighted: ", searchModel.Highlighted)
 }
 
-func createJob() (string, string) {
-	jobID, json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
-	return jobID, json
+func createJob() (string) {
+	json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
+	return json
 }
 
 func createSyncJob() *model.SearchEvents {
@@ -66,8 +66,7 @@ func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	jobID, json := createJob()
-	fmt.Println(jobID)
+	json := createJob()
 	fmt.Println(json)
 
 	///////////////////////////////////
