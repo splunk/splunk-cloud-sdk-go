@@ -28,3 +28,15 @@ func Test_getDatasets(t *testing.T) {
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
 }
+
+func Test_postDataset(t *testing.T) {
+
+	//dataset := model.Dataset_post{"ds1", model.VIEW, []string{"string"}, "string"}
+	result, err := getSplunkClient().CatalogService.PostDataset(
+		getSplunkClient().CatalogService.CreateDataset("ds1", model.VIEW, []string{"string"}, "string"))
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result.Id)
+	assert.Equal(t, "ds1", result.Name)
+	assert.Equal(t, model.VIEW, result.Kind)
+	assert.Equal(t, []string{"string"}, result.Rules)
+}
