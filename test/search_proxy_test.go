@@ -34,7 +34,6 @@ func TestGetJobResultsWithStubby(t *testing.T) {
 	client := service.NewClient(
 		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
 
-	client.SearchService.CreateJob(&model.PostJobsRequest{Query:"search index=*"})
 	response, _ := client.SearchService.GetResults("SEARCH_ID")
 
 	ValidateResponse(response, t)
