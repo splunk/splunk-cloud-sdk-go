@@ -12,14 +12,24 @@ import (
 )
 
 
-func Test_dataset(t *testing.T) {
+/*func Test_dataset(t *testing.T) {
 	var splunkClient = NewSplunkdClient("",
 		[2]string{"admin", "changeme"},
-		"localhost:8882", "https",nil)
+		"localhost:8889", "https",nil)
 
 	//client := &Client{Host:"http://localhost:8882", Auth: [2]string{"admin", "changeme"} }
 	url := splunkClient.CatalogService.GetDatasets()
 	fmt.Print(url)
 	//t.Error("hahah")
 
+}*/
+
+
+func TestDeleteDataRule(t *testing.T) {
+	var splunkClient = NewSplunkdClient("",
+		[2]string{"admin", "changeme"},
+		"localhost:32769", "https",nil)
+
+	urlDeleteErr := splunkClient.CatalogService.DeleteRule("rule1")
+	fmt.Println(urlDeleteErr)
 }

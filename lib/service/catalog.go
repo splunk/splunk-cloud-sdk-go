@@ -12,7 +12,7 @@ import (
 	//"io"
 	//"net/http"
 	//"net/url"
-	//"path"
+	"path"
 	//"reflect"
 	//"strconv"
 	//"strings"
@@ -22,7 +22,8 @@ import (
 	//"github.com/go-openapi/runtime/client"
 	"net/url"
 	//"path"
-	//"fmt"
+	"github.com/splunk/ssc-client-go/lib/util"
+	"fmt"
 )
 
 const SEARCH_SERVICE_PREFIX string = "/search/v1";
@@ -71,7 +72,7 @@ func (c *CatalogService) BuildURL(prefix string, path string ) url.URL {
 		Scheme:   defaultScheme,
 		Path:     CATALOG_SERVICE_PREFIX,
 		RawQuery: path,
-		Host: "localhost:8882",
+		Host: "localhost:32769",
 	}
 }
 
@@ -90,5 +91,23 @@ func (c *CatalogService) GetRules() (Rules) {
 	var ds Rule = Rule{"rule1", []ActionKind{LOOKUP},"match",9,"something"};
 	return Rules{ds}
 }
+
+
+/**
+ * Delete the rule by the given path.
+ * @param {string} rulePath
+ */
+func (c *CatalogService) DeleteRule(rulePath string) error {
+	buildPath := ""
+	buildPath = path.Join(buildPath, "/rules", rulePath)
+	deleteJobUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath)
+	fmt.Println(deleteJobUrl)
+	response, err := c.client.Delete(deleteJobUrl)
+	return util.ParseError(response, err)
+}
+
+/*func (c *CatalogService) PostRules() error {
+
+}*/
 
 
