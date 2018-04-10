@@ -35,7 +35,7 @@ func TestCreateSyncJob(t *testing.T) {
 
 func TestGetResults(t *testing.T) {
 
-	response, err := getSplunkClient().SearchService.GetResults("SEAwwRCH_ID")
+	response, err := getSplunkClient().SearchService.GetResults("SEARCH_ID")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
