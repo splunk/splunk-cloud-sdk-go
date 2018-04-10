@@ -21,3 +21,5 @@ debug
 
 # codeship encrypted files, used by codecov
 codeship.aes
+vendor
+secret.env

@@ -1,8 +1,7 @@
 /*
-Package service implements a service client which is used to communicate
-with Splunkd endpoints as well as a collection of services that group
-logically related Splunkd endpoints.
+Implement catalog service endpoints
 */
+
 package service
 
 import (
@@ -10,7 +9,6 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
-	"path"
 )
 
 const CATALOG_SERVICE_PREFIX string = "/catalog/v1";
@@ -46,7 +44,7 @@ func (c *CatalogService) BuildURL(prefix string, path string, query string) url.
 
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets", "")
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -58,8 +56,7 @@ func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 
 func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+name, "")
-	response, err := c.client.Get(url)
-
+	response, err := c.client.Get(url, JSON)
 	body, err := ioutil.ReadAll(response.Body)
 
 	var result model.Dataset
@@ -70,7 +67,7 @@ func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
 
 func (c *CatalogService) PostDataset(dataset dataset_post) (model.Dataset, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets", "")
-	response, err := c.client.Post(url, dataset)
+	response, err := c.client.Post(url, dataset, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -78,58 +75,12 @@ func (c *CatalogService) PostDataset(dataset dataset_post) (model.Dataset, error
 	err = json.Unmarshal(body, &result)
 
 	return result, err
-
 }
 
-/**
- * Delete the rule by the given path.
- * @param {string} rulePath
- */
-func (c *CatalogService) deleteRule(rulePath string) (model.Rule, error) {
-	buildPath := ""
-	buildPath = path.Join(buildPath, "rules", rulePath)
-	getDeleteUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath, "")
-	response, err := c.client.Delete(getDeleteUrl)
 
-	body, err := ioutil.ReadAll(response.Body)
+func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
+	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+dataset_name, "")
+	_, err := c.client.Delete(url, JSON)
 
-	var result model.Rule
-	err = json.Unmarshal(body, &result)
-
-	return result, err
-}
-
-/**
- * Returns the rule identified by the given path.
- * The path must be fully qualified, if the path is a prefix the request returns 404
- * because it does identify a rule resource.
- * @param {string} rulePath
- * @return {Promise<CatalogProxy~Rule>}
- */
-func (c *CatalogService) GetRules() ([]model.Rule, error){
-	getRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
-	response, err := c.client.Get(getRuleUrl)
-
-	body, err := ioutil.ReadAll(response.Body)
-
-	var result []model.Rule
-	err = json.Unmarshal(body, &result)
-
-	return result, err
-}
-
-/**
- * Post a new rule by the given path.
- * @param {string} rule
- */
-func (c *CatalogService) PostRule(rule model.Rule) (model.Rule, error) {
-	postRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
-	response, err := c.client.Post(postRuleUrl, rule)
-
-	body, err := ioutil.ReadAll(response.Body)
-
-	var result model.Rule
-	err = json.Unmarshal(body, &result)
-
-	return result, err
+	return err
 }

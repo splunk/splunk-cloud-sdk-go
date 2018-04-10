@@ -2,21 +2,19 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/splunk/ssc-client-go/lib/model"
+	"github.com/splunk/ssc-client-go/lib/util"
 	"io/ioutil"
 )
 
 // SearchService implements a new service type
 type SearchService service
 
-//
+// CreateJob dispatch a search and return the jobID
 // POST /search/v1/jobs
-// NewSearch dispatches a new spl search and returns sid
-//
-func (service *SearchService) CreateJob(spl string) (string, error) {
+func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, error) {
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs")
-	response, err := service.client.Post(jobURL, map[string]string{"query": spl})
+	response, err := service.client.Post(jobURL, job, JSON)
 	body, err := ioutil.ReadAll(response.Body)
 
 	//
@@ -24,54 +22,25 @@ func (service *SearchService) CreateJob(spl string) (string, error) {
 	//
 	data := make(map[string]string)
 	json.Unmarshal(body, &data)
-	return data["searchId"], err
+	return string(body), err
 }
 
-//
+// CreateSyncJob Dispatch a search and return the newly created search job synchronously
 // POST /search/v1/jobs/sync
-// NewSyncSearch (i.e. one-shot) dispatches a new spl search and returns sid
-//
-func (service *SearchService) CreateSyncJob(spl string) (*model.SearchEvents, error) {
+func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
 	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", "sync")
-	response, err := service.client.Post(jobURL, map[string]string{"query": spl})
-	body, err := ioutil.ReadAll(response.Body)
-	err = json.Unmarshal(body, &searchModel)
+	response, err := service.client.Post(jobURL, job, JSON)
+	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
 }
 
-//
-// GET /search/v1/jobs/{jobId}
-// Retrieves a job for a jobId
-//
-func (service *SearchService) GetJob(jobId string) (string, error) {
-	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId)
-	response, err := service.client.Get(jobURL)
-	//body, err := ioutil.ReadAll(response.Body)
-	fmt.Println("response Body:", response)
-	return "Not Implemented", err
-}
-
-//
-// DELETE /search/v1/jobs/{jobId}
-// Delete a search job by jobId
-//
-func (service *SearchService) DeleteJob(jobId string) (string, error) {
-	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId)
-	response, err := service.client.Delete(jobURL)
-	//body, err := ioutil.ReadAll(response.Body)
-	fmt.Println("response Body:", response)
-	return "Not Implemented", err
-}
-
-//
-// GET /search/v1/jobs/{jobId}/results
-//
-func (service *SearchService) GetResults(jobId string) (*model.SearchEvents, error) {
+// GetResults Returns results for the search job corresponding to "id".
+// GET /search/v1/jobs/{jobID}/results
+func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobId, "results")
-	response, err := service.client.Get(jobURL)
-	body, err := ioutil.ReadAll(response.Body)
-	err = json.Unmarshal(body, &searchModel)
+	jobURL := service.client.BuildSplunkdURL(nil, "search", "v1", "jobs", jobID, "results")
+	response, err := service.client.Get(jobURL, JSON)
+	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
 }
