@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
+	"path"
 )
 
 const CATALOG_SERVICE_PREFIX string = "/catalog/v1";
@@ -83,4 +84,49 @@ func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
 	_, err := c.client.Delete(url, JSON)
 
 	return err
+}
+
+/**
+ * Delete the rule by the given path.
+ * @param {string} rulePath
+ */
+func (c *CatalogService) deleteRule(rulePath string) (error) {
+	buildPath := ""
+	buildPath = path.Join(buildPath, "rules", rulePath)
+	getDeleteUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath, "")
+	_, err := c.client.Delete(getDeleteUrl, JSON)
+
+	return err
+}
+
+/**
+ * Returns all the rules.
+ * @return {Promise<CatalogProxy~Array of Rules>}
+ */
+func (c *CatalogService) GetRules() ([]model.Rule, error){
+	getRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
+	response, err := c.client.Get(getRuleUrl, JSON)
+
+	body, err := ioutil.ReadAll(response.Body)
+
+	var result []model.Rule
+	err = json.Unmarshal(body, &result)
+
+	return result, err
+}
+
+/**
+ * Post a new rule.
+ * @param {string} rule
+ */
+func (c *CatalogService) PostRule(rule model.Rule) (model.Rule, error) {
+	postRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
+	response, err := c.client.Post(postRuleUrl, rule, JSON)
+
+	body, err := ioutil.ReadAll(response.Body)
+
+	var result model.Rule
+	err = json.Unmarshal(body, &result)
+
+	return result, err
 }
