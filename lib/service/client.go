@@ -201,6 +201,7 @@ func NewDefaultSplunkdClient() *Client {
 	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
 	c := &Client{Auth: defaultAuth, Host: defaultHost, Scheme: defaultScheme, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
+	c.CatalogService = &CatalogService{client: c}
 	return c
 }
 
