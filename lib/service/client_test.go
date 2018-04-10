@@ -28,9 +28,9 @@ func getClient() *Client {
 }
 
 
-func TestBuildSplunkdURLNoURLPath(t *testing.T) {
+func TestBuildURLNoURLPath(t *testing.T) {
 	client := getClient()
-	url := client.BuildSplunkdURL(nil, "")
+	url := client.BuildURL(nil, "")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
 		t.Errorf("hostname invalid, got %s, want %s", got, want)
@@ -52,9 +52,9 @@ func TestBuildSplunkdURLNoURLPath(t *testing.T) {
 	}
 }
 
-func TestBuildSplunkdURLNoHost(t *testing.T) {
+func TestBuildURLNoHost(t *testing.T) {
 	client := getClient()
-	url := client.BuildSplunkdURL(nil, "services",
+	url := client.BuildURL(nil, "services",
 		"search", "jobs")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
