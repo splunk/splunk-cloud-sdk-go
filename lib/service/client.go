@@ -23,17 +23,18 @@ import (
 
 // Declare constants for service package
 const (
-	defaultTimeOut = time.Second * 5
-	defaultHost    = "localhost:8089"
-	defaultScheme  = "https"
-	MethodGet      = "GET"
-	MethodPost     = "POST"
-	MethodPut      = "PUT"
-	MethodPatch    = "PATCH"
-	MethodDelete   = "DELETE"
+	MethodGet    = "GET"
+	MethodPost   = "POST"
+	MethodPut    = "PUT"
+	MethodPatch  = "PATCH"
+	MethodDelete = "DELETE"
 )
 
-var defaultAuth = [2]string{"admin", "changeme"}
+// Request parameter format types
+const (
+	JSON       = "JSON"
+	URLEncoded = "URLEncoded"
+)
 
 // A Client is used to communicate with Splunkd endpoints
 type Client struct {
@@ -102,34 +103,39 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodGet, getURL, nil)
+func (c *Client) Get(getURL url.URL, format string) (*http.Response, error) {
+	return c.DoRequest(MethodGet, getURL, nil, format)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPost, postURL, body)
+func (c *Client) Post(postURL url.URL, body interface{}, format string) (*http.Response, error) {
+	return c.DoRequest(MethodPost, postURL, body, format)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPut, putURL, body)
+func (c *Client) Put(putURL url.URL, body interface{}, format string) (*http.Response, error) {
+	return c.DoRequest(MethodPut, putURL, body, format)
 }
 
 // Delete implements HTTP DELETE call
-func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodDelete, deleteURL, nil)
+func (c *Client) Delete(deleteURL url.URL, format string) (*http.Response, error) {
+	return c.DoRequest(MethodDelete, deleteURL, nil, format)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPatch, patchURL, body)
+func (c *Client) Patch(patchURL url.URL, body interface{}, format string) (*http.Response, error) {
+	return c.DoRequest(MethodPatch, patchURL, body, format)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
+func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}, format string) (*http.Response, error) {
+
+	// default to JSON
 	content, err := c.toJSON(body)
-	//content, err := c.EncodeRequestBody(body)
+
+	if format == URLEncoded {
+		content, err = c.EncodeRequestBody(body)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -196,30 +202,23 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 	return []byte(URLValues.Encode()), nil
 }
 
-// NewDefaultSplunkdClient creates a Client with default values
-func NewDefaultSplunkdClient() *Client {
-	httpClient := NewSplunkdHTTPClient(defaultTimeOut, true)
-	c := &Client{Auth: defaultAuth, Host: defaultHost, Scheme: defaultScheme, httpClient: httpClient}
+// NewClient creates a Client with custom values passed in
+func NewClient(sessionKey string, auth [2]string, host string, scheme string, timeout time.Duration, skipValidateTLS bool) *Client {
+	httpClient := newHTTPClient(timeout, skipValidateTLS)
+	c := &Client{Auth: auth, Host: host, Scheme: scheme, httpClient: httpClient}
+
+	// TODO(dan): this is here for backward compat, will circle back and refactor after demo.
+	if sessionKey != "" {
+		c.SessionKey = sessionKey
+	}
+	// TODO(dan): need to ask Eric why we did this, looks circular
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	return c
 }
 
-// NewSplunkdClient creates a Client with custom values passed in
-func NewSplunkdClient(sessionKey string, auth [2]string, host string, scheme string, httpClient *http.Client) *Client {
-	c := NewDefaultSplunkdClient()
-	c.Host = host
-	c.SessionKey = sessionKey
-	c.Auth = auth
-	c.Scheme = scheme
-	if httpClient != nil {
-		c.httpClient = httpClient
-	}
-	return c
-}
-
-// NewSplunkdHTTPClient returns a HTTP Client with timeout and tls validation setup
-func NewSplunkdHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
+// NewHTTPClient returns a HTTP Client with timeout and tls validation setup
+func newHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
 	return &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{

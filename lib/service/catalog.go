@@ -44,7 +44,7 @@ func (c *CatalogService) BuildURL(prefix string, path string, query string) url.
 
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets", "")
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -56,7 +56,7 @@ func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 
 func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+name, "")
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, JSON)
 	body, err := ioutil.ReadAll(response.Body)
 
 	var result model.Dataset
@@ -67,7 +67,7 @@ func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
 
 func (c *CatalogService) PostDataset(dataset dataset_post) (model.Dataset, error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets", "")
-	response, err := c.client.Post(url, dataset)
+	response, err := c.client.Post(url, dataset, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -80,7 +80,7 @@ func (c *CatalogService) PostDataset(dataset dataset_post) (model.Dataset, error
 
 func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
 	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+dataset_name, "")
-	_, err := c.client.Delete(url)
+	_, err := c.client.Delete(url, JSON)
 
 	return err
 }

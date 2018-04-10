@@ -7,23 +7,22 @@ import (
 	"time"
 )
 
+// Canned configs for running this example
 const (
-	ClientId     = "admin"
-	ClientSecret = "changeme"
-	Host      = "localhost:8882/catalog/v1/datasets"
-	Scheme = "http"
+	ClientID     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
+	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
+	Host         = "api.splunknovadev-playground.com"
+	Scheme       = "https"
 	Timeout      = time.Second * 5
 )
 
-var splunkClient = service.NewSplunkdClient(
-	"", [2]string{ClientId, ClientSecret}, Host, Scheme, service.NewSplunkdHTTPClient(Timeout, true))
+var splunkClient = service.NewClient(
+	"", [2]string{ClientID, ClientSecret}, Host, Scheme, Timeout, true)
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
 	fmt.Println("InitOffset: ", searchModel.InitOffset)
 	fmt.Println("Messages: ", searchModel.Messages)
-
-	//fmt.Println("Results: ", searchModel.Results)
 	fmt.Println("Results: ")
 	for _, result := range searchModel.Results {
 		fmt.Println("\tBkt", result.Bkt)
@@ -49,33 +48,26 @@ func printSearchModel(searchModel *model.SearchEvents) {
 }
 
 func createJob() string {
-	searchId, _ := splunkClient.SearchService.CreateJob("search index=*")
-	return searchId
+	json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+	return json
 }
 
 func createSyncJob() *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.CreateSyncJob("search index=*")
+	searchModel, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 	return searchModel
 }
 
-func getDataset() service.Datasets {
-	searchModel := splunkClient.CatalogService.GetDatasets()
-	return searchModel
-}
-
-func getResults(searchId string) *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.GetResults(searchId)
+func getResults(searchID string) *model.SearchEvents {
+	searchModel, _ := splunkClient.SearchService.GetResults(searchID)
 	return searchModel
 }
 
 func main() {
-
-	getDataset()
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	//searchId := createJob()
-	//fmt.Println(searchId)
+	//json := createJob()
+	//fmt.Println(json)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id

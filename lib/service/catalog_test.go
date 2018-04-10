@@ -4,13 +4,14 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/splunk/ssc-client-go/lib/model"
+	"time"
 )
 
 func getSplunkClient() *Client {
 
-	return NewSplunkdClient("",
+	return NewClient("",
 		[2]string{"admin", "changeme"},
-		"localhost:8882", "http", nil)
+		"localhost:8882", "http", time.Second*5, true)
 }
 
 func Test_getDataset(t *testing.T) {
