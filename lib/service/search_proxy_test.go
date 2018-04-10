@@ -10,12 +10,12 @@ import (
 const (
 	ClientID     = "admin"
 	ClientSecret = "changeme"
-	BaseURL      = "localhost:32769"
+	Host 	     = "ssc-sdk-shared-stubby:8882"
 )
 
 func TestNewSearchJobWithStubby(t *testing.T) {
 	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
+		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 
@@ -29,7 +29,7 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 
 func TestGetJobResultsWithStubby(t *testing.T) {
 	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
+		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.GetResults("SEARCH_ID")
 
@@ -38,7 +38,7 @@ func TestGetJobResultsWithStubby(t *testing.T) {
 
 func TestNewSearchJobSyncWithStubby(t *testing.T) {
 	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
+		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 
