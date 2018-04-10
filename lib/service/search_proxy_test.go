@@ -31,18 +31,26 @@ func TestGetJobResultsWithStubby(t *testing.T) {
 	client := NewClient(
 		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
-	response, _ := client.SearchService.GetResults("SEARCH_ID")
+	response, err := client.SearchService.GetResults("SEARCH_ID")
 
-	ValidateResponse(response, t)
+	if err == nil {
+		ValidateResponse(response, t)
+	} else {
+		t.Errorf("Encountered error in Get Results %v", err)
+	}
 }
 
 func TestNewSearchJobSyncWithStubby(t *testing.T) {
 	client := NewClient(
 		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
-	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 
-	ValidateResponse(response, t)
+	if err == nil {
+		ValidateResponse(response, t)
+	} else {
+		t.Errorf("Encountered error in Create Sync Job %v", err)
+	}
 }
 
 //Validate response results
