@@ -23,16 +23,14 @@ import (
 
 // Declare constants for service package
 const (
-	defaultTimeOut = time.Second * 5
-	defaultHost    = "localhost:8089"
-	defaultScheme  = "https"
-	MethodGet      = "GET"
-	MethodPost     = "POST"
-	MethodPut      = "PUT"
-	MethodPatch    = "PATCH"
-	MethodDelete   = "DELETE"
+	MethodGet    = "GET"
+	MethodPost   = "POST"
+	MethodPut    = "PUT"
+	MethodPatch  = "PATCH"
+	MethodDelete = "DELETE"
 )
 
+// Request parameter format types
 const (
 	JSON       = "JSON"
 	URLEncoded = "URLEncoded"
@@ -203,19 +201,21 @@ func (c *Client) EncodeObject(content interface{}) ([]byte, error) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(sessionKey string, auth [2]string, host string, scheme string, httpClient *http.Client) *Client {
-	httpClient = NewHTTPClient(defaultTimeOut, true)
+func NewClient(sessionKey string, auth [2]string, host string, scheme string, timeout time.Duration, skipValidateTLS bool) *Client {
+	httpClient := newHTTPClient(timeout, skipValidateTLS)
 	c := &Client{Auth: auth, Host: host, Scheme: scheme, httpClient: httpClient}
+
 	// TODO(dan): this is here for backward compat, will circle back and refactor after demo.
 	if sessionKey != "" {
 		c.SessionKey = sessionKey
 	}
+	// TODO(dan): need to ask Eric why we did this, looks circular
 	c.SearchService = &SearchService{client: c}
 	return c
 }
 
 // NewHTTPClient returns a HTTP Client with timeout and tls validation setup
-func NewHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
+func newHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
 	return &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{

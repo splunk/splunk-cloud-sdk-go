@@ -17,7 +17,7 @@ const (
 )
 
 var splunkClient = service.NewClient(
-	"", [2]string{ClientID, ClientSecret}, Host, Scheme, service.NewHTTPClient(Timeout, true))
+	"", [2]string{ClientID, ClientSecret}, Host, Scheme, Timeout, true)
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)

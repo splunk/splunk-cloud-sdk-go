@@ -1,9 +1,8 @@
-package tests
+package service
 
 import (
 	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
-	"github.com/splunk/ssc-client-go/lib/service"
 	"testing"
 	"time"
 )
@@ -15,8 +14,8 @@ const (
 )
 
 func TestNewSearchJobWithStubby(t *testing.T) {
-	client := service.NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
+	client := NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 
@@ -29,8 +28,8 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 }
 
 func TestGetJobResultsWithStubby(t *testing.T) {
-	client := service.NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
+	client := NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.GetResults("SEARCH_ID")
 
@@ -38,8 +37,8 @@ func TestGetJobResultsWithStubby(t *testing.T) {
 }
 
 func TestNewSearchJobSyncWithStubby(t *testing.T) {
-	client := service.NewClient(
-		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", service.NewHTTPClient(time.Second*5, true))
+	client := NewClient(
+		"", [2]string{ClientID, ClientSecret}, BaseURL, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 
