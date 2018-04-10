@@ -1,8 +1,7 @@
 /*
-Package service implements a service client which is used to communicate
-with Splunkd endpoints as well as a collection of services that group
-logically related Splunkd endpoints.
+Implement catalog service endpoints
 */
+
 package service
 
 import (
@@ -76,5 +75,12 @@ func (c *CatalogService) PostDataset(dataset dataset_post) (model.Dataset, error
 	err = json.Unmarshal(body, &result)
 
 	return result, err
+}
 
+
+func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
+	var url = c.BuildURL(CATALOG_SERVICE_PREFIX, "datasets"+"/"+dataset_name, "")
+	_, err := c.client.Delete(url)
+
+	return err
 }

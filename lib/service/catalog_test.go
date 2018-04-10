@@ -40,3 +40,8 @@ func Test_postDataset(t *testing.T) {
 	assert.Equal(t, model.VIEW, result.Kind)
 	assert.Equal(t, []string{"string"}, result.Rules)
 }
+
+func Test_deleteDataset(t *testing.T) {
+	err := getSplunkClient().CatalogService.DeleteDataset("ds1")
+	assert.Empty(t, err)
+}
