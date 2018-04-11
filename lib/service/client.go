@@ -167,7 +167,7 @@ func (c *Client) EncodeRequestBody(content interface{}) ([]byte, error) {
 // toJSON takes an object and attempts to convert to a JSON string
 func (c *Client) toJSON(data interface{}) ([]byte, error) {
 	marshalContent, err := json.Marshal(data)
-	return []byte(marshalContent), err
+	return marshalContent, err
 }
 
 // EncodeObject encodes an object into url-encoded string
