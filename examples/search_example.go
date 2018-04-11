@@ -16,8 +16,7 @@ const (
 	Timeout      = time.Second * 5
 )
 
-var splunkClient = service.NewClient(
-	"", [2]string{ClientID, ClientSecret}, Host, Scheme, Timeout, true)
+var splunkClient = service.NewClient([2]string{ClientID, ClientSecret}, Host, Scheme, Timeout, true)
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
@@ -64,6 +63,4 @@ func main() {
 	////////////////////////////////////
 	searchModel2 := createSyncJob()
 	printSearchModel(searchModel2)
-
-
 }

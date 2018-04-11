@@ -14,8 +14,7 @@ const (
 )
 
 func TestNewSearchJobWithStubby(t *testing.T) {
-	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
+	client := NewClient([2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 
@@ -28,8 +27,7 @@ func TestNewSearchJobWithStubby(t *testing.T) {
 }
 
 func TestGetJobResultsWithStubby(t *testing.T) {
-	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
+	client := NewClient([2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, err := client.SearchService.GetResults("SEARCH_ID")
 
@@ -41,8 +39,7 @@ func TestGetJobResultsWithStubby(t *testing.T) {
 }
 
 func TestNewSearchJobSyncWithStubby(t *testing.T) {
-	client := NewClient(
-		"", [2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
+	client := NewClient([2]string{ClientID, ClientSecret}, Host, "http", time.Second*5, true)
 
 	response, err := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 

@@ -9,8 +9,7 @@ import (
 
 func getSplunkClient() *Client {
 
-	return NewClient("",
-		[2]string{"admin", "changeme"},
+	return NewClient([2]string{"admin", "changeme"},
 		"ssc-sdk-shared-stubby:8882", "http", time.Second*5, true)
 }
 
