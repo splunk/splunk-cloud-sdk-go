@@ -5,15 +5,15 @@ type DatasetKind string
 
 const (
 	// VIEW object
-	VIEW    DatasetKind = "VIEW"
+	VIEW DatasetKind = "VIEW"
 	// INDEX object
-	INDEX   DatasetKind = "INDEX"
+	INDEX DatasetKind = "INDEX"
 	// KVSTORE object
 	KVSTORE DatasetKind = "KVSTORE"
 	// EXTERN object
-	EXTERN  DatasetKind = "EXTERN"
+	EXTERN DatasetKind = "EXTERN"
 	// TOPIC object
-	TOPIC   DatasetKind = "TOPIC"
+	TOPIC DatasetKind = "TOPIC"
 	// CATALOG object
 	CATALOG DatasetKind = "CATALOG"
 )
@@ -35,13 +35,13 @@ type ActionKind string
 
 const (
 	// ALIAS action
-	ALIAS  ActionKind = "ALIAS"
+	ALIAS ActionKind = "ALIAS"
 	// AUTOKV kv action
 	AUTOKV ActionKind = "AUTOKV"
 	// REGEX action
-	REGEX  ActionKind = "REGEX"
+	REGEX ActionKind = "REGEX"
 	// EVAL action
-	EVAL   ActionKind = "EVAL"
+	EVAL ActionKind = "EVAL"
 	// LOOKUP action
 	LOOKUP ActionKind = "LOOKUP"
 )
@@ -57,4 +57,3 @@ type Rule struct {
 
 // Rules is a set of rule
 type Rules []Rule
-

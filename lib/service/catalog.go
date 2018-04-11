@@ -5,30 +5,22 @@ Implement catalog service endpoints
 package service
 
 import (
-	"net/url"
-	"io/ioutil"
 	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
+	"io/ioutil"
+	"net/url"
 )
 
 // catalog service url prefix
-const catalogServicePrefix string = "/catalog/v1";
+const catalogServicePrefix string = "/catalog/v1"
 
 // CatalogService represents catalog service
 type CatalogService service
 
-//todo remove this if the endpoint can accept post with empty id
-type datasetPost struct {
-	Name  string            `json:"name"`
-	Kind  model.DatasetKind `json:"kind"`
-	Rules []string          `json:"rules"`
-	Todo  string            `json:"todo"`
-}
-
 // CreateDataset creates a dataset to post
 func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rules []string, todo string) model.Dataset {
 	return model.Dataset{
-		ID:"",
+		ID:    "",
 		Name:  name,
 		Kind:  kind,
 		Rules: rules,
@@ -73,9 +65,8 @@ func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
 
 // PostDataset implements post Dataset endpoing
 func (c *CatalogService) PostDataset(dataset model.Dataset) (model.Dataset, error) {
-	content := datasetPost{dataset.Name, dataset.Kind, dataset.Rules, dataset.Todo}
-	var url= c.BuildURL(catalogServicePrefix, "datasets", "")
-	response, err := c.client.Post(url, content, JSON)
+	var url = c.BuildURL(catalogServicePrefix, "datasets", "")
+	response, err := c.client.Post(url, dataset, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -86,8 +77,8 @@ func (c *CatalogService) PostDataset(dataset model.Dataset) (model.Dataset, erro
 }
 
 // DeleteDataset implements delete Dataset endpoing
-func (c *CatalogService) DeleteDataset(datasetName string) (error) {
-	var url= c.BuildURL(catalogServicePrefix, "datasets"+"/"+datasetName, "")
+func (c *CatalogService) DeleteDataset(datasetName string) error {
+	var url = c.BuildURL(catalogServicePrefix, "datasets"+"/"+datasetName, "")
 	_, err := c.client.Delete(url, JSON)
 
 	return err
