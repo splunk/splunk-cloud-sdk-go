@@ -50,14 +50,14 @@ func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	//json := createJob()
-	//fmt.Println(json)
+	json := createJob()
+	fmt.Println(json)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id
 	///////////////////////////////////
-	//searchModel1 := getResults("1b9c6b21-3277-4dc6-b80a-76894678986f")
-	//printSearchModel(searchModel1)
+	searchModel1 := getResults("1b9c6b21-3277-4dc6-b80a-76894678986f")
+	printSearchModel(searchModel1)
 
 	////////////////////////////////////
 	// 2) create a new synchronous search
@@ -65,6 +65,5 @@ func main() {
 	searchModel2 := createSyncJob()
 	printSearchModel(searchModel2)
 
-	// TODO(dan): delete, get results for job id
 
 }
