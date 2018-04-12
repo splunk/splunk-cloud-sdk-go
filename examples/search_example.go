@@ -29,27 +29,27 @@ func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Highlighted: ", searchModel.Highlighted)
 }
 
-func createJob() string {
-	json, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
-	return json
+func createJob() *model.PostJobResponse {
+	postJobResponse, _ := splunkClient.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+	return postJobResponse
 }
 
 func createSyncJob() *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
-	return searchModel
+	searchEvent, _ := splunkClient.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
+	return searchEvent
 }
 
 func getResults(searchID string) *model.SearchEvents {
-	searchModel, _ := splunkClient.SearchService.GetResults(searchID)
-	return searchModel
+	searchEvent, _ := splunkClient.SearchService.GetResults(searchID)
+	return searchEvent
 }
 
 func main() {
 	///////////////////////////////
 	// 1a) create a new search job
 	///////////////////////////////
-	json := createJob()
-	fmt.Println(json)
+	postJobResponse := createJob()
+	fmt.Printf("%+v\n", &postJobResponse)
 
 	///////////////////////////////////
 	// 1b) retrieve a job results by id
@@ -57,9 +57,9 @@ func main() {
 	searchModel1 := getResults("1b9c6b21-3277-4dc6-b80a-76894678986f")
 	printSearchModel(searchModel1)
 
-	////////////////////////////////////
+	/////////////////////////////////////
 	// 2) create a new synchronous search
-	////////////////////////////////////åå
+	/////////////////////////////////////
 	searchModel2 := createSyncJob()
 	printSearchModel(searchModel2)
 }

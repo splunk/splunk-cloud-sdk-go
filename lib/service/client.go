@@ -55,14 +55,12 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 }
 
 // BuildURL creates full Splunk URL
-func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.URL {
-	buildPath := ""
+func (c *Client) BuildURL(urlPathParts ...string) url.URL {
+	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
-	if queryValues == nil {
-		queryValues = url.Values{}
-	}
+
 	var u *url.URL
 	u,_ = url.Parse(c.URL)
 
@@ -70,7 +68,6 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.UR
 		Scheme: u.Scheme,
 		Host: u.Host,
 		Path: buildPath,
-		RawQuery: queryValues.Encode(),
 	}
 }
 
@@ -111,7 +108,7 @@ func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, erro
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
 
-	content, err := c.toJSON(body)
+	content, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
@@ -126,28 +123,15 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// toJSON takes an object and attempts to convert to a JSON string
-func (c *Client) toJSON(data interface{}) ([]byte, error) {
-	marshalContent, err := json.Marshal(data)
-	return marshalContent, err
-}
-
 // NewClient creates a Client with custom values passed in
 func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTLS bool) *Client {
-	httpClient := newHTTPClient(timeout, skipValidateTLS)
-	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
-
-	// TODO(dan): need to ask Eric why we did this, looks circular
-	c.SearchService = &SearchService{client: c}
-	return c
-}
-
-// NewHTTPClient returns a HTTP Client with timeout and tls validation setup
-func newHTTPClient(timeout time.Duration, skipValidateTLS bool) *http.Client {
-	return &http.Client{
+	httpClient := &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipValidateTLS},
 		},
 	}
+	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
+	c.SearchService = &SearchService{client: c}
+	return c
 }
