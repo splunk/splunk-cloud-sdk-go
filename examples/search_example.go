@@ -11,13 +11,11 @@ import (
 const (
 	ClientID     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
 	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
-	Host         = "api.splunknovadev-playground.com"
-	Scheme       = "https"
+	URL          = "https://api.splunknovadev-playground.com"
 	Timeout      = time.Second * 5
 )
 
-var splunkClient = service.NewClient(
-	"", [2]string{ClientID, ClientSecret}, Host, Scheme, Timeout, true)
+var splunkClient = service.NewClient([2]string{ClientID, ClientSecret}, URL, Timeout, true)
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
@@ -61,9 +59,7 @@ func main() {
 
 	////////////////////////////////////
 	// 2) create a new synchronous search
-	////////////////////////////////////
+	////////////////////////////////////åå
 	searchModel2 := createSyncJob()
 	printSearchModel(searchModel2)
-
-
 }

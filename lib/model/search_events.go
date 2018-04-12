@@ -12,21 +12,21 @@ type SearchEvents struct {
 
 // Result contains information about the search
 type Result struct {
-	Bkt          string   `json:"_bkt"`
-	Cd           string   `json:"_cd"`
-	IndexTime    string   `json:"_indextime"`
-	Raw          string   `json:"_raw"`
-	Serial       string   `json:"_serial"`
-	Si           []string `json:"_si"`
-	SourceType1  string   `json:"_sourcetype"`
-	Time         string   `json:"_time"`
-	Entity       []string `json:"entity"`
-	Host         string   `json:"host"`
-	Index        string   `json:"index"`
-	LineCount    string   `json:"linecount"`
-	Log          string   `json:"log"`
-	Punct        string   `json:"punct"`
-	Source       string   `json:"source"`
-	SourceType2  string   `json:"sourcetype"`
-	SplunkServer string   `json:"splunk_server"`
+	Bkt                string   `json:"_bkt"`
+	Cd                 string   `json:"_cd"`
+	IndexTime          string   `json:"_indextime"`
+	Raw                string   `json:"_raw"`
+	Serial             string   `json:"_serial"`
+	Si                 []string `json:"_si"`
+	OriginalSourceType string   `json:"_sourcetype"`
+	Time               string   `json:"_time"`
+	Entity             []string `json:"entity"`
+	Host               string   `json:"host"`
+	Index              string   `json:"index"`
+	LineCount          string   `json:"linecount"`
+	Log                string   `json:"log"`
+	Punct              string   `json:"punct"`
+	Source             string   `json:"source"`
+	SourceType         string   `json:"sourcetype"`
+	SplunkServer       string   `json:"splunk_server"`
 }
