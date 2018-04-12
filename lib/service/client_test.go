@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 	"net/url"
+	//"encoding/json"
 	"encoding/json"
 )
 
@@ -84,7 +85,7 @@ func TestNewClient(t *testing.T) {
 		t.Errorf("NewClient Auth is %v, want %v", got, want)
 	}
 	var u *url.URL
-	u,_ = url.Parse(client.Url)
+	u,_ = url.Parse(client.URL)
 
 	if got, want := u.Host, testHost; got != want {
 		t.Errorf("NewClient Host is %v, want %v", got, want)

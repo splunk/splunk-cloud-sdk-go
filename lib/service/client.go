@@ -31,7 +31,7 @@ type Client struct {
 	// Basic Auth with username and password
 	Auth [2]string
 	//Url string
-	Url string
+	URL string
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
@@ -64,7 +64,7 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.UR
 		queryValues = url.Values{}
 	}
 	var u *url.URL
-	u,_ = url.Parse(c.Url)
+	u,_ = url.Parse(c.URL)
 
 	// Always set json as output format for now
 	queryValues.Set("output_mode", "json")
@@ -137,7 +137,7 @@ func (c *Client) toJSON(data interface{}) ([]byte, error) {
 // NewClient creates a Client with custom values passed in
 func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTLS bool) *Client {
 	httpClient := newHTTPClient(timeout, skipValidateTLS)
-	c := &Client{Auth: auth, Url: url, httpClient: httpClient}
+	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
 
 	// TODO(dan): need to ask Eric why we did this, looks circular
 	c.SearchService = &SearchService{client: c}
