@@ -40,10 +40,17 @@ func (c *CatalogService) BuildURL(prefix string, path string, query string) url.
 
 // GetDatasets implements get Datasets endpoint
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
-	var url = c.BuildURL(catalogServicePrefix, "datasets", "")
+	var url= nil;//c.client.BuildURL("", catalogServicePrefix, "datasets")
 	response, err := c.client.Get(url, JSON)
 
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	var result model.Datasets
 	err = json.Unmarshal(body, &result)
@@ -52,28 +59,41 @@ func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 }
 
 // GetDataset implements get Dataset endpoing
-func (c *CatalogService) GetDataset(name string) (model.Dataset, error) {
-	var url = c.BuildURL(catalogServicePrefix, "datasets"+"/"+name, "")
+func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
+	var url= c.BuildURL(catalogServicePrefix, "datasets"+"/"+name, "")
 	response, err := c.client.Get(url, JSON)
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	var result model.Dataset
 	err = json.Unmarshal(body, &result)
 
-	return result, err
+	return &result, err
 }
 
 // PostDataset implements post Dataset endpoing
-func (c *CatalogService) PostDataset(dataset model.Dataset) (model.Dataset, error) {
+func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
 	var url = c.BuildURL(catalogServicePrefix, "datasets", "")
 	response, err := c.client.Post(url, dataset, JSON)
+	if err != nil {
+		return nil, err
+	}
 
 	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	var result model.Dataset
 	err = json.Unmarshal(body, &result)
 
-	return result, err
+	return &result, err
 }
 
 // DeleteDataset implements delete Dataset endpoing
