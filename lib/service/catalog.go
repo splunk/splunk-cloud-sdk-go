@@ -43,6 +43,7 @@ func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
+	response.Body.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +63,7 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
+	response.Body.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +83,7 @@ func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, err
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
+	response.Body.Close()
 	if err != nil {
 		return nil, err
 	}
