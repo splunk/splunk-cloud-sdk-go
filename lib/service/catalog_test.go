@@ -5,7 +5,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/splunk/ssc-client-go/lib/model"
 	"time"
-	"fmt"
 )
 
 func getSplunkClient() *Client {
@@ -48,19 +47,19 @@ func Test_deleteDataset(t *testing.T) {
 	assert.Empty(t, err)
 }
 
-// TODO Move the stubby test to a separate folder
-// Stubby test for DeleteRule() catalog service endpoint
+// TODO No dfference between stubby tests and unit tests (Should one be removed?)
 func TestDeleteRule(t *testing.T) {
-	err := getSplunkClient().CatalogService.deleteRule("rule1")
+	response, err := getSplunkClient().CatalogService.deleteRule("rule1")
 	assert.Empty(t, err)
+	assert.Equal(t, "200 OK", response.Status)
 }
 
 // Stubby test for GetRules() catalog service endpoint
 func TestGetRules(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.GetRules()
-	fmt.Println(err)
-	fmt.Println(result)
-
+	assert.Empty(t, err)
+	assert.Equal(t, 1, len(result))
+	assert.Equal(t, 3, len(result[0].Actions))
 }
 
 // Stubby test for PostRule() catalog service endpoint
@@ -70,33 +69,9 @@ func TestPostRule(t *testing.T) {
 	actions[1] = CreateAction("EVAL","" ,"", false, "", "string", "", "", 0, "string")
 	actions[2] = CreateAction("LOOKUP","" ,"",false, "", "string", "", "", 0, "")
 	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1","newrule",7,"first rule", actions[:]))
-	fmt.Println(err)
-	fmt.Println(result)
-}
-
-// creates a rule to post
-func CreateRule(name string, match string, priority int, description string, actions []model.Action) model.Rule {
-	return model.Rule{
-		Name:         name,
-		Match:        match,
-		Priority:     priority,
-		Description:  description,
-		Actions:      actions,
-	}
-}
-
-// creates an action for rule to post
-func CreateAction(kind model.ActionKind, field string, alias string, trim bool, mode model.AutoMode, expression string, pattern string, format string, limit int, result string) model.Action {
-	return model.Action{
-		Kind:        kind,
-		Field:       field,
-		Alias:       alias,
-		Trim:        trim,
-		Mode:        mode,
-		Expression:  expression,
-		Pattern:     pattern,
-		Format:      format,
-		Limit:       limit,
-		Result:      result,
-	}
+	assert.Empty(t, err)
+	//assert.NotEmpty(t, result.Id)
+	assert.Equal(t, "rule4", result.Name)
+	assert.Equal(t, "newrule", result.Match)
+	assert.Equal(t, 3, len(result.Actions))
 }

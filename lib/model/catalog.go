@@ -34,6 +34,7 @@ const (
 	LOOKUP ActionKind = "LOOKUP"
 )
 
+// TODO Should there be an ID field included as well in Rule 'Model'
 type Rule struct {
 	Name        string               `json:"name"`
 	Actions     []Action             `json:"actions"`

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
 	"path"
+	"net/http"
 )
 
 const CATALOG_SERVICE_PREFIX string = "/catalog/v1";
@@ -90,13 +91,13 @@ func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
  * Delete the rule by the given path.
  * @param {string} rulePath
  */
-func (c *CatalogService) deleteRule(rulePath string) (error) {
+func (c *CatalogService) deleteRule(rulePath string) (*http.Response, error) {
 	buildPath := ""
 	buildPath = path.Join(buildPath, "rules", rulePath)
 	getDeleteUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath, "")
-	_, err := c.client.Delete(getDeleteUrl, JSON)
+	response, err := c.client.Delete(getDeleteUrl, JSON)
 
-	return err
+	return response, err
 }
 
 /**
