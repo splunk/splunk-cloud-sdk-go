@@ -4,14 +4,7 @@ import (
 	"github.com/splunk/ssc-client-go/lib/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
 )
-
-func getSplunkClient() *Client {
-	return NewClient("",
-		[2]string{"admin", "changeme"},
-		"ssc-sdk-shared-stubby:8882", "http", time.Second*5, true)
-}
 
 func Test_getDataset(t *testing.T) {
 
@@ -31,8 +24,6 @@ func Test_getDatasets(t *testing.T) {
 }
 
 func Test_postDataset(t *testing.T) {
-
-	//dataset := model.Dataset_post{"ds1", model.VIEW, []string{"string"}, "string"}
 	result, err := getSplunkClient().CatalogService.PostDataset(
 		getSplunkClient().CatalogService.CreateDataset("ds1", model.VIEW, []string{"string"}, "string"))
 	assert.Empty(t, err)

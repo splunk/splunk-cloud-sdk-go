@@ -1,24 +1,26 @@
 package model
 
-//DatasetKind defines that the kind in a dataset
+//DatasetKind enumerates the kinds of datasets known to the system.
 type DatasetKind string
 
 const (
-	// VIEW object
+	// VIEW represents a view over base data in some other dataset.
+	// The view  consists of a Splunk query (with at least a generating command)
+	// and an optional collection of search time transformation rules.
 	VIEW DatasetKind = "VIEW"
-	// INDEX object
+	// INDEX represents a Splunk events or metrics index
 	INDEX DatasetKind = "INDEX"
-	// KVSTORE object
+	// KVSTORE represents an instance of the KV storage service as a dataset
 	KVSTORE DatasetKind = "KVSTORE"
-	// EXTERN object
+	// EXTERN represents an extern REST API based dataset
 	EXTERN DatasetKind = "EXTERN"
-	// TOPIC object
+	// TOPIC represents a message bus topic as a dataset.
 	TOPIC DatasetKind = "TOPIC"
-	// CATALOG object
+	// CATALOG represents the metadata catalog as a dataset
 	CATALOG DatasetKind = "CATALOG"
 )
 
-// Dataset represent a knowledge object in Splunk
+// Dataset represents the sources of data that can be serched by Splunk
 type Dataset struct {
 	ID    string      `json:"id"`
 	Name  string      `json:"name"`
@@ -27,16 +29,16 @@ type Dataset struct {
 	Todo  string      `json:"todo"`
 }
 
-// Datasets is a set of Dataset
+// Datasets - a set of Datasets
 type Datasets []Dataset
 
-// ActionKind type: define the action kind of a rule
+// ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
 
 const (
 	// ALIAS action
 	ALIAS ActionKind = "ALIAS"
-	// AUTOKV kv action
+	// AUTOKV action
 	AUTOKV ActionKind = "AUTOKV"
 	// REGEX action
 	REGEX ActionKind = "REGEX"
@@ -46,7 +48,8 @@ const (
 	LOOKUP ActionKind = "LOOKUP"
 )
 
-// Rule type
+// Rule represents a rule for transforming results at search time.
+// A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
 	Name        string       `json:"name"`
 	Action      []ActionKind `json:"actions"`
@@ -55,5 +58,5 @@ type Rule struct {
 	Description string       `json:"description"`
 }
 
-// Rules is a set of rule
+// Rules - a set of rules
 type Rules []Rule

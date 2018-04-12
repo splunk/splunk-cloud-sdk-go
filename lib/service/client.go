@@ -1,7 +1,6 @@
 /*
 Package service implements a service client which is used to communicate
-with Splunkd endpoints as well as a collection of services that group
-logically related Splunkd endpoints.
+with Search Service endpoints
 */
 package service
 
@@ -36,7 +35,7 @@ const (
 	URLEncoded = "URLEncoded"
 )
 
-// A Client is used to communicate with Splunkd endpoints
+// A Client is used to communicate with service endpoints
 type Client struct {
 	// Splunk session key
 	SessionKey string
@@ -74,8 +73,8 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	return request, nil
 }
 
-// BuildSplunkdURL creates full Splunkd URL
-func (c *Client) BuildSplunkdURL(queryValues url.Values, urlPathParts ...string) url.URL {
+// BuildURL creates full Splunk URL
+func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.URL {
 	buildPath := ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
@@ -170,7 +169,7 @@ func (c *Client) EncodeRequestBody(content interface{}) ([]byte, error) {
 // toJSON takes an object and attempts to convert to a JSON string
 func (c *Client) toJSON(data interface{}) ([]byte, error) {
 	marshalContent, err := json.Marshal(data)
-	return []byte(marshalContent), err
+	return marshalContent, err
 }
 
 // EncodeObject encodes an object into url-encoded string

@@ -28,7 +28,7 @@ func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rule
 	}
 }
 
-//BuildURL is to create a catalog URL //todo: move to client.go or other common files
+//BuildURL is to create a catalog URL
 func (c *CatalogService) BuildURL(prefix string, path string, query string) url.URL {
 	return url.URL{
 		Scheme:   c.client.Scheme,
@@ -38,7 +38,7 @@ func (c *CatalogService) BuildURL(prefix string, path string, query string) url.
 	}
 }
 
-// GetDatasets implements get Datasets endpoing
+// GetDatasets implements get Datasets endpoint
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 	var url = c.BuildURL(catalogServicePrefix, "datasets", "")
 	response, err := c.client.Get(url, JSON)
