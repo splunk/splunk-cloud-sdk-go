@@ -66,8 +66,6 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.UR
 	var u *url.URL
 	u,_ = url.Parse(c.URL)
 
-	// Always set json as output format for now
-	queryValues.Set("output_mode", "json")
 	return url.URL{
 		Scheme: u.Scheme,
 		Host: u.Host,
