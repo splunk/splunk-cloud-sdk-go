@@ -49,7 +49,7 @@ func Test_deleteDataset(t *testing.T) {
 
 // TODO No dfference between stubby tests and unit tests (Should one be removed?)
 func TestDeleteRule(t *testing.T) {
-	response, err := getSplunkClient().CatalogService.deleteRule("rule1")
+	response, err := getSplunkClient().CatalogService.DeleteRule("rule1")
 	assert.Empty(t, err)
 	assert.Equal(t, "200 OK", response.Status)
 }

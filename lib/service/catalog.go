@@ -87,26 +87,22 @@ func (c *CatalogService) DeleteDataset(dataset_name string) (error) {
 	return err
 }
 
-/**
- * Delete the rule by the given path.
- * @param {string} rulePath
- */
-func (c *CatalogService) deleteRule(rulePath string) (*http.Response, error) {
+
+// DeleteRule deletes the rule by the given path.
+func (c *CatalogService) DeleteRule(rulePath string) (*http.Response, error) {
 	buildPath := ""
 	buildPath = path.Join(buildPath, "rules", rulePath)
-	getDeleteUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath, "")
-	response, err := c.client.Delete(getDeleteUrl, JSON)
+	getDeleteURL := c.BuildURL(CATALOG_SERVICE_PREFIX, buildPath, "")
+	response, err := c.client.Delete(getDeleteURL, JSON)
 
 	return response, err
 }
 
-/**
- * Returns all the rules.
- * @return {Promise<CatalogProxy~Array of Rules>}
- */
+
+// GetRules returns all the rules.
 func (c *CatalogService) GetRules() ([]model.Rule, error){
-	getRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
-	response, err := c.client.Get(getRuleUrl, JSON)
+	getRuleURL := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
+	response, err := c.client.Get(getRuleURL, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -116,13 +112,11 @@ func (c *CatalogService) GetRules() ([]model.Rule, error){
 	return result, err
 }
 
-/**
- * Post a new rule.
- * @param {string} rule
- */
+
+//PostRule posts a new rule.
 func (c *CatalogService) PostRule(rule model.Rule) (model.Rule, error) {
-	postRuleUrl := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
-	response, err := c.client.Post(postRuleUrl, rule, JSON)
+	postRuleURL := c.BuildURL(CATALOG_SERVICE_PREFIX, "rules", "")
+	response, err := c.client.Post(postRuleURL, rule, JSON)
 
 	body, err := ioutil.ReadAll(response.Body)
 
