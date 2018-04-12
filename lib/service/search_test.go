@@ -10,7 +10,7 @@ import (
 func getSplunkClient() *Client {
 
 	return NewClient([2]string{"admin", "changeme"},
-		"ssc-sdk-shared-stubby:8882", "http", time.Second*5, true)
+		"http://localhost:32769", time.Second*5, true)
 }
 
 

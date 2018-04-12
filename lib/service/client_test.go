@@ -12,17 +12,18 @@ import (
 )
 
 const (
-	testUser       = "admin"
-	testPassword   = "changeme"
-	testHost       = "localhost:8089"
-	testStubbyHost = "ssc-sdk-shared-stubby:8882"
-	testScheme     = "https"
-	testURL        = "https://test:8089/test"
-	testTimeOut = time.Second*10
+	testUser                     = "admin"
+	testPassword                 = "changeme"
+	testHost                     = "localhost:8089"
+	testStubbyHost               = "ssc-sdk-shared-stubby:8882"
+	testScheme                   = "https"
+	baseURL                      = "https://localhost:8089"
+	testURL                      = "https://test:8089/test"
+	testTimeOut    time.Duration = time.Second*10
 )
 
 func getClient() *Client {
-	return NewClient([2]string{testUser, testPassword}, testHost, testScheme, testTimeOut, true)
+	return NewClient([2]string{testUser, testPassword}, baseURL, testTimeOut, true)
 }
 
 
@@ -82,7 +83,10 @@ func TestNewClient(t *testing.T) {
 	if got, want := client.Auth, defaultAuth; got != want {
 		t.Errorf("NewClient Auth is %v, want %v", got, want)
 	}
-	if got, want := client.Host, testHost; got != want {
+	var u *url.URL
+	u,_ = url.Parse(client.Url)
+
+	if got, want := u.Host, testHost; got != want {
 		t.Errorf("NewClient Host is %v, want %v", got, want)
 	}
 	if got, want := client.httpClient.Timeout, testTimeOut; got != want {

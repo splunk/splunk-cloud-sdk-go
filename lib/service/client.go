@@ -30,14 +30,12 @@ const (
 type Client struct {
 	// Basic Auth with username and password
 	Auth [2]string
-	// Host name
-	Host string
+	//Url string
+	Url string
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
 	SearchService *SearchService
-	//Scheme or http protocol
-	Scheme string
 }
 
 // service provides the interface between client and services
@@ -65,12 +63,15 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) url.UR
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
+	var u *url.URL
+	u,_ = url.Parse(c.Url)
+
 	// Always set json as output format for now
 	queryValues.Set("output_mode", "json")
 	return url.URL{
-		Scheme:   c.Scheme,
-		Host:     c.Host,
-		Path:     buildPath,
+		Scheme: u.Scheme,
+		Host: u.Host,
+		Path: buildPath,
 		RawQuery: queryValues.Encode(),
 	}
 }
@@ -134,9 +135,9 @@ func (c *Client) toJSON(data interface{}) ([]byte, error) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(auth [2]string, host string, scheme string, timeout time.Duration, skipValidateTLS bool) *Client {
+func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTLS bool) *Client {
 	httpClient := newHTTPClient(timeout, skipValidateTLS)
-	c := &Client{Auth: auth, Host: host, Scheme: scheme, httpClient: httpClient}
+	c := &Client{Auth: auth, Url: url, httpClient: httpClient}
 
 	// TODO(dan): need to ask Eric why we did this, looks circular
 	c.SearchService = &SearchService{client: c}
