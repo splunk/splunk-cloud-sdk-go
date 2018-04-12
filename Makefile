@@ -43,9 +43,6 @@ decrypt:
 		printf "Decrypted deploy/shared/env.encrypted to deploy/shared/env.encrypted\n"; \
 	fi;
 
-install_dep:
-	go get -u github.com/golang/dep/cmd/dep
-
 dependencies:
 	dep ensure -vendor-only
 	go get -u golang.org/x/tools/cmd/goimports
