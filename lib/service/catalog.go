@@ -28,11 +28,11 @@ func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rule
 }
 
 // GetDatasets implements get Datasets endpoint
-func (c *CatalogService) GetDatasets() (model.Datasets, error) {
+func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	response, err := c.client.Get(url)
 
-	var result model.Datasets
+	var result []model.Dataset
 	util.ParseResponse(&result, response, err)
 
 	return result, err

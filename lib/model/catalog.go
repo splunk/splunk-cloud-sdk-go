@@ -29,8 +29,6 @@ type Dataset struct {
 	Todo  string      `json:"todo"`
 }
 
-// Datasets - a set of Datasets
-type Datasets []Dataset
 
 // ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
@@ -57,6 +55,3 @@ type Rule struct {
 	Priority    int          `json:"priority"`
 	Description string       `json:"description"`
 }
-
-// Rules - a set of rules
-type Rules []Rule
