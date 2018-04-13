@@ -38,12 +38,10 @@ func Test_deleteDataset(t *testing.T) {
 	assert.Empty(t, err)
 }
 
-// TODO No dfference between stubby tests and unit tests (Should one be removed?)
 // Stubby test for DeleteRule() catalog service endpoint
 func TestDeleteRule(t *testing.T) {
-	response, err := getSplunkClient().CatalogService.DeleteRule("rule1")
+	err := getSplunkClient().CatalogService.DeleteRule("rule1")
 	assert.Empty(t, err)
-	assert.Equal(t, "200 OK", response.Status)
 }
 
 // Stubby test for GetRules() catalog service endpoint
@@ -66,4 +64,31 @@ func TestPostRule(t *testing.T) {
 	assert.Equal(t, "rule4", result.Name)
 	assert.Equal(t, "newrule", result.Match)
 	assert.Equal(t, 3, len(result.Actions))
+}
+
+// creates a rule to post
+func CreateRule(name string, match string, priority int, description string, actions []model.Action) model.Rule {
+	return model.Rule{
+		Name:        name,
+		Match:       match,
+		Priority:    priority,
+		Description: description,
+		Actions:     actions,
+	}
+}
+
+// creates an action for rule to post
+func CreateAction(kind model.ActionKind, field string, alias string, trim bool, mode model.AutoMode, expression string, pattern string, format string, limit int, result string) model.Action {
+	return model.Action{
+		Kind:       kind,
+		Field:      field,
+		Alias:      alias,
+		Trim:       trim,
+		Mode:       mode,
+		Expression: expression,
+		Pattern:    pattern,
+		Format:     format,
+		Limit:      limit,
+		Result:     result,
+	}
 }

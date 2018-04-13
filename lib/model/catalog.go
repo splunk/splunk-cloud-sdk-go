@@ -58,7 +58,7 @@ type Rule struct {
 	Description string       `json:"description"`
 }
 
-// Action description needed
+// Action represents a specific search time transformation action.
 type Action struct {
 	Kind           ActionKind         `json:"kind"`
 	Field          string             `json:"field,omitempty"`
@@ -79,3 +79,16 @@ type Rules []Rule
 // AutoMode enumerates the automatic key/value extraction modes.
 // One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
 type AutoMode string
+
+const (
+	// NONE Automode
+	NONE AutoMode = "NONE"
+	// AUTO Automode
+	AUTO AutoMode = "AUTO"
+	// MULTIKV Automode
+	MULTIKV AutoMode = "MULTIKV"
+	// XML Automode
+	XML AutoMode = "XML"
+	// JSON Automode
+	JSON AutoMode = "JSON"
+)
