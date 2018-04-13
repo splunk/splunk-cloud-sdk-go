@@ -58,18 +58,16 @@ func TestPostRule(t *testing.T) {
 	actions[0] = CreateAction("AUTOKV","" ,"",true, "NONE", "", "", "", 0, "")
 	actions[1] = CreateAction("EVAL","" ,"", false, "", "string", "", "", 0, "string")
 	actions[2] = CreateAction("LOOKUP","" ,"",false, "", "string", "", "", 0, "")
-	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("","rule1","newrule",7,"first rule", actions[:]))
+	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1","newrule",7,"first rule", actions[:]))
 	assert.Empty(t, err)
-	assert.NotEmpty(t, result.ID)
 	assert.Equal(t, "rule4", result.Name)
 	assert.Equal(t, "newrule", result.Match)
 	assert.Equal(t, 3, len(result.Actions))
 }
 
 // creates a rule to post
-func CreateRule(id string, name string, match string, priority int, description string, actions []model.Action) model.Rule {
+func CreateRule(name string, match string, priority int, description string, actions []model.Action) model.Rule {
 	return model.Rule{
-		ID:          id,
 		Name:        name,
 		Match:       match,
 		Priority:    priority,
