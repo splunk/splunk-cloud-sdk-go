@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"math"
 	"reflect"
 	"testing"
 	"time"
@@ -13,24 +12,24 @@ import (
 )
 
 const (
-	testUser       = "admin"
-	testPassword   = "changeme"
-	testSessionKey = "123"
-	testHost       = "localhost:8089"
-	testStubbyHost = "ssc-sdk-shared-stubby:8882"
-	testScheme     = "https"
-	testURL        = "https://test:8089/test"
-	testTimeOut = time.Second*10
+	testUser                     = "admin"
+	testPassword                 = "changeme"
+	testHost                     = "localhost:8089"
+	testStubbyHost               = "ssc-sdk-shared-stubby:8882"
+	testScheme                   = "https"
+	baseURL                      = "https://localhost:8089"
+	testURL                      = "https://test:8089/test"
+	testTimeOut    time.Duration = time.Second*10
 )
 
 func getClient() *Client {
-	return NewClient("", [2]string{testUser, testPassword}, testHost, testScheme, testTimeOut, true)
+	return NewClient([2]string{testUser, testPassword}, baseURL, testTimeOut, true)
 }
 
 
-func TestBuildSplunkdURLNoURLPath(t *testing.T) {
+func TestBuildURLNoURLPath(t *testing.T) {
 	client := getClient()
-	url := client.BuildSplunkdURL(nil, "")
+	url := client.BuildURL(nil, "")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
 		t.Errorf("hostname invalid, got %s, want %s", got, want)
@@ -52,9 +51,9 @@ func TestBuildSplunkdURLNoURLPath(t *testing.T) {
 	}
 }
 
-func TestBuildSplunkdURLNoHost(t *testing.T) {
+func TestBuildURLNoHost(t *testing.T) {
 	client := getClient()
-	url := client.BuildSplunkdURL(nil, "services",
+	url := client.BuildURL(nil, "services",
 		"search", "jobs")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
@@ -81,13 +80,13 @@ func TestNewClient(t *testing.T) {
 	var defaultAuth = [2]string{"admin", "changeme"}
 	client := getClient()
 	searchService := &SearchService{client: client}
-	if got, want := client.SessionKey, ""; got != want {
-		t.Errorf("NewClient SessionKey is %v, want %v", got, want)
-	}
 	if got, want := client.Auth, defaultAuth; got != want {
 		t.Errorf("NewClient Auth is %v, want %v", got, want)
 	}
-	if got, want := client.Host, testHost; got != want {
+	var u *url.URL
+	u,_ = url.Parse(client.URL)
+
+	if got, want := u.Host, testHost; got != want {
 		t.Errorf("NewClient Host is %v, want %v", got, want)
 	}
 	if got, want := client.httpClient.Timeout, testTimeOut; got != want {
@@ -151,124 +150,17 @@ func TestNewRequesthBasicAuthHeader(t *testing.T) {
 	}
 }
 
-func TestNewRequestSessionKey(t *testing.T) {
-	client := getClient()
-	client.SessionKey = testSessionKey
-	req, err := client.NewRequest(MethodGet, testURL, nil)
-	if err != nil {
-		t.Errorf("NewRequest returns unexpected error %v", err)
-	}
-	expectedBasicAuth := []string{"Splunk " + client.SessionKey}
-	if got, want := req.Header["Authorization"], expectedBasicAuth; !reflect.DeepEqual(got, want) {
-		t.Errorf("NewRequest authorization is %v, want %v", got, want)
-	}
-}
-
 func TestNewRequestError(t *testing.T) {
 	client := getClient()
-	client.SessionKey = testSessionKey
 	_, err := client.NewRequest("#~/", testURL, nil)
 	if err == nil {
 		t.Errorf("NewRequest expected to return error, got %v", err)
 	}
 }
 
-func TestEncodeRequestBodyNil(t *testing.T) {
-	client := getClient()
-	response, err := client.EncodeRequestBody(nil)
-	if len(response) > 0 {
-		t.Errorf("EncodeRequestBody expected to return nil, got %v", response)
-	}
-	if err != nil {
-		t.Errorf("EncodeRequestBody expected to not return error, got %v", err)
-	}
-}
-
-func TestEncodeRequestBodyString(t *testing.T) {
-	client := getClient()
-	got, err := client.EncodeRequestBody(`{"test":"This is a test body"}`)
-	// expect := []byte(`{"test":"This is a test body"}`)
-	if value := reflect.ValueOf(got); value.Kind() != reflect.Slice {
-		t.Errorf("EncodeRequestBody expected to return []byte, got %v", got)
-	}
-	if err != nil {
-		t.Errorf("EncodeRequestBody expected to not return error, got %v", err)
-	}
-}
-
-func TestTestEncodeRequestBodyMap(t *testing.T) {
-	client := getClient()
-	testData := map[string]string{
-		"testKey": "testValue",
-	}
-	got, err := client.EncodeRequestBody(testData)
-	if value := reflect.ValueOf(got); value.Kind() != reflect.Slice {
-		t.Errorf("EncodeRequestBody expected to return []byte, got %v", got)
-	}
-	if err != nil {
-		t.Errorf("EncodeRequestBody expected to not return error, got %v", err)
-	}
-}
-
-func TestTestEncodeRequestBodyStruct(t *testing.T) {
-	client := getClient()
-	type TestModel struct {
-		testID    string
-		testValue string
-	}
-	testData := TestModel{
-		testID:    "123",
-		testValue: "test",
-	}
-	got, err := client.EncodeRequestBody(testData)
-	if value := reflect.ValueOf(got); value.Kind() != reflect.Slice {
-		t.Errorf("EncodeRequestBody expected to return []byte, got %v", got)
-	}
-	if err != nil {
-		t.Errorf("EncodeRequestBody expected to not return error, got %v", err)
-	}
-}
-
-func TestTestEncodeRequestBodyInvalid(t *testing.T) {
-	client := getClient()
-	_, err := client.EncodeRequestBody(123)
-	if err == nil {
-		t.Errorf("EncodeRequestBody expected to raise an error, got %v", err)
-	}
-}
-
-func TestEncodeObjectError(t *testing.T) {
-	client := getClient()
-	_, err := client.EncodeObject(math.Inf(1))
-	if err == nil {
-		t.Errorf("EncodeObject expected to raise an error, got %v", err)
-	}
-}
-
-func TestEncodeObjectTypeConversion(t *testing.T) {
-	client := getClient()
-	intVal := 1
-	var float32Val float32 = 0.999
-	testData := map[string]interface{}{
-		"testBool":    true,
-		"testInt":     intVal,
-		"testFloat32": float32Val,
-		"testFloat64": 0.555,
-	}
-	want := "testbool=true&testfloat32=0.999&testfloat64=0.555&testint=1"
-	got, err := client.EncodeObject(testData)
-	gotString := string(got[:])
-	if gotString != want {
-		t.Errorf("EncodeObject expected to return %v, got %v", want, gotString)
-	}
-	if err != nil {
-		t.Errorf("EncodeObject expected to not return error, got %v", err)
-	}
-}
-
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient()
-	resp, _ := client.DoRequest(MethodGet, url.URL{Scheme: "http", Host: testStubbyHost, Path: "/error"}, nil, URLEncoded)
+	resp, _ := client.DoRequest(MethodGet, url.URL{Scheme: "http", Host: testStubbyHost, Path: "/error"}, nil)
 	if resp.StatusCode != 500 {
 		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
 	}
