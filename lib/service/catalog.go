@@ -5,9 +5,7 @@ Implement catalog service endpoints
 package service
 
 import (
-	"encoding/json"
 	"github.com/splunk/ssc-client-go/lib/model"
-	"io/ioutil"
 	"github.com/splunk/ssc-client-go/lib/util"
 )
 
@@ -31,68 +29,39 @@ func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rule
 
 // GetDatasets implements get Datasets endpoint
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
+	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	response, err := c.client.Get(url)
 
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(response.Body)
-	response.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	var result model.Datasets
-	err = json.Unmarshal(body, &result)
+	util.ParseResponse(&result, response, err)
 
 	return result, err
 }
 
 // GetDataset implements get Dataset endpoing
 func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
+	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
 	response, err := c.client.Get(url)
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(response.Body)
-	response.Body.Close()
-	if err != nil {
-		return nil, err
-	}
 
 	var result model.Dataset
-	err = json.Unmarshal(body, &result)
+	util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
 
 // PostDataset implements post Dataset endpoing
 func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
+	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
 	response, err := c.client.Post(url, dataset)
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(response.Body)
-	response.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
 	var result model.Dataset
-	err = json.Unmarshal(body, &result)
+	util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
 
 // DeleteDataset implements delete Dataset endpoing
 func (c *CatalogService) DeleteDataset(datasetName string) error {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
+	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
 	_, err := c.client.Delete(url)
 
 	return err
@@ -100,7 +69,7 @@ func (c *CatalogService) DeleteDataset(datasetName string) error {
 
 // DeleteRule deletes the rule by the given path.
 func (c *CatalogService) DeleteRule(rulePath string) (error) {
-	getDeleteURL := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
+	getDeleteURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
 	_, err := c.client.Delete(getDeleteURL)
 
 	return err
@@ -109,7 +78,7 @@ func (c *CatalogService) DeleteRule(rulePath string) (error) {
 
 // GetRules returns all the rules.
 func (c *CatalogService) GetRules() (model.Rules, error){
-	getRuleURL := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
+	getRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Get(getRuleURL)
 	if err != nil {
 		return nil, err
@@ -124,7 +93,7 @@ func (c *CatalogService) GetRules() (model.Rules, error){
 
 // PostRule posts a new rule.
 func (c *CatalogService) PostRule(rule model.Rule) (*model.Rule, error) {
-	postRuleURL := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
+	postRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Post(postRuleURL, rule)
 	if err != nil {
 		return nil, err
