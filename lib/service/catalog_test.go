@@ -11,8 +11,7 @@ func Test_getDataset(t *testing.T) {
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
 	assert.Equal(t, "ds1", result.Name)
-	// TODO: uncomment this once the stubby server response is fixed
-	//assert.Equal(t, model.VIEW, result.Kind)
+	assert.Equal(t, model.VIEW, result.Kind)
 }
 
 func Test_getDatasets(t *testing.T) {
