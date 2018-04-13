@@ -51,6 +51,7 @@ const (
 // Rule represents a rule for transforming results at search time.
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
+	ID          string       `json:"id"`
 	Name        string       `json:"name"`
 	Actions     []Action     `json:"actions"`
 	Match       string       `json:"match"`
