@@ -29,7 +29,7 @@ func getClient() *Client {
 
 func TestBuildURLNoURLPath(t *testing.T) {
 	client := getClient()
-	url := client.BuildURL(nil, "")
+	url := client.BuildURL("")
 
 	if got, want := url.Hostname(), "localhost"; got != want {
 		t.Errorf("hostname invalid, got %s, want %s", got, want)
@@ -53,7 +53,7 @@ func TestBuildURLNoURLPath(t *testing.T) {
 
 func TestBuildURLNoHost(t *testing.T) {
 	client := getClient()
-	url := client.BuildURL(nil, "services",
+	url := client.BuildURL("services",
 		"search", "jobs")
 
 	if got, want := url.Hostname(), "localhost"; got != want {

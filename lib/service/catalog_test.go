@@ -7,7 +7,6 @@ import (
 )
 
 func Test_getDataset(t *testing.T) {
-
 	result, err := getSplunkClient().CatalogService.GetDataset("ds1")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)

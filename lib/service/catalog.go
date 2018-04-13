@@ -28,14 +28,9 @@ func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rule
 	}
 }
 
-////BuildURL is to create a catalog URL
-//func (c *CatalogService) BuildURL(prefix string, path string, query string) url.URL {
-//	return c.client.BuildURL(nil, catalogServicePrefix, path)
-//}
-
 // GetDatasets implements get Datasets endpoint
 func (c *CatalogService) GetDatasets() (model.Datasets, error) {
-	var url=c.client.BuildURL(nil, catalogServicePrefix,catalogServiceVersion, "datasets")
+	var url=c.client.BuildURL(catalogServicePrefix,catalogServiceVersion, "datasets")
 	response, err := c.client.Get(url)
 
 	if err != nil {
@@ -56,7 +51,7 @@ func (c *CatalogService) GetDatasets() (model.Datasets, error) {
 
 // GetDataset implements get Dataset endpoing
 func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
-	var url= c.client.BuildURL(nil, catalogServicePrefix,catalogServiceVersion, "datasets",name)
+	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
 	response, err := c.client.Get(url)
 	if err != nil {
 		return nil, err
@@ -76,7 +71,7 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 
 // PostDataset implements post Dataset endpoing
 func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
-	var url = c.client.BuildURL(nil,catalogServicePrefix,catalogServiceVersion, "datasets", "")
+	var url = c.client.BuildURL(catalogServicePrefix,catalogServiceVersion, "datasets", "")
 	response, err := c.client.Post(url, dataset)
 	if err != nil {
 		return nil, err
@@ -96,7 +91,7 @@ func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, err
 
 // DeleteDataset implements delete Dataset endpoing
 func (c *CatalogService) DeleteDataset(datasetName string) error {
-	var url= c.client.BuildURL(nil, catalogServicePrefix,catalogServiceVersion, "datasets", datasetName)
+	var url= c.client.BuildURL(catalogServicePrefix,catalogServiceVersion, "datasets", datasetName)
 	_, err := c.client.Delete(url)
 
 	return err
