@@ -29,8 +29,6 @@ type Dataset struct {
 	Todo  string      `json:"todo"`
 }
 
-// Datasets - a set of Datasets
-type Datasets []Dataset
 
 // ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
@@ -72,9 +70,6 @@ type Action struct {
 	Result         string             `json:"result,omitempty"`
 
 }
-
-// Rules - a set of rules
-type Rules []Rule
 
 // AutoMode enumerates the automatic key/value extraction modes.
 // One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".

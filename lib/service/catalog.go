@@ -28,11 +28,11 @@ func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rule
 }
 
 // GetDatasets implements get Datasets endpoint
-func (c *CatalogService) GetDatasets() (model.Datasets, error) {
+func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	response, err := c.client.Get(url)
 
-	var result model.Datasets
+	var result []model.Dataset
 	util.ParseResponse(&result, response, err)
 
 	return result, err
@@ -77,14 +77,14 @@ func (c *CatalogService) DeleteRule(rulePath string) (error) {
 
 
 // GetRules returns all the rules.
-func (c *CatalogService) GetRules() (model.Rules, error){
+func (c *CatalogService) GetRules() ([]model.Rule, error){
 	getRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Get(getRuleURL)
 	if err != nil {
 		return nil, err
 	}
 
-	var result model.Rules
+	var result []model.Rule
 	util.ParseResponse(&result, response, err)
 
 	return result, err
