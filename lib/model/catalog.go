@@ -50,8 +50,40 @@ const (
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
 	Name        string       `json:"name"`
-	Action      []ActionKind `json:"actions"`
+	Actions     []Action     `json:"actions"`
 	Match       string       `json:"match"`
 	Priority    int          `json:"priority"`
 	Description string       `json:"description"`
 }
+
+// Action represents a specific search time transformation action.
+type Action struct {
+	Kind           ActionKind         `json:"kind"`
+	Field          string             `json:"field,omitempty"`
+	Alias          string             `json:"alias,omitempty"`
+	Trim           bool               `json:"trim,omitempty"`
+	Mode           AutoMode           `json:"mode,omitempty"`
+	Expression     string             `json:"expression,omitempty"`
+	Pattern        string             `json:"pattern,omitempty"`
+	Format         string             `json:"format,omitempty"`
+	Limit          int                `json:"limit,omitempty"`
+	Result         string             `json:"result,omitempty"`
+
+}
+
+// AutoMode enumerates the automatic key/value extraction modes.
+// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
+type AutoMode string
+
+const (
+	// NONE Automode
+	NONE AutoMode = "NONE"
+	// AUTO Automode
+	AUTO AutoMode = "AUTO"
+	// MULTIKV Automode
+	MULTIKV AutoMode = "MULTIKV"
+	// XML Automode
+	XML AutoMode = "XML"
+	// JSON Automode
+	JSON AutoMode = "JSON"
+)

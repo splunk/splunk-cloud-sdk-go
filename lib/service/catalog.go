@@ -66,3 +66,41 @@ func (c *CatalogService) DeleteDataset(datasetName string) error {
 
 	return err
 }
+
+// DeleteRule deletes the rule by the given path.
+func (c *CatalogService) DeleteRule(rulePath string) (error) {
+	getDeleteURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
+	_, err := c.client.Delete(getDeleteURL)
+
+	return err
+}
+
+
+// GetRules returns all the rules.
+func (c *CatalogService) GetRules() ([]model.Rule, error){
+	getRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
+	response, err := c.client.Get(getRuleURL)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []model.Rule
+	util.ParseResponse(&result, response, err)
+
+	return result, err
+}
+
+
+// PostRule posts a new rule.
+func (c *CatalogService) PostRule(rule model.Rule) (*model.Rule, error) {
+	postRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
+	response, err := c.client.Post(postRuleURL, rule)
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Rule
+	util.ParseResponse(&result, response, err)
+
+	return &result, err
+}
