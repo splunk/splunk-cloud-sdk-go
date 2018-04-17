@@ -1,7 +1,3 @@
-/*
-Implement catalog service endpoints
-*/
-
 package service
 
 import (
@@ -16,6 +12,7 @@ const catalogServiceVersion string = "v1"
 // CatalogService represents catalog service
 type CatalogService service
 
+// TODO: ID may be passed in later on
 // CreateDataset creates a dataset to post
 func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rules []string, todo string) model.Dataset {
 	return model.Dataset{
@@ -38,7 +35,7 @@ func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
 	return result, err
 }
 
-// GetDataset implements get Dataset endpoing
+// GetDataset implements get Dataset endpoint
 func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
 	response, err := c.client.Get(url)
@@ -49,7 +46,8 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 	return &result, err
 }
 
-// PostDataset implements post Dataset endpoing
+// TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
+// PostDataset implements post Dataset endpoint
 func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
 	response, err := c.client.Post(url, dataset)
@@ -59,7 +57,7 @@ func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, err
 	return &result, err
 }
 
-// DeleteDataset implements delete Dataset endpoing
+// DeleteDataset implements delete Dataset endpoint
 func (c *CatalogService) DeleteDataset(datasetName string) error {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
 	_, err := c.client.Delete(url)

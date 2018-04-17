@@ -1,6 +1,6 @@
 package model
 
-//DatasetKind enumerates the kinds of datasets known to the system.
+// DatasetKind enumerates the kinds of datasets known to the system.
 type DatasetKind string
 
 const (

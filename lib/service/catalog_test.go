@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-func Test_getDataset(t *testing.T) {
+// Stubby test for GetDataset() catalog service endpoint
+func TestGetDataset(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.GetDataset("ds1")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
@@ -14,14 +15,15 @@ func Test_getDataset(t *testing.T) {
 	assert.Equal(t, model.VIEW, result.Kind)
 }
 
-func Test_getDatasets(t *testing.T) {
-
+// Stubby test for GetDatasets() catalog service endpoint
+func TestGetDatasets(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.GetDatasets()
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
 }
 
-func Test_postDataset(t *testing.T) {
+// Stubby test for PostDataset() catalog service endpoint
+func TestPostDataset(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.PostDataset(
 		getSplunkClient().CatalogService.CreateDataset("ds1", model.VIEW, []string{"string"}, "string"))
 	assert.Empty(t, err)
@@ -31,7 +33,8 @@ func Test_postDataset(t *testing.T) {
 	assert.Equal(t, []string{"string"}, result.Rules)
 }
 
-func Test_deleteDataset(t *testing.T) {
+// Stubby test for DeleteDataset() catalog service endpoint
+func TestDeleteDataset(t *testing.T) {
 	err := getSplunkClient().CatalogService.DeleteDataset("ds1")
 	assert.Empty(t, err)
 }
@@ -53,10 +56,10 @@ func TestGetRules(t *testing.T) {
 // Stubby test for PostRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions[3]model.Action
-	actions[0] = CreateAction("AUTOKV","" ,"",true, "NONE", "", "", "", 0, "")
-	actions[1] = CreateAction("EVAL","" ,"", false, "", "string", "", "", 0, "string")
-	actions[2] = CreateAction("LOOKUP","" ,"",false, "", "string", "", "", 0, "")
-	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1","newrule",7,"first rule", actions[:]))
+	actions[0] = CreateAction("AUTOKV", "" , "", true, "NONE", "", "", "", 0, "")
+	actions[1] = CreateAction("EVAL", "" , "", false, "", "string", "", "", 0, "string")
+	actions[2] = CreateAction("LOOKUP", "" , "", false, "", "string", "", "", 0, "")
+	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
 	assert.Empty(t, err)
 	assert.Equal(t, "rule4", result.Name)
 	assert.Equal(t, "newrule", result.Match)
