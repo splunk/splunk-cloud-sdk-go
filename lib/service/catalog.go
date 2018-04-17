@@ -12,8 +12,8 @@ const catalogServiceVersion string = "v1"
 // CatalogService represents catalog service
 type CatalogService service
 
-// TODO: ID may be passed in later on
 // CreateDataset creates a dataset to post
+// TODO: ID may be passed in later on
 func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rules []string, todo string) model.Dataset {
 	return model.Dataset{
 		ID:    "",
@@ -46,8 +46,8 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 	return &result, err
 }
 
-// TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
 // PostDataset implements post Dataset endpoint
+// TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
 func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
 	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
 	response, err := c.client.Post(url, dataset)
