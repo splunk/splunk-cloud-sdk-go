@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/lib/model"
-	"github.com/splunk/ssc-client-go/lib/util"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 // SearchService implements a new service type
