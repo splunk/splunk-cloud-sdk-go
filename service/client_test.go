@@ -2,13 +2,13 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"io/ioutil"
+	"net/url"
 	"reflect"
 	"testing"
 	"time"
-	"net/url"
-	"encoding/json"
 )
 
 const (
@@ -19,13 +19,12 @@ const (
 	testScheme                   = "https"
 	baseURL                      = "https://localhost:8089"
 	testURL                      = "https://test:8089/test"
-	testTimeOut    time.Duration = time.Second*10
+	testTimeOut    time.Duration = time.Second * 10
 )
 
 func getClient() *Client {
 	return NewClient([2]string{testUser, testPassword}, baseURL, testTimeOut, true)
 }
-
 
 func TestBuildURLNoURLPath(t *testing.T) {
 	client := getClient()
@@ -84,7 +83,7 @@ func TestNewClient(t *testing.T) {
 		t.Errorf("NewClient Auth is %v, want %v", got, want)
 	}
 	var u *url.URL
-	u,_ = url.Parse(client.URL)
+	u, _ = url.Parse(client.URL)
 
 	if got, want := u.Host, testHost; got != want {
 		t.Errorf("NewClient Host is %v, want %v", got, want)
