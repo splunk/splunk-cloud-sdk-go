@@ -1,0 +1,385 @@
+diff --git a/Gopkg.lock b/Gopkg.lock
+index 0057a42d11c4..2079aeb4792c 100644
+--- a/Gopkg.lock
++++ b/Gopkg.lock
+@@ -23,4 +23,4 @@
+   analyzer-version = 1
+   inputs-digest = "a3f0936778bf7527e2d281c9627a81eef5b758c989349ae8b3e3d62e2a720880"
+   solver-name = "gps-cdcl"
+-  solver-version = 1
+\ No newline at end of file
++  solver-version = 1
+diff --git a/examples/search_example.go b/examples/search_example.go
+index 3eb1a5de3d30..0e946ab3c927 100644
+--- a/examples/search_example.go
++++ b/examples/search_example.go
+@@ -62,4 +62,4 @@ func main() {
+ 	/////////////////////////////////////
+ 	searchModel2 := createSyncJob()
+ 	printSearchModel(searchModel2)
+-}
++}
+\ No newline at end of file
+diff --git a/lib/model/catalog.go b/lib/model/catalog.go
+new file mode 100644
+index 000000000000..043a83e35070
+--- /dev/null
++++ b/lib/model/catalog.go
+@@ -0,0 +1,89 @@
++package model
++
++// DatasetKind enumerates the kinds of datasets known to the system.
++type DatasetKind string
++
++const (
++	// VIEW represents a view over base data in some other dataset.
++	// The view  consists of a Splunk query (with at least a generating command)
++	// and an optional collection of search time transformation rules.
++	VIEW DatasetKind = "VIEW"
++	// INDEX represents a Splunk events or metrics index
++	INDEX DatasetKind = "INDEX"
++	// KVSTORE represents an instance of the KV storage service as a dataset
++	KVSTORE DatasetKind = "KVSTORE"
++	// EXTERN represents an extern REST API based dataset
++	EXTERN DatasetKind = "EXTERN"
++	// TOPIC represents a message bus topic as a dataset.
++	TOPIC DatasetKind = "TOPIC"
++	// CATALOG represents the metadata catalog as a dataset
++	CATALOG DatasetKind = "CATALOG"
++)
++
++// Dataset represents the sources of data that can be serched by Splunk
++type Dataset struct {
++	ID    string      `json:"id"`
++	Name  string      `json:"name"`
++	Kind  DatasetKind `json:"kind"`
++	Rules []string    `json:"rules"`
++	Todo  string      `json:"todo"`
++}
++
++
++// ActionKind enumerates the kinds of search time transformation action known by the service.
++type ActionKind string
++
++const (
++	// ALIAS action
++	ALIAS ActionKind = "ALIAS"
++	// AUTOKV action
++	AUTOKV ActionKind = "AUTOKV"
++	// REGEX action
++	REGEX ActionKind = "REGEX"
++	// EVAL action
++	EVAL ActionKind = "EVAL"
++	// LOOKUP action
++	LOOKUP ActionKind = "LOOKUP"
++)
++
++// Rule represents a rule for transforming results at search time.
++// A rule consits of a `match` clause and a collection of transformation actions
++type Rule struct {
++	Name        string       `json:"name"`
++	Actions     []Action     `json:"actions"`
++	Match       string       `json:"match"`
++	Priority    int          `json:"priority"`
++	Description string       `json:"description"`
++}
++
++// Action represents a specific search time transformation action.
++type Action struct {
++	Kind           ActionKind         `json:"kind"`
++	Field          string             `json:"field,omitempty"`
++	Alias          string             `json:"alias,omitempty"`
++	Trim           bool               `json:"trim,omitempty"`
++	Mode           AutoMode           `json:"mode,omitempty"`
++	Expression     string             `json:"expression,omitempty"`
++	Pattern        string             `json:"pattern,omitempty"`
++	Format         string             `json:"format,omitempty"`
++	Limit          int                `json:"limit,omitempty"`
++	Result         string             `json:"result,omitempty"`
++
++}
++
++// AutoMode enumerates the automatic key/value extraction modes.
++// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
++type AutoMode string
++
++const (
++	// NONE Automode
++	NONE AutoMode = "NONE"
++	// AUTO Automode
++	AUTO AutoMode = "AUTO"
++	// MULTIKV Automode
++	MULTIKV AutoMode = "MULTIKV"
++	// XML Automode
++	XML AutoMode = "XML"
++	// JSON Automode
++	JSON AutoMode = "JSON"
++)
+\ No newline at end of file
+diff --git a/lib/service/catalog.go b/lib/service/catalog.go
+new file mode 100644
+index 000000000000..182c59d9fdf0
+--- /dev/null
++++ b/lib/service/catalog.go
+@@ -0,0 +1,104 @@
++package service
++
++import (
++	"github.com/splunk/ssc-client-go/lib/model"
++	"github.com/splunk/ssc-client-go/lib/util"
++)
++
++// catalog service url prefix
++const catalogServicePrefix string = "catalog"
++const catalogServiceVersion string = "v1"
++
++// CatalogService represents catalog service
++type CatalogService service
++
++// CreateDataset creates a dataset to post
++// TODO: ID may be passed in later on
++func (c *CatalogService) CreateDataset(name string, kind model.DatasetKind, rules []string, todo string) model.Dataset {
++	return model.Dataset{
++		ID:    "",
++		Name:  name,
++		Kind:  kind,
++		Rules: rules,
++		Todo:  todo,
++	}
++}
++
++// GetDatasets implements get Datasets endpoint
++func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
++	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
++	response, err := c.client.Get(url)
++
++	var result []model.Dataset
++	util.ParseResponse(&result, response, err)
++
++	return result, err
++}
++
++// GetDataset implements get Dataset endpoint
++func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
++	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
++	response, err := c.client.Get(url)
++
++	var result model.Dataset
++	util.ParseResponse(&result, response, err)
++
++	return &result, err
++}
++
++// PostDataset implements post Dataset endpoint
++// TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
++func (c *CatalogService) PostDataset(dataset model.Dataset) (*model.Dataset, error) {
++	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
++	response, err := c.client.Post(url, dataset)
++	var result model.Dataset
++	util.ParseResponse(&result, response, err)
++
++	return &result, err
++}
++
++// DeleteDataset implements delete Dataset endpoint
++func (c *CatalogService) DeleteDataset(datasetName string) error {
++	var url= c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
++	_, err := c.client.Delete(url)
++
++	return err
++}
++
++// DeleteRule deletes the rule by the given path.
++func (c *CatalogService) DeleteRule(rulePath string) (error) {
++	getDeleteURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
++	_, err := c.client.Delete(getDeleteURL)
++
++	return err
++}
++
++
++// GetRules returns all the rules.
++func (c *CatalogService) GetRules() ([]model.Rule, error){
++	getRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
++	response, err := c.client.Get(getRuleURL)
++	if err != nil {
++		return nil, err
++	}
++
++	var result []model.Rule
++	util.ParseResponse(&result, response, err)
++
++	return result, err
++}
++
++
++// PostRule posts a new rule.
++func (c *CatalogService) PostRule(rule model.Rule) (*model.Rule, error) {
++	postRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
++	response, err := c.client.Post(postRuleURL, rule)
++	if err != nil {
++		return nil, err
++	}
++
++	var result model.Rule
++	util.ParseResponse(&result, response, err)
++
++	return &result, err
++}
+diff --git a/lib/service/catalog_test.go b/lib/service/catalog_test.go
+new file mode 100644
+index 000000000000..0e1f14ef07f2
+--- /dev/null
++++ b/lib/service/catalog_test.go
+@@ -0,0 +1,94 @@
++package service
++
++import (
++	"github.com/splunk/ssc-client-go/lib/model"
++	"github.com/stretchr/testify/assert"
++	"testing"
++)
++
++// Stubby test for GetDataset() catalog service endpoint
++func TestGetDataset(t *testing.T) {
++	result, err := getSplunkClient().CatalogService.GetDataset("ds1")
++	assert.Empty(t, err)
++	assert.NotEmpty(t, result.ID)
++	assert.Equal(t, "ds1", result.Name)
++	assert.Equal(t, model.VIEW, result.Kind)
++}
++
++// Stubby test for GetDatasets() catalog service endpoint
++func TestGetDatasets(t *testing.T) {
++	result, err := getSplunkClient().CatalogService.GetDatasets()
++	assert.Empty(t, err)
++	assert.Equal(t, 2, len(result))
++}
++
++// Stubby test for PostDataset() catalog service endpoint
++func TestPostDataset(t *testing.T) {
++	result, err := getSplunkClient().CatalogService.PostDataset(
++		getSplunkClient().CatalogService.CreateDataset("ds1", model.VIEW, []string{"string"}, "string"))
++	assert.Empty(t, err)
++	assert.NotEmpty(t, result.ID)
++	assert.Equal(t, "ds1", result.Name)
++	assert.Equal(t, model.VIEW, result.Kind)
++	assert.Equal(t, []string{"string"}, result.Rules)
++}
++
++// Stubby test for DeleteDataset() catalog service endpoint
++func TestDeleteDataset(t *testing.T) {
++	err := getSplunkClient().CatalogService.DeleteDataset("ds1")
++	assert.Empty(t, err)
++}
++
++// Stubby test for DeleteRule() catalog service endpoint
++func TestDeleteRule(t *testing.T) {
++	err := getSplunkClient().CatalogService.DeleteRule("rule1")
++	assert.Empty(t, err)
++}
++
++// Stubby test for GetRules() catalog service endpoint
++func TestGetRules(t *testing.T) {
++	result, err := getSplunkClient().CatalogService.GetRules()
++	assert.Empty(t, err)
++	assert.Equal(t, 1, len(result))
++	assert.Equal(t, 3, len(result[0].Actions))
++}
++
++// Stubby test for PostRule() catalog service endpoint
++func TestPostRule(t *testing.T) {
++	var actions[3]model.Action
++	actions[0] = CreateAction("AUTOKV", "" , "", true, "NONE", "", "", "", 0, "")
++	actions[1] = CreateAction("EVAL", "" , "", false, "", "string", "", "", 0, "string")
++	actions[2] = CreateAction("LOOKUP", "" , "", false, "", "string", "", "", 0, "")
++	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
++	assert.Empty(t, err)
++	assert.Equal(t, "rule4", result.Name)
++	assert.Equal(t, "newrule", result.Match)
++	assert.Equal(t, 3, len(result.Actions))
++}
++
++// creates a rule to post
++func CreateRule(name string, match string, priority int, description string, actions []model.Action) model.Rule {
++	return model.Rule{
++		Name:        name,
++		Match:       match,
++		Priority:    priority,
++		Description: description,
++		Actions:     actions,
++	}
++}
++
++// creates an action for rule to post
++func CreateAction(kind model.ActionKind, field string, alias string, trim bool, mode model.AutoMode, expression string, pattern string, format string, limit int, result string) model.Action {
++	return model.Action{
++		Kind:       kind,
++		Field:      field,
++		Alias:      alias,
++		Trim:       trim,
++		Mode:       mode,
++		Expression: expression,
++		Pattern:    pattern,
++		Format:     format,
++		Limit:      limit,
++		Result:     result,
++	}
++}
+\ No newline at end of file
+diff --git a/lib/service/client.go b/lib/service/client.go
+index 11a91073b7ac..f8b87e989740 100644
+--- a/lib/service/client.go
++++ b/lib/service/client.go
+@@ -36,6 +36,8 @@ type Client struct {
+ 	httpClient *http.Client
+ 	// Services designed to talk to different parts of Splunk
+ 	SearchService *SearchService
++	//CatalogService is to talk to catalog service of Splunk
++	CatalogService *CatalogService
+ }
+ 
+ // service provides the interface between client and services
+@@ -133,5 +135,6 @@ func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTL
+ 	}
+ 	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
+ 	c.SearchService = &SearchService{client: c}
++	c.CatalogService = &CatalogService{client: c}
+ 	return c
+ }
+\ No newline at end of file
+diff --git a/lib/service/search_test.go b/lib/service/search_test.go
+index b3f54bc42394..bddea263a76b 100644
+--- a/lib/service/search_test.go
++++ b/lib/service/search_test.go
+@@ -1,19 +1,17 @@
+ package service
+ 
+ import (
+-"testing"
+-"github.com/splunk/ssc-client-go/lib/model"
+-"github.com/stretchr/testify/assert"
+-"time"
++	"testing"
++	"github.com/splunk/ssc-client-go/lib/model"
++	"github.com/stretchr/testify/assert"
++	"time"
+ )
+ 
+ func getSplunkClient() *Client {
+-
+ 	return NewClient([2]string{"admin", "changeme"},
+ 		"http://ssc-sdk-shared-stubby:8882", time.Second*5, true)
+ }
+ 
+-
+ func TestCreateJob(t *testing.T) {
+ 
+ 	response, err := getSplunkClient().SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+@@ -40,4 +38,4 @@ func TestGetResults(t *testing.T) {
+ 	assert.NotEmpty(t, response.Results)
+ 	assert.NotEmpty(t, response.Results[0].Index)
+ 	assert.NotEmpty(t, response.Fields)
+-}
+\ No newline at end of file
++}

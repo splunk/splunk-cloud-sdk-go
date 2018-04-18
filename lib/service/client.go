@@ -36,6 +36,8 @@ type Client struct {
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
 	SearchService *SearchService
+	//CatalogService is to talk to catalog service of Splunk
+	CatalogService *CatalogService
 }
 
 // service provides the interface between client and services
@@ -133,5 +135,6 @@ func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTL
 	}
 	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
+	c.CatalogService = &CatalogService{client: c}
 	return c
 }
