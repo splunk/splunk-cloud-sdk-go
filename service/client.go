@@ -14,7 +14,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/splunk/ssc-client-go/lib/util"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 // Declare constants for service package
