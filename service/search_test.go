@@ -1,9 +1,9 @@
 package service
 
 import (
-	"testing"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+	"testing"
 	"time"
 )
 
