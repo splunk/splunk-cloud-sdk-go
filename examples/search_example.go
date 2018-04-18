@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/lib/model"
-	"github.com/splunk/ssc-client-go/lib/service"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
 	"time"
 )
 
