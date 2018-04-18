@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -12,8 +13,7 @@ import (
 )
 
 const (
-	testUser                     = "admin"
-	testPassword                 = "changeme"
+	testToken                    = "testToken"
 	testHost                     = "localhost:8089"
 	testStubbyHost               = "ssc-sdk-shared-stubby:8882"
 	testScheme                   = "https"
@@ -23,7 +23,7 @@ const (
 )
 
 func getClient() *Client {
-	return NewClient([2]string{testUser, testPassword}, baseURL, testTimeOut, true)
+	return NewClient(testToken, baseURL, testTimeOut, true)
 }
 
 func TestBuildURLNoURLPath(t *testing.T) {
@@ -76,24 +76,14 @@ func TestBuildURLNoHost(t *testing.T) {
 }
 
 func TestNewClient(t *testing.T) {
-	var defaultAuth = [2]string{"admin", "changeme"}
 	client := getClient()
 	searchService := &SearchService{client: client}
-	if got, want := client.Auth, defaultAuth; got != want {
-		t.Errorf("NewClient Auth is %v, want %v", got, want)
-	}
-	var u *url.URL
-	u, _ = url.Parse(client.URL)
+	assert.Equal(t, testToken, client.token)
+	u, _ := url.Parse(client.URL)
 
-	if got, want := u.Host, testHost; got != want {
-		t.Errorf("NewClient Host is %v, want %v", got, want)
-	}
-	if got, want := client.httpClient.Timeout, testTimeOut; got != want {
-		t.Errorf("NewClient httpClient is %v, want %v", got, want)
-	}
-	if got, want := client.SearchService, searchService; *got != *want {
-		t.Errorf("NewClient SearchService is %v, want %v", got, want)
-	}
+	assert.Equal(t, testHost, u.Host)
+	assert.Equal(t, testTimeOut, client.httpClient.Timeout)
+	assert.Equal(t, searchService, client.SearchService)
 }
 
 func TestNewRequest(t *testing.T) {

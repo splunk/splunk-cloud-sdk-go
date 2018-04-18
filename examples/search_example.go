@@ -9,13 +9,12 @@ import (
 
 // Canned configs for running this example
 const (
-	ClientID     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
-	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
-	Host         = "https://api.splunknovadev-playground.com"
-	Timeout      = time.Second * 5
+	Token   = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
+	Host    = "https://api.splunknovadev-playground.com"
+	Timeout = time.Second * 5
 )
 
-var splunkClient = service.NewClient([2]string{ClientID, ClientSecret}, Host, Timeout, true)
+var splunkClient = service.NewClient(Token, Host, Timeout, true)
 
 func printSearchModel(searchModel *model.SearchEvents) {
 	fmt.Println("Preview: ", searchModel.Preview)
