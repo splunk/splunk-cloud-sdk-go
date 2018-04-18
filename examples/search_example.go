@@ -11,7 +11,7 @@ import (
 const (
 	ClientID     = "4zRqusbLAq754mX5WCDfoiQFzFJFWWkO"
 	ClientSecret = "ff9odDwxiZqSVEQzcBeOU-_ALDLKksXlELySNdjkbPxRH7rV9gybNhhbgbucteGe"
-	Host          = "https://api.splunknovadev-playground.com"
+	Host         = "https://api.splunknovadev-playground.com"
 	Timeout      = time.Second * 5
 )
 

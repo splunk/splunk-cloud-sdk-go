@@ -29,7 +29,6 @@ type Dataset struct {
 	Todo  string      `json:"todo"`
 }
 
-
 // ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
 
@@ -49,26 +48,25 @@ const (
 // Rule represents a rule for transforming results at search time.
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
-	Name        string       `json:"name"`
-	Actions     []Action     `json:"actions"`
-	Match       string       `json:"match"`
-	Priority    int          `json:"priority"`
-	Description string       `json:"description"`
+	Name        string   `json:"name"`
+	Actions     []Action `json:"actions"`
+	Match       string   `json:"match"`
+	Priority    int      `json:"priority"`
+	Description string   `json:"description"`
 }
 
 // Action represents a specific search time transformation action.
 type Action struct {
-	Kind           ActionKind         `json:"kind"`
-	Field          string             `json:"field,omitempty"`
-	Alias          string             `json:"alias,omitempty"`
-	Trim           bool               `json:"trim,omitempty"`
-	Mode           AutoMode           `json:"mode,omitempty"`
-	Expression     string             `json:"expression,omitempty"`
-	Pattern        string             `json:"pattern,omitempty"`
-	Format         string             `json:"format,omitempty"`
-	Limit          int                `json:"limit,omitempty"`
-	Result         string             `json:"result,omitempty"`
-
+	Kind       ActionKind `json:"kind"`
+	Field      string     `json:"field,omitempty"`
+	Alias      string     `json:"alias,omitempty"`
+	Trim       bool       `json:"trim,omitempty"`
+	Mode       AutoMode   `json:"mode,omitempty"`
+	Expression string     `json:"expression,omitempty"`
+	Pattern    string     `json:"pattern,omitempty"`
+	Format     string     `json:"format,omitempty"`
+	Limit      int        `json:"limit,omitempty"`
+	Result     string     `json:"result,omitempty"`
 }
 
 // AutoMode enumerates the automatic key/value extraction modes.

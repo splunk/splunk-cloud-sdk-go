@@ -22,10 +22,10 @@ func TestGetDatasets(t *testing.T) {
 	assert.Equal(t, 2, len(result))
 }
 
-// Stubby test for PostDataset() catalog service endpoint
+// Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
-	result, err := getSplunkClient().CatalogService.PostDataset(
-		getSplunkClient().CatalogService.CreateDataset("ds1", model.VIEW, []string{"string"}, "string"))
+	result, err := getSplunkClient().CatalogService.CreateDataset(
+		model.Dataset{Name: "ds1", Kind: model.VIEW, Rules: []string{"string"}, Todo: "string"})
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
 	assert.Equal(t, "ds1", result.Name)
@@ -53,13 +53,13 @@ func TestGetRules(t *testing.T) {
 	assert.Equal(t, 3, len(result[0].Actions))
 }
 
-// Stubby test for PostRule() catalog service endpoint
+// Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
-	var actions[3]model.Action
-	actions[0] = CreateAction("AUTOKV", "" , "", true, "NONE", "", "", "", 0, "")
-	actions[1] = CreateAction("EVAL", "" , "", false, "", "string", "", "", 0, "string")
-	actions[2] = CreateAction("LOOKUP", "" , "", false, "", "string", "", "", 0, "")
-	result, err := getSplunkClient().CatalogService.PostRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
+	var actions [3]model.Action
+	actions[0] = CreateAction("AUTOKV", "", "", true, "NONE", "", "", "", 0, "")
+	actions[1] = CreateAction("EVAL", "", "", false, "", "string", "", "", 0, "string")
+	actions[2] = CreateAction("LOOKUP", "", "", false, "", "string", "", "", 0, "")
+	result, err := getSplunkClient().CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
 	assert.Empty(t, err)
 	assert.Equal(t, "rule4", result.Name)
 	assert.Equal(t, "newrule", result.Match)

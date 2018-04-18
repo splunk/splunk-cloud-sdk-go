@@ -64,12 +64,12 @@ func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 	}
 
 	var u *url.URL
-	u,_ = url.Parse(c.URL)
+	u, _ = url.Parse(c.URL)
 
 	return url.URL{
 		Scheme: u.Scheme,
-		Host: u.Host,
-		Path: buildPath,
+		Host:   u.Host,
+		Path:   buildPath,
 	}
 }
 

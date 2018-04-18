@@ -5,13 +5,16 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 )
 
+const searchServicePrefix = "search"
+const searchServiceVersion = "v1"
+
 // SearchService implements a new service type
 type SearchService service
 
 //CreateJob Dispatches a search and returns the the newly created search job.
 func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.PostJobResponse, error) {
 	var postJobResponse model.PostJobResponse
-	jobURL := service.client.BuildURL("search", "v1", "jobs")
+	jobURL := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs")
 	response, err := service.client.Post(jobURL, job)
 	util.ParseResponse(&postJobResponse, response, err)
 	return &postJobResponse, err
@@ -20,7 +23,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.Post
 //CreateSyncJob Dispatches a new search and return results synchronously
 func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL := service.client.BuildURL("search", "v1", "jobs", "sync")
+	jobURL := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", "sync")
 	response, err := service.client.Post(jobURL, job)
 	if err != nil {
 		return nil, err
@@ -32,7 +35,7 @@ func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.
 //GetResults Returns the job resource with the given `id`.
 func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL := service.client.BuildURL("search", "v1", "jobs", jobID, "results")
+	jobURL := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	response, err := service.client.Get(jobURL)
 	if err != nil {
 		return nil, err
