@@ -8,12 +8,12 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"time"
-	"fmt"
 
 	"github.com/splunk/ssc-client-go/util"
 )
