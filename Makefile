@@ -50,6 +50,7 @@ install_local:
 	brew cask install codeship/taps/jet
 
 stubby_local:
+	jet load ssc-client-go-with-stubby
 	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
 
 install_dep:
