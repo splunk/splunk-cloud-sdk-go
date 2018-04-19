@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,24 +20,25 @@ import (
 
 // Declare constants for service package
 const (
-	MethodGet    = "GET"
-	MethodPost   = "POST"
-	MethodPut    = "PUT"
-	MethodPatch  = "PATCH"
-	MethodDelete = "DELETE"
+	MethodGet         = "GET"
+	MethodPost        = "POST"
+	MethodPut         = "PUT"
+	MethodPatch       = "PATCH"
+	MethodDelete      = "DELETE"
+	AuthorizationType = "Bearer"
 )
 
 // A Client is used to communicate with service endpoints
 type Client struct {
-	// Basic Auth with username and password
-	Auth [2]string
-	//Url string
-	URL string
+	// Authorization token
+	token string
+	// Url string
+	URL url.URL
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
 	SearchService *SearchService
-	//CatalogService is to talk to catalog service of Splunk
+	// CatalogService is to talk to catalog service of Splunk
 	CatalogService *CatalogService
 }
 
@@ -51,7 +53,9 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	if err != nil {
 		return nil, err
 	}
-	request.SetBasicAuth(c.Auth[0], c.Auth[1])
+	if len(c.token) > 0 {
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.token))
+	}
 	request.Header.Set("Content-Type", "application/json")
 	return request, nil
 }
@@ -63,12 +67,9 @@ func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 
-	var u *url.URL
-	u, _ = url.Parse(c.URL)
-
 	return url.URL{
-		Scheme: u.Scheme,
-		Host:   u.Host,
+		Scheme: c.URL.Scheme,
+		Host:   c.URL.Host,
 		Path:   buildPath,
 	}
 }
@@ -125,15 +126,21 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
+// UpdateToken updates the authorization token
+func (c *Client) UpdateToken(token string) {
+	c.token = token
+}
+
 // NewClient creates a Client with custom values passed in
-func NewClient(auth [2]string, url string, timeout time.Duration, skipValidateTLS bool) *Client {
+func NewClient(token, URL string, timeout time.Duration, skipValidateTLS bool) *Client {
 	httpClient := &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipValidateTLS},
 		},
 	}
-	c := &Client{Auth: auth, URL: url, httpClient: httpClient}
+	parsed, _ := url.Parse(URL)
+	c := &Client{token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	return c

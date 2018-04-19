@@ -1,15 +1,16 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/splunk/ssc-client-go/model"
+	. "github.com/splunk/ssc-client-go/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func getSplunkClient() *Client {
-	return NewClient([2]string{"admin", "changeme"},
-		"http://ssc-sdk-shared-stubby:8882", time.Second*5, true)
+	return NewClient(TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5, true)
 }
 
 func TestCreateJob(t *testing.T) {
