@@ -30,15 +30,15 @@ const (
 
 // A Client is used to communicate with service endpoints
 type Client struct {
-	// Basic Auth with username and password
+	// Authorization token
 	token string
-	//Url string
-	URL string
+	// Url string
+	URL url.URL
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// Services designed to talk to different parts of Splunk
 	SearchService *SearchService
-	//CatalogService is to talk to catalog service of Splunk
+	// CatalogService is to talk to catalog service of Splunk
 	CatalogService *CatalogService
 }
 
@@ -67,12 +67,9 @@ func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 
-	var u *url.URL
-	u, _ = url.Parse(c.URL)
-
 	return url.URL{
-		Scheme: u.Scheme,
-		Host:   u.Host,
+		Scheme: c.URL.Scheme,
+		Host:   c.URL.Host,
 		Path:   buildPath,
 	}
 }
@@ -135,14 +132,15 @@ func (c *Client) UpdateToken(token string) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(token, url string, timeout time.Duration, skipValidateTLS bool) *Client {
+func NewClient(token, URL string, timeout time.Duration, skipValidateTLS bool) *Client {
 	httpClient := &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipValidateTLS},
 		},
 	}
-	c := &Client{token: token, URL: url, httpClient: httpClient}
+	parsed, _ := url.Parse(URL)
+	c := &Client{token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	return c
