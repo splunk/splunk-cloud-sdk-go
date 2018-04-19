@@ -12,7 +12,7 @@ ssc-client-go-with-stubby:
     - ssc-sdk-shared-stubby
 
 ssc-sdk-shared-stubby:
-  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared:latest
+  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby:latest
   dockercfg_service: aws-generator
 
 aws-generator:
