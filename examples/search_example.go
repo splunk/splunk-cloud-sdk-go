@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
-	"time"
 )
 
 // Canned configs for running this example

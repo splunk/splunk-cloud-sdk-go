@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	. "github.com/splunk/ssc-client-go/util"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/url"
 	"reflect"
 	"testing"
+
+	. "github.com/splunk/ssc-client-go/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func getClient() *Client {

@@ -1,11 +1,12 @@
 package service
 
 import (
+	"testing"
+	"time"
+
 	"github.com/splunk/ssc-client-go/model"
 	. "github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
 )
 
 func getSplunkClient() *Client {

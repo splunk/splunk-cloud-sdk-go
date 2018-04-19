@@ -13,8 +13,8 @@ import (
 	"net/url"
 	"path"
 	"time"
-
 	"fmt"
+
 	"github.com/splunk/ssc-client-go/util"
 )
 
