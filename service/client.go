@@ -25,6 +25,8 @@ const (
 	MethodPatch       = "PATCH"
 	MethodDelete      = "DELETE"
 	AuthorizationType = "Bearer"
+	DefaultTenantID   = "system"
+	API               = "api"
 )
 
 // A Client is used to communicate with service endpoints
@@ -61,8 +63,9 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	return request, nil
 }
 
-// BuildURL creates full SSC URL
-func (c *Client) BuildURL(urlPathParts ...string) url.URL {
+// BuildURLWithDefaultTenantID creates full SSC URL with default tenant path "system"
+// Use this for auth services
+func (c *Client) BuildURLWithDefaultTenantID(urlPathParts ...string) url.URL {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
@@ -71,7 +74,7 @@ func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 	return url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
-		Path:   buildPath,
+		Path:   path.Join(API, DefaultTenantID, buildPath),
 	}
 }
 
@@ -79,12 +82,12 @@ func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 func (c *Client) BuildURLWithTenantID(urlPathParts ...string) url.URL {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
-		buildPath = path.Join(c.TenantID, buildPath, url.PathEscape(pathPart))
+		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 	return url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
-		Path:   buildPath,
+		Path:   path.Join(API, c.TenantID, buildPath),
 	}
 }
 

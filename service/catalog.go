@@ -66,9 +66,6 @@ func (c *CatalogService) DeleteRule(rulePath string) error {
 func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	getRuleURL := c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Get(getRuleURL)
-	if err != nil {
-		return nil, err
-	}
 
 	var result []model.Rule
 	util.ParseResponse(&result, response, err)
@@ -80,9 +77,6 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	postRuleURL := c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Post(postRuleURL, rule)
-	if err != nil {
-		return nil, err
-	}
 
 	var result model.Rule
 	util.ParseResponse(&result, response, err)

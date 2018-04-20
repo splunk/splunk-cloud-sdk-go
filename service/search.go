@@ -25,9 +25,6 @@ func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.
 	var searchModel model.SearchEvents
 	jobURL := service.client.BuildURLWithTenantID(searchServicePrefix, searchServiceVersion, "jobs", "sync")
 	response, err := service.client.Post(jobURL, job)
-	if err != nil {
-		return nil, err
-	}
 	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
 }
@@ -37,9 +34,6 @@ func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, err
 	var searchModel model.SearchEvents
 	jobURL := service.client.BuildURLWithTenantID(searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	response, err := service.client.Get(jobURL)
-	if err != nil {
-		return nil, err
-	}
 	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
 }
