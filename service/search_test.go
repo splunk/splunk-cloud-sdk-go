@@ -10,7 +10,7 @@ import (
 )
 
 func getSplunkClient() *Client {
-	return NewClient(TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5, true)
+	return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5)
 }
 
 func TestCreateJob(t *testing.T) {

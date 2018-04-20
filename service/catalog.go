@@ -14,7 +14,7 @@ type CatalogService service
 
 // GetDatasets returns all Datasets
 func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
+	var url = c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "datasets")
 	response, err := c.client.Get(url)
 
 	var result []model.Dataset
@@ -25,7 +25,7 @@ func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
 
 // GetDataset returns the Dataset by name
 func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
+	var url = c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "datasets", name)
 	response, err := c.client.Get(url)
 
 	var result model.Dataset
@@ -37,7 +37,7 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 // CreateDataset creates a new Dataset
 // TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
 func (c *CatalogService) CreateDataset(dataset model.Dataset) (*model.Dataset, error) {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
+	var url = c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "datasets", "")
 	response, err := c.client.Post(url, dataset)
 
 	var result model.Dataset
@@ -48,7 +48,7 @@ func (c *CatalogService) CreateDataset(dataset model.Dataset) (*model.Dataset, e
 
 // DeleteDataset implements delete Dataset endpoint
 func (c *CatalogService) DeleteDataset(datasetName string) error {
-	var url = c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
+	var url = c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
 	response, err := c.client.Delete(url)
 
 	return util.ParseError(response, err)
@@ -56,7 +56,7 @@ func (c *CatalogService) DeleteDataset(datasetName string) error {
 
 // DeleteRule deletes the rule by the given path.
 func (c *CatalogService) DeleteRule(rulePath string) error {
-	getDeleteURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
+	getDeleteURL := c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
 	response, err := c.client.Delete(getDeleteURL)
 
 	return util.ParseError(response, err)
@@ -64,7 +64,7 @@ func (c *CatalogService) DeleteRule(rulePath string) error {
 
 // GetRules returns all the rules.
 func (c *CatalogService) GetRules() ([]model.Rule, error) {
-	getRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
+	getRuleURL := c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Get(getRuleURL)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 
 // CreateRule posts a new rule.
 func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
-	postRuleURL := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules")
+	postRuleURL := c.client.BuildURLWithTenantID(catalogServicePrefix, catalogServiceVersion, "rules")
 	response, err := c.client.Post(postRuleURL, rule)
 	if err != nil {
 		return nil, err

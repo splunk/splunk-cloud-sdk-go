@@ -13,4 +13,6 @@ const (
 	TestStubbySchme = "http"
 	// TestTimeOut is the client timeout used in tests
 	TestTimeOut = time.Second * 10
+	// TestTenantID is the tenant id used by stubby tests
+	TestTenantID = "TEST_TENANT"
 )

@@ -15,7 +15,7 @@ import (
 )
 
 func getClient() *Client {
-	return NewClient(TestToken, TestHost, TestTimeOut, true)
+	return NewClient(TestTenantID, TestToken, TestHost, TestTimeOut)
 }
 
 func TestBuildURLNoURLPath(t *testing.T) {

@@ -6,7 +6,6 @@ package service
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -30,6 +29,8 @@ const (
 
 // A Client is used to communicate with service endpoints
 type Client struct {
+	// TenantID used for ssc service
+	TenantID string
 	// Authorization token
 	token string
 	// Url string
@@ -60,13 +61,26 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	return request, nil
 }
 
-// BuildURL creates full Splunk URL
+// BuildURL creates full SSC URL
 func (c *Client) BuildURL(urlPathParts ...string) url.URL {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 
+	return url.URL{
+		Scheme: c.URL.Scheme,
+		Host:   c.URL.Host,
+		Path:   buildPath,
+	}
+}
+
+// BuildURLWithTenantID creates full SSC URL with tenantID
+func (c *Client) BuildURLWithTenantID(urlPathParts ...string) url.URL {
+	var buildPath = ""
+	for _, pathPart := range urlPathParts {
+		buildPath = path.Join(c.TenantID, buildPath, url.PathEscape(pathPart))
+	}
 	return url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
@@ -132,15 +146,12 @@ func (c *Client) UpdateToken(token string) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(token, URL string, timeout time.Duration, skipValidateTLS bool) *Client {
+func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	httpClient := &http.Client{
 		Timeout: timeout,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipValidateTLS},
-		},
 	}
 	parsed, _ := url.Parse(URL)
-	c := &Client{token: token, URL: *parsed, httpClient: httpClient}
+	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	return c
