@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"path"
 	"time"
+	"errors"
 
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -25,7 +26,6 @@ const (
 	MethodPatch       = "PATCH"
 	MethodDelete      = "DELETE"
 	AuthorizationType = "Bearer"
-	DefaultTenantID   = "system"
 	API               = "api"
 )
 
@@ -63,32 +63,44 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	return request, nil
 }
 
-// BuildURLWithDefaultTenantID creates full SSC URL with default tenant path "system"
-// Use this for auth services
-func (c *Client) BuildURLWithDefaultTenantID(urlPathParts ...string) url.URL {
+// BuildURL creates full SSC URL with the client cached tenantID
+func (c *Client) BuildURL(urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 
-	return url.URL{
-		Scheme: c.URL.Scheme,
-		Host:   c.URL.Host,
-		Path:   path.Join(API, DefaultTenantID, buildPath),
+	var u url.URL
+	if len(c.TenantID) == 0 {
+		return u, errors.New("A non-empty tenant ID must be set on client")
 	}
-}
 
-// BuildURLWithTenantID creates full SSC URL with tenantID
-func (c *Client) BuildURLWithTenantID(urlPathParts ...string) url.URL {
-	var buildPath = ""
-	for _, pathPart := range urlPathParts {
-		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
-	}
-	return url.URL{
+	u = url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
 		Path:   path.Join(API, c.TenantID, buildPath),
 	}
+	return u, nil
+}
+
+// BuildURLWithTenantID creates full SSC URL with tenantID
+func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (url.URL, error) {
+	var buildPath = ""
+	for _, pathPart := range urlPathParts {
+		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
+	}
+
+	var u url.URL
+	if len(tenantID) == 0 {
+		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
+	}
+
+	u = url.URL{
+		Scheme: c.URL.Scheme,
+		Host:   c.URL.Host,
+		Path:   path.Join(API, tenantID, buildPath),
+	}
+	return u, nil
 }
 
 // Do sends out request and returns HTTP response

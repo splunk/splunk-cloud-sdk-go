@@ -20,13 +20,13 @@ func getClient() *Client {
 
 func TestBuildURL(t *testing.T) {
 	client := getClient()
-	url := client.BuildURLWithDefaultTenantID("services",
-		"search", "jobs")
+	url, err := client.BuildURL("services", "search", "jobs")
 
+	assert.Nil(t, err)
 	assert.Equal(t, "localhost", url.Hostname())
 	assert.Equal(t, "https", url.Scheme)
 	assert.Equal(t, "8089", url.Port())
-	assert.Equal(t, "api/system/services/search/jobs", url.Path)
+	assert.Equal(t, fmt.Sprintf("%s%s%s", "api/", TestTenantID, "/services/search/jobs"), url.Path)
 	assert.Empty(t, url.Fragment)
 }
 

@@ -14,7 +14,10 @@ type SearchService service
 //CreateJob Dispatches a search and returns the the newly created search job.
 func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.PostJobResponse, error) {
 	var postJobResponse model.PostJobResponse
-	jobURL := service.client.BuildURLWithTenantID(searchServicePrefix, searchServiceVersion, "jobs")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs")
+	if err != nil {
+		return nil, err
+	}
 	response, err := service.client.Post(jobURL, job)
 	util.ParseResponse(&postJobResponse, response, err)
 	return &postJobResponse, err
@@ -23,7 +26,10 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.Post
 //CreateSyncJob Dispatches a new search and return results synchronously
 func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL := service.client.BuildURLWithTenantID(searchServicePrefix, searchServiceVersion, "jobs", "sync")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", "sync")
+	if err != nil {
+		return nil, err
+	}
 	response, err := service.client.Post(jobURL, job)
 	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
@@ -32,7 +38,10 @@ func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.
 //GetResults Returns the job resource with the given `id`.
 func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL := service.client.BuildURLWithTenantID(searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	if err != nil {
+		return nil, err
+	}
 	response, err := service.client.Get(jobURL)
 	util.ParseResponse(&searchModel, response, err)
 	return &searchModel, err
