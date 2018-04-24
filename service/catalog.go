@@ -8,7 +8,7 @@ import (
 // catalog service url prefix
 const catalogServicePrefix = "catalog"
 
-// CatalogService talks to the SSC catalog component
+// CatalogService talks to the SSC catalog service
 type CatalogService service
 
 // GetDatasets returns all Datasets

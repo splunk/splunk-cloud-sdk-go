@@ -8,7 +8,7 @@ import (
 const identityServicePrefix = "identity"
 const identityServiceVersion = "v1"
 
-// IdentityService talks to the IAC component
+// IdentityService talks to the IAC service
 type IdentityService service
 
 // CreateTenant creates a tenant

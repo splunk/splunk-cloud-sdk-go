@@ -39,11 +39,11 @@ type Client struct {
 	URL url.URL
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
-	// SearchService talks to the SSC search component
+	// SearchService talks to the SSC search service
 	SearchService *SearchService
-	// CatalogService talks to the SSC catalog component
+	// CatalogService talks to the SSC catalog service
 	CatalogService *CatalogService
-	// IdentityService talks to the IAC component
+	// IdentityService talks to the IAC service
 	IdentityService *IdentityService
 }
 
