@@ -7,7 +7,7 @@ import (
 
 const searchServicePrefix = "search"
 
-// SearchService implements a new service type
+// SearchService talks to the SSC search service
 type SearchService service
 
 //CreateJob Dispatches a search and returns the the newly created search job.
