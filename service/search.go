@@ -6,7 +6,6 @@ import (
 )
 
 const searchServicePrefix = "search"
-const searchServiceVersion = "v1"
 
 // SearchService implements a new service type
 type SearchService service
@@ -14,7 +13,7 @@ type SearchService service
 //CreateJob Dispatches a search and returns the the newly created search job.
 func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.PostJobResponse, error) {
 	var postJobResponse model.PostJobResponse
-	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, "jobs")
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +25,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.Post
 //CreateSyncJob Dispatches a new search and return results synchronously
 func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", "sync")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, "jobs", "sync")
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +37,7 @@ func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.
 //GetResults Returns the job resource with the given `id`.
 func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, error) {
 	var searchModel model.SearchEvents
-	jobURL, err := service.client.BuildURL(searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	jobURL, err := service.client.BuildURL(searchServicePrefix, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
 	}
