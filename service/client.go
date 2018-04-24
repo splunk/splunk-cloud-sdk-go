@@ -43,7 +43,7 @@ type Client struct {
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
 	CatalogService *CatalogService
-	// HecService is to talk to hec service of Splunk SSC
+	// HecService talks to the SSC hec service
 	HecService *HecService
 	// IdentityService talks to the IAC service
 	IdentityService *IdentityService
