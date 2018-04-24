@@ -54,7 +54,7 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(3000 * time.Millisecond)
 
 	resp, err := client.SearchService.GetResults(response.SearchID)
 	assert.Nil(t, err)
