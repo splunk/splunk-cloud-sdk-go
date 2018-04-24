@@ -11,6 +11,9 @@ GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 noop:
 	@echo "No make target specified."
 
+clean:
+	docker rmi -f 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
+
 ssc-client-go: $(GO_SOURCES)
 	go build -v ./...
 
