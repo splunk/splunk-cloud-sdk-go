@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"reflect"
 	"testing"
@@ -49,11 +50,11 @@ func TestNewRequest(t *testing.T) {
 		url    string
 		body   io.Reader
 	}{
-		{MethodGet, TestHost, nil},
-		{MethodPost, TestHost, requestBody},
-		{MethodPut, TestHost, requestBody},
-		{MethodPatch, TestHost, requestBody},
-		{MethodDelete, TestHost, nil},
+		{http.MethodGet, TestHost, nil},
+		{http.MethodPost, TestHost, requestBody},
+		{http.MethodPut, TestHost, requestBody},
+		{http.MethodPatch, TestHost, requestBody},
+		{http.MethodDelete, TestHost, nil},
 	}
 	for _, test := range tests {
 		req, err := client.NewRequest(test.method, test.url, test.body)
@@ -69,8 +70,8 @@ func TestNewRequest(t *testing.T) {
 		if got, want := req.Header["Authorization"], expectedAuth; !reflect.DeepEqual(got, want) {
 			t.Errorf("NewRequest authorization is %v, want %v", got, want)
 		}
-		if test.method == MethodGet || test.method == MethodDelete {
-			t.Skipf("Skip NewRequest body test for %v and %v method", MethodGet, MethodDelete)
+		if test.method == http.MethodGet || test.method == http.MethodDelete {
+			t.Skipf("Skip NewRequest body test for %v and %v method", http.MethodGet, http.MethodDelete)
 		} else {
 			gotBody, _ := ioutil.ReadAll(req.Body)
 			if bytes.Compare(gotBody, body) != -1 {
@@ -82,7 +83,7 @@ func TestNewRequest(t *testing.T) {
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
 	client := getClient()
-	req, err := client.NewRequest(MethodGet, TestHost, nil)
+	req, err := client.NewRequest(http.MethodGet, TestHost, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
 	}
@@ -102,7 +103,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient()
-	resp, _ := client.DoRequest(MethodGet, url.URL{Scheme: TestStubbySchme, Host: TestStubbyHost, Path: "/error"}, nil)
+	resp, _ := client.DoRequest(http.MethodGet, url.URL{Scheme: TestStubbySchme, Host: TestStubbyHost, Path: "/error"}, nil)
 	if resp.StatusCode != 500 {
 		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
 	}
