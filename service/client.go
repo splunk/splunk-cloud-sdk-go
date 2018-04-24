@@ -20,11 +20,6 @@ import (
 
 // Declare constants for service package
 const (
-	MethodGet         = "GET"
-	MethodPost        = "POST"
-	MethodPut         = "PUT"
-	MethodPatch       = "PATCH"
-	MethodDelete      = "DELETE"
 	AuthorizationType = "Bearer"
 	API               = "api"
 )
@@ -114,27 +109,27 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 
 // Get implements HTTP Get call
 func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodGet, getURL, nil)
+	return c.DoRequest(http.MethodGet, getURL, nil)
 }
 
 // Post implements HTTP POST call
 func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPost, postURL, body)
+	return c.DoRequest(http.MethodPost, postURL, body)
 }
 
 // Put implements HTTP PUT call
 func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPut, putURL, body)
+	return c.DoRequest(http.MethodPut, putURL, body)
 }
 
 // Delete implements HTTP DELETE call
 func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodDelete, deleteURL, nil)
+	return c.DoRequest(http.MethodDelete, deleteURL, nil)
 }
 
 // Patch implements HTTP Patch call
 func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPatch, patchURL, body)
+	return c.DoRequest(http.MethodPatch, patchURL, body)
 }
 
 // DoRequest creates and execute a new request
