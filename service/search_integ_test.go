@@ -11,16 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TODO: add playground host to env variable also
-const (
-	HostID = "https://next.splunknovadev-playground.com:443"
-)
-
+var hostID = os.Getenv("SSC_HOST")
 var token = os.Getenv("BEARER_TOKEN")
 var tenantID = os.Getenv("TENANT_ID")
 
 func getSplunkClientForPlaygroundTests() *Client {
-	return NewClient(tenantID, token, HostID, time.Second*5)
+	return NewClient(tenantID, token, hostID, time.Second*5)
 }
 
 func TestIntegrationEnvironment(t *testing.T) {
