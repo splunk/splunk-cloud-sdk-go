@@ -3,11 +3,12 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 // TODO: add playground host to env variable also
@@ -61,7 +62,6 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	assert.NotNil(t, resp)
 	ValidateResponses(resp, t)
 }
-
 
 // Validate response results
 func ValidateResponses(response *model.SearchEvents, t *testing.T) {
