@@ -17,4 +17,4 @@
     steps:
       - name: test
         service: ssc-client-go-with-stubby
-        command: bash -c "source deploy/runtests"
+        command: bash -c "source ci/runtests"
