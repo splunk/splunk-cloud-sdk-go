@@ -39,10 +39,12 @@ type Client struct {
 	URL url.URL
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
-	// Services designed to talk to different parts of Splunk
+	// Services designed to talk to search service of Splunk SSC
 	SearchService *SearchService
-	// CatalogService is to talk to catalog service of Splunk
+	// CatalogService is to talk to catalog service of Splunk SSC
 	CatalogService *CatalogService
+	// HecService is to talk to hec service of Splunk SSC
+	HecService *HecService
 }
 
 // service provides the interface between client and services
@@ -169,5 +171,6 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
+	c.HecService = &HecService{client: c}
 	return c
 }
