@@ -6,7 +6,6 @@ package service
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,6 +13,7 @@ import (
 	"net/url"
 	"path"
 	"time"
+	"errors"
 
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -26,10 +26,13 @@ const (
 	MethodPatch       = "PATCH"
 	MethodDelete      = "DELETE"
 	AuthorizationType = "Bearer"
+	API               = "api"
 )
 
 // A Client is used to communicate with service endpoints
 type Client struct {
+	// TenantID used for ssc service
+	TenantID string
 	// Authorization token
 	token string
 	// Url string
@@ -62,18 +65,44 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	return request, nil
 }
 
-// BuildURL creates full Splunk URL
-func (c *Client) BuildURL(urlPathParts ...string) url.URL {
+// BuildURL creates full SSC URL with the client cached tenantID
+func (c *Client) BuildURL(urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
 
-	return url.URL{
+	var u url.URL
+	if len(c.TenantID) == 0 {
+		return u, errors.New("A non-empty tenant ID must be set on client")
+	}
+
+	u = url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
-		Path:   buildPath,
+		Path:   path.Join(API, c.TenantID, buildPath),
 	}
+	return u, nil
+}
+
+// BuildURLWithTenantID creates full SSC URL with tenantID
+func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (url.URL, error) {
+	var buildPath = ""
+	for _, pathPart := range urlPathParts {
+		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
+	}
+
+	var u url.URL
+	if len(tenantID) == 0 {
+		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
+	}
+
+	u = url.URL{
+		Scheme: c.URL.Scheme,
+		Host:   c.URL.Host,
+		Path:   path.Join(API, tenantID, buildPath),
+	}
+	return u, nil
 }
 
 // Do sends out request and returns HTTP response
@@ -134,15 +163,12 @@ func (c *Client) UpdateToken(token string) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(token, URL string, timeout time.Duration, skipValidateTLS bool) *Client {
+func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	httpClient := &http.Client{
 		Timeout: timeout,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipValidateTLS},
-		},
 	}
 	parsed, _ := url.Parse(URL)
-	c := &Client{token: token, URL: *parsed, httpClient: httpClient}
+	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.HecService = &HecService{client: c}
