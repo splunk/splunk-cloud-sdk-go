@@ -10,25 +10,23 @@ import (
 )
 
 func TestCreateEventSuccess(t *testing.T) {
+	timeValue := float64(1523637597)
 	err := getSplunkClient().HecService.CreateEvent(
-		model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen", Time: 1523637597})
-	assert.Empty(t, err)
-}
-
-func TestCreateEventFail(t *testing.T) {
-	client := NewClient("", TestStubbySchme+"://"+TestStubbyHost, time.Second*5, true)
-	err := client.HecService.CreateEvent(
-		model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Event: "", Source: "manual-events", Sourcetype: "sourcetype:eventgen", Time: 1523637597})
+		model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
 	assert.Empty(t, err)
 }
 
 func TestCreateRawEventSuccess(t *testing.T) {
-	client := getSplunkClient()
-	var url = client.BuildURL(hecServicePrefix, hecServiceVersion, "raw")
-	fields := map[string]string{
-		"test": "value",
-	}
-	event := model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen", Time: 1523637597, Fields: fields}
-	url.RawQuery = ParseURLParams(event).Encode()
-	t.Errorf("%v", url.String())
+	err := getSplunkClient().HecService.CreateRawEvent(
+		model.HecEvent{Event: "test"})
+	assert.Empty(t, err)
+}
+
+func TestHecEventFail(t *testing.T) {
+	client := NewClient(TestTenantID, "wrongToken", TestStubbySchme+"://"+TestStubbyHost, time.Second*5)
+	err := client.HecService.CreateEvent(
+		model.HecEvent{Event: "failed test"})
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 401, err.(*HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*HTTPError).Message)
 }
