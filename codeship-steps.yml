@@ -18,3 +18,10 @@
       - name: test
         service: ssc-client-go-with-stubby
         command: bash -c "source deploy/runtests"
+
+- type: parallel
+  tag: "master"
+  steps:
+    - name: integration
+      service: ssc-client-go-against-playground
+      command: bash -c "source deploy/integration/runtests"

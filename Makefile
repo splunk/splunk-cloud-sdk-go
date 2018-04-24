@@ -11,6 +11,9 @@ GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 noop:
 	@echo "No make target specified."
 
+clean:
+	docker rmi -f 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
+
 ssc-client-go: $(GO_SOURCES)
 	go build -v ./...
 
@@ -32,6 +35,10 @@ encrypt:
 		jet encrypt deploy/shared/secret.env deploy/shared/env.encrypted && \
 		printf "Encrypted deploy/shared/secret.env to deploy/shared/env.encrypted\n"; \
 	fi;
+	@if [ -f deploy/integration/secret.env ]; then \
+		jet encrypt deploy/integration/secret.env deploy/integration/env.encrypted && \
+		printf "Encrypted deploy/integration/secret.env to deploy/integration/env.encrypted\n"; \
+	fi;
 
 decrypt:
 	@if [ -f deploy/env.encrypted ]; then \
@@ -41,6 +48,10 @@ decrypt:
 	@if [ -f deploy/shared/env.encrypted ]; then \
 		jet decrypt deploy/shared/env.encrypted deploy/shared/secret.env && \
 		printf "Decrypted deploy/shared/env.encrypted to deploy/shared/env.encrypted\n"; \
+	fi;
+	@if [ -f deploy/integration/env.encrypted ]; then \
+		jet decrypt deploy/integration/env.encrypted deploy/integration/secret.env && \
+		printf "Decrypted deploy/integration/env.encrypted to deploy/integration/env.encrypted\n"; \
 	fi;
 
 install_local:
