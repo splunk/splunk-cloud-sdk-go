@@ -15,56 +15,19 @@ import (
 )
 
 func getClient() *Client {
-	return NewClient(TestToken, TestHost, TestTimeOut, true)
+	return NewClient(TestTenantID, TestToken, TestHost, TestTimeOut)
 }
 
-func TestBuildURLNoURLPath(t *testing.T) {
+func TestBuildURL(t *testing.T) {
 	client := getClient()
-	url := client.BuildURL("")
+	url, err := client.BuildURL("services", "search", "jobs")
 
-	if got, want := url.Hostname(), "localhost"; got != want {
-		t.Errorf("hostname invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Scheme, "https"; got != want {
-		t.Errorf("scheme invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Port(), "8089"; got != want {
-		t.Errorf("port invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Path, ""; got != want {
-		t.Errorf("path invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Fragment, ""; got != want {
-		t.Errorf("fragment invalid, got %s, want %s", got, want)
-	}
-	if url.User != nil {
-		t.Errorf("user invalid, got %s, want %v", url.User, nil)
-	}
-}
-
-func TestBuildURLNoHost(t *testing.T) {
-	client := getClient()
-	url := client.BuildURL("services",
-		"search", "jobs")
-
-	if got, want := url.Hostname(), "localhost"; got != want {
-		t.Errorf("hostname invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Scheme, "https"; got != want {
-		t.Errorf("scheme invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Port(), "8089"; got != want {
-		t.Errorf("port invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Path, "services/search/jobs"; got != want {
-		t.Errorf("path invalid, got %s, want %s", got, want)
-	}
-	if got, want := url.Fragment, ""; got != want {
-		t.Errorf("fragment invalid, got %s, want %s", got, want)
-	}
-	if url.User != nil {
-		t.Errorf("user invalid, got %s, want %v", url.User, nil)
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, "localhost", url.Hostname())
+	assert.Equal(t, "https", url.Scheme)
+	assert.Equal(t, "8089", url.Port())
+	assert.Equal(t, fmt.Sprintf("%s%s%s", "api/", TestTenantID, "/services/search/jobs"), url.Path)
+	assert.Empty(t, url.Fragment)
 }
 
 func TestNewClient(t *testing.T) {
