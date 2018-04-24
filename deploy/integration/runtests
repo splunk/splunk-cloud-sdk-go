@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source ./deploy/integration/okta.sh
+cd service # TODO: this shouldn't be necessary...
+go test -v -run ^TestIntegration* || exit 1

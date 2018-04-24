@@ -9,6 +9,7 @@ RUN apk update && apk upgrade && \
     apk add --no-cache git && \
     apk add --no-cache make && \
     apk add --no-cache curl && \
+    apk add --no-cache jq && \
     curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
