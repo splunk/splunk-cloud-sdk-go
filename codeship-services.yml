@@ -11,6 +11,12 @@ ssc-client-go-with-stubby:
   depends_on:
     - ssc-sdk-shared-stubby
 
+ssc-client-go-against-playground:
+  build:
+    image: splunk/ssc-client-go-with-stubby
+    dockerfile: deploy/Dockerfile
+  encrypted_env_file: deploy/integration/env.encrypted
+
 ssc-sdk-shared-stubby:
   image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby:latest
   dockercfg_service: aws-generator
