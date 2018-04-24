@@ -57,8 +57,8 @@ func TestIdentityService_AddTenantUsers(t *testing.T) {
 
 func TestIdentityService_DeleteTenantUsers(t *testing.T) {
 	err := getSplunkClient().IdentityService.DeleteTenantUsers("devtestTenant", []model.User{
+		{ID: "devtest4@splunk.com"},
 		{ID: "devtest5@splunk.com"},
-		{ID: "devtest6@splunk.com"},
 	})
 	assert.Nil(t, err)
 }
