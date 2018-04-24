@@ -135,7 +135,7 @@ func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
 func (c *Client) DeleteWithBody(deleteURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodDelete, deleteURL, body)
+	return c.DoRequest(http.MethodDelete, deleteURL, body)
 }
 
 // Patch implements HTTP Patch call
