@@ -7,13 +7,13 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"time"
-	"errors"
 
 	"github.com/splunk/ssc-client-go/util"
 )
