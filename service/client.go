@@ -43,6 +43,8 @@ type Client struct {
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
 	CatalogService *CatalogService
+	// HecService is to talk to hec service of Splunk SSC
+	HecService *HecService
 	// IdentityService talks to the IAC service
 	IdentityService *IdentityService
 }
@@ -179,5 +181,6 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
+	c.HecService = &HecService{client: c}
 	return c
 }
