@@ -9,10 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func getSplunkClientNew(tenant string, host string) *Client {
-	return NewClient(tenant, TestToken, host, time.Second*5)
-}
-
 func getSplunkClient() *Client {
 	return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5)
 }

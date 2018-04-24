@@ -7,7 +7,7 @@ export BEARER_TOKEN=$(curl -s --request POST --url "https://$OKTA_HOST/oauth2/de
 
 if [[ -z "$BEARER_TOKEN" ]]; then
     echo "Unable to set BEARER_TOKEN"
-   exit 1
+    exit 1
 else 
     echo "Successfully set BEARER_TOKEN"
 fi
