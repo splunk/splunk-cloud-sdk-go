@@ -1,6 +1,9 @@
 package service
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -17,6 +20,24 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 		return err
 	}
 	response, err := h.client.Post(url, event)
+	return util.ParseError(response, err)
+}
+
+// CreateEvents post multiple events in one payload
+func (h *HecService) CreateEvents(events []model.HecEvent) error {
+	var eventBuffer bytes.Buffer
+	for _, event := range events {
+		jsonBytes, err := json.Marshal(event)
+		if err != nil {
+			return err
+		}
+		eventBuffer.Write(jsonBytes)
+	}
+	url, err := h.client.BuildURL(hecServicePrefix, "events")
+	if err != nil {
+		return err
+	}
+	response, err := h.client.Post(url, eventBuffer)
 	return util.ParseError(response, err)
 }
 
