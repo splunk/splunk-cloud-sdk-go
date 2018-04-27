@@ -34,7 +34,7 @@ func TestHecEventFail(t *testing.T) {
 func TestCreateEvents(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	err := getSplunkClient().HecService.CreateEvents(
-		[]model.HecEvent{event1, event2})
-	assert.Nil(t, err)
+	events := model.HecEvents{Events: []model.HecEvent{event1, event2}}
+	err := getSplunkClient().HecService.CreateEvents(events)
+	assert.Empty(t, err)
 }

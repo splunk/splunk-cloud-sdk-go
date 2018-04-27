@@ -24,20 +24,13 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 }
 
 // CreateEvents post multiple events in one payload
-func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	var eventBuffer bytes.Buffer
-	for _, event := range events {
-		jsonBytes, err := json.Marshal(event)
-		if err != nil {
-			return err
-		}
-		eventBuffer.Write(jsonBytes)
-	}
+func (h *HecService) CreateEvents(events model.HecEvents) error {
 	url, err := h.client.BuildURL(hecServicePrefix, "events")
 	if err != nil {
 		return err
 	}
-	response, err := h.client.Post(url, eventBuffer)
+	hecEvents, err := h.buildMultiEventsPayload(events)
+	response, err := h.client.Post(url, hecEvents)
 	return util.ParseError(response, err)
 }
 
@@ -53,3 +46,16 @@ func (h *HecService) CreateRawEvent(event model.HecEvent) error {
 	response, err := h.client.Post(url, event.Event)
 	return util.ParseError(response, err)
 }
+
+func (h *HecService) buildMultiEventsPayload(events model.HecEvents) ([]byte, error) {
+	var eventBuffer bytes.Buffer
+	for _, event := range events.Events {
+		jsonBytes, err := json.Marshal(event)
+		if err != nil {
+			return nil, err
+		}
+		eventBuffer.Write(jsonBytes)
+	}
+	return eventBuffer.Bytes(), nil
+}
+

@@ -10,3 +10,8 @@ type HecEvent struct {
 	Event      interface{}       `json:"event"`
 	Fields     map[string]string `json:"fields,omitempty"`
 }
+
+// HecEvents contains multiple events
+type HecEvents struct {
+	Events []HecEvent
+}
