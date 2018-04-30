@@ -145,20 +145,23 @@ func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, erro
 
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
-
-	content, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
+	var buffer *bytes.Buffer
+	if contentBytes, ok := body.([]byte); ok {
+		buffer = bytes.NewBuffer(contentBytes)
+	} else {
+		if content, err := json.Marshal(body); err == nil {
+			buffer = bytes.NewBuffer(content)
+		} else {
+			return nil, err
+		}
 	}
-	request, err := c.NewRequest(method, requestURL.String(), bytes.NewBuffer(content))
-	if err != nil {
-		return nil, err
+	var err error
+	if request, err := c.NewRequest(method, requestURL.String(), buffer); err == nil {
+		if response, err := c.Do(request); err == nil {
+			return util.ParseHTTPStatusCodeInResponse(response)
+		}
 	}
-	response, err := c.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	return util.ParseHTTPStatusCodeInResponse(response)
+	return nil, err
 }
 
 // UpdateToken updates the authorization token
