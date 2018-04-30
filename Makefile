@@ -27,31 +27,31 @@ build:
 	make ssc-client-go
 
 encrypt:
-	@if [ -f deploy/secret.env ]; then \
-		jet encrypt deploy/secret.env deploy/env.encrypted && \
-		printf "Encrypted deploy/secret.env to deploy/env.encrypted\n"; \
+	@if [ -f ci/secret.env ]; then \
+		jet encrypt ci/secret.env ci/env.encrypted && \
+		printf "Encrypted ci/secret.env to ci/env.encrypted\n"; \
 	fi;
-	@if [ -f deploy/shared/secret.env ]; then \
-		jet encrypt deploy/shared/secret.env deploy/shared/env.encrypted && \
-		printf "Encrypted deploy/shared/secret.env to deploy/shared/env.encrypted\n"; \
+	@if [ -f ci/shared/secret.env ]; then \
+		jet encrypt ci/shared/secret.env ci/shared/env.encrypted && \
+		printf "Encrypted ci/shared/secret.env to ci/shared/env.encrypted\n"; \
 	fi;
-	@if [ -f deploy/integration/secret.env ]; then \
-		jet encrypt deploy/integration/secret.env deploy/integration/env.encrypted && \
-		printf "Encrypted deploy/integration/secret.env to deploy/integration/env.encrypted\n"; \
+	@if [ -f ci/integration/secret.env ]; then \
+		jet encrypt ci/integration/secret.env ci/integration/env.encrypted && \
+		printf "Encrypted ci/integration/secret.env to ci/integration/env.encrypted\n"; \
 	fi;
 
 decrypt:
-	@if [ -f deploy/env.encrypted ]; then \
-		jet decrypt deploy/env.encrypted deploy/secret.env && \
-		printf "Decrypted deploy/env.encrypted to deploy/secret.env\n"; \
+	@if [ -f ci/env.encrypted ]; then \
+		jet decrypt ci/env.encrypted ci/secret.env && \
+		printf "Decrypted ci/env.encrypted to ci/secret.env\n"; \
 	fi;
-	@if [ -f deploy/shared/env.encrypted ]; then \
-		jet decrypt deploy/shared/env.encrypted deploy/shared/secret.env && \
-		printf "Decrypted deploy/shared/env.encrypted to deploy/shared/env.encrypted\n"; \
+	@if [ -f ci/shared/env.encrypted ]; then \
+		jet decrypt ci/shared/env.encrypted ci/shared/secret.env && \
+		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
 	fi;
-	@if [ -f deploy/integration/env.encrypted ]; then \
-		jet decrypt deploy/integration/env.encrypted deploy/integration/secret.env && \
-		printf "Decrypted deploy/integration/env.encrypted to deploy/integration/env.encrypted\n"; \
+	@if [ -f ci/integration/env.encrypted ]; then \
+		jet decrypt ci/integration/env.encrypted ci/integration/secret.env && \
+		printf "Decrypted ci/integration/env.encrypted to ci/integration/env.encrypted\n"; \
 	fi;
 
 install_local:

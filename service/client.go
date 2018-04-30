@@ -20,11 +20,6 @@ import (
 
 // Declare constants for service package
 const (
-	MethodGet         = "GET"
-	MethodPost        = "POST"
-	MethodPut         = "PUT"
-	MethodPatch       = "PATCH"
-	MethodDelete      = "DELETE"
 	AuthorizationType = "Bearer"
 	API               = "api"
 )
@@ -39,12 +34,14 @@ type Client struct {
 	URL url.URL
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
-	// Services designed to talk to search service of Splunk SSC
+	// SearchService talks to the SSC search service
 	SearchService *SearchService
-	// CatalogService is to talk to catalog service of Splunk SSC
+	// CatalogService talks to the SSC catalog service
 	CatalogService *CatalogService
-	// HecService is to talk to hec service of Splunk SSC
+	// HecService talks to the SSC hec service
 	HecService *HecService
+	// IdentityService talks to the IAC service
+	IdentityService *IdentityService
 }
 
 // service provides the interface between client and services
@@ -116,27 +113,34 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 
 // Get implements HTTP Get call
 func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodGet, getURL, nil)
+	return c.DoRequest(http.MethodGet, getURL, nil)
 }
 
 // Post implements HTTP POST call
 func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPost, postURL, body)
+	return c.DoRequest(http.MethodPost, postURL, body)
 }
 
 // Put implements HTTP PUT call
 func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPut, putURL, body)
+	return c.DoRequest(http.MethodPut, putURL, body)
 }
 
 // Delete implements HTTP DELETE call
 func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(MethodDelete, deleteURL, nil)
+	return c.DoRequest(http.MethodDelete, deleteURL, nil)
+}
+
+// DeleteWithBody implements HTTP DELETE call with a request body
+// RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
+// netty etc) ignore bodies in DELETE requests
+func (c *Client) DeleteWithBody(deleteURL url.URL, body interface{}) (*http.Response, error) {
+	return c.DoRequest(http.MethodDelete, deleteURL, body)
 }
 
 // Patch implements HTTP Patch call
 func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(MethodPatch, patchURL, body)
+	return c.DoRequest(http.MethodPatch, patchURL, body)
 }
 
 // DoRequest creates and execute a new request
@@ -174,6 +178,7 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
+	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
 	return c
 }

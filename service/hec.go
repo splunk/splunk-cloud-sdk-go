@@ -10,7 +10,7 @@ import (
 
 const hecServicePrefix = "hec2"
 
-// HecService implements hec service
+// HecService talks to the SSC hec service
 type HecService service
 
 // CreateEvent implements HEC2 event endpoint
