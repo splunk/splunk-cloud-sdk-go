@@ -34,7 +34,18 @@ func TestHecEventFail(t *testing.T) {
 func TestCreateEvents(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	events := model.HecEvents{Events: []model.HecEvent{event1, event2}}
-	err := getSplunkClient().HecService.CreateEvents(events)
+	err := getSplunkClient().HecService.CreateEvents([]model.HecEvent{event1, event2})
 	assert.Empty(t, err)
+}
+
+func TestBuildMultiEventsPayload(t *testing.T) {
+	event1 := model.HecEvent{Host: "host1", Event: "test1"}
+	event2 := model.HecEvent{Host: "host2", Event: "test2"}
+	event3WithEmptyFields := model.HecEvent{Host: "", Event: "test3"}
+	payload1, err := getSplunkClient().HecService.buildMultiEventsPayload([]model.HecEvent{event1, event2})
+	assert.Nil(t, err)
+	assert.Equal(t, `{"host":"host1","event":"test1"}{"host":"host2","event":"test2"}`, string(payload1[:]))
+	payload2, err := getSplunkClient().HecService.buildMultiEventsPayload([]model.HecEvent{event1, event3WithEmptyFields})
+	assert.Nil(t, err)
+	assert.Equal(t, `{"host":"host1","event":"test1"}{"event":"test3"}`, string(payload2[:]))
 }
