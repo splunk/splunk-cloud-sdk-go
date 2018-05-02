@@ -32,9 +32,9 @@ func cleanupRules(t *testing.T) {
 }
 
 func TestIntegrationCRUDDatasets(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupDatasets(t)
 
-	cleanupDatasets(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -65,9 +65,9 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 }
 
 func TestIntegrationDatasetsErrors(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupDatasets(t)
 
-	cleanupDatasets(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -85,12 +85,12 @@ func TestIntegrationDatasetsErrors(t *testing.T) {
 }
 
 func TestIntegrationCRUDRules(t *testing.T) {
+	defer cleanupRules(t)
+
 	client := getSplunkClientForPlaygroundTests()
 
-	cleanupRules(t)
-
 	//create rule
-	ruleName := "goSdkTestRule1"
+	ruleName := "goSdkTestrRule1"
 	rule, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Priority: 8})
 	assert.Nil(t, err)
@@ -114,13 +114,13 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	cleanupRules(t)
 }
 
-func TestIntegrationRulesErrors(t *testing.T) {
+func TestIntegrationRulessErrors(t *testing.T) {
+	defer cleanupRules(t)
+
 	client := getSplunkClientForPlaygroundTests()
 
-	cleanupRules(t)
-
 	//create rule
-	ruleName := "goSdkTestRule1"
+	ruleName := "goSdkTestrRule1"
 	_, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Priority: 8})
 	assert.Nil(t, err)
