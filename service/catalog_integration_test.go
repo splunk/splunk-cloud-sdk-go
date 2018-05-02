@@ -32,9 +32,9 @@ func cleanupRules(t *testing.T) {
 }
 
 func TestIntegrationCRUDDatasets(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupDatasets(t)
 
-	cleanupDatasets(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -65,9 +65,9 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 }
 
 func TestIntegrationDatasetsErrors(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupDatasets(t)
 
-	cleanupDatasets(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -85,9 +85,9 @@ func TestIntegrationDatasetsErrors(t *testing.T) {
 }
 
 func TestIntegrationCRUDRules(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupRules(t)
 
-	cleanupRules(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	//create rule
 	ruleName := "goSdkTestrRule1"
@@ -115,9 +115,9 @@ func TestIntegrationCRUDRules(t *testing.T) {
 }
 
 func TestIntegrationRulessErrors(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	defer cleanupRules(t)
 
-	cleanupRules(t)
+	client := getSplunkClientForPlaygroundTests()
 
 	//create rule
 	ruleName := "goSdkTestrRule1"
