@@ -6,6 +6,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"time"
 )
 
 const hecServicePrefix = "hec2"
@@ -59,3 +60,8 @@ func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, e
 	return eventBuffer.Bytes(), nil
 }
 
+func (h *HecService) NewBatchEventsCollector(batchSize int, interval int64) *model.BatchEventCollector {
+	eventsQueue := make(chan model.HecEvent, batchSize)
+	quit := make(chan struct{}, 1)
+	return &model.BatchEventCollector{BatchSize:batchSize, Interval:time.Duration(interval), EventsChan:eventsQueue, QuitChan:quit, HecEventService: h}
+}

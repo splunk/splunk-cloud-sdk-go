@@ -49,3 +49,23 @@ func TestBuildMultiEventsPayload(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, `{"host":"host1","event":"test1"}{"event":"test3"}`, string(payload2[:]))
 }
+
+func TestHecService_NewBatchEventsCollector(t *testing.T) {
+	event1 := model.HecEvent{Host: "host1", Event: "test1"}
+	event2 := model.HecEvent{Host: "host2", Event: "test2"}
+	event3 := model.HecEvent{Host: "host3", Event: "test2"}
+	done := make(chan bool, 1)
+	collector := getSplunkClient().HecService.NewBatchEventsCollector(2, 1000)
+	collector.Start()
+	go blocking(done)
+	collector.AddEvent(event1)
+	collector.AddEvent(event2)
+	collector.AddEvent(event3)
+	<- done
+	collector.Stop()
+}
+
+func blocking(done chan bool) {
+	time.Sleep(time.Duration(5)*time.Second)
+	done <- true
+}
