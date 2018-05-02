@@ -90,7 +90,7 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	cleanupRules(t)
 
 	//create rule
-	ruleName := "goSdkTestrRule1"
+	ruleName := "goSdkTestRule1"
 	rule, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Priority: 8})
 	assert.Nil(t, err)
@@ -114,13 +114,13 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	cleanupRules(t)
 }
 
-func TestIntegrationRulessErrors(t *testing.T) {
+func TestIntegrationRulesErrors(t *testing.T) {
 	client := getSplunkClientForPlaygroundTests()
 
 	cleanupRules(t)
 
 	//create rule
-	ruleName := "goSdkTestrRule1"
+	ruleName := "goSdkTestRule1"
 	_, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Priority: 8})
 	assert.Nil(t, err)

@@ -6,11 +6,15 @@ import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/splunk/ssc-client-go/model"
+	"strings"
 )
 
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
+	testTenantID := "goSdkTestNewTenant"
 	client := getSplunkClientForPlaygroundTests()
+
+	defer client.IdentityService.DeleteTenant(testTenantID)
 
 	//get user profile
 	user, err := client.IdentityService.GetUserProfile()
@@ -23,9 +27,6 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	assert.Equal(t, "en-US", user.Locale)
 
 	//create tenant
-	testTenantID := "goSdkTestNewTenant"
-	client.IdentityService.DeleteTenant(testTenantID)
-
 	err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
 	assert.Nil(t, err)
 
@@ -70,6 +71,32 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	users, err = client.IdentityService.GetTenantUsers(testTenantID)
 	assert.Nil(t, err)
 	assert.Equal(t, 3, len(users))
+
+	//delete tenant
+	err = client.IdentityService.DeleteTenant(testTenantID)
+	assert.Nil(t, err)
+}
+
+// test Erros with auth endpoints
+func TestIntegrationTenantErrors(t *testing.T) {
+	testTenantID := "goSdkTestTenantError"
+	client := getSplunkClientForPlaygroundTests()
+
+	defer client.IdentityService.DeleteTenant(testTenantID)
+
+	//create duplicate tenant should return 409
+	err := client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
+	assert.Nil(t, err)
+
+	err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
+	assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
+
+	//add duplicate tenant user
+	addedUserName := "newUser@splunk.com"
+	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
+	assert.Nil(t, err)
+	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
+	assert.True(t, strings.Contains(err.Error(), "405 Method Not Allowed"))
 
 	//delete tenant
 	err = client.IdentityService.DeleteTenant(testTenantID)
