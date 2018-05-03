@@ -3,10 +3,11 @@
 package service
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/splunk/ssc-client-go/model"
 	"strings"
+	"testing"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 // CRUD tenant and add/delete user to the tenant
@@ -66,7 +67,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	//replace tenant users
 	err = client.IdentityService.ReplaceTenantUsers(testTenantID, []model.User{
 		{ID: "devtest2@splunk.com"},
-		{ID: "devtest3@splunk.com"},})
+		{ID: "devtest3@splunk.com"}})
 
 	users, err = client.IdentityService.GetTenantUsers(testTenantID)
 	assert.Nil(t, err)
