@@ -2,10 +2,10 @@ package model
 
 import (
 	"time"
-	"fmt"
 )
 
-type batchEventService interface {
+// HECEventService defines a new interface to avoid cycle import error
+type HECEventService interface {
 	CreateEvent(event HecEvent) error
 	CreateEvents(events []HecEvent) error
 }
@@ -21,69 +21,73 @@ type HecEvent struct {
 	Fields     map[string]string `json:"fields,omitempty"`
 }
 
-type BatchEventCollector struct {
-	BatchSize       int
-	Interval        time.Duration
-	EventsChan      chan HecEvent
-	QuitChan        chan struct{}
-	HecEventService batchEventService
+// BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
+type BatchEventsSender struct {
+	BatchSize    int
+	Interval     time.Duration
+	EventsChan   chan HecEvent
+	EventsQueue  []HecEvent
+	QuitChan     chan struct{}
+	EventService HECEventService
 }
 
-func (b *BatchEventCollector) Start() {
+// Run sets up ticker and starts a new goroutine
+func (b *BatchEventsSender) Run() {
 	ticker := time.NewTicker(b.Interval * time.Millisecond)
 	go b.loop(ticker)
 }
 
-func (b *BatchEventCollector) loop (ticker *time.Ticker) {
-	defer close(b.EventsChan)
-	eventsQueue := make([]HecEvent, 0, b.BatchSize)
+// loop is a infinity loop which listens to three channels
+// ticker.C: ticker channel to be used for timer
+// QuitChan: shut down signal channel
+// EventsChan: events channel
+// the loop will break only if there's signal in QuitChan
+// otherwise it'll constantly checking conditions for ticker and events
+func (b *BatchEventsSender) loop (ticker *time.Ticker) {
 	for {
 		select {
 		case <- ticker.C:
-			fmt.Println("flush from ticker")
-			b.Flush(eventsQueue)
+			b.Flush()
 		case <- b.QuitChan:
-			fmt.Println("done")
 			ticker.Stop()
-			b.Flush(eventsQueue)
+			close(b.EventsChan)
+			b.Flush()
 			return
-		case event, ok := <- b.EventsChan:
-			if ok {
-				eventsQueue = append(eventsQueue, event)
-				fmt.Println(event.Host, "added")
+		case event := <- b.EventsChan:
+			if len(b.EventsQueue) >= b.BatchSize {
+				b.Flush()
 			}
-			if len(eventsQueue) >= b.BatchSize {
-				b.Flush(eventsQueue)
-				eventsQueue = nil
-			}
+			b.EventsQueue = append(b.EventsQueue, event)
 		}
 	}
 }
 
-func (b *BatchEventCollector) Stop() {
+// Stop sends a signal to QuitChan and shuts down the goroutine that are created in Run()
+func (b *BatchEventsSender) Stop() {
 	b.QuitChan <- struct{}{}
 }
 
-func (b *BatchEventCollector) AddEvent(event HecEvent) {
+// AddEvent pushes a single event into EventsChan
+func (b *BatchEventsSender) AddEvent(event HecEvent) {
 		b.EventsChan <- event
 }
 
-func (b *BatchEventCollector) Flush(events []HecEvent) error {
-	//if len(events) > b.BatchSize {
-	//	for i := 0; i < len(events); i += b.BatchSize {
-	//		end := i + b.BatchSize
-	//		if end > len(events) {
-	//			end = len(events)
-	//		}
-	//		err := b.HecEventService.CreateEvents(events[i:end])
-	//		if err != nil {
-	//			return err
-	//		}
-	//	}
-	//} else {
-	//	return b.HecEventService.CreateEvents(events)
-	//}
-	//return nil
-	fmt.Println("flush")
-	return nil
+// Flush sends off all events currently in EventsQueue and clear EventsQueue afterwards
+// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
+// TODO: Error handling and return results
+func (b *BatchEventsSender) Flush() {
+	if len(b.EventsQueue) > b.BatchSize {
+		for i := 0; i < len(b.EventsQueue); i += b.BatchSize {
+			end := i + b.BatchSize
+			if end > len(b.EventsQueue) {
+				end = len(b.EventsQueue)
+			}
+			b.EventService.CreateEvents(b.EventsQueue[i:end])
+		}
+	} else if len(b.EventsQueue) > 0 {
+		b.EventService.CreateEvents(b.EventsQueue)
+	}
+
+	// This will keep the memory allocated to underlying array, but clear the value in the queue
+	b.EventsQueue = b.EventsQueue[:0]
 }
