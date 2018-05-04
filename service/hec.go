@@ -66,7 +66,8 @@ func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model
 	if batchSize == 0 || interval == 0 {
 		return nil, errors.New("batchSize and interval cannot be 0")
 	}
-	eventsQueue := make(chan model.HecEvent, batchSize)
+	eventsChan := make(chan model.HecEvent, batchSize)
+	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
-	return &model.BatchEventsSender{BatchSize:batchSize, Interval:time.Duration(interval), EventsChan:eventsQueue, QuitChan:quit, EventService: h}, nil
+	return &model.BatchEventsSender{BatchSize:batchSize, Interval:time.Duration(interval), EventsChan:eventsChan, EventsQueue:eventsQueue, QuitChan:quit, EventService: h}, nil
 }

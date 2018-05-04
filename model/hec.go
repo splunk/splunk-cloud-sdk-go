@@ -46,18 +46,17 @@ func (b *BatchEventsSender) Run() {
 func (b *BatchEventsSender) loop (ticker *time.Ticker) {
 	for {
 		select {
+		case <- b.QuitChan:
+			b.Flush()
+			ticker.Stop()
+			return
 		case <- ticker.C:
 			b.Flush()
-		case <- b.QuitChan:
-			ticker.Stop()
-			close(b.EventsChan)
-			b.Flush()
-			return
 		case event := <- b.EventsChan:
+			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) >= b.BatchSize {
 				b.Flush()
 			}
-			b.EventsQueue = append(b.EventsQueue, event)
 		}
 	}
 }
@@ -82,12 +81,16 @@ func (b *BatchEventsSender) Flush() {
 			if end > len(b.EventsQueue) {
 				end = len(b.EventsQueue)
 			}
-			b.EventService.CreateEvents(b.EventsQueue[i:end])
+			go b.EventService.CreateEvents(b.EventsQueue[i:end])
 		}
+		// This will keep the memory allocated to underlying array, but clear the value in the queue
+		b.EventsQueue = b.EventsQueue[:0]
 	} else if len(b.EventsQueue) > 0 {
-		b.EventService.CreateEvents(b.EventsQueue)
+		go b.EventService.CreateEvents(b.EventsQueue)
+		// This will keep the memory allocated to underlying array, but clear the value in the queue
+		b.EventsQueue = b.EventsQueue[:0]
+	} else {
+		return
 	}
 
-	// This will keep the memory allocated to underlying array, but clear the value in the queue
-	b.EventsQueue = b.EventsQueue[:0]
 }
