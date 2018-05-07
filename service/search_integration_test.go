@@ -28,7 +28,7 @@ func TestIntegrationNewSearchJob(t *testing.T) {
 	client := getSplunkClientForPlaygroundTests()
 	assert.NotNil(t, client)
 
-	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=_internal"})
+	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=_internal | head 5"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response.SearchID)
 }
@@ -37,7 +37,7 @@ func TestIntegrationNewSearchJobSync(t *testing.T) {
 	client := getSplunkClientForPlaygroundTests()
 	assert.NotNil(t, client)
 
-	response, err := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=_internal"})
+	response, err := client.SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=_internal | head 5"})
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 	ValidateResponses(response, t)
@@ -47,7 +47,7 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	client := getSplunkClientForPlaygroundTests()
 	assert.NotNil(t, client)
 
-	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=_internal"})
+	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=_internal | head 5"})
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 
