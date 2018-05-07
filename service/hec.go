@@ -8,6 +8,7 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 	"time"
 	"errors"
+	"fmt"
 )
 
 const hecServicePrefix = "hec2"
@@ -33,6 +34,7 @@ func (h *HecService) CreateEvents(events []model.HecEvent) error {
 	}
 	hecEvents, err := h.buildMultiEventsPayload(events)
 	response, err := h.client.Post(url, hecEvents)
+	fmt.Println(string(hecEvents))
 	return util.ParseError(response, err)
 }
 
@@ -69,5 +71,6 @@ func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
-	return &model.BatchEventsSender{BatchSize:batchSize, Interval:time.Duration(interval), EventsChan:eventsChan, EventsQueue:eventsQueue, QuitChan:quit, EventService: h}, nil
+	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
+	return &model.BatchEventsSender{BatchSize:batchSize, EventsChan:eventsChan, EventsQueue:eventsQueue, QuitChan:quit, EventService: h, HecTicker: ticker}, nil
 }
