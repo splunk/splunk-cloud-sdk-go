@@ -47,15 +47,21 @@ func (b *BatchEventsSender) loop (ticker *time.Ticker) {
 	for {
 		select {
 		case <- b.QuitChan:
-			b.Flush()
+			// this channel is used to make sure the last flush is finished before the loop breaks
+			done := make(chan struct{}, 1)
+			go b.Flush(b.EventsQueue, done)
 			ticker.Stop()
+			b.EventsQueue = b.EventsQueue[:0]
+			<- done
 			return
 		case <- ticker.C:
-			b.Flush()
+			go b.Flush(b.EventsQueue, nil)
+			b.EventsQueue = b.EventsQueue[:0]
 		case event := <- b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) >= b.BatchSize {
-				b.Flush()
+				go b.Flush(b.EventsQueue, nil)
+				b.EventsQueue = b.EventsQueue[:0]
 			}
 		}
 	}
@@ -68,29 +74,37 @@ func (b *BatchEventsSender) Stop() {
 
 // AddEvent pushes a single event into EventsChan
 func (b *BatchEventsSender) AddEvent(event HecEvent) {
-		b.EventsChan <- event
+	b.EventsChan <- event
 }
 
 // Flush sends off all events currently in EventsQueue and clear EventsQueue afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
-func (b *BatchEventsSender) Flush() {
-	if len(b.EventsQueue) > b.BatchSize {
-		for i := 0; i < len(b.EventsQueue); i += b.BatchSize {
+func (b *BatchEventsSender) Flush(events []HecEvent, doneChan chan struct{}) {
+	if len(events) > b.BatchSize {
+		for i := 0; i < len(events); i += b.BatchSize {
 			end := i + b.BatchSize
-			if end > len(b.EventsQueue) {
-				end = len(b.EventsQueue)
+			if end > len(events) {
+				end = len(events)
 			}
-			go b.EventService.CreateEvents(b.EventsQueue[i:end])
+			b.EventService.CreateEvents(events[i:end])
 		}
-		// This will keep the memory allocated to underlying array, but clear the value in the queue
-		b.EventsQueue = b.EventsQueue[:0]
-	} else if len(b.EventsQueue) > 0 {
-		go b.EventService.CreateEvents(b.EventsQueue)
-		// This will keep the memory allocated to underlying array, but clear the value in the queue
-		b.EventsQueue = b.EventsQueue[:0]
-	} else {
+		if doneChan != nil {
+			doneChan <- struct {}{}
+		}
 		return
 	}
+	if len(events) > 0 {
+		b.EventService.CreateEvents(events)
+		if doneChan != nil {
+			doneChan <- struct {}{}
+		}
+		return
+	}
+	if doneChan != nil {
+		doneChan <- struct {}{}
+	}
+	return
+
 
 }

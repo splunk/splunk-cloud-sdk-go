@@ -113,8 +113,8 @@ func TestHecServiceNewBatchEventsCollectorQuitFlush(t *testing.T) {
 	go blocking(done, 3)
 	collector.AddEvent(event1)
 	collector.Stop()
-	<- done
 	assert.Equal(t, 0, len(collector.EventsQueue))
+	<- done
 }
 
 // This function is purely for blocking purpose so that BatchEventsSender can run for a little while
