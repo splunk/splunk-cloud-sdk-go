@@ -35,10 +35,6 @@ encrypt:
 		jet encrypt ci/shared/secret.env ci/shared/env.encrypted && \
 		printf "Encrypted ci/shared/secret.env to ci/shared/env.encrypted\n"; \
 	fi;
-	@if [ -f ci/integration/secret.env ]; then \
-		jet encrypt ci/integration/secret.env ci/integration/env.encrypted && \
-		printf "Encrypted ci/integration/secret.env to ci/integration/env.encrypted\n"; \
-	fi;
 
 decrypt:
 	@if [ -f ci/env.encrypted ]; then \
@@ -48,10 +44,6 @@ decrypt:
 	@if [ -f ci/shared/env.encrypted ]; then \
 		jet decrypt ci/shared/env.encrypted ci/shared/secret.env && \
 		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
-	fi;
-	@if [ -f ci/integration/env.encrypted ]; then \
-		jet decrypt ci/integration/env.encrypted ci/integration/secret.env && \
-		printf "Decrypted ci/integration/env.encrypted to ci/integration/env.encrypted\n"; \
 	fi;
 
 install_local:
