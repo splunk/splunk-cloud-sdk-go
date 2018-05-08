@@ -9,6 +9,8 @@ const (
 	TestHost = "https://localhost:8089"
 	// TestStubbyHost is the stubby host
 	TestStubbyHost = "ssc-sdk-shared-stubby:8882"
+	// TestSubbyLocalHost is the stubby localhost
+	TestSubbyLocalHost = "localhost:8882"
 	// TestStubbySchme is the stubby scheme
 	TestStubbySchme = "http"
 	// TestTimeOut is the client timeout used in tests
