@@ -80,7 +80,7 @@ func TestHecServiceNewBatchEventsCollectorTickerFlush(t *testing.T) {
 	collector.AddEvent(event1)
 	collector.AddEvent(event2)
 	collector.AddEvent(event3)
-	<- done
+	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
@@ -104,7 +104,6 @@ func TestHecServiceNewBatchEventsCollectorQuitFlush(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	collector, _ := getSplunkClient(true).HecService.NewBatchEventsSender(5, 10000)
 	collector.Run()
-	//time.Sleep(time.Duration(2)*time.Second)
 	collector.AddEvent(event1)
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -112,6 +111,6 @@ func TestHecServiceNewBatchEventsCollectorQuitFlush(t *testing.T) {
 
 // This function is purely for blocking purpose so that BatchEventsSender can run for a little while
 func blocking(done chan bool, seconds int64) {
-	time.Sleep(time.Duration(seconds)*time.Second)
+	time.Sleep(time.Duration(seconds) * time.Second)
 	done <- true
 }

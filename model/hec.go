@@ -1,8 +1,8 @@
 package model
 
 import (
-	"sync"
 	"fmt"
+	"sync"
 )
 
 // HECEventService defines a new interface to avoid cycle import error
@@ -30,7 +30,7 @@ type BatchEventsSender struct {
 	QuitChan     chan struct{}
 	EventService HECEventService
 	HecTicker    *Ticker
-	wg 			 sync.WaitGroup
+	wg           sync.WaitGroup
 }
 
 // Run sets up ticker and starts a new goroutine
@@ -44,23 +44,23 @@ func (b *BatchEventsSender) Run() {
 // EventsChan: events channel
 // the loop will break only if there's signal in QuitChan
 // otherwise it'll constantly checking conditions for ticker and events
-func (b *BatchEventsSender) loop () {
+func (b *BatchEventsSender) loop() {
 	for {
 		select {
-		case <- b.QuitChan:
+		case <-b.QuitChan:
 			fmt.Println("stop")
 			events := append([]HecEvent(nil), b.EventsQueue...)
 			fmt.Println("queue size from stop:", len(events))
 			b.wg.Add(1)
 			go b.Flush(events)
 			return
-		case <- b.HecTicker.ticker.C:
+		case <-b.HecTicker.ticker.C:
 			fmt.Println("ticker ticked")
 			events := append([]HecEvent(nil), b.EventsQueue...)
 			b.wg.Add(1)
 			go b.Flush(events)
 			b.ResetQueue()
-		case event := <- b.EventsChan:
+		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			fmt.Println("queue size from eventschan:", len(b.EventsQueue))
 			if len(b.EventsQueue) == b.BatchSize {
