@@ -3,10 +3,10 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-
-	"errors"
+	"sync"
 	"time"
 
+	"errors"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -70,5 +70,7 @@ func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
-	return &model.BatchEventsSender{BatchSize: batchSize, Interval: time.Duration(interval), EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h}, nil
+	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
+	var wg sync.WaitGroup
+	return &model.BatchEventsSender{BatchSize: batchSize, EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h, HecTicker: ticker, WaitGroup: wg}, nil
 }

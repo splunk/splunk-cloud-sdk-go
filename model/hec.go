@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -30,11 +29,12 @@ type BatchEventsSender struct {
 	QuitChan     chan struct{}
 	EventService HECEventService
 	HecTicker    *Ticker
-	wg           sync.WaitGroup
+	WaitGroup    sync.WaitGroup
 }
 
 // Run sets up ticker and starts a new goroutine
 func (b *BatchEventsSender) Run() {
+	b.HecTicker.Stop()
 	go b.loop()
 }
 
@@ -48,24 +48,20 @@ func (b *BatchEventsSender) loop() {
 	for {
 		select {
 		case <-b.QuitChan:
-			fmt.Println("stop")
 			events := append([]HecEvent(nil), b.EventsQueue...)
-			fmt.Println("queue size from stop:", len(events))
-			b.wg.Add(1)
+			b.WaitGroup.Add(1)
 			go b.Flush(events)
 			return
 		case <-b.HecTicker.ticker.C:
-			fmt.Println("ticker ticked")
 			events := append([]HecEvent(nil), b.EventsQueue...)
-			b.wg.Add(1)
+			b.WaitGroup.Add(1)
 			go b.Flush(events)
 			b.ResetQueue()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
-			fmt.Println("queue size from eventschan:", len(b.EventsQueue))
 			if len(b.EventsQueue) == b.BatchSize {
 				events := append([]HecEvent(nil), b.EventsQueue...)
-				b.wg.Add(1)
+				b.WaitGroup.Add(1)
 				go b.Flush(events)
 				b.ResetQueue()
 			}
@@ -76,13 +72,18 @@ func (b *BatchEventsSender) loop() {
 // Stop sends a signal to QuitChan and shuts down the goroutine that are created in Run()
 func (b *BatchEventsSender) Stop() {
 	b.QuitChan <- struct{}{}
-	b.wg.Wait()
+	b.WaitGroup.Wait()
 	b.HecTicker.Stop()
 	b.ResetQueue()
 }
 
 // AddEvent pushes a single event into EventsChan
 func (b *BatchEventsSender) AddEvent(event HecEvent) {
+	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 {
+		if b.HecTicker.IsRunning() == false {
+			b.HecTicker.Start()
+		}
+	}
 	b.EventsChan <- event
 }
 
@@ -90,11 +91,9 @@ func (b *BatchEventsSender) AddEvent(event HecEvent) {
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
 func (b *BatchEventsSender) Flush(events []HecEvent) {
-	defer b.wg.Done()
-	fmt.Println("events size", len(events))
+	defer b.WaitGroup.Done()
 	if len(events) > 0 {
 		b.EventService.CreateEvents(events)
-		fmt.Println("flushed")
 	}
 	// Reset ticker
 	b.HecTicker.Reset()

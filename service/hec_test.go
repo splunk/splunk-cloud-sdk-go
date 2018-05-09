@@ -34,7 +34,7 @@ func TestHecEventFail(t *testing.T) {
 func TestCreateEvents(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	err := getSplunkClient().HecService.CreateEvents([]model.HecEvent{event1, event2})
+	err := getSplunkClient(true).HecService.CreateEvents([]model.HecEvent{event1, event2})
 	assert.Empty(t, err)
 }
 
@@ -61,8 +61,6 @@ func TestHecServiceNewBatchEventsSenderSuccess(t *testing.T) {
 	assert.Equal(t, 0, len(collector.QuitChan))
 	assert.Equal(t, 1, cap(collector.QuitChan))
 	assert.Equal(t, 5, collector.BatchSize)
-	assert.Equal(t, time.Duration(1000), collector.Interval)
-
 }
 
 func TestHecServiceNewBatchEventsCollectorFail(t *testing.T) {
@@ -92,29 +90,27 @@ func TestHecServiceNewBatchEventsCollectorQueueFlush(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
 	event3 := model.HecEvent{Host: "host3", Event: "test3"}
-	done := make(chan bool, 1)
 	collector, _ := getSplunkClient().HecService.NewBatchEventsSender(2, 100000)
 	collector.Run()
-	go blocking(done, 2)
 	collector.AddEvent(event1)
 	collector.AddEvent(event2)
 	collector.AddEvent(event3)
 	collector.Stop()
-	<-done
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
 
 // Should flush when quit signal is sent
 func TestHecServiceNewBatchEventsCollectorQuitFlush(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	done := make(chan bool, 1)
 	collector, _ := getSplunkClient().HecService.NewBatchEventsSender(5, 10000)
+	done := make(chan bool, 1)
 	collector.Run()
-	go blocking(done, 3)
+	go blocking(done, 1)
 	collector.AddEvent(event1)
+	collector.AddEvent(event1)
+	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
-	<-done
 }
 
 // This function is purely for blocking purpose so that BatchEventsSender can run for a little while
