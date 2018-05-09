@@ -9,7 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func getSplunkClient() *Client {
+func getSplunkClient(local ...bool) *Client {
+	if len(local) > 0 {
+		return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestSubbyLocalHost, time.Second*5)
+	}
 	return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5)
 }
 
