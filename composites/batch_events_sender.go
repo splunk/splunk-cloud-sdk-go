@@ -8,12 +8,6 @@ import (
 	"github.com/splunk/ssc-client-go/service"
 )
 
-// HECEventService defines a new interface to avoid cycle import error
-type HECEventService interface {
-	CreateEvent(event model.HecEvent) error
-	CreateEvents(events []model.HecEvent) error
-}
-
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
 	BatchSize   int
@@ -21,7 +15,7 @@ type BatchEventsSender struct {
 	EventsChan  chan model.HecEvent
 	EventsQueue []model.HecEvent
 	QuitChan    chan struct{}
-	HecService  service.HecService
+	HecService  *service.HecService
 }
 
 func (b *BatchEventsSender) Run() {
@@ -66,7 +60,7 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) {
 }
 
 // TODO: Error handling and return results
-func (b *BatchEventsSender) Flush(hecService service.HecService, events []model.HecEvent, doneChan chan struct{}) {
+func (b *BatchEventsSender) Flush(hecService *service.HecService, events []model.HecEvent, doneChan chan struct{}) {
 	if len(events) > b.BatchSize {
 		for i := 0; i < len(events); i += b.BatchSize {
 			end := i + b.BatchSize
@@ -94,24 +88,27 @@ func (b *BatchEventsSender) Flush(hecService service.HecService, events []model.
 
 }
 
-func (b *BatchEventsSender) NewBatchEventsSender(hecService service.HecService, batchSize int, interval int64) (*BatchEventsSender, error) {
-	if batchSize == 0 || interval == 0 {
-		return nil, errors.New("batchSize and interval cannot be 0")
+func NewBatchEventsSender(hecService *service.HecService, batchSize int, interval int64) (*BatchEventsSender, error) {
+	// batchSize will block interval error
+	if batchSize == 0 {
+		return nil, errors.New("batchSize cannot be 0")
 	}
+	if interval == 0 {
+		return nil, errors.New("interval cannot be 0")
+	}
+
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
 
-	batchEventsSender := new(BatchEventsSender)
-	batchEventsSender.BatchSize = batchSize
-	batchEventsSender.Interval = time.Duration(interval)
-	batchEventsSender.EventsChan = eventsChan
-	batchEventsSender.EventsQueue = eventsQueue
-	batchEventsSender.QuitChan = quit
-	// TODO: Figure out a way to remove this?
-	batchEventsSender.HecService = hecService
+	batchEventsSender := &BatchEventsSender{
+		BatchSize:   batchSize,
+		EventsChan:  eventsChan,
+		EventsQueue: eventsQueue,
+		HecService:  hecService,
+		Interval:    time.Duration(interval),
+		QuitChan:    quit,
+	}
 
 	return batchEventsSender, nil
-
-	//return &BatchEventsSender{BatchSize: batchSize, Interval: time.Duration(interval), EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h}, nil
 }

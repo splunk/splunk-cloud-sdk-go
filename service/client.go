@@ -180,5 +180,6 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
+
 	return c
 }
