@@ -3,8 +3,8 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/splunk/ssc-client-go/model"
@@ -18,7 +18,7 @@ type HecService service
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "events")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
@@ -28,19 +28,18 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 
 // CreateEvents post multiple events in one payload
 func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "events")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
 	hecEvents, err := h.buildMultiEventsPayload(events)
 	response, err := h.client.Post(url, hecEvents)
-	fmt.Println(string(hecEvents))
 	return util.ParseError(response, err)
 }
 
 // CreateRawEvent implements HEC2 raw endpoint
 func (h *HecService) CreateRawEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "raw")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "raw")
 	if err != nil {
 		return err
 	}
@@ -71,6 +70,5 @@ func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
-	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
-	return &model.BatchEventsSender{BatchSize: batchSize, EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h, HecTicker: ticker}, nil
+	return &model.BatchEventsSender{BatchSize: batchSize, Interval: time.Duration(interval), EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h}, nil
 }
