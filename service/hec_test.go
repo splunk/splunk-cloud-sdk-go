@@ -12,7 +12,7 @@ import (
 func TestCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
 	err := getSplunkClient().HecService.CreateEvent(
-		model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
+		model.HecEvent{Host: getSplunkClient().URL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
 	assert.Empty(t, err)
 }
 
