@@ -12,7 +12,7 @@ import (
 func TestCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
 	err := getSplunkClient().HecService.CreateEvent(
-		model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
+		model.HecEvent{Host: getSplunkClient().URL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
 	assert.Empty(t, err)
 }
 
@@ -82,7 +82,7 @@ func TestHecServiceNewBatchEventsCollectorTickerFlush(t *testing.T) {
 	collector.AddEvent(event1)
 	collector.AddEvent(event2)
 	collector.AddEvent(event3)
-	<- done
+	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
@@ -100,7 +100,7 @@ func TestHecServiceNewBatchEventsCollectorQueueFlush(t *testing.T) {
 	collector.AddEvent(event2)
 	collector.AddEvent(event3)
 	collector.Stop()
-	<- done
+	<-done
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
 
@@ -114,11 +114,11 @@ func TestHecServiceNewBatchEventsCollectorQuitFlush(t *testing.T) {
 	collector.AddEvent(event1)
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
-	<- done
+	<-done
 }
 
 // This function is purely for blocking purpose so that BatchEventsSender can run for a little while
 func blocking(done chan bool, seconds int64) {
-	time.Sleep(time.Duration(seconds)*time.Second)
+	time.Sleep(time.Duration(seconds) * time.Second)
 	done <- true
 }
