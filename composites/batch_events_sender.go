@@ -47,10 +47,6 @@ func (b *BatchEventsSender) loop(ticker *time.Ticker) {
 	}
 }
 
-func (b *BatchEventsSender) Start() {
-	//
-}
-
 func (b *BatchEventsSender) Stop() {
 	b.QuitChan <- struct{}{}
 }
@@ -89,7 +85,7 @@ func (b *BatchEventsSender) Flush(hecService *service.HecService, events []model
 }
 
 func NewBatchEventsSender(hecService *service.HecService, batchSize int, interval int64) (*BatchEventsSender, error) {
-	// batchSize will block interval error
+	// Rather than return a super general error for both it will block on batchSize first then interval
 	if batchSize == 0 {
 		return nil, errors.New("batchSize cannot be 0")
 	}
