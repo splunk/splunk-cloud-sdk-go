@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 
+	"errors"
+	"time"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -17,7 +20,7 @@ type HecService struct {
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "events")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
@@ -27,7 +30,7 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 
 // CreateEvents post multiple events in one payload
 func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "events")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
