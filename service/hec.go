@@ -72,5 +72,5 @@ func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model
 	quit := make(chan struct{}, 1)
 	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
-	return &model.BatchEventsSender{BatchSize: batchSize, EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h, HecTicker: ticker, WaitGroup: wg}, nil
+	return &model.BatchEventsSender{BatchSize: batchSize, EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h, HecTicker: ticker, WaitGroup: &wg}, nil
 }
