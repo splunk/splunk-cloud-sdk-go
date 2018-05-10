@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"errors"
-	"time"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )

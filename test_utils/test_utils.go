@@ -1,4 +1,4 @@
-package test_utils
+package testutils
 
 import (
 	"time"
@@ -21,6 +21,7 @@ const (
 	TestTenantID = "TEST_TENANT"
 )
 
+// GetSplunkClient - For configuring a Splunk client to use for tests
 func GetSplunkClient(local ...bool) *service.Client {
 	if len(local) > 0 {
 		return service.NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestSubbyLocalHost, TestTimeOut)
