@@ -81,11 +81,10 @@ func (b *BatchEventsSender) Flush(hecService *service.HecService, events []model
 		doneChan <- struct{}{}
 	}
 	return
-
 }
 
 func NewBatchEventsSender(hecService *service.HecService, batchSize int, interval int64) (*BatchEventsSender, error) {
-	// Rather than return a super general error for both it will block on batchSize first then interval
+	// Rather than return a super general error for both it will block on batchSize first
 	if batchSize == 0 {
 		return nil, errors.New("batchSize cannot be 0")
 	}
