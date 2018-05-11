@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"errors"
-	"time"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -14,7 +11,9 @@ import (
 const hecServicePrefix = "hec2"
 
 // HecService talks to the SSC hec service
-type HecService service
+type HecService struct {
+	client *Client
+}
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {
@@ -60,15 +59,4 @@ func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, e
 		eventBuffer.Write(jsonBytes)
 	}
 	return eventBuffer.Bytes(), nil
-}
-
-// NewBatchEventsSender creates a new batch events sender
-func (h *HecService) NewBatchEventsSender(batchSize int, interval int64) (*model.BatchEventsSender, error) {
-	if batchSize == 0 || interval == 0 {
-		return nil, errors.New("batchSize and interval cannot be 0")
-	}
-	eventsChan := make(chan model.HecEvent, batchSize)
-	eventsQueue := make([]model.HecEvent, 0, batchSize)
-	quit := make(chan struct{}, 1)
-	return &model.BatchEventsSender{BatchSize: batchSize, Interval: time.Duration(interval), EventsChan: eventsChan, EventsQueue: eventsQueue, QuitChan: quit, EventService: h}, nil
 }
