@@ -23,9 +23,9 @@
     steps:
       - name: integration tests - not gated
         service: ssc-client-go-against-playground
-        exclude: master
+        exclude: ^(master|develop)$
         command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
       - name: integration tests - gated
         service: ssc-client-go-against-playground
-        tag: master
+        tag: ^(master|develop)$
         command: bash -c "./ci/integration/runtests.sh"
