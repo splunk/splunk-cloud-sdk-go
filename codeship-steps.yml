@@ -28,4 +28,4 @@
       - name: integration tests - gated
         service: ssc-client-go-against-playground
         tag: ^(master|develop)$
-        command: bash -c "./ci/integration/runtests.sh"
+        command: bash -c ""allow_failures=0 ./ci/integration/runtests.sh"
