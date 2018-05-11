@@ -43,7 +43,7 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 // CreateDataset creates a new Dataset
 // TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
 func (c *CatalogService) CreateDataset(dataset model.Dataset) (*model.Dataset, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", "")
 	if err != nil {
 		return nil, err
 	}
