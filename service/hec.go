@@ -38,7 +38,7 @@ func (h *HecService) CreateEvents(events []model.HecEvent) error {
 
 // CreateRawEvent implements HEC2 raw endpoint
 func (h *HecService) CreateRawEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "raw")
+	url, err := h.client.BuildURL(hecServicePrefix, "v1", "raw")
 	if err != nil {
 		return err
 	}
