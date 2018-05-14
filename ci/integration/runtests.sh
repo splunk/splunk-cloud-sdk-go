@@ -1,6 +1,16 @@
 #!/bin/bash
 
-source ./ci/integration/okta.sh
+# source ./ci/integration/okta.sh
+
+CONFIG_FILE="./okta/.token"
+if [ -f $CONFIG_FILE ]; then
+    echo "Token found in $CONFIG_FILE"
+    BEARER_TOKEN=$(cat $CONFIG_FILE)
+else
+    echo "Token was not set to $CONFIG_FILE"
+    exit 1
+fi
+
 cd service # TODO: this shouldn't be necessary...
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
