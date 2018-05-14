@@ -16,15 +16,17 @@ var hostID = os.Getenv("SSC_HOST")
 var token = os.Getenv("BEARER_TOKEN")
 var tenantID = os.Getenv("TENANT_ID")
 
+const DefaultSearchQuery = "search index=_internal | head 5"
+
 var (
-	PostJobsRequest                        = &model.PostJobsRequest{Query: "search index=_internal | head 5"}
+	PostJobsRequest                        = &model.PostJobsRequest{Query: DefaultSearchQuery}
 	PostJobsRequestBadRequest              = &model.PostJobsRequest{}
 	PostJobsRequestBadQuery                = &model.PostJobsRequest{Query: "index=_internal | head 5"}
-	PostJobsRequestTimeout                 = &model.PostJobsRequest{Query: "search index=_internal | head 5", Timeout: 5}
-	PostJobsRequestTTL                     = &model.PostJobsRequest{Query: "search index=_internal | head 5", TTL: 5}
-	PostJobsRequestLimit                   = &model.PostJobsRequest{Query: "search index=_internal | head 5", Limit: 10}
-	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Query: "search index=_internal | head 5", Limit: 0}
-	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Query: "search index=_internal | head 5", Timeout: 5, TTL: 10, Limit: 10}
+	PostJobsRequestTimeout                 = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5}
+	PostJobsRequestTTL                     = &model.PostJobsRequest{Query: DefaultSearchQuery, TTL: 5}
+	PostJobsRequestLimit                   = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 10}
+	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 0}
+	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5, TTL: 10, Limit: 10}
 )
 
 func getSplunkClientForPlaygroundTests() *Client {
