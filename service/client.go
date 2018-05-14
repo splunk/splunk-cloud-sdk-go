@@ -13,8 +13,10 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"sync"
 	"time"
 
+	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
 
@@ -181,4 +183,33 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
 	return c
+}
+
+// NewBatchEventsSender used to initialize dependencies and set values
+func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEventsSender, error) {
+	// Rather than return a super general error for both it will block on batchSize first
+	if batchSize == 0 {
+		return nil, errors.New("batchSize cannot be 0")
+	}
+	if interval == 0 {
+		return nil, errors.New("interval cannot be 0")
+	}
+
+	eventsChan := make(chan model.HecEvent, batchSize)
+	eventsQueue := make([]model.HecEvent, 0, batchSize)
+	quit := make(chan struct{}, 1)
+	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
+	var wg sync.WaitGroup
+
+	batchEventsSender := &BatchEventsSender{
+		BatchSize:    batchSize,
+		EventsChan:   eventsChan,
+		EventsQueue:  eventsQueue,
+		EventService: c.HecService,
+		QuitChan:     quit,
+		HecTicker:    ticker,
+		WaitGroup:    &wg,
+	}
+
+	return batchEventsSender, nil
 }

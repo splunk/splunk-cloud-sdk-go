@@ -16,7 +16,7 @@ func main() {
 	var url = "https://next.splunknovadev-playground.com:443"
 	finish := make(chan bool)
 	client := service.NewClient(tenantID, token, url, time.Duration(10)*time.Second)
-	batchSender, _ := client.HecService.NewBatchEventsSender(3, 5000)
+	batchSender, _ := client.NewBatchEventsSender(3, 5000)
 	batchSender.Run()
 	server8001 := http.NewServeMux()
 	server8001.HandleFunc("/foo", func(writer http.ResponseWriter, request *http.Request) {
@@ -29,7 +29,7 @@ func main() {
 	batchSender.Stop()
 }
 
-func fooHandler(w http.ResponseWriter, r *http.Request, bs *model.BatchEventsSender) {
+func fooHandler(w http.ResponseWriter, r *http.Request, bs *service.BatchEventsSender) {
 	w.Write([]byte("Listening on 8001: foo "))
 	bodyBytes, _ := ioutil.ReadAll(r.Body)
 	bodyString := string(bodyBytes)

@@ -1,17 +1,16 @@
-package composites
+package service
 
 import (
 	"testing"
 	"time"
 
 	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewBatchEventsSenderState(t *testing.T) {
-	var client = testutils.GetSplunkClient()
-	collector, err := NewBatchEventsSender(client.HecService, 5, 1000)
+	var client = getSplunkClient()
+	collector, err := client.NewBatchEventsSender(5, 1000)
 	assert.Nil(t, err)
 
 	// Initial queue should
@@ -22,37 +21,36 @@ func TestNewBatchEventsSenderState(t *testing.T) {
 	assert.Equal(t, 0, len(collector.QuitChan))
 	assert.Equal(t, 1, cap(collector.QuitChan))
 	assert.Equal(t, 5, collector.BatchSize)
-	assert.Equal(t, time.Duration(1000), collector.Interval)
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
-	var client = testutils.GetSplunkClient()
-	_, err := NewBatchEventsSender(client.HecService, 0, 0)
+	var client = getSplunkClient()
+	_, err := client.NewBatchEventsSender(0, 0)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
-	var client = testutils.GetSplunkClient()
-	_, err := NewBatchEventsSender(client.HecService, 0, 1000)
+	var client = getSplunkClient()
+	_, err := client.NewBatchEventsSender(0, 1000)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
-	var client = testutils.GetSplunkClient()
-	_, err := NewBatchEventsSender(client.HecService, 5, 0)
+	var client = getSplunkClient()
+	_, err := client.NewBatchEventsSender(5, 0)
 	assert.EqualError(t, err, "interval cannot be 0")
 }
 
 // Should flush when ticker ticked and queue is not full
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
-	var client = testutils.GetSplunkClient()
+	var client = getSplunkClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
 	event3 := model.HecEvent{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := NewBatchEventsSender(client.HecService, 5, 1000)
+	collector, _ := client.NewBatchEventsSender(5, 1000)
 
 	collector.Run()
 	go blocking(done, 2)
@@ -66,14 +64,14 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 
 // Should flush when queue is full and ticker has not ticked
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
-	var client = testutils.GetSplunkClient()
+	var client = getSplunkClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
 	event3 := model.HecEvent{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := NewBatchEventsSender(client.HecService, 5, 1000)
+	collector, _ := client.NewBatchEventsSender(5, 1000)
 	collector.Run()
 	go blocking(done, 2)
 	collector.AddEvent(event1)
@@ -86,11 +84,11 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 
 //Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
-	var client = testutils.GetSplunkClient()
+	var client = getSplunkClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
-	collector, _ := NewBatchEventsSender(client.HecService, 5, 1000)
+	collector, _ := client.NewBatchEventsSender(5, 1000)
 	collector.Run()
 	go blocking(done, 3)
 	collector.AddEvent(event1)
