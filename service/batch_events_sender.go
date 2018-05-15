@@ -71,11 +71,9 @@ func (b *BatchEventsSender) Stop() {
 
 // AddEvent pushes a single event into EventsChan
 func (b *BatchEventsSender) AddEvent(event model.HecEvent) {
-	// Intend to only start ticker when first event is received
-	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 {
-		if b.HecTicker.IsRunning() == false {
-			b.HecTicker.Start()
-		}
+	// Intend to only start ticker when first event is received.
+	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.HecTicker.IsRunning() == false {
+		b.HecTicker.Start()
 	}
 	b.EventsChan <- event
 }
