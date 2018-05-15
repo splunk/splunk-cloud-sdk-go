@@ -38,8 +38,8 @@ func (t *Ticker) GetChan() <-chan time.Time {
 	return t.ticker.C
 }
 
-// CreateTicker spits out a pointer to Ticker model. It sets ticker to stop state by default
-func CreateTicker(duration time.Duration) *Ticker {
+// NewTicker spits out a pointer to Ticker model. It sets ticker to stop state by default
+func NewTicker(duration time.Duration) *Ticker {
 	newTicker := time.NewTicker(duration)
 	newTicker.Stop()
 	return &Ticker{duration: duration, ticker: newTicker, running: false}

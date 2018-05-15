@@ -11,14 +11,14 @@ import (
 const duration = time.Duration(100) * time.Millisecond
 
 func TestCreateTicker(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	assert.Equal(t, duration, ticker.duration)
 	assert.NotNil(t, ticker.ticker)
 	assert.False(t, ticker.running)
 }
 
 func TestTickerReset(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	ticker.Start()
 	tickerStatusBefore := ticker.running
 	time.Sleep(duration)
@@ -30,7 +30,7 @@ func TestTickerReset(t *testing.T) {
 }
 
 func TestTickerStop(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	ticker.Start()
 	time.Sleep(duration)
 	assert.Equal(t, 1, len(ticker.GetChan()))
@@ -43,18 +43,18 @@ func TestTickerStop(t *testing.T) {
 }
 
 func TestTickerStart(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	assert.False(t, ticker.running)
 	ticker.Start()
 	assert.True(t, ticker.running)
 }
 
 func TestIsRunning(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	assert.False(t, ticker.IsRunning())
 }
 
 func TestTickerGetChan(t *testing.T) {
-	ticker := CreateTicker(duration)
+	ticker := NewTicker(duration)
 	assert.Equal(t, reflect.Kind(reflect.Chan), reflect.TypeOf(ticker.GetChan()).Kind())
 }

@@ -198,7 +198,7 @@ func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEven
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
-	ticker := model.CreateTicker(time.Duration(interval) * time.Millisecond)
+	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
 
 	batchEventsSender := &BatchEventsSender{
