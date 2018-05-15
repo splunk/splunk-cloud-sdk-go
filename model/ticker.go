@@ -8,7 +8,7 @@ import (
 type Ticker struct {
 	duration time.Duration
 	ticker   *time.Ticker
-	running  bool ``
+	running  bool
 }
 
 // Reset resets ticker
