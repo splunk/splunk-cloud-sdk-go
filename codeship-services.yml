@@ -23,7 +23,9 @@ ssc-client-go-against-playground:
     image: splunk/ssc-client-go-against-playground
     dockerfile: ci/Dockerfile
   encrypted_env_file: ci/env.encrypted
-  volumes_from:
+  volumes:
+    - ./okta:/okta
+  depends_on:
     - ssc-sdk-shared-token-fetcher
 
 ssc-sdk-shared-stubby:
