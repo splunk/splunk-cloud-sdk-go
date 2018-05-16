@@ -54,6 +54,13 @@ type service struct {
 // NewRequest creates a new HTTP Request and set proper header
 func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
+	// 1. Check for 401
+	// 2. Attempt to get new token from refresh via Okta
+	//   a. 400 from Okta - return nil, err
+	//   b. 200 from Okta with new token
+	// 3. Retry request
+	//   a. 401 (again) - return nil, err
+	//   b. 200 - all good
 	if err != nil {
 		return nil, err
 	}
