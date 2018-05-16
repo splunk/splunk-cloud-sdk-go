@@ -10,6 +10,8 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"fmt"
+	"strconv"
 )
 
 var hostID = os.Getenv("SSC_HOST")
@@ -320,7 +322,13 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	validateGetResults(client, response, t)
+
+	time.Sleep(10000 * time.Millisecond)
+
+	resp, err := client.SearchService.GetResults(response.SearchID)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsBadSearchID
@@ -351,8 +359,10 @@ func getSplunkClientForPlaygroundTests() *Client {
 
 // retry
 func retry(attempts int, sleep time.Duration, callback func() (interface{}, error)) error {
-	for i:=attempts; i > attempts; i-- {
-		_, err := callback()
+	var err error
+	for i:=1; i <= attempts; i++ {
+		fmt.Println("Retry Attempts: " + strconv.Itoa(i))
+		_, err = callback()
 		if err != nil {
 			time.Sleep(sleep)
 		} else {
@@ -360,18 +370,22 @@ func retry(attempts int, sleep time.Duration, callback func() (interface{}, erro
 			return nil
 		}
 	}
-	return nil
+	return err
 }
 
 // validateGetResults tests the GetResults calls, tries 3x before giving up
 func validateGetResults(client *Client, response *model.PostJobResponse, t *testing.T) {
-	retry(3, 3000 * time.Millisecond, func() (interface{}, error) {
-		resp, err := client.SearchService.GetResults(response.SearchID)
-		assert.Nil(t, err)
-		assert.NotNil(t, resp)
-		validateResponses(resp, t)
+	var resp *model.SearchEvents
+	var err error
+
+	retryError := retry(3, 3000 * time.Millisecond, func() (interface{}, error) {
+		resp, err = client.SearchService.GetResults(response.SearchID)
 		return resp, err
 	})
+	assert.Nil(t, retryError)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // validateResponse
