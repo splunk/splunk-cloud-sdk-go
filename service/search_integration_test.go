@@ -27,11 +27,8 @@ var (
 	PostJobsRequestLimit                   = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 10}
 	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 0}
 	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5, TTL: 10, Limit: 10}
+	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 1, TTL: 1}
 )
-
-func getSplunkClientForPlaygroundTests() *Client {
-	return NewClient(tenantID, token, hostID, time.Second*5)
-}
 
 // TestIntegrationEnvironment for token and tenant
 func TestIntegrationEnvironment(t *testing.T) {
@@ -146,7 +143,7 @@ func TestIntegrationNewSearchJobSync(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobBadRequest asynchronously
@@ -186,12 +183,12 @@ func TestIntegrationNewSearchJobSyncDuplicates(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 
 	response, err = client.SearchService.CreateSyncJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobSyncTimeout with timeout at 5 sec
@@ -202,7 +199,7 @@ func TestIntegrationNewSearchJobSyncTimeout(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequestTimeout)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobSyncTTL with TTL at 5 sec
@@ -213,7 +210,7 @@ func TestIntegrationNewSearchJobSyncTTL(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequestTTL)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobSyncLimit with Limit at 10
@@ -224,7 +221,7 @@ func TestIntegrationNewSearchJobSyncLimit(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequestLimit)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobSyncDisableAutoFinalization with Limit at 0, disable automatic finalization
@@ -235,7 +232,7 @@ func TestIntegrationNewSearchJobSyncDisableAutoFinalization(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequestDisableAutoFinalization)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationNewSearchJobSyncMultiArgs with multiple args
@@ -246,7 +243,7 @@ func TestIntegrationNewSearchJobSyncMultiArgs(t *testing.T) {
 	response, err := client.SearchService.CreateSyncJob(PostJobsRequestMultiArgs)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	ValidateResponses(response, t)
+	validateResponses(response, t)
 }
 
 // TestIntegrationGetJobResults
@@ -257,13 +254,73 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
 
-	time.Sleep(3000 * time.Millisecond)
+// TestIntegrationGetJobResultsTimeout
+func TestIntegrationGetJobResultsTimeout(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
 
-	resp, err := client.SearchService.GetResults(response.SearchID)
+	response, err := client.SearchService.CreateJob(PostJobsRequestTimeout)
 	assert.Nil(t, err)
-	assert.NotNil(t, resp)
-	ValidateResponses(resp, t)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
+
+// TestIntegrationGetJobResultsTTL
+func TestIntegrationGetJobResultsTTL(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
+
+	response, err := client.SearchService.CreateJob(PostJobsRequestTTL)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
+
+// TestIntegrationGetJobResultsLimit
+func TestIntegrationGetJobResultsLimit(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
+
+	response, err := client.SearchService.CreateJob(PostJobsRequestLimit)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
+
+// TestIntegrationGetJobResultsDisableAutoFinalization
+func TestIntegrationGetJobResultsDisableAutoFinalization(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
+
+	response, err := client.SearchService.CreateJob(PostJobsRequestDisableAutoFinalization)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
+
+// TestIntegrationGetJobResultsMultipleArgs
+func TestIntegrationGetJobResultsMultipleArgs(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
+
+	response, err := client.SearchService.CreateJob(PostJobsRequestMultiArgs)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
+}
+
+// TestIntegrationGetJobResultsLowThresholds
+func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
+	client := getSplunkClientForPlaygroundTests()
+	assert.NotNil(t, client)
+
+	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+	validateGetResults(client, response, t)
 }
 
 // TestIntegrationGetJobResultsBadSearchID
@@ -286,8 +343,39 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.EqualValues(t, expectedSearchEvent, resp)
 }
 
-// Validate response results
-func ValidateResponses(response *model.SearchEvents, t *testing.T) {
+
+// getSplunkClientForPlaygroundTests returns an instance of test client
+func getSplunkClientForPlaygroundTests() *Client {
+	return NewClient(tenantID, token, hostID, time.Second*5)
+}
+
+// retry
+func retry(attempts int, sleep time.Duration, callback func() (interface{}, error)) error {
+	for i:=attempts; i > attempts; i-- {
+		_, err := callback()
+		if err != nil {
+			time.Sleep(sleep)
+		} else {
+			// stop retrying
+			return nil
+		}
+	}
+	return nil
+}
+
+// validateGetResults tests the GetResults calls, tries 3x before giving up
+func validateGetResults(client *Client, response *model.PostJobResponse, t *testing.T) {
+	retry(3, 3000 * time.Millisecond, func() (interface{}, error) {
+		resp, err := client.SearchService.GetResults(response.SearchID)
+		assert.Nil(t, err)
+		assert.NotNil(t, resp)
+		validateResponses(resp, t)
+		return resp, err
+	})
+}
+
+// validateResponse
+func validateResponses(response *model.SearchEvents, t *testing.T) {
 	indexFound := false
 	if response.Fields != nil {
 		for _, v := range response.Fields {
