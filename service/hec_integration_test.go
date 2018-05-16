@@ -8,12 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 func TestIntegrationCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
 	client := getSplunkClientForPlaygroundTests()
-	testHecEvent := model.HecEvent{Host: client.URL.RequestURI(),
+	testHecEvent := model.HecEvent{
+		Host:       client.URL.RequestURI(),
 		Index:      "main",
 		Event:      "test",
 		Sourcetype: "sourcetype:eventgen",
@@ -23,6 +25,16 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 
 	err := client.HecService.CreateEvent(testHecEvent)
 	assert.Empty(t, err)
+}
+
+func TestIntegrationHecEventFail(t *testing.T) {
+	client := NewClient(tenantID, "wrongToken", hostID, util.TestTimeOut)
+	testHecEvent := model.HecEvent{Event: "failed test"}
+	err := client.HecService.CreateEvent(testHecEvent)
+
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 
 func TestIntegrationCreateRawEventSuccess(t *testing.T) {
