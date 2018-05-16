@@ -1,5 +1,27 @@
 ssc-client-go:
   build:
     image: splunk/ssc-client-go
-    dockerfile: deploy/Dockerfile
-  encrypted_env_file: deploy/env.encrypted
+    dockerfile: ci/Dockerfile
+
+ssc-client-go-with-stubby:
+  build:
+    image: splunk/ssc-client-go-with-stubby
+    dockerfile: ci/Dockerfile
+  encrypted_env_file: ci/env.encrypted
+  depends_on:
+    - ssc-sdk-shared-stubby
+
+ssc-client-go-against-playground:
+  build:
+    image: splunk/ssc-client-go-with-stubby
+    dockerfile: ci/Dockerfile
+  encrypted_env_file: ci/env.encrypted
+
+ssc-sdk-shared-stubby:
+  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby:latest
+  dockercfg_service: aws-generator
+
+aws-generator:
+  add_docker: true
+  image: codeship/aws-ecr-dockercfg-generator
+  encrypted_env_file: ci/shared/env.encrypted
