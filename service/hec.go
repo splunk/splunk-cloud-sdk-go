@@ -11,9 +11,7 @@ import (
 const hecServicePrefix = "hec2"
 
 // HecService talks to the SSC hec service
-type HecService struct {
-	client *Client
-}
+type HecService service
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {

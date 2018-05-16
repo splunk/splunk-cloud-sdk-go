@@ -118,3 +118,18 @@ func TestNewStubbyRequest(t *testing.T) {
 		t.Fatalf("client.DoRequest error/ expecting response {\"message\":\"Something exploded\"} Received: %+v", content)
 	}
 }
+
+func TestNewBatchEventsSenderState(t *testing.T) {
+	var client = getSplunkClient()
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	assert.Nil(t, err)
+
+	// Initial queue should
+	assert.Equal(t, 0, len(collector.EventsQueue))
+	assert.Equal(t, 5, cap(collector.EventsQueue))
+	assert.Equal(t, 0, len(collector.EventsChan))
+	assert.Equal(t, 5, cap(collector.EventsChan))
+	assert.Equal(t, 0, len(collector.QuitChan))
+	assert.Equal(t, 1, cap(collector.QuitChan))
+	assert.Equal(t, 5, collector.BatchSize)
+}
