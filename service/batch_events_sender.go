@@ -83,10 +83,10 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) {
 // TODO: Error handling and return results
 func (b *BatchEventsSender) Flush(events []model.HecEvent) {
 	defer b.WaitGroup.Done()
+	// Reset ticker
+	b.HecTicker.Reset()
 	if len(events) > 0 {
 		b.EventService.CreateEvents(events)
-		// Reset ticker
-		b.HecTicker.Reset()
 	}
 }
 
