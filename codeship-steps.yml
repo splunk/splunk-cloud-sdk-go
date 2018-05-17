@@ -24,7 +24,7 @@
     command: bash -c "make run_docker_stubby_tests"
 
   - type: serial
-    name: integration tests
+    name: integration steps
     steps:
     - name: fetch Okta token
       service: ssc-sdk-shared-token-fetcher
