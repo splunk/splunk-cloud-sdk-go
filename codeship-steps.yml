@@ -2,6 +2,7 @@
   steps:
  
   - type: parallel
+    name: code quality checks
     steps:
       - name: lint
         service: ssc-client-go
@@ -13,19 +14,29 @@
         service: ssc-client-go
         command: bash -c "make build"
 
-  - type: parallel
-    steps:
-      - name: test
-        service: ssc-client-go-with-stubby
-        command: bash -c "source ci/runtests"
 
-  - type: parallel
+  - name: unit tests
+    service: ssc-client-go
+    command: bash -c "make run_unit_tests"
+
+  - name: functional tests
+    service: ssc-client-go-with-stubby
+    command: bash -c "make run_docker_stubby_tests"
+
+  - type: serial
+    name: integration tests
     steps:
-      - name: integration tests - not gated
-        service: ssc-client-go-against-playground
-        exclude: ^(master|develop)$
-        command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
-      - name: integration tests - gated
-        service: ssc-client-go-against-playground
-        tag: ^(master|develop)$
-        command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
+    - name: fetch Okta token
+      service: ssc-sdk-shared-token-fetcher
+      command: true
+    - type: parallel
+      name: integration tests
+      steps:
+        - name: integration tests - not gated
+          service: ssc-client-go-against-playground
+          exclude: ^(master|develop)$
+          command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
+        - name: integration tests - gated
+          service: ssc-client-go-against-playground
+          tag: ^(master|develop)$
+          command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"

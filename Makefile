@@ -2,20 +2,26 @@
 
 .DEFAULT_GOAL := noop
 
-GO_SOURCES := $(shell find . -name '*.go')
 GO_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/)
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+
+LOCAL_TEST_URL_PROTOCOL := http
+LOCAL_TEST_SSC_HOST := localhost:8882
+LOCAL_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
+LOCAL_TEST_TENANT_ID := TEST_TENANT
+
+DOCKER_STUBBY_TEST_URL_PROTOCOL := http
+DOCKER_STUBBY_TEST_SSC_HOST := ssc-sdk-shared-stubby:8882
+DOCKER_STUBBY_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
+DOCKER_STUBBY_TEST_TENANT_ID := TEST_TENANT
 
 noop:
 	@echo "No make target specified."
 
 clean:
 	docker rmi -f 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
-
-ssc-client-go: $(GO_SOURCES)
-	go build -v ./...
 
 lint:
 	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)
@@ -24,7 +30,8 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
-	make ssc-client-go
+	go build ./model/... \
+			 ./service/...
 
 encrypt:
 	@if [ -f ci/secret.env ]; then \
@@ -52,6 +59,7 @@ install_local:
 	printf "Installing Codeship jet for local build acceptance testing, if there are any issues installing see: https://documentation.codeship.com/pro/jet-cli/installation/ ..." && \
 	brew cask install codeship/taps/jet
 
+# This is broken
 stubby_local:
 	jet load ssc-client-go-with-stubby
 	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
@@ -65,3 +73,37 @@ dependencies:
 
 dependencies_update:
 	dep ensure -update
+
+debug_local_environment_variables:
+	@echo "Local Testing Environment Variables"
+	@echo "LOCAL_TEST_URL_PROTOCOL: $(LOCAL_TEST_URL_PROTOCOL)"
+	@echo "LOCAL_TEST_SSC_HOST: $(LOCAL_TEST_SSC_HOST)"
+	@echo "LOCAL_TEST_BEARER_TOKEN: $(LOCAL_TEST_BEARER_TOKEN)"
+	@echo "LOCAL_TEST_TENANT_ID: $(LOCAL_TEST_TENANT_ID)"
+	@echo
+
+debug_docker_environment_variables:
+	@echo "Docker Testing Environment Variables"
+	@echo "DOCKER_STUBBY_TEST_URL_PROTOCOL: $(DOCKER_STUBBY_TEST_URL_PROTOCOL)"
+	@echo "DOCKER_STUBBY_TEST_SSC_HOST: $(DOCKER_STUBBY_TEST_SSC_HOST)"
+	@echo "DOCKER_STUBBY_TEST_BEARER_TOKEN: $(DOCKER_STUBBY_TEST_BEARER_TOKEN)"
+	@echo "DOCKER_STUBBY_TEST_TENANT_ID: $(DOCKER_STUBBY_TEST_TENANT_ID)"
+	@echo
+
+run_unit_tests:
+	go test -v ./model/... \
+			   ./service/...
+
+run_local_stubby_tests: debug_local_environment_variables
+	TEST_URL_PROTOCOL=$(LOCAL_TEST_URL_PROTOCOL) \
+	TEST_SSC_HOST=$(LOCAL_TEST_SSC_HOST) \
+	TEST_BEARER_TOKEN=$(LOCAL_TEST_BEARER_TOKEN) \
+	TEST_TENANT_ID=$(LOCAL_TEST_TENANT_ID) \
+	go test -v ./test/stubby_integration/...
+
+run_docker_stubby_tests: debug_docker_environment_variables
+	TEST_URL_PROTOCOL=$(DOCKER_STUBBY_TEST_URL_PROTOCOL) \
+	TEST_SSC_HOST=$(DOCKER_STUBBY_TEST_SSC_HOST) \
+	TEST_BEARER_TOKEN=$(DOCKER_STUBBY_TEST_BEARER_TOKEN) \
+	TEST_TENANT_ID=$(DOCKER_STUBBY_TEST_TENANT_ID) \
+	go test -v ./test/stubby_integration/...

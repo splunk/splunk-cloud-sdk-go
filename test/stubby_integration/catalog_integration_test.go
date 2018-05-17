@@ -1,15 +1,17 @@
-package service
+package stubbyintegration
 
 import (
 	"testing"
 
-	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/ssc-client-go/model"
 )
 
 // Stubby test for GetDataset() catalog service endpoint
 func TestGetDataset(t *testing.T) {
-	result, err := getSplunkClient().CatalogService.GetDataset("ds1")
+	result, err := getClient().CatalogService.GetDataset("ds1")
+
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
 	assert.Equal(t, "ds1", result.Name)
@@ -18,15 +20,17 @@ func TestGetDataset(t *testing.T) {
 
 // Stubby test for GetDatasets() catalog service endpoint
 func TestGetDatasets(t *testing.T) {
-	result, err := getSplunkClient().CatalogService.GetDatasets()
+	result, err := getClient().CatalogService.GetDatasets()
+
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
 }
 
 // Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
-	result, err := getSplunkClient().CatalogService.CreateDataset(
-		model.Dataset{Name: "ds1", Kind: model.VIEW, Rules: []string{"string"}, Todo: "string"})
+	testDataset := model.Dataset{Name: "ds1", Kind: model.VIEW, Rules: []string{"string"}, Todo: "string"}
+	result, err := getClient().CatalogService.CreateDataset(testDataset)
+
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
 	assert.Equal(t, "ds1", result.Name)
@@ -36,19 +40,20 @@ func TestPostDataset(t *testing.T) {
 
 // Stubby test for DeleteDataset() catalog service endpoint
 func TestDeleteDataset(t *testing.T) {
-	err := getSplunkClient().CatalogService.DeleteDataset("ds1")
+	err := getClient().CatalogService.DeleteDataset("ds1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for DeleteRule() catalog service endpoint
 func TestDeleteRule(t *testing.T) {
-	err := getSplunkClient().CatalogService.DeleteRule("rule1")
+	err := getClient().CatalogService.DeleteRule("rule1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for GetRules() catalog service endpoint
 func TestGetRules(t *testing.T) {
-	result, err := getSplunkClient().CatalogService.GetRules()
+	result, err := getClient().CatalogService.GetRules()
+
 	assert.Empty(t, err)
 	assert.Equal(t, 1, len(result))
 	assert.Equal(t, 3, len(result[0].Actions))
@@ -60,7 +65,8 @@ func TestPostRule(t *testing.T) {
 	actions[0] = CreateAction("AUTOKV", "", "", true, "NONE", "", "", "", 0, "")
 	actions[1] = CreateAction("EVAL", "", "", false, "", "string", "", "", 0, "string")
 	actions[2] = CreateAction("LOOKUP", "", "", false, "", "string", "", "", 0, "")
-	result, err := getSplunkClient().CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
+	result, err := getClient().CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
+
 	assert.Empty(t, err)
 	assert.Equal(t, "rule4", result.Name)
 	assert.Equal(t, "newrule", result.Match)
