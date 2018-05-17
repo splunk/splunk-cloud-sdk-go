@@ -18,6 +18,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"io/ioutil"
 )
 
 // Declare constants for service package
@@ -114,11 +115,78 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 // Do sends out request and returns HTTP response
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	response, err := c.httpClient.Do(req)
+	fmt.Print(c.token)
+	c.RefreshToken("N7qXDPVprmCN6UUSFyOcEAXk9evIrKQ08GnGbqBOuN0", "0oa12zcrqk8jXGIDZ2p7")
+	fmt.Println(c.token)
+
 	if err != nil {
 		return nil, err
 	}
 	return response, nil
 }
+
+type refreshDat struct {
+	AccessToken string `json:"access_token"`
+	TokenType string `json:"token_type"`
+	ExpireIn int `json:"expires_in"`
+	Scope string `json:"scope"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+func (c *Client) RefreshToken(refreshToken string, clientId string) (*http.Response, error){
+
+	client := http.Client{}
+	var urlPath= ""
+	urlPath = path.Join("splunk-ciam.okta.com/oauth2/default/v1/token")
+
+	var u *url.URL
+
+	u, _ = url.Parse(urlPath)
+	u.Path = urlPath
+	u.Scheme = "https"
+
+	data := url.Values{}
+	data.Set("refresh_token",refreshToken)
+	data.Add("grant_type", "refresh_token")
+	data.Add("client_id", clientId)
+
+	u.RawQuery = data.Encode()
+
+	urlStr := fmt.Sprintf("%v", u)
+
+	req, err := http.NewRequest("POST", urlStr, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("accept", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := client.Do(req)
+
+	var accessToken string
+
+	if response.StatusCode == 200 {
+		body, err := ioutil.ReadAll(response.Body)
+		if err == nil {
+			s, _ := parseRefreshData([]byte(body))
+			accessToken = s.AccessToken
+		}
+	}
+	c.UpdateToken(accessToken)
+
+	return response, err
+}
+
+
+func parseRefreshData(body []byte) (*refreshDat, error) {
+	var refreshJson = new(refreshDat)
+	err := json.Unmarshal(body, &refreshJson)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return refreshJson, err
+}
+
 
 // Get implements HTTP Get call
 func (c *Client) Get(getURL url.URL) (*http.Response, error) {
