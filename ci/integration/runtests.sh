@@ -16,7 +16,19 @@ env | grep TEST_TENANT_ID
 #fi
 echo "==============================================="
 
-FULL_PATH_OF_DIRECTORY_CONTAINING_THIS_SCRIPT=$(cd "$(dirname "$0")"; pwd)
+# Get the BEARER_TOKEN setup
+CONFIG_FILE="./okta/.token"
+if [ -f $CONFIG_FILE ]; then
+    echo "Token found in $CONFIG_FILE"
+    TEST_BEARER_TOKEN=$(cat $CONFIG_FILE)
+else
+    echo "Token was not set to $CONFIG_FILE"
+    exit 1
+fi
+
+# Required to run just the service tests
+# cd service
+
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
@@ -27,5 +39,6 @@ else
     go test -v -covermode=count -coverprofile="codecov.integration.out" ./test/playground_integration/... || exit 1
 fi
 
+# Upload coverage information
 $FULL_PATH_OF_DIRECTORY_CONTAINING_THIS_SCRIPT/../codecov -f "codecov.integration.out" -F integration
 
