@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# source ./ci/integration/okta.sh
+FULL_PATH_OF_DIRECTORY_CONTAINING_THIS_SCRIPT=$(cd "$(dirname "$0")"; pwd)
 
+# Get the BEARER_TOKEN setup
 CONFIG_FILE="./okta/.token"
 if [ -f $CONFIG_FILE ]; then
     echo "Token found in $CONFIG_FILE"
@@ -11,13 +12,15 @@ else
     exit 1
 fi
 
-cd service # TODO: this shouldn't be necessary...
+cd service # Required to run just the service tests
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
-    go test -v -run ^TestIntegration*
-    exit 0
+    go test -v -covermode=count -coverprofile="codecov.integration.out" -run ^TestIntegration* ./...
 else
     echo "Running integration tests and gating on failures..."
-    go test -v -run ^TestIntegration* || exit 1
+    go test -v -covermode=count -coverprofile="codecov.integration.out" -run ^TestIntegration* ./... || exit 1
 fi
+
+# Upload coverage information
+$FULL_PATH_OF_DIRECTORY_CONTAINING_THIS_SCRIPT/../codecov -f "codecov.integration.out" -F integration
