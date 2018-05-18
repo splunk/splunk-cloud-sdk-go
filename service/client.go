@@ -27,6 +27,8 @@ const (
 	API               = "api"
 )
 
+const RefreshToken = "tobefilled"
+
 // A Client is used to communicate with service endpoints
 type Client struct {
 	// TenantID used for ssc service
@@ -115,9 +117,15 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 // Do sends out request and returns HTTP response
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	response, err := c.httpClient.Do(req)
+	//if 401 ->
 	fmt.Print(c.token)
-	c.RefreshToken("N7qXDPVprmCN6UUSFyOcEAXk9evIrKQ08GnGbqBOuN0", "0oa12zcrqk8jXGIDZ2p7")
+	//Refresh access token with refresh token
+	c.RefreshToken(RefreshToken, "0oa12zcrqk8jXGIDZ2p7")
 	fmt.Println(c.token)
+	//retry request with new access token
+	//response, err := c.httpClient.Do(req)
+	//if 401 return error
+	//else return response, nil
 
 	if err != nil {
 		return nil, err
