@@ -59,7 +59,6 @@ install_local:
 	printf "Installing Codeship jet for local build acceptance testing, if there are any issues installing see: https://documentation.codeship.com/pro/jet-cli/installation/ ..." && \
 	brew cask install codeship/taps/jet
 
-# This is broken
 stubby_local:
 	jet load ssc-client-go-with-stubby
 	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
