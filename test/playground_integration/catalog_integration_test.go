@@ -1,16 +1,16 @@
-// +build !integration
-
-package service
+package playgroundintegration
 
 import (
-	"testing"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/ssc-client-go/model"
 )
 
 func cleanupDatasets(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	result, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
 
@@ -21,7 +21,7 @@ func cleanupDatasets(t *testing.T) {
 }
 
 func cleanupRules(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	result, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
 
@@ -34,18 +34,18 @@ func cleanupRules(t *testing.T) {
 func TestIntegrationCRUDDatasets(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
-	dataset, err := client.CatalogService.CreateDataset(
-		model.Dataset{Name: datasetName, Kind: model.VIEW, Rules: []string{"somerule"}, Todo: "todos"})
+	testDataset := model.Dataset{Name: datasetName, Kind: model.VIEW, Rules: []string{"somerule"}, Todo: "todos"}
+	dataset, err := client.CatalogService.CreateDataset(testDataset)
 
 	assert.Nil(t, err)
 	assert.Equal(t, datasetName, dataset.Name)
 	assert.Equal(t, model.VIEW, dataset.Kind)
 	assert.Equal(t, []string{"somerule"}, dataset.Rules)
-	//todo field is not returned from playground, bug in catalog service
+	//todo field is not returned from playground_integration, bug in catalog service
 	//assert.Equal(t, "todos", dataset.Todo)
 
 	_, err = client.CatalogService.CreateDataset(
@@ -67,7 +67,7 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 func TestIntegrationDatasetsErrors(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -87,7 +87,7 @@ func TestIntegrationDatasetsErrors(t *testing.T) {
 func TestIntegrationCRUDRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	//create rule
 	ruleName := "goSdkTestrRule1"
@@ -114,10 +114,10 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	cleanupRules(t)
 }
 
-func TestIntegrationRulessErrors(t *testing.T) {
+func TestIntegrationRulesErrors(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	//create rule
 	ruleName := "goSdkTestrRule1"

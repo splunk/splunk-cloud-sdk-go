@@ -14,13 +14,17 @@
         service: ssc-client-go
         command: bash -c "make build"
 
-  
-  - name: stubby tests
+
+  - name: unit tests
+    service: ssc-client-go
+    command: bash -c "make run_unit_tests"
+
+  - name: functional tests
     service: ssc-client-go-with-stubby
-    command: bash -c "source ci/runtests"
+    command: bash -c "make run_docker_stubby_tests"
 
   - type: serial
-    name: integration
+    name: integration steps
     steps:
     - name: fetch Okta token
       service: ssc-sdk-shared-token-fetcher
