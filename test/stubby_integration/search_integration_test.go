@@ -1,24 +1,16 @@
-package service
+package stubbyintegration
 
 import (
 	"testing"
-	"time"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/splunk/ssc-client-go/model"
-	. "github.com/splunk/ssc-client-go/util"
-	"github.com/stretchr/testify/assert"
 )
-
-func getSplunkClient(local ...bool) *Client {
-	if len(local) > 0 {
-		return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestSubbyLocalHost, time.Second*5)
-	}
-	return NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestStubbyHost, time.Second*5)
-}
 
 func TestCreateJob(t *testing.T) {
 
-	response, err := getSplunkClient().SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := getClient().SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, "SEARCH_ID", response.SearchID)
@@ -27,7 +19,7 @@ func TestCreateJob(t *testing.T) {
 
 func TestCreateSyncJob(t *testing.T) {
 
-	response, err := getSplunkClient().SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := getClient().SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
@@ -38,7 +30,7 @@ func TestCreateSyncJob(t *testing.T) {
 
 func TestGetResults(t *testing.T) {
 
-	response, err := getSplunkClient().SearchService.GetResults("SEARCH_ID")
+	response, err := getClient().SearchService.GetResults("SEARCH_ID")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)

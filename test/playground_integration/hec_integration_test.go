@@ -1,6 +1,4 @@
-// +build !integration
-
-package service
+package playgroundintegration
 
 import (
 	"testing"
@@ -8,12 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
 )
 
 func TestIntegrationCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	testHecEvent := model.HecEvent{
 		Host:       client.URL.RequestURI(),
 		Index:      "main",
@@ -27,8 +27,9 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 	assert.Empty(t, err)
 }
 
+// TODO: Deal with later
 func TestIntegrationHecEventFail(t *testing.T) {
-	client := NewClient(tenantID, "wrongToken", hostID, util.TestTimeOut)
+	client := service.NewClient(testutils.TestTenantID, "wrongToken", "http://example.com", testutils.TestTimeOut)
 	testHecEvent := model.HecEvent{Event: "failed test"}
 	err := client.HecService.CreateEvent(testHecEvent)
 
@@ -38,7 +39,7 @@ func TestIntegrationHecEventFail(t *testing.T) {
 }
 
 func TestIntegrationCreateRawEventSuccess(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	testHecEvent := model.HecEvent{Event: "test"}
 
 	err := client.HecService.CreateRawEvent(testHecEvent)
@@ -46,22 +47,9 @@ func TestIntegrationCreateRawEventSuccess(t *testing.T) {
 }
 
 func TestIntegrationCreateEvents(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
 	err := client.HecService.CreateEvents([]model.HecEvent{event1, event2})
 	assert.Empty(t, err)
-}
-
-func TestIntegrationBuildMultiEventsPayload(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	event3WithEmptyFields := model.HecEvent{Host: "", Event: "test3"}
-	payload1, err := client.HecService.buildMultiEventsPayload([]model.HecEvent{event1, event2})
-	assert.Nil(t, err)
-	assert.Equal(t, `{"host":"host1","event":"test1"}{"host":"host2","event":"test2"}`, string(payload1[:]))
-	payload2, err := client.HecService.buildMultiEventsPayload([]model.HecEvent{event1, event3WithEmptyFields})
-	assert.Nil(t, err)
-	assert.Equal(t, `{"host":"host1","event":"test1"}{"event":"test3"}`, string(payload2[:]))
 }
