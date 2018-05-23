@@ -12,11 +12,7 @@ import (
 // ParseResponse parses the http response and unmarshals it into json
 func ParseResponse(model interface{}, response *http.Response, err error) error {
 
-	// The request body could not be serialized or the http request is invalid
-	if response == nil {
-		return err
-	}
-	if err == nil {
+	if err == nil && response != nil {
 		defer response.Body.Close()
 		b := new(bytes.Buffer)
 		b.ReadFrom(response.Body)
@@ -28,7 +24,7 @@ func ParseResponse(model interface{}, response *http.Response, err error) error 
 // ParseError checks for error and closes the response body
 // It can be used when we don't care about the response, but do want to close the response body
 func ParseError(response *http.Response, err error) error {
-	if err == nil {
+	if err == nil && response != nil {
 		defer response.Body.Close()
 	}
 	return err
