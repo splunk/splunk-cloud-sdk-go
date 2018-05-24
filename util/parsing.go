@@ -11,13 +11,13 @@ import (
 
 // ParseResponse parses the http response and unmarshals it into json
 func ParseResponse(model interface{}, response *http.Response, err error) error {
-	if err != nil {
-		return err
-	}
 	if response == nil {
 		return fmt.Errorf("nil response provided")
 	}
 	defer response.Body.Close()
+	if err != nil {
+		return err
+	}
 	b := new(bytes.Buffer)
 	b.ReadFrom(response.Body)
 	return json.NewDecoder(b).Decode(model)
