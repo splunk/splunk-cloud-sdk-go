@@ -1,34 +1,17 @@
-package service
+package stubbyintegration
 
 import (
 	"testing"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/ssc-client-go/model"
 )
-
-func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
-	var client = getSplunkClient()
-	_, err := client.NewBatchEventsSender(0, 0)
-	assert.EqualError(t, err, "batchSize cannot be 0")
-}
-
-func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
-	var client = getSplunkClient()
-	_, err := client.NewBatchEventsSender(0, 1000)
-	assert.EqualError(t, err, "batchSize cannot be 0")
-}
-
-func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
-	var client = getSplunkClient()
-	_, err := client.NewBatchEventsSender(5, 0)
-	assert.EqualError(t, err, "interval cannot be 0")
-}
 
 // Should flush when ticker ticked and queue is not full
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
-	var client = getSplunkClient()
+	var client = getClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
@@ -49,7 +32,7 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 
 // Should flush when queue is full and ticker has not ticked
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
-	var client = getSplunkClient()
+	var client = getClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
@@ -69,7 +52,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 
 //Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
-	var client = getSplunkClient()
+	var client = getClient()
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)

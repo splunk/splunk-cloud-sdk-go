@@ -21,7 +21,7 @@ func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
 	response, err := c.client.Get(url)
 
 	var result []model.Dataset
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return result, err
 }
@@ -35,7 +35,7 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 	response, err := c.client.Get(url)
 
 	var result model.Dataset
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
@@ -43,14 +43,14 @@ func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
 // CreateDataset creates a new Dataset
 // TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
 func (c *CatalogService) CreateDataset(dataset model.Dataset) (*model.Dataset, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", "")
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Post(url, dataset)
 
 	var result model.Dataset
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
@@ -86,7 +86,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	response, err := c.client.Get(getRuleURL)
 
 	var result []model.Rule
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return result, err
 }
@@ -100,7 +100,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	response, err := c.client.Post(postRuleURL, rule)
 
 	var result model.Rule
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }

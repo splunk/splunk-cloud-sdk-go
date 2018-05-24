@@ -30,6 +30,9 @@ func (h *HecService) CreateEvents(events []model.HecEvent) error {
 		return err
 	}
 	hecEvents, err := h.buildMultiEventsPayload(events)
+	if err != nil {
+		return err
+	}
 	response, err := h.client.Post(url, hecEvents)
 	return util.ParseError(response, err)
 }

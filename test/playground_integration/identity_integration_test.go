@@ -1,19 +1,18 @@
-// +build !integration
-
-package service
+package playgroundintegration
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/ssc-client-go/model"
 )
 
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
 	testTenantID := "goSdkTestNewTenant"
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
@@ -81,7 +80,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 // test Erros with auth endpoints
 func TestIntegrationTenantErrors(t *testing.T) {
 	testTenantID := "goSdkTestTenantError"
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
