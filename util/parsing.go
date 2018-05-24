@@ -11,14 +11,16 @@ import (
 
 // ParseResponse parses the http response and unmarshals it into json
 func ParseResponse(model interface{}, response *http.Response, err error) error {
-
-	if err == nil && response != nil {
-		defer response.Body.Close()
-		b := new(bytes.Buffer)
-		b.ReadFrom(response.Body)
-		err = json.NewDecoder(b).Decode(model)
+	if err != nil {
+		return err
 	}
-	return err
+	if response == nil {
+		return fmt.Errorf("nil response provided")
+	}
+	defer response.Body.Close()
+	b := new(bytes.Buffer)
+	b.ReadFrom(response.Body)
+	return json.NewDecoder(b).Decode(model)
 }
 
 // ParseError checks for error and closes the response body
