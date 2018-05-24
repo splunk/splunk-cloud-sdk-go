@@ -3,12 +3,23 @@ ssc-client-go:
     image: splunk/ssc-client-go
     dockerfile: ci/Dockerfile
 
+ssc-sdk-shared-tenant-creation:
+  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-tenant-creation:temporary
+  dockercfg_service: aws-generator
+  encrypted_env_file: ci/env.encrypted
+  volumes_from:
+    - ssc-sdk-shared-token-fetcher
+  depends_on:
+    - ssc-sdk-shared-token-fetcher
+  volumes:
+    - ./.config/tenant:/tenant
+
 ssc-sdk-shared-token-fetcher:
   image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:temporary
   dockercfg_service: aws-generator
   encrypted_env_file: ci/env.encrypted
   volumes:
-    - ./okta:/okta
+    - ./.config/okta:/okta
 
 ssc-client-go-with-stubby:
   build:
@@ -25,8 +36,10 @@ ssc-client-go-against-playground:
   encrypted_env_file: ci/env.encrypted
   volumes_from:
     - ssc-sdk-shared-token-fetcher
+    - ssc-sdk-shared-tenant-creation
   depends_on:
     - ssc-sdk-shared-token-fetcher
+    - ssc-sdk-shared-tenant-creation
 
 ssc-sdk-shared-stubby:
   image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby:latest

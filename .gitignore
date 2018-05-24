@@ -26,3 +26,6 @@ secret.env
 
 # used by token fetcher
 okta/.token
+
+# Hide everything not explicitly added to the .config dir, used by token-fetcher & tenant-creation
+.config/*

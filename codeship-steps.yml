@@ -26,8 +26,11 @@
   - type: serial
     name: integration steps
     steps:
-    - name: fetch Okta token
+    - name: initialize token fetcher service
       service: ssc-sdk-shared-token-fetcher
+      command: true
+    - name: initialize tenant creation service
+      service: ssc-sdk-shared-tenant-creation
       command: true
     - type: parallel
       name: integration tests
