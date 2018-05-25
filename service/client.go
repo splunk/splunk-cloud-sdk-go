@@ -23,7 +23,7 @@ import (
 // Declare constants for service package
 const (
 	AuthorizationType = "Bearer"
-	API               = "api"
+	// API               = "api"
 )
 
 // A Client is used to communicate with service endpoints
@@ -79,7 +79,7 @@ func (c *Client) BuildURL(urlPathParts ...string) (url.URL, error) {
 	u = url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
-		Path:   path.Join(API, c.TenantID, buildPath),
+		Path:   path.Join(c.TenantID, buildPath),
 	}
 	return u, nil
 }
@@ -99,7 +99,7 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 	u = url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
-		Path:   path.Join(API, tenantID, buildPath),
+		Path:   path.Join(tenantID, buildPath),
 	}
 	return u, nil
 }
