@@ -12,7 +12,7 @@ ssc-sdk-shared-tenant-creation:
   depends_on:
     - ssc-sdk-shared-token-fetcher
   volumes:
-    - ./.config/tenant:/tenant
+    - ./.config/ssc:/ssc
 
 ssc-sdk-shared-token-fetcher:
   image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:temporary
