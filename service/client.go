@@ -18,6 +18,8 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"os"
+	"io/ioutil"
 )
 
 // Declare constants for service package
@@ -45,6 +47,13 @@ type Client struct {
 	// IdentityService talks to the IAC service
 	IdentityService *IdentityService
 }
+
+// RefreshToken - RefreshToken to refresh the bearer token if expired
+var RefreshToken = os.Getenv("REFRESH_TOKEN")
+//RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
+var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
+//ClientID - Okta app Client Id for SDK
+var ClientID = os.Getenv("CLIENT_ID")
 
 // service provides the interface between client and services
 type service struct {
@@ -106,7 +115,97 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 
 // Do sends out request and returns HTTP response
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
-	return c.httpClient.Do(req)
+
+	response, err := c.httpClient.Do(req)
+
+	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
+	if response.StatusCode == 401 && len(RefreshToken) != 0 {
+		var u *url.URL
+		u = req.URL
+		httpMethod := req.Method
+		body := req.Body
+
+		//Refresh access token with refresh token
+		var accessToken string
+		accessToken, err = c.RefreshBearerToken()
+		if err != nil || len(accessToken) == 0 {
+			return nil, err
+		}
+		c.UpdateToken(accessToken)
+		request, err := http.NewRequest(httpMethod, u.String(), body)
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
+		request.Header.Set("Content-Type", "application/json")
+
+		//retry request with new access token
+		response, err := c.httpClient.Do(request)
+		if response != nil {
+			return response, err
+		}
+		return nil, err
+	}
+	return response, err
+}
+
+type refreshDat struct {
+	AccessToken string `json:"access_token"`
+	TokenType string `json:"token_type"`
+	ExpireIn int `json:"expires_in"`
+	Scope string `json:"scope"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+//RefreshBearerToken gets bearer token from the okta token endpoint given the refresh token
+func (c *Client) RefreshBearerToken() (string, error){
+	var accessToken = ""
+	client := http.Client{}
+	var urlPath= ""
+	urlPath = path.Join(RefreshTokenEndpoint)
+
+	var u *url.URL
+
+	u, _ = url.Parse(urlPath)
+	u.Path = urlPath
+	u.Scheme = "https"
+
+	data := url.Values{}
+	data.Set("refresh_token",RefreshToken)
+	data.Add("grant_type", "refresh_token")
+	data.Add("client_id", ClientID)
+	data.Add("scope", "openid email profile")
+
+	u.RawQuery = data.Encode()
+
+	urlStr := fmt.Sprintf("%v", u)
+
+	req, err := http.NewRequest("POST", urlStr, nil)
+	if err != nil {
+		return accessToken, err
+	}
+	req.Header.Set("accept", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := client.Do(req)
+
+	if response.StatusCode == 200 {
+		body, err := ioutil.ReadAll(response.Body)
+		if err == nil {
+			s, err := parseRefreshData([]byte(body))
+			if err != nil {
+				return accessToken, err
+			}
+			accessToken = s.AccessToken
+			return accessToken, err
+		}
+		return accessToken, err
+	}
+	return accessToken, err
+}
+
+func parseRefreshData(body []byte) (*refreshDat, error) {
+	var refreshJSON = new(refreshDat)
+	err := json.Unmarshal(body, &refreshJSON)
+
+	return refreshJSON, err
 }
 
 // Get implements HTTP Get call
