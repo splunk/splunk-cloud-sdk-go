@@ -107,7 +107,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 }
 
 // GetRules returns all the rules.
-func (c *CatalogService) GetRule(ruleId string) ([]model.Rule, error) {
+func (c *CatalogService) GetRule(ruleId string) (*model.Rule, error) {
 	getRuleURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleId)
 	fmt.Println(getRuleURL)
 	if err != nil {
@@ -115,10 +115,10 @@ func (c *CatalogService) GetRule(ruleId string) ([]model.Rule, error) {
 	}
 	response, err := c.client.Get(getRuleURL)
 
-	var result []model.Rule
+	var result model.Rule
 	util.ParseResponse(&result, response, err)
 
-	return result, err
+	return &result, err
 }
 
 // CreateRule posts a new rule.

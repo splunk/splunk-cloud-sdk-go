@@ -82,16 +82,16 @@ type PartialDatasetInfo struct {
 type Field struct {
 	ID             string         `json:"id" binding:"required"`
 	Name           string         `json:"name" binding:"required"`
-	DatasetID      string         `json:"datasetId" binding:"required"` // TODO: Further split
-	DataType       DataType       `json:"dataType"`
-	FieldType      FieldType      `json:"fieldType"`
-	Prevalence     PrevelanceType `json:"prevalence"` // TODO: Further split
-	Created        string         `json:"created"`
-	Modified       string         `json:"modified"`
-	VersionAdded   int            `json:"versionAdded"`
-	VersionRemoved int            `json:"versionRemoved"`
-	Fields         []Field        `json:"fields"`
-	Dataset        DatasetInfo    `json:"dataset"`
+	DatasetID      string         `json:"datasetId" binding:"required"`
+	DataType       DataType       `json:"dataType,omitempty"`
+	FieldType      FieldType      `json:"fieldType,omitempty"`
+	Prevalence     PrevelanceType `json:"prevalence,omitempty"`
+	Created        string         `json:"created,omitempty"`
+	Modified       string         `json:"modified,omitempty"`
+	VersionAdded   int            `json:"versionAdded,omitempty"`
+	VersionRemoved int            `json:"versionRemoved,omitempty"`
+	Fields         []Field        `json:"fields,omitempty"`
+	Dataset        DatasetInfo    `json:"dataset,omitempty"`
 }
 
 // PrevelanceType enumerates the types of prevalance used in fields.
@@ -154,11 +154,11 @@ const (
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
 	ID         string   `json:"id,omitempty"`
-	Name       string   `json:"name"`
+	Name       string   `json:"name" binding:"required"`
 	Module     string   `json:"module,omitempty"`
-	Match      string   `json:"match"`
+	Match      string   `json:"match" binding:"required"`
 	Actions    []Action `json:"actions,omitempty"`
-	Owner      string   `json:"owner"`
+	Owner      string   `json:"owner" binding:"required"`
 	Created    string   `json:"created,omitempty"`
 	Modified   string   `json:"modified,omitempty"`
 	CreatedBy  string   `json:"createdBy,omitempty"`
@@ -168,15 +168,15 @@ type Rule struct {
 
 // Action represents a specific search time transformation action.
 type Action struct {
-	ID         string     `json:"id"`
-	RuleID     string     `json:"ruleid" binding:"required"`
+	ID         string     `json:"id,omitempty"`
+	RuleID     string     `json:"ruleid,omitempty"`
 	Kind       ActionKind `json:"kind" binding:"required"`
 	Owner      string     `json:"owner" binding:"required"`
-	Created    string     `json:"created"`
-	Modified   string     `json:"modified"`
-	CreatedBy  string     `json:"createdBy"`
-	ModifiedBy string     `json:"modifiedBy"`
-	Version    int        `json:"version"`
+	Created    string     `json:"created,omitempty"`
+	Modified   string     `json:"modified,omitempty"`
+	CreatedBy  string     `json:"createdBy,omitempty"`
+	ModifiedBy string     `json:"modifiedBy,omitempty"`
+	Version    int        `json:"version,omitempty"`
 	Field      string     `json:"field,omitempty"`
 	Alias      string     `json:"alias,omitempty"`
 	Mode       AutoMode   `json:"mode,omitempty"`

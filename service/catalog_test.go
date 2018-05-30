@@ -4,7 +4,6 @@ import (
 	"testing"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
-	"fmt"
 )
 
 // Stubby test for GetDataset() catalog service endpoint
@@ -54,24 +53,25 @@ func TestGetRules(t *testing.T) {
 	assert.Equal(t, 2, len(result))
 }
 
-/*func TestGetRule(t *testing.T) {
+func TestGetRule(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.GetRule("rule1")
 	assert.Empty(t, err)
-	assert.Equal(t, 1, len(result))
-}*/
+	assert.NotNil(t, "rule1",result.ID)
+	assert.Equal(t, "_internal", result.Name)
+}
 
 // Stubby test for CreateRule() catalog service endpoint
-/*func TestPostRule(t *testing.T) {
+func TestPostRule(t *testing.T) {
 	var actions [3]model.Action
-	actions[0] = CreateAction("AUTOKV", "Splunk", 1,"", model.NONE, "", "", "", 0)
-	actions[1] = CreateAction("EVAL", "Splunk", 1,"Splunk", "", "string", "", "",0)
-	actions[2] = CreateAction("LOOKUP", "Splunk", 1, "", "", "string", "", "", 0)
+	actions[0] = CreateAction("AUTOKV", "Splunk", 0,"", model.NONE, "", "", "", 0)
+	actions[1] = CreateAction("EVAL", "Splunk",0,"Splunk", "", "string", "", "",0)
+	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
 	result, err := getSplunkClient().CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
 	assert.Empty(t, err)
 	assert.Equal(t, "_internal", result.Name)
 	assert.Equal(t, "test_match", result.Match)
 	assert.Equal(t, 3, len(result.Actions))
-}*/
+}
 
 // creates a rule to post
 func CreateRule(name string, match string, module string, owner string, actions []model.Action) model.Rule {
