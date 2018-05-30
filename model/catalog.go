@@ -4,7 +4,7 @@ package model
 type DatasetInfoKind string
 
 const (
-	// LOOKUP represents // TODO: Description needed
+	// LOOKUP represents TODO: Description needed
 	LOOKUP DatasetInfoKind = "lookup"
 	// INDEX represents a Splunk events or metrics index
 	INDEX DatasetInfoKind = "index"
@@ -35,24 +35,6 @@ type DatasetInfo struct {
 	Datatype string `json:"datatype,omitempty"`
 	Disabled bool   `json:"disabled,omitempty"`
 }
-
-/*// Lookup represents LOOKUP DatasetInfoKind
-type Lookup struct {
-	DatasetInfoKind    string `json:"datasetInfoKind"`
-	ExternalKind       string `json:"externalKind"`
-	ExternalName       string `json:"externalName"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch"`
-	Filter             string `json:"filter"`
-	MaxMatches         int    `json:"maxMatches"`
-	MinMatches         int    `json:"minMatches"`
-	defaultMatch       string `json:"defaultMatch"`
-}
-
-// Index represents INDEX DatasetInfoKind
-type Index struct {
-	Datatype string `json:"datatype"`
-	Disabled bool   `json:"disabled"`
-}*/
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
 type PartialDatasetInfo struct {
