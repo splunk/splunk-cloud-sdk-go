@@ -1,9 +1,9 @@
 package service
 
 import (
-	"testing"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Stubby test for GetDataset() catalog service endpoint
@@ -32,7 +32,15 @@ func TestPostDataset(t *testing.T) {
 	assert.Equal(t, model.INDEX, result.Kind)
 }
 
-// TODO: UpdateDataset
+// Stubby test for UpdateDataset() catalog service endpoint
+func TestUpdateataset(t *testing.T) {
+	result, err := getSplunkClient().CatalogService.UpdateDataset(
+		model.PartialDatasetInfo{Disabled: true, Version: 5}, "ds1")
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, "stubby_dataset_1", result.Name)
+	assert.Equal(t, model.INDEX, result.Kind)
+}
 
 // Stubby test for DeleteDataset() catalog service endpoint
 func TestDeleteDataset(t *testing.T) {
@@ -56,15 +64,15 @@ func TestGetRules(t *testing.T) {
 func TestGetRule(t *testing.T) {
 	result, err := getSplunkClient().CatalogService.GetRule("rule1")
 	assert.Empty(t, err)
-	assert.NotNil(t, "rule1",result.ID)
+	assert.NotNil(t, "rule1", result.ID)
 	assert.Equal(t, "_internal", result.Name)
 }
 
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions [3]model.Action
-	actions[0] = CreateAction("AUTOKV", "Splunk", 0,"", model.NONE, "", "", "", 0)
-	actions[1] = CreateAction("EVAL", "Splunk",0,"Splunk", "", "string", "", "",0)
+	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
+	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
 	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
 	result, err := getSplunkClient().CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
 	assert.Empty(t, err)
