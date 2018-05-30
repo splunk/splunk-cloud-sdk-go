@@ -30,7 +30,7 @@ type DatasetInfo struct {
 	Filter             string `json:"filter,omitempty"`
 	MaxMatches         int    `json:"maxMatches,omitempty"`
 	MinMatches         int    `json:"minMatches,omitempty"`
-	defaultMatch       string `json:"defaultMatch,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
 	Disabled bool   `json:"disabled,omitempty"`
@@ -72,7 +72,7 @@ type PartialDatasetInfo struct {
 	Filter             string `json:"filter,omitempty"`
 	MaxMatches         int    `json:"maxMatches,omitempty"`
 	MinMatches         int    `json:"minMatches,omitempty"`
-	defaultMatch       string `json:"defaultMatch,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
 	Disabled bool   `json:"disabled,omitempty"`
