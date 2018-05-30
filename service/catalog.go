@@ -54,8 +54,8 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 	return &result, err
 }
 // UpdateDataset updates an existing Dataset
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetId string) (*model.PartialDatasetInfo, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", datasetId)
+func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.PartialDatasetInfo, error) {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", datasetID)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,8 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 }
 
 // DeleteDataset implements delete Dataset endpoint
-func (c *CatalogService) DeleteDataset(datasetId string) error {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetId)
+func (c *CatalogService) DeleteDataset(datasetID string) error {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return err
 	}
@@ -79,8 +79,8 @@ func (c *CatalogService) DeleteDataset(datasetId string) error {
 }
 
 // DeleteRule deletes the rule by the given path.
-func (c *CatalogService) DeleteRule(ruleId string) error {
-	getDeleteURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleId)
+func (c *CatalogService) DeleteRule(ruleID string) error {
+	getDeleteURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
 	if err != nil {
 		return err
 	}
@@ -103,9 +103,9 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	return result, err
 }
 
-// GetRules returns all the rules.
-func (c *CatalogService) GetRule(ruleId string) (*model.Rule, error) {
-	getRuleURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleId)
+// GetRule returns rule by an ID.
+func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
+	getRuleURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
 	if err != nil {
 		return nil, err
 	}
