@@ -42,6 +42,17 @@ func TestParseResponse(t *testing.T) {
 	}
 }
 
+func TestParseNilResponse(t *testing.T) {
+	type TestModel struct {
+		TestID string `json:"TestID"`
+	}
+	parsingError := errors.New("ParsingError")
+	var testModel TestModel
+	err := ParseResponse(&testModel, nil, parsingError)
+	assert.NotNil(t, err)
+	assert.Equal(t, parsingError, err)
+}
+
 func TestParseErrorNoError(t *testing.T) {
 	testData := []byte(`{"TestID":"1"}`)
 	httpResp := &http.Response{

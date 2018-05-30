@@ -1,30 +1,24 @@
 package testutils
 
 import (
+	"os"
 	"time"
-
-	"github.com/splunk/ssc-client-go/service"
 )
 
-const (
-	// TestToken is the auth token used by stubby server
-	TestToken = "TEST_AUTH_TOKEN"
-	// TestStubbyHost is the stubby host
-	TestStubbyHost = "ssc-sdk-shared-stubby:8882"
-	// TestSubbyLocalHost is the stubby localhost
-	TestSubbyLocalHost = "localhost:8882"
-	// TestStubbySchme is the stubby scheme
-	TestStubbySchme = "http"
-	// TestTimeOut is the client timeout used in tests
-	TestTimeOut = time.Second * 5
-	// TestTenantID is the tenant id used by stubby tests
-	TestTenantID = "TEST_TENANT"
-)
+// TestURLProtocol - the url protocol for the test api to be used
+var TestURLProtocol = os.Getenv("TEST_URL_PROTOCOL")
 
-// GetSplunkClient - For configuring a Splunk client to use for tests
-func GetSplunkClient(local ...bool) *service.Client {
-	if len(local) > 0 {
-		return service.NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestSubbyLocalHost, TestTimeOut)
-	}
-	return service.NewClient(TestTenantID, TestToken, TestStubbySchme+"://"+TestStubbyHost, TestTimeOut)
-}
+// TestSSCHost - the url for the test api to be used
+var TestSSCHost = os.Getenv("TEST_SSC_HOST")
+
+// TestAuthenticationToken - the authentication that gives permission to make requests against the api
+var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")
+
+// TestTenantID - the tenant to be used for the API
+var TestTenantID = os.Getenv("TEST_TENANT_ID")
+
+// TestInavlidAuthenticationToken - the invalid authentication that denies permission to make requests against the api
+var TestInvalidAuthenticationToken = "INVALID_TEST_AUTH_TOKEN"
+
+// TestTimeOut - the timeout to be used for requests to the api
+var TestTimeOut = time.Second * 5

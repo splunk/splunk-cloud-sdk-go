@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"fmt"
 )
 
 // catalog service url prefix
@@ -22,7 +21,7 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	response, err := c.client.Get(url)
 
 	var result []model.DatasetInfo
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return result, err
 }
@@ -36,25 +35,24 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 	response, err := c.client.Get(url)
 
 	var result model.DatasetInfo
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
 
 // CreateDataset creates a new Dataset
 func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets")
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Post(url, dataset)
 
 	var result model.DatasetInfo
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
-
 // UpdateDataset updates an existing Dataset
 func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetId string) (*model.PartialDatasetInfo, error) {
 	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", datasetId)
@@ -64,7 +62,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 	response, err := c.client.Patch(url, dataset)
 
 	var result model.PartialDatasetInfo
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
@@ -100,7 +98,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	response, err := c.client.Get(getRuleURL)
 
 	var result []model.Rule
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return result, err
 }
@@ -108,14 +106,13 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 // GetRules returns all the rules.
 func (c *CatalogService) GetRule(ruleId string) (*model.Rule, error) {
 	getRuleURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleId)
-	fmt.Println(getRuleURL)
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Get(getRuleURL)
 
 	var result model.Rule
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
@@ -129,7 +126,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	response, err := c.client.Post(postRuleURL, rule)
 
 	var result model.Rule
-	util.ParseResponse(&result, response, err)
+	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }

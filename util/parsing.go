@@ -11,19 +11,22 @@ import (
 
 // ParseResponse parses the http response and unmarshals it into json
 func ParseResponse(model interface{}, response *http.Response, err error) error {
-	if err == nil {
-		defer response.Body.Close()
-		b := new(bytes.Buffer)
-		b.ReadFrom(response.Body)
-		err = json.NewDecoder(b).Decode(model)
+	if response == nil {
+		return fmt.Errorf("nil response provided")
 	}
-	return err
+	defer response.Body.Close()
+	if err != nil {
+		return err
+	}
+	b := new(bytes.Buffer)
+	b.ReadFrom(response.Body)
+	return json.NewDecoder(b).Decode(model)
 }
 
 // ParseError checks for error and closes the response body
 // It can be used when we don't care about the response, but do want to close the response body
 func ParseError(response *http.Response, err error) error {
-	if err == nil {
+	if err == nil && response != nil {
 		defer response.Body.Close()
 	}
 	return err

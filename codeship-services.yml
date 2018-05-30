@@ -4,7 +4,7 @@ ssc-client-go:
     dockerfile: ci/Dockerfile
 
 ssc-sdk-shared-token-fetcher:
-  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:temporary
+  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:latest
   dockercfg_service: aws-generator
   encrypted_env_file: ci/env.encrypted
   volumes:
@@ -23,8 +23,8 @@ ssc-client-go-against-playground:
     image: splunk/ssc-client-go-against-playground
     dockerfile: ci/Dockerfile
   encrypted_env_file: ci/env.encrypted
-  volumes:
-    - ./okta:/okta
+  volumes_from:
+    - ssc-sdk-shared-token-fetcher
   depends_on:
     - ssc-sdk-shared-token-fetcher
 

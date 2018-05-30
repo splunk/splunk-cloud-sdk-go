@@ -45,7 +45,7 @@ func (c *IdentityService) GetUserProfile() (*model.User, error) {
 	}
 
 	response, err := c.client.Get(url)
-	util.ParseResponse(&user, response, err)
+	err = util.ParseResponse(&user, response, err)
 	return &user, err
 }
 
@@ -59,7 +59,7 @@ func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) 
 	}
 
 	response, err := c.client.Get(url)
-	util.ParseResponse(&users, response, err)
+	err = util.ParseResponse(&users, response, err)
 	return users, err
 }
 
@@ -73,7 +73,6 @@ func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User
 
 	response, err := c.client.Put(url, users)
 	return util.ParseError(response, err)
-
 }
 
 // AddTenantUsers adds users to a tenant
@@ -86,7 +85,6 @@ func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) er
 
 	response, err := c.client.Patch(url, users)
 	return util.ParseError(response, err)
-
 }
 
 // DeleteTenantUsers deletes users from a tenant

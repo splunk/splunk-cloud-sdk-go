@@ -1,6 +1,6 @@
 // +build !integration
 
-package service
+package playgroundintegration
 
 import (
 	"github.com/splunk/ssc-client-go/model"
@@ -12,7 +12,7 @@ import (
 )
 
 func cleanupDatasets(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	result, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
 
@@ -23,7 +23,7 @@ func cleanupDatasets(t *testing.T) {
 }
 
 func cleanupRules(t *testing.T) {
-	client := getSplunkClientForPlaygroundTests()
+	client := getClient()
 	result, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
 
@@ -36,8 +36,8 @@ func cleanupRules(t *testing.T) {
 func TestIntegrationCRUDDatasets(t *testing.T) {
 	// cleanupDatasets(t)
 
-	client := getSplunkClientForPlaygroundTests()
-	invalidClient := getInvalidSplunkClientForPlaygroundTests()
+	client := getClient()
+	invalidClient := getInvalidClient()
 
 	// create dataset
 	datasetName := "integ_dataset_1000"
@@ -131,8 +131,8 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 func TestIntegrationCRUDRules(t *testing.T) {
 	//defer cleanupRules(t)
 
-	client := getSplunkClientForPlaygroundTests()
-	invalidClient := getInvalidSplunkClientForPlaygroundTests()
+	client := getClient()
+	invalidClient := getInvalidClient()
 
 	// create rule
 	ruleName := "goSdkTestrRule1"

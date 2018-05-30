@@ -1,9 +1,8 @@
-package service
+package stubbyintegration
 
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,50 +10,42 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
 )
 
-func getClient() *Client {
-	return NewClient(TestTenantID, TestToken, TestHost, TestTimeOut)
-}
+func getClient() *service.Client {
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
-func TestBuildURL(t *testing.T) {
-	client := getClient()
-	url, err := client.BuildURL("services", "search", "jobs")
+	//fmt.Printf("=================================================================")
+	//fmt.Printf("CREATING A CLIENT WITH THESE SETTINGS")
+	//fmt.Printf("=================================================================")
+	//fmt.Printf("Authentication Token: " + testutils.TestAuthenticationToken + "\n")
+	//fmt.Printf("SSC Host API: " + testutils.TestSSCHost + "\n")
+	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
+	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
+	//fmt.Printf("Fully Qualified URL: " + url + "\n")
 
-	assert.Nil(t, err)
-	assert.Equal(t, "localhost", url.Hostname())
-	assert.Equal(t, "https", url.Scheme)
-	assert.Equal(t, "8089", url.Port())
-	assert.Equal(t, fmt.Sprintf("%s%s%s", "api/", TestTenantID, "/services/search/jobs"), url.Path)
-	assert.Empty(t, url.Fragment)
-}
-
-func TestNewClient(t *testing.T) {
-	client := getClient()
-	searchService := &SearchService{client: client}
-	assert.Equal(t, TestToken, client.token)
-	assert.Equal(t, TestHost, fmt.Sprintf("%s://%s", client.URL.Scheme, client.URL.Host))
-	assert.Equal(t, TestTimeOut, client.httpClient.Timeout)
-	assert.Equal(t, searchService, client.SearchService)
+	return service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
 }
 
 func TestNewRequest(t *testing.T) {
 	client := getClient()
 	body := []byte(`{"test":"This is a test body"}`)
-	expectedAuth := []string{"Bearer " + TestToken}
+	expectedAuth := []string{"Bearer " + testutils.TestAuthenticationToken}
 	requestBody := bytes.NewBuffer(body)
 	tests := []struct {
 		method string
 		url    string
 		body   io.Reader
 	}{
-		{http.MethodGet, TestHost, nil},
-		{http.MethodPost, TestHost, requestBody},
-		{http.MethodPut, TestHost, requestBody},
-		{http.MethodPatch, TestHost, requestBody},
-		{http.MethodDelete, TestHost, nil},
+		{http.MethodGet, testutils.TestSSCHost, nil},
+		{http.MethodPost, testutils.TestSSCHost, requestBody},
+		{http.MethodPut, testutils.TestSSCHost, requestBody},
+		{http.MethodPatch, testutils.TestSSCHost, requestBody},
+		{http.MethodDelete, testutils.TestSSCHost, nil},
 	}
 	for _, test := range tests {
 		req, err := client.NewRequest(test.method, test.url, test.body)
@@ -83,11 +74,11 @@ func TestNewRequest(t *testing.T) {
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
 	client := getClient()
-	req, err := client.NewRequest(http.MethodGet, TestHost, nil)
+	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
 	}
-	expectedAuth := []string{"Bearer " + TestToken}
+	expectedAuth := []string{"Bearer " + testutils.TestAuthenticationToken}
 	if got, want := req.Header["Authorization"], expectedAuth; !reflect.DeepEqual(got, want) {
 		t.Errorf("NewRequest authorization is %v, want %v", got, want)
 	}
@@ -95,7 +86,7 @@ func TestNewRequestBearerAuthHeader(t *testing.T) {
 
 func TestNewRequestError(t *testing.T) {
 	client := getClient()
-	_, err := client.NewRequest("#~/", TestHost, nil)
+	_, err := client.NewRequest("#~/", testutils.TestSSCHost, nil)
 	if err == nil {
 		t.Errorf("NewRequest expected to return error, got %v", err)
 	}
@@ -103,7 +94,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient()
-	resp, _ := client.DoRequest(http.MethodGet, url.URL{Scheme: TestStubbySchme, Host: TestStubbyHost, Path: "/error"}, nil)
+	resp, _ := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil)
 	if resp.StatusCode != 500 {
 		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
 	}
@@ -120,7 +111,7 @@ func TestNewStubbyRequest(t *testing.T) {
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {
-	var client = getSplunkClient()
+	var client = getClient()
 	collector, err := client.NewBatchEventsSender(5, 1000)
 	assert.Nil(t, err)
 

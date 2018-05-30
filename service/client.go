@@ -23,7 +23,6 @@ import (
 // Declare constants for service package
 const (
 	AuthorizationType = "Bearer"
-	// API               = "api"
 )
 
 // A Client is used to communicate with service endpoints
@@ -54,6 +53,7 @@ type service struct {
 // NewRequest creates a new HTTP Request and set proper header
 func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
+	fmt.Println(request)
 	if err != nil {
 		return nil, err
 	}
@@ -105,12 +105,8 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *http.Request) (*http.Response, error) {
-	response, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return response, nil
+func (c *Client) Do(req *http.Request) (*http.Response, error) {fmt.Println(req)
+	return c.httpClient.Do(req)
 }
 
 // Get implements HTTP Get call
@@ -157,13 +153,15 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 			return nil, err
 		}
 	}
-	var err error
-	if request, err := c.NewRequest(method, requestURL.String(), buffer); err == nil {
-		if response, err := c.Do(request); err == nil {
-			return util.ParseHTTPStatusCodeInResponse(response)
-		}
+	request, err := c.NewRequest(method, requestURL.String(), buffer)
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+	response, err := c.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
 // UpdateToken updates the authorization token
