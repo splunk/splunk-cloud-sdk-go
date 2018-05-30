@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -18,6 +17,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"fmt"
 )
 
 // Declare constants for service package
@@ -53,7 +53,6 @@ type service struct {
 // NewRequest creates a new HTTP Request and set proper header
 func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
-	fmt.Println(request)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +104,7 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *http.Request) (*http.Response, error) {fmt.Println(req)
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	return c.httpClient.Do(req)
 }
 

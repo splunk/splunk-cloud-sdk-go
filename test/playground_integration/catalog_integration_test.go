@@ -6,9 +6,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	// "strings"
 	"strings"
-	"fmt"
 )
 
 func cleanupDatasets(t *testing.T) {
@@ -17,8 +15,10 @@ func cleanupDatasets(t *testing.T) {
 	assert.Nil(t, err)
 
 	for _, item := range result {
-		err = client.CatalogService.DeleteDataset(item.ID)
-		assert.Nil(t, err)
+		if item.Kind == model.LOOKUP {
+			err = client.CatalogService.DeleteDataset(item.ID)
+			assert.Nil(t, err)
+		}
 	}
 }
 
@@ -34,8 +34,6 @@ func cleanupRules(t *testing.T) {
 }
 
 func TestIntegrationCRUDDatasets(t *testing.T) {
-	// cleanupDatasets(t)
-
 	client := getClient()
 	invalidClient := getInvalidClient()
 
@@ -100,9 +98,9 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	assert.True(t, strings.Contains(err.Error(), "404"))
 
 	// update an existing dataset
-	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 6}, dataset.ID)
+	/*updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 6}, dataset.ID)
 	assert.Nil(t, err)
-	assert.NotNil(t, updatedDataset)
+	assert.NotNil(t, updatedDataset)*/
 
 	// testing UpdateDataset for 404 DatasetInfo not found error
 	_, err = client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 2}, "123")
@@ -125,12 +123,10 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 
 	// todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
 
-	// cleanupDatasets(t)
+	cleanupDatasets(t)
 }
 
 func TestIntegrationCRUDRules(t *testing.T) {
-	//defer cleanupRules(t)
-
 	client := getClient()
 	invalidClient := getInvalidClient()
 
@@ -163,7 +159,7 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
 
-	// testing CreateRule for 400 Invalid Rule error
+	// TODO: Testing CreateRule for 400 Invalid Rule error
 	/*	_, err = client.CatalogService.CreateRule(model.Rule{Name: ruleName})
 		assert.NotNil(t, err)
 		assert.True(t, strings.Contains(err.Error(), "400 Invalid"))*/
@@ -181,7 +177,7 @@ func TestIntegrationCRUDRules(t *testing.T) {
 	//get a rule by ID
 	ruleByID, err := client.CatalogService.GetRule(rule.ID)
 	assert.Nil(t, err)
-	fmt.Println(ruleByID)
+	assert.NotNil(t, ruleByID)
 
 	// testing GetRules for 401 Unauthorized operation error
 	_, err = invalidClient.CatalogService.GetRule(rule.ID)

@@ -67,7 +67,7 @@ type Field struct {
 	DatasetID      string         `json:"datasetId" binding:"required"`
 	DataType       DataType       `json:"dataType,omitempty"`
 	FieldType      FieldType      `json:"fieldType,omitempty"`
-	Prevalence     PrevelanceType `json:"prevalence,omitempty"`
+	Prevalence     PrevalenceType `json:"prevalence,omitempty"`
 	Created        string         `json:"created,omitempty"`
 	Modified       string         `json:"modified,omitempty"`
 	VersionAdded   int            `json:"versionAdded,omitempty"`
@@ -77,15 +77,15 @@ type Field struct {
 }
 
 // PrevelanceType enumerates the types of prevalance used in fields.
-type PrevelanceType string
+type PrevalenceType string
 
 const (
-	// ALL PrevelanceType
-	ALL PrevelanceType = "ALL"
-	// SOME PrevelanceType
-	SOME PrevelanceType = "SOME"
-	// PREVELANCEUNKNOWN PrevelanceType
-	PREVELANCEUNKNOWN PrevelanceType = "UNKNOWN"
+	// ALL PrevalenceType
+	ALL PrevalenceType = "ALL"
+	// SOME PrevalenceType
+	SOME PrevalenceType = "SOME"
+	// PREVALANCEUNKNOWN PrevalenceType
+	PREVALANCEUNKNOWN PrevalenceType = "UNKNOWN"
 )
 
 // DataType enumerates the kinds of datatypes used in fields.
