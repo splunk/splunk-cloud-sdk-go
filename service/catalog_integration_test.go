@@ -3,10 +3,11 @@
 package service
 
 import (
-	"testing"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
+	"testing"
 	// "strings"
+	"strings"
 	"fmt"
 )
 
@@ -33,92 +34,107 @@ func cleanupRules(t *testing.T) {
 }
 
 func TestIntegrationCRUDDatasets(t *testing.T) {
-	//defer cleanupDatasets(t)
+	// cleanupDatasets(t)
 
 	client := getSplunkClientForPlaygroundTests()
 	invalidClient := getInvalidSplunkClientForPlaygroundTests()
 
 	// create dataset
-	datasetName := "integ_dataset_1"
+	datasetName := "integ_dataset_1000"
 	datasetOwner := "Splunk"
 	datasetCapabilities := "1101-00000:11010"
-	isDatasetDisabled := false
-	dataset, err := client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: datasetName, Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: isDatasetDisabled})
+
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	assert.Nil(t, err)
 	assert.Equal(t, datasetName, dataset.Name)
-	assert.Equal(t, model.INDEX, dataset.Kind)
+	assert.Equal(t, model.LOOKUP, dataset.Kind)
 	// assert.Equal(t, []string{"somerule"}, dataset.Rules)
-	//todo field is not returned from playground, bug in catalog service
-	//assert.Equal(t, "todos", dataset.Todo)
 	_, err = client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "integ_dataset_2", Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: false})
+		model.DatasetInfo{Name: "integ_dataset_2000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.Nil(t, err)
 	_, err = client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "integ_dataset_3", Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: false})
+		model.DatasetInfo{Name: "integ_dataset_3000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.Nil(t, err)
 
+	// testing CreateDataset for 409 DatasetInfo already present error
 	_, err = client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "goSdkDataset2", Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: isDatasetDisabled})
+		model.DatasetInfo{ID: dataset.ID, Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "409"))
 
+	// testing CreateDataset for 401 Unauthorized operation error
 	_, err = invalidClient.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "goSdkDataset2", Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: isDatasetDisabled})
+		model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
 
+	// testing CreateDataset for 400 Invalid DatasetInfo error
 	_, err = client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "goSdkDataset4", Kind: model.INDEX})
+		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
 	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "400"))
 
-	//get datasets
+	// get datasets
 	datasets, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
 	assert.NotNil(t, len(datasets))
 
-	//get dataset
-	datasetByID, getDatasetErr := client.CatalogService.GetDataset("5b0704135ef8cf000a2cd55a")
-	assert.Nil(t, getDatasetErr)
-	fmt.Println(datasetByID)
+	// testing GetDatasets for 401 Unauthorized operation error
+	_, err = invalidClient.CatalogService.GetDatasets()
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
 
-	updatedDataset, updateDatasetErr := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.INDEX, Owner: datasetOwner, Capabilities: datasetCapabilities, Disabled: isDatasetDisabled, Version: 6}, "5b06fce15ef8cf000a2cd557")
-	assert.Nil(t, updateDatasetErr)
+	// get dataset
+	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
+	assert.Nil(t, err)
+
+	// testing GetDataset for 401 Unauthorized operation error
+	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+
+	// testing GetDataset for 404 DatasetInfo not found error
+	_, err = client.CatalogService.GetDataset("123")
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "404"))
+
+	// update an existing dataset
+	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 6}, dataset.ID)
+	assert.Nil(t, err)
 	fmt.Println(updatedDataset)
 
-	//delete dataset
-	err = client.CatalogService.DeleteDataset(datasetByID.ID)
+	// testing UpdateDataset for 404 DatasetInfo not found error
+	_, err = client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 2}, "123")
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "404"))
 
-	//delete dataset
+	// delete dataset
+	err = client.CatalogService.DeleteDataset(datasetByID.ID)
+	assert.Nil(t, err)
+
+	// testing DeleteDataset for 401 Unauthorized operation error
+	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+
+	// testing DeleteDataset for 404 DatasetInfo not found error
+	err = client.CatalogService.DeleteDataset("123")
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "404"))
+
+	// todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
+
 	// cleanupDatasets(t)
 }
 
-/*func TestIntegrationDatasetsErrors(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getSplunkClientForPlaygroundTests()
-
-	// create dataset
-	datasetName := "goSdkDataset1"
-	_, err := client.CatalogService.CreateDataset(
-		model.Dataset{Name: datasetName, Kind: model.VIEW, Rules: []string{"somerule"}, Todo: "todos"})
-	assert.Nil(t, err)
-
-	// create duplicated dataset should return 409
-	_, err = client.CatalogService.CreateDataset(
-		model.Dataset{Name: datasetName, Kind: model.VIEW})
-	assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
-
-	//delete dataset
-	cleanupDatasets(t)
-}*/
-
 func TestIntegrationCRUDRules(t *testing.T) {
-	cleanupRules(t)
-	defer cleanupRules(t)
+	//defer cleanupRules(t)
 
 	client := getSplunkClientForPlaygroundTests()
+	invalidClient := getInvalidSplunkClientForPlaygroundTests()
 
-	//create rule
+	// create rule
 	ruleName := "goSdkTestrRule1"
 	ruleModule := "catalog"
 	ruleMatch := "integration_test_match"
@@ -137,38 +153,61 @@ func TestIntegrationCRUDRules(t *testing.T) {
 		model.Rule{Name: "thirdone", Module: ruleModule, Owner: owner})
 	assert.Nil(t, err)
 
-	//get rules
+	// testing CreateRule for 409 Rule already present error
+	_, err = client.CatalogService.CreateRule(model.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Owner: owner})
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "409"))
+
+	// testing CreateRule for 401 Unauthorized operation error
+	_, err = invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner})
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+
+	// testing CreateRule for 400 Invalid Rule error
+	/*	_, err = client.CatalogService.CreateRule(model.Rule{Name: ruleName})
+		assert.NotNil(t, err)
+		assert.True(t, strings.Contains(err.Error(), "400 Invalid"))*/
+
+	// get all the rules
 	rules, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
 	assert.NotNil(t, len(rules))
 
-/*	ruleById, getRuleErr := client.CatalogService.GetRule(rule.ID)
-	assert.Nil(t, getRuleErr)
+	// testing GetRules for 401 Unauthorized operation error
+	_, err = invalidClient.CatalogService.GetRules()
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+
+	//get a rule by ID
+	/*ruleById, err := client.CatalogService.GetRule(rule.ID)
+	assert.Nil(t, err)
 	fmt.Println(ruleById)*/
 
-	deleteRuleErr := client.CatalogService.DeleteRule(rule.ID)
-	assert.Nil(t, deleteRuleErr)
+	// testing GetRules for 401 Unauthorized operation error
+	_, err = invalidClient.CatalogService.GetRule(rule.ID)
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
 
-	//delete rules
-	 cleanupRules(t)
-}
+	// testing GetRules for 404 Rule not found error
+	_, err = client.CatalogService.GetRule("123")
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "404"))
 
-/*func TestIntegrationRulessErrors(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getSplunkClientForPlaygroundTests()
-
-	//create rule
-	ruleName := "goSdkTestrRule1"
-	_, err := client.CatalogService.CreateRule(
-		model.Rule{Name: ruleName, Priority: 8})
+	// delete a rule by ID
+	err = client.CatalogService.DeleteRule(rule.ID)
 	assert.Nil(t, err)
 
-	// create duplicated rule should return 409
-	_, err = client.CatalogService.CreateRule(
-		model.Rule{Name: ruleName, Priority: 8})
-	assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
+	// testing DeleteRule for 401 Unauthorized operation error
+	err = invalidClient.CatalogService.DeleteRule(rule.ID)
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
 
-	//delete rules
+	// testing DeleteRule for 404 Rule not found error
+	err = client.CatalogService.DeleteRule("123")
+	assert.NotNil(t, err)
+	assert.True(t, strings.Contains(err.Error(), "404"))
+
+	// todo (Parul): 405 Rule cannot be deleted because of dependencies error case
+
 	cleanupRules(t)
-}*/
+}
