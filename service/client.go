@@ -161,23 +161,19 @@ func (c *Client) RefreshBearerToken() (string, error){
 	var urlPath= ""
 	urlPath = path.Join(RefreshTokenEndpoint)
 
-	var u *url.URL
-
-	u, _ = url.Parse(urlPath)
-	u.Path = urlPath
-	u.Scheme = "https"
-
 	data := url.Values{}
 	data.Set("refresh_token",RefreshToken)
 	data.Add("grant_type", "refresh_token")
 	data.Add("client_id", ClientID)
 	data.Add("scope", "openid email profile")
 
-	u.RawQuery = data.Encode()
+	tokenURL := url.URL{
+		Scheme:   "https",
+		Path:     urlPath,
+		RawQuery: data.Encode(),
+	}
 
-	urlStr := fmt.Sprintf("%v", u)
-
-	req, err := http.NewRequest("POST", urlStr, nil)
+	req, err := http.NewRequest("POST", tokenURL.String(), nil)
 	if err != nil {
 		return accessToken, err
 	}
@@ -187,7 +183,9 @@ func (c *Client) RefreshBearerToken() (string, error){
 	response, err := client.Do(req)
 
 	if response.StatusCode == 200 {
+		defer response.Body.Close()
 		body, err := ioutil.ReadAll(response.Body)
+
 		if err == nil {
 			s, err := parseRefreshData([]byte(body))
 			if err != nil {
@@ -196,6 +194,7 @@ func (c *Client) RefreshBearerToken() (string, error){
 			accessToken = s.AccessToken
 			return accessToken, err
 		}
+
 		return accessToken, err
 	}
 	return accessToken, err
