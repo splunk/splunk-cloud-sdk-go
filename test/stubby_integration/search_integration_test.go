@@ -10,7 +10,7 @@ import (
 
 func TestCreateJob(t *testing.T) {
 
-	response, err := getClient().SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := getClient(t).SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, "SEARCH_ID", response.SearchID)
@@ -19,7 +19,7 @@ func TestCreateJob(t *testing.T) {
 
 func TestCreateSyncJob(t *testing.T) {
 
-	response, err := getClient().SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := getClient(t).SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
@@ -30,7 +30,7 @@ func TestCreateSyncJob(t *testing.T) {
 
 func TestGetResults(t *testing.T) {
 
-	response, err := getClient().SearchService.GetResults("SEARCH_ID")
+	response, err := getClient(t).SearchService.GetResults("SEARCH_ID")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)

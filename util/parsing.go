@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -12,7 +13,7 @@ import (
 // ParseResponse parses the http response and unmarshals it into json
 func ParseResponse(model interface{}, response *http.Response, err error) error {
 	if response == nil {
-		return fmt.Errorf("nil response provided")
+		return errors.New("nil response provided")
 	}
 	defer response.Body.Close()
 	if err != nil {

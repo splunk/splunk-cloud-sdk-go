@@ -10,7 +10,7 @@ import (
 )
 
 func cleanupDatasets(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	result, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
 
@@ -21,7 +21,7 @@ func cleanupDatasets(t *testing.T) {
 }
 
 func cleanupRules(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	result, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
 
@@ -34,7 +34,7 @@ func cleanupRules(t *testing.T) {
 func TestIntegrationCRUDDatasets(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -67,7 +67,7 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 func TestIntegrationDatasetsErrors(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetName := "goSdkDataset1"
@@ -87,7 +87,7 @@ func TestIntegrationDatasetsErrors(t *testing.T) {
 func TestIntegrationCRUDRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	//create rule
 	ruleName := "goSdkTestrRule1"
@@ -117,7 +117,7 @@ func TestIntegrationCRUDRules(t *testing.T) {
 func TestIntegrationRulesErrors(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	//create rule
 	ruleName := "goSdkTestrRule1"

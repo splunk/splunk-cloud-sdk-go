@@ -10,7 +10,7 @@ import (
 
 // Stubby test for GetDataset() catalog service endpoint
 func TestGetDataset(t *testing.T) {
-	result, err := getClient().CatalogService.GetDataset("ds1")
+	result, err := getClient(t).CatalogService.GetDataset("ds1")
 
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
@@ -20,7 +20,7 @@ func TestGetDataset(t *testing.T) {
 
 // Stubby test for GetDatasets() catalog service endpoint
 func TestGetDatasets(t *testing.T) {
-	result, err := getClient().CatalogService.GetDatasets()
+	result, err := getClient(t).CatalogService.GetDatasets()
 
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
@@ -29,7 +29,7 @@ func TestGetDatasets(t *testing.T) {
 // Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
 	testDataset := model.Dataset{Name: "ds1", Kind: model.VIEW, Rules: []string{"string"}, Todo: "string"}
-	result, err := getClient().CatalogService.CreateDataset(testDataset)
+	result, err := getClient(t).CatalogService.CreateDataset(testDataset)
 
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
@@ -40,19 +40,19 @@ func TestPostDataset(t *testing.T) {
 
 // Stubby test for DeleteDataset() catalog service endpoint
 func TestDeleteDataset(t *testing.T) {
-	err := getClient().CatalogService.DeleteDataset("ds1")
+	err := getClient(t).CatalogService.DeleteDataset("ds1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for DeleteRule() catalog service endpoint
 func TestDeleteRule(t *testing.T) {
-	err := getClient().CatalogService.DeleteRule("rule1")
+	err := getClient(t).CatalogService.DeleteRule("rule1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for GetRules() catalog service endpoint
 func TestGetRules(t *testing.T) {
-	result, err := getClient().CatalogService.GetRules()
+	result, err := getClient(t).CatalogService.GetRules()
 
 	assert.Empty(t, err)
 	assert.Equal(t, 1, len(result))
@@ -65,7 +65,7 @@ func TestPostRule(t *testing.T) {
 	actions[0] = CreateAction("AUTOKV", "", "", true, "NONE", "", "", "", 0, "")
 	actions[1] = CreateAction("EVAL", "", "", false, "", "string", "", "", 0, "string")
 	actions[2] = CreateAction("LOOKUP", "", "", false, "", "string", "", "", 0, "")
-	result, err := getClient().CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
+	result, err := getClient(t).CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
 
 	assert.Empty(t, err)
 	assert.Equal(t, "rule4", result.Name)

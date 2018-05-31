@@ -9,13 +9,14 @@ import (
 )
 
 const hecServicePrefix = "hec2"
+const hecServiceVersion = "v1"
 
 // HecService talks to the SSC hec service
 type HecService service
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
+	url, err := h.client.BuildURL(hecServicePrefix, hecServiceVersion, "events")
 	if err != nil {
 		return err
 	}
@@ -25,7 +26,7 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 
 // CreateEvents post multiple events in one payload
 func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
+	url, err := h.client.BuildURL(hecServicePrefix, hecServiceVersion, "events")
 	if err != nil {
 		return err
 	}
@@ -39,7 +40,7 @@ func (h *HecService) CreateEvents(events []model.HecEvent) error {
 
 // CreateRawEvent implements HEC2 raw endpoint
 func (h *HecService) CreateRawEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "raw")
+	url, err := h.client.BuildURL(hecServicePrefix, hecServiceVersion, "raw")
 	if err != nil {
 		return err
 	}

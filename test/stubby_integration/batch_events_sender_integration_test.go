@@ -11,7 +11,7 @@ import (
 
 // Should flush when ticker ticked and queue is not full
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
-	var client = getClient()
+	var client = getClient(t)
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
@@ -32,7 +32,7 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 
 // Should flush when queue is full and ticker has not ticked
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
-	var client = getClient()
+	var client = getClient(t)
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
@@ -52,7 +52,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 
 //Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
-	var client = getClient()
+	var client = getClient(t)
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)

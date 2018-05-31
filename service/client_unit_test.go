@@ -17,7 +17,7 @@ func TestBuildURL(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client = NewClient(tenant, token, apiURL, timeout)
+	var client, _ = NewClient(tenant, token, apiURL, timeout)
 
 	testURL, err := client.BuildURL("services", "search", "jobs")
 
@@ -37,9 +37,10 @@ func TestNewClient(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client = NewClient(tenant, token, apiURL, timeout)
+	var client, err = NewClient(tenant, token, apiURL, timeout)
 	var searchService = &SearchService{client: client}
 
+	assert.Nil(t, err)
 	assert.Equal(t, token, client.token)
 	assert.Equal(t, apiURL, fmt.Sprintf("%s://%s", client.URL.Scheme, client.URL.Host))
 	assert.Equal(t, timeout, client.httpClient.Timeout)
