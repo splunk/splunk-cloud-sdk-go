@@ -34,6 +34,8 @@ func cleanupRules(t *testing.T) {
 }
 
 func TestIntegrationCRUDDatasets(t *testing.T) {
+	defer cleanupDatasets(t)
+
 	client := getClient()
 	invalidClient := getInvalidClient()
 
@@ -123,10 +125,13 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 
 	// todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
 
+	// clean up test datasets
 	cleanupDatasets(t)
 }
 
 func TestIntegrationCRUDRules(t *testing.T) {
+	defer cleanupRules(t)
+
 	client := getClient()
 	invalidClient := getInvalidClient()
 
@@ -205,5 +210,6 @@ func TestIntegrationCRUDRules(t *testing.T) {
 
 	// todo (Parul): 405 Rule cannot be deleted because of dependencies error case
 
+	// clean up test rules
 	cleanupRules(t)
 }
