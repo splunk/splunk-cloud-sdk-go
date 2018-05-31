@@ -27,6 +27,13 @@ var (
 	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 1, TTL: 1}
 )
 
+func TestGetJobs(t *testing.T) {
+	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
+	response, err := client.SearchService.GetJobs(nil)
+	assert.Nil(t, err)
+	assert.NotNil(t, response)
+}
+
 // TestIntegrationNewSearchJob asynchronously
 func TestIntegrationNewSearchJob(t *testing.T) {
 	client := getClient()
@@ -126,36 +133,6 @@ func TestIntegrationNewSearchJobMultiArgs(t *testing.T) {
 	assert.NotEmpty(t, response.SearchID)
 }
 
-// TestIntegrationNewSearchJobSync
-func TestIntegrationNewSearchJobSync(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequest)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobBadRequest asynchronously
-func TestIntegrationNewSearchJobSyncBadRequest(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestBadRequest)
-
-	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request"}
-	assert.NotNil(t, err)
-	assert.Equal(t, expectedError, err)
-
-	// expected Search Event
-	expectedResult := &model.SearchEvents{Preview: false, InitOffset: 0, Messages: []interface{}(nil),
-		Results: []*model.Result(nil), Fields: []map[string]interface{}(nil), Highlighted: map[string]interface{}(nil)}
-	assert.NotNil(t, response)
-	assert.EqualValues(t, expectedResult, response)
-}
-
 // TestIntegrationNewSearchJobBadQuery asynchronously
 func TestIntegrationNewSearchJobSyncBadQuery(t *testing.T) {
 	client := getClient()
@@ -165,78 +142,6 @@ func TestIntegrationNewSearchJobSyncBadQuery(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response.SearchID)
 }
-
-// TestIntegrationNewSearchJobSyncDuplicates
-func TestIntegrationNewSearchJobSyncDuplicates(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequest)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-
-	response, err = client.SearchService.CreateSyncJob(PostJobsRequest)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobSyncTimeout with timeout at 5 sec
-func TestIntegrationNewSearchJobSyncTimeout(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestTimeout)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobSyncTTL with TTL at 5 sec
-func TestIntegrationNewSearchJobSyncTTL(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestTTL)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobSyncLimit with Limit at 10
-func TestIntegrationNewSearchJobSyncLimit(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestLimit)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobSyncDisableAutoFinalization with Limit at 0, disable automatic finalization
-func TestIntegrationNewSearchJobSyncDisableAutoFinalization(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestDisableAutoFinalization)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
-// TestIntegrationNewSearchJobSyncMultiArgs with multiple args
-func TestIntegrationNewSearchJobSyncMultiArgs(t *testing.T) {
-	client := getClient()
-	assert.NotNil(t, client)
-
-	response, err := client.SearchService.CreateSyncJob(PostJobsRequestMultiArgs)
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	validateResponses(response, t)
-}
-
 // TestIntegrationGetJobResults
 func TestIntegrationGetJobResults(t *testing.T) {
 	client := getClient()
