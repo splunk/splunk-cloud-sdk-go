@@ -76,7 +76,7 @@ type Field struct {
 	Dataset        DatasetInfo    `json:"dataset,omitempty"`
 }
 
-// PrevelanceType enumerates the types of prevalance used in fields.
+// PrevalenceType enumerates the types of prevalance used in fields.
 type PrevalenceType string
 
 const (
