@@ -1,33 +1,120 @@
 package model
 
-// DatasetKind enumerates the kinds of datasets known to the system.
-type DatasetKind string
+// DatasetInfoKind enumerates the kinds of datasets known to the system.
+type DatasetInfoKind string
 
 const (
-	// VIEW represents a view over base data in some other dataset.
-	// The view  consists of a Splunk query (with at least a generating command)
-	// and an optional collection of search time transformation rules.
-	VIEW DatasetKind = "VIEW"
+	// LOOKUP represents TODO: Description needed
+	LOOKUP DatasetInfoKind = "lookup"
 	// INDEX represents a Splunk events or metrics index
-	INDEX DatasetKind = "INDEX"
-	// KVSTORE represents an instance of the KV storage service as a dataset
-	KVSTORE DatasetKind = "KVSTORE"
-	// EXTERN represents an extern REST API based dataset
-	EXTERN DatasetKind = "EXTERN"
-	// TOPIC represents a message bus topic as a dataset.
-	TOPIC DatasetKind = "TOPIC"
-	// CATALOG represents the metadata catalog as a dataset
-	CATALOG DatasetKind = "CATALOG"
+	INDEX DatasetInfoKind = "index"
 )
 
-// Dataset represents the sources of data that can be serched by Splunk
-type Dataset struct {
-	ID    string      `json:"id"`
-	Name  string      `json:"name"`
-	Kind  DatasetKind `json:"kind"`
-	Rules []string    `json:"rules"`
-	Todo  string      `json:"todo"`
+// DatasetInfo represents the sources of data that can be serched by Splunk
+type DatasetInfo struct {
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name" binding:"required"`
+	Kind         DatasetInfoKind `json:"kind" binding:"required"`
+	Owner        string          `json:"owner" binding:"required"`
+	Created      string          `json:"created,omitempty"`
+	Modified     string          `json:"modified,omitempty"`
+	CreatedBy    string          `json:"createdBy,omitempty"`
+	ModifiedBy   string          `json:"modifiedBy,omitempty"`
+	Capabilities string          `json:"capabilities" binding:"required"`
+	Version      int             `json:"version,omitempty"`
+	Fields       []Field         `json:"fields,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         int    `json:"maxMatches,omitempty"`
+	MinMatches         int    `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled bool   `json:"disabled,omitempty"`
 }
+
+// PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
+type PartialDatasetInfo struct {
+	Name         string          `json:"name,omitempty"`
+	Kind         DatasetInfoKind `json:"kind,omitempty"`
+	Owner        string          `json:"owner,omitempty"`
+	Created      string          `json:"created,omitempty"`
+	Modified     string          `json:"modified,omitempty"`
+	CreatedBy    string          `json:"createdBy,omitempty"`
+	ModifiedBy   string          `json:"modifiedBy,omitempty"`
+	Capabilities string          `json:"capabilities,omitempty"`
+	Version      int             `json:"version,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         int    `json:"maxMatches,omitempty"`
+	MinMatches         int    `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled bool   `json:"disabled,omitempty"`
+}
+
+// Field represents TODO: Description needed
+type Field struct {
+	ID             string         `json:"id" binding:"required"`
+	Name           string         `json:"name" binding:"required"`
+	DatasetID      string         `json:"datasetId" binding:"required"`
+	DataType       DataType       `json:"dataType,omitempty"`
+	FieldType      FieldType      `json:"fieldType,omitempty"`
+	Prevalence     PrevalenceType `json:"prevalence,omitempty"`
+	Created        string         `json:"created,omitempty"`
+	Modified       string         `json:"modified,omitempty"`
+	VersionAdded   int            `json:"versionAdded,omitempty"`
+	VersionRemoved int            `json:"versionRemoved,omitempty"`
+	Fields         []Field        `json:"fields,omitempty"`
+	Dataset        DatasetInfo    `json:"dataset,omitempty"`
+}
+
+// PrevalenceType enumerates the types of prevalance used in fields.
+type PrevalenceType string
+
+const (
+	// ALL PrevalenceType
+	ALL PrevalenceType = "ALL"
+	// SOME PrevalenceType
+	SOME PrevalenceType = "SOME"
+	// PREVALANCEUNKNOWN PrevalenceType
+	PREVALANCEUNKNOWN PrevalenceType = "UNKNOWN"
+)
+
+// DataType enumerates the kinds of datatypes used in fields.
+type DataType string
+
+const (
+	// DATE DataType
+	DATE DataType = "DATE"
+	// NUMBER DataType
+	NUMBER DataType = "NUMBER"
+	// OBJECTID DataType
+	OBJECTID DataType = "OBJECT_ID"
+	// STRING DataType
+	STRING DataType = "STRING"
+	// DATATYPEUNKNOWN DataType
+	DATATYPEUNKNOWN DataType = "UNKNOWN"
+)
+
+// FieldType enumerates different kinds of fields.
+type FieldType string
+
+const (
+	// DIMENSION fieldType
+	DIMENSION FieldType = "DIMENSION"
+	// MEASURE fieldType
+	MEASURE FieldType = "MEASURE"
+	// FIELDTYPEUNKNOWN fieldType
+	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
+)
 
 // ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
@@ -41,32 +128,43 @@ const (
 	REGEX ActionKind = "REGEX"
 	// EVAL action
 	EVAL ActionKind = "EVAL"
-	// LOOKUP action
-	LOOKUP ActionKind = "LOOKUP"
+	// LOOKUPACTION action
+	LOOKUPACTION ActionKind = "LOOKUP"
 )
 
 // Rule represents a rule for transforming results at search time.
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
-	Name        string   `json:"name"`
-	Actions     []Action `json:"actions"`
-	Match       string   `json:"match"`
-	Priority    int      `json:"priority"`
-	Description string   `json:"description"`
+	ID         string   `json:"id,omitempty"`
+	Name       string   `json:"name" binding:"required"`
+	Module     string   `json:"module,omitempty"`
+	Match      string   `json:"match" binding:"required"`
+	Actions    []Action `json:"actions,omitempty"`
+	Owner      string   `json:"owner" binding:"required"`
+	Created    string   `json:"created,omitempty"`
+	Modified   string   `json:"modified,omitempty"`
+	CreatedBy  string   `json:"createdBy,omitempty"`
+	ModifiedBy string   `json:"modifiedBy,omitempty"`
+	Version    int      `json:"version,omitempty"`
 }
 
 // Action represents a specific search time transformation action.
 type Action struct {
-	Kind       ActionKind `json:"kind"`
+	ID         string     `json:"id,omitempty"`
+	RuleID     string     `json:"ruleid,omitempty"`
+	Kind       ActionKind `json:"kind" binding:"required"`
+	Owner      string     `json:"owner" binding:"required"`
+	Created    string     `json:"created,omitempty"`
+	Modified   string     `json:"modified,omitempty"`
+	CreatedBy  string     `json:"createdBy,omitempty"`
+	ModifiedBy string     `json:"modifiedBy,omitempty"`
+	Version    int        `json:"version,omitempty"`
 	Field      string     `json:"field,omitempty"`
 	Alias      string     `json:"alias,omitempty"`
-	Trim       bool       `json:"trim,omitempty"`
 	Mode       AutoMode   `json:"mode,omitempty"`
 	Expression string     `json:"expression,omitempty"`
 	Pattern    string     `json:"pattern,omitempty"`
-	Format     string     `json:"format,omitempty"`
 	Limit      int        `json:"limit,omitempty"`
-	Result     string     `json:"result,omitempty"`
 }
 
 // AutoMode enumerates the automatic key/value extraction modes.
