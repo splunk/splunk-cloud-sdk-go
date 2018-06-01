@@ -19,10 +19,14 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 		return nil, err
 	}
 	response, err := c.client.Get(url)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result []model.DatasetInfo
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return result, err
 }
 
@@ -33,10 +37,14 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 		return nil, err
 	}
 	response, err := c.client.Get(url)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result model.DatasetInfo
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
@@ -47,10 +55,14 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 		return nil, err
 	}
 	response, err := c.client.Post(url, dataset)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result model.DatasetInfo
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 // UpdateDataset updates an existing Dataset
@@ -60,10 +72,14 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 		return nil, err
 	}
 	response, err := c.client.Patch(url, dataset)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result model.PartialDatasetInfo
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
@@ -74,8 +90,10 @@ func (c *CatalogService) DeleteDataset(datasetID string) error {
 		return err
 	}
 	response, err := c.client.Delete(url)
-
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // DeleteRule deletes the rule by the given path.
@@ -85,8 +103,10 @@ func (c *CatalogService) DeleteRule(ruleID string) error {
 		return err
 	}
 	response, err := c.client.Delete(getDeleteURL)
-
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // GetRules returns all the rules.
@@ -96,10 +116,14 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 		return nil, err
 	}
 	response, err := c.client.Get(getRuleURL)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result []model.Rule
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return result, err
 }
 
@@ -110,10 +134,14 @@ func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
 		return nil, err
 	}
 	response, err := c.client.Get(getRuleURL)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result model.Rule
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
@@ -124,9 +152,13 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 		return nil, err
 	}
 	response, err := c.client.Post(postRuleURL, rule)
-
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
 	var result model.Rule
-	err = util.ParseResponse(&result, response, err)
-
+	err = util.ParseResponse(&result, response)
 	return &result, err
 }
