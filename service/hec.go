@@ -8,7 +8,7 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 )
 
-const hecServicePrefix = "hec2"
+const hecServicePrefix = "ingest"
 
 // HecService talks to the SSC hec service
 type HecService service
