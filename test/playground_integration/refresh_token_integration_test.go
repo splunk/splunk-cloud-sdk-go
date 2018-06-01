@@ -29,9 +29,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	//get user profile
 	user, err := client.IdentityService.GetUserProfile()
 	if err != nil {
-
-		t.Errorf("Failed test")
-
+		t.FailNow()
 	}
 	assert.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", user.ID)

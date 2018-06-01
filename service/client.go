@@ -129,8 +129,6 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 
 func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error) {
 	// refresh and retry request here
-	var u *url.URL
-	u = req.URL
 	httpMethod := req.Method
 	body := req.Body
 
@@ -142,16 +140,14 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 		return nil, err
 	}
 	c.UpdateToken(accessToken)
-	request, err := http.NewRequest(httpMethod, u.String(), body)
+	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
 	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 	request.Header.Set("Content-Type", "application/json")
 
 	//retry request with new access token
 	response, err := c.httpClient.Do(request)
-	if response != nil {
-		return response, err
-	}
-	return nil, err
+
+	return response, err
 }
 
 type refreshData struct {
