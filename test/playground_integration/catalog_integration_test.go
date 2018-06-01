@@ -67,13 +67,15 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	_, err = invalidClient.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.Equal(t,401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 
 	// testing CreateDataset for 400 Invalid DatasetInfo error
 	_, err = client.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "400"))
+	assert.Equal(t, 400, err.(*util.HTTPError).Status)
+	assert.Equal(t, "400 ", err.(*util.HTTPError).Message)
 
 	// get datasets
 	datasets, err := client.CatalogService.GetDatasets()
@@ -83,7 +85,8 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	// testing GetDatasets for 401 Unauthorized operation error
 	_, err = invalidClient.CatalogService.GetDatasets()
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.Equal(t,401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 
 	// get dataset
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
@@ -92,12 +95,14 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	// testing GetDataset for 401 Unauthorized operation error
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.Equal(t,401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 
 	// testing GetDataset for 404 DatasetInfo not found error
 	_, err = client.CatalogService.GetDataset("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.Equal(t,404, err.(*util.HTTPError).Status)
+	assert.Equal(t, "404 ", err.(*util.HTTPError).Message)
 
 	// update an existing dataset
 	/*updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 6}, dataset.ID)
@@ -116,7 +121,8 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 			Version: 2,
 		}, "123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.Equal(t,404, err.(*util.HTTPError).Status)
+	assert.Equal(t, "404 ", err.(*util.HTTPError).Message)
 
 	// delete dataset
 	err = client.CatalogService.DeleteDataset(datasetByID.ID)
@@ -125,12 +131,14 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	// testing DeleteDataset for 401 Unauthorized operation error
 	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.Equal(t,401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 
 	// testing DeleteDataset for 404 DatasetInfo not found error
 	err = client.CatalogService.DeleteDataset("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.Equal(t,404, err.(*util.HTTPError).Status)
+	assert.Equal(t, "404 ", err.(*util.HTTPError).Message)
 
 	// todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
 
