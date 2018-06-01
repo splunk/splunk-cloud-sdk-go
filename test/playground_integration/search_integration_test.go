@@ -14,17 +14,17 @@ import (
 
 const DefaultSearchQuery = "search index=_internal | head 5"
 
-var (
-	PostJobsRequest                        = &model.PostJobsRequest{Query: DefaultSearchQuery}
-	PostJobsRequestBadRequest              = &model.PostJobsRequest{}
-	PostJobsRequestBadQuery                = &model.PostJobsRequest{Query: "index=_internal | head 5"}
-	PostJobsRequestTimeout                 = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5}
-	PostJobsRequestTTL                     = &model.PostJobsRequest{Query: DefaultSearchQuery, TTL: 5}
-	PostJobsRequestLimit                   = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 10}
-	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 0}
-	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5, TTL: 10, Limit: 10}
-	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 1, TTL: 1}
-)
+// var (
+// 	PostJobsRequest                        = &model.PostJobsRequest{Query: DefaultSearchQuery}
+// 	PostJobsRequestBadRequest              = &model.PostJobsRequest{}
+// 	PostJobsRequestBadQuery                = &model.PostJobsRequest{Query: "index=_internal | head 5"}
+// 	PostJobsRequestTimeout                 = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5}
+// 	PostJobsRequestTTL                     = &model.PostJobsRequest{Query: DefaultSearchQuery, TTL: 5}
+// 	PostJobsRequestLimit                   = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 10}
+// 	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Query: DefaultSearchQuery, Limit: 0}
+// 	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 5, TTL: 10, Limit: 10}
+// 	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Query: DefaultSearchQuery, Timeout: 1, TTL: 1}
+// )
 
 func TestGetJobs(t *testing.T) {
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
@@ -35,7 +35,7 @@ func TestGetJobs(t *testing.T) {
 
 func TestGetJob(t *testing.T) {
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
-	sid, _ := client.SearchService.CreateJob(&model.NewSearchConfig{Search: "search index=_internal | head 5"})
+	sid, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=_internal | head 5"})
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -43,7 +43,7 @@ func TestGetJob(t *testing.T) {
 
 func TestPostJobAction(t *testing.T) {
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
-	sid, _ := client.SearchService.CreateJob(&model.NewSearchConfig{Search: "search index=_internal | head 5"})
+	sid, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=_internal | head 5"})
 	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action:"pause"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, msg)
@@ -51,7 +51,7 @@ func TestPostJobAction(t *testing.T) {
 
 func TestGetJobResults(t *testing.T) {
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
-	sid, _ := client.SearchService.CreateJob(&model.NewSearchConfig{Search: "search index=_internal | head 5"})
+	sid, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=_internal | head 5"})
 	time.Sleep(time.Second * 5)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
 	assert.Nil(t, err)
@@ -60,7 +60,7 @@ func TestGetJobResults(t *testing.T) {
 
 func TestGetJobEvents(t *testing.T) {
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
-	sid, _ := client.SearchService.CreateJob(&model.NewSearchConfig{Search: "search index=_internal | head 5"})
+	sid, _ := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=_internal | head 5"})
 	time.Sleep(time.Second * 5)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
 	assert.Nil(t, err)
@@ -72,7 +72,7 @@ func TestIntegrationNewSearchJob(t *testing.T) {
 	// client := getClient()
 	client := service.NewClient("123","","http://0.0.0.0:8443",time.Second * 5)
 	assert.NotNil(t, client)
-	response, err := client.SearchService.CreateJob(&model.NewSearchConfig{Search: "search index=_internal | head 5"})
+	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=_internal | head 5"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 }
