@@ -19,6 +19,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
+	//"os"
 	"os"
 )
 
@@ -134,12 +135,16 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	//Refresh access token with refresh token
 	var accessToken string
 	var err error
-	accessToken, err = c.RefreshBearerToken()
+	accessToken, err = c.GetNewAccessToken()
 	if err != nil || len(accessToken) == 0 {
 		return nil, err
 	}
+	//Update the client with the newly obtained access token
 	c.UpdateToken(accessToken)
 	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
+	if err != nil {
+		return nil, err
+	}
 	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 	request.Header.Set("Content-Type", "application/json")
 
@@ -157,8 +162,8 @@ type refreshData struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-//RefreshBearerToken gets bearer token from the okta token endpoint given the refresh token
-func (c *Client) RefreshBearerToken() (string, error) {
+//GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
+func (c *Client) GetNewAccessToken() (string, error) {
 	var accessToken = ""
 	client := http.Client{}
 	var urlPath = ""
@@ -185,7 +190,7 @@ func (c *Client) RefreshBearerToken() (string, error) {
 
 	response, err := client.Do(req)
 
-	if response.StatusCode == 200 {
+	if response != nil && response.StatusCode == 200 {
 		defer response.Body.Close()
 		body, err := ioutil.ReadAll(response.Body)
 
