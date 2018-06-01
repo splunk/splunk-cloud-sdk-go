@@ -13,51 +13,63 @@ const catalogServiceVersion = "v1"
 type CatalogService service
 
 // GetDatasets returns all Datasets
-func (c *CatalogService) GetDatasets() ([]model.Dataset, error) {
+func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Get(url)
 
-	var result []model.Dataset
+	var result []model.DatasetInfo
 	err = util.ParseResponse(&result, response, err)
 
 	return result, err
 }
 
 // GetDataset returns the Dataset by name
-func (c *CatalogService) GetDataset(name string) (*model.Dataset, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", name)
+func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", id)
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Get(url)
 
-	var result model.Dataset
+	var result model.DatasetInfo
 	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
 
 // CreateDataset creates a new Dataset
-// TODO: Can we remove the empty string ("") argument when calling 'BuildURL'?
-func (c *CatalogService) CreateDataset(dataset model.Dataset) (*model.Dataset, error) {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", "")
+func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error) {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
 	response, err := c.client.Post(url, dataset)
 
-	var result model.Dataset
+	var result model.DatasetInfo
+	err = util.ParseResponse(&result, response, err)
+
+	return &result, err
+}
+// UpdateDataset updates an existing Dataset
+func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.PartialDatasetInfo, error) {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion,  "datasets", datasetID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Patch(url, dataset)
+
+	var result model.PartialDatasetInfo
 	err = util.ParseResponse(&result, response, err)
 
 	return &result, err
 }
 
 // DeleteDataset implements delete Dataset endpoint
-func (c *CatalogService) DeleteDataset(datasetName string) error {
-	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetName)
+func (c *CatalogService) DeleteDataset(datasetID string) error {
+	url, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return err
 	}
@@ -67,8 +79,8 @@ func (c *CatalogService) DeleteDataset(datasetName string) error {
 }
 
 // DeleteRule deletes the rule by the given path.
-func (c *CatalogService) DeleteRule(rulePath string) error {
-	getDeleteURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", rulePath)
+func (c *CatalogService) DeleteRule(ruleID string) error {
+	getDeleteURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
 	if err != nil {
 		return err
 	}
@@ -89,6 +101,20 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	err = util.ParseResponse(&result, response, err)
 
 	return result, err
+}
+
+// GetRule returns rule by an ID.
+func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
+	getRuleURL, err := c.client.BuildURL(catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(getRuleURL)
+
+	var result model.Rule
+	err = util.ParseResponse(&result, response, err)
+
+	return &result, err
 }
 
 // CreateRule posts a new rule.

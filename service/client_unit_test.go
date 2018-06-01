@@ -25,7 +25,7 @@ func TestBuildURL(t *testing.T) {
 	assert.Equal(t, apiHost, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, fmt.Sprintf("%s%s%s", "api/", tenant, "/services/search/jobs"), testURL.Path)
+	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 }
 
