@@ -18,9 +18,11 @@ func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
 	if err != nil {
 		return err
 	}
-
 	response, err := c.client.Post(url, tenant)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // DeleteTenant deletes a tenant by tenantID
@@ -32,7 +34,10 @@ func (c *IdentityService) DeleteTenant(tenantID string) error {
 	}
 
 	response, err := c.client.Delete(url)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // GetUserProfile retrieves the user profile associated with the current cached auth token
@@ -45,7 +50,13 @@ func (c *IdentityService) GetUserProfile() (*model.User, error) {
 	}
 
 	response, err := c.client.Get(url)
-	err = util.ParseResponse(&user, response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&user, response)
 	return &user, err
 }
 
@@ -57,9 +68,14 @@ func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	response, err := c.client.Get(url)
-	err = util.ParseResponse(&users, response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&users, response)
 	return users, err
 }
 
@@ -72,7 +88,10 @@ func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User
 	}
 
 	response, err := c.client.Put(url, users)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // AddTenantUsers adds users to a tenant
@@ -84,7 +103,10 @@ func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) er
 	}
 
 	response, err := c.client.Patch(url, users)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // DeleteTenantUsers deletes users from a tenant
@@ -96,5 +118,8 @@ func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User)
 	}
 
 	response, err := c.client.DeleteWithBody(url, users)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
