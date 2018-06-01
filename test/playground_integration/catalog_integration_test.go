@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"strings"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 func cleanupDatasets(t *testing.T) {
@@ -49,7 +50,6 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, datasetName, dataset.Name)
 	assert.Equal(t, model.LOOKUP, dataset.Kind)
-	// assert.Equal(t, []string{"somerule"}, dataset.Rules)
 	_, err = client.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_2000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.Nil(t, err)
@@ -61,7 +61,7 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	_, err = client.CatalogService.CreateDataset(
 		model.DatasetInfo{ID: dataset.ID, Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "409"))
+	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
 
 	// testing CreateDataset for 401 Unauthorized operation error
 	_, err = invalidClient.CatalogService.CreateDataset(
@@ -105,7 +105,16 @@ func TestIntegrationCRUDDatasets(t *testing.T) {
 	assert.NotNil(t, updatedDataset)*/
 
 	// testing UpdateDataset for 404 DatasetInfo not found error
-	_, err = client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 2}, "123")
+	_, err = client.CatalogService.UpdateDataset(
+		model.PartialDatasetInfo{
+			Name: "goSdkDataset6",
+			Kind: model.LOOKUP,
+			Owner: datasetOwner,
+			Capabilities: datasetCapabilities,
+			ExternalKind: "kvcollection",
+			ExternalName: "test_externalName",
+			Version: 2,
+		}, "123")
 	assert.NotNil(t, err)
 	assert.True(t, strings.Contains(err.Error(), "404"))
 
