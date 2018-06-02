@@ -87,11 +87,6 @@ type PostJobsRequest struct {
 	Ttl int `json:"ttl"`
 }
 
-// PostJobResponse contains a SearchID
-type PostJobResponse struct {
-	SearchID string `json:"searchId"` // The SearchID returned for the newly created search job.
-}
-
 // PagingInfo captures fields returned for endpoints supporting paging
 type PagingInfo struct {
 	Total   float64 `json:"total"`
