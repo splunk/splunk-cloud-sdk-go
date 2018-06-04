@@ -15,14 +15,12 @@ import (
 //Expired token
 var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
-////Should we include refresh token in our script for access token/tenant id and set it as env variable
-//
-//// CRUD tenant and add/delete user to the tenant
+// CRUD tenant and add/delete user to the tenant
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
-	testTenantID := "goSdkTestNewTenant"
+	testTenantID := "6fecc441-fb60-4992-a822-069feb622fab"
 
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	client := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
+	client,_ := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
@@ -61,8 +59,8 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		}
 	}
 	assert.True(t, found)
-	//
-	////delete tenant user
+
+	//delete tenant user
 	err = client.IdentityService.DeleteTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
 	assert.Nil(t, err)
 
@@ -76,8 +74,8 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		}
 	}
 	assert.False(t, found)
-	//
-	////replace tenant users
+
+	//replace tenant users
 	err = client.IdentityService.ReplaceTenantUsers(testTenantID, []model.User{
 		{ID: "devtest2@splunk.com"},
 		{ID: "devtest3@splunk.com"}})
@@ -86,7 +84,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 3, len(users))
 
-	////delete tenant
+	//delete tenant
 	err = client.IdentityService.DeleteTenant(testTenantID)
 	assert.Nil(t, err)
 }

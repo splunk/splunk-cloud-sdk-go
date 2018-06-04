@@ -1,11 +1,9 @@
 package stubbyintegration
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestIntegrationEnvironment(t *testing.T) {
