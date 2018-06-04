@@ -8,27 +8,16 @@ import (
 
 func TestCreateJob(t *testing.T) {
 
-	response, err := getClient(t).SearchService.CreateJob(&model.PostJobsRequest{Query: "search index=*"})
+	response, err := getClient(t).SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
-	assert.Equal(t, "SEARCH_ID", response.SearchID)
+	assert.Equal(t, "SEARCH_ID", response)
 
-}
-
-func TestCreateSyncJob(t *testing.T) {
-
-	response, err := getClient(t).SearchService.CreateSyncJob(&model.PostJobsRequest{Query: "search index=*"})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, response)
-	assert.NotEmpty(t, response.Results)
-	assert.NotEmpty(t, response.Results[0].Host)
-	assert.NotEmpty(t, response.Fields)
-	validateResponse(response, t)
 }
 
 func TestGetResults(t *testing.T) {
 
-	response, err := getClient(t).SearchService.GetResults("SEARCH_ID")
+	response, err := getClient(t).SearchService.GetJobResults("SEARCH_ID", nil)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
@@ -38,7 +27,7 @@ func TestGetResults(t *testing.T) {
 }
 
 //Validate response results
-func validateResponse(response *model.SearchEvents, t *testing.T) {
+func validateResponse(response *model.SearchResults, t *testing.T) {
 
 	var indexFound bool
 

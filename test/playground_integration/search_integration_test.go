@@ -18,29 +18,26 @@ var timeout uint = 5
 
 var (
 	PostJobsRequest                        = &model.PostJobsRequest{Search: DefaultSearchQuery}
-	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "index=main"}
-	PostJobsRequestBadQuery                = &model.PostJobsRequest{Search: "index=main | head 5"}
+	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "index=main | head 5"}
 	PostJobsRequestTimeout                 = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout}
-	PostJobsRequestTTL                     = &model.PostJobsRequest{Search: DefaultSearchQuery, Ttl: 5}
+	PostJobsRequestTTL                     = &model.PostJobsRequest{Search: DefaultSearchQuery, TTL: 5}
 	PostJobsRequestLimit                   = &model.PostJobsRequest{Search: DefaultSearchQuery, Limit: 10}
 	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Search: DefaultSearchQuery, Limit: 0}
-	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, Ttl: 10, Limit: 10}
-	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, Ttl: 1}
+	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, TTL: 10, Limit: 10}
+	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, TTL: 1}
 )
 
-var client = getClient()
-
-func TestClientNotNil(t *testing.T) {
-	assert.NotNil(t, client)
-}
-
 func TestGetJobsDefaultParams(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.GetJobs(nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 }
 
 func TestGetJobsCustomParams(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.GetJobs(&model.JobsRequest{Count:1, Offset:0})
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -48,6 +45,8 @@ func TestGetJobsCustomParams(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
@@ -56,6 +55,8 @@ func TestGetJob(t *testing.T) {
 }
 
 func TestPostJobAction(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action:"pause"})
 	assert.Nil(t, err)
@@ -63,6 +64,8 @@ func TestPostJobAction(t *testing.T) {
 }
 
 func TestGetJobResults(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	time.Sleep(time.Second * 5)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
@@ -72,6 +75,8 @@ func TestGetJobResults(t *testing.T) {
 }
 
 func TestGetJobEvents(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	time.Sleep(time.Second * 5)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
@@ -82,6 +87,8 @@ func TestGetJobEvents(t *testing.T) {
 
 // TestIntegrationNewSearchJob asynchronously
 func TestIntegrationNewSearchJob(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -89,6 +96,8 @@ func TestIntegrationNewSearchJob(t *testing.T) {
 //
 // TestIntegrationNewSearchJobBadRequest asynchronously
 func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
 	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request"}
@@ -99,6 +108,8 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 
 // TestIntegrationNewSearchJobDuplicates
 func TestIntegrationNewSearchJobDuplicates(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -109,6 +120,8 @@ func TestIntegrationNewSearchJobDuplicates(t *testing.T) {
 //
 // TestIntegrationNewSearchJobTimeout with timeout at 5 sec
 func TestIntegrationNewSearchJobTimeout(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestTimeout)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -116,6 +129,8 @@ func TestIntegrationNewSearchJobTimeout(t *testing.T) {
 
 // TestIntegrationNewSearchJobTTL with TTL at 5 sec
 func TestIntegrationNewSearchJobTTL(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestTTL)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -123,6 +138,8 @@ func TestIntegrationNewSearchJobTTL(t *testing.T) {
 
 // TestIntegrationNewSearchJobLimit with Limit at 10
 func TestIntegrationNewSearchJobLimit(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestLimit)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -130,6 +147,8 @@ func TestIntegrationNewSearchJobLimit(t *testing.T) {
 
 // TestIntegrationNewSearchJobDisableAutoFinalization with Limit at 0, disable automatic finalization
 func TestIntegrationNewSearchJobDisableAutoFinalization(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestDisableAutoFinalization)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -137,6 +156,8 @@ func TestIntegrationNewSearchJobDisableAutoFinalization(t *testing.T) {
 
 // TestIntegrationNewSearchJobMultiArgs with multiple args
 func TestIntegrationNewSearchJobMultiArgs(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestMultiArgs)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -144,6 +165,8 @@ func TestIntegrationNewSearchJobMultiArgs(t *testing.T) {
 
 // TestIntegrationGetJobResults
 func TestIntegrationGetJobResults(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	sid, err := client.SearchService.CreateJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, sid)
@@ -152,6 +175,8 @@ func TestIntegrationGetJobResults(t *testing.T) {
 
 // TestIntegrationGetJobResultsTTL
 func TestIntegrationGetJobResultsTTL(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestTTL)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -160,6 +185,8 @@ func TestIntegrationGetJobResultsTTL(t *testing.T) {
 
 // TestIntegrationGetJobResultsLimit
 func TestIntegrationGetJobResultsLimit(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestLimit)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -168,6 +195,8 @@ func TestIntegrationGetJobResultsLimit(t *testing.T) {
 
 // TestIntegrationGetJobResultsDisableAutoFinalization
 func TestIntegrationGetJobResultsDisableAutoFinalization(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestDisableAutoFinalization)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -176,6 +205,8 @@ func TestIntegrationGetJobResultsDisableAutoFinalization(t *testing.T) {
 
 // TestIntegrationGetJobResultsMultipleArgs
 func TestIntegrationGetJobResultsMultipleArgs(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestMultiArgs)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -184,6 +215,8 @@ func TestIntegrationGetJobResultsMultipleArgs(t *testing.T) {
 
 // TestIntegrationGetJobResultsLowThresholds
 func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
@@ -197,6 +230,8 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 
 // TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
 	// HTTP Code 500 Error
 	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found"}
 

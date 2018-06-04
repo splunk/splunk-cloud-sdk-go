@@ -84,7 +84,7 @@ type PostJobsRequest struct {
 	Timeout *uint `json:"timeout"`
 
 	// search timeout
-	Ttl int `json:"ttl"`
+	TTL int `json:"ttl"`
 }
 
 // PagingInfo captures fields returned for endpoints supporting paging
@@ -107,6 +107,7 @@ func NewDefaultPaginationParams() *JobsRequest {
 		Offset: 0,
 	}
 }
+
 // SearchJob specifies the fields returned for a /search/jobs/ entry for a specific job
 type SearchJob struct {
 	Sid           string           `json:"sid"`
@@ -130,6 +131,7 @@ type SearchContext struct {
 	App  string
 }
 
+// JobControlAction specifies the action needs to be taken on a job
 //TODO: Define supported actinos:
 //            - pause
 //            - unpause
@@ -142,9 +144,10 @@ type SearchContext struct {
 //            - disablepreview
 type JobControlAction struct {
 	Action string `json:"action"`
-	Ttl    int    `json:"ttl"`
+	TTL    int    `json:"ttl"`
 }
 
+// JobControlReplyMsg displays messages returned from taking a job control
 type JobControlReplyMsg struct {
 	Msg []struct {
 		TypeKey string `json:"type"`
@@ -152,6 +155,7 @@ type JobControlReplyMsg struct {
 	} `json:"messages"`
 }
 
+// FetchResultsRequest specifies the query params when fetching job results
 type FetchResultsRequest struct {
 	Count      int      `key:"count"`
 	Offset     int      `key:"offset"`
@@ -160,6 +164,7 @@ type FetchResultsRequest struct {
 	Search     string   `key:"search"`
 }
 
+// FetchEventsRequest specifies the query params when fetching job events
 type FetchEventsRequest struct {
 	Count            int      `key:"count"`
 	Offset           int      `key:"offset"`

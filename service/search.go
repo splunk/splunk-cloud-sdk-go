@@ -14,7 +14,7 @@ const searchServiceVersion = "v1"
 // SearchService talks to the SSC search service
 type SearchService service
 
-// GetJobsHandler gets details of all current searches.
+// GetJobs gets details of all current searches.
 func (service *SearchService) GetJobs(params *model.JobsRequest) ([]model.SearchJob, error) {
 	var jobs []model.SearchJob
 	if params == nil {
@@ -55,12 +55,12 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, err
 	}
 	jobID, err := strconv.Unquote(string(body))
 	if err != nil {
-		return "", errors.New("Unable to parse jobID.")
+		return "", errors.New("unable to parse jobID")
 	}
 	return jobID, err
 }
 
-// GetJobHandler retrieves information about the specified search.
+// GetJob retrieves information about the specified search.
 func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, error) {
 	var jobsResponse model.SearchJobContent
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
