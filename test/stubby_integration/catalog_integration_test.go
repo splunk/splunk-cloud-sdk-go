@@ -1,11 +1,9 @@
 package stubbyintegration
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Stubby test for GetDataset() catalog service endpoint
@@ -66,6 +64,7 @@ func TestGetRules(t *testing.T) {
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
 }
+
 // Stubby test for GetRule() catalog service endpoint
 func TestGetRule(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetRule("rule1")

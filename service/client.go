@@ -9,15 +9,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"sync"
 	"time"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 )
 
 // Declare constants for service package

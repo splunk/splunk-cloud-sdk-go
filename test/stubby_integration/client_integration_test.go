@@ -3,18 +3,16 @@ package stubbyintegration
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-
-	"fmt"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
 func getClient(t *testing.T) *service.Client {

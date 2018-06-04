@@ -1,12 +1,10 @@
 package stubbyintegration
 
 import (
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
 )
 
 // Should flush when ticker ticked and queue is not full

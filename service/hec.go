@@ -3,13 +3,11 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
 
 const hecServicePrefix = "ingest"
-const hecServicePrefix = "hec2"
 const hecServiceVersion = "v1"
 
 // HecService talks to the SSC hec service

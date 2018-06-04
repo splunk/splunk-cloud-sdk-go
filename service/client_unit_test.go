@@ -2,11 +2,9 @@ package service
 
 import (
 	"fmt"
-	"testing"
-
-	"time"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
 )
 
 func TestBuildURL(t *testing.T) {

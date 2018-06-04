@@ -1,15 +1,13 @@
 package stubbyintegration
 
 import (
-	"testing"
-	"time"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
 )
 
 func TestCreateEventSuccess(t *testing.T) {
