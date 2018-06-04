@@ -18,6 +18,8 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"io/ioutil"
+	"os"
 )
 
 // Declare constants for service package
@@ -44,6 +46,15 @@ type Client struct {
 	// IdentityService talks to the IAC service
 	IdentityService *IdentityService
 }
+
+// RefreshToken - RefreshToken to refresh the bearer token if expired
+var RefreshToken = os.Getenv("REFRESH_TOKEN")
+
+//RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
+var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
+
+//ClientID - Okta app Client Id for SDK
+var ClientID = os.Getenv("CLIENT_ID")
 
 // service provides the interface between client and services
 type service struct {
@@ -110,7 +121,102 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 
 // Do sends out request and returns HTTP response
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
-	return c.httpClient.Do(req)
+	response, err := c.httpClient.Do(req)
+
+	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
+	if response.StatusCode == 401 && len(RefreshToken) != 0 {
+		response, err = c.onUnauthorizedRequest(req)
+		return response, err
+	}
+	return response, err
+}
+
+func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error) {
+	// refresh and retry request here
+	httpMethod := req.Method
+	body := req.Body
+
+	//Refresh access token with refresh token
+	var accessToken string
+	var err error
+	accessToken, err = c.GetNewAccessToken()
+	if err != nil || len(accessToken) == 0 {
+		return nil, err
+	}
+	//Update the client with the newly obtained access token
+	c.UpdateToken(accessToken)
+	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
+	request.Header.Set("Content-Type", "application/json")
+
+	//retry request with new access token
+	response, err := c.httpClient.Do(request)
+
+	return response, err
+}
+
+type refreshData struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpireIn     int    `json:"expires_in"`
+	Scope        string `json:"scope"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+//GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
+func (c *Client) GetNewAccessToken() (string, error) {
+	var accessToken = ""
+	client := http.Client{}
+	var urlPath = ""
+	urlPath = path.Join(RefreshTokenEndpoint)
+
+	data := url.Values{}
+	data.Set("refresh_token", RefreshToken)
+	data.Add("grant_type", "refresh_token")
+	data.Add("client_id", ClientID)
+	data.Add("scope", "openid email profile")
+
+	tokenURL := url.URL{
+		Scheme:   "https",
+		Path:     urlPath,
+		RawQuery: data.Encode(),
+	}
+
+	req, err := http.NewRequest("POST", tokenURL.String(), nil)
+	if err != nil {
+		return accessToken, err
+	}
+	req.Header.Set("accept", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := client.Do(req)
+
+	if response != nil && response.StatusCode == 200 {
+		defer response.Body.Close()
+		body, err := ioutil.ReadAll(response.Body)
+
+		if err == nil {
+			s, err := parseRefreshData([]byte(body))
+			if err != nil {
+				return accessToken, err
+			}
+			accessToken = s.AccessToken
+			return accessToken, err
+		}
+
+		return accessToken, err
+	}
+	return accessToken, err
+}
+
+func parseRefreshData(body []byte) (*refreshData, error) {
+	var refreshJSON = new(refreshData)
+	err := json.Unmarshal(body, &refreshJSON)
+
+	return refreshJSON, err
 }
 
 // Get implements HTTP Get call
@@ -174,17 +280,25 @@ func (c *Client) UpdateToken(token string) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
+func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, error) {
+	if tenantID == "" || token == "" || URL == "" {
+		return nil, errors.New("tenantID or token or url can't be empty")
+	}
+
 	httpClient := &http.Client{
 		Timeout: timeout,
 	}
-	parsed, _ := url.Parse(URL)
+	parsed, err := url.Parse(URL)
+	if err != nil {
+		return nil, errors.New("Url is not correct")
+	}
+
 	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
-	return c
+	return c, nil
 }
 
 // NewBatchEventsSender used to initialize dependencies and set values

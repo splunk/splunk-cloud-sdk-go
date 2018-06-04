@@ -1,9 +1,8 @@
 package service
 
 import (
-	"sync"
-
 	"github.com/splunk/ssc-client-go/model"
+	"sync"
 )
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
