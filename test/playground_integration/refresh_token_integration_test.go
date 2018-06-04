@@ -1,23 +1,34 @@
+// +build !integration
+
 package playgroundintegration
 
 import (
-	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
+	"fmt"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
+	"os"
 )
 
+//Expired token
+var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
+
 // CRUD tenant and add/delete user to the tenant
-func TestIntegrationCRUDTenant(t *testing.T) {
-	testTenantID := "6fecc441-fb60-4992-a822-069feb622fez"
-	client := getClient(t)
+func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
+	testTenantID := "6fecc441-fb60-4992-a822-069feb622fab"
+
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	client,_ := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
 	//get user profile
 	user, err := client.IdentityService.GetUserProfile()
+	if err != nil {
+		t.FailNow()
+	}
 	assert.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", user.ID)
 	assert.Equal(t, "test1@splunk.com", user.Email)
@@ -35,7 +46,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
 	assert.Nil(t, err)
 
-	//get tennant users
+	//get tenant users
 	users, err := client.IdentityService.GetTenantUsers(testTenantID)
 	assert.Nil(t, err)
 	assert.Equal(t, 2, len(users))
@@ -57,6 +68,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	found = false
 	for _, v := range users {
 		if v.ID == addedUserName {
+			fmt.Println(v.ID)
 			found = true
 			break
 		}
@@ -77,28 +89,3 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// test Erros with auth endpoints
-func TestIntegrationTenantErrors(t *testing.T) {
-	testTenantID := "6fecc441-fb60-4992-a822-069feb611fez"
-	client := getClient(t)
-
-	defer client.IdentityService.DeleteTenant(testTenantID)
-
-	//create duplicate tenant should return 409
-	err := client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-	assert.Nil(t, err)
-
-	err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-	assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
-
-	//add duplicate tenant user
-	addedUserName := "newUser@splunk.com"
-	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	assert.Nil(t, err)
-	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	assert.True(t, strings.Contains(err.Error(), "405 Method Not Allowed"))
-
-	//delete tenant
-	err = client.IdentityService.DeleteTenant(testTenantID)
-	assert.Nil(t, err)
-}
