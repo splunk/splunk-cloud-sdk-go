@@ -14,7 +14,6 @@
         service: ssc-client-go
         command: bash -c "make build"
 
-
   - name: unit tests
     service: ssc-client-go
     command: bash -c "make run_unit_tests"
@@ -29,9 +28,9 @@
     - name: initialize token fetcher service
       service: ssc-sdk-shared-token-fetcher
       command: true
-    - name: initialize tenant creation service
+    - name: create a tenant for CI
       service: ssc-sdk-shared-tenant-creation
-      command: true
+      command: python /opt/splunk/ssc-sdk-shared/tenant-creation/tenant_creation.py
     - type: parallel
       name: integration tests
       steps:
@@ -43,3 +42,6 @@
           service: ssc-client-go-against-playground
           tag: ^(master|develop)$
           command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
+    - name: delete tenant that was created
+      service: ssc-sdk-shared-tenant-creation
+      command: python /opt/splunk/ssc-sdk-shared/tenant-creation/tenant_deletion.py
