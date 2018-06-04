@@ -98,7 +98,6 @@ type PagingInfo struct {
 type JobsRequest struct {
 	Count  uint `key:"count"`
 	Offset uint `key:"offset"`
-	Search string `json:"search"`
 }
 
 // NewDefaultPaginationParams creates search pagination parameters according to Splunk Enterprise defaults
@@ -154,26 +153,26 @@ type JobControlReplyMsg struct {
 }
 
 type FetchResultsRequest struct {
-	Count      int      `json:"count" form:"count"`
-	Offset     int      `json:"offset" form:"offset"`
-	Fields     []string `json:"f"`
-	OutputMode string   `json:"outputMode"`
-	Search     string   `json:"search"`
+	Count      int      `key:"count"`
+	Offset     int      `key:"offset"`
+	Fields     []string `key:"f"`
+	OutputMode string   `key:"outputMode"`
+	Search     string   `key:"search"`
 }
 
 type FetchEventsRequest struct {
-	Count            int      `json:"count" form:"count"`
-	Offset           int      `json:"offset" form:"offset"`
-	EarliestTime     string   `json:"earliestTime"`
-	Fields           []string `json:"f"`
-	LatestTime       string   `json:"latestTime"`
-	MaxLines         *uint    `json:"maxLines"`
-	OutputMode       string   `json:"outputMode"`
-	TimeFormat       string   `json:"timeFormat"`
-	OutputTimeFormat string   `json:"outputTimeFormat"`
-	Search           string   `json:"search"`
-	TruncationMode   string   `json:"truncationMode"`
-	Segmentation     string   `json:"segmentation"`
+	Count            int      `key:"count"`
+	Offset           int      `key:"offset"`
+	EarliestTime     string   `key:"earliestTime"`
+	Fields           []string `key:"f"`
+	LatestTime       string   `key:"latestTime"`
+	MaxLines         *uint    `key:"maxLines"`
+	OutputMode       string   `key:"outputMode"`
+	TimeFormat       string   `key:"timeFormat"`
+	OutputTimeFormat string   `key:"outputTimeFormat"`
+	Search           string   `key:"search"`
+	TruncationMode   string   `key:"truncationMode"`
+	Segmentation     string   `key:"segmentation"`
 }
 
 // SearchResults represents the /search/jobs/{sid}/events or /search/jobs/{sid}/results response

@@ -72,8 +72,6 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.U
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	// Always set json as output format
-	queryValues.Set("output_mode", "json")
 	var u url.URL
 	if len(c.TenantID) == 0 {
 		return u, errors.New("A non-empty tenant ID must be set on client")
@@ -96,8 +94,6 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	// Always set json as output format
-	queryValues.Set("output_mode", "json")
 	var u url.URL
 	if len(tenantID) == 0 {
 		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
