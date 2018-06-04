@@ -9,15 +9,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"sync"
 	"time"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 )
 
 // Declare constants for service package
@@ -169,17 +168,25 @@ func (c *Client) UpdateToken(token string) {
 }
 
 // NewClient creates a Client with custom values passed in
-func NewClient(tenantID, token, URL string, timeout time.Duration) *Client {
+func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, error) {
+	if tenantID == "" || token == "" || URL == "" {
+		return nil, errors.New("tenantID or token or url can't be empty")
+	}
+
 	httpClient := &http.Client{
 		Timeout: timeout,
 	}
-	parsed, _ := url.Parse(URL)
+	parsed, err := url.Parse(URL)
+	if err != nil {
+		return nil, errors.New("Url is not correct")
+	}
+
 	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
-	return c
+	return c, nil
 }
 
 // NewBatchEventsSender used to initialize dependencies and set values

@@ -12,7 +12,7 @@ import (
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
 	testTenantID := "goSdkTestNewTenant"
-	client := getClient()
+	client := getClient(t)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
@@ -80,7 +80,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 // test Erros with auth endpoints
 func TestIntegrationTenantErrors(t *testing.T) {
 	testTenantID := "goSdkTestTenantError"
-	client := getClient()
+	client := getClient(t)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 

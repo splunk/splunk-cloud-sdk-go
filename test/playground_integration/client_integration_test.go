@@ -1,11 +1,13 @@
 package playgroundintegration
 
 import (
+	"fmt"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
+	"testing"
 )
 
-func getClient() *service.Client {
+func getClient(t *testing.T) *service.Client {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	//fmt.Printf("=================================================================")
@@ -17,13 +19,20 @@ func getClient() *service.Client {
 	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
 
-	return service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	client, err := service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	if err != nil {
+		fmt.Println(err.Error())
+		t.FailNow()
+	}
+
+	return client
 }
 
 func getInvalidClient() *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url= testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
-	return service.NewClient(testutils.TestTenantID, testutils.TestInvalidAuthenticationToken, url, testutils.TestTimeOut)
+	client, _ := service.NewClient(testutils.TestTenantID, testutils.TestInvalidAuthenticationToken, url, testutils.TestTimeOut)
+	return client
 }
 
 // TODO?
