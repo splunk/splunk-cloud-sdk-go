@@ -13,9 +13,9 @@ func TestGetDataset(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetDataset("ds1")
 
 	assert.Empty(t, err)
-	assert.NotEmpty(t, result.ID)
-	assert.Equal(t, "ds1", result.Name)
-	assert.Equal(t, model.VIEW, result.Kind)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, "ds1", result.ID)
+	assert.Equal(t, model.INDEX, result.Kind)
 }
 
 // Stubby test for GetDatasets() catalog service endpoint
@@ -28,14 +28,23 @@ func TestGetDatasets(t *testing.T) {
 
 // Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
-	testDataset := model.Dataset{Name: "ds1", Kind: model.VIEW, Rules: []string{"string"}, Todo: "string"}
-	result, err := getClient(t).CatalogService.CreateDataset(testDataset)
+	result, err := getClient(t).CatalogService.CreateDataset(
+		model.DatasetInfo{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: true})
 
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
-	assert.Equal(t, "ds1", result.Name)
-	assert.Equal(t, model.VIEW, result.Kind)
-	assert.Equal(t, []string{"string"}, result.Rules)
+	assert.Equal(t, "stubby_dataset_1", result.Name)
+	assert.Equal(t, model.INDEX, result.Kind)
+}
+
+// Stubby test for UpdateDataset() catalog service endpoint
+func TestUpdateDataset(t *testing.T) {
+	result, err := getClient(t).CatalogService.UpdateDataset(
+		model.PartialDatasetInfo{Disabled: true, Version: 5}, "ds1")
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, "stubby_dataset_1", result.Name)
+	assert.Equal(t, model.INDEX, result.Kind)
 }
 
 // Stubby test for DeleteDataset() catalog service endpoint
@@ -55,47 +64,51 @@ func TestGetRules(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetRules()
 
 	assert.Empty(t, err)
-	assert.Equal(t, 1, len(result))
-	assert.Equal(t, 3, len(result[0].Actions))
+	assert.Equal(t, 2, len(result))
+}
+// Stubby test for GetRule() catalog service endpoint
+func TestGetRule(t *testing.T) {
+	result, err := getClient(t).CatalogService.GetRule("rule1")
+	assert.Empty(t, err)
+	assert.NotNil(t, "rule1", result.ID)
+	assert.Equal(t, "_internal", result.Name)
 }
 
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions [3]model.Action
-	actions[0] = CreateAction("AUTOKV", "", "", true, "NONE", "", "", "", 0, "")
-	actions[1] = CreateAction("EVAL", "", "", false, "", "string", "", "", 0, "string")
-	actions[2] = CreateAction("LOOKUP", "", "", false, "", "string", "", "", 0, "")
-	result, err := getClient(t).CatalogService.CreateRule(CreateRule("rule1", "newrule", 7, "first rule", actions[:]))
-
+	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
+	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
+	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
+	result, err := getClient(t).CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
 	assert.Empty(t, err)
-	assert.Equal(t, "rule4", result.Name)
-	assert.Equal(t, "newrule", result.Match)
+	assert.Equal(t, "_internal", result.Name)
+	assert.Equal(t, "test_match", result.Match)
 	assert.Equal(t, 3, len(result.Actions))
 }
 
 // creates a rule to post
-func CreateRule(name string, match string, priority int, description string, actions []model.Action) model.Rule {
+func CreateRule(name string, match string, module string, owner string, actions []model.Action) model.Rule {
 	return model.Rule{
-		Name:        name,
-		Match:       match,
-		Priority:    priority,
-		Description: description,
-		Actions:     actions,
+		Name:    name,
+		Match:   match,
+		Module:  module,
+		Owner:   owner,
+		Actions: actions,
 	}
 }
 
 // creates an action for rule to post
-func CreateAction(kind model.ActionKind, field string, alias string, trim bool, mode model.AutoMode, expression string, pattern string, format string, limit int, result string) model.Action {
+func CreateAction(kind model.ActionKind, owner string, version int, field string, mode model.AutoMode, expression string, pattern string, alias string, limit int) model.Action {
 	return model.Action{
 		Kind:       kind,
+		Owner:      owner,
+		Version:    version,
 		Field:      field,
-		Alias:      alias,
-		Trim:       trim,
 		Mode:       mode,
 		Expression: expression,
 		Pattern:    pattern,
-		Format:     format,
+		Alias:      alias,
 		Limit:      limit,
-		Result:     result,
 	}
 }

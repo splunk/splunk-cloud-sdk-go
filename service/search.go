@@ -18,7 +18,13 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (*model.Post
 		return nil, err
 	}
 	response, err := service.client.Post(jobURL, job)
-	err = util.ParseResponse(&postJobResponse, response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&postJobResponse, response)
 	return &postJobResponse, err
 }
 
@@ -30,7 +36,13 @@ func (service *SearchService) CreateSyncJob(job *model.PostJobsRequest) (*model.
 		return nil, err
 	}
 	response, err := service.client.Post(jobURL, job)
-	err = util.ParseResponse(&searchModel, response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&searchModel, response)
 	return &searchModel, err
 }
 
@@ -42,6 +54,12 @@ func (service *SearchService) GetResults(jobID string) (*model.SearchEvents, err
 		return nil, err
 	}
 	response, err := service.client.Get(jobURL)
-	err = util.ParseResponse(&searchModel, response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&searchModel, response)
 	return &searchModel, err
 }

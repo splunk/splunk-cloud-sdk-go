@@ -28,4 +28,10 @@ func getClient(t *testing.T) *service.Client {
 	return client
 }
 
+func getInvalidClient() *service.Client {
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+
+	return service.NewClient(testutils.TestTenantID, testutils.TestInvalidAuthenticationToken, url, testutils.TestTimeOut)
+}
+
 // TODO?
