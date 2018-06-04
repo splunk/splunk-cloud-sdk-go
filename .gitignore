@@ -25,7 +25,7 @@ vendor
 secret.env
 
 # used by token fetcher
-okta/.token
+okta/*
 
 # Hide everything not explicitly added to the .config dir, used by token-fetcher & tenant-creation
 .config/*
