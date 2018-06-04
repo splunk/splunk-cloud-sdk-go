@@ -76,9 +76,9 @@ func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, err
 }
 
 // PostJobControl runs a job control command for the specified search.
-func (service *SearchService) PostJobControl(jobId string, action *model.JobControlAction) (*model.JobControlReplyMsg, error) {
+func (service *SearchService) PostJobControl(jobID string, action *model.JobControlAction) (*model.JobControlReplyMsg, error) {
 	var msg model.JobControlReplyMsg
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobId, "control")
+	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID, "control")
 	if err != nil {
 		return nil, err
 	}
