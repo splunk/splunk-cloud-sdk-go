@@ -26,3 +26,4 @@ secret.env
 
 # used by token fetcher
 okta/.token
+okta/token

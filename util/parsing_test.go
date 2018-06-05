@@ -11,23 +11,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseResponseError(t *testing.T) {
+func TestParseResponseParsingError(t *testing.T) {
 	testData := []byte("testbool=true&testfloat32=0.999&testfloat64=0.555&testint=1")
 	type TestModel struct {
 		TestID string `json:"TestID"`
 	}
-
 	httpResp := &http.Response{
 		Body: ioutil.NopCloser(bytes.NewReader(testData)),
 	}
 	var testModel TestModel
-	err := ParseResponse(&testModel, httpResp, nil)
+	err := ParseResponse(&testModel, httpResp)
 	if err == nil {
 		t.Errorf("ParseResponse expected to raise an error, got %v", err)
 	}
 }
 
-func TestParseResponse(t *testing.T) {
+func TestParseResponseSuccess(t *testing.T) {
 	testData := []byte(`{"TestID":"1"}`)
 	type TestModel struct {
 		TestID string `json:"TestID"`
@@ -36,42 +35,21 @@ func TestParseResponse(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader(testData)),
 	}
 	var testModel TestModel
-	err := ParseResponse(&testModel, httpResp, nil)
+	err := ParseResponse(&testModel, httpResp)
 	if err != nil {
-		t.Errorf("ParseResponse expected to return an error, got %v", err)
+		t.Errorf("ParseResponse expected to not return an error, got %v", err)
 	}
 }
 
-func TestParseNilResponse(t *testing.T) {
+func TestParseResponseNilResponseError(t *testing.T) {
 	type TestModel struct {
 		TestID string `json:"TestID"`
 	}
-	parsingError := errors.New("ParsingError")
+	parsingError := errors.New("nil response provided")
 	var testModel TestModel
-	err := ParseResponse(&testModel, nil, parsingError)
+	err := ParseResponse(&testModel, nil)
 	assert.NotNil(t, err)
 	assert.Equal(t, parsingError, err)
-}
-
-func TestParseErrorNoError(t *testing.T) {
-	testData := []byte(`{"TestID":"1"}`)
-	httpResp := &http.Response{
-		Body: ioutil.NopCloser(bytes.NewReader(testData)),
-	}
-	if err := ParseError(httpResp, nil); err != nil {
-		t.Errorf("ParseError expected to not return an error, got %v", err)
-	}
-}
-
-func TestParseErrorReturnError(t *testing.T) {
-	testData := []byte(`{"TestID":"1"}`)
-	httpResp := &http.Response{
-		Body: ioutil.NopCloser(bytes.NewReader(testData)),
-	}
-	err := errors.New("TestParseErrorReturnError should return this error")
-	if err = ParseError(httpResp, err); err == nil {
-		t.Errorf("ParseError expected to return an error, got %v", err)
-	}
 }
 
 func TestParseUrlParams(t *testing.T) {
