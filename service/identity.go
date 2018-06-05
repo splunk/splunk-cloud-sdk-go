@@ -13,7 +13,7 @@ type IdentityService service
 
 // CreateTenant creates a tenant
 func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
 
 // DeleteTenant deletes a tenant by tenantID
 func (c *IdentityService) DeleteTenant(tenantID string) error {
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", tenantID)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (c *IdentityService) DeleteTenant(tenantID string) error {
 // GetUserProfile retrieves the user profile associated with the current cached auth token
 func (c *IdentityService) GetUserProfile() (*model.User, error) {
 	var user model.User
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"userprofile")
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (c *IdentityService) GetUserProfile() (*model.User, error) {
 // GetTenantUsers returns users registered with the tenant
 func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) {
 	var users []model.User
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", tenantID, "users")
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) 
 
 // ReplaceTenantUsers replaces existing users on a tenant with the provided user list
 func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", tenantID, "users")
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User
 
 // AddTenantUsers adds users to a tenant
 func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", tenantID, "users")
 	if err != nil {
 		return err
@@ -111,7 +111,7 @@ func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) er
 
 // DeleteTenantUsers deletes users from a tenant
 func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID("system", identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", tenantID, "users")
 	if err != nil {
 		return err

@@ -21,6 +21,9 @@ func ParseResponse(model interface{}, response *http.Response) error {
 // It parses basic values and slices, and will parse structs recursively
 func ParseURLParams(model interface{}) url.Values {
 	values := url.Values{}
+	if model == nil {
+		return values
+	}
 	typ := reflect.TypeOf(model)
 	indirect := reflect.Indirect(reflect.ValueOf(model))
 

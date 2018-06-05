@@ -17,7 +17,7 @@ func TestBuildURL(t *testing.T) {
 	var timeout = time.Second * 5
 	var client, _ = NewClient(tenant, token, apiURL, timeout)
 
-	testURL, err := client.BuildURL("services", "search", "jobs")
+	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
 
 	assert.Nil(t, err)
 	assert.Equal(t, apiHost, testURL.Hostname())
