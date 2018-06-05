@@ -13,7 +13,7 @@ import (
 
 func TestIntegrationCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
-	client := getClient()
+	client := getClient(t)
 	testHecEvent := model.HecEvent{
 		Host:       client.URL.RequestURI(),
 		Index:      "main",
@@ -29,7 +29,7 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 
 // TODO: Deal with later
 func TestIntegrationHecEventFail(t *testing.T) {
-	client := service.NewClient(testutils.TestTenantID, "wrongToken", "http://example.com", testutils.TestTimeOut)
+	client, _ := service.NewClient(testutils.TestTenantID, "wrongToken", "http://example.com", testutils.TestTimeOut)
 	testHecEvent := model.HecEvent{Event: "failed test"}
 	err := client.HecService.CreateEvent(testHecEvent)
 
@@ -39,7 +39,7 @@ func TestIntegrationHecEventFail(t *testing.T) {
 }
 
 func TestIntegrationCreateRawEventSuccess(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	testHecEvent := model.HecEvent{Event: "test"}
 
 	err := client.HecService.CreateRawEvent(testHecEvent)
@@ -47,7 +47,7 @@ func TestIntegrationCreateRawEventSuccess(t *testing.T) {
 }
 
 func TestIntegrationCreateEvents(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	event2 := model.HecEvent{Host: "host2", Event: "test2"}
 	err := client.HecService.CreateEvents([]model.HecEvent{event1, event2})
