@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"errors"
+	"net/url"
 )
 
 const searchServicePrefix = "search"
@@ -55,7 +56,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, err
 	}
 	jobID, err := strconv.Unquote(string(body))
 	if err != nil {
-		return "", errors.New("unable to parse jobID")
+		return jobID, errors.New("unable to parse jobID")
 	}
 	return jobID, err
 }
@@ -96,7 +97,11 @@ func (service *SearchService) PostJobControl(jobID string, action *model.JobCont
 // GetJobResults Returns the job results with the given `id`.
 func (service *SearchService) GetJobResults(jobID string, params *model.FetchResultsRequest) (*model.SearchResults, error) {
 	var results model.SearchResults
-	jobURL, err := service.client.BuildURL(util.ParseURLParams(*params), searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	var query url.Values
+	if params != nil {
+		query = util.ParseURLParams(*params)
+	}
+	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +119,11 @@ func (service *SearchService) GetJobResults(jobID string, params *model.FetchRes
 //GetJobEvents Returns the job events with the given `id`.
 func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEventsRequest) (*model.SearchResults, error) {
 	var results model.SearchResults
-	jobURL, err := service.client.BuildURL(util.ParseURLParams(*params), searchServicePrefix, searchServiceVersion, "jobs", jobID, "events")
+	var query url.Values
+	if params != nil {
+		query = util.ParseURLParams(*params)
+	}
+	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "events")
 	if err != nil {
 		return nil, err
 	}
