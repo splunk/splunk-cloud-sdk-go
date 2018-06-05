@@ -75,32 +75,36 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 }
 
 // BuildURL creates full SSC URL with the client cached tenantID
-func (c *Client) BuildURL(urlPathParts ...string) (url.URL, error) {
+func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
-
+	if queryValues == nil {
+		queryValues = url.Values{}
+	}
 	var u url.URL
 	if len(c.TenantID) == 0 {
 		return u, errors.New("A non-empty tenant ID must be set on client")
 	}
-
 	u = url.URL{
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
 		Path:   path.Join(c.TenantID, buildPath),
+		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
 }
 
 // BuildURLWithTenantID creates full SSC URL with tenantID
-func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (url.URL, error) {
+func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
 	}
-
+	if queryValues == nil {
+		queryValues = url.Values{}
+	}
 	var u url.URL
 	if len(tenantID) == 0 {
 		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
@@ -110,6 +114,7 @@ func (c *Client) BuildURLWithTenantID(tenantID string, urlPathParts ...string) (
 		Scheme: c.URL.Scheme,
 		Host:   c.URL.Host,
 		Path:   path.Join(tenantID, buildPath),
+		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
 }
