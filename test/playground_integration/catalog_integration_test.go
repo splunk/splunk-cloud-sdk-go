@@ -35,8 +35,6 @@ func cleanupRules(t *testing.T) {
 
 // Test CreateDataset
 func TestIntegrationCreateDataset(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -61,8 +59,6 @@ func TestIntegrationCreateDataset(t *testing.T) {
 
 // Test CreateDataset for 409 DatasetInfo already present error
 func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -82,8 +78,6 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 
 // Test CreateDataset for 401 Unauthorized operation error
 func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	invalidClient := getInvalidClient(t)
 
 	datasetName := "integ_dataset_1000"
@@ -100,8 +94,6 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
 func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	_, err := client.CatalogService.CreateDataset(
@@ -115,8 +107,6 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 
 // Test GetDatasets
 func TestIntegrationGetAllDatasets(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -136,8 +126,6 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 
 // Test GetDatasets for 401 Unauthorized operation error
 func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -158,8 +146,6 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 
 // Test GetDataset by ID
 func TestIntegrationGetDatasetByID(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -177,8 +163,6 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 
 // Test GetDataset for 401 Unauthorized operation error
 func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -197,8 +181,6 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 
 // Test GetDataset for 404 DatasetInfo not found error
 func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	_, err := client.CatalogService.GetDataset("123")
@@ -211,8 +193,6 @@ func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 
 // Test UpdateDataset
 func TestIntegrationUpdateExistingDataset(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -230,8 +210,6 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 
 // Test UpdateDataset for 404 DatasetInfo not found error
 func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	datasetOwner := "Splunk"
@@ -247,8 +225,6 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 
 // Test DeleteDataset
 func TestIntegrationDeleteDataset(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	// create dataset
@@ -270,8 +246,6 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 
 // Test DeleteDataset for 401 Unauthorized operation error
 func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -291,8 +265,6 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 
 // Test DeleteDataset for 404 DatasetInfo not found error
 func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
-
 	client := getClient(t)
 
 	err := client.CatalogService.DeleteDataset("123")
@@ -307,8 +279,6 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 
 // Test CreateRules
 func TestIntegrationCreateRules(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	// create rule
@@ -336,8 +306,6 @@ func TestIntegrationCreateRules(t *testing.T) {
 
 // Test CreateRule for 409 Rule already present error
 func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	// create rule
@@ -361,8 +329,6 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 
 // Test CreateRule for 401 Unauthorized operation error
 func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
 	invalidClient := getInvalidClient(t)
 
 	// create rule
@@ -380,8 +346,6 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 
 // Test GetRules
 func TestIntegrationGetAllRules(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	// create rule
@@ -403,8 +367,6 @@ func TestIntegrationGetAllRules(t *testing.T) {
 
 // Test GetRules for 401 Unauthorized operation error
 func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -427,8 +389,6 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 
 // Test GetRule By ID
 func TestIntegrationGetRuleByID(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	// create rule
@@ -449,8 +409,6 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 
 // Test GetRules for 401 Unauthorized operation error
 func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -472,8 +430,6 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 // Test GetRules for 404 Rule not found error
 func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	_, err := client.CatalogService.GetRule("123")
@@ -486,8 +442,6 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 
 // Test DeleteRule by ID
 func TestIntegrationDeleteRule(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	// create rule
@@ -507,8 +461,6 @@ func TestIntegrationDeleteRule(t *testing.T) {
 
 // Test DeleteRule for 401 Unauthorized operation error
 func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
@@ -530,8 +482,6 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 // Test DeleteRule for 404 Rule not found error
 func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
-	defer cleanupRules(t)
-
 	client := getClient(t)
 
 	err := client.CatalogService.DeleteRule("123")
@@ -544,8 +494,6 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 
 /*// Currently unable to generate a bad rule
 func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
-	defer cleanupRules(t)
-
 	client := getClient()
 
 	// testing CreateRule for 400 Invalid Rule error
