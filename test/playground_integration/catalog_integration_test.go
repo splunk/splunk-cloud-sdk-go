@@ -10,7 +10,7 @@ import (
 )
 
 func cleanupDatasets(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	result, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
 
@@ -23,7 +23,7 @@ func cleanupDatasets(t *testing.T) {
 }
 
 func cleanupRules(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	result, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
 
@@ -37,7 +37,7 @@ func cleanupRules(t *testing.T) {
 func TestIntegrationCreateDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetName := "integ_dataset_1000"
@@ -63,7 +63,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetName := "integ_dataset_1000"
@@ -84,7 +84,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient()
+	invalidClient := getInvalidClient(t)
 
 	datasetName := "integ_dataset_1000"
 	datasetOwner := "Splunk"
@@ -102,7 +102,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	_, err := client.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
@@ -117,7 +117,7 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 func TestIntegrationGetAllDatasets(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -138,8 +138,8 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -160,7 +160,7 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetDatasetByID(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -179,8 +179,8 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -199,7 +199,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	_, err := client.CatalogService.GetDataset("123")
 	assert.NotNil(t, err)
@@ -213,7 +213,7 @@ func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -232,7 +232,7 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	datasetOwner := "Splunk"
 	datasetCapabilities := "1101-00000:11010"
@@ -249,7 +249,7 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 func TestIntegrationDeleteDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -272,8 +272,8 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create dataset
 	datasetOwner := "Splunk"
@@ -293,7 +293,7 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	err := client.CatalogService.DeleteDataset("123")
 	assert.NotNil(t, err)
@@ -309,7 +309,7 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 func TestIntegrationCreateRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -338,7 +338,7 @@ func TestIntegrationCreateRules(t *testing.T) {
 func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -363,7 +363,7 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	invalidClient := getInvalidClient()
+	invalidClient := getInvalidClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -382,7 +382,7 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetAllRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -405,8 +405,8 @@ func TestIntegrationGetAllRules(t *testing.T) {
 func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -429,7 +429,7 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetRuleByID(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -451,8 +451,8 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -474,7 +474,7 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	_, err := client.CatalogService.GetRule("123")
 	assert.NotNil(t, err)
@@ -488,7 +488,7 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 func TestIntegrationDeleteRule(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -509,8 +509,8 @@ func TestIntegrationDeleteRule(t *testing.T) {
 func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
-	invalidClient := getInvalidClient()
+	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// create rule
 	ruleName := "goSdkTestrRule1"
@@ -532,7 +532,7 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getClient(t)
 
 	err := client.CatalogService.DeleteRule("123")
 	assert.NotNil(t, err)

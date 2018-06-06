@@ -15,17 +15,20 @@ type HecService service
 
 // CreateEvent implements HEC2 event endpoint
 func (h *HecService) CreateEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
+	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
 	response, err := h.client.Post(url, event)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // CreateEvents post multiple events in one payload
 func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "events")
+	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
@@ -34,12 +37,15 @@ func (h *HecService) CreateEvents(events []model.HecEvent) error {
 		return err
 	}
 	response, err := h.client.Post(url, hecEvents)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 // CreateRawEvent implements HEC2 raw endpoint
 func (h *HecService) CreateRawEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(hecServicePrefix, "v1", "raw")
+	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "raw")
 	if err != nil {
 		return err
 	}
@@ -47,7 +53,10 @@ func (h *HecService) CreateRawEvent(event model.HecEvent) error {
 		url.RawQuery = param
 	}
 	response, err := h.client.Post(url, event.Event)
-	return util.ParseError(response, err)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }
 
 func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, error) {

@@ -3,20 +3,19 @@ package stubbyintegration
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
-func getClient() *service.Client {
+func getClient(t *testing.T) *service.Client {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	//fmt.Printf("=================================================================")
@@ -28,11 +27,17 @@ func getClient() *service.Client {
 	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
 
-	return service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	client, err := service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	if err != nil {
+		fmt.Println(err.Error())
+		t.FailNow()
+	}
+
+	return client
 }
 
 func TestNewRequest(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	body := []byte(`{"test":"This is a test body"}`)
 	expectedAuth := []string{"Bearer " + testutils.TestAuthenticationToken}
 	requestBody := bytes.NewBuffer(body)
@@ -73,7 +78,7 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
@@ -85,7 +90,7 @@ func TestNewRequestBearerAuthHeader(t *testing.T) {
 }
 
 func TestNewRequestError(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	_, err := client.NewRequest("#~/", testutils.TestSSCHost, nil)
 	if err == nil {
 		t.Errorf("NewRequest expected to return error, got %v", err)
@@ -93,7 +98,7 @@ func TestNewRequestError(t *testing.T) {
 }
 
 func TestNewStubbyRequest(t *testing.T) {
-	client := getClient()
+	client := getClient(t)
 	resp, _ := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil)
 	if resp.StatusCode != 500 {
 		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
@@ -111,7 +116,7 @@ func TestNewStubbyRequest(t *testing.T) {
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {
-	var client = getClient()
+	var client = getClient(t)
 	collector, err := client.NewBatchEventsSender(5, 1000)
 	assert.Nil(t, err)
 

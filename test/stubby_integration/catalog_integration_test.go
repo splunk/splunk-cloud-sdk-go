@@ -1,16 +1,14 @@
 package stubbyintegration
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Stubby test for GetDataset() catalog service endpoint
 func TestGetDataset(t *testing.T) {
-	result, err := getClient().CatalogService.GetDataset("ds1")
+	result, err := getClient(t).CatalogService.GetDataset("ds1")
 
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -20,7 +18,7 @@ func TestGetDataset(t *testing.T) {
 
 // Stubby test for GetDatasets() catalog service endpoint
 func TestGetDatasets(t *testing.T) {
-	result, err := getClient().CatalogService.GetDatasets()
+	result, err := getClient(t).CatalogService.GetDatasets()
 
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
@@ -28,7 +26,7 @@ func TestGetDatasets(t *testing.T) {
 
 // Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
-	result, err := getClient().CatalogService.CreateDataset(
+	result, err := getClient(t).CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: true})
 
 	assert.Empty(t, err)
@@ -39,7 +37,7 @@ func TestPostDataset(t *testing.T) {
 
 // Stubby test for UpdateDataset() catalog service endpoint
 func TestUpdateDataset(t *testing.T) {
-	result, err := getClient().CatalogService.UpdateDataset(
+	result, err := getClient(t).CatalogService.UpdateDataset(
 		model.PartialDatasetInfo{Disabled: true, Version: 5}, "ds1")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -49,27 +47,29 @@ func TestUpdateDataset(t *testing.T) {
 
 // Stubby test for DeleteDataset() catalog service endpoint
 func TestDeleteDataset(t *testing.T) {
-	err := getClient().CatalogService.DeleteDataset("ds1")
+	err := getClient(t).CatalogService.DeleteDataset("ds1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for DeleteRule() catalog service endpoint
 func TestDeleteRule(t *testing.T) {
-	err := getClient().CatalogService.DeleteRule("rule1")
+	err := getClient(t).CatalogService.DeleteRule("rule1")
 	assert.Empty(t, err)
 }
 
 // Stubby test for GetRules() catalog service endpoint
 func TestGetRules(t *testing.T) {
-	result, err := getClient().CatalogService.GetRules()
+	result, err := getClient(t).CatalogService.GetRules()
 
 	assert.Empty(t, err)
 	assert.Equal(t, 2, len(result))
 }
+
 // Stubby test for GetRule() catalog service endpoint
 func TestGetRule(t *testing.T) {
-	result, err := getClient().CatalogService.GetRule("rule1")
+	result, err := getClient(t).CatalogService.GetRule("rule1")
 	assert.Empty(t, err)
+
 	assert.NotNil(t, "rule1", result.ID)
 	assert.Equal(t, "_internal", result.Name)
 }
@@ -80,7 +80,9 @@ func TestPostRule(t *testing.T) {
 	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
 	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
 	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
-	result, err := getClient().CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
+
+	result, err := getClient(t).CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
+
 	assert.Empty(t, err)
 	assert.Equal(t, "_internal", result.Name)
 	assert.Equal(t, "test_match", result.Match)
