@@ -123,8 +123,12 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	response, err := c.httpClient.Do(req)
 
+	if err != nil {
+		return nil, err
+	}
+
 	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
-	if response.StatusCode == 401 && len(RefreshToken) != 0 {
+	if response != nil && response.StatusCode == 401 && len(RefreshToken) != 0 {
 		response, err = c.onUnauthorizedRequest(req)
 		return response, err
 	}
