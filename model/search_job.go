@@ -28,7 +28,7 @@ type PostJobsRequest struct {
 	//earliest_time    String        Specify a time string. Sets the earliest (inclusive), respectively, time bounds for the search.
 	//The time string can be either a UTC time (with fractional seconds), a relative time specifier (to now) or a formatted time string. Refer to Time modifiers for search for information and examples of specifying a time string.
 	//Compare to index_earliest parameter. Also see comment for the search_mode parameter.
-	EarliestTime string `json:"earliesTime"`
+	EarliestTime string `json:"earliestTime"`
 
 	//enable_lookups    Boolean    true    Indicates whether lookups should be applied to events.
 	//Specifying true (the default) may slow searches significantly depending on the nature of the lookups.
