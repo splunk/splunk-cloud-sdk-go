@@ -37,10 +37,18 @@ func TestNewClient(t *testing.T) {
 	var timeout = time.Second * 5
 	var client, err = NewClient(tenant, token, apiURL, timeout)
 	var searchService = &SearchService{client: client}
+	var catalogService = &CatalogService{client: client}
+	var identityService = &IdentityService{client: client}
+	var hecService = &HecService{client: client}
+	var kvStoreService = &KVStoreService{client: client}
 
 	assert.Nil(t, err)
 	assert.Equal(t, token, client.token)
 	assert.Equal(t, apiURL, fmt.Sprintf("%s://%s", client.URL.Scheme, client.URL.Host))
 	assert.Equal(t, timeout, client.httpClient.Timeout)
 	assert.Equal(t, searchService, client.SearchService)
+	assert.Equal(t, catalogService, client.CatalogService)
+	assert.Equal(t, identityService, client.IdentityService)
+	assert.Equal(t, hecService, client.HecService)
+	assert.Equal(t, kvStoreService, client.KVStoreService)
 }
