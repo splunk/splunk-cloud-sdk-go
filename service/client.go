@@ -43,17 +43,19 @@ type Client struct {
 	CatalogService *CatalogService
 	// HecService talks to the SSC hec service
 	HecService *HecService
-	// IdentityService talks to the IAC service
+	// IdentityService talks to SSC IAC service
 	IdentityService *IdentityService
+	// KVStoreService talks to SSC kvstore service
+	KVStoreService *KVStoreService
 }
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
-//RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
+// RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
 var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
 
-//ClientID - Okta app Client Id for SDK
+// ClientID - Okta app Client Id for SDK
 var ClientID = os.Getenv("CLIENT_ID")
 
 // service provides the interface between client and services
@@ -123,8 +125,12 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	response, err := c.httpClient.Do(req)
 
+	if err != nil {
+		return nil, err
+	}
+
 	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
-	if response.StatusCode == 401 && len(RefreshToken) != 0 {
+	if response != nil && response.StatusCode == 401 && len(RefreshToken) != 0 {
 		response, err = c.onUnauthorizedRequest(req)
 		return response, err
 	}
@@ -143,7 +149,7 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	if err != nil || len(accessToken) == 0 {
 		return nil, err
 	}
-	//Update the client with the newly obtained access token
+	// Update the client with the newly obtained access token
 	c.UpdateToken(accessToken)
 	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
 	if err != nil {
@@ -152,7 +158,7 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 	request.Header.Set("Content-Type", "application/json")
 
-	//retry request with new access token
+	// retry request with new access token
 	response, err := c.httpClient.Do(request)
 
 	return response, err
@@ -166,7 +172,7 @@ type refreshData struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-//GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
+// GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
 func (c *Client) GetNewAccessToken() (string, error) {
 	var accessToken = ""
 	client := http.Client{}
@@ -298,6 +304,7 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, err
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
+	c.KVStoreService = &KVStoreService{client: c}
 	return c, nil
 }
 
