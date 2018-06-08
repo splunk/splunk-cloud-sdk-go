@@ -1,5 +1,18 @@
 package model
 
+// DispatchState describes dispatchState of a job
+type DispatchState string
+// Supported DispatchState constants
+const (
+	QUEUED     DispatchState = "QUEUED"
+	PARSING    DispatchState = "PARSING"
+	RUNNING    DispatchState = "RUNNING"
+	PAUSED     DispatchState = "PAUSED"
+	FINALIZING DispatchState = "FINALIZING"
+	FAILED     DispatchState = "FAILED"
+	DONE       DispatchState = "DONE"
+)
+
 // PostJobsRequest represents the search job post params
 type PostJobsRequest struct {
 
@@ -118,7 +131,7 @@ type SearchJob struct {
 type SearchJobContent struct {
 	Sid              string                 `json:"sid"`
 	EventCount       int                    `json:"eventCount"`
-	DispatchState    string                 `json:"dispatchState"`
+	DispatchState    DispatchState          `json:"dispatchState"`
 	DiskUsage        int64                  `json:"diskUsage"`
 	IsFinalized      bool                   `json:"isFinalized"`
 	OptimizedSearch  string                 `json:"optimizedSearch"`
@@ -130,20 +143,23 @@ type SearchContext struct {
 	User string
 	App  string
 }
-
+// JobAction defines the action that can be posted on a job
+type JobAction string
+// Supported JobAction constants
+const (
+	PAUSE JobAction = "pause"
+	UNPAUSE JobAction = "unpause"
+	FINALIZE JobAction = "finalize"
+	CANCEL JobAction = "cancel"
+	TOUCH JobAction = "touch"
+	SAVE JobAction = "save"
+	SETTTL JobAction = "setttl"
+	ENABLEPREVIEW JobAction = "enablepreview"
+	DISABLEPREVIEW JobAction = "disablepreview"
+)
 // JobControlAction specifies the action needs to be taken on a job
-//TODO: Define supported actinos:
-//            - pause
-//            - unpause
-//            - finalize
-//            - cancel
-//            - touch
-//            - save
-//            - setttl
-//            - enablepreview
-//            - disablepreview
 type JobControlAction struct {
-	Action string `json:"action"`
+	Action JobAction `json:"action"`
 	TTL    int    `json:"ttl"`
 }
 

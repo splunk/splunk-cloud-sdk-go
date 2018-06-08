@@ -50,7 +50,7 @@ func TestGetJob(t *testing.T) {
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
-	time.Sleep(time.Second * 5)
+	client.SearchService.WaitForJob(sid, 1000 * time.Millisecond)
 	assert.NotEmpty(t, response)
 }
 
@@ -67,7 +67,7 @@ func TestGetJobResults(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	time.Sleep(time.Second * 5)
+	client.SearchService.WaitForJob(sid, 1000 * time.Millisecond)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -78,7 +78,7 @@ func TestGetJobEvents(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	time.Sleep(time.Second * 5)
+	client.SearchService.WaitForJob(sid, 1000 * time.Millisecond)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -220,8 +220,7 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	//TODO: Replace with composite functions
-	time.Sleep(10000 * time.Millisecond)
+	client.SearchService.WaitForJob(response, 1000 * time.Millisecond)
 	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode:"json", Count:30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
