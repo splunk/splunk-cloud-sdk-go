@@ -5,9 +5,18 @@ package playgroundintegration
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
-	"strings"
 	"testing"
+	"github.com/splunk/ssc-client-go/util"
 )
+
+var ruleName = "goSdkTestrRule1"
+var ruleModule = "catalog"
+var ruleMatch = "host::integration_test_match"
+var owner = "splunk"
+
+var datasetOwner = "Splunk"
+var datasetCapabilities = "1101-00000:11010"
+var datasetName = "integ_dataset_1000"
 
 func cleanupDatasets(t *testing.T) {
 	client := getClient(t)
@@ -40,9 +49,6 @@ func TestIntegrationCreateDataset(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetName := "integ_dataset_1000"
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	assert.Nil(t, err)
@@ -63,15 +69,12 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetName := "integ_dataset_1000"
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	_, err = client.CatalogService.CreateDataset(
 		model.DatasetInfo{ID: dataset.ID, Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "409"))
+	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
 }
 
 // Test CreateDataset for 401 Unauthorized operation error
@@ -80,13 +83,11 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 
 	invalidClient := getInvalidClient(t)
 
-	datasetName := "integ_dataset_1000"
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	_, err := invalidClient.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
@@ -98,7 +99,7 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	_, err := client.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "400"))
+	assert.True(t, err.(*util.HTTPError).Status == 400, "Expected error code 400")
 }
 
 // Test GetDatasets
@@ -108,8 +109,6 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	_, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_2000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_3000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
@@ -123,19 +122,12 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
-	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
-	_, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_2000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_3000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-
-	_, err = invalidClient.CatalogService.GetDatasets()
+	_, err := invalidClient.CatalogService.GetDatasets()
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetDataset by ID
@@ -145,8 +137,6 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
@@ -162,13 +152,12 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetDataset for 404 DatasetInfo not found error
@@ -179,7 +168,7 @@ func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 
 	_, err := client.CatalogService.GetDataset("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 // Test UpdateDataset
@@ -189,13 +178,17 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
+	updateVersion := 6
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
-	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: 6}, dataset.ID)
+	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: updateVersion}, dataset.ID)
 	assert.Nil(t, err)
 	assert.NotNil(t, updatedDataset)
+
+	// validate the update operation
+	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
+	assert.Nil(t, err)
+	assert.Equal(t, updateVersion, datasetByID.Version)
 }
 
 // Test UpdateDataset for 404 DatasetInfo not found error
@@ -204,12 +197,9 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 
 	client := getClient(t)
 
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
-
 	_, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName", Version: 2}, "123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 // Test DeleteDataset
@@ -219,8 +209,6 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 	client := getClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, dataset.ID)
 
@@ -229,7 +217,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 
 	_, err = client.CatalogService.GetDataset(dataset.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 // Test DeleteDataset for 401 Unauthorized operation error
@@ -240,14 +228,13 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create dataset
-	datasetOwner := "Splunk"
-	datasetCapabilities := "1101-00000:11010"
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	assert.NotNil(t, dataset.ID)
 
 	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test DeleteDataset for 404 DatasetInfo not found error
@@ -258,7 +245,7 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteDataset("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 // todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
@@ -270,10 +257,6 @@ func TestIntegrationCreateRules(t *testing.T) {
 	client := getClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.Nil(t, err)
@@ -281,11 +264,11 @@ func TestIntegrationCreateRules(t *testing.T) {
 	assert.Equal(t, ruleMatch, rule.Match)
 
 	_, err = client.CatalogService.CreateRule(
-		model.Rule{Name: "anotherone", Module: ruleModule, Owner: owner})
+		model.Rule{Name: "anotherone", Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.Nil(t, err)
 
 	_, err = client.CatalogService.CreateRule(
-		model.Rule{Name: "thirdone", Module: ruleModule, Owner: owner})
+		model.Rule{Name: "thirdone", Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.Nil(t, err)
 }
 
@@ -296,19 +279,15 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 	client := getClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(
 		model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.Nil(t, err)
 	assert.Equal(t, ruleName, rule.Name)
 	assert.Equal(t, ruleMatch, rule.Match)
 
-	_, err = client.CatalogService.CreateRule(model.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Owner: owner})
+	_, err = client.CatalogService.CreateRule(model.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "409"))
+	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
 }
 
 // Test CreateRule for 401 Unauthorized operation error
@@ -318,13 +297,10 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	owner := "splunk"
-
-	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner})
+	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetRules
@@ -334,13 +310,9 @@ func TestIntegrationGetAllRules(t *testing.T) {
 	client := getClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "anotherone", Module: ruleModule, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Owner: owner})
+	_, err = client.CatalogService.CreateRule(model.Rule{Name: "anotherone", Module: ruleModule, Match: ruleMatch, Owner: owner})
+	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Match: ruleMatch, Owner: owner})
 
 	rules, err := client.CatalogService.GetRules()
 	assert.Nil(t, err)
@@ -351,21 +323,12 @@ func TestIntegrationGetAllRules(t *testing.T) {
 func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
 	invalidClient := getInvalidClient(t)
 
-	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
-	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "anotherone", Module: ruleModule, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Owner: owner})
-
-	_, err = invalidClient.CatalogService.GetRules()
+	_, err := invalidClient.CatalogService.GetRules()
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetRule By ID
@@ -375,10 +338,6 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 	client := getClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.NotNil(t, rule.ID)
 
@@ -395,16 +354,13 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.NotNil(t, rule.ID)
 
 	_, err = invalidClient.CatalogService.GetRule(rule.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetRules for 404 Rule not found error
@@ -415,7 +371,7 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 
 	_, err := client.CatalogService.GetRule("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 // Test DeleteRule by ID
@@ -425,10 +381,6 @@ func TestIntegrationDeleteRule(t *testing.T) {
 	client := getClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.NotNil(t, rule.ID)
 
@@ -444,16 +396,13 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create rule
-	ruleName := "goSdkTestrRule1"
-	ruleModule := "catalog"
-	ruleMatch := "integration_test_match"
-	owner := "splunk"
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
 	assert.NotNil(t, rule.ID)
 
 	err = invalidClient.CatalogService.DeleteRule(rule.ID)
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "401 Unauthorized"))
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test DeleteRule for 404 Rule not found error
@@ -464,7 +413,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteRule("123")
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "404"))
+	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
 /*// Currently unable to generate a bad rule
@@ -477,7 +426,7 @@ func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 	ruleName := "goSdkTestrRule1"
 	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName})
 	assert.NotNil(t, err)
-	assert.True(t, strings.Contains(err.Error(), "400 Invalid"))
+    assert.True(t, err.(*util.HTTPError).Status == 400, "Expected error code 400")
 }*/
 
 // todo (Parul): 405 Rule cannot be deleted because of dependencies error case
