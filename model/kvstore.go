@@ -44,3 +44,23 @@ const (
 	// PingOKBodyStatusUnknown captures enum value "unknown"
 	PingOKBodyStatusUnknown string = "unknown"
 )
+
+// NamespaceDescription namespace description
+type NamespaceDescription struct {
+
+	// The list of collections
+	Collections []*CollectionDescription `json:"collections"`
+
+	// The name of the namespace
+	Name string `json:"name,omitempty"`
+}
+
+// TenantDescription tenant description
+type TenantDescription struct {
+
+	// The name of the tenant
+	Name string `json:"name,omitempty"`
+
+	// The list of namespaces
+	Namespaces []*NamespaceDescription `json:"namespaces"`
+}
