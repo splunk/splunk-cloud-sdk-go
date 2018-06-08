@@ -9,11 +9,13 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 )
 
+// Test Rule variables
 var ruleName = "goSdkTestrRule1"
 var ruleModule = "catalog"
 var ruleMatch = "host::integration_test_match"
 var owner = "splunk"
 
+// Test Dataset variables
 var datasetOwner = "Splunk"
 var datasetCapabilities = "1101-00000:11010"
 var datasetName = "integ_dataset_1000"
