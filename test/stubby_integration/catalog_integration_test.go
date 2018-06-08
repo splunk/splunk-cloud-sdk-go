@@ -69,6 +69,7 @@ func TestGetRules(t *testing.T) {
 func TestGetRule(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetRule("rule1")
 	assert.Empty(t, err)
+
 	assert.NotNil(t, "rule1", result.ID)
 	assert.Equal(t, "_internal", result.Name)
 }
@@ -79,7 +80,9 @@ func TestPostRule(t *testing.T) {
 	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
 	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
 	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
+
 	result, err := getClient(t).CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
+
 	assert.Empty(t, err)
 	assert.Equal(t, "_internal", result.Name)
 	assert.Equal(t, "test_match", result.Match)
