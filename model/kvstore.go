@@ -45,6 +45,47 @@ const (
 	PingOKBodyStatusUnknown string = "unknown"
 )
 
+// IndexFieldDefinition index field definition
+type IndexFieldDefinition struct {
+
+	// The sort direction for the indexed field
+	// Required: true
+	Direction *int64 `json:"direction"`
+
+	// The name of the field to index
+	// Required: true
+	Field *string `json:"field"`
+}
+
+// IndexDescription index description
+type IndexDescription struct {
+
+	// The collection name
+	Collection string `json:"collection,omitempty"`
+
+	// fields
+	Fields []*IndexFieldDefinition `json:"fields"`
+
+	// The name of the index
+	Name string `json:"name,omitempty"`
+
+	// The namespace containing the collection
+	Namespace string `json:"namespace,omitempty"`
+}
+
+// CollectionDescription collection description
+type CollectionDescription struct {
+
+	// The list of indexes on this collection
+	Indexes []*IndexDescription `json:"indexes"`
+
+	// The collection name
+	Name string `json:"name,omitempty"`
+
+	// The namespace containing the collection
+	Namespace string `json:"namespace,omitempty"`
+}
+
 // NamespaceDescription namespace description
 type NamespaceDescription struct {
 
