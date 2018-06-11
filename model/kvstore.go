@@ -103,3 +103,6 @@ type TenantDescription struct {
 	// The list of namespaces
 	Namespaces []*NamespaceDescription `json:"namespaces"`
 }
+
+// LookupValue Value tuple used for lookup
+type LookupValue []interface{}
