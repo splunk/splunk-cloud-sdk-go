@@ -15,7 +15,7 @@ type KVStoreService service
 
 
 // GetCollectionStats returns Collection Stats for the collection
-func (c *KVStoreService) GetCollectionStats(namespace string, collection string) ([]model.CollectionStats, error) {
+func (c *KVStoreService) GetCollectionStats(namespace string, collection string) (*model.CollectionStats, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, kvStoreCollectionsResource, collection, "stats")
 	if err != nil {
 		return nil, err
@@ -27,13 +27,13 @@ func (c *KVStoreService) GetCollectionStats(namespace string, collection string)
 	if err != nil {
 		return nil, err
 	}
-	var result []model.CollectionStats
+	var result model.CollectionStats
 	err = util.ParseResponse(&result, response)
-	return result, err
+	return &result, err
 }
 
-// GetPingStatus returns Service Health Status
-func (c *KVStoreService) GetServiceHealthStatus() ([]model.ServiceHealthStatus, error) {
+// GetServiceHealthStatus returns Service Health Status
+func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (c *KVStoreService) GetServiceHealthStatus() ([]model.ServiceHealthStatus, 
 	if err != nil {
 		return nil, err
 	}
-	var result []model.ServiceHealthStatus
+	var result model.PingOKBody
 	err = util.ParseResponse(&result, response)
-	return result, err
+	return &result, err
 }

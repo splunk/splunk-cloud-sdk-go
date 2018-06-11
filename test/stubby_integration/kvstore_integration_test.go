@@ -1,5 +1,6 @@
 package stubbyintegration
 
+
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -10,9 +11,9 @@ func TestGetCollectionStats(t *testing.T) {
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
 
-	assert.Equal(t, "5", result.count)
-	assert.Equal(t, "namespace1", result.ns)
-	assert.Equal(t, "1", result.nindexes)
+	assert.Equal(t, "5", result.Count)
+	assert.Equal(t, "namespace1", result.Ns)
+	assert.Equal(t, "1", result.Nindexes)
 }
 
 func TestGetServiceHealthStatus(t *testing.T) {
@@ -20,6 +21,5 @@ func TestGetServiceHealthStatus(t *testing.T) {
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
 
-	assert.Equal(t, "healthy", result.status)
+	assert.Equal(t, "healthy", result.Status)
 }
-
