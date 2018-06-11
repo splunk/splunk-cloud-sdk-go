@@ -49,11 +49,9 @@ const (
 type IndexFieldDefinition struct {
 
 	// The sort direction for the indexed field
-	// Required: true
 	Direction *int64 `json:"direction"`
 
 	// The name of the field to index
-	// Required: true
 	Field *string `json:"field"`
 }
 
