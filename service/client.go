@@ -90,9 +90,9 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.U
 		return u, errors.New("A non-empty tenant ID must be set on client")
 	}
 	u = url.URL{
-		Scheme: c.URL.Scheme,
-		Host:   c.URL.Host,
-		Path:   path.Join(c.TenantID, buildPath),
+		Scheme:   c.URL.Scheme,
+		Host:     c.URL.Host,
+		Path:     path.Join(c.TenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -113,9 +113,9 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 	}
 
 	u = url.URL{
-		Scheme: c.URL.Scheme,
-		Host:   c.URL.Host,
-		Path:   path.Join(tenantID, buildPath),
+		Scheme:   c.URL.Scheme,
+		Host:     c.URL.Host,
+		Path:     path.Join(tenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil

@@ -1,12 +1,12 @@
 package service
 
 import (
+	"errors"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
-	"strconv"
-	"errors"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -15,52 +15,63 @@ const searchServiceVersion = "v1"
 
 // Search is a wrapper class for convenient search operations
 type Search struct {
-	Sid string
+	Sid     string
 	Service *SearchService
 }
+
 // Status returns the status of the search job
 func (search *Search) Status() (*model.SearchJobContent, error) {
 	return search.Service.GetJob(search.Sid)
 }
+
 // Cancel posts a cancel action to the search job
 func (search *Search) Cancel() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.CANCEL})
 }
+
 // Pause posts a pause action to the search job
 func (search *Search) Pause() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.PAUSE})
 }
+
 // Unpause posts an unpause action to the search job
 func (search *Search) Unpause() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.UNPAUSE})
 }
+
 // Touch posts a touch action to the search job
 func (search *Search) Touch() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.TOUCH})
 }
+
 // SetTTL posts a setttl action to the search job
 func (search *Search) SetTTL() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.SETTTL})
 }
+
 // Finalize posts a finalize action to the search job
 func (search *Search) Finalize() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.FINALIZE})
 }
+
 // Save posts a save action to the search job
 func (search *Search) Save() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.SAVE})
 }
+
 // EnablePreview posts an enablepreview action to the search job
 func (search *Search) EnablePreview() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.ENABLEPREVIEW})
 }
+
 // DisablePreview posts a disablepreview action to the search job
 func (search *Search) DisablePreview() (*model.JobControlReplyMsg, error) {
 	return search.Service.PostJobControl(search.Sid, &model.JobControlAction{Action: model.DISABLEPREVIEW})
 }
+
 // Wait polls the job until it's completed or errors out
 func (search *Search) Wait() error {
-	return search.Service.WaitForJob(search.Sid, 250 * time.Millisecond)
+	return search.Service.WaitForJob(search.Sid, 250*time.Millisecond)
 }
 
 // SearchService talks to the SSC search service
@@ -202,6 +213,7 @@ func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration)
 	}
 	return nil
 }
+
 // SubmitSearch creates a search job and wraps the response in an object
 func (service *SearchService) SubmitSearch(job *model.PostJobsRequest) (*Search, error) {
 	sid, err := service.CreateJob(job)
@@ -209,7 +221,7 @@ func (service *SearchService) SubmitSearch(job *model.PostJobsRequest) (*Search,
 		return nil, err
 	}
 	return &Search{
-		Sid: sid,
+		Sid:     sid,
 		Service: service,
 	}, nil
 }
