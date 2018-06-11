@@ -44,3 +44,6 @@ const (
 	// PingOKBodyStatusUnknown captures enum value "unknown"
 	PingOKBodyStatusUnknown string = "unknown"
 )
+
+// LookupValue Value tuple used for lookup
+type LookupValue []interface{}
