@@ -11,9 +11,9 @@ func TestGetCollectionStats(t *testing.T) {
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
 
-	assert.Equal(t, "5", result.Count)
+	assert.Equal(t, 5, result.Count)
 	assert.Equal(t, "namespace1", result.Ns)
-	assert.Equal(t, "1", result.Nindexes)
+	assert.Equal(t, 1, result.Nindexes)
 }
 
 func TestGetServiceHealthStatus(t *testing.T) {
