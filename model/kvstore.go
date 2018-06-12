@@ -45,5 +45,64 @@ const (
 	PingOKBodyStatusUnknown string = "unknown"
 )
 
+// IndexFieldDefinition index field definition
+type IndexFieldDefinition struct {
+
+	// The sort direction for the indexed field
+	Direction int64 `json:"direction"`
+
+	// The name of the field to index
+	Field string `json:"field"`
+}
+
+// IndexDescription index description
+type IndexDescription struct {
+
+	// The collection name
+	Collection string `json:"collection,omitempty"`
+
+	// fields
+	Fields []IndexFieldDefinition `json:"fields"`
+
+	// The name of the index
+	Name string `json:"name,omitempty"`
+
+	// The namespace containing the collection
+	Namespace string `json:"namespace,omitempty"`
+}
+
+// CollectionDescription collection description
+type CollectionDescription struct {
+
+	// The list of indexes on this collection
+	Indexes []*IndexDescription `json:"indexes"`
+
+	// The collection name
+	Name string `json:"name,omitempty"`
+
+	// The namespace containing the collection
+	Namespace string `json:"namespace,omitempty"`
+}
+
+// NamespaceDescription namespace description
+type NamespaceDescription struct {
+
+	// The list of collections
+	Collections []*CollectionDescription `json:"collections"`
+
+	// The name of the namespace
+	Name string `json:"name,omitempty"`
+}
+
+// TenantDescription tenant description
+type TenantDescription struct {
+
+	// The name of the tenant
+	Name string `json:"name,omitempty"`
+
+	// The list of namespaces
+	Namespaces []*NamespaceDescription `json:"namespaces"`
+}
+
 // LookupValue Value tuple used for lookup
 type LookupValue []interface{}
