@@ -1,12 +1,13 @@
 package playgroundintegration
 
 import (
+	"fmt"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
 )
 
 // Should flush when ticker ticked and queue is not full
@@ -69,4 +70,32 @@ func TestBatchEventsSenderQuitFlush(t *testing.T) {
 func blocking(done chan bool, seconds int64) {
 	time.Sleep(time.Duration(seconds) * time.Second)
 	done <- true
+}
+
+func addEventBatch(collector *service.BatchEventsSender, event1 model.HecEvent) {
+	for i := 0; i < 5; i++ {
+		collector.AddEvent(event1)
+	}
+}
+
+// Should return error message when 5 errors are encountered during sending batches
+func TestBatchEventsSenderErrorHandle(t *testing.T) {
+	var client = getInvalidClient(t)
+
+	event1 := model.HecEvent{Host: "host1", Event: "test10"}
+	done := make(chan bool, 1)
+
+	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
+	collector.Run()
+	go blocking(done, 15)
+	for i := 0; i < 10; i++ {
+		go addEventBatch(collector, event1)
+	}
+
+	<-done
+
+	s := strings.Split(collector.ErrorMsg, "],")
+	fmt.Println(s)
+	assert.Equal(t, 10, len(s))
+
 }
