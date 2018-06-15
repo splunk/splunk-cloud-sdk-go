@@ -11,7 +11,7 @@ import (
 
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
-	testTenantID := "6fecc441-fb60-4992-a822-069feb622fez"
+	testTenantID := "sscsdk-06152018"
 	client := getClient(t)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
@@ -79,7 +79,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 
 // test Erros with auth endpoints
 func TestIntegrationTenantErrors(t *testing.T) {
-	testTenantID := "6fecc441-fb60-4992-a822-069feb611fez"
+	testTenantID := "sscsdk-06152018"
 	client := getClient(t)
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
