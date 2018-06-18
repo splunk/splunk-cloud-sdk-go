@@ -16,7 +16,7 @@ type DatasetInfo struct {
 	Name         string          `json:"name"`
 	Kind         DatasetInfoKind `json:"kind"`
 	Owner        string          `json:"owner"`
-	// Included for testing purpose
+	// TODO (remove later): Included for testing purpose - temporary for namespace and collection creation
 	Module       string          `json:"module,omitempty"`
 	Created      string          `json:"created,omitempty"`
 	Modified     string          `json:"modified,omitempty"`
