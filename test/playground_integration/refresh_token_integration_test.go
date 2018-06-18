@@ -17,10 +17,11 @@ var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
-	testTenantID := "sscsdk-06152018"
-
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 	client,_ := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
+
+	//prepare a temp tenant that will be deleted
+	testTenantID := "sscsdk-new-temp-tenant"
 
 	defer client.IdentityService.DeleteTenant(testTenantID)
 
