@@ -51,6 +51,56 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	return &result, err
 }
 
+// CreateIndex posts a new index to be added to the collection.
+func (c *KVStoreService) CreateIndex(index model.IndexDescription, namespace string, collectionName string) error {
+	postIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes")
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Post(postIndexURL, index)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+// GetIndexes retrieves all the indexes in a given namespace and collection
+func (c *KVStoreService) GetIndexes(namespace string, collectionName string) ([]model.IndexDescription, error) {
+	getIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(getIndexURL)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.IndexDescription
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// DeleteIndex deletes the specified index in a given namespace and collection
+func (c *KVStoreService) DeleteIndex(namespace string, collectionName string, indexName string) error {
+	deleteIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes", indexName)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(deleteIndexURL)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 // CreateRecords posts new records to the collection.
 func (c *KVStoreService) CreateRecords(namespace string, collectionName string, records []model.Record) ([]string, error) {
 	postRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "batch")
@@ -105,8 +155,7 @@ func (c *KVStoreService) GetRecordByKey(namespace string, collectionName string,
 	return result, err
 }
 
-// TODO: Delete record based on query - currently this is deleting all the records.
-// DeleteRecords deletes all the records present in a given collection.
+// DeleteRecords deletes records present in a given collection based on the provided query.
 func (c *KVStoreService) DeleteRecords(values url.Values, namespace string, collectionName string) error {
 	deleteRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "query")
 	if err != nil {
