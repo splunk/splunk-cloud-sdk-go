@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"go/types"
+	"net/url"
 )
 
 
@@ -52,56 +52,63 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 }
 
 // CreateRecords posts new records to the collection.
-func (c *KVStoreService) CreateRecords(namespace string, collectionName string, recordArray []types.Object) error {
+func (c *KVStoreService) CreateRecords(namespace string, collectionName string, records []model.Record) ([]string, error) {
 	postRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "batch")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	response, err := c.client.Post(postRecordURL, recordArray)
+	response, err := c.client.Post(postRecordURL, records)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return err
+	var result []string
+	err = util.ParseResponse(&result, response)
+	return result, err
 }
 
 // GetRecords queries records present in a given collection.
-func (c *KVStoreService) GetRecords(namespace string, collectionName string) error {
-	getRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "query")
+func (c *KVStoreService) GetRecords(values url.Values, namespace string, collectionName string) ([]model.Record, error) {
+	getRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Get(getRecordURL)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return err
+	var result []model.Record
+	err = util.ParseResponse(&result, response)
+	return result, err
 }
 
 // GetRecordByKey queries a particular record present in a given collection based on the key value provided by the user.
-func (c *KVStoreService) GetRecordByKey(namespace string, collectionName string, keyValue model.Key) error {
-	getRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, keyValue.Key)
+func (c *KVStoreService) GetRecordByKey(namespace string, collectionName string, keyValue string) (model.Record, error) {
+	getRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, keyValue)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Get(getRecordURL)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return err
+	var result model.Record
+	err = util.ParseResponse(&result, response)
+	return result, err
 }
 
+// TODO: Delete record based on query - currently this is deleting all the records.
 // DeleteRecords deletes all the records present in a given collection.
-func (c *KVStoreService) DeleteRecords(namespace string, collectionName string) error {
-	deleteRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "query")
+func (c *KVStoreService) DeleteRecords(values url.Values, namespace string, collectionName string) error {
+	deleteRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "query")
 	if err != nil {
 		return err
 	}
@@ -116,8 +123,8 @@ func (c *KVStoreService) DeleteRecords(namespace string, collectionName string) 
 }
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
-func (c *KVStoreService) DeleteRecordByKey(namespace string, collectionName string, keyValue model.Key) error {
-	deleteRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, keyValue.Key)
+func (c *KVStoreService) DeleteRecordByKey(namespace string, collectionName string, keyValue string) error {
+	deleteRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, keyValue)
 	if err != nil {
 		return err
 	}

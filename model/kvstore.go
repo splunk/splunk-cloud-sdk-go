@@ -111,3 +111,6 @@ type LookupValue []interface{}
 type Key struct {
 	Key string `json:"_key"`
 }
+
+// Record is a JSON document entity contained in collections
+type Record map[string]interface{}
