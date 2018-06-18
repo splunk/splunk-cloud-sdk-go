@@ -246,6 +246,34 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.EqualValues(t, expectedSearchEvent, resp)
 }
 
+func TestQueryEvents(t *testing.T) {
+	client := getClient(t)
+	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
+	pages, _ := search.QueryEvents(2, 0, &model.FetchEventsRequest{Count: 5})
+	defer pages.Close()
+	for pages.Next() {
+		values, _ := pages.Value()
+		assert.NotNil(t, values)
+		assert.Equal(t, 2, len(values.Results))
+	}
+	err := pages.Err()
+	assert.Nil(t, err)
+}
+
+func TestQueryResults(t *testing.T) {
+	client := getClient(t)
+	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
+	pages, _ := search.QueryResults(2, 0, &model.FetchResultsRequest{Count: 5})
+	defer pages.Close()
+	for pages.Next() {
+		values, _ := pages.Value()
+		assert.NotNil(t, values)
+		assert.Equal(t, 2, len(values.Results))
+	}
+	err := pages.Err()
+	assert.Nil(t, err)
+}
+
 // retry
 func retry(attempts int, sleep time.Duration, callback func() (interface{}, error)) error {
 	var err error
