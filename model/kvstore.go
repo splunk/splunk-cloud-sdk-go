@@ -82,10 +82,10 @@ const (
 type IndexFieldDefinition struct {
 
 	// The sort direction for the indexed field
-	Direction *int64 `json:"direction"`
+	Direction int64 `json:"direction"`
 
 	// The name of the field to index
-	Field *string `json:"field"`
+	Field string `json:"field"`
 }
 
 // IndexDescription index description
@@ -95,7 +95,7 @@ type IndexDescription struct {
 	Collection string `json:"collection,omitempty"`
 
 	// fields
-	Fields []*IndexFieldDefinition `json:"fields"`
+	Fields []IndexFieldDefinition `json:"fields"`
 
 	// The name of the index
 	Name string `json:"name,omitempty"`

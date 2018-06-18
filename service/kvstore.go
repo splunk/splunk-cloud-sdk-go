@@ -5,14 +5,12 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 )
 
-
 const kvStoreServicePrefix = "kvstore"
 const kvStoreServiceVersion = "v1"
 const kvStoreCollectionsResource = "collections"
 
 // KVStoreService talks to kvstore service
 type KVStoreService service
-
 
 // GetCollectionStats returns Collection Stats for the collection
 func (c *KVStoreService) GetCollectionStats(namespace string, collection string) (*model.CollectionStats, error) {
@@ -48,4 +46,54 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	var result model.PingOKBody
 	err = util.ParseResponse(&result, response)
 	return &result, err
+}
+
+// CreateIndex posts a new index to be added to the collection.
+func (c *KVStoreService) CreateIndex(index model.IndexDescription, namespace string, collectionName string) error {
+	postIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes")
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Post(postIndexURL, index)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+// GetIndexes retrieves all the indexes in a given namespace and collection
+func (c *KVStoreService) GetIndexes(namespace string, collectionName string) ([]model.IndexDescription, error) {
+	getIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(getIndexURL)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.IndexDescription
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// DeleteIndex deletes the specified index in a given namespace and collection
+func (c *KVStoreService) DeleteIndex(namespace string, collectionName string, indexName string) error {
+	deleteIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes", indexName)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(deleteIndexURL)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return err
 }
