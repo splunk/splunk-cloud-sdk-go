@@ -13,14 +13,16 @@ const (
 // DatasetInfo represents the sources of data that can be serched by Splunk
 type DatasetInfo struct {
 	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name" binding:"required"`
-	Kind         DatasetInfoKind `json:"kind" binding:"required"`
-	Owner        string          `json:"owner" binding:"required"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Owner        string          `json:"owner"`
+	// Included for testing purpose
+	Module       string          `json:"module,omitempty"`
 	Created      string          `json:"created,omitempty"`
 	Modified     string          `json:"modified,omitempty"`
 	CreatedBy    string          `json:"createdBy,omitempty"`
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities" binding:"required"`
+	Capabilities string          `json:"capabilities"`
 	Version      int             `json:"version,omitempty"`
 	Fields       []Field         `json:"fields,omitempty"`
 
