@@ -22,6 +22,39 @@ type CollectionStats struct {
 	TotalIndexSize *int64 `json:"totalIndexSize"`
 }
 
+// CollectionDescription collection description
+type CollectionDescription struct {
+
+	// The list of indexes on this collection
+	Indexes []*IndexDescription `json:"indexes"`
+
+	// The collection name
+	Name string `json:"name,omitempty"`
+
+	// The namespace containing the collection
+	Namespace string `json:"namespace,omitempty"`
+}
+
+// CreateCollectionParamsBody create collection params body
+type CreateCollectionParamsBody struct {
+	// name
+	// Max Length: 45
+	// Min Length: 1
+	Name *string `json:"name"`
+}
+
+// CollectionDefinition collection definition
+type CollectionDefinition struct {
+
+	// The collection name
+	// Max Length: 45
+	// Min Length: 1
+	Collection *string `json:"collection"`
+
+	// The namespace containing the collection
+	Namespace *string `json:"namespace"`
+}
+
 // PingOKBody ping ok body
 type PingOKBody struct {
 
@@ -71,19 +104,6 @@ type IndexDescription struct {
 	Namespace string `json:"namespace,omitempty"`
 }
 
-// CollectionDescription collection description
-type CollectionDescription struct {
-
-	// The list of indexes on this collection
-	Indexes []*IndexDescription `json:"indexes"`
-
-	// The collection name
-	Name string `json:"name,omitempty"`
-
-	// The namespace containing the collection
-	Namespace string `json:"namespace,omitempty"`
-}
-
 // NamespaceDescription namespace description
 type NamespaceDescription struct {
 
@@ -92,16 +112,6 @@ type NamespaceDescription struct {
 
 	// The name of the namespace
 	Name string `json:"name,omitempty"`
-}
-
-// TenantDescription tenant description
-type TenantDescription struct {
-
-	// The name of the tenant
-	Name string `json:"name,omitempty"`
-
-	// The list of namespaces
-	Namespaces []*NamespaceDescription `json:"namespaces"`
 }
 
 // LookupValue Value tuple used for lookup
