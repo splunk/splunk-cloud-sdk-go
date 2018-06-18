@@ -13,12 +13,12 @@ var collectionName = "test_collection"
 
 // Stubby test for GetCollectionStats() kvstore service endpoint
 func TestGetCollectionStats(t *testing.T) {
-	result, err := getClient(t).KVStoreService.GetCollectionStats("namespace1", "collection1")
+	result, err := getClient(t).KVStoreService.GetCollectionStats("test_namespace", "test_collection")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
 
 	assert.Equal(t, int64(5), result.Count)
-	assert.Equal(t, "namespace1", result.Ns)
+	assert.Equal(t, "test_namespace", result.Ns)
 	assert.Equal(t, int64(1), result.Nindexes)
 }
 
