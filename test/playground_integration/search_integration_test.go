@@ -13,13 +13,13 @@ import (
 	"strconv"
 )
 
-const DefaultSearchQuery = "search index=main | head 5"
+const DefaultSearchQuery = "search index==main | head 5"
 
 var timeout uint = 5
 
 var (
 	PostJobsRequest                        = &model.PostJobsRequest{Search: DefaultSearchQuery}
-	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "index=main | head 5"}
+	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "some invalid index=main | head 5"}
 	PostJobsRequestTimeout                 = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout}
 	PostJobsRequestTTL                     = &model.PostJobsRequest{Search: DefaultSearchQuery, TTL: 5}
 	PostJobsRequestLimit                   = &model.PostJobsRequest{Search: DefaultSearchQuery, Limit: 10}
