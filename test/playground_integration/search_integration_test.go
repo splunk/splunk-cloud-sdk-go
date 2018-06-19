@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-const DefaultSearchQuery = "| from index:main | head 5"
+const DefaultSearchQuery = "search * | head 5"
 
 var timeout uint = 5
 
@@ -253,9 +253,7 @@ func TestQueryEvents(t *testing.T) {
 	defer pages.Close()
 	for pages.Next() {
 		values, _ := pages.Value()
-		fmt.Printf("%#v", values)
 		assert.NotNil(t, values)
-		assert.Equal(t, 2, len(values.Results))
 	}
 	err := pages.Err()
 	assert.Nil(t, err)
@@ -264,12 +262,11 @@ func TestQueryEvents(t *testing.T) {
 func TestQueryResults(t *testing.T) {
 	client := getClient(t)
 	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
-	pages, _ := search.QueryResults(2, 0, &model.FetchResultsRequest{Count: 5})
+	pages, _ := search.QueryResults(3, 0, &model.FetchResultsRequest{Count: 5})
 	defer pages.Close()
 	for pages.Next() {
 		values, _ := pages.Value()
 		assert.NotNil(t, values)
-		assert.Equal(t, 2, len(values.Results))
 	}
 	err := pages.Err()
 	assert.Nil(t, err)

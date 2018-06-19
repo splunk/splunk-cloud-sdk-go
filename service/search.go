@@ -74,7 +74,10 @@ func (search *Search) DisablePreview() (*model.JobControlReplyMsg, error) {
 // Wait polls the job until it's completed or errors out
 func (search *Search) Wait() error {
 	err := search.svc.WaitForJob(search.sid, 250*time.Millisecond)
-	if search.isCancelling == true || err.(*util.HTTPError).Status == 404 {
+	if search.isCancelling == true {
+		return errors.New("search has been cancelled")
+	}
+	if err != nil && err.(*util.HTTPError).Status == 404 {
 		return errors.New("search has been cancelled")
 	}
 	return err
@@ -134,8 +137,8 @@ func (search *Search) QueryResults(batchSize, offset int, params *model.FetchRes
 	}
 	iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
 		func(count, offset int) (*model.SearchResults, error) {
-			params.Offset = count
-			params.Count = offset
+			params.Count = count
+			params.Offset = offset
 			return search.GetResults(params)
 		})
 	return iterator, nil
