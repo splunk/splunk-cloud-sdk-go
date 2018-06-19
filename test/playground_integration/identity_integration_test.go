@@ -96,6 +96,6 @@ func TestIntegrationTenantErrors(t *testing.T) {
 	//add duplicate tenant user
 	addedUserName := "newUser@splunk.com"
 	_ = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
+	err := client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
 	assert.True(t, strings.Contains(err.Error(), "405 Method Not Allowed"))
 }
