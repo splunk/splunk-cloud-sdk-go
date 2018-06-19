@@ -4,22 +4,22 @@ package model
 type CollectionStats struct {
 
 	// Number of records in collection
-	Count *int64 `json:"count"`
+	Count int64 `json:"count"`
 
 	// Map of index name to index size in bytes
 	IndexSizes interface{} `json:"indexSizes"`
 
 	// Number of indexes on collection
-	Nindexes *int64 `json:"nindexes"`
+	Nindexes int64 `json:"nindexes"`
 
 	// Collection name
-	Ns *string `json:"ns"`
+	Ns string `json:"ns"`
 
 	// Size in bytes of collection, not including indexes
-	Size *int64 `json:"size"`
+	Size int64 `json:"size"`
 
 	// Total size of indexes
-	TotalIndexSize *int64 `json:"totalIndexSize"`
+	TotalIndexSize int64 `json:"totalIndexSize"`
 }
 
 // CollectionDescription collection description
@@ -63,7 +63,7 @@ type PingOKBody struct {
 
 	// Database status
 	// Enum: [healthy unhealthy unknown]
-	Status *string `json:"status"`
+	Status string `json:"status"`
 }
 
 const (
