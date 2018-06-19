@@ -4,9 +4,9 @@ package playgroundintegration
 
 import (
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/splunk/ssc-client-go/util"
 )
 
 // Test Rule variables
