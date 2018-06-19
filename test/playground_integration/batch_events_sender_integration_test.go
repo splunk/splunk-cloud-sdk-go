@@ -96,6 +96,5 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 
 	s := strings.Split(collector.ErrorMsg, "],")
 	fmt.Println(s)
-	assert.Equal(t, 10, len(s))
-
+	assert.Equal(t, 10, len(s)-1)
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"github.com/splunk/ssc-client-go/model"
 	"sync"
@@ -17,11 +18,13 @@ type BatchEventsSender struct {
 	WaitGroup    *sync.WaitGroup
 	ErrorChan    chan string
 	ErrorMsg     string
+	IsRunning    bool
 }
 
 // Run sets up ticker and starts a new goroutine
 func (b *BatchEventsSender) Run() {
 	go b.loop()
+	b.IsRunning = true
 }
 
 // loop is a infinity loop which listens to three channels
@@ -41,7 +44,7 @@ func (b *BatchEventsSender) loop() {
 			b.ErrorMsg += "[" + err + "],"
 			fmt.Println("got an error : " + err)
 
-			if errorMsgCount == cap(b.ErrorChan)-1 {
+			if errorMsgCount == cap(b.ErrorChan) {
 				b.Stop()
 			}
 
@@ -83,12 +86,17 @@ func (b *BatchEventsSender) Stop() {
 }
 
 // AddEvent pushes a single event into EventsChan
-func (b *BatchEventsSender) AddEvent(event model.HecEvent) {
+func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
+	if !b.IsRunning {
+		return errors.New("Need to start the BatchEventsSender first, call Run() ")
+	}
+
 	// Intend to only start ticker when first event is received.
 	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.HecTicker.IsRunning() == false {
 		b.HecTicker.Start()
 	}
 	b.EventsChan <- event
+	return nil
 }
 
 // Flush sends off all events currently in EventsQueue and resets ticker afterwards
