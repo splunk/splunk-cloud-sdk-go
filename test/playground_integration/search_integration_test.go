@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-const DefaultSearchQuery = "search * | head 5"
+const DefaultSearchQuery = "| from index:main | head 5"
 
 var timeout uint = 5
 
