@@ -40,5 +40,5 @@ else
 fi
 
 # Upload coverage information
-$FULL_PATH_OF_DIRECTORY_CONTAINING_THIS_SCRIPT/../codecov -f "codecov.integration.out" -F integration
+./ci/codecov -f "codecov.integration.out" -F integration
 

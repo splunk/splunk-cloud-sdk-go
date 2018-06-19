@@ -7,12 +7,32 @@ import (
 	"github.com/splunk/ssc-client-go/testutils"
 )
 
-var testNamespace = "test_namespace"
-var testCollection = "test_collection"
-var testIndex1 = "test_index1"
-var testIndex2 = "test_index2"
-var testField1 = "test_field1"
-var testField2 = "test_field2"
+var testNamespace = "TEST_NAMESPACE"
+var testCollection = "TEST_COLLECTION"
+var testIndex1 = "TEST_INDEX_01"
+var testIndex2 = "TEST_INDEX_02"
+var testField1 = "TEST_FIELD_01"
+var testField2 = "TEST_FIELD_02"
+
+// Stubby test for GetCollectionStats() kvstore service endpoint
+func TestGetCollectionStats(t *testing.T) {
+	result, err := getClient(t).KVStoreService.GetCollectionStats(testNamespace, testCollection)
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+
+	assert.Equal(t, int64(5), result.Count)
+	assert.Equal(t, testNamespace, result.Ns)
+	assert.Equal(t, int64(1), result.Nindexes)
+}
+
+// Stubby test for ping/GetServiceHealthStatus() kvstore service endpoint
+func TestGetServiceHealthStatus(t *testing.T) {
+	result, err := getClient(t).KVStoreService.GetServiceHealthStatus()
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+
+	assert.Equal(t, "healthy", result.Status)
+}
 
 // Stubby test for GetIndexes() kvstore service endpoint
 func TestGetIndexes(t *testing.T) {

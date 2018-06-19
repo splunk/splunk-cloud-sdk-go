@@ -7,9 +7,46 @@ import (
 
 const kvStoreServicePrefix = "kvstore"
 const kvStoreServiceVersion = "v1"
+const kvStoreCollectionsResource = "collections"
 
 // KVStoreService talks to kvstore service
 type KVStoreService service
+
+// GetCollectionStats returns Collection Stats for the collection
+func (c *KVStoreService) GetCollectionStats(namespace string, collection string) (*model.CollectionStats, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, kvStoreCollectionsResource, collection, "stats")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.CollectionStats
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetServiceHealthStatus returns Service Health Status
+func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.PingOKBody
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
 
 // CreateIndex posts a new index to be added to the collection.
 func (c *KVStoreService) CreateIndex(index model.IndexDescription, namespace string, collectionName string) error {
