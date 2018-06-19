@@ -4,6 +4,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"github.com/splunk/ssc-client-go/testutils"
 )
 
 var testNamespace = "test_namespace"
@@ -56,5 +57,23 @@ func CreateField(direction int64, field string) model.IndexFieldDefinition {
 	return model.IndexFieldDefinition{
 		Direction: direction,
 		Field:     field,
+	}
+}
+
+// Gets records that exist for the tenant's namespace collection
+func TestListRecords(t *testing.T) {
+	records, err := getClient(t).KVStoreService.ListRecords(
+		testutils.TestNamespace,
+		testutils.TestCollection)
+	assert.NotNil(t, records)
+	assert.Nil(t, err)
+	assert.Len(t, records, 4)
+
+	for _, element := range records {
+		assert.NotNil(t, element)
+		for key, value := range element {
+			assert.IsType(t, "string", key)
+			assert.NotNil(t, value)
+		}
 	}
 }
