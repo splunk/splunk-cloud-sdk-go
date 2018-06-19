@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 	"testing"
 )
@@ -18,9 +20,13 @@ func TestParseHTTPStatusCodeInResponseBadResponse(t *testing.T) {
 	httpResp := &http.Response{
 		StatusCode: 400,
 		Status:     "400 Bad Request",
+		Body:       ioutil.NopCloser(bytes.NewBufferString("")),
 	}
-	expectErrMsg := "Http Error: [400] 400 Bad Request"
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).Status != 400 || err.Error() != expectErrMsg {
+
+	expectErrMsg := "Http Error: [400] 400 Bad Request "
+	_, err := ParseHTTPStatusCodeInResponse(httpResp)
+
+	if err == nil || err.Status != 400 || err.Message != "400 Bad Request" || err.Error() != expectErrMsg {
 		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error for bad responses, got %v", err)
 	}
 }
