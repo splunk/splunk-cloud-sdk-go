@@ -7,9 +7,31 @@ import (
 	"testing"
 )
 
+// Collection and Namespace test variables
 var testCollection = "integ_test_collection"
 var testNamespace = "integ_test_namespace"
 var testIndex = "integ_test_index"
+
+// Test GetCollectionStatus against nova playground
+func TestIntegrationGetCollectionStatus(t *testing.T) {
+	// Create the test collection and test namespace
+	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testNamespace, Capabilities: "1100-11111:00000"})
+
+	response, err := getClient(t).KVStoreService.GetCollectionStats(testNamespace, testCollection)
+	assert.Empty(t, err)
+	assert.NotEmpty(t, response)
+
+	// Delete the test collection and test namespace
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
+}
+
+// Test GetServiceHealthStatus against nova playground
+func TestIntegrationGetServiceHealth(t *testing.T) {
+	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
+	assert.Empty(t, err)
+	assert.NotEmpty(t, response)
+}
 
 // Test CreateIndex, GetIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
