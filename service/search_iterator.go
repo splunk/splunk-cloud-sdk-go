@@ -32,10 +32,7 @@ type SearchIterator struct {
 }
 
 // NewSearchIterator creates a new reference to the iterator object
-func NewSearchIterator(batch, offset, max int, fn queryFunc) (*SearchIterator, error) {
-	if max == 0 {
-		return nil, errors.New("max number of events can not be 0")
-	}
+func NewSearchIterator(batch, offset, max int, fn queryFunc) *SearchIterator {
 	return &SearchIterator{
 		start:    offset,
 		batch:    batch,
@@ -43,7 +40,7 @@ func NewSearchIterator(batch, offset, max int, fn queryFunc) (*SearchIterator, e
 		fn:       fn,
 		isClosed: false,
 		offset:   offset,
-	}, nil
+	}
 }
 
 // Value returns value in current iteration or error out if iterator is closed

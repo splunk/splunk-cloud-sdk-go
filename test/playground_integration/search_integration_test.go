@@ -247,12 +247,18 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 }
 
 func TestQueryEvents(t *testing.T) {
-	client := getClient(t)
+	client, _ := service.NewClient(
+		"test123",
+		"eyJraWQiOiI3cXV0SjFleUR6V2lOeGlTbktsakZHRWhmU0VzWFlMQWt0NUVNbzJaNFk4IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULms1eUVMNzJzTGxSYkR0c1dXVmtkUmxIay1YemU2cVIxMEVBOXVvSS1sbDQiLCJpc3MiOiJodHRwczovL3NwbHVuay1jaWFtLm9rdGEuY29tL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTUyOTM1Nzg0NSwiZXhwIjoxNTI5NDAxMDQ1LCJjaWQiOiIwb2FwYmcyem1MYW1wV2daNDJwNiIsInVpZCI6IjAwdXpsMHdlZFdxM2tvWEFDMnA2Iiwic2NwIjpbInByb2ZpbGUiLCJlbWFpbCIsIm9wZW5pZCJdLCJzdWIiOiJ4Y2hlbmdAc3BsdW5rLmNvbSJ9.TMkxl81pCILkeNaLJ31lOITyXSuAnhKDnse7sOAQ8qOvPTywgSuRfrhO6casTVagS_WF421TfGEHTGk1Mdar8ZCddueDUY1JJMQuuocfM600uHE4tKPFC-gUqQgg32RlWPJZL1RQyMBIWd6u92rCL5PFJb2KkX7kFBaePsdW_xqlJYTMuh688znL858y9MlQ8gyjzx3hVAjHPCoBhx11kRo1W7BkZ73bkX_S_k3To93_6E_rFz9arACMl9sr64Yb5maPe8PgXVXhyLED90qWUrKo5bj3DnV-gXPLUe4J-s4uECCDo9fQc76Rd5XfSd85jtRwCQmR0Jg2IifbpggpfQ",
+		"https://gateway.splunknovadev-playground.com",
+		5*time.Second,
+	)
 	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
 	pages, _ := search.QueryEvents(2, 0, &model.FetchEventsRequest{Count: 5})
 	defer pages.Close()
 	for pages.Next() {
 		values, _ := pages.Value()
+		fmt.Printf("%#v", values)
 		assert.NotNil(t, values)
 		assert.Equal(t, 2, len(values.Results))
 	}

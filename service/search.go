@@ -15,8 +15,9 @@ const searchServiceVersion = "v1"
 
 // Search is a wrapper class for convenient search operations
 type Search struct {
-	sid string
-	svc *SearchService
+	sid          string
+	svc          *SearchService
+	isCancelling bool
 }
 
 // Status returns the status of the search job
@@ -26,6 +27,7 @@ func (search *Search) Status() (*model.SearchJobContent, error) {
 
 // Cancel posts a cancel action to the search job
 func (search *Search) Cancel() (*model.JobControlReplyMsg, error) {
+	search.isCancelling = true
 	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.CANCEL})
 }
 
@@ -71,7 +73,11 @@ func (search *Search) DisablePreview() (*model.JobControlReplyMsg, error) {
 
 // Wait polls the job until it's completed or errors out
 func (search *Search) Wait() error {
-	return search.svc.WaitForJob(search.sid, 250*time.Millisecond)
+	err := search.svc.WaitForJob(search.sid, 250*time.Millisecond)
+	if search.isCancelling == true || err.(*util.HTTPError).Status == 404 {
+		return errors.New("search has been cancelled")
+	}
+	return err
 }
 
 // GetEvents returns events from the search
@@ -103,18 +109,12 @@ func (search *Search) QueryEvents(batchSize, offset int, params *model.FetchEven
 	if err != nil {
 		return nil, err
 	}
-	if jobStatus.EventCount == 0 {
-		return nil, errors.New("no events are retrieved from the search")
-	}
-	iterator, err := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
+	iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
 		func(count, offset int) (*model.SearchResults, error) {
 			params.Count = count
 			params.Offset = offset
 			return search.GetEvents(params)
 		})
-	if err != nil {
-		return nil, err
-	}
 	return iterator, nil
 }
 
@@ -132,15 +132,12 @@ func (search *Search) QueryResults(batchSize, offset int, params *model.FetchRes
 	if jobStatus.EventCount == 0 {
 		return nil, errors.New("no results are retrieved from the search")
 	}
-	iterator, err := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
+	iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
 		func(count, offset int) (*model.SearchResults, error) {
 			params.Offset = count
 			params.Count = offset
 			return search.GetResults(params)
 		})
-	if err != nil {
-		return nil, err
-	}
 	return iterator, nil
 }
 
@@ -278,8 +275,13 @@ func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration)
 		if err != nil {
 			return err
 		}
-		done = job.DispatchState == model.DONE
-		time.Sleep(pollInterval)
+		if job.DispatchState == model.DONE {
+			done = true
+		} else if job.DispatchState == model.FAILED {
+			return errors.New("job failed")
+		} else {
+			time.Sleep(pollInterval)
+		}
 	}
 	return nil
 }
@@ -291,7 +293,8 @@ func (service *SearchService) SubmitSearch(job *model.PostJobsRequest) (*Search,
 		return nil, err
 	}
 	return &Search{
-		sid: sid,
-		svc: service,
+		sid:          sid,
+		svc:          service,
+		isCancelling: false,
 	}, nil
 }
