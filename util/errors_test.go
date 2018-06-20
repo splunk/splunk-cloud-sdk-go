@@ -25,8 +25,9 @@ func TestParseHTTPStatusCodeInResponseBadResponse(t *testing.T) {
 
 	expectErrMsg := "Http Error: [400] 400 Bad Request "
 	_, err := ParseHTTPStatusCodeInResponse(httpResp)
+	httpError := err.(*HTTPError)
 
-	if err == nil || err.Status != 400 || err.Message != "400 Bad Request" || err.Error() != expectErrMsg {
+	if err == nil || httpError.Status != 400 || httpError.Message != "400 Bad Request" || err.Error() != expectErrMsg {
 		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error for bad responses, got %v", err)
 	}
 }

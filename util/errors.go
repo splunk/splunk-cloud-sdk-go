@@ -28,7 +28,7 @@ func newError(status int, message string, body string) *HTTPError {
 }
 
 // ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and message
-func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, *HTTPError ) {
+func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error ) {
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		body, _ := ioutil.ReadAll(response.Body)
 
