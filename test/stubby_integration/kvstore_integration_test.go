@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"testing"
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
 var testIndex1 = "TEST_INDEX_01"
