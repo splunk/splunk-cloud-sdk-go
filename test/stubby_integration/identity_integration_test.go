@@ -4,13 +4,11 @@ import (
 	"testing"
 
 	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestIdentityService_GetUserProfile(t *testing.T) {
-	testTenantID := testutils.TestTenantID
-	user, err := getClient(t).IdentityService.GetUserProfile(testTenantID)
+	user, err := getClient(t).IdentityService.GetUserProfile("devtestTenant")
 	assert.Nil(t, err)
 	assert.Equal(t, "devtest@splunk.com", user.ID)
 	assert.Equal(t, "devtest@splunk.com", user.Email)
