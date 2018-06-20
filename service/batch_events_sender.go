@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"github.com/splunk/ssc-client-go/model"
 	"sync"
 )
@@ -14,11 +16,15 @@ type BatchEventsSender struct {
 	EventService *HecService
 	HecTicker    *model.Ticker
 	WaitGroup    *sync.WaitGroup
+	ErrorChan    chan string
+	ErrorMsg     string
+	IsRunning    bool
 }
 
 // Run sets up ticker and starts a new goroutine
 func (b *BatchEventsSender) Run() {
 	go b.loop()
+	b.IsRunning = true
 }
 
 // loop is a infinity loop which listens to three channels
@@ -28,9 +34,20 @@ func (b *BatchEventsSender) Run() {
 // the loop will break only if there's signal in QuitChan
 // otherwise it'll constantly checking conditions for ticker and events
 func (b *BatchEventsSender) loop() {
+	errorMsgCount := 0
+
 	defer close(b.EventsChan)
 	for {
 		select {
+		case err := <-b.ErrorChan:
+			errorMsgCount++
+			b.ErrorMsg += "[" + err + "],"
+			fmt.Println("got an error : " + err)
+
+			if errorMsgCount == cap(b.ErrorChan) {
+				b.Stop()
+			}
+
 		case <-b.QuitChan:
 			events := append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
@@ -69,24 +86,35 @@ func (b *BatchEventsSender) Stop() {
 }
 
 // AddEvent pushes a single event into EventsChan
-func (b *BatchEventsSender) AddEvent(event model.HecEvent) {
+func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
+	if !b.IsRunning {
+		return errors.New("Need to start the BatchEventsSender first, call Run() ")
+	}
+
 	// Intend to only start ticker when first event is received.
 	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.HecTicker.IsRunning() == false {
 		b.HecTicker.Start()
 	}
 	b.EventsChan <- event
+	return nil
 }
 
 // Flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
-func (b *BatchEventsSender) Flush(events []model.HecEvent) {
+func (b *BatchEventsSender) Flush(events []model.HecEvent) error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
 	if len(events) > 0 {
-		b.EventService.CreateEvents(events)
+		err := b.EventService.CreateEvents(events)
+		if err != nil {
+			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+			b.ErrorChan <- str
+		}
 	}
+
+	return nil
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
