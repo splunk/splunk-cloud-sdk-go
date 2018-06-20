@@ -116,3 +116,11 @@ type NamespaceDescription struct {
 
 // LookupValue Value tuple used for lookup
 type LookupValue []interface{}
+
+// Key to identify a record in a collection
+type Key struct {
+	Key string `json:"_key"`
+}
+
+// Record is a JSON document entity contained in collections
+type Record map[string]interface{}
