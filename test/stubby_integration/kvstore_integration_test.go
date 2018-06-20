@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/url"
 	"testing"
+	"github.com/splunk/ssc-client-go/testutils"
 )
 
 var testIndex1 = "TEST_INDEX_01"
@@ -152,4 +153,22 @@ func TestDeleteRecord(t *testing.T) {
 
 	err := getClient(t).KVStoreService.DeleteRecords(outerQuery, testutils.TestNamespace, testutils.TestCollection)
 	assert.Nil(t, err)
+}
+
+// Gets records that exist for the tenant's namespace collection
+func TestListRecords(t *testing.T) {
+	records, err := getClient(t).KVStoreService.ListRecords(
+		testutils.TestNamespace,
+		testutils.TestCollection)
+	assert.NotNil(t, records)
+	assert.Nil(t, err)
+	assert.Len(t, records, 4)
+
+	for _, element := range records {
+		assert.NotNil(t, element)
+		for key, value := range element {
+			assert.IsType(t, "string", key)
+			assert.NotNil(t, value)
+		}
+	}
 }
