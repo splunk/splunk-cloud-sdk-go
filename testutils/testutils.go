@@ -22,3 +22,9 @@ var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
 
 // TestTimeOut - the timeout to be used for requests to the api
 var TestTimeOut = time.Second * 5
+
+// TestNamespace - Namespace to be used in stubby tests
+var TestNamespace = "TEST_NAMESPACE"
+
+// TestCollection - Collection to be used in stubby tests
+var TestCollection = "TEST_COLLECTION"
