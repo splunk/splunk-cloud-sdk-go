@@ -1,13 +1,16 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIdentityService_GetUserProfile(t *testing.T) {
-	user, err := getClient(t).IdentityService.GetUserProfile()
+	testTenantID := testutils.TestTenantID
+	user, err := getClient(t).IdentityService.GetUserProfile(testTenantID)
 	assert.Nil(t, err)
 	assert.Equal(t, "devtest@splunk.com", user.ID)
 	assert.Equal(t, "devtest@splunk.com", user.Email)

@@ -18,9 +18,9 @@ var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 	client, _ := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
-
+	testTenantID := testutils.TestTenantID
 	//get user profile
-	user, err := client.IdentityService.GetUserProfile()
+	user, err := client.IdentityService.GetUserProfile(testTenantID)
 	if err != nil {
 		t.FailNow()
 	}
