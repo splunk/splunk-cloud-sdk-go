@@ -65,9 +65,10 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
+
 // UpdateDataset updates an existing Dataset
 func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.PartialDatasetInfo, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion,  "datasets", datasetID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return nil, err
 	}
