@@ -6,14 +6,12 @@ import (
 	"net/url"
 )
 
-
 const kvStoreServicePrefix = "kvstore"
 const kvStoreServiceVersion = "v1"
 const kvStoreCollectionsResource = "collections"
 
 // KVStoreService talks to kvstore service
 type KVStoreService service
-
 
 // GetCollectionStats returns Collection Stats for the collection
 func (c *KVStoreService) GetCollectionStats(namespace string, collection string) (*model.CollectionStats, error) {
@@ -67,8 +65,8 @@ func (c *KVStoreService) CreateIndex(index model.IndexDescription, namespace str
 	return err
 }
 
-// GetIndexes retrieves all the indexes in a given namespace and collection
-func (c *KVStoreService) GetIndexes(namespace string, collectionName string) ([]model.IndexDescription, error) {
+// ListIndexes retrieves all the indexes in a given namespace and collection
+func (c *KVStoreService) ListIndexes(namespace string, collectionName string) ([]model.IndexDescription, error) {
 	getIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
@@ -101,8 +99,8 @@ func (c *KVStoreService) DeleteIndex(namespace string, collectionName string, in
 	return err
 }
 
-// CreateRecords posts new records to the collection.
-func (c *KVStoreService) CreateRecords(namespace string, collectionName string, records []model.Record) ([]string, error) {
+// InsertRecords posts new records to the collection.
+func (c *KVStoreService) InsertRecords(namespace string, collectionName string, records []model.Record) ([]string, error) {
 	postRecordURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName, "batch")
 	if err != nil {
 		return nil, err
@@ -119,8 +117,8 @@ func (c *KVStoreService) CreateRecords(namespace string, collectionName string, 
 	return result, err
 }
 
-// GetRecords queries records present in a given collection.
-func (c *KVStoreService) GetRecords(values url.Values, namespace string, collectionName string) ([]model.Record, error) {
+// QueryRecords queries records present in a given collection.
+func (c *KVStoreService) QueryRecords(values url.Values, namespace string, collectionName string) ([]model.Record, error) {
 	getRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName)
 	if err != nil {
 		return nil, err
@@ -168,7 +166,7 @@ func (c *KVStoreService) DeleteRecords(values url.Values, namespace string, coll
 	if err != nil {
 		return err
 	}
-	return err
+	return nil
 }
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.

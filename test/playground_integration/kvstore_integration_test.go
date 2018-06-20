@@ -1,12 +1,12 @@
 package playgroundintegration
 
 import (
+	"encoding/json"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"net/url"
-	"encoding/json"
+	"testing"
 )
 
 // Collection and Namespace test variables
@@ -35,7 +35,7 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 	assert.NotEmpty(t, response)
 }
 
-// Test CreateIndex, GetIndexes and DeleteIndex kvstore endpoints
+// Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
 	// Create the test collection and test namespace for all the index operations
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testNamespace, Capabilities: "1100-11111:00000"})
@@ -47,7 +47,7 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Validate if the index was created
-	result, err := getClient(t).KVStoreService.GetIndexes(testNamespace, testCollection)
+	result, err := getClient(t).KVStoreService.ListIndexes(testNamespace, testCollection)
 	assert.Nil(t, err)
 	assert.Equal(t, len(result), 1)
 	assert.Equal(t, result[0].Name, testIndex)
@@ -57,7 +57,7 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Validate if the index was deleted
-	result, err = getClient(t).KVStoreService.GetIndexes(testNamespace, testCollection)
+	result, err = getClient(t).KVStoreService.ListIndexes(testNamespace, testCollection)
 	assert.Nil(t, err)
 	assert.Equal(t, len(result), 0)
 
@@ -109,45 +109,30 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Test CreateRecords() kvstore service endpoint against nova playground
+// Test InsertRecords() kvstore service endpoint against nova playground
 func TestCreateRecords(t *testing.T) {
 	// Create the test collection and test namespace
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	result, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(result), 3)
+	CreateTestRecord(err, t)
 
 	// Delete the test collection and test namespace
 	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
 	assert.Nil(t, err)
 }
 
-// Test GetRecords() kvstore service endpoint based on a query against nova playground
+// Test QueryRecords() kvstore service endpoint based on a query against nova playground
 func TestGetRecordsWithQuery(t *testing.T) {
 	// Create the test collection and test namespace
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
-	// Create records
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	keys, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(keys), 3)
+	CreateTestRecord(err, t)
 
 	// Get records
 	query := make(url.Values)
 	query.Add("size", "tiny")
 	query.Add("capacity_gb", "8")
-	result, err := getClient(t).KVStoreService.GetRecords(query, testCollection, testCollection)
+	result, err := getClient(t).KVStoreService.QueryRecords(query, testCollection, testCollection)
 
 	assert.Nil(t, err)
 	assert.Equal(t, len(result), 1)
@@ -161,23 +146,15 @@ func TestGetRecordsWithQuery(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Test GetRecords() kvstore service endpoint against the nova playground
+// Test QueryRecords() kvstore service endpoint against the nova playground
 func TestGetAllRecords(t *testing.T) {
 	// Create the test collection and test namespace
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
-	// Create records
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	keys, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(keys), 3)
+	CreateTestRecord(err, t)
 
 	// Get all the records for validation
-	result, err := getClient(t).KVStoreService.GetRecords(nil, testCollection, testCollection)
+	result, err := getClient(t).KVStoreService.QueryRecords(nil, testCollection, testCollection)
 	assert.Nil(t, err)
 	assert.Equal(t, len(result), 3)
 
@@ -186,20 +163,12 @@ func TestGetAllRecords(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Test GetRecords() kvstore service endpoint based on a key against the nova playground
+// Test getRecordByKey() kvstore service endpoint against the nova playground
 func TestGetRecordByKey(t *testing.T) {
 	// Create the test collection and test namespace
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
-	// Create records
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	keys, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(keys), 3)
+	keys := CreateTestRecord(err, t)
 
 	result, err := getClient(t).KVStoreService.GetRecordByKey(testCollection, testCollection, keys[0])
 
@@ -219,15 +188,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 	// Create the test collection and test namespace
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
-	// Create records
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	keys, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(keys), 3)
+	keys := CreateTestRecord(err, t)
 
 	// Delete record by key
 	err = getClient(t).KVStoreService.DeleteRecordByKey(testCollection, testCollection, keys[0])
@@ -237,7 +198,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(testCollection, testCollection, keys[0])
 	assert.Nil(t, retrievedRecordsByKey)
 
-	retrievedRecords, err := getClient(t).KVStoreService.GetRecords(nil, testCollection, testCollection)
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(nil, testCollection, testCollection)
 	assert.Equal(t, len(retrievedRecords), 2)
 
 	// Delete the test collection and test namespace
@@ -251,14 +212,7 @@ func TestDeleteRecord(t *testing.T) {
 	dataset, err := getClient(t).CatalogService.CreateDataset(model.DatasetInfo{Name: testCollection, Kind: "kvcollection", Owner: "integ_test", Module: testCollection, Capabilities: "1100-11111:00000"})
 
 	// Create records
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
-	var res []model.Record
-	err = json.Unmarshal([]byte(integrationTestRecord), &res)
-	assert.Nil(t, err)
-
-	keys, err := getClient(t).KVStoreService.CreateRecords(testCollection, testCollection, res)
-	assert.Nil(t, err)
-	assert.Equal(t, len(keys), 3)
+	CreateTestRecord(err, t)
 
 	// Create query to test delete operation
 	var integrationTestQuery = `{"capacity_gb": 16}`
@@ -270,10 +224,24 @@ func TestDeleteRecord(t *testing.T) {
 	assert.Nil(t, err)
 
 	// Validate that the record has been deleted
-	retrievedRecords, err := getClient(t).KVStoreService.GetRecords(nil, testCollection, testCollection)
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(nil, testCollection, testCollection)
 	assert.Equal(t, len(retrievedRecords), 2)
 
 	// Delete the test collection and test namespace
 	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
 	assert.Nil(t, err)
+}
+
+// Create test record
+func CreateTestRecord(err error, t *testing.T) []string {
+	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
+	var res []model.Record
+	err = json.Unmarshal([]byte(integrationTestRecord), &res)
+	assert.Nil(t, err)
+
+	keys, err := getClient(t).KVStoreService.InsertRecords(testCollection, testCollection, res)
+	assert.Nil(t, err)
+	assert.Equal(t, len(keys), 3)
+
+	return keys
 }
