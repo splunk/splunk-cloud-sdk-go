@@ -13,9 +13,9 @@ import (
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
 	client := getClient(t)
-
+	testTenantID := testutils.TestTenantID
 	//get user profile
-	user, err := client.IdentityService.GetUserProfile()
+	user, err := client.IdentityService.GetUserProfile(testTenantID)
 	assert.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", user.ID)
 	assert.Equal(t, "test1@splunk.com", user.Email)
