@@ -234,7 +234,26 @@ func TestDeleteRecord(t *testing.T) {
 
 // Create test record
 func CreateTestRecord(err error, t *testing.T) []string {
-	var integrationTestRecord = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
+	var integrationTestRecord =
+		`[
+          {
+           "capacity_gb": 8,
+           "size": "tiny",
+           "description": "This is a tiny amount of GB",
+           "_raw": ""
+          },
+          {
+           "capacity_gb": 16,
+           "size": "small",
+           "description": "This is a small amount of GB",
+           "_raw": ""
+          },
+          {
+           "type": "A",
+           "name": "test_record",
+           "count_of_fields": 3
+          }
+         ]`
 	var res []model.Record
 	err = json.Unmarshal([]byte(integrationTestRecord), &res)
 	assert.Nil(t, err)

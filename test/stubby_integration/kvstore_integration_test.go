@@ -82,7 +82,26 @@ func CreateField(direction int64, field string) model.IndexFieldDefinition {
 
 // Stubby test for InsertRecords() kvstore service endpoint
 func TestCreateRecords(t *testing.T) {
-	var testRecords = `[{ "capacity_gb": 8, "size": "tiny", "description": "This is a tiny amount of GB", "_raw": ""} ,{"capacity_gb": 16,"size": "small","description": "This is a small amount of GB","_raw": ""}, {"type": "A","name": "test_record","count_of_fields": 3}]`
+	var testRecords =
+		`[
+          {
+           "capacity_gb": 8,
+           "size": "tiny",
+           "description": "This is a tiny amount of GB",
+           "_raw": ""
+          },
+          {
+           "capacity_gb": 16,
+           "size": "small",
+           "description": "This is a small amount of GB",
+           "_raw": ""
+          },
+          {
+           "type": "A",
+           "name": "test_record",
+           "count_of_fields": 3
+          }
+         ]`
 	var res []model.Record
 	err := json.Unmarshal([]byte(testRecords), &res)
 
