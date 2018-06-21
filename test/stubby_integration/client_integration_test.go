@@ -2,10 +2,10 @@ package stubbyintegration
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -99,20 +99,13 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, _ := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil)
-	if resp.StatusCode != 500 {
-		t.Fatalf("client.DoRequest to /error endpoint expected Response Code: %d, Received: %d", 500, resp.StatusCode)
-	}
+	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil)
 	defer resp.Body.Close()
-	b := new(bytes.Buffer)
-	b.ReadFrom(resp.Body)
-	content := new(map[string]string)
-	if err := json.NewDecoder(b).Decode(content); err != nil {
-		t.Fatalf("client.DoRequest error unmarshalling response, err: %v", err)
-	}
-	if (*content)["message"] != "Something exploded" {
-		t.Fatalf("client.DoRequest error/ expecting response {\"message\":\"Something exploded\"} Received: %+v", content)
-	}
+
+	assert.NotNil(t, err)
+
+	assert.Equal(t, 500, resp.StatusCode)
+	assert.Equal(t, "{\"message\":\"Something exploded\"}", err.(*util.HTTPError).Body)
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {

@@ -17,8 +17,14 @@ var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")
 // TestTenantID - the tenant to be used for the API
 var TestTenantID = os.Getenv("TEST_TENANT_ID")
 
-// TestInvalidAuthenticationToken - the invalid authentication that denies permission to make requests against the api
-var TestInvalidAuthenticationToken = "INVALID_TEST_AUTH_TOKEN"
+// TestInvalidTestTenantID - the invalid tenant ID that denies permission to make requests against the api
+var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
+
+// TestNamespace - A namespace for testing
+var TestNamespace = "TEST_NAMESPACE"
+
+// TestCollection - A collection for testing
+var TestCollection = "TEST_COLLECTION"
 
 // TestTimeOut - the timeout to be used for requests to the api
 var TestTimeOut = time.Second * 5

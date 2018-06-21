@@ -6,8 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
 )
 
@@ -29,9 +27,9 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 
 // TODO: Deal with later
 func TestIntegrationHecEventFail(t *testing.T) {
-	client, _ := service.NewClient(testutils.TestTenantID, "wrongToken", "http://example.com", testutils.TestTimeOut)
+	invalidClient := getInvalidClient(t)
 	testHecEvent := model.HecEvent{Event: "failed test"}
-	err := client.HecService.CreateEvent(testHecEvent)
+	err := invalidClient.HecService.CreateEvent(testHecEvent)
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).Status)

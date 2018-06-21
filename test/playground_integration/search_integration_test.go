@@ -13,12 +13,13 @@ import (
 	"strconv"
 )
 
-const DefaultSearchQuery = "search index=main | head 5"
+const DefaultSearchQuery = "| from index:main | head 5"
+
 var timeout uint = 5
 
 var (
 	PostJobsRequest                        = &model.PostJobsRequest{Search: DefaultSearchQuery}
-	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "index=main | head 5"}
+	PostJobsRequestBadRequest              = &model.PostJobsRequest{Search: "hahdkfdksf=main | dfsdfdshead 5"}
 	PostJobsRequestTimeout                 = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout}
 	PostJobsRequestTTL                     = &model.PostJobsRequest{Search: DefaultSearchQuery, TTL: 5}
 	PostJobsRequestLimit                   = &model.PostJobsRequest{Search: DefaultSearchQuery, Limit: 10}
@@ -38,7 +39,7 @@ func TestGetJobsDefaultParams(t *testing.T) {
 func TestGetJobsCustomParams(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	response, err := client.SearchService.GetJobs(&model.JobsRequest{Count:1, Offset:0})
+	response, err := client.SearchService.GetJobs(&model.JobsRequest{Count: 1, Offset: 0})
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 	assert.Equal(t, len(response), 1)
@@ -50,7 +51,7 @@ func TestGetJob(t *testing.T) {
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
-	time.Sleep(time.Second * 5)
+	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 	assert.NotEmpty(t, response)
 }
 
@@ -58,7 +59,7 @@ func TestPostJobAction(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action:"pause"})
+	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action: model.PAUSE})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, msg)
 }
@@ -67,8 +68,8 @@ func TestGetJobResults(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	time.Sleep(time.Second * 5)
-	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
+	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5, OutputMode: "json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 5, len(response.Results))
@@ -78,8 +79,8 @@ func TestGetJobEvents(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	time.Sleep(time.Second * 5)
-	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count:5, OutputMode:"json"})
+	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5, OutputMode: "json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 5, len(response.Results))
@@ -93,6 +94,7 @@ func TestIntegrationNewSearchJob(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 }
+
 //
 // TestIntegrationNewSearchJobBadRequest asynchronously
 func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
@@ -100,7 +102,7 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request"}
+	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request",Body:"{\"Code\":\"400\",\"Message\":\"{\\\"code\\\":1019,\\\"message\\\":\\\"Failed to parse SPLv2='hahdkfdksf=main | dfsdfdshead 5' at line=1 pos=27 token=dfsdfdshead due to the error=no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead' (code:2)\\\"}\"}"}
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	assert.Empty(t, response)
@@ -117,6 +119,7 @@ func TestIntegrationNewSearchJobDuplicates(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 }
+
 //
 // TestIntegrationNewSearchJobTimeout with timeout at 5 sec
 func TestIntegrationNewSearchJobTimeout(t *testing.T) {
@@ -220,9 +223,8 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	//TODO: Replace with composite functions
-	time.Sleep(10000 * time.Millisecond)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode:"json", Count:30})
+	client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -233,15 +235,41 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	// HTTP Code 500 Error
-	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found"}
+	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found", Body: "{\"Code\":\"404\",\"Message\":\"Error in Splunkd client: 404 Not Found\"}"}
 
-	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{OutputMode:"json", Count:30})
+	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{OutputMode: "json", Count: 30})
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	// empty SearchResults
 	var expectedSearchEvent *model.SearchResults
 	assert.Nil(t, resp)
 	assert.EqualValues(t, expectedSearchEvent, resp)
+}
+
+func TestQueryEvents(t *testing.T) {
+	client := getClient(t)
+	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
+	pages, _ := search.QueryEvents(2, 0, &model.FetchEventsRequest{Count: 5})
+	defer pages.Close()
+	for pages.Next() {
+		values, _ := pages.Value()
+		assert.NotNil(t, values)
+	}
+	err := pages.Err()
+	assert.Nil(t, err)
+}
+
+func TestQueryResults(t *testing.T) {
+	client := getClient(t)
+	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
+	pages, _ := search.QueryResults(3, 0, &model.FetchResultsRequest{Count: 5})
+	defer pages.Close()
+	for pages.Next() {
+		values, _ := pages.Value()
+		assert.NotNil(t, values)
+	}
+	err := pages.Err()
+	assert.Nil(t, err)
 }
 
 // retry
@@ -266,7 +294,7 @@ func validateGetResults(client *service.Client, sid string, t *testing.T) {
 	var err error
 
 	retryError := retry(3, 3000*time.Millisecond, func() (interface{}, error) {
-		resp, err = client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{OutputMode:"json", Count:30})
+		resp, err = client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
 		return resp, err
 	})
 	assert.Nil(t, retryError)

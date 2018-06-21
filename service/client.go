@@ -43,17 +43,19 @@ type Client struct {
 	CatalogService *CatalogService
 	// HecService talks to the SSC hec service
 	HecService *HecService
-	// IdentityService talks to the IAC service
+	// IdentityService talks to SSC IAC service
 	IdentityService *IdentityService
+	// KVStoreService talks to SSC kvstore service
+	KVStoreService *KVStoreService
 }
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
-//RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
+// RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
 var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
 
-//ClientID - Okta app Client Id for SDK
+// ClientID - Okta app Client Id for SDK
 var ClientID = os.Getenv("CLIENT_ID")
 
 // service provides the interface between client and services
@@ -88,9 +90,9 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.U
 		return u, errors.New("A non-empty tenant ID must be set on client")
 	}
 	u = url.URL{
-		Scheme: c.URL.Scheme,
-		Host:   c.URL.Host,
-		Path:   path.Join(c.TenantID, buildPath),
+		Scheme:   c.URL.Scheme,
+		Host:     c.URL.Host,
+		Path:     path.Join(c.TenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -111,9 +113,9 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 	}
 
 	u = url.URL{
-		Scheme: c.URL.Scheme,
-		Host:   c.URL.Host,
-		Path:   path.Join(tenantID, buildPath),
+		Scheme:   c.URL.Scheme,
+		Host:     c.URL.Host,
+		Path:     path.Join(tenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -147,7 +149,7 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	if err != nil || len(accessToken) == 0 {
 		return nil, err
 	}
-	//Update the client with the newly obtained access token
+	// Update the client with the newly obtained access token
 	c.UpdateToken(accessToken)
 	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
 	if err != nil {
@@ -156,7 +158,7 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 	request.Header.Set("Content-Type", "application/json")
 
-	//retry request with new access token
+	// retry request with new access token
 	response, err := c.httpClient.Do(request)
 
 	return response, err
@@ -170,7 +172,7 @@ type refreshData struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-//GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
+// GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
 func (c *Client) GetNewAccessToken() (string, error) {
 	var accessToken = ""
 	client := http.Client{}
@@ -302,11 +304,12 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, err
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.HecService = &HecService{client: c}
+	c.KVStoreService = &KVStoreService{client: c}
 	return c, nil
 }
 
-// NewBatchEventsSender used to initialize dependencies and set values
-func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEventsSender, error) {
+// NewBatchEventsSenderWithMaxAllowedError used to initialize dependencies and set values, the maxErrorsAllowed is the max number of errors allowed before the eventsender quit
+func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, maxErrorsAllowed int) (*BatchEventsSender, error) {
 	// Rather than return a super general error for both it will block on batchSize first
 	if batchSize == 0 {
 		return nil, errors.New("batchSize cannot be 0")
@@ -315,11 +318,16 @@ func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEven
 		return nil, errors.New("interval cannot be 0")
 	}
 
+	if maxErrorsAllowed < 0 {
+		maxErrorsAllowed = 1
+	}
+
 	eventsChan := make(chan model.HecEvent, batchSize)
 	eventsQueue := make([]model.HecEvent, 0, batchSize)
 	quit := make(chan struct{}, 1)
 	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
+	errorChan := make(chan string, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
 		BatchSize:    batchSize,
@@ -329,7 +337,14 @@ func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEven
 		QuitChan:     quit,
 		HecTicker:    ticker,
 		WaitGroup:    &wg,
+		ErrorChan:    errorChan,
+		IsRunning:    false,
 	}
 
 	return batchEventsSender, nil
+}
+
+// NewBatchEventsSender used to initialize dependencies and set values
+func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEventsSender, error) {
+	return c.NewBatchEventsSenderWithMaxAllowedError(batchSize, interval, 1)
 }

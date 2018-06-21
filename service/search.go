@@ -1,16 +1,148 @@
 package service
 
 import (
+	"errors"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
-	"strconv"
-	"errors"
 	"net/url"
+	"strconv"
+	"time"
 )
 
 const searchServicePrefix = "search"
 const searchServiceVersion = "v1"
+
+// Search is a wrapper class for convenient search operations
+type Search struct {
+	sid          string
+	svc          *SearchService
+	isCancelling bool
+}
+
+// Status returns the status of the search job
+func (search *Search) Status() (*model.SearchJobContent, error) {
+	return search.svc.GetJob(search.sid)
+}
+
+// Cancel posts a cancel action to the search job
+func (search *Search) Cancel() (*model.JobControlReplyMsg, error) {
+	search.isCancelling = true
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.CANCEL})
+}
+
+// Pause posts a pause action to the search job
+func (search *Search) Pause() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.PAUSE})
+}
+
+// Unpause posts an unpause action to the search job
+func (search *Search) Unpause() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.UNPAUSE})
+}
+
+// Touch posts a touch action to the search job
+func (search *Search) Touch() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.TOUCH})
+}
+
+// SetTTL posts a setttl action to the search job
+func (search *Search) SetTTL() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.SETTTL})
+}
+
+// Finalize posts a finalize action to the search job
+func (search *Search) Finalize() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.FINALIZE})
+}
+
+// Save posts a save action to the search job
+func (search *Search) Save() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.SAVE})
+}
+
+// EnablePreview posts an enablepreview action to the search job
+func (search *Search) EnablePreview() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.ENABLEPREVIEW})
+}
+
+// DisablePreview posts a disablepreview action to the search job
+func (search *Search) DisablePreview() (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.DISABLEPREVIEW})
+}
+
+// Wait polls the job until it's completed or errors out
+func (search *Search) Wait() error {
+	err := search.svc.WaitForJob(search.sid, 250*time.Millisecond)
+	if search.isCancelling == true {
+		return errors.New("search has been cancelled")
+	}
+	if err != nil && err.(*util.HTTPError).Status == 404 {
+		return errors.New("search has been cancelled")
+	}
+	return err
+}
+
+// GetEvents returns events from the search
+func (search *Search) GetEvents(params *model.FetchEventsRequest) (*model.SearchResults, error) {
+	err := search.Wait()
+	if err != nil {
+		return nil, err
+	}
+	return search.svc.GetJobEvents(search.sid, params)
+}
+
+// GetResults returns results from the search
+func (search *Search) GetResults(params *model.FetchResultsRequest) (*model.SearchResults, error) {
+	err := search.Wait()
+	if err != nil {
+		return nil, err
+	}
+	return search.svc.GetJobResults(search.sid, params)
+}
+
+// QueryEvents waits for job to complete and returns an iterator. If offset and batchSize are specified,
+// the iterator will return that window of results with each Next() call
+func (search *Search) QueryEvents(batchSize, offset int, params *model.FetchEventsRequest) (*SearchIterator, error) {
+	err := search.Wait()
+	if err != nil {
+		return nil, err
+	}
+	jobStatus, err := search.Status()
+	if err != nil {
+		return nil, err
+	}
+	iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
+		func(count, offset int) (*model.SearchResults, error) {
+			params.Count = count
+			params.Offset = offset
+			return search.GetEvents(params)
+		})
+	return iterator, nil
+}
+
+// QueryResults waits for job to complete and returns an iterator. If offset and batchSize are specified,
+// the iterator will return that window of results with each Next() call
+func (search *Search) QueryResults(batchSize, offset int, params *model.FetchResultsRequest) (*SearchIterator, error) {
+	err := search.Wait()
+	if err != nil {
+		return nil, err
+	}
+	jobStatus, err := search.Status()
+	if err != nil {
+		return nil, err
+	}
+	if jobStatus.EventCount == 0 {
+		return nil, errors.New("no results are retrieved from the search")
+	}
+	iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
+		func(count, offset int) (*model.SearchResults, error) {
+			params.Count = count
+			params.Offset = offset
+			return search.GetResults(params)
+		})
+	return iterator, nil
+}
 
 // SearchService talks to the SSC search service
 type SearchService service
@@ -116,7 +248,7 @@ func (service *SearchService) GetJobResults(jobID string, params *model.FetchRes
 	return &results, err
 }
 
-//GetJobEvents Returns the job events with the given `id`.
+// GetJobEvents Returns the job events with the given `id`.
 func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEventsRequest) (*model.SearchResults, error) {
 	var results model.SearchResults
 	var query url.Values
@@ -136,4 +268,36 @@ func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEven
 	}
 	err = util.ParseResponse(&results, response)
 	return &results, err
+}
+
+// WaitForJob polls the job until it's completed or errors out
+func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration) error {
+	var done bool
+	for !done {
+		job, err := service.GetJob(sid)
+		if err != nil {
+			return err
+		}
+		if job.DispatchState == model.DONE {
+			done = true
+		} else if job.DispatchState == model.FAILED {
+			return errors.New("job failed")
+		} else {
+			time.Sleep(pollInterval)
+		}
+	}
+	return nil
+}
+
+// SubmitSearch creates a search job and wraps the response in an object
+func (service *SearchService) SubmitSearch(job *model.PostJobsRequest) (*Search, error) {
+	sid, err := service.CreateJob(job)
+	if err != nil {
+		return nil, err
+	}
+	return &Search{
+		sid:          sid,
+		svc:          service,
+		isCancelling: false,
+	}, nil
 }
