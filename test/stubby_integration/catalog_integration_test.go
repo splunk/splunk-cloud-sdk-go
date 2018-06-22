@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// Test variables
+var testDatasetID = "TEST_DATASET_ID"
+var testFieldID1 = "TEST_FIELD_ID_01"
+
 // Stubby test for GetDataset() catalog service endpoint
 func TestGetDataset(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetDataset("ds1")
@@ -72,6 +76,33 @@ func TestGetRule(t *testing.T) {
 
 	assert.NotNil(t, "rule1", result.ID)
 	assert.Equal(t, "_internal", result.Name)
+}
+
+// Stubby test for GetDatasetFields() catalog service endpoint
+func TestGetDatasetFields(t *testing.T) {
+	result, err := getClient(t).CatalogService.GetDatasetFields(testDatasetID)
+
+	assert.Empty(t, err)
+	assert.Equal(t, 3, len(result))
+}
+
+// Stubby test for GetDatasetField() catalog service endpoint
+func TestGetDatasetField(t *testing.T) {
+	result, err := getClient(t).CatalogService.GetDatasetField(testDatasetID, testFieldID1)
+
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, "date_second", result.Name)
+	assert.Equal(t, model.NUMBER, result.DataType)
+	assert.Equal(t, model.DIMENSION, result.FieldType)
+	assert.Equal(t, model.ALL, result.Prevalence)
+}
+
+// Stubby test for DeleteDatasetField() catalog service endpoint
+func TestDeleteDatasetField(t *testing.T) {
+	err := getClient(t).CatalogService.DeleteDatasetField(testDatasetID, testFieldID1)
+
+	assert.Empty(t, err)
 }
 
 // Stubby test for CreateRule() catalog service endpoint
