@@ -6,6 +6,8 @@ type DatasetInfoKind string
 const (
 	// LOOKUP represents TODO: Description needed
 	LOOKUP DatasetInfoKind = "lookup"
+	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
+	KVCOLLECTION DatasetInfoKind = "kvcollection"
 	// INDEX represents a Splunk events or metrics index
 	INDEX DatasetInfoKind = "index"
 )
