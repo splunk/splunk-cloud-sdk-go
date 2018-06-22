@@ -93,8 +93,8 @@ func TestGetDatasetField(t *testing.T) {
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
 	assert.Equal(t, "date_second", result.Name)
-	assert.Equal(t, model.NUMBER, result.Datatype)
-	assert.Equal(t, model.DIMENSION, result.Fieldtype)
+	assert.Equal(t, model.NUMBER, result.DataType)
+	assert.Equal(t, model.DIMENSION, result.FieldType)
 	assert.Equal(t, model.ALL, result.Prevalence)
 }
 

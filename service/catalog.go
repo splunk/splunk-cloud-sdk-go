@@ -201,7 +201,7 @@ func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string
 }
 
 // DeleteDatasetField deletes the field belonging to the specified dataset with the id datasetFieldID
-func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID string) (error) {
+func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID string) error {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return err

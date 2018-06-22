@@ -64,14 +64,14 @@ type PartialDatasetInfo struct {
 
 // Field represents the fields belonging to the specified Database
 type Field struct {
-	ID             string         `json:"id"`
-	Name           string         `json:"name"`
-	DatasetID      string         `json:"datasetId"`
-	Datatype       DataType       `json:"datatype,omitempty"`
-	Fieldtype      FieldType      `json:"fieldtype,omitempty"`
-	Prevalence     PrevalenceType `json:"prevalence,omitempty"`
-	Created        string         `json:"created,omitempty"`
-	Modified       string         `json:"modified,omitempty"`
+	ID         string         `json:"id"`
+	Name       string         `json:"name"`
+	DatasetID  string         `json:"datasetid"`
+	DataType   DataType       `json:"datatype,omitempty"`
+	FieldType  FieldType      `json:"fieldtype,omitempty"`
+	Prevalence PrevalenceType `json:"prevalence,omitempty"`
+	Created    string         `json:"created,omitempty"`
+	Modified   string         `json:"modified,omitempty"`
 }
 
 // PrevalenceType enumerates the types of prevalance used in fields.
