@@ -49,22 +49,22 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
-			events := append([]model.HecEvent(nil), b.EventsQueue...)
+			b.EventsQueue = append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
 			// flush one last time before exit
-			go b.flush(events)
+			go b.Flush()
 			return
 		case <-b.HecTicker.GetChan():
-			events := append([]model.HecEvent(nil), b.EventsQueue...)
+			b.EventsQueue = append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
-			go b.flush(events)
+			go b.Flush()
 			b.ResetQueue()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
-				events := append([]model.HecEvent(nil), b.EventsQueue...)
+				b.EventsQueue= append([]model.HecEvent(nil), b.EventsQueue...)
 				b.WaitGroup.Add(1)
-				go b.flush(events)
+				go b.Flush()
 				b.ResetQueue()
 			}
 		}
@@ -102,25 +102,19 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 // flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
-func (b *BatchEventsSender) flush(events []model.HecEvent) error {
+func (b *BatchEventsSender) Flush() error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
-	if len(events) > 0 {
-		err := b.EventService.CreateEvents(events)
+	if len(b.EventsQueue) > 0 {
+		err := b.EventService.CreateEvents(b.EventsQueue)
 		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", b.EventsQueue, err)
 			b.ErrorChan <- str
 		}
 	}
 
 	return nil
-}
-
-// Flush sends off all events currently in EventsQueue and resets ticker afterwards
-// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
-func (b *BatchEventsSender) Flush() error {
-	return b.flush(b.EventsQueue)
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
