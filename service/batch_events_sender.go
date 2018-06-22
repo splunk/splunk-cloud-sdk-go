@@ -99,7 +99,7 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 	return nil
 }
 
-// flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
+// Flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
 func (b *BatchEventsSender) Flush() error {
