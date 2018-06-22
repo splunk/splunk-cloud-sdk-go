@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// Test variables
+var testDatasetID = "TEST_DATASET_ID"
+var testFieldID1 = "TEST_FIELD_ID_01"
+
 // Stubby test for GetDataset() catalog service endpoint
 func TestGetDataset(t *testing.T) {
 	result, err := getClient(t).CatalogService.GetDataset("ds1")
@@ -76,7 +80,7 @@ func TestGetRule(t *testing.T) {
 
 // Stubby test for GetDatasetFields() catalog service endpoint
 func TestGetDatasetFields(t *testing.T) {
-	result, err := getClient(t).CatalogService.GetDatasetFields("TEST_DATASET_ID")
+	result, err := getClient(t).CatalogService.GetDatasetFields(testDatasetID)
 
 	assert.Empty(t, err)
 	assert.Equal(t, 3, len(result))
@@ -84,7 +88,7 @@ func TestGetDatasetFields(t *testing.T) {
 
 // Stubby test for GetDatasetField() catalog service endpoint
 func TestGetDatasetField(t *testing.T) {
-	result, err := getClient(t).CatalogService.GetDatasetField("TEST_DATASET_ID", "TEST_FIELD_ID_01")
+	result, err := getClient(t).CatalogService.GetDatasetField(testDatasetID, testFieldID1)
 
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -96,8 +100,8 @@ func TestGetDatasetField(t *testing.T) {
 
 // Stubby test for DeleteDatasetField() catalog service endpoint
 func TestDeleteDatasetField(t *testing.T) {
-	err := getClient(t).CatalogService.DeleteDatasetField("TEST_DATASET_ID", "TEST_FIELD_ID_01")
-	
+	err := getClient(t).CatalogService.DeleteDatasetField(testDatasetID, testFieldID1)
+
 	assert.Empty(t, err)
 }
 
