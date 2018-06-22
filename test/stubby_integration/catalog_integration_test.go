@@ -74,6 +74,33 @@ func TestGetRule(t *testing.T) {
 	assert.Equal(t, "_internal", result.Name)
 }
 
+// Stubby test for GetDatasetFields() catalog service endpoint
+func TestGetDatasetFields(t *testing.T) {
+	result, err := getClient(t).CatalogService.GetDatasetFields("TEST_DATASET_ID")
+
+	assert.Empty(t, err)
+	assert.Equal(t, 3, len(result))
+}
+
+// Stubby test for GetDatasetField() catalog service endpoint
+func TestGetDatasetField(t *testing.T) {
+	result, err := getClient(t).CatalogService.GetDatasetField("TEST_DATASET_ID", "TEST_FIELD_ID_01")
+
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, "date_second", result.Name)
+	assert.Equal(t, model.NUMBER, result.Datatype)
+	assert.Equal(t, model.DIMENSION, result.Fieldtype)
+	assert.Equal(t, model.ALL, result.Prevalence)
+}
+
+// Stubby test for DeleteDatasetField() catalog service endpoint
+func TestDeleteDatasetField(t *testing.T) {
+	err := getClient(t).CatalogService.DeleteDatasetField("TEST_DATASET_ID", "TEST_FIELD_ID_01")
+	
+	assert.Empty(t, err)
+}
+
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions [3]model.Action

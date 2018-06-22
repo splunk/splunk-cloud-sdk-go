@@ -163,3 +163,52 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
+
+// GetDatasetFields returns all the fields belonging to the specified dataset
+func (c *CatalogService) GetDatasetFields(datasetID string) ([]model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.Field
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetDatasetField returns the field belonging to the specified dataset with the id datasetFieldID
+func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// DeleteDatasetField deletes the field belonging to the specified dataset with the id datasetFieldID
+func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID string) (error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
