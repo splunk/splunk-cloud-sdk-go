@@ -51,3 +51,35 @@ func TestIntegrationCreateEvents(t *testing.T) {
 	err := client.HecService.CreateEvents([]model.HecEvent{event1, event2})
 	assert.Empty(t, err)
 }
+
+func TestIntegrationCreateMetrics(t *testing.T) {
+	client := getClient(t)
+
+	metrics := []model.Metric{
+		{Name: "CPU", Value: 55.89,
+			Dimensions: map[string]string{"Server": "redhat"}, Unit: "percentage"},
+
+		{Name: "Memory", Value: 20.27,
+			Dimensions: map[string]string{"Region": "us-east-5"}, Type: "g"},
+
+		{Name: "Disk", Value: 15.444,
+			Unit: "GB"},
+	}
+
+	metricEvent1 := model.MetricEvent{
+		Body:       metrics,
+		Timestamp:  1529020697,
+		Nanos:      1,
+		Source:     "mysource",
+		Sourcetype: "mysourcetype",
+		Host:       "myhost",
+		ID:         "metric0001",
+		Attributes: model.MetricAttribute{
+			DefaultDimensions: map[string]string{"defaultDimensions": ""},
+			DefaultType:       "g",
+			DefaultUnit:       "MB",
+		},
+	};
+	err := client.HecService.CreateMetrics(metricEvent1)
+	assert.Empty(t, err)
+}

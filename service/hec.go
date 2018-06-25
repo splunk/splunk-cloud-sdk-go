@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -58,6 +57,24 @@ func (h *HecService) CreateRawEvent(event model.HecEvent) error {
 	}
 	return err
 }
+
+
+// CreateMetrics implements HEC2 metrics endpoint
+func (h *HecService) CreateMetrics(event model.MetricEvent) error {
+	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "metrics")
+	if err != nil {
+		return err
+	}
+	if param := util.ParseURLParams(event).Encode(); len(param) > 0 {
+		url.RawQuery = param
+	}
+	response, err := h.client.Post(url, event.Body)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
 
 func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, error) {
 	var eventBuffer bytes.Buffer
