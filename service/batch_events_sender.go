@@ -19,6 +19,7 @@ type BatchEventsSender struct {
 	ErrorChan    chan string
 	ErrorMsg     string
 	IsRunning    bool
+	mux          *sync.Mutex
 }
 
 // Run sets up ticker and starts a new goroutine
@@ -49,20 +50,21 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
-			b.EventsQueue = append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
 			// flush one last time before exit
 			go b.Flush()
 			return
 		case <-b.HecTicker.GetChan():
-			b.EventsQueue = append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
 			go b.Flush()
 			b.ResetQueue()
 		case event := <-b.EventsChan:
+			// synchronize
+			b.mux.Lock()
 			b.EventsQueue = append(b.EventsQueue, event)
+			b.mux.Unlock()
+
 			if len(b.EventsQueue) == b.BatchSize {
-				b.EventsQueue= append([]model.HecEvent(nil), b.EventsQueue...)
 				b.WaitGroup.Add(1)
 				go b.Flush()
 				b.ResetQueue()
