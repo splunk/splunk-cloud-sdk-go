@@ -26,6 +26,7 @@ var (
 	PostJobsRequestDisableAutoFinalization = &model.PostJobsRequest{Search: DefaultSearchQuery, Limit: 0}
 	PostJobsRequestMultiArgs               = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, TTL: 10, Limit: 10}
 	PostJobsRequestLowThresholds           = &model.PostJobsRequest{Search: DefaultSearchQuery, Timeout: &timeout, TTL: 1}
+	PostJobsRequestModule                  = &model.PostJobsRequest{Search: DefaultSearchQuery, Module: "testing"}
 )
 
 func TestGetJobsDefaultParams(t *testing.T) {
