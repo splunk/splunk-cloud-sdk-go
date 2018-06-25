@@ -98,6 +98,34 @@ func TestGetDatasetField(t *testing.T) {
 	assert.Equal(t, model.ALL, result.Prevalence)
 }
 
+// Stubby test for PostDatasetField() catalog service endpoint
+func TestPostDatasetField(t *testing.T) {
+	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	result, err := getClient(t).CatalogService.PostDatasetField(testDatasetID, testField)
+
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, testFieldID1, result.ID)
+	assert.Equal(t, "test_data", result.Name)
+	assert.Equal(t, model.STRING, result.DataType)
+	assert.Equal(t, model.DIMENSION, result.FieldType)
+	assert.Equal(t, model.ALL, result.Prevalence)
+}
+
+// Stubby test for PatchDatasetField() catalog service endpoint
+func TestPatchDatasetField(t *testing.T) {
+	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "N", FieldType: "D", Prevalence: "A"}
+	result, err := getClient(t).CatalogService.PatchDatasetField(testDatasetID, testFieldID1, testField)
+
+	assert.Empty(t, err)
+	assert.NotEmpty(t, result)
+	assert.Equal(t, testFieldID1, result.ID)
+	assert.Equal(t, "test_data", result.Name)
+	assert.Equal(t, model.NUMBER, result.DataType)
+	assert.Equal(t, model.DIMENSION, result.FieldType)
+	assert.Equal(t, model.ALL, result.Prevalence)
+}
+
 // Stubby test for DeleteDatasetField() catalog service endpoint
 func TestDeleteDatasetField(t *testing.T) {
 	err := getClient(t).CatalogService.DeleteDatasetField(testDatasetID, testFieldID1)
