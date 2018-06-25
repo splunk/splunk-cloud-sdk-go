@@ -56,6 +56,16 @@ func TestGetJob(t *testing.T) {
 	assert.NotEmpty(t, response)
 }
 
+func TestGetJobWithModule(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
+	sid, _ := client.SearchService.CreateJob(PostJobsRequestModule)
+	response, err := client.SearchService.GetJob(sid)
+	assert.Nil(t, err)
+	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.NotEmpty(t, response)
+}
+
 func TestPostJobAction(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
@@ -81,7 +91,7 @@ func TestGetJobEvents(t *testing.T) {
 	assert.NotNil(t, client)
 	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
 	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
-	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5, OutputMode: "json"})
+	response, err := client.SearchService.GetJobEvents(sid, &model.FetchEventsRequest{Count: 5, OutputMode: "json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 5, len(response.Results))
