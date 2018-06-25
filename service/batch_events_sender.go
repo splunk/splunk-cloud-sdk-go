@@ -19,7 +19,7 @@ type BatchEventsSender struct {
 	ErrorChan    chan string
 	ErrorMsg     string
 	IsRunning    bool
-	mux          *sync.Mutex
+	mux          sync.Mutex
 }
 
 // Run sets up ticker and starts a new goroutine
