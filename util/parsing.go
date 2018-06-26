@@ -14,7 +14,11 @@ func ParseResponse(model interface{}, response *http.Response) error {
 	if response == nil {
 		return errors.New("nil response provided")
 	}
-	return json.NewDecoder(response.Body).Decode(model)
+	if response.StatusCode == 204 {
+		return nil
+	}
+	err := json.NewDecoder(response.Body).Decode(model)
+	return err
 }
 
 // ParseURLParams parses a struct into url params based on its "key" tag

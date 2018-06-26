@@ -21,15 +21,19 @@ func (he *HTTPError) Error() string {
 
 // ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and message
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
-	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		body, _ := ioutil.ReadAll(response.Body)
-
-		return response, &HTTPError{
+	if response != nil && (response.StatusCode < 200 || response.StatusCode >= 300) {
+		httpErr := &HTTPError{
 			Status:  response.StatusCode,
 			Message: response.Status,
-			Body:    string(body),
 		}
+		if response.Body != nil {
+			body, err := ioutil.ReadAll(response.Body)
+			if err != nil {
+				return response, err
+			}
+			httpErr.Body = string(body)
+		}
+		return response, httpErr
 	}
-
 	return response, nil
 }

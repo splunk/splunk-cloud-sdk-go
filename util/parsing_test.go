@@ -52,6 +52,20 @@ func TestParseResponseNilResponseError(t *testing.T) {
 	assert.Equal(t, parsingError, err)
 }
 
+func TestParseEmptyResponse(t *testing.T) {
+	testData := []byte("")
+	type TestModel struct {
+		TestID string `json:"TestID"`
+	}
+	httpResp := &http.Response{
+		StatusCode: 204,
+		Body:       ioutil.NopCloser(bytes.NewReader(testData)),
+	}
+	var testModel TestModel
+	err := ParseResponse(&testModel, httpResp)
+	assert.Nil(t, err)
+}
+
 func TestParseUrlParams(t *testing.T) {
 	params := model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
