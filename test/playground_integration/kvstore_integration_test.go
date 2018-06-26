@@ -2,11 +2,12 @@ package playgroundintegration
 
 import (
 	"encoding/json"
+	"net/url"
+	"testing"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"testing"
 )
 
 // Collection and Namespace test variables
@@ -14,6 +15,7 @@ var testCollection = "integ_test_collection"
 var testNamespace = "integ_test_namespace"
 var testIndex = "integ_test_index"
 
+// TODO (Logan): circle back and align the kvcollection creation on catalog with the other kvcollection integration tests
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection and test namespace
@@ -234,8 +236,7 @@ func TestDeleteRecord(t *testing.T) {
 
 // Create test record
 func CreateTestRecord(err error, t *testing.T) []string {
-	var integrationTestRecord =
-		`[
+	var integrationTestRecord = `[
           {
            "capacity_gb": 8,
            "size": "tiny",
