@@ -57,17 +57,11 @@ func (b *BatchEventsSender) loop() {
 		case <-b.HecTicker.GetChan():
 			b.WaitGroup.Add(1)
 			go b.Flush()
-			b.ResetQueue()
 		case event := <-b.EventsChan:
-			// synchronize
-			b.mux.Lock()
 			b.EventsQueue = append(b.EventsQueue, event)
-			b.mux.Unlock()
-
 			if len(b.EventsQueue) == b.BatchSize {
 				b.WaitGroup.Add(1)
 				go b.Flush()
-				b.ResetQueue()
 			}
 		}
 	}
@@ -105,11 +99,16 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
 func (b *BatchEventsSender) Flush() error {
+
+	// make a local copy of the events, then reset the queue
+	events := append([]model.HecEvent(nil), b.EventsQueue...)
+	b.ResetQueue()
+
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
 	if len(b.EventsQueue) > 0 {
-		err := b.EventService.CreateEvents(b.EventsQueue)
+		err := b.EventService.CreateEvents(events)
 		if err != nil {
 			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", b.EventsQueue, err)
 			b.ErrorChan <- str
@@ -121,5 +120,7 @@ func (b *BatchEventsSender) Flush() error {
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
 func (b *BatchEventsSender) ResetQueue() {
+	b.mux.Lock()
 	b.EventsQueue = b.EventsQueue[:0]
+	b.mux.Unlock()
 }
