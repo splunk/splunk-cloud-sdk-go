@@ -6,6 +6,8 @@ type DatasetInfoKind string
 const (
 	// LOOKUP represents TODO: Description needed
 	LOOKUP DatasetInfoKind = "lookup"
+	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
+	KVCOLLECTION DatasetInfoKind = "kvcollection"
 	// INDEX represents a Splunk events or metrics index
 	INDEX DatasetInfoKind = "index"
 )
@@ -64,9 +66,9 @@ type PartialDatasetInfo struct {
 
 // Field represents the fields belonging to the specified Database
 type Field struct {
-	ID         string         `json:"id"`
-	Name       string         `json:"name"`
-	DatasetID  string         `json:"datasetid"`
+	ID         string         `json:"id,omitempty"`
+	Name       string         `json:"name,omitempty"`
+	DatasetID  string         `json:"datasetid,omitempty"`
 	DataType   DataType       `json:"datatype,omitempty"`
 	FieldType  FieldType      `json:"fieldtype,omitempty"`
 	Prevalence PrevalenceType `json:"prevalence,omitempty"`

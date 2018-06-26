@@ -186,6 +186,7 @@ func (c *KVStoreService) DeleteRecordByKey(namespace string, collectionName stri
 }
 
 // ListRecords - List the records created for the tenant's specified collection
+// TODO: add the optional query parameters for the list records
 func (c *KVStoreService) ListRecords(namespaceName string, collectionName string) ([]map[string]interface{}, error) {
 	listRecordsURL, err := c.client.BuildURL(
 		nil,
@@ -213,4 +214,35 @@ func (c *KVStoreService) ListRecords(namespaceName string, collectionName string
 	err = util.ParseResponse(&records, response)
 
 	return records, err
+}
+
+// InsertRecord - Create a new record in the tenant's specified collection
+func (c *KVStoreService) InsertRecord(namespaceName string, collectionName string, record map[string]string) (map[string]string, error) {
+	insertRecordURL, err := c.client.BuildURL(
+		nil,
+		kvStoreServicePrefix,
+		kvStoreServiceVersion,
+		namespaceName,
+		"collections",
+		collectionName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Post(insertRecordURL, record)
+
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	// Should always be a map with one key called "_key"
+	var responseMap map[string]string
+	err = util.ParseResponse(&responseMap, response)
+
+	return responseMap, err
 }
