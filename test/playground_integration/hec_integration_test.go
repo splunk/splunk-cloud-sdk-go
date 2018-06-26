@@ -80,6 +80,9 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	};
-	err := client.HecService.CreateMetrics(metricEvent1)
+	err := client.HecService.CreateMetricEvent(metricEvent1)
 	assert.Empty(t, err)
+
+	err1 := client.HecService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1})
+	assert.Empty(t, err1)
 }

@@ -59,22 +59,30 @@ func (h *HecService) CreateRawEvent(event model.HecEvent) error {
 }
 
 
-// CreateMetrics implements HEC2 metrics endpoint
-func (h *HecService) CreateMetrics(event model.MetricEvent) error {
+// CreateMetricEvent implements HEC2 metrics endpoint to send one metric event
+func (h *HecService) CreateMetricEvent(event model.MetricEvent) error {
+	return h.CreateMetricEvents([]model.MetricEvent{event})
+}
+
+// CreateMetricEvents implements HEC2 metrics endpoint to send multipe metric events
+func (h *HecService) CreateMetricEvents(events []model.MetricEvent) error {
 	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "metrics")
 	if err != nil {
 		return err
 	}
-	if param := util.ParseURLParams(event).Encode(); len(param) > 0 {
-		url.RawQuery = param
+
+	jsonBytes, err := json.Marshal(events)
+	if err != nil {
+		return err
 	}
-	response, err := h.client.Post(url, event.Body)
+
+	response, err := h.client.Post(url, jsonBytes)
 	if response != nil {
 		defer response.Body.Close()
 	}
+
 	return err
 }
-
 
 func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, error) {
 	var eventBuffer bytes.Buffer
