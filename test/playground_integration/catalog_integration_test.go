@@ -4,10 +4,10 @@ package playgroundintegration
 
 import (
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/splunk/ssc-client-go/service"
 )
 
 // Test Rule variables
@@ -441,26 +441,6 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	assert.Equal(t, 2, len(result))
 }
 
-// Test GetDatasetFields for 401 Unauthorized operation error
-func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-
-	// Create new fields in the dataset
-	PostDatasetField(dataset, client, t)
-
-	// Validate the creation of new dataset fields
-	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID)
-	assert.Empty(t, result)
-	assert.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
-}
-
 // Test PostDatasetField
 func TestIntegrationPostDatasetField(t *testing.T) {
 	defer cleanupDatasets(t)
@@ -477,6 +457,56 @@ func TestIntegrationPostDatasetField(t *testing.T) {
 	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.NotEmpty(t, resultField)
 	assert.Nil(t, err)
+}
+
+// Test PatchDatasetField
+func TestIntegrationPatchDatasetField(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+
+	// Create a new dataset field
+	resultField := PostDatasetField(dataset, client, t)
+
+	// Validate the creation of a new dataset field
+	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
+	assert.NotEmpty(t, resultField)
+	assert.Nil(t, err)
+
+	// Update the existing dataset field
+	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
+	assert.NotEmpty(t, resultField)
+	assert.Equal(t, "integ_test_field", resultField.Name)
+	assert.Equal(t, model.OBJECTID, resultField.DataType)
+	assert.Equal(t, model.DIMENSION, resultField.FieldType)
+	assert.Equal(t, model.ALL, resultField.Prevalence)
+	assert.Nil(t, err)
+}
+
+// Test DeleteDatasetField
+func TestIntegrationDeleteDatasetField(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+
+	// Create a new dataset field
+	resultField := PostDatasetField(dataset, client, t)
+
+	// Delete dataset field
+	err = client.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
+	assert.Nil(t, err)
+
+	// Validate the deletion of the dataset field
+	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
+	assert.Empty(t, result)
+	assert.True(t, err.(*util.HTTPError).Status == 404)
+	assert.NotNil(t, err)
 }
 
 // Test PostDatasetField for 401 error
@@ -507,7 +537,7 @@ func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
 	// Create a new dataset field
-    PostDatasetField(dataset, client, t)
+	PostDatasetField(dataset, client, t)
 
 	// Post an already created dataset field
 	duplicateTestField := model.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
@@ -532,34 +562,26 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	assert.Empty(t, resultField)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 500, "Expected error code 500")
-
 }
 
-// Test PatchDatasetField
-func TestIntegrationPatchDatasetField(t *testing.T) {
+// Test GetDatasetFields for 401 Unauthorized operation error
+func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	client := getClient(t)
+	invalidClient := getInvalidClient(t)
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
-	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
+	// Create new fields in the dataset
+	PostDatasetField(dataset, client, t)
 
-	// Validate the creation of a new dataset field
-	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
-	assert.NotEmpty(t, resultField)
-	assert.Nil(t, err)
-
-	// Update the existing dataset field
-	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
-	assert.NotEmpty(t, resultField)
-	assert.Equal(t, "integ_test_field", resultField.Name)
-	assert.Equal(t, model.OBJECTID, resultField.DataType)
-	assert.Equal(t, model.DIMENSION, resultField.FieldType)
-	assert.Equal(t, model.ALL, resultField.Prevalence)
-	assert.Nil(t, err)
+	// Validate the creation of new dataset fields
+	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID)
+	assert.Empty(t, result)
+	assert.NotNil(t, err)
+	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
 }
 
 // Test PatchDatasetField for 401 error
@@ -611,29 +633,6 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
-// Test DeleteDatasetField
-func TestIntegrationDeleteDatasetField(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-
-	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
-
-	// Delete dataset field
-	err = client.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
-	assert.Nil(t, err)
-
-	// Validate the deletion of the dataset field
-	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
-	assert.Empty(t, result)
- 	assert.True(t, err.(*util.HTTPError).Status == 404)
-	assert.NotNil(t, err)
-}
-
 // Test DeleteDatasetField for 401 error
 func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
@@ -668,7 +667,7 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 }
 
-func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) (*model.Field) {
+func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
 	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
 
 	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, testField)
