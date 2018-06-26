@@ -51,7 +51,7 @@ func (b *BatchEventsSender) loop() {
 
 		case <-b.QuitChan:
 			b.WaitGroup.Add(1)
-			// flush one last time before exit
+			// Flush one last time before exit
 			go b.Flush()
 			return
 		case <-b.HecTicker.GetChan():
@@ -107,10 +107,10 @@ func (b *BatchEventsSender) Flush() error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
-	if len(b.EventsQueue) > 0 {
+	if len(events) > 0 {
 		err := b.EventService.CreateEvents(events)
 		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", b.EventsQueue, err)
+			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
 			b.ErrorChan <- str
 		}
 	}
