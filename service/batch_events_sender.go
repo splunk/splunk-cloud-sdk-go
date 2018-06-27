@@ -19,7 +19,6 @@ type BatchEventsSender struct {
 	ErrorChan    chan string
 	ErrorMsg     string
 	IsRunning    bool
-	mux          sync.Mutex
 }
 
 // Run sets up ticker and starts a new goroutine
@@ -50,18 +49,23 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
+			events := append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
-			// Flush one last time before exit
-			go b.Flush()
+			// flush one last time before exit
+			go b.flush(events)
 			return
 		case <-b.HecTicker.GetChan():
+			events := append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
-			go b.Flush()
+			go b.flush(events)
+			b.ResetQueue()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
+				events := append([]model.HecEvent(nil), b.EventsQueue...)
 				b.WaitGroup.Add(1)
-				go b.Flush()
+				go b.flush(events)
+				b.ResetQueue()
 			}
 		}
 	}
@@ -95,15 +99,10 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 	return nil
 }
 
-// Flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
+// flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
-func (b *BatchEventsSender) Flush() error {
-
-	// make a local copy of the events, then reset the queue
-	events := append([]model.HecEvent(nil), b.EventsQueue...)
-	b.ResetQueue()
-
+func (b *BatchEventsSender) flush(events []model.HecEvent) error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
@@ -118,9 +117,13 @@ func (b *BatchEventsSender) Flush() error {
 	return nil
 }
 
+// Flush sends off all events currently in EventsQueue and resets ticker afterwards
+// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
+func (b *BatchEventsSender) Flush() error {
+	return b.flush(b.EventsQueue)
+}
+
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
 func (b *BatchEventsSender) ResetQueue() {
-	b.mux.Lock()
 	b.EventsQueue = b.EventsQueue[:0]
-	b.mux.Unlock()
 }
