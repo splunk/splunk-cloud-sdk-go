@@ -55,17 +55,11 @@ func (b *BatchEventsSender) loop() {
 			go b.flush(events)
 			return
 		case <-b.HecTicker.GetChan():
-			events := append([]model.HecEvent(nil), b.EventsQueue...)
-			b.WaitGroup.Add(1)
-			go b.flush(events)
-			b.ResetQueue()
+			b.Flush()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
-				events := append([]model.HecEvent(nil), b.EventsQueue...)
-				b.WaitGroup.Add(1)
-				go b.flush(events)
-				b.ResetQueue()
+				b.Flush()
 			}
 		}
 	}
@@ -119,8 +113,11 @@ func (b *BatchEventsSender) flush(events []model.HecEvent) error {
 
 // Flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
-func (b *BatchEventsSender) Flush() error {
-	return b.flush(b.EventsQueue)
+func (b *BatchEventsSender) Flush() {
+	events := append([]model.HecEvent(nil), b.EventsQueue...)
+	b.WaitGroup.Add(1)
+	go b.flush(events)
+	b.ResetQueue()
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
