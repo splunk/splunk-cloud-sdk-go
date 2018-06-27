@@ -140,7 +140,6 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error) {
 	// refresh and retry request here
 	httpMethod := req.Method
-	body := req.Body
 
 	//Refresh access token with refresh token
 	var accessToken string
@@ -151,6 +150,7 @@ func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error
 	}
 	// Update the client with the newly obtained access token
 	c.UpdateToken(accessToken)
+	body, err := req.GetBody()
 	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
 	if err != nil {
 		return nil, err
