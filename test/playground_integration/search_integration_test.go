@@ -113,7 +113,7 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request",Body:"{\"Code\":\"400\",\"Message\":\"{\\\"code\\\":1019,\\\"message\\\":\\\"Failed to parse SPLv2='hahdkfdksf=main | dfsdfdshead 5' at line=1 pos=27 token=dfsdfdshead due to the error=no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead' (code:2)\\\"}\"}"}
+	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request", Body: "{\"code\":\"1019\",\"message\":\"Failed to parse SPLv2='hahdkfdksf=main | dfsdfdshead 5' at line=1 pos=27 token=dfsdfdshead due to the error=no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead' (code:2)\"}"}
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	assert.Empty(t, response)
@@ -246,7 +246,7 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	// HTTP Code 500 Error
-	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found", Body: "{\"Code\":\"404\",\"Message\":\"Error in Splunkd client: 404 Not Found\"}"}
+	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found", Body: "{\"code\":\"404\",\"message\":\"404 Not Found\"}"}
 
 	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{OutputMode: "json", Count: 30})
 	assert.NotNil(t, err)
