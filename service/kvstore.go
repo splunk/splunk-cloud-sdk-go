@@ -1,9 +1,10 @@
 package service
 
 import (
+	"net/url"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"net/url"
 )
 
 const kvStoreServicePrefix = "kvstore"
@@ -186,10 +187,9 @@ func (c *KVStoreService) DeleteRecordByKey(namespace string, collectionName stri
 }
 
 // ListRecords - List the records created for the tenant's specified collection
-// TODO: add the optional query parameters for the list records
-func (c *KVStoreService) ListRecords(namespaceName string, collectionName string) ([]map[string]interface{}, error) {
+func (c *KVStoreService) ListRecords(namespaceName string, collectionName string, filters map[string][]string) ([]map[string]interface{}, error) {
 	listRecordsURL, err := c.client.BuildURL(
-		nil,
+		filters,
 		kvStoreServicePrefix,
 		kvStoreServiceVersion,
 		namespaceName,
