@@ -106,7 +106,7 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 	return nil
 }
 
-// Flush sends off all events currently in EventsQueue and resets ticker afterwards
+// flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 func (b *BatchEventsSender) flush(fromTicker bool) error {
 	fmt.Println("== call flush()")
@@ -116,7 +116,7 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 	// Reset ticker
 	if fromTicker {
 		b.HecTicker.Reset()
-	}else if  len(b.EventsQueue)<b.BatchSize {
+	} else if len(b.EventsQueue) < b.BatchSize {
 		// it is possible different threads send flush signal while the previous flush already flush everything in queue
 		fmt.Println("???? call flush, no batchsize", )
 		b.mux.Unlock()
@@ -128,11 +128,21 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 	b.ResetQueue()
 	fmt.Println("== in  flush() queuesize",len(b.EventsQueue))
 
+	// slice events into batch size to send
 	if len(events) > 0 {
-		err := b.EventService.CreateEvents(events)
-		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
-			b.ErrorChan <- str
+		for i := 0; i < len(events); {
+			end := len(events)
+			if i+b.BatchSize < len(events) {
+				end = i + b.BatchSize
+			}
+			fmt.Println("== ***** in  flush() for loop", end)
+
+			err := b.EventService.CreateEvents(events[i:end])
+			i = i + b.BatchSize
+			if err != nil {
+				str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+				b.ErrorChan <- str
+			}
 		}
 	}
 
