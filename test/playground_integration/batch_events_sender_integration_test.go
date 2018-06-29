@@ -8,7 +8,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"sync"
 )
+var wg sync.WaitGroup
 
 // Should flush when ticker ticked and queue is not full
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
@@ -73,48 +75,40 @@ func blocking(done chan bool, seconds int64) {
 }
 
 func addEventBatch(collector *service.BatchEventsSender, event1 model.HecEvent) {
-	for i := 0; i < 5; i++ {
-		collector.AddEvent(event1)
+	defer wg.Done()
+	for i := 0; i < 3; i++ {
+		if err := collector.AddEvent(event1); err != nil {
+			return
+		}
+		time.Sleep(time.Duration(1) * time.Second)
 	}
 }
 
 // Should return error message when 5 errors are encountered during sending batches
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
-	var client = getInvalidClient(t)
+	var client= getInvalidClient(t)
 
 	event1 := model.HecEvent{Host: "host1", Event: "test10"}
-	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
+	maxAllowedErr := 11
+	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 500, maxAllowedErr)
 	collector.Run()
-	go blocking(done, 15)
-	for i := 0; i < 10; i++ {
+
+	// start 15 threads to send data simultaneously
+	wg.Add(15)
+	for i := 0; i < 15; i++ {
 		go addEventBatch(collector, event1)
 	}
-
-	<-done
+	wg.Wait()
 
 	s := strings.Split(collector.ErrorMsg, "],")
 	fmt.Println(s)
-	assert.Equal(t, 10, len(s)-1)
-}
 
-// TestBatchEventsSenderFlush should send events right away
-func TestBatchEventsSenderFlush(t *testing.T) {
-	var client = getClient(t)
+	// it is possible that the stop signal is set by the maxAllowedErr constraint,
+	// but while there are some events are pushed to the queue by some threads before we do last flush
+	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
+	assert.True(t, len(s)-1 >= maxAllowedErr)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	event3 := model.HecEvent{Host: "host3", Event: "test3"}
-
-	collector, _ := client.NewBatchEventsSender(5, 1000)
-	collector.Run()
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
-	collector.Flush()
-	collector.Stop()
-
-	assert.Equal(t, 0, len(collector.EventsQueue))
-	assert.Empty(t, collector.ErrorMsg)
+	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
+	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 }

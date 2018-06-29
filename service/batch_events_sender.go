@@ -49,17 +49,20 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
-			events := append([]model.HecEvent(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
-			// flush one last time before exit
-			go b.flush(events)
+			// Flush one last time before exit
+			go b.flush()
 			return
 		case <-b.HecTicker.GetChan():
-			b.Flush()
+			b.WaitGroup.Add(1)
+			go b.flush()
+			b.ResetQueue()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
-				b.Flush()
+				b.WaitGroup.Add(1)
+				go b.flush()
+				b.ResetQueue()
 			}
 		}
 	}
@@ -67,6 +70,7 @@ func (b *BatchEventsSender) loop() {
 
 // Stop sends a signal to QuitChan, wait for all registered goroutines to finish, stop ticker and clear queue
 func (b *BatchEventsSender) Stop() {
+	b.IsRunning = false
 	// Wait until no element is in channel
 	for {
 		if len(b.EventsChan) == 0 {
@@ -93,13 +97,13 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 	return nil
 }
 
-// flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
+// Flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
-// TODO: Error handling and return results
-func (b *BatchEventsSender) flush(events []model.HecEvent) error {
+func (b *BatchEventsSender) flush() error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
 	b.HecTicker.Reset()
+	events := append([]model.HecEvent(nil), b.EventsQueue...)
 	if len(events) > 0 {
 		err := b.EventService.CreateEvents(events)
 		if err != nil {
@@ -109,15 +113,6 @@ func (b *BatchEventsSender) flush(events []model.HecEvent) error {
 	}
 
 	return nil
-}
-
-// Flush sends off all events currently in EventsQueue and resets ticker afterwards
-// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
-func (b *BatchEventsSender) Flush() {
-	events := append([]model.HecEvent(nil), b.EventsQueue...)
-	b.WaitGroup.Add(1)
-	go b.flush(events)
-	b.ResetQueue()
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
