@@ -19,7 +19,10 @@ type BatchEventsSender struct {
 	ErrorChan    chan string
 	ErrorMsg     string
 	IsRunning    bool
+	mux          sync.Mutex
 }
+
+
 
 // Run sets up ticker and starts a new goroutine
 func (b *BatchEventsSender) Run() {
@@ -42,27 +45,29 @@ func (b *BatchEventsSender) loop() {
 		case err := <-b.ErrorChan:
 			errorMsgCount++
 			b.ErrorMsg += "[" + err + "],"
+			fmt.Println(errorMsgCount)
 			fmt.Println("got an error : " + err)
 
 			if errorMsgCount == cap(b.ErrorChan) {
+				fmt.Println("======call b.stop")
 				b.Stop()
 			}
 
 		case <-b.QuitChan:
-			b.WaitGroup.Add(1)
-			// Flush one last time before exit
-			go b.flush()
+			fmt.Println("===== call quit")
 			return
+
 		case <-b.HecTicker.GetChan():
 			b.WaitGroup.Add(1)
-			go b.flush()
-			b.ResetQueue()
+			fmt.Println("===== cal HecTicker")
+			go b.flush(true)
+
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
 				b.WaitGroup.Add(1)
-				go b.flush()
-				b.ResetQueue()
+				fmt.Println("===== call batch, queuesize=%d",len(b.EventsQueue))
+				go b.flush(false)
 			}
 		}
 	}
@@ -77,10 +82,14 @@ func (b *BatchEventsSender) Stop() {
 			break
 		}
 	}
-	b.QuitChan <- struct{}{}
-	b.WaitGroup.Wait()
 	b.HecTicker.Stop()
-	b.ResetQueue()
+
+	b.WaitGroup.Add(1)
+	// flush one last time before stop
+	go b.flush(true)
+	b.WaitGroup.Wait()
+
+	b.QuitChan <- struct{}{}
 }
 
 // AddEvent pushes a single event into EventsChan
@@ -99,11 +108,26 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 
 // Flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
-func (b *BatchEventsSender) flush() error {
+func (b *BatchEventsSender) flush(fromTicker bool) error {
+	fmt.Println("== call flush()")
 	defer b.WaitGroup.Done()
+
+	b.mux.Lock()
 	// Reset ticker
-	b.HecTicker.Reset()
+	if fromTicker {
+		b.HecTicker.Reset()
+	}else if  len(b.EventsQueue)<b.BatchSize {
+		// it is possible different threads send flush signal while the previous flush already flush everything in queue
+		fmt.Println("???? call flush, no batchsize", )
+		b.mux.Unlock()
+		return nil
+	}
+
+	fmt.Println("== in  flush() queuesize",len(b.EventsQueue))
 	events := append([]model.HecEvent(nil), b.EventsQueue...)
+	b.ResetQueue()
+	fmt.Println("== in  flush() queuesize",len(b.EventsQueue))
+
 	if len(events) > 0 {
 		err := b.EventService.CreateEvents(events)
 		if err != nil {
@@ -112,6 +136,7 @@ func (b *BatchEventsSender) flush() error {
 		}
 	}
 
+	b.mux.Unlock()
 	return nil
 }
 

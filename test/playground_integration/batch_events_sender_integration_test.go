@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 	"sync"
+	"math/rand"
 )
 var wg sync.WaitGroup
 
@@ -77,10 +78,11 @@ func blocking(done chan bool, seconds int64) {
 func addEventBatch(collector *service.BatchEventsSender, event1 model.HecEvent) {
 	defer wg.Done()
 	for i := 0; i < 3; i++ {
+		time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
 		if err := collector.AddEvent(event1); err != nil {
+			fmt.Println(err)
 			return
 		}
-		time.Sleep(time.Duration(1) * time.Second)
 	}
 }
 
@@ -90,8 +92,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 
 	event1 := model.HecEvent{Host: "host1", Event: "test10"}
 
-	maxAllowedErr := 11
-	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 500, maxAllowedErr)
+	maxAllowedErr := 5
+	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
 	collector.Run()
 
 	// start 15 threads to send data simultaneously
@@ -108,7 +110,9 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(s)-1 >= maxAllowedErr)
+	//assert.Equal(t, len(s)-1 , maxAllowedErr)
 
+	fmt.Println(s[0])
 	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
 	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 }
