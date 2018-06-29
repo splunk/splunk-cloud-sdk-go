@@ -112,7 +112,6 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	assert.True(t, len(s)-1 >= maxAllowedErr)
 	//assert.Equal(t, len(s)-1 , maxAllowedErr)
 
-	fmt.Println(s[0])
 	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
 	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 }

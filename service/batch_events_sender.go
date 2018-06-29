@@ -45,28 +45,23 @@ func (b *BatchEventsSender) loop() {
 		case err := <-b.ErrorChan:
 			errorMsgCount++
 			b.ErrorMsg += "[" + err + "],"
-			fmt.Println(errorMsgCount)
 			fmt.Println("got an error : " + err)
 
 			if errorMsgCount == cap(b.ErrorChan) {
-				fmt.Println("======call b.stop")
 				b.Stop()
 			}
 
 		case <-b.QuitChan:
-			fmt.Println("===== call quit")
 			return
 
 		case <-b.HecTicker.GetChan():
 			b.WaitGroup.Add(1)
-			fmt.Println("===== cal HecTicker")
 			go b.flush(true)
 
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
 				b.WaitGroup.Add(1)
-				fmt.Println("===== call batch, queuesize=",len(b.EventsQueue))
 				go b.flush(false)
 			}
 		}
@@ -109,7 +104,6 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 // flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 func (b *BatchEventsSender) flush(fromTicker bool) error {
-	fmt.Println("== call flush()")
 	defer b.WaitGroup.Done()
 
 	b.mux.Lock()
@@ -118,15 +112,12 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 		b.HecTicker.Reset()
 	} else if len(b.EventsQueue) < b.BatchSize {
 		// it is possible different threads send flush signal while the previous flush already flush everything in queue
-		fmt.Println("???? call flush, no batchsize", )
 		b.mux.Unlock()
 		return nil
 	}
 
-	fmt.Println("== in  flush() queuesize",len(b.EventsQueue))
 	events := append([]model.HecEvent(nil), b.EventsQueue...)
 	b.ResetQueue()
-	fmt.Println("== in  flush() queuesize",len(b.EventsQueue))
 
 	// slice events into batch size to send
 	if len(events) > 0 {
@@ -135,7 +126,6 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 			if i+b.BatchSize < len(events) {
 				end = i + b.BatchSize
 			}
-			fmt.Println("== ***** in  flush() for loop", end)
 
 			err := b.EventService.CreateEvents(events[i:end])
 			i = i + b.BatchSize
