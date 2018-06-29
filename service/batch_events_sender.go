@@ -66,7 +66,7 @@ func (b *BatchEventsSender) loop() {
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
 				b.WaitGroup.Add(1)
-				fmt.Println("===== call batch, queuesize=%d",len(b.EventsQueue))
+				fmt.Println("===== call batch, queuesize=",len(b.EventsQueue))
 				go b.flush(false)
 			}
 		}
