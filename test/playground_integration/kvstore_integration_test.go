@@ -11,9 +11,9 @@ import (
 )
 
 // Collection and Namespace test variables
-var testCollection = "integ_test_collection"
-var testNamespace = "integ_test_namespace"
-var testIndex = "integ_test_index"
+var testCollection = "integtestcollection"
+var testNamespace = "integtestnamespace"
+var testIndex = "integtestindex"
 
 // TODO (Logan): circle back and align the kvcollection creation on catalog with the other kvcollection integration tests
 // Test GetCollectionStatus against nova playground
