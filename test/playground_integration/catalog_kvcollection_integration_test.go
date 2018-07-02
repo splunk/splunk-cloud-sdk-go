@@ -9,7 +9,8 @@ import (
 	"github.com/splunk/ssc-client-go/testutils"
 )
 
-func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
+// createDatastoreKVCollection - Helper function for creating a valid KV Collection in Catalog
+func createDatastoreKVCollection(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
 	createDatasetInfo := model.DatasetInfo{
 		Name:         testutils.TestCollection,
 		Kind:         model.KVCOLLECTION,
@@ -18,9 +19,18 @@ func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
 		Capabilities: datasetCapabilities}
 
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createDatasetInfo)
-
 	assert.NotNil(t, datasetInfo)
 	assert.Nil(t, err)
+
+	return datasetInfo, err
+}
+
+func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
+	createDatastoreKVCollection(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
 	cleanupDatasets(t)
 }
