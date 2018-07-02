@@ -113,7 +113,7 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request", Body: "{\"code\":\"1019\",\"message\":\"Failed to parse SPLv2='hahdkfdksf=main | dfsdfdshead 5' at line=1 pos=27 token=dfsdfdshead due to the error=no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead' (code:2)\"}"}
+	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request", Body: "{\"code\":\"1019\",\"message\":\"{\\\"type\\\":\\\"ERROR_SPL_PARSE\\\",\\\"reason\\\":\\\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\\\",\\\"rule\\\":\\\"search\\\",\\\"line\\\":1,\\\"position\\\":27,\\\"token\\\":\\\"dfsdfdshead\\\",\\\"ok\\\":false}\"}"}
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	assert.Empty(t, response)
