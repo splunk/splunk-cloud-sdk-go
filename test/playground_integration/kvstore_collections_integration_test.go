@@ -25,6 +25,9 @@ func TestListRecordsReturnsEmptyDatasetOnCreation(t *testing.T) {
 		Module:       testutils.TestNamespace,
 		Capabilities: datasetCapabilities}
 
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createDatasetInfo)
 	assert.NotNil(t, datasetInfo)
 	assert.Nil(t, err)
@@ -34,9 +37,6 @@ func TestListRecordsReturnsEmptyDatasetOnCreation(t *testing.T) {
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
-
-	// Remove the dataset used for testing
-	cleanupDatasets(t)
 }
 
 func TestListRecordsReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
@@ -52,6 +52,9 @@ func TestListRecordsReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	// Verify the initial dataset has no records
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createDatasetInfo)
@@ -96,9 +99,6 @@ func TestListRecordsReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
 			assert.NotNil(t, value)
 		}
 	}
-
-	// Remove the dataset used for testing
-	cleanupDatasets(t)
 }
 
 // --------
@@ -138,6 +138,9 @@ func TestInsertRecordSuccess(t *testing.T) {
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
 
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
 	// Verify the initial dataset has no records
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createDatasetInfo)
 	assert.NotNil(t, datasetInfo)
@@ -167,7 +170,4 @@ func TestInsertRecordSuccess(t *testing.T) {
 		assert.NotNil(t, value)
 		assert.IsType(t, "string", value)
 	}
-
-	// Remove the dataset used for testing
-	cleanupDatasets(t)
 }

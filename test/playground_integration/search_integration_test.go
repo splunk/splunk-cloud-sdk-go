@@ -49,27 +49,32 @@ func TestGetJobsCustomParams(t *testing.T) {
 func TestGetJob(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
+	sid, err := client.SearchService.CreateJob(PostJobsRequest)
+	assert.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
-	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	assert.NotEmpty(t, response)
 }
 
 func TestGetJobWithModule(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	sid, _ := client.SearchService.CreateJob(PostJobsRequestModule)
+	sid, err := client.SearchService.CreateJob(PostJobsRequestModule)
+	assert.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(sid)
 	assert.Nil(t, err)
-	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	assert.NotEmpty(t, response)
 }
 
 func TestPostJobAction(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
+	sid, err := client.SearchService.CreateJob(PostJobsRequest)
+	assert.Emptyf(t, err, "Error creating job: %s", err)
 	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action: model.PAUSE})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, msg)
@@ -78,8 +83,10 @@ func TestPostJobAction(t *testing.T) {
 func TestGetJobResults(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	sid, err := client.SearchService.CreateJob(PostJobsRequest)
+	assert.Emptyf(t, err, "Error creating job: %s", err)
+	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5, OutputMode: "json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -89,8 +96,10 @@ func TestGetJobResults(t *testing.T) {
 func TestGetJobEvents(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
-	sid, _ := client.SearchService.CreateJob(PostJobsRequest)
-	client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	sid, err := client.SearchService.CreateJob(PostJobsRequest)
+	assert.Emptyf(t, err, "Error creating job: %s", err)
+	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	response, err := client.SearchService.GetJobEvents(sid, &model.FetchEventsRequest{Count: 5, OutputMode: "json"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
@@ -234,7 +243,8 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestLowThresholds)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
@@ -259,27 +269,33 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 
 func TestQueryEvents(t *testing.T) {
 	client := getClient(t)
-	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
-	pages, _ := search.QueryEvents(2, 0, &model.FetchEventsRequest{Count: 5})
+	search, err := client.SearchService.SubmitSearch(PostJobsRequest)
+	assert.Emptyf(t, err, "Error submitting search: %s", err)
+	pages, err := search.QueryEvents(2, 0, &model.FetchEventsRequest{Count: 5})
+	assert.Emptyf(t, err, "Error querying events: %s", err)
 	defer pages.Close()
 	for pages.Next() {
-		values, _ := pages.Value()
+		values, err := pages.Value()
+		assert.Emptyf(t, err, "Error calling pages.Value(): %s", err)
 		assert.NotNil(t, values)
 	}
-	err := pages.Err()
+	err = pages.Err()
 	assert.Nil(t, err)
 }
 
 func TestQueryResults(t *testing.T) {
 	client := getClient(t)
-	search, _ := client.SearchService.SubmitSearch(PostJobsRequest)
-	pages, _ := search.QueryResults(3, 0, &model.FetchResultsRequest{Count: 5})
+	search, err := client.SearchService.SubmitSearch(PostJobsRequest)
+	assert.Emptyf(t, err, "Error submitting search: %s", err)
+	pages, err := search.QueryResults(3, 0, &model.FetchResultsRequest{Count: 5})
+	assert.Emptyf(t, err, "Error querying events: %s", err)
 	defer pages.Close()
 	for pages.Next() {
-		values, _ := pages.Value()
+		values, err := pages.Value()
+		assert.Emptyf(t, err, "Error calling pages.Value(): %s", err)
 		assert.NotNil(t, values)
 	}
-	err := pages.Err()
+	err = pages.Err()
 	assert.Nil(t, err)
 }
 

@@ -19,13 +19,17 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	event3 := model.HecEvent{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -40,12 +44,16 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	event3 := model.HecEvent{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	collector.Stop()
 	<-done
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -57,10 +65,12 @@ func TestBatchEventsSenderQuitFlush(t *testing.T) {
 
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 3)
-	collector.AddEvent(event1)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
 	<-done
@@ -72,9 +82,10 @@ func blocking(done chan bool, seconds int64) {
 	done <- true
 }
 
-func addEventBatch(collector *service.BatchEventsSender, event1 model.HecEvent) {
+func addEventBatch(t *testing.T, collector *service.BatchEventsSender, event1 model.HecEvent) {
 	for i := 0; i < 5; i++ {
-		collector.AddEvent(event1)
+		err := collector.AddEvent(event1)
+		assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
 	}
 }
 
@@ -85,11 +96,12 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test10"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
+	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
+	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 15)
 	for i := 0; i < 10; i++ {
-		go addEventBatch(collector, event1)
+		go addEventBatch(t, collector, event1)
 	}
 
 	<-done
