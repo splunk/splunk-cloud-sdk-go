@@ -3,6 +3,9 @@ package playgroundintegration
 import (
 	"testing"
 
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -685,7 +688,7 @@ func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 	ruleName := "goSdkTestrRule1"
 	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName})
 	assert.NotNil(t, err)
-  assert.True(t, err.(*util.HTTPError).Status == 400, "Expected error code 400")
+   assert.True(t, err.(*util.HTTPError).Status == 400, "Expected error code 400")
 }*/
 
 // todo (Parul): 405 Rule cannot be deleted because of dependencies error case
