@@ -88,7 +88,7 @@ func addEventBatch(collector *service.BatchEventsSender, event1 model.HecEvent) 
 
 // Should return error message when 5 errors are encountered during sending batches
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
-	var client= getInvalidClient(t)
+	var client = getInvalidClient(t)
 
 	event1 := model.HecEvent{Host: "host1", Event: "test10"}
 
