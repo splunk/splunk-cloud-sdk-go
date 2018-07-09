@@ -119,11 +119,19 @@ func (c *KVStoreService) InsertRecords(namespace string, collectionName string, 
 }
 
 // QueryRecords queries records present in a given collection.
-func (c *KVStoreService) QueryRecords(values url.Values, namespace string, collectionName string) ([]model.Record, error) {
-	getRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, namespace, "collections", collectionName)
+func (c *KVStoreService) QueryRecords(namespace string, collectionName string, values url.Values) ([]model.Record, error) {
+	getRecordURL, err := c.client.BuildURL(values,
+		kvStoreServicePrefix,
+		kvStoreServiceVersion,
+		namespace,
+		"collections",
+		collectionName,
+		"query")
+
 	if err != nil {
 		return nil, err
 	}
+
 	response, err := c.client.Get(getRecordURL)
 	if response != nil {
 		defer response.Body.Close()
@@ -131,8 +139,10 @@ func (c *KVStoreService) QueryRecords(values url.Values, namespace string, colle
 	if err != nil {
 		return nil, err
 	}
+
 	var result []model.Record
 	err = util.ParseResponse(&result, response)
+
 	return result, err
 }
 
