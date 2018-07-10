@@ -7,14 +7,14 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 )
 
-const hecServicePrefix = "ingest"
+const ingestServicePrefix = "ingest"
 
-// HecService talks to the SSC hec service
-type HecService service
+// IngestService talks to the SSC ingest service
+type IngestService service
 
-// CreateEvent implements HEC2 event endpoint
-func (h *HecService) CreateEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "events")
+// CreateEvent implements Ingest event endpoint
+func (h *IngestService) CreateEvent(event model.Event) error {
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
@@ -26,25 +26,25 @@ func (h *HecService) CreateEvent(event model.HecEvent) error {
 }
 
 // CreateEvents post multiple events in one payload
-func (h *HecService) CreateEvents(events []model.HecEvent) error {
-	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "events")
+func (h *IngestService) CreateEvents(events []model.Event) error {
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, "v1", "events")
 	if err != nil {
 		return err
 	}
-	hecEvents, err := h.buildMultiEventsPayload(events)
+	ingestEvents, err := h.buildMultiEventsPayload(events)
 	if err != nil {
 		return err
 	}
-	response, err := h.client.Post(url, hecEvents)
+	response, err := h.client.Post(url, ingestEvents)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	return err
 }
 
-// CreateRawEvent implements HEC2 raw endpoint
-func (h *HecService) CreateRawEvent(event model.HecEvent) error {
-	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "raw")
+// CreateRawEvent implements Ingest raw endpoint
+func (h *IngestService) CreateRawEvent(event model.Event) error {
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, "v1", "raw")
 	if err != nil {
 		return err
 	}
@@ -58,15 +58,14 @@ func (h *HecService) CreateRawEvent(event model.HecEvent) error {
 	return err
 }
 
-
-// CreateMetricEvent implements HEC2 metrics endpoint to send one metric event
-func (h *HecService) CreateMetricEvent(event model.MetricEvent) error {
+// CreateMetricEvent implements Ingest metrics endpoint to send one metric event
+func (h *IngestService) CreateMetricEvent(event model.MetricEvent) error {
 	return h.CreateMetricEvents([]model.MetricEvent{event})
 }
 
-// CreateMetricEvents implements HEC2 metrics endpoint to send multipe metric events
-func (h *HecService) CreateMetricEvents(events []model.MetricEvent) error {
-	url, err := h.client.BuildURL(nil, hecServicePrefix, "v1", "metrics")
+// CreateMetricEvents implements Ingest metrics endpoint to send multipe metric events
+func (h *IngestService) CreateMetricEvents(events []model.MetricEvent) error {
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, "v1", "metrics")
 	if err != nil {
 		return err
 	}
@@ -84,7 +83,7 @@ func (h *HecService) CreateMetricEvents(events []model.MetricEvent) error {
 	return err
 }
 
-func (h *HecService) buildMultiEventsPayload(events []model.HecEvent) ([]byte, error) {
+func (h *IngestService) buildMultiEventsPayload(events []model.Event) ([]byte, error) {
 	var eventBuffer bytes.Buffer
 	for _, event := range events {
 		jsonBytes, err := json.Marshal(event)

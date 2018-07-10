@@ -39,7 +39,7 @@ func TestNewClient(t *testing.T) {
 	var searchService = &SearchService{client: client}
 	var catalogService = &CatalogService{client: client}
 	var identityService = &IdentityService{client: client}
-	var hecService = &HecService{client: client}
+	var ingestService = &IngestService{client: client}
 	var kvStoreService = &KVStoreService{client: client}
 
 	assert.Nil(t, err)
@@ -49,6 +49,6 @@ func TestNewClient(t *testing.T) {
 	assert.Equal(t, searchService, client.SearchService)
 	assert.Equal(t, catalogService, client.CatalogService)
 	assert.Equal(t, identityService, client.IdentityService)
-	assert.Equal(t, hecService, client.HecService)
+	assert.Equal(t, ingestService, client.IngestService)
 	assert.Equal(t, kvStoreService, client.KVStoreService)
 }

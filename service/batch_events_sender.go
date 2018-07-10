@@ -10,11 +10,11 @@ import (
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
 	BatchSize    int
-	EventsChan   chan model.HecEvent
-	EventsQueue  []model.HecEvent
+	EventsChan   chan model.Event
+	EventsQueue  []model.Event
 	QuitChan     chan struct{}
-	EventService *HecService
-	HecTicker    *model.Ticker
+	EventService *IngestService
+	IngestTicker *model.Ticker
 	WaitGroup    *sync.WaitGroup
 	ErrorChan    chan string
 	ErrorMsg     string
@@ -49,12 +49,12 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
-			events := append([]model.HecEvent(nil), b.EventsQueue...)
+			events := append([]model.Event(nil), b.EventsQueue...)
 			b.WaitGroup.Add(1)
 			// flush one last time before exit
 			go b.flush(events)
 			return
-		case <-b.HecTicker.GetChan():
+		case <-b.IngestTicker.GetChan():
 			b.Flush()
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
@@ -75,19 +75,19 @@ func (b *BatchEventsSender) Stop() {
 	}
 	b.QuitChan <- struct{}{}
 	b.WaitGroup.Wait()
-	b.HecTicker.Stop()
+	b.IngestTicker.Stop()
 	b.ResetQueue()
 }
 
 // AddEvent pushes a single event into EventsChan
-func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
+func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	if !b.IsRunning {
 		return errors.New("Need to start the BatchEventsSender first, call Run() ")
 	}
 
 	// Intend to only start ticker when first event is received.
-	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.HecTicker.IsRunning() == false {
-		b.HecTicker.Start()
+	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.IngestTicker.IsRunning() == false {
+		b.IngestTicker.Start()
 	}
 	b.EventsChan <- event
 	return nil
@@ -96,10 +96,10 @@ func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
 // flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
 // TODO: Error handling and return results
-func (b *BatchEventsSender) flush(events []model.HecEvent) error {
+func (b *BatchEventsSender) flush(events []model.Event) error {
 	defer b.WaitGroup.Done()
 	// Reset ticker
-	b.HecTicker.Reset()
+	b.IngestTicker.Reset()
 	if len(events) > 0 {
 		err := b.EventService.CreateEvents(events)
 		if err != nil {
@@ -114,7 +114,7 @@ func (b *BatchEventsSender) flush(events []model.HecEvent) error {
 // Flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
 func (b *BatchEventsSender) Flush() {
-	events := append([]model.HecEvent(nil), b.EventsQueue...)
+	events := append([]model.Event(nil), b.EventsQueue...)
 	b.WaitGroup.Add(1)
 	go b.flush(events)
 	b.ResetQueue()
