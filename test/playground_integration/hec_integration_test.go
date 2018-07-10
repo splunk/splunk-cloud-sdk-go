@@ -38,9 +38,9 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 
 func TestIntegrationCreateRawEventSuccess(t *testing.T) {
 	client := getClient(t)
-	testIngestEvent := model.Event{Event: "test"}
+	testEvent := model.Event{Event: "test"}
 
-	err := client.IngestService.CreateRawEvent(testIngestEvent)
+	err := client.IngestService.CreateRawEvent(testEvent)
 	assert.Empty(t, err)
 }
 
