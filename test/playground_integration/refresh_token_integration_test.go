@@ -6,10 +6,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
-	"github.com/splunk/ssc-client-go/model"
 )
 
 //Expired token
@@ -23,7 +23,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	assert.Emptyf(t, err, "Error initializing client: %s", err)
 
 	timeValue := float64(1529945178)
-	testHecEvent := model.HecEvent{
+	testIngestEvent := model.Event{
 		Host:       client.URL.RequestURI(),
 		Index:      "main",
 		Event:      "refreshtokentest",
@@ -32,6 +32,6 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		Time:       &timeValue,
 		Fields:     map[string]string{"testKey": "testValue"}}
 
-	err = client.HecService.CreateEvent(testHecEvent)
+	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using refresh logic: %s", err)
 }
