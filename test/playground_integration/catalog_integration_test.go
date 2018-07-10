@@ -7,6 +7,7 @@ import (
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Test Rule variables
@@ -51,7 +52,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, datasetName, dataset.Name)
 	assert.Equal(t, model.LOOKUP, dataset.Kind)
 	_, err = client.CatalogService.CreateDataset(
@@ -129,7 +130,7 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	_, err := invalidClient.CatalogService.GetDatasets()
-	assert.Emptyf(t, err, "Error getting dataset: %s", err)
+	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
@@ -161,7 +162,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
-	assert.Emptyf(t, err, "Error getting dataset: %s", err)
+	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
@@ -510,6 +511,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 	// Validate the deletion of the dataset field
 	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.Empty(t, result)
+	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404)
 	assert.NotNil(t, err)
 }

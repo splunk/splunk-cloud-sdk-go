@@ -2,12 +2,14 @@ package playgroundintegration
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Should flush when ticker ticked and queue is not full
@@ -20,7 +22,7 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
-	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
 	go blocking(done, 2)
@@ -45,7 +47,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
-	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 2)
 	err = collector.AddEvent(event1)
@@ -66,7 +68,7 @@ func TestBatchEventsSenderQuitFlush(t *testing.T) {
 	event1 := model.HecEvent{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
 	collector, err := client.NewBatchEventsSender(5, 1000)
-	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 3)
 	err = collector.AddEvent(event1)
@@ -97,7 +99,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
-	assert.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 15)
 	for i := 0; i < 10; i++ {

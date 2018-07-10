@@ -5,7 +5,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func getClient(t *testing.T) *service.Client {
@@ -21,7 +21,7 @@ func getClient(t *testing.T) *service.Client {
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
 
 	client, err := service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
-	assert.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
+	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
 
 	return client
 }
@@ -30,7 +30,7 @@ func getInvalidClient(t *testing.T) *service.Client {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	client, err := service.NewClient(testutils.TestInvalidTestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
-	assert.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
+	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
 
 	return client
 }
