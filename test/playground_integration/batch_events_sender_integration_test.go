@@ -110,3 +110,23 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	fmt.Println(s)
 	assert.Equal(t, 10, len(s)-1)
 }
+
+//// TestBatchEventsSenderFlush should send events right away
+//func TestBatchEventsSenderFlush(t *testing.T) {
+//	var client = getClient(t)
+//
+//	event1 := model.HecEvent{Host: "host1", Event: "test1"}
+//	event2 := model.HecEvent{Host: "host2", Event: "test2"}
+//	event3 := model.HecEvent{Host: "host3", Event: "test3"}
+//
+//	collector, _ := client.NewBatchEventsSender(5, 1000)
+//	collector.Run()
+//	collector.AddEvent(event1)
+//	collector.AddEvent(event2)
+//	collector.AddEvent(event3)
+//	collector.Flush()
+//	collector.Stop()
+//
+//	assert.Equal(t, 0, len(collector.EventsQueue))
+//	assert.Empty(t, collector.ErrorMsg)
+//}

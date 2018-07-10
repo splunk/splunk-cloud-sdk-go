@@ -2,11 +2,12 @@ package stubbyintegration
 
 import (
 	"encoding/json"
+	"net/url"
+	"testing"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"testing"
 )
 
 var testIndex1 = "TEST_INDEX_01"
@@ -82,8 +83,7 @@ func CreateField(direction int64, field string) model.IndexFieldDefinition {
 
 // Stubby test for InsertRecords() kvstore service endpoint
 func TestCreateRecords(t *testing.T) {
-	var testRecords =
-		`[
+	var testRecords = `[
           {
            "capacity_gb": 8,
            "size": "tiny",
@@ -158,7 +158,8 @@ func TestDeleteRecord(t *testing.T) {
 func TestListRecords(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(
 		testutils.TestNamespace,
-		testutils.TestCollection)
+		testutils.TestCollection,
+		nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 4)
