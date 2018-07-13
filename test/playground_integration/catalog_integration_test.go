@@ -189,6 +189,7 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, updateVersion, datasetByID.Version)
+	assert.NotNil(t, datasetByID.ID)
 }
 
 // Test UpdateDataset for 404 DatasetInfo not found error
