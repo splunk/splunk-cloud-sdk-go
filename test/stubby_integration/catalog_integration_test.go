@@ -80,7 +80,7 @@ func TestGetRule(t *testing.T) {
 
 // Stubby test for GetDatasetFields() catalog service endpoint
 func TestGetDatasetFields(t *testing.T) {
-	result, err := getClient(t).CatalogService.GetDatasetFields(testDatasetID)
+	result, err := getClient(t).CatalogService.GetDatasetFields(nil, testDatasetID)
 
 	assert.Empty(t, err)
 	assert.Equal(t, 3, len(result))
