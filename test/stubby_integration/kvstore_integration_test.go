@@ -116,7 +116,7 @@ func TestGetRecordsWithQuery(t *testing.T) {
 	query := make(url.Values)
 	query.Add("size", "tiny")
 	query.Add("capacity_gb", "8")
-	result, err := getClient(t).KVStoreService.QueryRecords(query, testutils.TestNamespace, testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, query)
 	assert.Nil(t, err)
 
 	assert.Equal(t, len(result), 1)

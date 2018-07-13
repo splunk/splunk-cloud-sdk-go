@@ -32,7 +32,8 @@ func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
 		datasetOwner,
 		datasetCapabilities)
 
-	cleanupDatasets(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 }
 
 func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
