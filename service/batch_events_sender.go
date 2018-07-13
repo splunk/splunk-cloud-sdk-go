@@ -7,6 +7,7 @@ import (
 	"sync"
 )
 
+//UserErrHandlerFunc defines the type of user callback function for batchEventSender
 type UserErrHandlerFunc func(*BatchEventsSender)
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
@@ -25,7 +26,7 @@ type BatchEventsSender struct {
 	callbackFunc UserErrHandlerFunc
 }
 
-// Run sets up ticker and starts a new goroutine
+// SetCallbackFunc allows users to pass their own callback function
 func (b *BatchEventsSender) SetCallbackFunc(callback UserErrHandlerFunc) {
 	b.callbackFunc = callback
 }
