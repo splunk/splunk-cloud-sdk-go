@@ -12,7 +12,7 @@ import (
 func TestIntegrationCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
 	client := getClient(t)
-	testHecEvent := model.HecEvent{
+	testIngestEvent := model.Event{
 		Host:       client.URL.RequestURI(),
 		Index:      "main",
 		Event:      "test",
@@ -21,15 +21,15 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 		Time:       &timeValue,
 		Fields:     map[string]string{"testKey": "testValue"}}
 
-	err := client.HecService.CreateEvent(testHecEvent)
+	err := client.IngestService.CreateEvent(testIngestEvent)
 	assert.Empty(t, err)
 }
 
 // TODO: Deal with later
-func TestIntegrationHecEventFail(t *testing.T) {
+func TestIntegrationIngestEventFail(t *testing.T) {
 	invalidClient := getInvalidClient(t)
-	testHecEvent := model.HecEvent{Event: "failed test"}
-	err := invalidClient.HecService.CreateEvent(testHecEvent)
+	testIngestEvent := model.Event{Event: "failed test"}
+	err := invalidClient.IngestService.CreateEvent(testIngestEvent)
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).Status)
@@ -38,17 +38,17 @@ func TestIntegrationHecEventFail(t *testing.T) {
 
 func TestIntegrationCreateRawEventSuccess(t *testing.T) {
 	client := getClient(t)
-	testHecEvent := model.HecEvent{Event: "test"}
+	testEvent := model.Event{Event: "test"}
 
-	err := client.HecService.CreateRawEvent(testHecEvent)
+	err := client.IngestService.CreateRawEvent(testEvent)
 	assert.Empty(t, err)
 }
 
 func TestIntegrationCreateEvents(t *testing.T) {
 	client := getClient(t)
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	err := client.HecService.CreateEvents([]model.HecEvent{event1, event2})
+	event1 := model.Event{Host: "host1", Event: "test1"}
+	event2 := model.Event{Host: "host2", Event: "test2"}
+	err := client.IngestService.CreateEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
@@ -79,10 +79,10 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultType:       "g",
 			DefaultUnit:       "MB",
 		},
-	};
-	err := client.HecService.CreateMetricEvent(metricEvent1)
+	}
+	err := client.IngestService.CreateMetricEvent(metricEvent1)
 	assert.Empty(t, err)
 
-	err1 := client.HecService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1})
+	err1 := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1})
 	assert.Empty(t, err1)
 }

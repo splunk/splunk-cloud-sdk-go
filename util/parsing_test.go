@@ -67,7 +67,7 @@ func TestParseEmptyResponse(t *testing.T) {
 }
 
 func TestParseUrlParams(t *testing.T) {
-	params := model.HecEvent{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
+	params := model.Event{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
 	assert.Equal(t, "http://ssc-sdk-shared-stubby:8882", values.Get("host"))
 	assert.Equal(t, "manual-events", values.Get("source"))

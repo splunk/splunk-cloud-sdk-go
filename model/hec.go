@@ -1,7 +1,7 @@
 package model
 
-// HecEvent contains metadata about the event
-type HecEvent struct {
+// Event contains metadata about the event
+type Event struct {
 	Host       string            `json:"host,omitempty" key:"host"`
 	Index      string            `json:"index,omitempty" key:"index"`
 	Sourcetype string            `json:"sourcetype,omitempty" key:"sourcetype"`

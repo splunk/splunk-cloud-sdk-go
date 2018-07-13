@@ -41,8 +41,8 @@ type Client struct {
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
 	CatalogService *CatalogService
-	// HecService talks to the SSC hec service
-	HecService *HecService
+	// IngestService talks to the SSC ingest service
+	IngestService *IngestService
 	// IdentityService talks to SSC IAC service
 	IdentityService *IdentityService
 	// KVStoreService talks to SSC kvstore service
@@ -303,7 +303,7 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, err
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
-	c.HecService = &HecService{client: c}
+	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	return c, nil
 }
@@ -322,8 +322,8 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 		maxErrorsAllowed = 1
 	}
 
-	eventsChan := make(chan model.HecEvent, batchSize)
-	eventsQueue := make([]model.HecEvent, 0, batchSize)
+	eventsChan := make(chan model.Event, batchSize)
+	eventsQueue := make([]model.Event, 0, batchSize)
 	quit := make(chan struct{}, 1)
 	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
@@ -333,9 +333,9 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 		BatchSize:    batchSize,
 		EventsChan:   eventsChan,
 		EventsQueue:  eventsQueue,
-		EventService: c.HecService,
+		EventService: c.IngestService,
 		QuitChan:     quit,
-		HecTicker:    ticker,
+		IngestTicker: ticker,
 		WaitGroup:    &wg,
 		ErrorChan:    errorChan,
 		IsRunning:    false,

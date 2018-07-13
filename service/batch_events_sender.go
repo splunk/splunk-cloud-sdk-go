@@ -10,10 +10,10 @@ import (
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
 	BatchSize    int
-	EventsChan   chan model.HecEvent
-	EventsQueue  []model.HecEvent
+	EventsChan   chan model.Event
+	EventsQueue  []model.Event
 	QuitChan     chan struct{}
-	EventService *HecService
+	EventService *IngestService
 	HecTicker    *model.Ticker
 	WaitGroup    *sync.WaitGroup
 	ErrorChan    chan string
@@ -88,7 +88,7 @@ func (b *BatchEventsSender) Stop() {
 }
 
 // AddEvent pushes a single event into EventsChan
-func (b *BatchEventsSender) AddEvent(event model.HecEvent) error {
+func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	if !b.IsRunning {
 		return errors.New("Need to start the BatchEventsSender first, call Run() ")
 	}
@@ -116,7 +116,7 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 		return nil
 	}
 
-	events := append([]model.HecEvent(nil), b.EventsQueue...)
+	events := append([]model.Event(nil), b.EventsQueue...)
 	b.ResetQueue()
 
 	// slice events into batch size to send
