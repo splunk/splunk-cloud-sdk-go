@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"net/url"
 )
 
 // catalog service url prefix
@@ -165,8 +166,8 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // GetDatasetFields returns all the fields belonging to the specified dataset
-func (c *CatalogService) GetDatasetFields(datasetID string) ([]model.Field, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+func (c *CatalogService) GetDatasetFields(values url.Values, datasetID string) ([]model.Field, error) {
+	url, err := c.client.BuildURL(values, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
 	}

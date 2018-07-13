@@ -7,6 +7,7 @@ import (
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"net/url"
 )
 
 // Test Rule variables
@@ -432,10 +433,36 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(dataset.ID)
+	result, err := client.CatalogService.GetDatasetFields(nil, dataset.ID)
 	assert.NotEmpty(t, result)
 	assert.Nil(t, err)
 	assert.Equal(t, 2, len(result))
+}
+
+// Test GetDatasetFields based on filter
+func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+
+	// create new fields in the dataset
+	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
+	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField1)
+	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
+
+	filter := make(url.Values)
+	filter.Add("filter", "name==\"integ_test_field2\"")
+
+	// Validate the creation of new dataset fields
+	result, err := client.CatalogService.GetDatasetFields(filter, dataset.ID)
+	assert.NotEmpty(t, result)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(result))
+	assert.Equal(t, result[0].Name, testField2.Name)
 }
 
 // Test PostDatasetField
@@ -575,7 +602,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	PostDatasetField(dataset, client, t)
 
 	// Validate the creation of new dataset fields
-	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID)
+	result, err := invalidClient.CatalogService.GetDatasetFields(nil, dataset.ID)
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
