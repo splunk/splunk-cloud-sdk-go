@@ -16,9 +16,9 @@ import (
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	event3 := model.HecEvent{Host: "host3", Event: "test3"}
+	event1 := model.Event{Host: "host1", Event: "test1"}
+	event2 := model.Event{Host: "host2", Event: "test2"}
+	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
@@ -41,9 +41,9 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-	event3 := model.HecEvent{Host: "host3", Event: "test3"}
+	event1 := model.Event{Host: "host1", Event: "test1"}
+	event2 := model.Event{Host: "host2", Event: "test2"}
+	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
@@ -65,7 +65,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test1"}
+	event1 := model.Event{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
 	collector, err := client.NewBatchEventsSender(5, 1000)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
@@ -84,7 +84,7 @@ func blocking(done chan bool, seconds int64) {
 	done <- true
 }
 
-func addEventBatch(t *testing.T, collector *service.BatchEventsSender, event1 model.HecEvent) {
+func addEventBatch(t *testing.T, collector *service.BatchEventsSender, event1 model.Event) {
 	for i := 0; i < 5; i++ {
 		err := collector.AddEvent(event1)
 		assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
@@ -95,7 +95,7 @@ func addEventBatch(t *testing.T, collector *service.BatchEventsSender, event1 mo
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	var client = getInvalidClient(t)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test10"}
+	event1 := model.Event{Host: "host1", Event: "test10"}
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
@@ -117,9 +117,9 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 //func TestBatchEventsSenderFlush(t *testing.T) {
 //	var client = getClient(t)
 //
-//	event1 := model.HecEvent{Host: "host1", Event: "test1"}
-//	event2 := model.HecEvent{Host: "host2", Event: "test2"}
-//	event3 := model.HecEvent{Host: "host3", Event: "test3"}
+//	event1 := model.Event{Host: "host1", Event: "test1"}
+//	event2 := model.Event{Host: "host2", Event: "test2"}
+//	event3 := model.Event{Host: "host3", Event: "test3"}
 //
 //	collector, _ := client.NewBatchEventsSender(5, 1000)
 //	collector.Run()

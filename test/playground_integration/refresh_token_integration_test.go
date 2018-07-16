@@ -24,7 +24,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
 	timeValue := float64(1529945178)
-	testHecEvent := model.HecEvent{
+	testIngestEvent := model.Event{
 		Host:       client.URL.RequestURI(),
 		Index:      "main",
 		Event:      "refreshtokentest",
@@ -33,6 +33,6 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		Time:       &timeValue,
 		Fields:     map[string]string{"testKey": "testValue"}}
 
-	err = client.HecService.CreateEvent(testHecEvent)
+	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using refresh logic: %s", err)
 }
