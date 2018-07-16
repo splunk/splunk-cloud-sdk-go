@@ -68,7 +68,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 }
 
 // UpdateDataset updates an existing Dataset
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.PartialDatasetInfo, error) {
+func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 	if err != nil {
 		return nil, err
 	}
-	var result model.PartialDatasetInfo
+	var result model.DatasetInfo
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
