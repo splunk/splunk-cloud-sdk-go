@@ -45,6 +45,7 @@ func TestUpdateDataset(t *testing.T) {
 		model.PartialDatasetInfo{Disabled: true, Version: 5}, "ds1")
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
+	assert.IsType(t, &(model.DatasetInfo{}), result)
 	assert.NotNil(t, result.ID)
 	assert.Equal(t, "stubby_dataset_1", result.Name)
 	assert.Equal(t, model.INDEX, result.Kind)
