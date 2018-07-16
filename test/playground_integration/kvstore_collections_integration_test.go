@@ -271,7 +271,6 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 	assert.Len(t, recordsAfterInsert, 1)
 }
 
-// BUG! This should fail, but it doesn't because the kvstore service is not checking its input
 func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T) {
 	filters := map[string][]string{
 		"count": {"-1"},
@@ -301,9 +300,9 @@ func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(testutils.TestNamespace, testutils.TestCollection, filters)
-	// BUG: This should return an error from the API instead of being successful
-	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+
+	assert.Nil(t, recordsAfterInsert)
+	assert.NotNil(t, err)
 }
 
 func TestKVStoreCollectionsListRecordsCountPositiveOutOfBoundsInput(t *testing.T) {
@@ -377,7 +376,6 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	assert.Len(t, recordsAfterInsert, 1)
 }
 
-// BUG! This should fail, but it doesn't because the kvstore service is not checking its input
 func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.T) {
 	filters := map[string][]string{
 		"offset": {"-1"},
@@ -407,9 +405,9 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(testutils.TestNamespace, testutils.TestCollection, filters)
-	// BUG: This should return an error from the API instead of being successful
-	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+
+	assert.Nil(t, recordsAfterInsert)
+	assert.NotNil(t, err)
 }
 
 func TestKVStoreCollectionsListRecordsOffsetPositiveOutOfBoundsInput(t *testing.T) {

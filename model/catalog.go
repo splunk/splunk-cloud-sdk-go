@@ -18,15 +18,16 @@ type DatasetInfo struct {
 	Name  string          `json:"name"`
 	Kind  DatasetInfoKind `json:"kind"`
 	Owner string          `json:"owner"`
-	// TODO (remove later): Included for testing purpose - temporary for namespace and collection creation
-	Module       string  `json:"module,omitempty"`
-	Created      string  `json:"created,omitempty"`
-	Modified     string  `json:"modified,omitempty"`
-	CreatedBy    string  `json:"createdBy,omitempty"`
-	ModifiedBy   string  `json:"modifiedBy,omitempty"`
-	Capabilities string  `json:"capabilities"`
-	Version      int     `json:"version,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
+	Module       string   `json:"module,omitempty"`
+	Created      string   `json:"created,omitempty"`
+	Modified     string   `json:"modified,omitempty"`
+	CreatedBy    string   `json:"createdBy,omitempty"`
+	ModifiedBy   string   `json:"modifiedBy,omitempty"`
+	Capabilities string   `json:"capabilities"`
+	Version      int      `json:"version,omitempty"`
+	Fields       []Field  `json:"fields,omitempty"`
+	Readroles    []string `json:"readroles,omitempty"`
+	Writeroles   []string `json:"writeroles,omitempty"`
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
@@ -51,6 +52,8 @@ type PartialDatasetInfo struct {
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
 	Capabilities string          `json:"capabilities,omitempty"`
 	Version      int             `json:"version,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
