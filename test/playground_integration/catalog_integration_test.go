@@ -7,6 +7,7 @@ import (
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"net/url"
 )
 
@@ -447,6 +448,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
 
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
@@ -459,8 +461,9 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 
 	// Validate the creation of new dataset fields
 	result, err := client.CatalogService.GetDatasetFields(dataset.ID, filter)
-	assert.NotEmpty(t, result)
+	require.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
 	assert.Nil(t, err)
+	assert.NotEmpty(t, result)
 	assert.Equal(t, 1, len(result))
 	assert.Equal(t, result[0].Name, testField2.Name)
 }
