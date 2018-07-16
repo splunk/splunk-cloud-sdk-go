@@ -166,7 +166,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // GetDatasetFields returns all the fields belonging to the specified dataset
-func (c *CatalogService) GetDatasetFields(values url.Values, datasetID string) ([]model.Field, error) {
+func (c *CatalogService) GetDatasetFields(datasetID string, values url.Values) ([]model.Field, error) {
 	url, err := c.client.BuildURL(values, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err

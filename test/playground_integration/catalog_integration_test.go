@@ -433,7 +433,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(nil, dataset.ID)
+	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
 	assert.NotEmpty(t, result)
 	assert.Nil(t, err)
 	assert.Equal(t, 2, len(result))
@@ -458,7 +458,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	filter.Add("filter", "name==\"integ_test_field2\"")
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(filter, dataset.ID)
+	result, err := client.CatalogService.GetDatasetFields(dataset.ID, filter)
 	assert.NotEmpty(t, result)
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(result))
@@ -602,7 +602,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	PostDatasetField(dataset, client, t)
 
 	// Validate the creation of new dataset fields
-	result, err := invalidClient.CatalogService.GetDatasetFields(nil, dataset.ID)
+	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID, nil)
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
