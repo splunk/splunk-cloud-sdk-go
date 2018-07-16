@@ -192,11 +192,14 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: updateVersion}, dataset.ID)
 	assert.Nil(t, err)
 	assert.NotNil(t, updatedDataset)
+	assert.IsType(t, &(model.DatasetInfo{}), updatedDataset)
 
 	// validate the update operation
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, updateVersion, datasetByID.Version)
+	assert.NotNil(t, datasetByID.ID)
+	assert.IsType(t, &(model.DatasetInfo{}), datasetByID)
 }
 
 // Test UpdateDataset for 404 DatasetInfo not found error
