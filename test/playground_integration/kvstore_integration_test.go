@@ -18,7 +18,7 @@ var testIndex = "integtestindex"
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection and test namespace
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -42,7 +42,7 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
 	// Create the test collection and test namespace for all the index operations
-	dataset, err := createDatastoreKVCollection(t,
+	dataset, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -86,7 +86,7 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 // Test CreateIndex for 422 Unprocessable Entity error
 func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create the test collection and test namespace
-	_, err := createDatastoreKVCollection(t,
+	_, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -115,7 +115,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 
 // Test DeleteIndex for 404 Index not found error
 func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -134,7 +134,7 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 // Test InsertRecords() kvstore service endpoint against nova playground
 func TestCreateRecords(t *testing.T) {
 	// Create the test collection and test namespace
-	_, err := createDatastoreKVCollection(t,
+	_, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -149,7 +149,7 @@ func TestCreateRecords(t *testing.T) {
 // Test getRecordByKey() kvstore service endpoint against the nova playground
 func TestGetRecordByKey(t *testing.T) {
 	// Create the test collection and test namespace
-	_, err := createDatastoreKVCollection(t,
+	_, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -172,7 +172,7 @@ func TestGetRecordByKey(t *testing.T) {
 // Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
 func TestDeleteRecordByKey(t *testing.T) {
 	// Create the test collection and test namespace
-	_, err := createDatastoreKVCollection(t,
+	_, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -198,7 +198,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 // Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
 func TestDeleteRecord(t *testing.T) {
 	// Create the test collection and test namespace
-	_, err := createDatastoreKVCollection(t,
+	_, err := createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,

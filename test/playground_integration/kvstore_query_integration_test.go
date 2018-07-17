@@ -18,7 +18,7 @@ import (
 // GET
 // --------
 func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -38,7 +38,7 @@ func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 // GET ?fields=parameter
 // --------
 func TestKVStoreQueryReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -78,7 +78,7 @@ func TestKVStoreQueryFieldsValidInclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -123,7 +123,7 @@ func TestKVStoreQueryFieldsValidExclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -170,7 +170,7 @@ func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -206,7 +206,7 @@ func TestKVStoreQueryCountValidInput(t *testing.T) {
 		"count": {"1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -240,7 +240,7 @@ func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
 		"count": {"-1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -274,7 +274,7 @@ func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
 		"count": {"10000"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -311,7 +311,7 @@ func TestKVStoreQueryOffsetValidInput(t *testing.T) {
 		"offset": {"1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -345,7 +345,7 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 		"offset": {"-1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -379,7 +379,7 @@ func TestKVStoreQueryOffsetPositiveOutOfBoundsInput(t *testing.T) {
 		"offset": {"10000"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -416,7 +416,7 @@ func TestKVStoreQueryOrderByValidInput(t *testing.T) {
 		"orderby": {"TEST_KEY_02"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -458,7 +458,7 @@ func TestKVStoreQueryOrderByNonExisentInput(t *testing.T) {
 		"orderby": {"thisdoesntexistasakey"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -503,7 +503,7 @@ func TestKVStoreQueryQueryParameterInput(t *testing.T) {
 		"query": {"{\"TEST_KEY_02\":\"A\"}"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -553,7 +553,7 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 		"query":   {"{\"TEST_KEY_02\":\"A\"}"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -616,7 +616,7 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,

@@ -7,10 +7,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"strconv"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
-	"strconv"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
