@@ -8,6 +8,7 @@ import (
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Test Rule variables
@@ -58,17 +59,16 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 	}
 
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createLookupDatasetInfo)
-	assert.NotNil(t, datasetInfo)
-	assert.IsType(t, model.DatasetInfo{}, *datasetInfo)
-	assert.Nil(t, err)
-	assert.Emptyf(t, err, "Error creating dataset: %s", err)
-	assert.Equal(t, model.LOOKUP, datasetInfo.Kind)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, model.LOOKUP, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
 
 func createKVCollectionDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
-	createLookupDatasetInfo := model.DatasetInfo{
+	createKVCollectionDatasetInfo := model.DatasetInfo{
 		Name:         collectionName,
 		Kind:         model.KVCOLLECTION,
 		Owner:        datasetOwner,
@@ -76,12 +76,11 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 		Capabilities: capabilities,
 	}
 
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createLookupDatasetInfo)
-	assert.NotNil(t, datasetInfo)
-	assert.IsType(t, model.DatasetInfo{}, *datasetInfo)
-	assert.Nil(t, err)
-	assert.Emptyf(t, err, "Error creating dataset: %s", err)
-	assert.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
+	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createKVCollectionDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
