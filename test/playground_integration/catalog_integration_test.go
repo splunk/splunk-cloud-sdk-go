@@ -59,6 +59,7 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createLookupDatasetInfo)
 	assert.NotNil(t, datasetInfo)
+	assert.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	assert.Nil(t, err)
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 	assert.Equal(t, model.LOOKUP, datasetInfo.Kind)
@@ -77,6 +78,7 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(createLookupDatasetInfo)
 	assert.NotNil(t, datasetInfo)
+	assert.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	assert.Nil(t, err)
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 	assert.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
