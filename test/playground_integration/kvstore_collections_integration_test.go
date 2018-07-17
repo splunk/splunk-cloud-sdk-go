@@ -67,7 +67,6 @@ func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
-
 }
 
 // --------
