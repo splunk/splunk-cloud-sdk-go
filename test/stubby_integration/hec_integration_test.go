@@ -12,8 +12,13 @@ import (
 
 func TestCreateEventSuccess(t *testing.T) {
 	timeValue := float64(1523637597)
-	err := getClient(t).IngestService.CreateEvent(
-		model.Event{Host: getClient(t).URL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
+
+	client := getClient(t)
+	clientURL, err := client.GetURL()
+	assert.Empty(t, err)
+
+	err = client.IngestService.CreateEvent(
+		model.Event{Host: clientURL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
 	assert.Empty(t, err)
 }
 
@@ -24,7 +29,7 @@ func TestCreateRawEventSuccess(t *testing.T) {
 }
 
 func TestIngestEventFail(t *testing.T) {
-	client, _ := service.NewClient(testutils.TestTenantID, "wrongToken", testutils.TestURLProtocol+"://"+testutils.TestSSCHost, time.Second*5)
+	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol+"://"+testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second*5})
 	err := client.IngestService.CreateEvent(model.Event{Event: "failed test"})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).Status)
