@@ -19,13 +19,15 @@ var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 //Test ingesting event with invalid access token then retrying after refreshing token
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	client, err := service.NewClient(testutils.TestTenantID, TestAuthenticationToken, url, testutils.TestTimeOut)
-
+	client, err := service.NewClient(&service.Config{Token: TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
+
+	clientURL, err := client.GetURL()
+	assert.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
 	timeValue := float64(1529945178)
 	testIngestEvent := model.Event{
-		Host:       client.URL.RequestURI(),
+		Host:       clientURL.RequestURI(),
 		Index:      "main",
 		Event:      "refreshtokentest",
 		Sourcetype: "sourcetype:refreshtokentest",
