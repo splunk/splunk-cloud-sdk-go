@@ -19,6 +19,7 @@ type BatchEventsSender struct {
 	ErrorChan    chan string
 	ErrorMsg     string
 	IsRunning    bool
+	mux          sync.Mutex
 }
 
 // Run sets up ticker and starts a new goroutine
@@ -49,17 +50,17 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
-			events := append([]model.Event(nil), b.EventsQueue...)
-			b.WaitGroup.Add(1)
-			// flush one last time before exit
-			go b.flush(events)
 			return
+
 		case <-b.IngestTicker.GetChan():
-			b.Flush()
+			b.WaitGroup.Add(1)
+			go b.flush(true)
+
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
 			if len(b.EventsQueue) == b.BatchSize {
-				b.Flush()
+				b.WaitGroup.Add(1)
+				go b.flush(false)
 			}
 		}
 	}
@@ -67,16 +68,21 @@ func (b *BatchEventsSender) loop() {
 
 // Stop sends a signal to QuitChan, wait for all registered goroutines to finish, stop ticker and clear queue
 func (b *BatchEventsSender) Stop() {
+	b.IsRunning = false
 	// Wait until no element is in channel
 	for {
 		if len(b.EventsChan) == 0 {
 			break
 		}
 	}
-	b.QuitChan <- struct{}{}
-	b.WaitGroup.Wait()
 	b.IngestTicker.Stop()
-	b.ResetQueue()
+
+	b.WaitGroup.Add(1)
+	// flush one last time before stop
+	go b.flush(true)
+	b.WaitGroup.Wait()
+
+	b.QuitChan <- struct{}{}
 }
 
 // AddEvent pushes a single event into EventsChan
@@ -93,31 +99,43 @@ func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	return nil
 }
 
-// flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
+// flush sends off all events currently in EventsQueue and resets ticker afterwards
 // If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
-// TODO: Error handling and return results
-func (b *BatchEventsSender) flush(events []model.Event) error {
+func (b *BatchEventsSender) flush(fromTicker bool) error {
 	defer b.WaitGroup.Done()
+
+	b.mux.Lock()
 	// Reset ticker
-	b.IngestTicker.Reset()
+	if fromTicker {
+		b.IngestTicker.Reset()
+	} else if len(b.EventsQueue) < b.BatchSize {
+		// it is possible different threads send flush signal while the previous flush already flush everything in queue
+		b.mux.Unlock()
+		return nil
+	}
+
+	events := append([]model.Event(nil), b.EventsQueue...)
+	b.ResetQueue()
+
+	// slice events into batch size to send
 	if len(events) > 0 {
-		err := b.EventService.CreateEvents(events)
-		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
-			b.ErrorChan <- str
+		for i := 0; i < len(events); {
+			end := len(events)
+			if i+b.BatchSize < len(events) {
+				end = i + b.BatchSize
+			}
+
+			err := b.EventService.CreateEvents(events[i:end])
+			i = i + b.BatchSize
+			if err != nil {
+				str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+				b.ErrorChan <- str
+			}
 		}
 	}
 
+	b.mux.Unlock()
 	return nil
-}
-
-// Flush sends off all events currently in EventsQueue and resets ticker afterwards
-// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
-func (b *BatchEventsSender) Flush() {
-	events := append([]model.Event(nil), b.EventsQueue...)
-	b.WaitGroup.Add(1)
-	go b.flush(events)
-	b.ResetQueue()
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
