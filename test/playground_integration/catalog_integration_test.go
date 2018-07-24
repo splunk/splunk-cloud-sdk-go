@@ -7,6 +7,7 @@ import (
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Test Rule variables
@@ -51,7 +52,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, datasetName, dataset.Name)
 	assert.Equal(t, model.LOOKUP, dataset.Kind)
 	_, err = client.CatalogService.CreateDataset(
@@ -70,6 +71,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	_, err = client.CatalogService.CreateDataset(
 		model.DatasetInfo{ID: dataset.ID, Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
@@ -110,8 +112,11 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 
 	// create dataset
 	_, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_2000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 	_, err = client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_3000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	datasets, err := client.CatalogService.GetDatasets()
 	assert.Nil(t, err)
@@ -138,9 +143,10 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error getting dataset: %s", err)
 	assert.NotNil(t, datasetByID)
 }
 
@@ -153,6 +159,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
 	assert.NotNil(t, err)
@@ -180,15 +187,19 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	// create dataset
 	updateVersion := 6
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: updateVersion}, dataset.ID)
 	assert.Nil(t, err)
 	assert.NotNil(t, updatedDataset)
+	assert.IsType(t, &(model.DatasetInfo{}), updatedDataset)
 
 	// validate the update operation
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
 	assert.Nil(t, err)
 	assert.Equal(t, updateVersion, datasetByID.Version)
+	assert.NotNil(t, datasetByID.ID)
+	assert.IsType(t, &(model.DatasetInfo{}), datasetByID)
 }
 
 // Test UpdateDataset for 404 DatasetInfo not found error
@@ -446,6 +457,7 @@ func TestIntegrationPostDatasetField(t *testing.T) {
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -502,6 +514,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 	// Validate the deletion of the dataset field
 	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.Empty(t, result)
+	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404)
 	assert.NotNil(t, err)
 }
@@ -657,6 +670,7 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	// Delete dataset field
 	err = client.CatalogService.DeleteDatasetField(dataset.ID, "123")

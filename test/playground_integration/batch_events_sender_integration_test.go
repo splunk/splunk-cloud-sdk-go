@@ -2,14 +2,15 @@ package playgroundintegration
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
 	"sync"
 	"math/rand"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 var wg sync.WaitGroup
 
@@ -22,13 +23,17 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -43,12 +48,16 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	collector.Stop()
 	<-done
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -60,10 +69,12 @@ func TestBatchEventsSenderQuitFlush(t *testing.T) {
 
 	event1 := model.Event{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 3)
-	collector.AddEvent(event1)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
 	<-done
@@ -75,20 +86,20 @@ func blocking(done chan bool, seconds int64) {
 	done <- true
 }
 
-func addEventBatch(collector *service.BatchEventsSender, event1 model.Event) {
+func addEventBatch(collector *service.BatchEventsSender, event1 model.Event) error {
 	defer wg.Done()
 	for i := 0; i < 3; i++ {
 		time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
 		if err := collector.AddEvent(event1); err != nil {
-			fmt.Println(err)
-			return
+			return err
 		}
 	}
+	return nil
 }
 
 // Should return error message when 5 errors are encountered during sending batches
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
-	var client = getInvalidClient(t)
+	var client= getInvalidClient(t)
 
 	event1 := model.Event{Host: "host1", Event: "test10"}
 
@@ -100,18 +111,26 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	wg.Add(15)
 	for i := 0; i < 15; i++ {
 		go addEventBatch(collector, event1)
+
+		collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 1000, 10)
+		require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+		collector.Run()
+
+		for i := 0; i < 10; i++ {
+			go addEventBatch(collector, event1)
+		}
+		wg.Wait()
+
+		s := strings.Split(collector.ErrorMsg, "],")
+		fmt.Println(s)
+
+		// it is possible that the stop signal is set by the maxAllowedErr constraint,
+		// but while there are some events are pushed to the queue by some threads before we do last flush
+		// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
+		assert.True(t, len(s)-1 >= maxAllowedErr)
+		//assert.Equal(t, len(s)-1 , maxAllowedErr)
+
+		assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
+		assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 	}
-	wg.Wait()
-
-	s := strings.Split(collector.ErrorMsg, "],")
-	fmt.Println(s)
-
-	// it is possible that the stop signal is set by the maxAllowedErr constraint,
-	// but while there are some events are pushed to the queue by some threads before we do last flush
-	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
-	assert.True(t, len(s)-1 >= maxAllowedErr)
-	//assert.Equal(t, len(s)-1 , maxAllowedErr)
-
-	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
-	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 }
