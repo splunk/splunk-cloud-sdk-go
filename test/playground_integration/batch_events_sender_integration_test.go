@@ -115,3 +115,29 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
 	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
 }
+
+func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
+	var client = getInvalidClient(t)
+
+	event1 := model.HecEvent{Host: "host1", Event: "test10"}
+
+	maxAllowedErr := 5
+
+	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	callbackPrint := ""
+	callback := func(b *service.BatchEventsSender) {
+		callbackPrint = "call from callback function"
+	}
+
+	collector.SetCallbackFunc(callback)
+
+	assert.Equal(t, "", callbackPrint)
+
+	// this should call the callback func when err happens during sending the batch
+	collector.Run()
+	wg.Add(1)
+	go addEventBatch(collector, event1)
+	wg.Wait()
+
+	assert.Equal(t, "call from callback function", callbackPrint)
+}
