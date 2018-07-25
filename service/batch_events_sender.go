@@ -17,7 +17,7 @@ type BatchEventsSender struct {
 	EventsQueue  []model.Event
 	QuitChan     chan struct{}
 	EventService *IngestService
-	HecTicker    *model.Ticker
+	IngestTicker *model.Ticker
 	WaitGroup    *sync.WaitGroup
 	ErrorChan    chan string
 	ErrorMsg     string
@@ -65,7 +65,7 @@ func (b *BatchEventsSender) loop() {
 		case <-b.QuitChan:
 			return
 
-		case <-b.HecTicker.GetChan():
+		case <-b.IngestTicker.GetChan():
 			b.WaitGroup.Add(1)
 			go b.flush(true)
 
@@ -88,7 +88,7 @@ func (b *BatchEventsSender) Stop() {
 			break
 		}
 	}
-	b.HecTicker.Stop()
+	b.IngestTicker.Stop()
 
 	b.WaitGroup.Add(1)
 	// flush one last time before stop
@@ -105,8 +105,8 @@ func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	}
 
 	// Intend to only start ticker when first event is received.
-	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.HecTicker.IsRunning() == false {
-		b.HecTicker.Start()
+	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.IngestTicker.IsRunning() == false {
+		b.IngestTicker.Start()
 	}
 	b.EventsChan <- event
 	return nil
@@ -120,7 +120,7 @@ func (b *BatchEventsSender) flush(fromTicker bool) error {
 	b.mux.Lock()
 	// Reset ticker
 	if fromTicker {
-		b.HecTicker.Reset()
+		b.IngestTicker.Reset()
 	} else if len(b.EventsQueue) < b.BatchSize {
 		// it is possible different threads send flush signal while the previous flush already flush everything in queue
 		b.mux.Unlock()

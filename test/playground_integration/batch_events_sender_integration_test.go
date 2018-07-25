@@ -5,12 +5,13 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"strings"
+	"sync"
 	"testing"
 	"time"
-	"sync"
-	"math/rand"
 )
+
 var wg sync.WaitGroup
 
 // Should flush when ticker ticked and queue is not full
@@ -119,7 +120,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 	var client = getInvalidClient(t)
 
-	event1 := model.HecEvent{Host: "host1", Event: "test10"}
+	event1 := model.Event{Host: "host1", Event: "test10"}
 
 	maxAllowedErr := 5
 
