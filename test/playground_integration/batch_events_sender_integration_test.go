@@ -5,6 +5,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"math/rand"
 	"strings"
 	"sync"
@@ -23,13 +24,17 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	<-done
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -44,12 +49,16 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Event: "test3"}
 	done := make(chan bool, 1)
 
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 2)
-	collector.AddEvent(event1)
-	collector.AddEvent(event2)
-	collector.AddEvent(event3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
 	collector.Stop()
 	<-done
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -61,10 +70,13 @@ func TestBatchEventsSenderQuitFlush(t *testing.T) {
 
 	event1 := model.Event{Host: "host1", Event: "test1"}
 	done := make(chan bool, 1)
-	collector, _ := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.NewBatchEventsSender(5, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+
 	collector.Run()
 	go blocking(done, 3)
-	collector.AddEvent(event1)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
 	collector.Stop()
 	assert.Equal(t, 0, len(collector.EventsQueue))
 	<-done
@@ -93,28 +105,28 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 
 	event1 := model.Event{Host: "host1", Event: "test10"}
 
-	maxAllowedErr := 5
+	maxAllowedErr := 4
 	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
 	collector.Run()
 
 	// start 15 threads to send data simultaneously
-	wg.Add(15)
-	for i := 0; i < 15; i++ {
+	wg.Add(8)
+	for i := 0; i < 8; i++ {
 		go addEventBatch(collector, event1)
 	}
 	wg.Wait()
 
-	s := strings.Split(collector.ErrorMsg, "],")
-	fmt.Println(s)
+	errors := collector.GetErrors()
 
 	// it is possible that the stop signal is set by the maxAllowedErr constraint,
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
-	assert.True(t, len(s)-1 >= maxAllowedErr)
-	//assert.Equal(t, len(s)-1 , maxAllowedErr)
+	assert.True(t, len(errors) >= maxAllowedErr)
 
-	assert.True(t, strings.Contains(s[0], "[Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
-	assert.True(t, strings.Contains(s[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
+	assert.True(t, strings.Contains(errors[0], "Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
+	assert.True(t, strings.Contains(errors[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
+
+	collector.Stop()
 }
 
 func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
@@ -124,9 +136,12 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 	maxAllowedErr := 5
 
-	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+
 	callbackPrint := ""
 	callback := func(b *service.BatchEventsSender) {
+		assert.True(t, len(b.GetErrors()) > 0)
 		callbackPrint = "call from callback function"
 	}
 
@@ -134,11 +149,17 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 	assert.Equal(t, "", callbackPrint)
 
-	// this should call the callback func when err happens during sending the batch
+	// this should call the callback func when err happens during sending the batch and update the value of callbackPrint
 	collector.Run()
 	wg.Add(1)
 	go addEventBatch(collector, event1)
 	wg.Wait()
 
+	// this wait is to make the sure the callback func finish its execution
+	done := make(chan bool, 1)
+	go blocking(done, 2)
+	<-done
+
 	assert.Equal(t, "call from callback function", callbackPrint)
+	collector.Stop()
 }
