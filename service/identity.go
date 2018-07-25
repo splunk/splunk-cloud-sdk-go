@@ -43,8 +43,14 @@ func (c *IdentityService) DeleteTenant(tenantID string) error {
 // GetUserProfile retrieves the user profile associated with the current cached auth token
 func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 	var user model.User
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, identityServiceVersion,
-		"userprofile")
+	var scope = tenantID
+
+	if len(tenantID) == 0 {
+		scope = "system"
+	}
+	url, err := c.client.BuildURLWithTenantID(scope, nil, identityServicePrefix, identityServiceVersion,
+			"userprofile")
+
 	if err != nil {
 		return nil, err
 	}
