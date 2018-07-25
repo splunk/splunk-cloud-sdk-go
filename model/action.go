@@ -69,3 +69,33 @@ type ActionError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
+
+// ActionNotificationKind defines the types of notifications
+type ActionNotificationKind string
+
+const (
+	//SplunkEventKind for splunk event payloads
+	SplunkEventKind ActionNotificationKind = "splunkEvent"
+	//RawJSONPayloadKind for raw json payloads
+	RawJSONPayloadKind ActionNotificationKind = "rawJSON"
+)
+
+// ActionNotification defines the action notification format
+type ActionNotification struct {
+	EmailImmediately bool   `json:"emailImmediately,omitempty"`
+	Severity         int    `json:"severity" binding:"omitempty,min=0,max=10"`
+	Kind             string `json:"kind" binding:"required"`
+	Tenant           string `json:"tenant" binding:"required"`
+	UserID           string `json:"userId" binding:"required"`
+	Payload          interface{}
+}
+
+// SplunkEventPayload is the payload for a notification coming from Splunk
+type SplunkEventPayload struct {
+	Index      string `json:"index" binding:"required"`
+	Host       string `json:"host" binding:"required"`
+	Source     string `json:"source" binding:"required"`
+	Sourcetype string `json:"sourcetype" binding:"required"`
+	Raw        string `json:"_raw" binding:"required"`
+	Time       string `json:"_time"` // if "required", value can't be 0=
+}
