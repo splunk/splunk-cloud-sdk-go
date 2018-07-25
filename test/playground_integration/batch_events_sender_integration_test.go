@@ -106,7 +106,10 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	event1 := model.Event{Host: "host1", Event: "test10"}
 
 	maxAllowedErr := 4
-	collector, _ := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+
+	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+
 	collector.Run()
 
 	// start 15 threads to send data simultaneously

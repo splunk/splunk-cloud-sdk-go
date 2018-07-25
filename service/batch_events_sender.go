@@ -179,7 +179,7 @@ func (b *BatchEventsSender) ResetQueue() {
 	b.EventsQueue = b.EventsQueue[:0]
 }
 
-// GetErrorMsg return all the error messages as an array
+// GetErrors return all the error messages as an array
 func (b *BatchEventsSender) GetErrors() []string {
 	if b.errorMsg == "" {
 		return nil
