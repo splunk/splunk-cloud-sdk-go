@@ -8,8 +8,8 @@ import (
 	"sync"
 )
 
-//UserErrHandlerFunc defines the type of user callback function for batchEventSender
-type UserErrHandlerFunc func(*BatchEventsSender)
+//UserErrHandler defines the type of user callback function for batchEventSender
+type UserErrHandler func(*BatchEventsSender)
 
 const errMsgSplitter = "[insErrSplit]"
 
@@ -26,12 +26,12 @@ type BatchEventsSender struct {
 	errorMsg     string
 	IsRunning    bool
 	mux          sync.Mutex
-	callbackFunc UserErrHandlerFunc
+	callbackFunc UserErrHandler
 	stopMux      sync.Mutex
 }
 
 // SetCallbackFunc allows users to pass their own callback function
-func (b *BatchEventsSender) SetCallbackFunc(callback UserErrHandlerFunc) {
+func (b *BatchEventsSender) SetCallbackFunc(callback UserErrHandler) {
 	b.callbackFunc = callback
 }
 
