@@ -3,12 +3,14 @@ package stubbyintegration
 import (
 	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
+
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
-	"io"
-	"io/ioutil"
+
 	"net/http"
 	"net/url"
 	"reflect"
