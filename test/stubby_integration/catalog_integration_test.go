@@ -137,7 +137,7 @@ func TestDeleteDatasetField(t *testing.T) {
 
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
-	var actions [3]model.Action
+	var actions [3]model.CatalogAction
 	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
 	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
 	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
@@ -151,7 +151,7 @@ func TestPostRule(t *testing.T) {
 }
 
 // creates a rule to post
-func CreateRule(name string, match string, module string, owner string, actions []model.Action) model.Rule {
+func CreateRule(name string, match string, module string, owner string, actions []model.CatalogAction) model.Rule {
 	return model.Rule{
 		Name:    name,
 		Match:   match,
@@ -162,8 +162,8 @@ func CreateRule(name string, match string, module string, owner string, actions 
 }
 
 // creates an action for rule to post
-func CreateAction(kind model.ActionKind, owner string, version int, field string, mode model.AutoMode, expression string, pattern string, alias string, limit int) model.Action {
-	return model.Action{
+func CreateAction(kind model.CatalogActionKind, owner string, version int, field string, mode model.AutoMode, expression string, pattern string, alias string, limit int) model.CatalogAction {
+	return model.CatalogAction{
 		Kind:       kind,
 		Owner:      owner,
 		Version:    version,
