@@ -92,7 +92,7 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	return nil
 }
 
-// UpdateAction triggers an action from a notification
+// UpdateAction updates and action by name
 func (c *ActionService) UpdateAction(name string, action model.Action) error {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {

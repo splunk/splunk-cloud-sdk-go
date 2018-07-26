@@ -16,10 +16,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
 	"os"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 // Declare constants for service package
@@ -47,7 +48,7 @@ type Client struct {
 	IdentityService *IdentityService
 	// KVStoreService talks to SSC kvstore service
 	KVStoreService *KVStoreService
-	// ActionStoreService talks to SSC action store service
+	// ActionService talks to SSC action service
 	ActionService *ActionService
 }
 

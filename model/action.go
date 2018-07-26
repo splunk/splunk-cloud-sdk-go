@@ -15,9 +15,12 @@ const (
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
 	// Common action fields:
-	Name string     `json:"name" binding:"required"`
+	// Name of action, all actions have this field
+	Name string `json:"name" binding:"required"`
+	// Kind of action (email, webhook, or sns), all actions have this field
 	Kind ActionKind `json:"kind" binding:"required"`
-	ID   string     `json:"id" binding:"omitempty"`
+	// ID of action assigned by action service, all actions have this field
+	ID string `json:"id" binding:"omitempty"`
 	// Email action fields:
 	// HTMLPart to send via Email action
 	HTMLPart string `json:"htmlPart,omitempty"`
