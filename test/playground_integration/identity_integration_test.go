@@ -6,9 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"fmt"
-	"time"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 )
@@ -27,7 +24,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	assert.Equal(t, "Test1 Splunk", userSystem.Name)
 	assert.Equal(t, "en-US", userSystem.Locale)
 
-	userTenant, errTenant:= client.IdentityService.GetUserProfile(testutils.TestTenantID)
+	userTenant, errTenant := client.IdentityService.GetUserProfile(testutils.TestTenantID)
 	assert.Nil(t, errTenant)
 	assert.Equal(t, "test1@splunk.com", userTenant.ID)
 	assert.Equal(t, "test1@splunk.com", userTenant.Email)
@@ -36,61 +33,60 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	assert.Equal(t, "Test1 Splunk", userTenant.Name)
 	assert.Equal(t, "en-US", userTenant.Locale)
 
+	// //prepare a temp tenant that will be deleted
+	// testTenantID := fmt.Sprintf("%d-sdk-integration", time.Now().Unix())
 
-	//prepare a temp tenant that will be deleted
-	testTenantID := fmt.Sprintf("%d-sdk-integration", time.Now().Unix())
+	// defer client.IdentityService.DeleteTenant(testTenantID)
 
-	defer client.IdentityService.DeleteTenant(testTenantID)
+	// //create tenant
+	// err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
+	// assert.Nil(t, err)
 
-	//create tenant
-	err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-	assert.Nil(t, err)
+	// //add tenant user
+	// addedUserName := "newUser@splunk.com"
+	// err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
+	// assert.Nil(t, err)
 
-	//add tenant user
-	addedUserName := "newUser@splunk.com"
-	err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	assert.Nil(t, err)
+	// //get tennant users
+	// users, err := client.IdentityService.GetTenantUsers(testTenantID)
+	// assert.Nil(t, err)
+	// assert.Equal(t, 2, len(users))
 
-	//get tennant users
-	users, err := client.IdentityService.GetTenantUsers(testTenantID)
-	assert.Nil(t, err)
-	assert.Equal(t, 2, len(users))
+	// found := false
+	// for _, v := range users {
+	// 	if v.ID == addedUserName {
+	// 		found = true
+	// 		break
+	// 	}
+	// }
+	// assert.True(t, found)
 
-	found := false
-	for _, v := range users {
-		if v.ID == addedUserName {
-			found = true
-			break
-		}
-	}
-	assert.True(t, found)
+	// //delete tenant user
+	// err = client.IdentityService.DeleteTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
+	// assert.Nil(t, err)
 
-	//delete tenant user
-	err = client.IdentityService.DeleteTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	assert.Nil(t, err)
+	// users, err = client.IdentityService.GetTenantUsers(testTenantID)
+	// found = false
+	// for _, v := range users {
+	// 	if v.ID == addedUserName {
+	// 		found = true
+	// 		break
+	// 	}
+	// }
+	// assert.False(t, found)
 
-	users, err = client.IdentityService.GetTenantUsers(testTenantID)
-	found = false
-	for _, v := range users {
-		if v.ID == addedUserName {
-			found = true
-			break
-		}
-	}
-	assert.False(t, found)
+	// //replace tenant users
+	// err = client.IdentityService.ReplaceTenantUsers(testTenantID, []model.User{
+	// 	{ID: "devtest2@splunk.com"},
+	// 	{ID: "devtest3@splunk.com"}})
 
-	//replace tenant users
-	err = client.IdentityService.ReplaceTenantUsers(testTenantID, []model.User{
-		{ID: "devtest2@splunk.com"},
-		{ID: "devtest3@splunk.com"}})
+	// users, err = client.IdentityService.GetTenantUsers(testTenantID)
+	// assert.Nil(t, err)
+	// assert.Equal(t, 3, len(users))
 
-	users, err = client.IdentityService.GetTenantUsers(testTenantID)
-	assert.Nil(t, err)
-	assert.Equal(t, 3, len(users))
-
-	//delete tenant
-	err = client.IdentityService.DeleteTenant(testTenantID)
-	assert.Nil(t, err)
+	// //delete tenant
+	// err = client.IdentityService.DeleteTenant(testTenantID)
+	// assert.Nil(t, err)
 }
 
 // test Erros with auth endpoints

@@ -29,7 +29,7 @@ func getClient(t *testing.T) *service.Client {
 	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
 
-	client, err := service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
 	if err != nil {
 		fmt.Println(err.Error())
 		t.FailNow()
