@@ -6,6 +6,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"strings"
 	"sync"
+	"time"
 )
 
 //UserErrHandler defines the type of user callback function for batchEventSender
@@ -28,10 +29,11 @@ type BatchEventsSender struct {
 	mux          sync.Mutex
 	callbackFunc UserErrHandler
 	stopMux      sync.Mutex
+	chanWaitInMilSec int
 }
 
-// SetCallbackFunc allows users to pass their own callback function
-func (b *BatchEventsSender) SetCallbackFunc(callback UserErrHandler) {
+// SetCallbackHandler allows users to pass their own callback function
+func (b *BatchEventsSender) SetCallbackHandler(callback UserErrHandler) {
 	b.callbackFunc = callback
 }
 
@@ -65,6 +67,7 @@ func (b *BatchEventsSender) loop() {
 			}
 
 		case <-b.QuitChan:
+			b.IsRunning = false
 			return
 
 		case <-b.IngestTicker.GetChan():
@@ -104,7 +107,6 @@ func (b *BatchEventsSender) Stop() {
 	// flush one last time before stop
 	go b.flush(2)
 	b.WaitGroup.Wait()
-
 	b.QuitChan <- struct{}{}
 }
 
@@ -119,7 +121,13 @@ func (b *BatchEventsSender) AddEvent(event model.Event) error {
 		b.IngestTicker.Start()
 	}
 
-	b.EventsChan <- event
+	for len(b.EventsChan) >= cap(b.EventsChan) {
+		time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
+	}
+
+	if b.IsRunning {
+		b.EventsChan <- event
+	}
 	return nil
 }
 
@@ -164,12 +172,13 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		if err != nil {
 			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
 
-			if len(b.ErrorChan) >= cap(b.ErrorChan) {
-				fmt.Println("Too many errors happened, will stop batch event sender now !!!")
-				return
+			for len(b.EventsChan) >= cap(b.EventsChan) {
+				time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
 			}
 
-			b.ErrorChan <- str
+			if b.IsRunning {
+				b.ErrorChan <- str
+			}
 		}
 	}
 }

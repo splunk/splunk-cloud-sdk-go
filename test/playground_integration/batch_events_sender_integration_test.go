@@ -148,7 +148,7 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 		callbackPrint = "call from callback function"
 	}
 
-	collector.SetCallbackFunc(callback)
+	collector.SetCallbackHandler(callback)
 
 	assert.Equal(t, "", callbackPrint)
 
