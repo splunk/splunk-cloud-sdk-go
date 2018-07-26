@@ -47,6 +47,8 @@ type Client struct {
 	IdentityService *IdentityService
 	// KVStoreService talks to SSC kvstore service
 	KVStoreService *KVStoreService
+	// ActionStoreService talks to SSC action store service
+	ActionService *ActionService
 }
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
@@ -305,6 +307,7 @@ func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, err
 	c.IdentityService = &IdentityService{client: c}
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
+	c.ActionService = &ActionService{client: c}
 	return c, nil
 }
 

@@ -34,20 +34,24 @@ func (c *ActionService) GetActions() ([]model.Action, error) {
 }
 
 // CreateAction creates an action
-func (c *ActionService) CreateAction(action model.Action) error {
+func (c *ActionService) CreateAction(action model.Action) (*model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Post(url, action)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	// TODO: parse response/header
-	return nil
+	var result model.Action
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
 
 // GetAction get an action by name
