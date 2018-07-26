@@ -502,10 +502,10 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	filter.Add("filter", "name==\"integ_test_field2\"")
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(dataset.ID, filter)
-	require.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
+	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
 	assert.NotEmpty(t, result)
-	assert.Equal(t, 1, len(result))
+	assert.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
+	assert.Equal(t, 2, len(result))
 	assert.Equal(t, result[0].Name, testField2.Name)
 }
 
@@ -576,7 +576,6 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404)
-	assert.NotNil(t, err)
 }
 
 // Test PostDatasetField for 401 error
