@@ -9,6 +9,7 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"net/url"
 )
 
 // Test Rule variables
@@ -27,22 +28,22 @@ var externalName = "test_externalName"
 func cleanupDatasets(t *testing.T) {
 	client := getClient(t)
 	result, err := client.CatalogService.GetDatasets()
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 
 	for _, item := range result {
 		err = client.CatalogService.DeleteDataset(item.ID)
-		assert.Nil(t, err)
+		assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 	}
 }
 
 func cleanupRules(t *testing.T) {
 	client := getClient(t)
 	result, err := client.CatalogService.GetRules()
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving the rules: %s", err)
 
 	for _, item := range result {
 		err := client.CatalogService.DeleteRule(item.ID)
-		assert.Nil(t, err)
+		assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 	}
 }
 
@@ -158,7 +159,7 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 	assert.Emptyf(t, errThree, "Error creating dataset: %s", errThree)
 
 	datasets, err := client.CatalogService.GetDatasets()
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
 
@@ -228,13 +229,13 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 
 	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: updateVersion}, dataset.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error updating dataset: %s", err)
 	assert.NotNil(t, updatedDataset)
 	assert.IsType(t, &(model.DatasetInfo{}), updatedDataset)
 
 	// validate the update operation
 	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset: %s", err)
 	assert.Equal(t, updateVersion, datasetByID.Version)
 	assert.NotNil(t, datasetByID.ID)
 	assert.IsType(t, &(model.DatasetInfo{}), datasetByID)
@@ -261,7 +262,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 
 	err = client.CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 
 	_, err = client.CatalogService.GetDataset(dataset.ID)
 	assert.NotNil(t, err)
@@ -358,7 +359,7 @@ func TestIntegrationGetAllRules(t *testing.T) {
 	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Match: ruleMatch, Owner: owner})
 
 	rules, err := client.CatalogService.GetRules()
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving rules: %s", err)
 	assert.NotNil(t, len(rules))
 }
 
@@ -385,7 +386,7 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 	assert.NotNil(t, rule.ID)
 
 	ruleByID, err := client.CatalogService.GetRule(rule.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving rule by ID: %s", err)
 	assert.NotNil(t, ruleByID)
 }
 
@@ -428,7 +429,7 @@ func TestIntegrationDeleteRule(t *testing.T) {
 	assert.NotNil(t, rule.ID)
 
 	err = client.CatalogService.DeleteRule(rule.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error deleting a rule by ID: %s", err)
 }
 
 // Test DeleteRule for 401 Unauthorized operation error
@@ -475,10 +476,37 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(dataset.ID)
+	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
 	assert.NotEmpty(t, result)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
 	assert.Equal(t, 2, len(result))
+}
+
+// Test GetDatasetFields based on filter
+func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
+
+	// create new fields in the dataset
+	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
+	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField1)
+	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
+
+	filter := make(url.Values)
+	filter.Add("filter", "name==\"integ_test_field2\"")
+
+	// Validate the creation of new dataset fields
+	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
+	assert.NotEmpty(t, result)
+	assert.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
+	assert.Equal(t, 2, len(result))
+	assert.Equal(t, result[0].Name, testField2.Name)
 }
 
 // Test PostDatasetField
@@ -497,7 +525,7 @@ func TestIntegrationPostDatasetField(t *testing.T) {
 	// Validate the creation of a new dataset field
 	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.NotEmpty(t, resultField)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset field : %s", err)
 }
 
 // Test PatchDatasetField
@@ -515,7 +543,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 	// Validate the creation of a new dataset field
 	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.NotEmpty(t, resultField)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
 	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
@@ -524,7 +552,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 	assert.Equal(t, model.OBJECTID, resultField.DataType)
 	assert.Equal(t, model.DIMENSION, resultField.FieldType)
 	assert.Equal(t, model.ALL, resultField.Prevalence)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error updating dataset field: %s", err)
 }
 
 // Test DeleteDatasetField
@@ -541,14 +569,13 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 
 	// Delete dataset field
 	err = client.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error deleting dataset field: %s", err)
 
 	// Validate the deletion of the dataset field
 	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404)
-	assert.NotNil(t, err)
 }
 
 // Test PostDatasetField for 401 error
@@ -619,7 +646,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	PostDatasetField(dataset, client, t)
 
 	// Validate the creation of new dataset fields
-	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID)
+	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID, nil)
 	assert.Empty(t, result)
 	assert.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
@@ -641,7 +668,7 @@ func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 	// Validate the creation of a new dataset field
 	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.NotEmpty(t, resultField)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
 	resultField, err = invalidClient.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
@@ -665,7 +692,7 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	// Validate the creation of a new dataset field
 	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	assert.NotEmpty(t, resultField)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
 	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, "123", model.Field{DataType: "O"})
@@ -717,7 +744,7 @@ func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *tes
 	assert.Equal(t, model.STRING, resultField.DataType)
 	assert.Equal(t, model.DIMENSION, resultField.FieldType)
 	assert.Equal(t, model.ALL, resultField.Prevalence)
-	assert.Nil(t, err)
+	assert.Emptyf(t, err, "Error creating dataset field: %s", err)
 
 	return resultField
 }

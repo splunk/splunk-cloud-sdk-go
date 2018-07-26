@@ -15,7 +15,7 @@ func TestBuildMultiEventsPayload(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, _ = NewClient(tenant, token, apiURL, timeout)
+	var client, _ = NewClient(&Config{token, apiURL, tenant, timeout})
 
 	event1 := model.Event{Host: "host1", Event: "test1"}
 	event2 := model.Event{Host: "host2", Event: "test2"}
