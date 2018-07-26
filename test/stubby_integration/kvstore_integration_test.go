@@ -119,7 +119,6 @@ func TestGetRecordsWithQuery(t *testing.T) {
 	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, query)
 	assert.Nil(t, err)
 
-	// https://github.com/splunk/ssc-sdk-shared/blob/master/stubby/stubs/stubs_kvstore.yml#L166
 	assert.Equal(t, len(result), 2)
 	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result[0]["capacity_gb"], float64(8))
