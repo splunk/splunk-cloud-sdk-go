@@ -12,35 +12,32 @@ const (
 	SNSKind ActionKind = "sns"
 )
 
-// ActionBase is the base struct that all actions must inherit
-type ActionBase struct {
+// Action defines the fields for email, sns, and webhooks as one aggregated model
+type Action struct {
+	// Common action fields:
 	Name string     `json:"name" binding:"required"`
 	Kind ActionKind `json:"kind" binding:"required"`
 	ID   string     `json:"id" binding:"omitempty"`
-}
-
-// EmailAction defines email action kinds
-type EmailAction struct {
-	*ActionBase
-	HTMLPart     string   `json:"htmlPart,omitempty"`
-	SubjectPart  string   `json:"subjectPart,omitempty"`
-	TextPart     string   `json:"textPart,omitempty"`
-	TemplateName string   `json:"templateName,omitempty"`
-	Addresses    []string `json:"addresses" binding:"required"`
-}
-
-// SNSAction defines SNS action kinds
-type SNSAction struct {
-	*ActionBase
-	Topic   string `json:"topic" binding:"required"`
+	// Email action fields:
+	// HTMLPart to send via Email action
+	HTMLPart string `json:"htmlPart,omitempty"`
+	// SubjectPart to send via Email action
+	SubjectPart string `json:"subjectPart,omitempty"`
+	// TextPart to send via Email action
+	TextPart string `json:"textPart,omitempty"`
+	// TemplateName to send via Email action
+	TemplateName string `json:"templateName,omitempty"`
+	// Addresses to send to when Email action triggered
+	Addresses []string `json:"addresses" binding:"required"`
+	// SNS action fields:
+	// Topic to trigger SNS action
+	Topic string `json:"topic" binding:"required"`
+	// Message to send via SNS or Webhook action
 	Message string `json:"message" binding:"required"`
-}
-
-// WebhookAction an action to run webhooks
-type WebhookAction struct {
-	*ActionBase
+	// Webhook action fields:
+	// WebhookURL to trigger Webhook action
 	WebhookURL string `json:"webhookUrl" binding:"required"`
-	Message    string `json:"message" binding:"required"`
+	// Message string `json:"message" binding:"required"` (defined above)
 }
 
 // ActionStatusState reflects the status of the action

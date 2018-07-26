@@ -1,9 +1,6 @@
 package service
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -16,7 +13,7 @@ const actionServiceVersion = "v1"
 type ActionService service
 
 // GetActions get all actions
-func (c *ActionService) GetActions() ([]interface{}, error) {
+func (c *ActionService) GetActions() ([]model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return nil, err
@@ -28,7 +25,7 @@ func (c *ActionService) GetActions() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var results []interface{}
+	var results []model.Action
 	err = util.ParseResponse(&results, response)
 	if err != nil {
 		return nil, err
@@ -37,7 +34,7 @@ func (c *ActionService) GetActions() ([]interface{}, error) {
 }
 
 // CreateAction creates an action
-func (c *ActionService) CreateAction(action interface{}) error {
+func (c *ActionService) CreateAction(action model.Action) error {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return err
@@ -54,7 +51,7 @@ func (c *ActionService) CreateAction(action interface{}) error {
 }
 
 // GetAction get an action by name
-func (c *ActionService) GetAction(name string) (interface{}, error) {
+func (c *ActionService) GetAction(name string) (*model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
@@ -66,41 +63,12 @@ func (c *ActionService) GetAction(name string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var base model.ActionBase
-	err = util.ParseResponse(&base, response)
+	var result model.Action
+	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
 	}
-	return UnmarshallAction(base.Kind, response)
-}
-
-// UnmarshallAction parses the response into the appropriate Action struct
-func UnmarshallAction(kind model.ActionKind, response *http.Response) (interface{}, error) {
-	switch kind {
-	case model.EmailKind:
-		var email model.EmailAction
-		err := util.ParseResponse(&email, response)
-		if err != nil {
-			return nil, err
-		}
-		return email, nil
-	case model.SNSKind:
-		var sns model.SNSAction
-		err := util.ParseResponse(&sns, response)
-		if err != nil {
-			return nil, err
-		}
-		return sns, nil
-	case model.WebhookKind:
-		var webhook model.EmailAction
-		err := util.ParseResponse(&webhook, response)
-		if err != nil {
-			return nil, err
-		}
-		return webhook, nil
-	default:
-		return nil, fmt.Errorf("unrecognized ActionKind: %s", kind)
-	}
+	return &result, nil
 }
 
 // TriggerAction triggers an action from a notification
@@ -116,12 +84,12 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	if err != nil {
 		return err
 	}
-	//
+	// TODO
 	return nil
 }
 
 // UpdateAction triggers an action from a notification
-func (c *ActionService) UpdateAction(name string, action interface{}) error {
+func (c *ActionService) UpdateAction(name string, action model.Action) error {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return err
