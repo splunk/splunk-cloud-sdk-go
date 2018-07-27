@@ -70,16 +70,6 @@ func TestGetJobWithModule(t *testing.T) {
 	assert.NotEmpty(t, response)
 }
 
-func TestPostJobAction(t *testing.T) {
-	client := getClient(t)
-	assert.NotNil(t, client)
-	sid, err := client.SearchService.CreateJob(PostJobsRequest)
-	assert.Emptyf(t, err, "Error creating job: %s", err)
-	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action: model.PAUSE})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, msg)
-}
-
 func TestGetJobResults(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
