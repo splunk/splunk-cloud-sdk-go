@@ -351,15 +351,16 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 	errorChan := make(chan string, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
-		BatchSize:    batchSize,
-		EventsChan:   eventsChan,
-		EventsQueue:  eventsQueue,
-		EventService: c.IngestService,
-		QuitChan:     quit,
-		IngestTicker: ticker,
-		WaitGroup:    &wg,
-		ErrorChan:    errorChan,
-		IsRunning:    false,
+		BatchSize:        batchSize,
+		EventsChan:       eventsChan,
+		EventsQueue:      eventsQueue,
+		EventService:     c.IngestService,
+		QuitChan:         quit,
+		IngestTicker:     ticker,
+		WaitGroup:        &wg,
+		ErrorChan:        errorChan,
+		IsRunning:        false,
+		chanWaitInMilSec: 300,
 	}
 
 	return batchEventsSender, nil
