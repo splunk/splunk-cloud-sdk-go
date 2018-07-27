@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"net/url"
 )
 
 // action service url prefix
@@ -76,20 +77,22 @@ func (c *ActionService) GetAction(name string) (*model.Action, error) {
 }
 
 // TriggerAction triggers an action from a notification
-func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) error {
+func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) (*url.URL, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Post(url, notification)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 	// TODO
-	return nil
+
+	u, err := response.Location()
+	return u, nil
 }
 
 // UpdateAction updates and action by name
