@@ -115,11 +115,11 @@ const (
 
 // ActionNotification defines the action notification format
 type ActionNotification struct {
-	EmailImmediately bool   `json:"emailImmediately,omitempty"`
-	Severity         int    `json:"severity" binding:"omitempty,min=0,max=10"`
-	Kind             string `json:"kind" binding:"required"`
-	Tenant           string `json:"tenant" binding:"required"`
-	UserID           string `json:"userId" binding:"required"`
+	EmailImmediately bool                   `json:"emailImmediately,omitempty"`
+	Severity         int                    `json:"severity" binding:"omitempty,min=0,max=10"`
+	Kind             ActionNotificationKind `json:"kind" binding:"required"`
+	Tenant           string                 `json:"tenant" binding:"required"`
+	UserID           string                 `json:"userId" binding:"required"`
 	Payload          interface{}
 }
 

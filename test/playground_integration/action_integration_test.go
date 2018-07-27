@@ -7,6 +7,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -90,7 +91,18 @@ func TestGetCreateActionWebhook(t *testing.T) {
 
 // Test TriggerAction
 func TestTriggerAction(t *testing.T) {
-	// TODO
+	client := getClient(t)
+	defer cleanupAction(client, emailAction.Name)
+	_, err := client.ActionService.CreateAction(*emailAction)
+	require.Nil(t, err)
+	err = client.ActionService.TriggerAction(emailActionName,
+		model.ActionNotification{
+			Kind:    model.RawJSONPayloadKind,
+			Tenant:  testutils.TestTenantID,
+			UserID:  "sdk_tester",
+			Payload: "some data",
+		})
+	require.Nil(t, err)
 }
 
 // Test UpdateAction
