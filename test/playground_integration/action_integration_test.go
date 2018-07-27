@@ -102,17 +102,26 @@ func TestTriggerAction(t *testing.T) {
 			UserID:  "sdk_tester",
 			Payload: "some data",
 		})
-	require.Nil(t, err)
+	assert.Nil(t, err)
 }
 
 // Test UpdateAction
 func TestUpdateAction(t *testing.T) {
-	// TODO
+	client := getClient(t)
+	defer cleanupAction(client, emailAction.Name)
+	_, err := client.ActionService.CreateAction(*emailAction)
+	require.Nil(t, err)
+	err = client.ActionService.UpdateAction(emailActionName, model.Action{TextPart: "updated email text"})
+	assert.Nil(t, err)
 }
 
 // Test DeleteAction
 func TestDeleteAction(t *testing.T) {
-	// TODO
+	client := getClient(t)
+	_, err := client.ActionService.CreateAction(*emailAction)
+	require.Nil(t, err)
+	err = client.ActionService.DeleteAction(emailActionName)
+	assert.Nil(t, err)
 }
 
 // Test GetActionStatus
