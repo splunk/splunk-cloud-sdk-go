@@ -43,6 +43,39 @@ type Action struct {
 	// Message string `json:"message" binding:"required"` (defined above)
 }
 
+// NewEmailAction creates a new email kind action
+func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action {
+	return &Action{
+		Name:         name,
+		Kind:         EmailKind,
+		HTMLPart:     htmlPart,
+		SubjectPart:  subjectPart,
+		TextPart:     textPart,
+		TemplateName: templateName,
+		Addresses:    addresses,
+	}
+}
+
+// NewSNSAction creates a new sns kind action
+func NewSNSAction(name string, topic string, message string) *Action {
+	return &Action{
+		Name:    name,
+		Kind:    SNSKind,
+		Topic:   topic,
+		Message: message,
+	}
+}
+
+// NewWebhookAction creates a new webhook kind action
+func NewWebhookAction(name string, webhookUrl string, message string) *Action {
+	return &Action{
+		Name:       name,
+		Kind:       WebhookKind,
+		WebhookURL: webhookUrl,
+		Message:    message,
+	}
+}
+
 // ActionStatusState reflects the status of the action
 type ActionStatusState string
 
