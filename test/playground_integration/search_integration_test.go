@@ -8,7 +8,6 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"strconv"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
