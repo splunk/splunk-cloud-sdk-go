@@ -10,7 +10,6 @@ import (
 	"strconv"
 
 	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 )
 
@@ -69,16 +68,6 @@ func TestGetJobWithModule(t *testing.T) {
 	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
 	assert.NotEmpty(t, response)
-}
-
-func TestPostJobAction(t *testing.T) {
-	client := getClient(t)
-	assert.NotNil(t, client)
-	sid, err := client.SearchService.CreateJob(PostJobsRequest)
-	assert.Emptyf(t, err, "Error creating job: %s", err)
-	msg, err := client.SearchService.PostJobControl(sid, &model.JobControlAction{Action: model.PAUSE})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, msg)
 }
 
 func TestGetJobResults(t *testing.T) {
@@ -194,7 +183,12 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	sid, err := client.SearchService.CreateJob(PostJobsRequest)
 	assert.Nil(t, err)
 	assert.NotNil(t, sid)
-	validateGetResults(client, sid, t)
+	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
+	resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsTTL
@@ -204,7 +198,12 @@ func TestIntegrationGetJobResultsTTL(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestTTL)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	validateGetResults(client, response, t)
+	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsLimit
@@ -214,7 +213,12 @@ func TestIntegrationGetJobResultsLimit(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestLimit)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	validateGetResults(client, response, t)
+	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsDisableAutoFinalization
@@ -224,7 +228,12 @@ func TestIntegrationGetJobResultsDisableAutoFinalization(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestDisableAutoFinalization)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	validateGetResults(client, response, t)
+	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsMultipleArgs
@@ -234,7 +243,12 @@ func TestIntegrationGetJobResultsMultipleArgs(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsRequestMultiArgs)
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
-	validateGetResults(client, response, t)
+	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
+	assert.Emptyf(t, err, "Error waiting for job: %s", err)
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	validateResponses(resp, t)
 }
 
 // TestIntegrationGetJobResultsLowThresholds
@@ -314,21 +328,6 @@ func retry(attempts int, sleep time.Duration, callback func() (interface{}, erro
 		}
 	}
 	return err
-}
-
-// validateGetResults tests the GetResults calls, tries 3x before giving up
-func validateGetResults(client *service.Client, sid string, t *testing.T) {
-	var resp *model.SearchResults
-	var err error
-
-	retryError := retry(3, 3000*time.Millisecond, func() (interface{}, error) {
-		resp, err = client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
-		return resp, err
-	})
-	assert.Nil(t, retryError)
-	assert.Nil(t, err)
-	assert.NotNil(t, resp)
-	validateResponses(resp, t)
 }
 
 // validateResponse
