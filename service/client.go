@@ -47,12 +47,13 @@ type Client struct {
 
 // Config is used to set the client specific attributes
 type Config struct {
+	// Authorization token
 	Token string
 	// Url string
 	URL string
-	// Timeout
+	// TenantID
 	TenantID string
-	// Authorization token
+	// Timeout
 	Timeout time.Duration
 }
 
@@ -316,7 +317,7 @@ func (c *Client) GetURL() (*url.URL, error) {
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
 	if config.TenantID == "" || config.Token == "" || config.URL == "" {
-		return nil, errors.New("tenantID or token or url can't be empty")
+		return nil, errors.New("at least one of tenantID, token, or url must be set")
 	}
 
 	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
