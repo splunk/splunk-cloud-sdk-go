@@ -66,6 +66,7 @@ type PingOKBody struct {
 	Status PingOKBodyStatus `json:"status"`
 }
 
+// PingOKBodyStatus used to force type expectation for KVStore Ping endpoint response
 type PingOKBodyStatus string
 
 const (
