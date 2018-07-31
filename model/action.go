@@ -82,8 +82,8 @@ type ActionStatusState string
 const (
 	// StatusQueued status
 	StatusQueued ActionStatusState = "QUEUED"
-	// StatusInProgress status
-	StatusInProgress ActionStatusState = "IN PROGRESS"
+	// StatusRunning status
+	StatusRunning ActionStatusState = "RUNNING"
 	// StatusDone status
 	StatusDone ActionStatusState = "DONE"
 	// StatusFailed status
@@ -99,8 +99,10 @@ type ActionStatus struct {
 
 // ActionError defines format for returned errors
 type ActionError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	Code     string      `json:"code"`
+	Message  string      `json:"message"`
+	Details  interface{} `json:"details,omitempty"`
+	MoreInfo string      `json:"moreInfo,omitempty"`
 }
 
 // ActionNotificationKind defines the types of notifications
@@ -115,20 +117,24 @@ const (
 
 // ActionNotification defines the action notification format
 type ActionNotification struct {
-	EmailImmediately bool                   `json:"emailImmediately,omitempty"`
-	Severity         int                    `json:"severity" binding:"omitempty,min=0,max=10"`
-	Kind             ActionNotificationKind `json:"kind" binding:"required"`
-	Tenant           string                 `json:"tenant" binding:"required"`
-	UserID           string                 `json:"userId" binding:"required"`
-	Payload          interface{}
+	Kind    ActionNotificationKind `json:"kind" binding:"required"`
+	Tenant  string                 `json:"tenant" binding:"required"`
+	Payload ActionPayload          `json:"payload" binding:"required"`
 }
+
+// ActionPayload is what is sent when the action is triggered
+type ActionPayload interface{}
+
+// RawJSONPayload specifies the format for RawJSONPayloadKind ActionNotifications
+type RawJSONPayload map[string]interface{}
 
 // SplunkEventPayload is the payload for a notification coming from Splunk
 type SplunkEventPayload struct {
-	Index      string `json:"index" binding:"required"`
-	Host       string `json:"host" binding:"required"`
-	Source     string `json:"source" binding:"required"`
-	Sourcetype string `json:"sourcetype" binding:"required"`
-	Raw        string `json:"_raw" binding:"required"`
-	Time       string `json:"_time"` // if "required", value can't be 0=
+	Event      map[string]interface{} `json:"event" binding:"required"`
+	Fields     map[string]string      `json:"fields" binding:"required"`
+	Host       string                 `json:"host" binding:"required"`
+	Index      string                 `json:"index" binding:"required"`
+	Source     string                 `json:"source" binding:"required"`
+	Sourcetype string                 `json:"sourcetype" binding:"required"`
+	Time       float64                `json:"time" binding:"required"`
 }

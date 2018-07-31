@@ -21,7 +21,8 @@ const (
 	snsTopic     = "myTopic"
 	snsMsg       = "SNS Message"
 	webhookUrl   = "https://locahost:9999/test"
-	webhookMsg   = "Webhook Message"
+	webhookMsg   = "{{ .name }} is a {{ .species }}"
+	actionUserID = "sdk_tester"
 )
 
 // Test vars
@@ -34,6 +35,7 @@ var (
 	emailAction       = model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	snsAction         = model.NewSNSAction(snsActionName, snsTopic, snsMsg)
 	webhookAction     = model.NewWebhookAction(webhookActionName, webhookUrl, webhookMsg)
+	webhookPayload    = &map[string]interface{}{"name": "bean bag", "species": "cat"}
 )
 
 func cleanupActions(client *service.Client) {
@@ -92,15 +94,14 @@ func TestGetCreateActionWebhook(t *testing.T) {
 // Test TriggerAction
 func TestTriggerAction(t *testing.T) {
 	client := getClient(t)
-	defer cleanupAction(client, emailAction.Name)
-	_, err := client.ActionService.CreateAction(*emailAction)
+	defer cleanupAction(client, webhookAction.Name)
+	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
-	url, err := client.ActionService.TriggerAction(emailActionName,
+	url, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
 			Tenant:  testutils.TestTenantID,
-			UserID:  "sdk_tester",
-			Payload: "some data",
+			Payload: webhookPayload,
 		})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, url)

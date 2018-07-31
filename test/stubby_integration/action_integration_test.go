@@ -9,7 +9,7 @@ import (
 
 // Stubby test for Create Action service endpoint
 func TestCreateAction(t *testing.T) {
-	actionData := model.Action{Name: "test10", Kind: "webhook", WebhookURL: "http://webhook.site/40fa145b-43d7-48f9-a391-aa7558042fa6", Message: "{{ .name }} is a {{ .species }}"}
+	actionData := model.Action{Name: "test10", Kind: model.WebhookKind, WebhookURL: "http://webhook.site/40fa145b-43d7-48f9-a391-aa7558042fa6", Message: "{{ .name }} is a {{ .species }}"}
 	result, err := getClient(t).ActionService.CreateAction(actionData)
 	assert.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -18,12 +18,11 @@ func TestCreateAction(t *testing.T) {
 
 // Stubby test for Post trigger action
 func TestTriggerWebHookAction(t *testing.T) {
-	actionNotificationData := model.ActionNotification{Kind: "rawJSON", UserID: "unused", Tenant: "tenantId", Payload: "{ \"name\": \"bean bag\", \"species\": \"cat\"}"}
+	actionNotificationData := model.ActionNotification{Kind: model.RawJSONPayloadKind, UserID: "unused", Tenant: "tenantId", Payload: "{ \"name\": \"bean bag\", \"species\": \"cat\"}"}
 	u, err := getClient(t).ActionService.TriggerAction("test10", actionNotificationData)
 	assert.Empty(t, err)
 	assert.Empty(t, u)
 }
-
 
 // Stubby test for GetAction service endpoint
 func TestGetAction(t *testing.T) {
@@ -61,6 +60,5 @@ func TestUpdateAction(t *testing.T) {
 	actionData := model.Action{Message: "updated message"}
 	result, err := getClient(t).ActionService.UpdateAction("test10", actionData)
 	assert.Empty(t, err)
-	assert.Equal(t, "updated message",result.Message )
+	assert.Equal(t, "updated message", result.Message)
 }
-
