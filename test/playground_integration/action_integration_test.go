@@ -95,7 +95,7 @@ func TestTriggerAction(t *testing.T) {
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
-	err = client.ActionService.TriggerAction(emailActionName,
+	url, err := client.ActionService.TriggerAction(emailActionName,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
 			Tenant:  testutils.TestTenantID,
@@ -103,6 +103,7 @@ func TestTriggerAction(t *testing.T) {
 			Payload: "some data",
 		})
 	assert.Nil(t, err)
+	assert.NotEmpty(t, url)
 }
 
 // Test UpdateAction
@@ -111,7 +112,8 @@ func TestUpdateAction(t *testing.T) {
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
-	err = client.ActionService.UpdateAction(emailActionName, model.Action{TextPart: "updated email text"})
+	result, err := client.ActionService.UpdateAction(emailActionName, model.Action{TextPart: "updated email text"})
+	assert.NotEmpty(t, result)
 	assert.Nil(t, err)
 }
 

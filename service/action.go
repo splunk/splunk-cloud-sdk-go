@@ -89,26 +89,31 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	if err != nil {
 		return nil, err
 	}
-	// TODO
 
 	u, err := response.Location()
 	return u, nil
 }
 
 // UpdateAction updates and action by name
-func (c *ActionService) UpdateAction(name string, action model.Action) error {
+func (c *ActionService) UpdateAction(name string, action model.Action) (*model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Patch(url, action)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	var result model.Action
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
 
 // DeleteAction deletes an action by name
