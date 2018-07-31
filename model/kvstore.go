@@ -63,19 +63,20 @@ type PingOKBody struct {
 
 	// Database status
 	// Enum: [healthy unhealthy unknown]
-	Status string `json:"status"`
+	Status PingOKBodyStatus `json:"status"`
 }
 
-const (
+type PingOKBodyStatus string
 
+const (
 	// PingOKBodyStatusHealthy captures enum value "healthy"
-	PingOKBodyStatusHealthy string = "healthy"
+	PingOKBodyStatusHealthy PingOKBodyStatus = "healthy"
 
 	// PingOKBodyStatusUnhealthy captures enum value "unhealthy"
-	PingOKBodyStatusUnhealthy string = "unhealthy"
+	PingOKBodyStatusUnhealthy PingOKBodyStatus = "unhealthy"
 
 	// PingOKBodyStatusUnknown captures enum value "unknown"
-	PingOKBodyStatusUnknown string = "unknown"
+	PingOKBodyStatusUnknown PingOKBodyStatus = "unknown"
 )
 
 // IndexFieldDefinition index field definition

@@ -38,6 +38,7 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
 	assert.Empty(t, err)
 	assert.NotEmpty(t, response)
+	assert.Equal(t, model.PingOKBodyStatusHealthy, response.Status)
 }
 
 // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
