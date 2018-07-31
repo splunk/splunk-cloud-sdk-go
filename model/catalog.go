@@ -67,7 +67,7 @@ type PartialDatasetInfo struct {
 	Disabled bool   `json:"disabled,omitempty"`
 }
 
-// Field represents the fields belonging to the specified Database
+// Field represents the fields belonging to the specified Dataset
 type Field struct {
 	ID         string         `json:"id,omitempty"`
 	Name       string         `json:"name,omitempty"`
