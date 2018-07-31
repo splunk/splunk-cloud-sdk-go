@@ -1,10 +1,11 @@
 package playgroundintegration
 
 import (
-	"fmt"
+	"testing"
+
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
-	"testing"
+	"github.com/stretchr/testify/require"
 )
 
 func getClient(t *testing.T) *service.Client {
@@ -18,22 +19,15 @@ func getClient(t *testing.T) *service.Client {
 	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
 	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
-
-	client, err := service.NewClient(testutils.TestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
-	if err != nil {
-		fmt.Println(err.Error())
-		t.FailNow()
-	}
-
+	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
+	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
 	return client
 }
 
 func getInvalidClient(t *testing.T) *service.Client {
-	var url= testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
-	client, _ := service.NewClient(testutils.TestInvalidTestTenantID, testutils.TestAuthenticationToken, url, testutils.TestTimeOut)
+	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestInvalidTestTenantID, Timeout: testutils.TestTimeOut})
+	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
 	return client
 }
-
-
-// TODO?

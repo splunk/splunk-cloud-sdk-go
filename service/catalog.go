@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"net/url"
 )
 
 // catalog service url prefix
@@ -67,7 +68,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 }
 
 // UpdateDataset updates an existing Dataset
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.PartialDatasetInfo, error) {
+func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return nil, err
@@ -79,7 +80,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 	if err != nil {
 		return nil, err
 	}
-	var result model.PartialDatasetInfo
+	var result model.DatasetInfo
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
@@ -162,4 +163,89 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	var result model.Rule
 	err = util.ParseResponse(&result, response)
 	return &result, err
+}
+
+// GetDatasetFields returns all the fields belonging to the specified dataset
+func (c *CatalogService) GetDatasetFields(datasetID string, values url.Values) ([]model.Field, error) {
+	url, err := c.client.BuildURL(values, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.Field
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetDatasetField returns the field belonging to the specified dataset with the id datasetFieldID
+func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// PostDatasetField creates a new field in the specified dataset
+func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.Field) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(url, datasetField)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// PatchDatasetField updates an already existing field in the specified dataset
+func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID string, datasetField model.Field) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Patch(url, datasetField)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// DeleteDatasetField deletes the field belonging to the specified dataset with the id datasetFieldID
+func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID string) error {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
 }

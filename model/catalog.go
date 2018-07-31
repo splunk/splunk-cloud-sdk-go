@@ -6,6 +6,8 @@ type DatasetInfoKind string
 const (
 	// LOOKUP represents TODO: Description needed
 	LOOKUP DatasetInfoKind = "lookup"
+	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
+	KVCOLLECTION DatasetInfoKind = "kvcollection"
 	// INDEX represents a Splunk events or metrics index
 	INDEX DatasetInfoKind = "index"
 )
@@ -16,15 +18,16 @@ type DatasetInfo struct {
 	Name  string          `json:"name"`
 	Kind  DatasetInfoKind `json:"kind"`
 	Owner string          `json:"owner"`
-	// TODO (remove later): Included for testing purpose - temporary for namespace and collection creation
-	Module       string  `json:"module,omitempty"`
-	Created      string  `json:"created,omitempty"`
-	Modified     string  `json:"modified,omitempty"`
-	CreatedBy    string  `json:"createdBy,omitempty"`
-	ModifiedBy   string  `json:"modifiedBy,omitempty"`
-	Capabilities string  `json:"capabilities"`
-	Version      int     `json:"version,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
+	Module       string   `json:"module,omitempty"`
+	Created      string   `json:"created,omitempty"`
+	Modified     string   `json:"modified,omitempty"`
+	CreatedBy    string   `json:"createdBy,omitempty"`
+	ModifiedBy   string   `json:"modifiedBy,omitempty"`
+	Capabilities string   `json:"capabilities"`
+	Version      int      `json:"version,omitempty"`
+	Fields       []Field  `json:"fields,omitempty"`
+	Readroles    []string `json:"readroles,omitempty"`
+	Writeroles   []string `json:"writeroles,omitempty"`
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
@@ -49,6 +52,8 @@ type PartialDatasetInfo struct {
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
 	Capabilities string          `json:"capabilities,omitempty"`
 	Version      int             `json:"version,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
@@ -62,20 +67,16 @@ type PartialDatasetInfo struct {
 	Disabled bool   `json:"disabled,omitempty"`
 }
 
-// Field represents TODO: Description needed
+// Field represents the fields belonging to the specified Dataset
 type Field struct {
-	ID             string         `json:"id" binding:"required"`
-	Name           string         `json:"name" binding:"required"`
-	DatasetID      string         `json:"datasetId" binding:"required"`
-	DataType       DataType       `json:"dataType,omitempty"`
-	FieldType      FieldType      `json:"fieldType,omitempty"`
-	Prevalence     PrevalenceType `json:"prevalence,omitempty"`
-	Created        string         `json:"created,omitempty"`
-	Modified       string         `json:"modified,omitempty"`
-	VersionAdded   int            `json:"versionAdded,omitempty"`
-	VersionRemoved int            `json:"versionRemoved,omitempty"`
-	Fields         []Field        `json:"fields,omitempty"`
-	Dataset        DatasetInfo    `json:"dataset,omitempty"`
+	ID         string         `json:"id,omitempty"`
+	Name       string         `json:"name,omitempty"`
+	DatasetID  string         `json:"datasetid,omitempty"`
+	DataType   DataType       `json:"datatype,omitempty"`
+	FieldType  FieldType      `json:"fieldtype,omitempty"`
+	Prevalence PrevalenceType `json:"prevalence,omitempty"`
+	Created    string         `json:"created,omitempty"`
+	Modified   string         `json:"modified,omitempty"`
 }
 
 // PrevalenceType enumerates the types of prevalance used in fields.

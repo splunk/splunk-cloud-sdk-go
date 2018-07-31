@@ -15,7 +15,7 @@ func TestBuildURL(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, _ = NewClient(tenant, token, apiURL, timeout)
+	var client, _ = NewClient(&Config{token, apiURL, tenant, timeout})
 
 	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
 
@@ -35,20 +35,22 @@ func TestNewClient(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, err = NewClient(tenant, token, apiURL, timeout)
+	var client, err = NewClient(&Config{token, apiURL, tenant, timeout})
 	var searchService = &SearchService{client: client}
 	var catalogService = &CatalogService{client: client}
 	var identityService = &IdentityService{client: client}
-	var hecService = &HecService{client: client}
+	var ingestService = &IngestService{client: client}
 	var kvStoreService = &KVStoreService{client: client}
-
 	assert.Nil(t, err)
-	assert.Equal(t, token, client.token)
-	assert.Equal(t, apiURL, fmt.Sprintf("%s://%s", client.URL.Scheme, client.URL.Host))
+
+	clientURL, err := client.GetURL()
+	assert.Nil(t, err)
+	assert.Equal(t, token, client.config.Token)
+	assert.Equal(t, apiURL, fmt.Sprintf("%s://%s", clientURL.Scheme, clientURL.Host))
 	assert.Equal(t, timeout, client.httpClient.Timeout)
 	assert.Equal(t, searchService, client.SearchService)
 	assert.Equal(t, catalogService, client.CatalogService)
 	assert.Equal(t, identityService, client.IdentityService)
-	assert.Equal(t, hecService, client.HecService)
+	assert.Equal(t, ingestService, client.IngestService)
 	assert.Equal(t, kvStoreService, client.KVStoreService)
 }

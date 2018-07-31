@@ -21,10 +21,10 @@ var TestTenantID = os.Getenv("TEST_TENANT_ID")
 var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
 
 // TestNamespace - A namespace for testing
-var TestNamespace = "TEST_NAMESPACE"
+var TestNamespace = "testnamespace0"
 
 // TestCollection - A collection for testing
-var TestCollection = "TEST_COLLECTION"
+var TestCollection = "testcollection0"
 
 // TestTimeOut - the timeout to be used for requests to the api
 var TestTimeOut = time.Second * 5

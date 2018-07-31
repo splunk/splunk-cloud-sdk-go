@@ -2,11 +2,12 @@ package stubbyintegration
 
 import (
 	"encoding/json"
+	"net/url"
+	"testing"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"testing"
 )
 
 var testIndex1 = "TEST_INDEX_01"
@@ -82,8 +83,7 @@ func CreateField(direction int64, field string) model.IndexFieldDefinition {
 
 // Stubby test for InsertRecords() kvstore service endpoint
 func TestCreateRecords(t *testing.T) {
-	var testRecords =
-		`[
+	var testRecords = `[
           {
            "capacity_gb": 8,
            "size": "tiny",
@@ -116,10 +116,10 @@ func TestGetRecordsWithQuery(t *testing.T) {
 	query := make(url.Values)
 	query.Add("size", "tiny")
 	query.Add("capacity_gb", "8")
-	result, err := getClient(t).KVStoreService.QueryRecords(query, testutils.TestNamespace, testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, query)
 	assert.Nil(t, err)
 
-	assert.Equal(t, len(result), 1)
+	assert.Equal(t, len(result), 2)
 	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result[0]["capacity_gb"], float64(8))
 	assert.Equal(t, result[0]["description"], "This is a tiny amount of GB")
@@ -158,7 +158,8 @@ func TestDeleteRecord(t *testing.T) {
 func TestListRecords(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(
 		testutils.TestNamespace,
-		testutils.TestCollection)
+		testutils.TestCollection,
+		nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 4)
@@ -169,5 +170,31 @@ func TestListRecords(t *testing.T) {
 			assert.IsType(t, "string", key)
 			assert.NotNil(t, value)
 		}
+	}
+}
+
+// Inserts a record into the specified tenant's namespace collection
+func TestInsertRecord(t *testing.T) {
+	record := map[string]string{
+		"TEST_KEY_01": "TEST_VALUE_01",
+		"TEST_KEY_02": "TEST_VALUE_02",
+		"TEST_KEY_03": "TEST_VALUE_03",
+	}
+
+	responseMap, err := getClient(t).KVStoreService.InsertRecord(
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		record)
+
+	assert.NotNil(t, responseMap)
+	assert.Nil(t, err)
+	assert.Len(t, responseMap, 1)
+
+	for key, value := range responseMap {
+		assert.IsType(t, "string", key)
+		assert.Equal(t, "_key", key)
+
+		assert.NotNil(t, value)
+		assert.IsType(t, "string", value)
 	}
 }

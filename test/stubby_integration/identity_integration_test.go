@@ -7,8 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIdentityService_GetUserProfile(t *testing.T) {
+func TestIdentityService_GetUserProfile_TenantId(t *testing.T) {
 	user, err := getClient(t).IdentityService.GetUserProfile("devtestTenant")
+	assert.Nil(t, err)
+	assert.Equal(t, "devtest@splunk.com", user.ID)
+	assert.Equal(t, "devtest@splunk.com", user.Email)
+	assert.Equal(t, "Dev", user.FirstName)
+	assert.Equal(t, "Test", user.LastName)
+	assert.Equal(t, "Dev Test", user.Name)
+	assert.Equal(t, "en-US", user.Locale)
+	assert.Equal(t, 1, len(user.TenantMemberships))
+	assert.Equal(t, "devtestTenant", user.TenantMemberships[0])
+}
+
+func TestIdentityService_GetUserProfile_System(t *testing.T) {
+	user, err := getClient(t).IdentityService.GetUserProfile("")
 	assert.Nil(t, err)
 	assert.Equal(t, "devtest@splunk.com", user.ID)
 	assert.Equal(t, "devtest@splunk.com", user.Email)

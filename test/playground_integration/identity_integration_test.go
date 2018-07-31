@@ -13,18 +13,26 @@ import (
 // CRUD tenant and add/delete user to the tenant
 func TestIntegrationCRUDTenant(t *testing.T) {
 	client := getClient(t)
-	testTenantID := testutils.TestTenantID
-	//get user profile
-	user, err := client.IdentityService.GetUserProfile(testTenantID)
-	assert.Nil(t, err)
-	assert.Equal(t, "test1@splunk.com", user.ID)
-	assert.Equal(t, "test1@splunk.com", user.Email)
-	assert.Equal(t, "Test1", user.FirstName)
-	assert.Equal(t, "Splunk", user.LastName)
-	assert.Equal(t, "Test1 Splunk", user.Name)
-	assert.Equal(t, "en-US", user.Locale)
 
-	// TODO: uncomment when tenant Maestro gets better at handling tenant creation/deletion
+	//get user profile
+	userSystem, err := client.IdentityService.GetUserProfile("")
+	assert.Nil(t, err)
+	assert.Equal(t, "test1@splunk.com", userSystem.ID)
+	assert.Equal(t, "test1@splunk.com", userSystem.Email)
+	assert.Equal(t, "Test1", userSystem.FirstName)
+	assert.Equal(t, "Splunk", userSystem.LastName)
+	assert.Equal(t, "Test1 Splunk", userSystem.Name)
+	assert.Equal(t, "en-US", userSystem.Locale)
+
+	userTenant, errTenant := client.IdentityService.GetUserProfile(testutils.TestTenantID)
+	assert.Nil(t, errTenant)
+	assert.Equal(t, "test1@splunk.com", userTenant.ID)
+	assert.Equal(t, "test1@splunk.com", userTenant.Email)
+	assert.Equal(t, "Test1", userTenant.FirstName)
+	assert.Equal(t, "Splunk", userTenant.LastName)
+	assert.Equal(t, "Test1 Splunk", userTenant.Name)
+	assert.Equal(t, "en-US", userTenant.Locale)
+
 	// //prepare a temp tenant that will be deleted
 	// testTenantID := fmt.Sprintf("%d-sdk-integration", time.Now().Unix())
 
