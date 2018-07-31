@@ -71,7 +71,7 @@ type PostJobsRequest struct {
 	//max_time    Number    0    The number of seconds to run this search before finalizing. Specify 0 to never finalize.
 	MaxTime *uint `json:"maxTime"`
 
-	//module	String		The current system time Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time.
+	//module	String		The Module to run the search in.
 	Module string `json:"module"`
 
 	//now    String    current system time    Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time.
