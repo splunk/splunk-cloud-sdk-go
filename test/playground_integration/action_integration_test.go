@@ -141,7 +141,8 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 
 	emailActionName := fmt.Sprintf("e-unauth-%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
-	defer cleanupAction(client, emailAction.Name)
+	// This shouldn't be needed since the CreateAction should fail for 401:
+	// defer cleanupAction(client, emailAction.Name)
 
 	_, err = invalidClient.ActionService.CreateAction(*emailAction)
 	validateUnauthenticatedActionError(t, err)
@@ -160,7 +161,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 		})
 	validateUnauthenticatedActionError(t, err)
 
-	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.Action{TextPart: "updated email text"})
+	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.ActionUpdateFields{TextPart: "updated email text"})
 	validateUnauthenticatedActionError(t, err)
 
 	err = invalidClient.ActionService.DeleteAction(webhookActionName)
@@ -195,8 +196,9 @@ func TestUpdateAction(t *testing.T) {
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
-	result, err := client.ActionService.UpdateAction(emailActionName, model.Action{TextPart: "updated email text"})
-	assert.NotEmpty(t, result)
+	const newText = "updated email text"
+	result, err := client.ActionService.UpdateAction(emailActionName, model.ActionUpdateFields{TextPart: newText})
+	assert.Equal(t, result.TextPart, newText)
 	assert.Nil(t, err)
 }
 
@@ -218,7 +220,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 	_, err := client.ActionService.GetAction("Action123")
 	validateNotFoundActionError(t, err)
 
-	_, err = client.ActionService.UpdateAction("Action123", model.Action{TextPart: "updated email text"})
+	_, err = client.ActionService.UpdateAction("Action123", model.ActionUpdateFields{TextPart: "updated email text"})
 	validateNotFoundActionError(t, err)
 
 	err = client.ActionService.DeleteAction("Action123")

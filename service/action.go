@@ -104,7 +104,7 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 }
 
 // UpdateAction updates and action by name
-func (c *ActionService) UpdateAction(name string, action model.Action) (*model.Action, error) {
+func (c *ActionService) UpdateAction(name string, action model.ActionUpdateFields) (*model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err

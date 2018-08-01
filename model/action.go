@@ -16,13 +16,8 @@ const (
 	SNSKind ActionKind = "sns"
 )
 
-// Action defines the fields for email, sns, and webhooks as one aggregated model
-type Action struct {
-	// Common action fields:
-	// Name of action, all actions have this field
-	Name string `json:"name" binding:"required"`
-	// Kind of action (email, webhook, or sns), all actions have this field
-	Kind ActionKind `json:"kind" binding:"required"`
+// ActionUpdateFields define the fields that may be updated for an existing Action
+type ActionUpdateFields struct {
 	// ID of action assigned by action service, all actions have this field
 	ID string `json:"id" binding:"omitempty"`
 	// Email action fields:
@@ -47,36 +42,52 @@ type Action struct {
 	// Message string `json:"message" binding:"required"` (defined above)
 }
 
+// Action defines the fields for email, sns, and webhooks as one aggregated model
+type Action struct {
+	// Common action fields:
+	// Name of action, all actions have this field
+	Name string `json:"name" binding:"required"`
+	// Kind of action (email, webhook, or sns), all actions have this field
+	Kind ActionKind `json:"kind" binding:"required"`
+	ActionUpdateFields
+}
+
 // NewEmailAction creates a new email kind action
 func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action {
 	return &Action{
-		Name:         name,
-		Kind:         EmailKind,
-		HTMLPart:     htmlPart,
-		SubjectPart:  subjectPart,
-		TextPart:     textPart,
-		TemplateName: templateName,
-		Addresses:    addresses,
+		Name: name,
+		Kind: EmailKind,
+		ActionUpdateFields: ActionUpdateFields{
+			HTMLPart:     htmlPart,
+			SubjectPart:  subjectPart,
+			TextPart:     textPart,
+			TemplateName: templateName,
+			Addresses:    addresses,
+		},
 	}
 }
 
 // NewSNSAction creates a new sns kind action
 func NewSNSAction(name string, topic string, message string) *Action {
 	return &Action{
-		Name:    name,
-		Kind:    SNSKind,
-		Topic:   topic,
-		Message: message,
+		Name: name,
+		Kind: SNSKind,
+		ActionUpdateFields: ActionUpdateFields{
+			Topic:   topic,
+			Message: message,
+		},
 	}
 }
 
 // NewWebhookAction creates a new webhook kind action
-func NewWebhookAction(name string, webhookUrl string, message string) *Action {
+func NewWebhookAction(name string, webhookURL string, message string) *Action {
 	return &Action{
-		Name:       name,
-		Kind:       WebhookKind,
-		WebhookURL: webhookUrl,
-		Message:    message,
+		Name: name,
+		Kind: WebhookKind,
+		ActionUpdateFields: ActionUpdateFields{
+			WebhookURL: webhookURL,
+			Message:    message,
+		},
 	}
 }
 
