@@ -29,14 +29,14 @@ func TestIntegrationGetCollectionStatus(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	response, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestNamespace, testutils.TestCollection)
-	assert.Empty(t, err)
+	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
 
 // Test GetServiceHealthStatus against nova playground
 func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
-	assert.Empty(t, err)
+	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
 
@@ -62,26 +62,26 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 		Fields:     fields[:]},
 		testutils.TestNamespace,
 		testutils.TestCollection)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// Validate if the index was created
 	result, err := getClient(t).KVStoreService.ListIndexes(testutils.TestNamespace, testutils.TestCollection)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, len(result), 1)
 	assert.Equal(t, result[0].Name, testIndex)
 
 	// Delete the test index
 	err = getClient(t).KVStoreService.DeleteIndex(testutils.TestNamespace, testutils.TestCollection, testIndex)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	// Validate if the index was deleted
 	result, err = getClient(t).KVStoreService.ListIndexes(testutils.TestNamespace, testutils.TestCollection)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.Equal(t, len(result), 0)
 
 	// Delete the test collection and test namespace
 	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 }
 
 // Test CreateIndex for 422 Unprocessable Entity error
@@ -111,7 +111,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	err := getClient(t).KVStoreService.CreateIndex(model.IndexDescription{Name: testIndex, Collection: testutils.TestCollection, Namespace: testutils.TestNamespace, Fields: fields[:]}, testutils.TestNamespace, testutils.TestCollection)
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found Error")
+	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
 
 // Test DeleteIndex for 404 Index not found error
