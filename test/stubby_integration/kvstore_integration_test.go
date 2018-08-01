@@ -130,7 +130,7 @@ func TestGetRecordsWithQuery(t *testing.T) {
 	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, query)
 	require.Nil(t, err)
 
-	assert.Equal(t, len(result), 2)
+	require.Equal(t, len(result), 1)
 	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result[0]["capacity_gb"], float64(8))
 	assert.Equal(t, result[0]["description"], "This is a tiny amount of GB")
