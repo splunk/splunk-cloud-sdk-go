@@ -1,9 +1,10 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"net/url"
 )
 
 // action service url prefix
@@ -77,7 +78,7 @@ func (c *ActionService) GetAction(name string) (*model.Action, error) {
 }
 
 // TriggerAction triggers an action from a notification
-func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) (*url.URL, error) {
+func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) (*model.ActionTriggerResponse, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
@@ -91,7 +92,15 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	}
 
 	u, err := response.Location()
-	return u, nil
+	parts := strings.Split(u.Path, "/")
+	l := len(parts)
+	if l >= 2 && parts[l-2] == "status" {
+		// Parse the Location url for the user looking for .../status/{statusid}
+		// at the end of the URL,
+		return &model.ActionTriggerResponse{StatusID: &parts[l-1], StatusURL: u}, nil
+	}
+	// If format doesn't match what we expect just return url
+	return &model.ActionTriggerResponse{StatusURL: u}, nil
 }
 
 // UpdateAction updates and action by name

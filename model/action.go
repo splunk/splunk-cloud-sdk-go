@@ -1,5 +1,9 @@
 package model
 
+import (
+	"net/url"
+)
+
 // ActionKind reflects the kinds of actions supported by the Action service
 type ActionKind string
 
@@ -95,6 +99,12 @@ type ActionStatus struct {
 	State   ActionStatusState `json:"state"`
 	ID      string            `json:"statusId"`
 	Message string            `json:"message,omitempty"`
+}
+
+// ActionTriggerResponse for returning status url and parsed statusID (if possible)
+type ActionTriggerResponse struct {
+	StatusID  *string
+	StatusURL *url.URL
 }
 
 // ActionError defines format for returned errors
