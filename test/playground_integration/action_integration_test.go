@@ -52,10 +52,16 @@ func cleanupAction(client *service.Client, name string) {
 	}
 }
 
-func validateActionError(t *testing.T, err error) {
+func validateUnauthenticatedActionError(t *testing.T, err error) {
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).Status)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+}
+
+func validateNotFoundActionError(t *testing.T, err error) {
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 404, err.(*util.HTTPError).Status)
+	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
 }
 
 // Test GetActions
@@ -134,13 +140,13 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	require.Nil(t, err)
 
 	_, err = invalidClient.ActionService.CreateAction(*emailAction)
-	validateActionError(t , err)
+	validateUnauthenticatedActionError(t , err)
 
 	_, err = invalidClient.ActionService.GetAction(webhookAction.Name)
-	validateActionError(t , err)
+	validateUnauthenticatedActionError(t , err)
 
 	_, err = invalidClient.ActionService.GetActions()
-	validateActionError(t , err)
+	validateUnauthenticatedActionError(t , err)
 
 	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
@@ -148,31 +154,33 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 			Tenant:  testutils.TestTenantID,
 			Payload: webhookPayload,
 		})
-	validateActionError(t , err)
+	validateUnauthenticatedActionError(t , err)
 
 	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.Action{TextPart: "updated email text"})
-	validateActionError(t , err)
+	validateUnauthenticatedActionError(t , err)
 
 	err = invalidClient.ActionService.DeleteAction(webhookActionName)
-	validateActionError(t , err)
-
+	validateUnauthenticatedActionError(t , err)
 }
 
-// Test TriggerAction
+// Trigger action with invalid fields
 func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getClient(t)
 	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
-	url, err := client.ActionService.TriggerAction(webhookAction.Name,
+	_, err = client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  "",
 			Payload: webhookPayload,
 		})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, url)
+
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 422, err.(*util.HTTPError).Status)
+	assert.Equal(t, "422 Unprocessable Entity", err.(*util.HTTPError).Message)
 }
+
 
 // Test UpdateAction
 func TestUpdateAction(t *testing.T) {
@@ -192,6 +200,20 @@ func TestDeleteAction(t *testing.T) {
 	require.Nil(t, err)
 	err = client.ActionService.DeleteAction(emailActionName)
 	assert.Nil(t, err)
+}
+
+// Access action endpoints using an Unauthenticated client
+func TestActionFailNotFoundAction(t *testing.T) {
+	client := getClient(t)
+	// Get Invalid Action
+	_, err := client.ActionService.GetAction("Action123")
+	validateNotFoundActionError(t, err)
+
+	_, err = client.ActionService.UpdateAction("Action123", model.Action{TextPart: "updated email text"})
+	validateNotFoundActionError(t, err)
+
+	err = client.ActionService.DeleteAction("Action123")
+	validateNotFoundActionError(t, err)
 }
 
 // Test GetActionStatus
