@@ -30,12 +30,8 @@ const (
 
 // A Client is used to communicate with service endpoints
 type Client struct {
-	// TenantID used for ssc service
-	TenantID string
-	// Authorization token
-	token string
-	// Url string
-	URL url.URL
+	// config
+	config *Config
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// SearchService talks to the SSC search service
@@ -50,6 +46,18 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
+}
+
+// Config is used to set the client specific attributes
+type Config struct {
+	// Authorization token
+	Token string
+	// Url string
+	URL string
+	// TenantID
+	TenantID string
+	// Timeout
+	Timeout time.Duration
 }
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
@@ -72,8 +80,8 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Reque
 	if err != nil {
 		return nil, err
 	}
-	if len(c.token) > 0 {
-		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.token))
+	if len(c.config.Token) > 0 {
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
 	}
 	request.Header.Set("Content-Type", "application/json")
 	return request, nil
@@ -89,13 +97,19 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.U
 		queryValues = url.Values{}
 	}
 	var u url.URL
-	if len(c.TenantID) == 0 {
+	if len(c.config.TenantID) == 0 {
 		return u, errors.New("A non-empty tenant ID must be set on client")
 	}
+
+	clientURL, err := c.GetURL()
+	if err != nil {
+		return u, err
+	}
+
 	u = url.URL{
-		Scheme:   c.URL.Scheme,
-		Host:     c.URL.Host,
-		Path:     path.Join(c.TenantID, buildPath),
+		Scheme:   clientURL.Scheme,
+		Host:     clientURL.Host,
+		Path:     path.Join(c.config.TenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -115,9 +129,14 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
 	}
 
+	clientURL, err := c.GetURL()
+	if err != nil {
+		return u, err
+	}
+
 	u = url.URL{
-		Scheme:   c.URL.Scheme,
-		Host:     c.URL.Host,
+		Scheme:   clientURL.Scheme,
+		Host:     clientURL.Host,
 		Path:     path.Join(tenantID, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
@@ -285,24 +304,26 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 
 // UpdateToken updates the authorization token
 func (c *Client) UpdateToken(token string) {
-	c.token = token
+	c.config.Token = token
 }
 
-// NewClient creates a Client with custom values passed in
-func NewClient(tenantID, token, URL string, timeout time.Duration) (*Client, error) {
-	if tenantID == "" || token == "" || URL == "" {
-		return nil, errors.New("tenantID or token or url can't be empty")
+// GetURL returns the client config url string as a url.URL
+func (c *Client) GetURL() (*url.URL, error) {
+	parsed, err := url.Parse(c.config.URL)
+	if c.config.URL == "" || err != nil {
+		return nil, errors.New("url is not correct")
+	}
+	return parsed, nil
+}
+
+
+// NewClient creates a Client with config values passed in
+func NewClient(config *Config) (*Client, error) {
+	if config.TenantID == "" || config.Token == "" || config.URL == "" {
+		return nil, errors.New("at least one of tenantID, token, or url must be set")
 	}
 
-	httpClient := &http.Client{
-		Timeout: timeout,
-	}
-	parsed, err := url.Parse(URL)
-	if err != nil {
-		return nil, errors.New("Url is not correct")
-	}
-
-	c := &Client{TenantID: tenantID, token: token, URL: *parsed, httpClient: httpClient}
+	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
@@ -334,15 +355,16 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 	errorChan := make(chan string, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
-		BatchSize:    batchSize,
-		EventsChan:   eventsChan,
-		EventsQueue:  eventsQueue,
-		EventService: c.IngestService,
-		QuitChan:     quit,
-		IngestTicker: ticker,
-		WaitGroup:    &wg,
-		ErrorChan:    errorChan,
-		IsRunning:    false,
+		BatchSize:        batchSize,
+		EventsChan:       eventsChan,
+		EventsQueue:      eventsQueue,
+		EventService:     c.IngestService,
+		QuitChan:         quit,
+		IngestTicker:     ticker,
+		WaitGroup:        &wg,
+		ErrorChan:        errorChan,
+		IsRunning:        false,
+		chanWaitInMilSec: 300,
 	}
 
 	return batchEventsSender, nil

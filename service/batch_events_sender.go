@@ -4,8 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/splunk/ssc-client-go/model"
+	"strings"
 	"sync"
+	"time"
 )
+
+//UserErrHandler defines the type of user callback function for batchEventSender
+type UserErrHandler func(*BatchEventsSender)
+
+const errMsgSplitter = "[insErrSplit]"
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
@@ -17,8 +24,17 @@ type BatchEventsSender struct {
 	IngestTicker *model.Ticker
 	WaitGroup    *sync.WaitGroup
 	ErrorChan    chan string
-	ErrorMsg     string
+	errorMsg     string
 	IsRunning    bool
+	mux          sync.Mutex
+	callbackFunc UserErrHandler
+	stopMux      sync.Mutex
+	chanWaitInMilSec int
+}
+
+// SetCallbackHandler allows users to pass their own callback function
+func (b *BatchEventsSender) SetCallbackHandler(callback UserErrHandler) {
+	b.callbackFunc = callback
 }
 
 // Run sets up ticker and starts a new goroutine
@@ -41,25 +57,28 @@ func (b *BatchEventsSender) loop() {
 		select {
 		case err := <-b.ErrorChan:
 			errorMsgCount++
-			b.ErrorMsg += "[" + err + "],"
-			fmt.Println("got an error : " + err)
+			b.errorMsg += err + errMsgSplitter
+			if b.callbackFunc != nil {
+				go b.callbackFunc(b)
+			}
 
-			if errorMsgCount == cap(b.ErrorChan) {
+			if errorMsgCount >= cap(b.ErrorChan) {
 				b.Stop()
 			}
 
 		case <-b.QuitChan:
-			events := append([]model.Event(nil), b.EventsQueue...)
-			b.WaitGroup.Add(1)
-			// flush one last time before exit
-			go b.flush(events)
+			b.IsRunning = false
 			return
+
 		case <-b.IngestTicker.GetChan():
-			b.Flush()
+			b.WaitGroup.Add(1)
+			go b.flush(0)
+
 		case event := <-b.EventsChan:
 			b.EventsQueue = append(b.EventsQueue, event)
-			if len(b.EventsQueue) == b.BatchSize {
-				b.Flush()
+			if len(b.EventsQueue) >= b.BatchSize {
+				b.WaitGroup.Add(1)
+				go b.flush(1)
 			}
 		}
 	}
@@ -67,16 +86,28 @@ func (b *BatchEventsSender) loop() {
 
 // Stop sends a signal to QuitChan, wait for all registered goroutines to finish, stop ticker and clear queue
 func (b *BatchEventsSender) Stop() {
+	b.stopMux.Lock()
+	defer b.stopMux.Unlock()
+
+	if b.IsRunning == false && len(b.EventsQueue) == 0 {
+		return
+	}
+
+	b.IsRunning = false
 	// Wait until no element is in channel
 	for {
 		if len(b.EventsChan) == 0 {
 			break
 		}
 	}
-	b.QuitChan <- struct{}{}
-	b.WaitGroup.Wait()
+
 	b.IngestTicker.Stop()
-	b.ResetQueue()
+
+	b.WaitGroup.Add(1)
+	// flush one last time before stop
+	go b.flush(2)
+	b.WaitGroup.Wait()
+	b.QuitChan <- struct{}{}
 }
 
 // AddEvent pushes a single event into EventsChan
@@ -89,38 +120,80 @@ func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	if len(b.EventsQueue) == 0 && len(b.EventsChan) == 0 && b.IngestTicker.IsRunning() == false {
 		b.IngestTicker.Start()
 	}
-	b.EventsChan <- event
-	return nil
-}
 
-// flush sends off all events currently in the EventsQueue that is passed and resets ticker afterwards
-// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
-// TODO: Error handling and return results
-func (b *BatchEventsSender) flush(events []model.Event) error {
-	defer b.WaitGroup.Done()
-	// Reset ticker
-	b.IngestTicker.Reset()
-	if len(events) > 0 {
-		err := b.EventService.CreateEvents(events)
-		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
-			b.ErrorChan <- str
-		}
+	for len(b.EventsChan) >= cap(b.EventsChan) {
+		time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
 	}
 
+	if b.IsRunning {
+		b.EventsChan <- event
+	}
 	return nil
 }
 
-// Flush sends off all events currently in EventsQueue and resets ticker afterwards
-// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by
-func (b *BatchEventsSender) Flush() {
+// flush sends off all events currently in EventsQueue and resets ticker afterwards
+// If EventsQueue size is bigger than BatchSize, it'll slice the queue into batches and send batches one by one
+func (b *BatchEventsSender) flush(flushSource int) {
+	defer b.WaitGroup.Done()
+	defer b.mux.Unlock()
+
+	b.mux.Lock()
+	// Reset ticker
+	if flushSource == 0 {
+		b.IngestTicker.Reset()
+	} else if flushSource == 1 && len(b.EventsQueue) < b.BatchSize {
+		// it is possible different threads send flush signal while the previous flush already flush everything in queue
+		return
+	}
+
 	events := append([]model.Event(nil), b.EventsQueue...)
-	b.WaitGroup.Add(1)
-	go b.flush(events)
 	b.ResetQueue()
+
+	// slice events into batch size to send
+	b.sendEventInBatches(events)
+
+}
+
+// sendEventInBatches slices events into batch size to send
+func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
+
+	if len(events) <= 0 {
+		return
+	}
+
+	for i := 0; i < len(events); {
+		end := len(events)
+		if i+b.BatchSize < len(events) {
+			end = i + b.BatchSize
+		}
+
+		err := b.EventService.CreateEvents(events[i:end])
+		i = i + b.BatchSize
+		if err != nil {
+			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+
+			for len(b.EventsChan) >= cap(b.EventsChan) {
+				time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
+			}
+
+			if b.IsRunning {
+				b.ErrorChan <- str
+			}
+		}
+	}
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
 func (b *BatchEventsSender) ResetQueue() {
 	b.EventsQueue = b.EventsQueue[:0]
+}
+
+// GetErrors return all the error messages as an array
+func (b *BatchEventsSender) GetErrors() []string {
+	if b.errorMsg == "" {
+		return nil
+	}
+
+	errors := strings.Split(b.errorMsg, errMsgSplitter)
+	return errors[:len(errors)-1]
 }
