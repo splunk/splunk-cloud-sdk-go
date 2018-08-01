@@ -229,7 +229,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 func TestGetActionStatus(t *testing.T) {
 	client := getClient(t)
 	webhookActionName := fmt.Sprintf("w-stat-%d", timeSec)
-	webhookAction := model.NewWebhookAction(webhookActionName, webhookUrl, webhookMsg)
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
