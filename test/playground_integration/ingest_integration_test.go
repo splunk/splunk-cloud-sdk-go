@@ -13,8 +13,11 @@ import (
 func TestIntegrationCreateEventSuccess(t *testing.T) {
 	timeValue := float64(time.Now().Unix() * 1000) // Unix millis
 	client := getClient(t)
+	clientURL, err := client.GetURL()
+	assert.Empty(t, err)
+
 	testIngestEvent := model.Event{
-		Host:       client.URL.RequestURI(),
+		Host:       clientURL.RequestURI(),
 		Index:      "main",
 		Event:      "test",
 		Sourcetype: "sourcetype:eventgen",
@@ -22,7 +25,7 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 		Time:       &timeValue,
 		Fields:     map[string]string{"testKey": "testValue"}}
 
-	err := client.IngestService.CreateEvent(testIngestEvent)
+	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Empty(t, err)
 }
 

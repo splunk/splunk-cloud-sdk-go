@@ -3,8 +3,8 @@ package playgroundintegration
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
 )
 
 var recordOne = map[string]string{
@@ -53,7 +53,7 @@ func createRecord(t *testing.T, namespace string, collection string, record map[
 // GET
 // --------
 func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T) {
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -73,7 +73,7 @@ func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T
 // GET ?fields= parameter
 // --------
 func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -113,7 +113,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -158,7 +158,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -205,7 +205,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 		"fields": fieldsToFilter,
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -241,7 +241,7 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 		"count": {"1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -275,7 +275,7 @@ func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T
 		"count": {"-1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -309,7 +309,7 @@ func TestKVStoreCollectionsListRecordsCountPositiveOutOfBoundsInput(t *testing.T
 		"count": {"10000"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -346,7 +346,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 		"offset": {"1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -380,7 +380,7 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 		"offset": {"-1"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -414,7 +414,7 @@ func TestKVStoreCollectionsListRecordsOffsetPositiveOutOfBoundsInput(t *testing.
 		"offset": {"10000"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -451,7 +451,7 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 		"orderby": {"TEST_KEY_02"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -493,7 +493,7 @@ func TestKVStoreCollectionsListRecordsOrderByNonExisentInput(t *testing.T) {
 		"orderby": {"thisdoesntexistasakey"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -542,7 +542,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 		"orderby": {"TEST_KEY_02"},
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -607,7 +607,7 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
 
-	createDatastoreKVCollection(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
