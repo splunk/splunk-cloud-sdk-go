@@ -202,7 +202,7 @@ func TestDeleteAction(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Access action endpoints using an Unauthenticated client
+// Access action endpoints with a non-existent Action
 func TestActionFailNotFoundAction(t *testing.T) {
 	client := getClient(t)
 	// Get Invalid Action

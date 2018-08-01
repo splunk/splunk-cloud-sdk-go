@@ -18,10 +18,11 @@ func TestCreateAction(t *testing.T) {
 
 // Stubby test for Post trigger action
 func TestTriggerWebHookAction(t *testing.T) {
-	actionNotificationData := model.ActionNotification{Kind: model.RawJSONPayloadKind, UserID: "unused", Tenant: "tenantId", Payload: "{ \"name\": \"bean bag\", \"species\": \"cat\"}"}
+	var payloadweb  = &map[string]interface{}{"name": "bean bag"}
+	actionNotificationData := model.ActionNotification{Kind: model.RawJSONPayloadKind, Tenant: "tenantId", Payload: payloadweb}
 	u, err := getClient(t).ActionService.TriggerAction("test10", actionNotificationData)
 	assert.Empty(t, err)
-	assert.Empty(t, u)
+	assert.NotEmpty(t, u)
 }
 
 // Stubby test for GetAction service endpoint
