@@ -10,6 +10,7 @@ import (
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 // Test consts
@@ -20,7 +21,7 @@ const (
 	templateName = "template1000"
 	snsTopic     = "myTopic"
 	snsMsg       = "SNS Message"
-	webhookUrl   = "https://locahost:9999/test"
+	webhookURL   = "https://locahost:9999/test"
 	webhookMsg   = "{{ .name }} is a {{ .species }}"
 	actionUserID = "sdk_tester"
 )
@@ -34,7 +35,7 @@ var (
 	addresses         = []string{"test1@splunk.com", "test2@splunk.com"}
 	emailAction       = model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	snsAction         = model.NewSNSAction(snsActionName, snsTopic, snsMsg)
-	webhookAction     = model.NewWebhookAction(webhookActionName, webhookUrl, webhookMsg)
+	webhookAction     = model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	webhookPayload    = &map[string]interface{}{"name": "bean bag", "species": "cat"}
 )
 
@@ -49,6 +50,12 @@ func cleanupAction(client *service.Client, name string) {
 	if err != nil {
 		fmt.Printf("WARN: error deleting action: %s, err: %s", name, err)
 	}
+}
+
+func validateActionError(t *testing.T, err error) {
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 401, err.(*util.HTTPError).Status)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 
 // Test GetActions
@@ -91,8 +98,68 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	assert.EqualValues(t, action, webhookAction)
 }
 
+// Get Non-Existent Action
+func TestCreateActionFailInvalidAction(t *testing.T) {
+	client := getClient(t)
+	// Get Invalid Action
+	_, err := client.ActionService.GetAction("Dontexist")
+
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 404, err.(*util.HTTPError).Status)
+	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
+}
+
+// Create Existing action
+func TestCreateActionFailExistingAction(t *testing.T) {
+	client := getClient(t)
+	defer cleanupAction(client, emailAction.Name)
+	_, err := client.ActionService.CreateAction(*emailAction)
+	require.Nil(t, err)
+	action, err := client.ActionService.GetAction(emailAction.Name)
+	assert.EqualValues(t, action, emailAction)
+
+	_, err = client.ActionService.CreateAction(*emailAction)
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 409, err.(*util.HTTPError).Status)
+	assert.Equal(t, "409 Conflict", err.(*util.HTTPError).Message)
+}
+
+// Access action endpoints using an Unauthenticated client
+func TestActionFailUnauthenticatedClient(t *testing.T) {
+	invalidClient := getInvalidClient(t)
+	client := getClient(t)
+	defer cleanupAction(client, webhookAction.Name)
+
+	_, err := client.ActionService.CreateAction(*webhookAction)
+	require.Nil(t, err)
+
+	_, err = invalidClient.ActionService.CreateAction(*emailAction)
+	validateActionError(t , err)
+
+	_, err = invalidClient.ActionService.GetAction(webhookAction.Name)
+	validateActionError(t , err)
+
+	_, err = invalidClient.ActionService.GetActions()
+	validateActionError(t , err)
+
+	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
+		model.ActionNotification{
+			Kind:    model.RawJSONPayloadKind,
+			Tenant:  testutils.TestTenantID,
+			Payload: webhookPayload,
+		})
+	validateActionError(t , err)
+
+	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.Action{TextPart: "updated email text"})
+	validateActionError(t , err)
+
+	err = invalidClient.ActionService.DeleteAction(webhookActionName)
+	validateActionError(t , err)
+
+}
+
 // Test TriggerAction
-func TestTriggerAction(t *testing.T) {
+func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getClient(t)
 	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
