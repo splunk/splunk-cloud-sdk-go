@@ -8,6 +8,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var testIndex1 = "TEST_INDEX_01"
@@ -18,8 +19,8 @@ var testField2 = "TEST_FIELD_02"
 // Stubby test for GetCollectionStats() kvstore service endpoint
 func TestGetCollectionStats(t *testing.T) {
 	result, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestCollection)
-	assert.Empty(t, err)
-	assert.NotEmpty(t, result)
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
 
 	assert.Equal(t, int64(5), result.Count)
 	assert.Equal(t, testutils.TestCollection, result.Ns)
@@ -29,8 +30,8 @@ func TestGetCollectionStats(t *testing.T) {
 // Stubby test for ping/GetServiceHealthStatus() kvstore service endpoint
 func TestGetServiceHealthStatus(t *testing.T) {
 	result, err := getClient(t).KVStoreService.GetServiceHealthStatus()
-	assert.Empty(t, err)
-	assert.NotEmpty(t, result)
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
 
 	assert.Equal(t, "healthy", result.Status)
 }
@@ -38,7 +39,8 @@ func TestGetServiceHealthStatus(t *testing.T) {
 // Stubby test for ListIndexes() kvstore service endpoint
 func TestGetIndexes(t *testing.T) {
 	result, err := getClient(t).KVStoreService.ListIndexes(testutils.TestCollection)
-	assert.NotNil(t, result)
+	require.Nil(t, err)
+	require.NotNil(t, result)
 	assert.Equal(t, len(result), 2)
 	assert.Equal(t, len(result[0].Fields), 2)
 	assert.Equal(t, result[0].Name, testIndex1)
@@ -46,7 +48,6 @@ func TestGetIndexes(t *testing.T) {
 	assert.Equal(t, result[0].Fields[0].Direction, int64(1))
 	assert.Equal(t, result[0].Fields[1].Field, testField2)
 	assert.Equal(t, result[0].Fields[1].Direction, int64(1))
-	assert.Nil(t, err)
 }
 
 // Stubby test for CreateIndex() kvstore service endpoint
@@ -54,8 +55,8 @@ func TestCreateIndex(t *testing.T) {
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = CreateField(-1, testField1)
 	result, err := getClient(t).KVStoreService.CreateIndex(CreateIndex(fields[:], testIndex2), testutils.TestCollection)
-	assert.Nil(t, err)
-	assert.NotEmpty(t, result)
+	require.Nil(t, err)
+	require.NotEmpty(t, result)
 	assert.Equal(t, result.Name, testIndex1)
 	assert.Equal(t, result.Collection, testutils.TestCollection)
 	assert.Equal(t, result.Fields[0].Field, testField1)
@@ -65,7 +66,7 @@ func TestCreateIndex(t *testing.T) {
 // Stubby test for DeleteIndex() kvstore service endpoint
 func TestDeleteIndex(t *testing.T) {
 	err := getClient(t).KVStoreService.DeleteIndex(testutils.TestCollection, testIndex1)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 }
 
 // creates an index to post
@@ -110,19 +111,32 @@ func TestCreateRecords(t *testing.T) {
 
 	result, err := getClient(t).KVStoreService.InsertRecords(testutils.TestCollection, res)
 	assert.Nil(t, err)
+
 	assert.Equal(t, len(result), 3)
 	assert.Equal(t, result[0], "TEST_RECORD_KEY_01")
 }
 
 // Stubby test for QueryRecords() kvstore service endpoint
-func TestGetRecordsWithQuery(t *testing.T) {
-	query := make(url.Values)
-	query.Add("size", "tiny")
-	query.Add("capacity_gb", "8")
-	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, query)
-	assert.Nil(t, err)
+func TestGetRecords(t *testing.T) {
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
+	require.Nil(t, err)
+	require.NotNil(t, result)
 
 	assert.Equal(t, len(result), 2)
+	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
+	assert.Equal(t, result[1]["_key"], "TEST_RECORD_KEY_02")
+}
+
+// Stubby test for QueryRecords() kvstore service endpoint based on a query
+func TestGetRecordsWithQuery(t *testing.T) {
+	query := make(url.Values)
+
+	query.Add("query", "{\"size\": \"tiny\", \"capacity_gb\": 8}")
+
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, query)
+	require.Nil(t, err)
+
+	require.Equal(t, len(result), 1)
 	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result[0]["capacity_gb"], float64(8))
 	assert.Equal(t, result[0]["description"], "This is a tiny amount of GB")
@@ -132,7 +146,8 @@ func TestGetRecordsWithQuery(t *testing.T) {
 // Stubby test for GetRecordsByKey() kvstore service endpoint
 func TestGetRecordByKey(t *testing.T) {
 	result, err := getClient(t).KVStoreService.GetRecordByKey(testutils.TestCollection, "TEST_RECORD_KEY_01")
-	assert.Nil(t, err)
+	require.Nil(t, err)
+
 	assert.Equal(t, result["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result["capacity_gb"], float64(8))
 	assert.Equal(t, result["description"], "This is a tiny amount of GB")
@@ -142,19 +157,22 @@ func TestGetRecordByKey(t *testing.T) {
 // Stubby test for DeleteRecordsByKey() kvstore service endpoint
 func TestDeleteRecordByKey(t *testing.T) {
 	err := getClient(t).KVStoreService.DeleteRecordByKey(testutils.TestCollection, "TEST_RECORD_KEY_01")
-	assert.Nil(t, err)
+	require.Nil(t, err)
+}
+
+// Stubby test for DeleteRecords() kvstore service endpoint
+func TestDeleteRecord(t *testing.T) {
+	err := getClient(t).KVStoreService.DeleteRecords(nil, testutils.TestCollection)
+	require.Nil(t, err)
 }
 
 // Stubby test for DeleteRecords() kvstore service endpoint based on a query
-func TestDeleteRecord(t *testing.T) {
+func TestDeleteRecordWithQuery(t *testing.T) {
 	query := make(url.Values)
-	query.Add("size", "tiny")
-	query.Add("capacity_gb", "8")
-	outerQuery := make(url.Values)
-	outerQuery.Add("query", query.Encode())
+	query.Add("query", "{\"size\": \"tiny\", \"capacity_gb\": 8}")
 
-	err := getClient(t).KVStoreService.DeleteRecords(outerQuery, testutils.TestCollection)
-	assert.Nil(t, err)
+	err := getClient(t).KVStoreService.DeleteRecords(query, testutils.TestCollection)
+	require.Nil(t, err)
 }
 
 // Gets records that exist for the tenant's namespace collection
@@ -162,8 +180,8 @@ func TestListRecords(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(
 		testutils.TestCollection,
 		nil)
+	require.Nil(t, err)
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
 	assert.Len(t, records, 4)
 
 	for _, element := range records {
@@ -187,8 +205,8 @@ func TestInsertRecord(t *testing.T) {
 		testutils.TestCollection,
 		record)
 
+	require.Nil(t, err)
 	assert.NotNil(t, responseMap)
-	assert.Nil(t, err)
 	assert.Len(t, responseMap, 1)
 
 	for key, value := range responseMap {

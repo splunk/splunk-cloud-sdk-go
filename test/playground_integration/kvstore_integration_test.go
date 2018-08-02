@@ -25,14 +25,14 @@ func TestIntegrationGetCollectionStatus(t *testing.T) {
 	defer cleanupCollection(t)
 
 	response, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestCollection)
-	assert.Empty(t, err)
+	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
 
 // Test GetServiceHealthStatus against nova playground
 func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
-	assert.Empty(t, err)
+	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
 
@@ -96,7 +96,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	_, err := getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{Name: testIndex, Fields: fields[:]}, testutils.TestCollection)
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found Error")
+	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
 
 // Test DeleteIndex for 404 Index not found error
