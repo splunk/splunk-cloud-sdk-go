@@ -16,10 +16,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
 	"os"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 // Declare constants for service package
@@ -43,6 +44,8 @@ type Client struct {
 	IdentityService *IdentityService
 	// KVStoreService talks to SSC kvstore service
 	KVStoreService *KVStoreService
+	// ActionService talks to SSC action service
+	ActionService *ActionService
 }
 
 // Config is used to set the client specific attributes
@@ -326,6 +329,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IdentityService = &IdentityService{client: c}
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
+	c.ActionService = &ActionService{client: c}
 	return c, nil
 }
 
