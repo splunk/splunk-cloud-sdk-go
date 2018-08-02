@@ -54,7 +54,7 @@ func validateNotFoundActionError(t *testing.T, err error) {
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
 }
 
-// Test GetActions
+// Test GetActions which returns the list of all actions for the tenant
 func TestIntegrationGetActions(t *testing.T) {
 	client := getClient(t)
 
@@ -100,7 +100,7 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	assert.EqualValues(t, action, webhookAction)
 }
 
-// Get Non-Existent Action
+// Get Non-Existent Action should result in 404 Not Found
 func TestCreateActionFailInvalidAction(t *testing.T) {
 	client := getClient(t)
 	// Get Invalid Action
@@ -111,7 +111,7 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
 }
 
-// Create Existing action
+// Create Existing action should result in 409 Conflict
 func TestCreateActionFailExistingAction(t *testing.T) {
 	client := getClient(t)
 	emailActionName := fmt.Sprintf("e-confl-%d", timeSec)
@@ -128,7 +128,7 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	assert.Equal(t, "409 Conflict", err.(*util.HTTPError).Message)
 }
 
-// Access action endpoints using an Unauthenticated client
+// Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
 func TestActionFailUnauthenticatedClient(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 	client := getClient(t)
@@ -164,11 +164,14 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.ActionUpdateFields{TextPart: "updated email text"})
 	validateUnauthenticatedActionError(t, err)
 
+	_, err = invalidClient.ActionService.GetActionStatus("Action123", "statusID")
+	validateUnauthenticatedActionError(t, err)
+
 	err = invalidClient.ActionService.DeleteAction(webhookActionName)
 	validateUnauthenticatedActionError(t, err)
 }
 
-// Trigger action with invalid fields
+// Trigger action with invalid fields results in a 422 Unprocessable Entity error
 func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getClient(t)
 	webhookActionName := fmt.Sprintf("w-unproc-%d", timeSec)
@@ -188,7 +191,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 	assert.Equal(t, "422 Unprocessable Entity", err.(*util.HTTPError).Message)
 }
 
-// Test UpdateAction
+// Test UpdateAction updates with the new fields in the action
 func TestUpdateAction(t *testing.T) {
 	client := getClient(t)
 	emailActionName := fmt.Sprintf("e-up-%d", timeSec)
@@ -202,7 +205,7 @@ func TestUpdateAction(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Test DeleteAction
+// Test DeleteAction deletes the action specified
 func TestDeleteAction(t *testing.T) {
 	client := getClient(t)
 	emailActionName := fmt.Sprintf("e-del-%d", timeSec)
@@ -213,11 +216,14 @@ func TestDeleteAction(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Access action endpoints with a non-existent Action
+// Access action endpoints with a non-existent Action results in a 404 NotFound
 func TestActionFailNotFoundAction(t *testing.T) {
 	client := getClient(t)
 	// Get Invalid Action
 	_, err := client.ActionService.GetAction("Action123")
+	validateNotFoundActionError(t, err)
+
+	_, err = client.ActionService.GetActionStatus("Action123", "statusID")
 	validateNotFoundActionError(t, err)
 
 	_, err = client.ActionService.UpdateAction("Action123", model.ActionUpdateFields{TextPart: "updated email text"})
@@ -227,7 +233,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 	validateNotFoundActionError(t, err)
 }
 
-// Test GetActionStatus
+// Test GetActionStatus gets the status of the action after it is triggered
 func TestGetActionStatus(t *testing.T) {
 	client := getClient(t)
 	webhookActionName := fmt.Sprintf("w-stat-%d", timeSec)
