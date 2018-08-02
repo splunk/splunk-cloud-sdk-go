@@ -12,22 +12,19 @@ import (
 // --------------------------------------------------------------------------------
 // Query Endpoints
 // --------------------------------------------------------------------------------
-// /TENANT_NAME/kvstore/v1/NAMESPACE_NAME/collections/COLLECTION_NAME/query
+// /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME/query
 
 // --------
 // GET
 // --------
 func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -38,27 +35,24 @@ func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 // GET ?fields=parameter
 // --------
 func TestKVStoreQueryReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert a new record into the kvstore
-	createRecordResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -78,31 +72,28 @@ func TestKVStoreQueryFieldsValidInclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -123,31 +114,28 @@ func TestKVStoreQueryFieldsValidExclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -170,30 +158,27 @@ func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
 		"fields": fieldsToFilter,
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 }
@@ -206,30 +191,27 @@ func TestKVStoreQueryCountValidInput(t *testing.T) {
 		"count": {"1"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -240,30 +222,27 @@ func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
 		"count": {"-1"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
@@ -274,30 +253,27 @@ func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
 		"count": {"10000"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -311,30 +287,27 @@ func TestKVStoreQueryOffsetValidInput(t *testing.T) {
 		"offset": {"1"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -345,30 +318,27 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 		"offset": {"-1"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
@@ -379,30 +349,27 @@ func TestKVStoreQueryOffsetPositiveOutOfBoundsInput(t *testing.T) {
 		"offset": {"10000"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 0)
@@ -416,34 +383,31 @@ func TestKVStoreQueryOrderByValidInput(t *testing.T) {
 		"orderby": {"TEST_KEY_02"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Insert the third record into the kvstore
-	createRecordThreeResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordThree)
+	createRecordThreeResponseMap, err := createRecord(t, testutils.TestCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 3)
@@ -458,34 +422,31 @@ func TestKVStoreQueryOrderByNonExisentInput(t *testing.T) {
 		"orderby": {"thisdoesntexistasakey"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Insert the third record into the kvstore
-	createRecordThreeResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordThree)
+	createRecordThreeResponseMap, err := createRecord(t, testutils.TestCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 3)
@@ -503,34 +464,31 @@ func TestKVStoreQueryQueryParameterInput(t *testing.T) {
 		"query": {"{\"TEST_KEY_02\":\"A\"}"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
 	// Make sure that the data set is empty
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Insert the third record into the kvstore
-	createRecordThreeResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordThree)
+	createRecordThreeResponseMap, err := createRecord(t, testutils.TestCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -553,34 +511,31 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 		"query":   {"{\"TEST_KEY_02\":\"A\"}"},
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordOne)
+	createRecordOneResponseMap, err := createRecord(t, testutils.TestCollection, recordOne)
 	assert.Len(t, createRecordOneResponseMap, 1)
 
 	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordTwo)
+	createRecordTwoResponseMap, err := createRecord(t, testutils.TestCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Insert the third record into the kvstore
-	createRecordThreeResponseMap, err := createRecord(t, testutils.TestNamespace, testutils.TestCollection, recordThree)
+	createRecordThreeResponseMap, err := createRecord(t, testutils.TestCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, filters)
+	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 0)
@@ -589,9 +544,9 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 //--------
 //POST
 //--------
-//There is no separation for the testing the insertion of a record when using an incorrect namespace or collections
+//There is no separation for the testing the insertion of a record when using an incorrect collections
 //because BOTH are required in order to make a dataset of kvcollection via the catalog service
-func TestKVStoreQueryInsertRecordIntoMissingNamespaceAndCollection(t *testing.T) {
+func TestKVStoreQueryInsertRecordIntoMissingCollection(t *testing.T) {
 	record := map[string]string{
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
@@ -600,7 +555,6 @@ func TestKVStoreQueryInsertRecordIntoMissingNamespaceAndCollection(t *testing.T)
 
 	// Insert a new record into the kvstore
 	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
-		testutils.TestNamespace,
 		testutils.TestCollection,
 		record)
 
@@ -608,7 +562,7 @@ func TestKVStoreQueryInsertRecordIntoMissingNamespaceAndCollection(t *testing.T)
 	assert.NotNil(t, err)
 }
 
-// Inserts a record into the specified tenant's namespace collection
+// Inserts a record into the specified tenant's collection
 func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 	record := map[string]string{
 		"TEST_KEY_01": "TEST_VALUE_01",
@@ -616,16 +570,13 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
 
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	// Create the test collection
+	createKVCollection(t, testutils.TestCollection)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	// Remove the test collection used for testing
+	defer cleanupCollection(t)
 
-	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	records, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -633,7 +584,6 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 
 	// Insert a new record into the kvstore
 	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
-		testutils.TestNamespace,
 		testutils.TestCollection,
 		record)
 
