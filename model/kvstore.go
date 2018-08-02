@@ -53,9 +53,11 @@ type CreateNamespaceResponse struct {
 type Error struct {
 
 	// The reason of the error
-	Code    int    `json:"code"`
+	Code int64 `json:"code"`
+	// Error message
 	Message string `json:"message"`
-	SsCode  int    `json:"ssCode"`
+	// State Storage error code
+	SsCode int64 `json:"ssCode"`
 }
 
 // AuthError auth error reason

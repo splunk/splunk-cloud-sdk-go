@@ -13,8 +13,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// Collection and Namespace test variables
+// Test variables
 var testIndex = "integtestindex"
+
+// --------------------------------------------------------------------------------
+// Admin Endpoints
+// --------------------------------------------------------------------------------
 
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
@@ -35,6 +39,11 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
+
+// --------------------------------------------------------------------------------
+// Index Endpoints
+// --------------------------------------------------------------------------------
+// /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME/indexes
 
 // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
@@ -113,6 +122,11 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
+
+// --------------------------------------------------------------------------------
+// Record Endpoints
+// --------------------------------------------------------------------------------
+// /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME
 
 // Test InsertRecords() kvstore service endpoint against nova playground
 func TestCreateRecords(t *testing.T) {
@@ -227,6 +241,7 @@ func CreateTestRecord(t *testing.T) []string {
 	return keys
 }
 
+// Create test collection
 func createKVCollection(t *testing.T, collectionName string) (*model.CreateCollectionResponse, error) {
 
 	collection, err := getClient(t).KVStoreService.CreateCollection(model.CreateCollectionResponse{Name: collectionName})
@@ -237,8 +252,15 @@ func createKVCollection(t *testing.T, collectionName string) (*model.CreateColle
 	return collection, err
 }
 
+// Delete the test collections
 func cleanupCollection(t *testing.T) {
+
 	client := getClient(t)
-	err := client.KVStoreService.DeleteCollection(testutils.TestCollection)
-	assert.Emptyf(t, err, "Error deleting the collection: %s", err)
+	result, err := client.KVStoreService.GetCollections()
+	assert.Emptyf(t, err, "Error retrieving the collections: %s", err)
+
+	for _, item := range result {
+		err := client.KVStoreService.DeleteCollection(item.Collection)
+		assert.Emptyf(t, err, "Error deleting the collection: %s", err)
+	}
 }
