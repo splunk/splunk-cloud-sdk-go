@@ -16,7 +16,7 @@ const (
 	SNSKind ActionKind = "sns"
 )
 
-// ActionUpdateFields define the fields that may be updated for an existing Action
+// ActionUpdateFields defines the fields that may be updated for an existing Action
 type ActionUpdateFields struct {
 	// ID of action assigned by action service, all actions have this field
 	ID string `json:"id" binding:"omitempty"`
