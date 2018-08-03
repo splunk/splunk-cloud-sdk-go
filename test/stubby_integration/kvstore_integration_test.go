@@ -18,12 +18,12 @@ var testField2 = "TEST_FIELD_02"
 
 // Stubby test for GetCollectionStats() kvstore service endpoint
 func TestGetCollectionStats(t *testing.T) {
-	result, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestNamespace, testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestCollection)
 	require.Empty(t, err)
-	assert.NotEmpty(t, result)
+	require.NotEmpty(t, result)
 
 	assert.Equal(t, int64(5), result.Count)
-	assert.Equal(t, testutils.TestNamespace, result.Ns)
+	assert.Equal(t, testutils.TestCollection, result.Ns)
 	assert.Equal(t, int64(1), result.Nindexes)
 }
 
@@ -31,16 +31,16 @@ func TestGetCollectionStats(t *testing.T) {
 func TestGetServiceHealthStatus(t *testing.T) {
 	result, err := getClient(t).KVStoreService.GetServiceHealthStatus()
 	require.Empty(t, err)
-	assert.NotEmpty(t, result)
+	require.NotEmpty(t, result)
 
-	assert.Equal(t, "healthy", result.Status)
+	assert.Equal(t, model.PingOKBodyStatusHealthy, result.Status)
 }
 
 // Stubby test for ListIndexes() kvstore service endpoint
 func TestGetIndexes(t *testing.T) {
-	result, err := getClient(t).KVStoreService.ListIndexes(testutils.TestNamespace, testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.ListIndexes(testutils.TestCollection)
 	require.Nil(t, err)
-	assert.NotNil(t, result)
+	require.NotNil(t, result)
 	assert.Equal(t, len(result), 2)
 	assert.Equal(t, len(result[0].Fields), 2)
 	assert.Equal(t, result[0].Name, testIndex1)
@@ -54,23 +54,26 @@ func TestGetIndexes(t *testing.T) {
 func TestCreateIndex(t *testing.T) {
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = CreateField(-1, testField1)
-	err := getClient(t).KVStoreService.CreateIndex(CreateIndex(testutils.TestCollection, fields[:], testIndex2, testutils.TestNamespace), testutils.TestNamespace, testutils.TestCollection)
-	assert.Nil(t, err)
+	result, err := getClient(t).KVStoreService.CreateIndex(CreateIndex(fields[:], testIndex2), testutils.TestCollection)
+	require.Nil(t, err)
+	require.NotEmpty(t, result)
+	assert.Equal(t, result.Name, testIndex1)
+	assert.Equal(t, result.Collection, testutils.TestCollection)
+	assert.Equal(t, result.Fields[0].Field, testField1)
+	assert.Equal(t, result.Fields[0].Direction, int64(-1))
 }
 
 // Stubby test for DeleteIndex() kvstore service endpoint
 func TestDeleteIndex(t *testing.T) {
-	err := getClient(t).KVStoreService.DeleteIndex(testutils.TestNamespace, testutils.TestCollection, testIndex1)
+	err := getClient(t).KVStoreService.DeleteIndex(testutils.TestCollection, testIndex1)
 	require.Nil(t, err)
 }
 
 // creates an index to post
-func CreateIndex(collection string, fields []model.IndexFieldDefinition, name string, namespace string) model.IndexDescription {
-	return model.IndexDescription{
-		Collection: collection,
-		Fields:     fields,
-		Name:       name,
-		Namespace:  namespace,
+func CreateIndex(fields []model.IndexFieldDefinition, name string) model.IndexDefinition {
+	return model.IndexDefinition{
+		Fields: fields,
+		Name:   name,
 	}
 }
 
@@ -106,16 +109,18 @@ func TestCreateRecords(t *testing.T) {
 	var res []model.Record
 	err := json.Unmarshal([]byte(testRecords), &res)
 
-	result, err := getClient(t).KVStoreService.InsertRecords(testutils.TestNamespace, testutils.TestCollection, res)
-	require.Nil(t, err)
+	result, err := getClient(t).KVStoreService.InsertRecords(testutils.TestCollection, res)
+	assert.Nil(t, err)
+
 	assert.Equal(t, len(result), 3)
 	assert.Equal(t, result[0], "TEST_RECORD_KEY_01")
 }
 
 // Stubby test for QueryRecords() kvstore service endpoint
 func TestGetRecords(t *testing.T) {
-	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, nil)
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
 	require.Nil(t, err)
+	require.NotNil(t, result)
 
 	assert.Equal(t, len(result), 2)
 	assert.Equal(t, result[0]["_key"], "TEST_RECORD_KEY_01")
@@ -125,9 +130,10 @@ func TestGetRecords(t *testing.T) {
 // Stubby test for QueryRecords() kvstore service endpoint based on a query
 func TestGetRecordsWithQuery(t *testing.T) {
 	query := make(url.Values)
+
 	query.Add("query", "{\"size\": \"tiny\", \"capacity_gb\": 8}")
 
-	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestNamespace, testutils.TestCollection, query)
+	result, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, query)
 	require.Nil(t, err)
 
 	require.Equal(t, len(result), 1)
@@ -139,8 +145,9 @@ func TestGetRecordsWithQuery(t *testing.T) {
 
 // Stubby test for GetRecordsByKey() kvstore service endpoint
 func TestGetRecordByKey(t *testing.T) {
-	result, err := getClient(t).KVStoreService.GetRecordByKey(testutils.TestNamespace, testutils.TestCollection, "TEST_RECORD_KEY_01")
+	result, err := getClient(t).KVStoreService.GetRecordByKey(testutils.TestCollection, "TEST_RECORD_KEY_01")
 	require.Nil(t, err)
+
 	assert.Equal(t, result["_key"], "TEST_RECORD_KEY_01")
 	assert.Equal(t, result["capacity_gb"], float64(8))
 	assert.Equal(t, result["description"], "This is a tiny amount of GB")
@@ -149,13 +156,13 @@ func TestGetRecordByKey(t *testing.T) {
 
 // Stubby test for DeleteRecordsByKey() kvstore service endpoint
 func TestDeleteRecordByKey(t *testing.T) {
-	err := getClient(t).KVStoreService.DeleteRecordByKey(testutils.TestNamespace, testutils.TestCollection, "TEST_RECORD_KEY_01")
+	err := getClient(t).KVStoreService.DeleteRecordByKey(testutils.TestCollection, "TEST_RECORD_KEY_01")
 	require.Nil(t, err)
 }
 
 // Stubby test for DeleteRecords() kvstore service endpoint
 func TestDeleteRecord(t *testing.T) {
-	err := getClient(t).KVStoreService.DeleteRecords(nil, testutils.TestNamespace, testutils.TestCollection)
+	err := getClient(t).KVStoreService.DeleteRecords(nil, testutils.TestCollection)
 	require.Nil(t, err)
 }
 
@@ -164,14 +171,13 @@ func TestDeleteRecordWithQuery(t *testing.T) {
 	query := make(url.Values)
 	query.Add("query", "{\"size\": \"tiny\", \"capacity_gb\": 8}")
 
-	err := getClient(t).KVStoreService.DeleteRecords(query, testutils.TestNamespace, testutils.TestCollection)
+	err := getClient(t).KVStoreService.DeleteRecords(query, testutils.TestCollection)
 	require.Nil(t, err)
 }
 
 // Gets records that exist for the tenant's namespace collection
 func TestListRecords(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(
-		testutils.TestNamespace,
 		testutils.TestCollection,
 		nil)
 	require.Nil(t, err)
@@ -196,7 +202,6 @@ func TestInsertRecord(t *testing.T) {
 	}
 
 	responseMap, err := getClient(t).KVStoreService.InsertRecord(
-		testutils.TestNamespace,
 		testutils.TestCollection,
 		record)
 
