@@ -1,3 +1,10 @@
+/*
+ * Copyright © 2018 Splunk Inc.
+ * SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+ * without a valid written license from Splunk Inc. is PROHIBITED.
+ *
+ */
+
 package service
 
 import (
@@ -16,19 +23,19 @@ const errMsgSplitter = "[insErrSplit]"
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
-	BatchSize    int
-	EventsChan   chan model.Event
-	EventsQueue  []model.Event
-	QuitChan     chan struct{}
-	EventService *IngestService
-	IngestTicker *model.Ticker
-	WaitGroup    *sync.WaitGroup
-	ErrorChan    chan string
-	errorMsg     string
-	IsRunning    bool
-	mux          sync.Mutex
-	callbackFunc UserErrHandler
-	stopMux      sync.Mutex
+	BatchSize        int
+	EventsChan       chan model.Event
+	EventsQueue      []model.Event
+	QuitChan         chan struct{}
+	EventService     *IngestService
+	IngestTicker     *model.Ticker
+	WaitGroup        *sync.WaitGroup
+	ErrorChan        chan string
+	errorMsg         string
+	IsRunning        bool
+	mux              sync.Mutex
+	callbackFunc     UserErrHandler
+	stopMux          sync.Mutex
 	chanWaitInMilSec int
 }
 

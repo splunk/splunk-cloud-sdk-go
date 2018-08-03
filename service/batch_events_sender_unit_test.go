@@ -1,3 +1,10 @@
+/*
+ * Copyright © 2018 Splunk Inc.
+ * SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+ * without a valid written license from Splunk Inc. is PROHIBITED.
+ *
+ */
+
 package service
 
 import (
@@ -6,7 +13,7 @@ import (
 	"time"
 )
 
-var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example.com", TenantID: "EXAMPLE_TENANT", Timeout: time.Second*5}
+var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example.com", TenantID: "EXAMPLE_TENANT", Timeout: time.Second * 5}
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
 	var client, _ = NewClient(config)

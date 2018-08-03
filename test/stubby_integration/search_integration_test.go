@@ -1,3 +1,10 @@
+/*
+ * Copyright © 2018 Splunk Inc.
+ * SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+ * without a valid written license from Splunk Inc. is PROHIBITED.
+ *
+ */
+
 package stubbyintegration
 
 import (
@@ -51,7 +58,7 @@ func TestGetEvents(t *testing.T) {
 }
 
 func TestJobActionControl(t *testing.T) {
-	response, err := getClient(t).SearchService.PostJobControl("SEARCH_ID", &model.JobControlAction{Action:"pause"})
+	response, err := getClient(t).SearchService.PostJobControl("SEARCH_ID", &model.JobControlAction{Action: "pause"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 1, len(response.Msg))

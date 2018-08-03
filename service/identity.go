@@ -1,3 +1,10 @@
+/*
+ * Copyright © 2018 Splunk Inc.
+ * SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+ * without a valid written license from Splunk Inc. is PROHIBITED.
+ *
+ */
+
 package service
 
 import (
@@ -49,7 +56,7 @@ func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 		scope = "system"
 	}
 	url, err := c.client.BuildURLWithTenantID(scope, nil, identityServicePrefix, identityServiceVersion,
-			"userprofile")
+		"userprofile")
 
 	if err != nil {
 		return nil, err

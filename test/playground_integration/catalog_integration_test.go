@@ -1,3 +1,10 @@
+/*
+ * Copyright © 2018 Splunk Inc.
+ * SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+ * without a valid written license from Splunk Inc. is PROHIBITED.
+ *
+ */
+
 package playgroundintegration
 
 import (
@@ -475,7 +482,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-    require.Nil(t, err)
+	require.Nil(t, err)
 
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
