@@ -8,6 +8,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/service/handler"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -16,10 +17,26 @@ import (
 //Expired token
 var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
+// RefreshToken - RefreshToken to refresh the bearer token if expired
+var RefreshToken = os.Getenv("REFRESH_TOKEN")
+
+// IdPHost - host to retrieve access token from
+var IdPHost = "https://splunk-ciam.okta.com/" //os.Getenv("IDP_HOST")
+
+// ClientID - Okta app Client Id for SDK
+var ClientID = os.Getenv("CLIENT_ID")
+
 //Test ingesting event with invalid access token then retrying after refreshing token
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	client, err := service.NewClient(&service.Config{Token: TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
+
+	client, err := service.NewClient(&service.Config{
+		Token:           TestAuthenticationToken,
+		URL:             url,
+		TenantID:        testutils.TestTenantID,
+		Timeout:         testutils.TestTimeOut,
+		ResponseHandler: handler.NewRefreshTokenAuthnResponseHandler(IdPHost, ClientID, "openid email profile", RefreshToken),
+	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
 	clientURL, err := client.GetURL()

@@ -29,8 +29,6 @@ const (
 type Client struct {
 	// config
 	config *Config
-	// Error handler to handle response codes > 2xx
-	ErrorHandler ErrorHandler
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// SearchService talks to the SSC search service
@@ -47,20 +45,27 @@ type Client struct {
 	ActionService *ActionService
 }
 
-// ErrorHandler defines the interface for implementing response handler to use
-// for responses with response codes > 2xx
-type ErrorHandler interface {
-	HandleError(client *Client, request *RetryableRequest, response *http.Response)
-	GetMaxAttempts() uint
-	GetMaxRetriesByError(errorType string) uint
-}
-
-// RetryableRequest extends net/http.Request to track number of total attempts
-// and error counts by type of error
-type RetryableRequest struct {
+// Request extends net/http.Request to track number of total attempts and error
+// counts by type of error
+type Request struct {
 	*http.Request
 	NumAttempts     uint
 	NumErrorsByType map[string]uint
+}
+
+// GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
+func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
+	code := fmt.Sprintf("%d", respCode)
+	if val, ok := r.NumErrorsByType[code]; ok {
+		return val
+	}
+	return 0
+}
+
+// ResponseHandler defines the interface for implementing custom response
+// handling logic
+type ResponseHandler interface {
+	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
 }
 
 // Config is used to set the client specific attributes
@@ -73,6 +78,8 @@ type Config struct {
 	TenantID string
 	// Timeout
 	Timeout time.Duration
+	// ResponseHandler to support additional response handling logic
+	ResponseHandler ResponseHandler
 }
 
 // service provides the interface between client and services
@@ -81,7 +88,7 @@ type service struct {
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*RetryableRequest, error) {
+func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -90,7 +97,7 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*RetryableR
 		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
 	}
 	request.Header.Set("Content-Type", "application/json")
-	retryRequest := &RetryableRequest{request, 0, make(map[string]uint)}
+	retryRequest := &Request{request, 0, make(map[string]uint)}
 	return retryRequest, nil
 }
 
@@ -151,13 +158,25 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *RetryableRequest) (*http.Response, error) {
+func (c *Client) Do(req *Request) (*http.Response, error) {
+	req.NumAttempts++
 	response, err := c.httpClient.Do(req.Request)
 	if err != nil {
 		return nil, err
 	}
-	if c.ErrorHandler != nil {
-		c.ErrorHandler.HandleError(c, req, response)
+	// If error response found, record number of errors by response code
+	if response.StatusCode >= 400 {
+		// TODO: This could be extended to include SSC error fields in addition
+		// to response code
+		code := fmt.Sprintf("%d", response.StatusCode)
+		if _, ok := req.NumErrorsByType[code]; ok {
+			req.NumErrorsByType[code]++
+		} else {
+			req.NumErrorsByType[code] = 1
+		}
+	}
+	if c.config.ResponseHandler != nil {
+		response, err = c.config.ResponseHandler.HandleResponse(c, req, response)
 	}
 	return response, err
 }
