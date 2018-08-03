@@ -105,10 +105,10 @@ type Context struct {
 }
 
 const (
-	defaultAuthnPath     = "default/api/v1/authn"
-	defaultAuthorizePath = "default/oauth2/%s/v1/authorize"
-	defaultKeysPath      = "default/oauth2/%s/v1/keys"
-	defaultTokenPath     = "default/oauth2/%s/v1/token"
+	defaultAuthnPath     = "api/v1/authn"
+	defaultAuthorizePath = "oauth2/default/v1/authorize"
+	defaultKeysPath      = "oauth2/default/v1/keys"
+	defaultTokenPath     = "oauth2/default/v1/token"
 )
 
 type Client struct {
