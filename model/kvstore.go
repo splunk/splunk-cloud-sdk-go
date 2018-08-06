@@ -31,24 +31,6 @@ type CollectionDefinition struct {
 	Collection string `json:"collection"`
 }
 
-// CreateCollectionResponse create collection response
-type CreateCollectionResponse struct {
-
-	// name
-	// Max Length: 45
-	// Min Length: 1
-	Name string `json:"name"`
-}
-
-// CreateNamespaceResponse create namespace response
-type CreateNamespaceResponse struct {
-
-	// name
-	// Max Length: 45
-	// Min Length: 1
-	Name string `json:"name"`
-}
-
 // Error error reason
 type Error struct {
 

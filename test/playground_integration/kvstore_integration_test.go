@@ -15,6 +15,7 @@ import (
 
 // Test variables
 var testIndex = "integtestindex"
+var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 
 // --------------------------------------------------------------------------------
 // Admin Endpoints
@@ -23,12 +24,16 @@ var testIndex = "integtestindex"
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
-	response, err := getClient(t).KVStoreService.GetCollectionStats(testutils.TestCollection)
+	response, err := getClient(t).KVStoreService.GetCollectionStats(kvCollection)
 	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 }
@@ -48,10 +53,14 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
@@ -59,68 +68,102 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	indexDescription, err := getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{
 		Name:   testIndex,
 		Fields: fields[:]},
-		testutils.TestCollection)
+		kvCollection)
 	require.Nil(t, err)
 	require.NotEmpty(t, indexDescription)
-	assert.Equal(t, indexDescription.Collection, testutils.TestCollection)
+	assert.Equal(t, indexDescription.Collection, kvCollection)
 
 	// Validate if the index was created
-	indexes, err := getClient(t).KVStoreService.ListIndexes(testutils.TestCollection)
+	indexes, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
 	require.Nil(t, err)
 	require.NotNil(t, indexes)
 	assert.Equal(t, len(indexes), 1)
 	assert.Equal(t, indexes[0].Name, testIndex)
 
 	// Delete the test index
-	err = getClient(t).KVStoreService.DeleteIndex(testutils.TestCollection, testIndex)
+	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	assert.Nil(t, err)
 
 	// Validate if the index was deleted
-	result, err := getClient(t).KVStoreService.ListIndexes(testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
 	assert.Nil(t, err)
 	require.NotNil(t, result)
 	assert.Equal(t, len(result), 0)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Test CreateIndex for 422 Unprocessable Entity error
 func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	// Create Index
-	_, err := getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{Name: testIndex, Fields: nil}, testutils.TestCollection)
+	_, err = getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{Name: testIndex, Fields: nil}, kvCollection)
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 422, "Expected error code 422")
 	assert.True(t, err.(*util.HTTPError).Message == "422 Unprocessable Entity", "Expected error message should be 422 Unprocessable Entity")
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
-// Test CreateIndex for 404 Not Found error
+// Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
 func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
+	// Create the test collection
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
-	_, err := getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{Name: testIndex, Fields: fields[:]}, testutils.TestCollection)
+	_, err = getClient(t).KVStoreService.CreateIndex(model.IndexDefinition{Name: testIndex, Fields: fields[:]}, testutils.TestCollection)
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Test DeleteIndex for 404 Index not found error
 func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	// DeleteIndex
-	err := getClient(t).KVStoreService.DeleteIndex(testutils.TestCollection, testIndex)
+	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // --------------------------------------------------------------------------------
@@ -131,25 +174,37 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 // Test InsertRecords() kvstore service endpoint against nova playground
 func TestCreateRecords(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	CreateTestRecord(t)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Test getRecordByKey() kvstore service endpoint against the nova playground
 func TestGetRecordByKey(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	keys := CreateTestRecord(t)
 
-	result, err := getClient(t).KVStoreService.GetRecordByKey(testutils.TestCollection, keys[0])
+	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 
 	require.Nil(t, err)
 	require.NotNil(t, result)
@@ -157,38 +212,54 @@ func TestGetRecordByKey(t *testing.T) {
 	assert.Equal(t, result["capacity_gb"], float64(8))
 	assert.Equal(t, result["description"], "This is a tiny amount of GB")
 	assert.Equal(t, result["size"], "tiny")
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
 func TestDeleteRecordByKey(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	keys := CreateTestRecord(t)
 
 	// Delete record by key
-	err := getClient(t).KVStoreService.DeleteRecordByKey(testutils.TestCollection, keys[0])
+	err = getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
 	require.Nil(t, err)
 
 	// Validate that the record has been deleted
-	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(testutils.TestCollection, keys[0])
+	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 	assert.Nil(t, retrievedRecordsByKey)
 
-	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
 	require.NotNil(t, retrievedRecords)
 	assert.Equal(t, len(retrievedRecords), 2)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
 func TestDeleteRecord(t *testing.T) {
 	// Create the test collection
-	createKVCollection(t, testutils.TestCollection)
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
 
-	// Remove the test collection used for testing
-	defer cleanupCollection(t)
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
 
 	// Create records
 	CreateTestRecord(t)
@@ -199,13 +270,17 @@ func TestDeleteRecord(t *testing.T) {
 	outerQuery.Add("query", integrationTestQuery)
 	outerQuery.Encode()
 
-	err := getClient(t).KVStoreService.DeleteRecords(outerQuery, testutils.TestCollection)
+	err = getClient(t).KVStoreService.DeleteRecords(outerQuery, kvCollection)
 	require.Nil(t, err)
 
 	// Validate that the record has been deleted
-	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(testutils.TestCollection, nil)
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
 	require.NotNil(t, retrievedRecords)
 	assert.Equal(t, len(retrievedRecords), 2)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
 }
 
 // Create test record
@@ -233,34 +308,10 @@ func CreateTestRecord(t *testing.T) []string {
 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
 	require.Nil(t, err)
 
-	keys, err := getClient(t).KVStoreService.InsertRecords(testutils.TestCollection, res)
+	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
 	require.Nil(t, err)
 	require.NotNil(t, keys)
 	assert.Equal(t, len(keys), 3)
 
 	return keys
-}
-
-// Create test collection
-func createKVCollection(t *testing.T, collectionName string) (*model.CreateCollectionResponse, error) {
-
-	collection, err := getClient(t).KVStoreService.CreateCollection(model.CreateCollectionResponse{Name: collectionName})
-	assert.Emptyf(t, err, "Error creating the collection: %s", err)
-	require.NotNil(t, collection)
-	require.IsType(t, model.CreateCollectionResponse{}, *collection)
-
-	return collection, err
-}
-
-// Delete the test collections
-func cleanupCollection(t *testing.T) {
-
-	client := getClient(t)
-	result, err := client.KVStoreService.GetCollections()
-	assert.Emptyf(t, err, "Error retrieving the collections: %s", err)
-
-	for _, item := range result {
-		err := client.KVStoreService.DeleteCollection(item.Collection)
-		assert.Emptyf(t, err, "Error deleting the collection: %s", err)
-	}
 }

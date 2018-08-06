@@ -32,41 +32,6 @@ func (c *KVStoreService) GetCollectionStats(collection string) (*model.Collectio
 	return &result, err
 }
 
-// CreateCollection creates a new collection
-func (c *KVStoreService) CreateCollection(collectionName model.CreateCollectionResponse) (*model.CreateCollectionResponse, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := c.client.Post(url, collectionName)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, err
-	}
-	var result model.CreateCollectionResponse
-	err = util.ParseResponse(&result, response)
-	return &result, err
-}
-
-// RenameCollection renames an existing collection
-func (c *KVStoreService) RenameCollection(collectionName string, updatedCollectionName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName)
-	if err != nil {
-		return err
-	}
-	response, err := c.client.Patch(url, updatedCollectionName)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 // GetCollections gets all the collections
 func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
@@ -83,22 +48,6 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 	var result []model.CollectionDefinition
 	err = util.ParseResponse(&result, response)
 	return result, err
-}
-
-// DeleteCollection deletes the specified collection
-func (c *KVStoreService) DeleteCollection(collectionName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName)
-	if err != nil {
-		return err
-	}
-	response, err := c.client.Delete(url)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // GetServiceHealthStatus returns Service Health Status
