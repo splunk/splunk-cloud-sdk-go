@@ -142,6 +142,11 @@ func NewClient(host string, authnPath string, authorizePath string, keysPath str
 	}
 }
 
+// NewDefaultClient returns a new IdP client object with default routes.
+func NewDefaultClient(host string) *Client {
+	return NewClient(host, "", "", "", "")
+}
+
 // Returns a new HTTP client object with redirects disabled.
 func newHttpClient() *http.Client {
 	return &http.Client{

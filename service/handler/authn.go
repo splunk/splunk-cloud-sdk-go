@@ -33,6 +33,12 @@ func (rh *AuthnResponseHandler) HandleResponse(client *service.Client, request *
 	if err != nil {
 		return response, err
 	}
+	// Replace the access token in the request's Authorization: Bearer header
+	request.UpdateToken(token)
+	// Re-initialize body (otherwise body is empty)
+	body, err := request.GetBody()
+	request.Body = body
+	// Update the client such that future requests will use the new access token
 	client.UpdateToken(token)
 	// Retry the request with the updated token
 	return client.Do(request)
@@ -49,7 +55,7 @@ type RefreshTokenAuthnResponseHandler struct {
 // NewRefreshTokenAuthnResponseHandler initializes a new response handler
 func NewRefreshTokenAuthnResponseHandler(idpHost string, clientID string, scope string, refreshToken string) *RefreshTokenAuthnResponseHandler {
 	handler := &RefreshTokenAuthnResponseHandler{
-		AuthnResponseHandler: &AuthnResponseHandler{IdpClient: idp.NewClient(idpHost, "", "", "", "")},
+		AuthnResponseHandler: &AuthnResponseHandler{IdpClient: idp.NewDefaultClient(idpHost)},
 		ClientID:             clientID,
 		Scope:                scope,
 		RefreshToken:         refreshToken,
@@ -79,7 +85,7 @@ type ClientCredentialsAuthnResponseHandler struct {
 func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, clientSecret string, scope string) *ClientCredentialsAuthnResponseHandler {
 	handler := &ClientCredentialsAuthnResponseHandler{
 		AuthnResponseHandler: &AuthnResponseHandler{
-			IdpClient: idp.NewClient(idpHost, "", "", "", ""),
+			IdpClient: idp.NewDefaultClient(idpHost),
 		},
 		ClientID:     clientID,
 		ClientSecret: clientSecret,

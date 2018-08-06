@@ -62,6 +62,11 @@ func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	return 0
 }
 
+// UpdateToken replaces the access token in the Authorization: Bearer header
+func (r *Request) UpdateToken(accessToken string) {
+	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
+}
+
 // ResponseHandler defines the interface for implementing custom response
 // handling logic
 type ResponseHandler interface {
@@ -70,7 +75,7 @@ type ResponseHandler interface {
 
 // Config is used to set the client specific attributes
 type Config struct {
-	// Authorization token
+	// Token to be sent in the Authorization: Bearer header
 	Token string
 	// Url string
 	URL string
@@ -166,8 +171,8 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 	}
 	// If error response found, record number of errors by response code
 	if response.StatusCode >= 400 {
-		// TODO: This could be extended to include SSC error fields in addition
-		// to response code
+		// TODO: This could be extended to include specific SSC error fields in
+		// addition to response code
 		code := fmt.Sprintf("%d", response.StatusCode)
 		if _, ok := req.NumErrorsByType[code]; ok {
 			req.NumErrorsByType[code]++
@@ -236,9 +241,9 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// UpdateToken updates the authorization token
-func (c *Client) UpdateToken(token string) {
-	c.config.Token = token
+// UpdateToken the access token in the Authorization: Bearer header
+func (c *Client) UpdateToken(accessToken string) {
+	c.config.Token = accessToken
 }
 
 // GetURL returns the client config url string as a url.URL
@@ -252,8 +257,8 @@ func (c *Client) GetURL() (*url.URL, error) {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
-	if config.TenantID == "" || config.Token == "" || config.URL == "" {
-		return nil, errors.New("at least one of tenantID, token, or url must be set")
+	if config.TenantID == "" || config.URL == "" {
+		return nil, errors.New("tenantID and url must be set")
 	}
 
 	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
