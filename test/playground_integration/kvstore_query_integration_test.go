@@ -201,7 +201,6 @@ func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -295,7 +294,6 @@ func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(kvCollection, filters)
-
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 
@@ -320,7 +318,6 @@ func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -362,7 +359,6 @@ func TestKVStoreQueryOffsetValidInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -401,7 +397,6 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -415,7 +410,6 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(kvCollection, filters)
-
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 
@@ -634,7 +628,6 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -701,7 +694,6 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)

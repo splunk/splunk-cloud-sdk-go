@@ -33,7 +33,7 @@ func TestGetServiceHealthStatus(t *testing.T) {
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
-	assert.Equal(t, "healthy", result.Status)
+	assert.Equal(t, model.PingOKBodyStatusHealthy, result.Status)
 }
 
 // Stubby test for ListIndexes() kvstore service endpoint

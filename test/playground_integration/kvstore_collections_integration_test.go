@@ -235,7 +235,6 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -276,7 +275,6 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -329,7 +327,6 @@ func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
-
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 
@@ -396,7 +393,6 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -435,7 +431,6 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -449,7 +444,6 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
-
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 
@@ -474,7 +468,6 @@ func TestKVStoreCollectionsListRecordsOffsetPositiveOutOfBoundsInput(t *testing.
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -563,7 +556,6 @@ func TestKVStoreCollectionsListRecordsOrderByNonExisentInput(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -617,7 +609,6 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)

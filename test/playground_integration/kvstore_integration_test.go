@@ -21,6 +21,10 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 // Admin Endpoints
 // --------------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------------
+// Admin Endpoints
+// --------------------------------------------------------------------------------
+
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection
@@ -43,6 +47,7 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
 	require.Empty(t, err)
 	assert.NotEmpty(t, response)
+	assert.Equal(t, model.PingOKBodyStatusHealthy, response.Status)
 }
 
 // --------------------------------------------------------------------------------
