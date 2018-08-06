@@ -3,8 +3,10 @@ package playgroundintegration
 import (
 	"testing"
 
+	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var recordOne = map[string]string{
@@ -699,6 +701,83 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		assert.NotNil(t, value)
 		assert.IsType(t, "string", value)
 	}
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
+}
+
+// Test GetCollections to retrieve all the collections belonging to the tenant
+func TestIntegrationGetCollections(t *testing.T) {
+	// Create the test collection
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
+	require.Nil(t, err)
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
+	// Retrieve all the collections present in the tenant
+	collections, err := getClient(t).KVStoreService.GetCollections()
+	require.Nil(t, err)
+	require.NotNil(t, collections)
+	assert.Len(t, collections, 1)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
+}
+
+// Test ExportCollection to retrieve collection records for content-type text/csv
+func TestIntegrationExportCollectionCsvContentType(t *testing.T) { // Create the test collection
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
+	require.Nil(t, err)
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
+	// Create test records in the collection
+	CreateTestRecord(t)
+
+	// Export the collection to an external file (response is a csv content string)
+	response, err := getClient(t).KVStoreService.ExportCollection(kvCollection, model.CSV)
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+	assert.NotEmpty(t, response)
+
+	// Delete the test collection
+	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
+	assert.Nil(t, err)
+}
+
+// Test ExportCollection to retrieve collection records for content-type application/gzip
+func TestIntegrationExportCollectionGzipContentType(t *testing.T) {
+	// Create the test collection
+	dataset, err := createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
+	require.Nil(t, err)
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
+	// Create test records in the collection
+	CreateTestRecord(t)
+
+	// Export the collection to an external file (response is a gzipped csv content string)
+	response, err := getClient(t).KVStoreService.ExportCollection(kvCollection, model.GZIP)
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+	assert.NotEmpty(t, response)
 
 	// Delete the test collection
 	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)

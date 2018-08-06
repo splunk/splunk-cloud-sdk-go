@@ -117,3 +117,14 @@ type Key struct {
 
 // Record is a JSON document entity contained in collections
 type Record map[string]interface{}
+
+// ExportCollectionContentType used to specify the export collection file content type
+type ExportCollectionContentType string
+
+const (
+	// CSV captures enum value "csv"
+	CSV ExportCollectionContentType = "csv"
+
+	// GZIP captures enum value "gzip"
+	GZIP ExportCollectionContentType = "gzip"
+)

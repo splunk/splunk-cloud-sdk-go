@@ -21,10 +21,6 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 // Admin Endpoints
 // --------------------------------------------------------------------------------
 
-// --------------------------------------------------------------------------------
-// Admin Endpoints
-// --------------------------------------------------------------------------------
-
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection

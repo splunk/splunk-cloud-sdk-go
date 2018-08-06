@@ -5,6 +5,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"io/ioutil"
 )
 
 const kvStoreServicePrefix = "kvstore"
@@ -32,6 +33,24 @@ func (c *KVStoreService) GetCollectionStats(collection string) (*model.Collectio
 	return &result, err
 }
 
+// GetServiceHealthStatus returns Service Health Status
+func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(url)
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.PingOKBody
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
 // GetCollections gets all the collections
 func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
@@ -50,22 +69,37 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 	return result, err
 }
 
-// GetServiceHealthStatus returns Service Health Status
-func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
+// ExportCollection exports the specified collection records to an external file
+func (c *KVStoreService) ExportCollection(collectionName string, contentType model.ExportCollectionContentType) (string, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName, "export")
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	response, err := c.client.Get(url)
+
+	var acceptType string
+	if contentType == model.CSV {
+		acceptType = "text/csv"
+	} else {
+		acceptType = "application/gzip"
+	}
+
+	headers := map[string]string{
+		"Accept": acceptType,
+	}
+	response, err := c.client.GetWithHeaders(url, headers)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	var result model.PingOKBody
-	err = util.ParseResponse(&result, response)
-	return &result, err
+
+	records, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(records), nil
 }
 
 // CreateIndex posts a new index to be added to the collection.
