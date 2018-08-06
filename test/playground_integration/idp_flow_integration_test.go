@@ -20,8 +20,8 @@ var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
-// IdPHost - host to retrieve access token from
-var IdPHost = os.Getenv("IDP_HOST")
+// IDPHost - host to retrieve access token from
+var IDPHost = os.Getenv("IDP_HOST")
 
 // RefreshClientID - Okta app Client Id for SDK Native App
 var RefreshClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
@@ -47,7 +47,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		URL:             url,
 		TenantID:        testutils.TestTenantID,
 		Timeout:         testutils.TestTimeOut,
-		ResponseHandler: handler.NewRefreshTokenAuthnResponseHandler(IdPHost, RefreshClientID, RefreshTokenScope, RefreshToken),
+		ResponseHandler: handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken),
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
@@ -77,7 +77,7 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 		URL:             url,
 		TenantID:        testutils.TestTenantID,
 		Timeout:         testutils.TestTimeOut,
-		ResponseHandler: handler.NewClientCredentialsAuthnResponseHandler(IdPHost, BackendClientID, BackendClientSecret, BackendServiceScope),
+		ResponseHandler: handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope),
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 

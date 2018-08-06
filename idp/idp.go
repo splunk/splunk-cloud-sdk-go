@@ -69,14 +69,15 @@ func gets(m map[string]interface{}, key string) (string, error) {
 	return result, nil
 }
 
-// Represents a SSC error response
-type HttpError struct {
+// HTTPError Represents an error response
+type HTTPError struct {
 	StatusCode int                    `json:"status,omitempty"`
 	Body       map[string]interface{} `json:"body,omitempty"`
 }
 
-func (self *HttpError) Error() string {
-	b, err := json.Marshal(self)
+// Error handles marshalling of the HttpError to error type
+func (e *HTTPError) Error() string {
+	b, err := json.Marshal(e)
 	if err != nil {
 		return err.Error()
 	}
@@ -85,7 +86,7 @@ func (self *HttpError) Error() string {
 
 // Returns a golang error corresponding to the given http response.
 func httpError(response *http.Response) error {
-	var result = &HttpError{StatusCode: response.StatusCode}
+	var result = &HTTPError{StatusCode: response.StatusCode}
 
 	// ignore if we cant read body details
 	_ = json.NewDecoder(response.Body).Decode(&result.Body)
@@ -93,14 +94,14 @@ func httpError(response *http.Response) error {
 	return result
 }
 
-// Represents an authentication "context", which is the result of a successful
-// OAuth authentication flow.
+// Context Represents an authentication "context", which is the result of a
+// successful OAuth authentication flow.
 type Context struct {
 	TokenType    string `json:"token_type"`
 	AccessToken  string `json:"access_token"`
 	ExpiresIn    int    `json:"expires_in"`
 	Scope        string `json:"scope"`
-	IdToken      string `json:"id_token,omitempty"`
+	IDToken      string `json:"id_token,omitempty"`
 	RefreshToken string `json:"refresh_token,omitempty"`
 }
 
@@ -111,6 +112,7 @@ const (
 	defaultTokenPath     = "oauth2/default/v1/token"
 )
 
+// Client captures host and route information for the IdP endpoints
 type Client struct {
 	Host          string
 	PathAuthn     string
@@ -119,7 +121,7 @@ type Client struct {
 	PathToken     string
 }
 
-// Returns a new IdP client object.
+// NewClient Returns a new IdP client object.
 func NewClient(host string, authnPath string, authorizePath string, keysPath string, tokenPath string) *Client {
 	if authnPath == "" {
 		authnPath = defaultAuthnPath
@@ -148,7 +150,7 @@ func NewDefaultClient(host string) *Client {
 }
 
 // Returns a new HTTP client object with redirects disabled.
-func newHttpClient() *http.Client {
+func newHTTPClient() *http.Client {
 	return &http.Client{
 		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
 			return http.ErrUseLastResponse
@@ -213,7 +215,7 @@ func get(url string, params url.Values) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newHttpClient().Do(request)
+	return newHTTPClient().Do(request)
 }
 
 func post(url string, body interface{}) (*http.Response, error) {
@@ -221,7 +223,7 @@ func post(url string, body interface{}) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newHttpClient().Do(request)
+	return newHTTPClient().Do(request)
 }
 
 func formPost(url string, data url.Values) (*http.Response, error) {
@@ -229,7 +231,7 @@ func formPost(url string, data url.Values) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	return newHttpClient().Do(request)
+	return newHTTPClient().Do(request)
 }
 
 // Returns a synthetic state value.
@@ -239,21 +241,21 @@ func state() string {
 }
 
 // Return a full URL basd on the given path template.
-func (self *Client) url(path string) string {
-	return fmt.Sprintf("%s%s", self.Host, path)
+func (c *Client) url(path string) string {
+	return fmt.Sprintf("%s%s", c.Host, path)
 }
 
-// Authenticate using the "client credentials" flow.
-func (self *Client) ClientFlow(clientId, clientSecret, scope string) (*Context, error) {
+// ClientFlow will authenticate using the "client credentials" flow.
+func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, error) {
 	form := url.Values{
 		"grant_type": {"client_credentials"},
 		"scope":      {scope}}
-	request, err := newFormPost(self.url(self.PathToken), form)
+	request, err := newFormPost(c.url(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
-	request.SetBasicAuth(clientId, clientSecret)
-	response, err := newHttpClient().Do(request)
+	request.SetBasicAuth(clientID, clientSecret)
+	response, err := newHTTPClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -264,23 +266,24 @@ func (self *Client) ClientFlow(clientId, clientSecret, scope string) (*Context, 
 	return decode(response)
 }
 
-func (self *Client) CodeFlow(clientId, clientSecret, redirectUri, scope, username, password string) (*Context, error) {
+// CodeFlow will authenticate using an authorization code.
+func (c *Client) CodeFlow(clientID, clientSecret, redirectURI, scope, username, password string) (*Context, error) {
 	// retrieve one-time session token
-	sessionToken, err := self.GetSessionToken(username, password)
+	sessionToken, err := c.GetSessionToken(username, password)
 	if err != nil {
 		return nil, err
 	}
 
 	// request authorization code
 	params := url.Values{
-		"client_id":     {clientId},
+		"client_id":     {clientID},
 		"nonce":         {"none"},
-		"redirect_uri":  {redirectUri},
+		"redirect_uri":  {redirectURI},
 		"response_type": {"code"},
 		"scope":         {scope},
 		"sessionToken":  {sessionToken},
 		"state":         {state()}}
-	response, err := get(self.url(self.PathAuthorize), params)
+	response, err := get(c.url(c.PathAuthorize), params)
 	if err != nil {
 		return nil, err
 	}
@@ -290,23 +293,23 @@ func (self *Client) CodeFlow(clientId, clientSecret, redirectUri, scope, usernam
 
 	// retrieve authorization code from location url query string
 	location := response.Header.Get("Location")
-	locationUrl, err := url.Parse(location)
+	locationURL, err := url.Parse(location)
 	if err != nil {
 		return nil, err
 	}
-	code := locationUrl.Query().Get("code")
+	code := locationURL.Query().Get("code")
 
 	// exchange authorization code for token(s)
 	data := url.Values{
 		"code":         {code},
 		"grant_type":   {"authorization_code"},
-		"redirect_uri": {redirectUri}}
-	request, err := newFormPost(self.url(self.PathToken), data)
+		"redirect_uri": {redirectURI}}
+	request, err := newFormPost(c.url(c.PathToken), data)
 	if err != nil {
 		return nil, err
 	}
-	request.SetBasicAuth(clientId, clientSecret)
-	response, err = newHttpClient().Do(request)
+	request.SetBasicAuth(clientID, clientSecret)
+	response, err = newHTTPClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -318,13 +321,13 @@ func (self *Client) CodeFlow(clientId, clientSecret, redirectUri, scope, usernam
 	return decode(response)
 }
 
-// Returns a one-time session token by authenticating using a
+// GetSessionToken Returns a one-time session token by authenticating using a
 // "primary" endpoint (/authn).
-func (self *Client) GetSessionToken(username, password string) (string, error) {
+func (c *Client) GetSessionToken(username, password string) (string, error) {
 	body := map[string]string{
 		"username": username,
 		"password": password}
-	response, err := post(self.url(self.PathAuthn), body)
+	response, err := post(c.url(c.PathAuthn), body)
 	if err != nil {
 		return "", err
 	}
@@ -371,9 +374,10 @@ func createCodeChallenge(n int) (string, string, error) {
 	return cv, cc, nil
 }
 
-func (self *Client) PKCEFlow(clientId, redirectUri, scope, username, password string) (*Context, error) {
+// PKCEFlow will authenticate using the "proof key for code exchange" flow.
+func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password string) (*Context, error) {
 	// retrieve one-time session token
-	sessionToken, err := self.GetSessionToken(username, password)
+	sessionToken, err := c.GetSessionToken(username, password)
 	if err != nil {
 		return nil, err
 	}
@@ -382,16 +386,16 @@ func (self *Client) PKCEFlow(clientId, redirectUri, scope, username, password st
 
 	// request authorization code
 	params := url.Values{
-		"client_id":             {clientId},
+		"client_id":             {clientID},
 		"code_challenge":        {cc},
 		"code_challenge_method": {"S256"},
 		"nonce":                 {"none"},
-		"redirect_uri":          {redirectUri},
+		"redirect_uri":          {redirectURI},
 		"response_type":         {"code"},
 		"scope":                 {scope},
 		"sessionToken":          {sessionToken},
 		"state":                 {state()}}
-	response, err := get(self.url(self.PathAuthorize), params)
+	response, err := get(c.url(c.PathAuthorize), params)
 	if err != nil {
 		return nil, err
 	}
@@ -401,20 +405,20 @@ func (self *Client) PKCEFlow(clientId, redirectUri, scope, username, password st
 
 	// retrieve the authorization code from the redirect url query string
 	location := response.Header.Get("Location")
-	locationUrl, err := url.Parse(location)
+	locationURL, err := url.Parse(location)
 	if err != nil {
 		return nil, err
 	}
-	code := locationUrl.Query().Get("code")
+	code := locationURL.Query().Get("code")
 
 	// exchange authorization code for token(s)
 	form := url.Values{
-		"client_id":     {clientId},
+		"client_id":     {clientID},
 		"code":          {code},
 		"code_verifier": {cv},
 		"grant_type":    {"authorization_code"},
-		"redirect_uri":  {redirectUri}}
-	response, err = formPost(self.url(self.PathToken), form)
+		"redirect_uri":  {redirectURI}}
+	response, err = formPost(c.url(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
@@ -448,7 +452,7 @@ func decodeFragment(fragment string) (*Context, error) {
 			}
 			context.ExpiresIn = expiresIn
 		case "id_token":
-			context.IdToken = v
+			context.IDToken = v
 		case "refresh_token":
 			context.RefreshToken = v
 		case "scope":
@@ -464,57 +468,60 @@ func decodeFragment(fragment string) (*Context, error) {
 	return context, nil
 }
 
-func (self *Client) ImplicitFlow(clientId, redirectUri, scope, username, password string) (*Context, error) {
+// ImplicitFlow will authenticate using the "implicit" flow.
+func (c *Client) ImplicitFlow(clientID, redirectURI, scope, username, password string) (*Context, error) {
 	// retrieve one-time session token
-	sessionToken, err := self.GetSessionToken(username, password)
+	sessionToken, err := c.GetSessionToken(username, password)
 	if err != nil {
 		return nil, err
 	}
 
 	// request authorization code
 	params := url.Values{
-		"client_id":     {clientId},
+		"client_id":     {clientID},
 		"nonce":         {"none"},
-		"redirect_uri":  {redirectUri},
+		"redirect_uri":  {redirectURI},
 		"response_type": {"token id_token"},
 		"scope":         {scope},
 		"sessionToken":  {sessionToken},
 		"state":         {state()}}
-	response, err := get(self.url(self.PathAuthorize), params)
+	response, err := get(c.url(c.PathAuthorize), params)
 	if err != nil {
 		return nil, err
 	}
 
 	// retrieve token(s) from location url fragment
 	location := response.Header.Get("Location")
-	locationUrl, err := url.Parse(location)
+	locationURL, err := url.Parse(location)
 	if err != nil {
 		return nil, err
 	}
-	return decodeFragment(locationUrl.Fragment)
+	return decodeFragment(locationURL.Fragment)
 }
 
-func (self *Client) Refresh(clientId, scope, refreshToken string) (*Context, error) {
+// Refresh will authenticate using a refresh token.
+func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error) {
 	form := url.Values{
-		"client_id":     {clientId},
+		"client_id":     {clientID},
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
-	response, err := formPost(self.url(self.PathToken), form)
+	response, err := formPost(c.url(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
 	return decode(response)
 }
 
-func (self *Client) ROPWFlow(clientId, scope, username, password string) (*Context, error) {
+// ROPWFlow will authenticate using the "resource owner password" flow.
+func (c *Client) ROPWFlow(clientID, scope, username, password string) (*Context, error) {
 	form := url.Values{
-		"client_id":  {clientId},
+		"client_id":  {clientID},
 		"grant_type": {"password"},
 		"scope":      {scope},
 		"username":   {username},
 		"password":   {password}}
-	response, err := formPost(self.url(self.PathToken), form)
+	response, err := formPost(c.url(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
