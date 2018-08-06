@@ -54,7 +54,7 @@ func TestGetIndexes(t *testing.T) {
 func TestCreateIndex(t *testing.T) {
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = CreateField(-1, testField1)
-	result, err := getClient(t).KVStoreService.CreateIndex(CreateIndex(fields[:], testIndex2), testutils.TestCollection)
+	result, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, CreateIndex(fields[:], testIndex2))
 	require.Nil(t, err)
 	require.NotEmpty(t, result)
 	assert.Equal(t, result.Name, testIndex1)
@@ -162,7 +162,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 
 // Stubby test for DeleteRecords() kvstore service endpoint
 func TestDeleteRecord(t *testing.T) {
-	err := getClient(t).KVStoreService.DeleteRecords(nil, testutils.TestCollection)
+	err := getClient(t).KVStoreService.DeleteRecords(testutils.TestCollection, nil)
 	require.Nil(t, err)
 }
 
@@ -171,7 +171,7 @@ func TestDeleteRecordWithQuery(t *testing.T) {
 	query := make(url.Values)
 	query.Add("query", "{\"size\": \"tiny\", \"capacity_gb\": 8}")
 
-	err := getClient(t).KVStoreService.DeleteRecords(query, testutils.TestCollection)
+	err := getClient(t).KVStoreService.DeleteRecords(testutils.TestCollection, query)
 	require.Nil(t, err)
 }
 

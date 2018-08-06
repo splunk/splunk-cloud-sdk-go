@@ -19,7 +19,7 @@ import (
 // --------
 func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -33,10 +33,6 @@ func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 // --------
@@ -44,7 +40,7 @@ func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 // --------
 func TestKVStoreQueryReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -76,10 +72,6 @@ func TestKVStoreQueryReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) 
 			assert.NotNil(t, value)
 		}
 	}
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryFieldsValidInclude(t *testing.T) {
@@ -89,7 +81,7 @@ func TestKVStoreQueryFieldsValidInclude(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -126,10 +118,6 @@ func TestKVStoreQueryFieldsValidInclude(t *testing.T) {
 			assert.EqualValues(t, "TEST_KEY_01", key)
 		}
 	}
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryFieldsValidExclude(t *testing.T) {
@@ -139,7 +127,7 @@ func TestKVStoreQueryFieldsValidExclude(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -176,10 +164,6 @@ func TestKVStoreQueryFieldsValidExclude(t *testing.T) {
 			assert.NotEqual(t, "TEST_KEY_01", key)
 		}
 	}
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
@@ -191,7 +175,7 @@ func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -216,10 +200,6 @@ func TestKVStoreQueryFieldsValidIncludeAndExclude(t *testing.T) {
 	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 // --------
@@ -231,7 +211,7 @@ func TestKVStoreQueryCountValidInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -258,10 +238,6 @@ func TestKVStoreQueryCountValidInput(t *testing.T) {
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
@@ -270,7 +246,7 @@ func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -296,10 +272,6 @@ func TestKVStoreQueryCountNegativeOutOfBoundsInput(t *testing.T) {
 	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
@@ -308,7 +280,7 @@ func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -334,10 +306,6 @@ func TestKVStoreQueryCountPositiveOutOfBoundsInput(t *testing.T) {
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 // --------
@@ -349,7 +317,7 @@ func TestKVStoreQueryOffsetValidInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -375,10 +343,6 @@ func TestKVStoreQueryOffsetValidInput(t *testing.T) {
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
@@ -387,7 +351,7 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 	}
 
 	/// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -412,10 +376,6 @@ func TestKVStoreQueryOffsetNegativeOutOfBoundsInput(t *testing.T) {
 	recordsAfterInsert, err := getClient(t).KVStoreService.QueryRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryOffsetPositiveOutOfBoundsInput(t *testing.T) {
@@ -424,7 +384,7 @@ func TestKVStoreQueryOffsetPositiveOutOfBoundsInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -451,10 +411,6 @@ func TestKVStoreQueryOffsetPositiveOutOfBoundsInput(t *testing.T) {
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 0)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 // --------
@@ -466,7 +422,7 @@ func TestKVStoreQueryOrderByValidInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -501,10 +457,6 @@ func TestKVStoreQueryOrderByValidInput(t *testing.T) {
 	assert.EqualValues(t, "A", recordsAfterInsert[0]["TEST_KEY_02"])
 	assert.EqualValues(t, "B", recordsAfterInsert[1]["TEST_KEY_02"])
 	assert.EqualValues(t, "C", recordsAfterInsert[2]["TEST_KEY_02"])
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 func TestKVStoreQueryOrderByNonExisentInput(t *testing.T) {
@@ -513,7 +465,7 @@ func TestKVStoreQueryOrderByNonExisentInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -548,10 +500,6 @@ func TestKVStoreQueryOrderByNonExisentInput(t *testing.T) {
 	assert.EqualValues(t, "A", recordsAfterInsert[0]["TEST_KEY_01"])
 	assert.EqualValues(t, "B", recordsAfterInsert[1]["TEST_KEY_01"])
 	assert.EqualValues(t, "C", recordsAfterInsert[2]["TEST_KEY_01"])
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 //--------
@@ -563,7 +511,7 @@ func TestKVStoreQueryQueryParameterInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -598,10 +546,6 @@ func TestKVStoreQueryQueryParameterInput(t *testing.T) {
 	assert.EqualValues(t, "A", recordsAfterInsert[0]["TEST_KEY_02"])
 	assert.EqualValues(t, "B", recordsAfterInsert[0]["TEST_KEY_03"])
 	assert.EqualValues(t, "C", recordsAfterInsert[0]["TEST_KEY_01"])
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 // --------
@@ -618,7 +562,7 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -648,10 +592,6 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 0)
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }
 
 //--------
@@ -684,7 +624,7 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 	}
 
 	// Create the test collection
-	dataset, err := createKVCollectionDataset(t,
+	createKVCollectionDataset(t,
 		testutils.TestNamespace,
 		testutils.TestCollection,
 		datasetOwner,
@@ -715,8 +655,4 @@ func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
 		assert.NotNil(t, value)
 		assert.IsType(t, "string", value)
 	}
-
-	// Delete the test collection
-	err = getClient(t).CatalogService.DeleteDataset(dataset.ID)
-	assert.Nil(t, err)
 }

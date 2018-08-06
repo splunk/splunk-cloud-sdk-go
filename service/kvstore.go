@@ -103,7 +103,7 @@ func (c *KVStoreService) ExportCollection(collectionName string, contentType mod
 }
 
 // CreateIndex posts a new index to be added to the collection.
-func (c *KVStoreService) CreateIndex(index model.IndexDefinition, collectionName string) (*model.IndexDescription, error) {
+func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDefinition) (*model.IndexDescription, error) {
 	postIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
@@ -218,7 +218,7 @@ func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) 
 }
 
 // DeleteRecords deletes records present in a given collection based on the provided query.
-func (c *KVStoreService) DeleteRecords(values url.Values, collectionName string) error {
+func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values) error {
 	deleteRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "query")
 	if err != nil {
 		return err
