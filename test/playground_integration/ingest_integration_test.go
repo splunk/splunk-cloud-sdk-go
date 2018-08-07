@@ -7,6 +7,7 @@ package playgroundintegration
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -15,7 +16,7 @@ import (
 )
 
 func TestIntegrationCreateEventSuccess(t *testing.T) {
-	timeValue := float64(1523637597)
+	timeValue := float64(time.Now().Unix() * 1000) // Unix millis
 	client := getClient(t)
 	clientURL, err := client.GetURL()
 	assert.Empty(t, err)
@@ -64,7 +65,7 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 	client := getClient(t)
 
 	metrics := []model.Metric{
-		{Name: "CPU", Value: 55.89,
+		{Name: "CPU", Value: 5.89,
 			Dimensions: map[string]string{"Server": "redhat"}, Unit: "percentage"},
 
 		{Name: "Memory", Value: 20.27,
@@ -76,7 +77,7 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 
 	metricEvent1 := model.MetricEvent{
 		Body:       metrics,
-		Timestamp:  1529020697,
+		Timestamp:  time.Now().Unix() * 1000,
 		Nanos:      1,
 		Source:     "mysource",
 		Sourcetype: "mysourcetype",
