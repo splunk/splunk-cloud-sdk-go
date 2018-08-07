@@ -10,6 +10,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
+	"io/ioutil"
 )
 
 const kvStoreServicePrefix = "kvstore"
@@ -37,39 +38,22 @@ func (c *KVStoreService) GetCollectionStats(collection string) (*model.Collectio
 	return &result, err
 }
 
-// CreateCollection creates a new collection
-func (c *KVStoreService) CreateCollection(collectionName model.CreateCollectionResponse) (*model.CreateCollectionResponse, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
+// GetServiceHealthStatus returns Service Health Status
+func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
 	if err != nil {
 		return nil, err
 	}
-
-	response, err := c.client.Post(url, collectionName)
+	response, err := c.client.Get(url)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.CreateCollectionResponse
+	var result model.PingOKBody
 	err = util.ParseResponse(&result, response)
 	return &result, err
-}
-
-// RenameCollection renames an existing collection
-func (c *KVStoreService) RenameCollection(collectionName string, updatedCollectionName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName)
-	if err != nil {
-		return err
-	}
-	response, err := c.client.Patch(url, updatedCollectionName)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // GetCollections gets all the collections
@@ -90,42 +74,41 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 	return result, err
 }
 
-// DeleteCollection deletes the specified collection
-func (c *KVStoreService) DeleteCollection(collectionName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName)
+// ExportCollection exports the specified collection records to an external file
+func (c *KVStoreService) ExportCollection(collectionName string, contentType model.ExportCollectionContentType) (string, error) {
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName, "export")
 	if err != nil {
-		return err
+		return "", err
 	}
-	response, err := c.client.Delete(url)
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
-// GetServiceHealthStatus returns Service Health Status
-func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
-	if err != nil {
-		return nil, err
+	var acceptType string
+	if contentType == model.CSV {
+		acceptType = "text/csv"
+	} else {
+		acceptType = "application/gzip"
 	}
-	response, err := c.client.Get(url)
+
+	headers := map[string]string{
+		"Accept": acceptType,
+	}
+	response, err := c.client.GetWithHeaders(url, headers)
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	var result model.PingOKBody
-	err = util.ParseResponse(&result, response)
-	return &result, err
+
+	records, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(records), nil
 }
 
 // CreateIndex posts a new index to be added to the collection.
-func (c *KVStoreService) CreateIndex(index model.IndexDefinition, collectionName string) (*model.IndexDescription, error) {
+func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDefinition) (*model.IndexDescription, error) {
 	postIndexURL, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
@@ -240,7 +223,7 @@ func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) 
 }
 
 // DeleteRecords deletes records present in a given collection based on the provided query.
-func (c *KVStoreService) DeleteRecords(values url.Values, collectionName string) error {
+func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values) error {
 	deleteRecordURL, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "query")
 	if err != nil {
 		return err

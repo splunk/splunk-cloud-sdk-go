@@ -36,24 +36,6 @@ type CollectionDefinition struct {
 	Collection string `json:"collection"`
 }
 
-// CreateCollectionResponse create collection response
-type CreateCollectionResponse struct {
-
-	// name
-	// Max Length: 45
-	// Min Length: 1
-	Name string `json:"name"`
-}
-
-// CreateNamespaceResponse create namespace response
-type CreateNamespaceResponse struct {
-
-	// name
-	// Max Length: 45
-	// Min Length: 1
-	Name string `json:"name"`
-}
-
 // Error error reason
 type Error struct {
 
@@ -140,3 +122,14 @@ type Key struct {
 
 // Record is a JSON document entity contained in collections
 type Record map[string]interface{}
+
+// ExportCollectionContentType used to specify the export collection file content type
+type ExportCollectionContentType string
+
+const (
+	// CSV captures enum value "csv"
+	CSV ExportCollectionContentType = "csv"
+
+	// GZIP captures enum value "gzip"
+	GZIP ExportCollectionContentType = "gzip"
+)

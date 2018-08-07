@@ -60,7 +60,7 @@ func TestNewRequest(t *testing.T) {
 		{http.MethodDelete, testutils.TestSSCHost, nil},
 	}
 	for _, test := range tests {
-		req, err := client.NewRequest(test.method, test.url, test.body)
+		req, err := client.NewRequest(test.method, test.url, test.body, nil)
 		if err != nil {
 			t.Fatalf("client.NewRequest returns unexpected error: %v", err)
 		}
@@ -86,7 +86,7 @@ func TestNewRequest(t *testing.T) {
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
 	client := getClient(t)
-	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil)
+	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil,  nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
 	}
@@ -98,7 +98,7 @@ func TestNewRequestBearerAuthHeader(t *testing.T) {
 
 func TestNewRequestError(t *testing.T) {
 	client := getClient(t)
-	_, err := client.NewRequest("#~/", testutils.TestSSCHost, nil)
+	_, err := client.NewRequest("#~/", testutils.TestSSCHost, nil, nil)
 	if err == nil {
 		t.Errorf("NewRequest expected to return error, got %v", err)
 	}
@@ -106,7 +106,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil)
+	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil, nil)
 	defer resp.Body.Close()
 
 	assert.NotNil(t, err)
