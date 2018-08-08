@@ -48,6 +48,8 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
+	// ResponseHandler to support additional response handling logic
+	responseHandler ResponseHandler
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -88,8 +90,6 @@ type Config struct {
 	TenantID string
 	// Timeout
 	Timeout time.Duration
-	// ResponseHandler to support additional response handling logic
-	ResponseHandler ResponseHandler
 }
 
 // service provides the interface between client and services
@@ -190,8 +190,8 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 			req.NumErrorsByType[code] = 1
 		}
 	}
-	if c.config.ResponseHandler != nil {
-		response, err = c.config.ResponseHandler.HandleResponse(c, req, response)
+	if c.responseHandler != nil {
+		response, err = c.responseHandler.HandleResponse(c, req, response)
 	}
 	return response, err
 }
@@ -270,6 +270,11 @@ func (c *Client) GetURL() (*url.URL, error) {
 	return parsed, nil
 }
 
+// SetResponseHandler sets the response handler for all requests made by the client
+func (c *Client) SetResponseHandler(rh ResponseHandler) {
+	c.responseHandler = rh
+}
+
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
 	if config.TenantID == "" || config.URL == "" {
@@ -283,6 +288,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
+	c.responseHandler = nil
 	return c, nil
 }
 

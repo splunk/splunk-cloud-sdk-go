@@ -48,16 +48,20 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	client, err := service.NewClient(&service.Config{
-		Token:           TestAuthenticationToken,
-		URL:             url,
-		TenantID:        testutils.TestTenantID,
-		Timeout:         testutils.TestTimeOut,
-		ResponseHandler: handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken),
+		Token:    TestAuthenticationToken,
+		URL:      url,
+		TenantID: testutils.TestTenantID,
+		Timeout:  testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken)
+	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
+	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
 
 	timeValue := float64(1529945178)
 	testIngestEvent := model.Event{
@@ -78,16 +82,20 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	client, err := service.NewClient(&service.Config{
-		Token:           TestAuthenticationToken,
-		URL:             url,
-		TenantID:        testutils.TestTenantID,
-		Timeout:         testutils.TestTimeOut,
-		ResponseHandler: handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope),
+		Token:    TestAuthenticationToken,
+		URL:      url,
+		TenantID: testutils.TestTenantID,
+		Timeout:  testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
+	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
+	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
 
 	timeValue := float64(1529945178)
 	testIngestEvent := model.Event{
@@ -100,5 +108,5 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 		Fields:     map[string]string{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
-	assert.Emptyf(t, err, "Error ingesting test event using client credentials logic. NOTE: If 401 encountered this may be becaue the backend service app=%s needs to be added to SDK testing tenant=%s via PATCH to identity/{}/users error: %s", BackendClientID, testutils.TestTenantID, err)
+	assert.Emptyf(t, err, "Error ingesting test event using client credentials logic error: %s", err)
 }
