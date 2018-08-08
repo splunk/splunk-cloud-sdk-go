@@ -23,7 +23,7 @@ func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Post(url, model.RequestParams{Body: tenant})
+	response, err := c.client.Post(RequestParams{URL: url, Body: tenant})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -38,7 +38,7 @@ func (c *IdentityService) DeleteTenant(tenantID string) error {
 		return err
 	}
 
-	response, err := c.client.Delete(url, model.RequestParams{})
+	response, err := c.client.Delete(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -60,7 +60,7 @@ func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 		return nil, err
 	}
 
-	response, err := c.client.Get(url, model.RequestParams{})
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -79,7 +79,7 @@ func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) 
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url, model.RequestParams{})
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -98,7 +98,7 @@ func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User
 		return err
 	}
 
-	response, err := c.client.Put(url, model.RequestParams{Body: users})
+	response, err := c.client.Put(RequestParams{URL: url, Body: users})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -113,7 +113,7 @@ func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) er
 		return err
 	}
 
-	response, err := c.client.Patch(url, model.RequestParams{Body: users})
+	response, err := c.client.Patch(RequestParams{URL: url, Body: users})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -128,7 +128,7 @@ func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User)
 		return err
 	}
 
-	response, err := c.client.Delete(url, model.RequestParams{Body: users})
+	response, err := c.client.Delete(RequestParams{URL: url, Body: users})
 	if response != nil {
 		defer response.Body.Close()
 	}

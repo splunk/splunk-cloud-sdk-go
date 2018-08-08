@@ -16,7 +16,6 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/splunk/ssc-client-go/model"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -107,7 +106,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, model.RequestParams{})
+	resp, err := client.DoRequest(service.RequestParams{Method: http.MethodGet, URL: url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}})
 	defer resp.Body.Close()
 
 	assert.NotNil(t, err)

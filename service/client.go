@@ -67,6 +67,10 @@ type Config struct {
 
 // RequestParams contains all the optional request URL parameters
 type RequestParams struct {
+	// Http method name
+	Method string
+	// Http url
+	URL url.URL
 	// Body parameter
 	Body interface{}
 	// Additional headers
@@ -266,34 +270,39 @@ func parseRefreshData(body []byte) (*refreshData, error) {
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(getURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
-	return c.DoRequest(http.MethodGet, getURL, requestParams)
+func (c *Client) Get(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodGet
+	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(postURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
-	return c.DoRequest(http.MethodPost, postURL, requestParams)
+func (c *Client) Post(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPost
+	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(putURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
-	return c.DoRequest(http.MethodPut, putURL, requestParams)
+func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPut
+	return c.DoRequest(requestParams)
 }
 
 // Delete implements HTTP DELETE call
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *Client) Delete(deleteURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, requestParams)
+func (c *Client) Delete(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodDelete
+	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(patchURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
-	return c.DoRequest(http.MethodPatch, patchURL, requestParams)
+func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPatch
+	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(method string, requestURL url.URL, requestParams model.RequestParams) (*http.Response, error) {
+func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
@@ -304,7 +313,7 @@ func (c *Client) DoRequest(method string, requestURL url.URL, requestParams mode
 			return nil, err
 		}
 	}
-	request, err := c.NewRequest(method, requestURL.String(), buffer, requestParams.Headers)
+	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {
 		return nil, err
 	}
