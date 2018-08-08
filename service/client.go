@@ -386,6 +386,7 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 		ErrorChan:        errorChan,
 		IsRunning:        false,
 		chanWaitInMilSec: 300,
+		callbackFunc:     nil,
 	}
 
 	return batchEventsSender, nil
