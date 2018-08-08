@@ -16,6 +16,7 @@ import (
 	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/splunk/ssc-client-go/model"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -86,7 +87,7 @@ func TestNewRequest(t *testing.T) {
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
 	client := getClient(t)
-	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil,  nil)
+	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
 	}
@@ -106,7 +107,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, nil, nil)
+	resp, err := client.DoRequest(http.MethodGet, url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}, model.RequestParams{})
 	defer resp.Body.Close()
 
 	assert.NotNil(t, err)

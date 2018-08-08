@@ -25,7 +25,7 @@ func (c *ActionService) GetActions() ([]model.Action, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -46,7 +46,7 @@ func (c *ActionService) CreateAction(action model.Action) (*model.Action, error)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(url, action)
+	response, err := c.client.Post(url, model.RequestParams{Body: action})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -67,7 +67,7 @@ func (c *ActionService) GetAction(name string) (*model.Action, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -88,7 +88,7 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(url, notification)
+	response, err := c.client.Post(url, model.RequestParams{Body: notification})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -114,7 +114,8 @@ func (c *ActionService) UpdateAction(name string, action model.ActionUpdateField
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Patch(url, action)
+
+	response, err := c.client.Patch(url, model.RequestParams{Body: action})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -136,7 +137,7 @@ func (c *ActionService) DeleteAction(name string) error {
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(url)
+	response, err := c.client.Delete(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -152,7 +153,7 @@ func (c *ActionService) GetActionStatus(name string, statusID string) (*model.Ac
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}

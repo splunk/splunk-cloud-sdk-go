@@ -26,7 +26,7 @@ func (c *KVStoreService) GetCollectionStats(collection string) (*model.Collectio
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -44,7 +44,7 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -62,7 +62,7 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(url, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -91,7 +91,7 @@ func (c *KVStoreService) ExportCollection(collectionName string, contentType mod
 	headers := map[string]string{
 		"Accept": acceptType,
 	}
-	response, err := c.client.GetWithHeaders(url, headers)
+	response, err := c.client.Get(url, model.RequestParams{Headers: headers})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -113,7 +113,7 @@ func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDef
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(postIndexURL, index)
+	response, err := c.client.Post(postIndexURL, model.RequestParams{Body: index})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -131,7 +131,7 @@ func (c *KVStoreService) ListIndexes(collectionName string) ([]model.IndexDefini
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(getIndexURL)
+	response, err := c.client.Get(getIndexURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -149,7 +149,7 @@ func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) er
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(deleteIndexURL)
+	response, err := c.client.Delete(deleteIndexURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -165,7 +165,7 @@ func (c *KVStoreService) InsertRecords(collectionName string, records []model.Re
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(postRecordURL, records)
+	response, err := c.client.Post(postRecordURL, model.RequestParams{Body: records})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -190,7 +190,7 @@ func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) 
 		return nil, err
 	}
 
-	response, err := c.client.Get(getRecordURL)
+	response, err := c.client.Get(getRecordURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -210,7 +210,7 @@ func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) 
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(getRecordURL)
+	response, err := c.client.Get(getRecordURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -228,7 +228,7 @@ func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(deleteRecordURL)
+	response, err := c.client.Delete(deleteRecordURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -244,7 +244,7 @@ func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue strin
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(deleteRecordURL)
+	response, err := c.client.Delete(deleteRecordURL, model.RequestParams{})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -267,7 +267,7 @@ func (c *KVStoreService) ListRecords(collectionName string, filters map[string][
 		return nil, err
 	}
 
-	response, err := c.client.Get(listRecordsURL)
+	response, err := c.client.Get(listRecordsURL, model.RequestParams{})
 
 	if response != nil {
 		defer response.Body.Close()
@@ -296,7 +296,7 @@ func (c *KVStoreService) InsertRecord(collectionName string, record map[string]s
 		return nil, err
 	}
 
-	response, err := c.client.Post(insertRecordURL, record)
+	response, err := c.client.Post(insertRecordURL, model.RequestParams{Body: record})
 
 	if response != nil {
 		defer response.Body.Close()
