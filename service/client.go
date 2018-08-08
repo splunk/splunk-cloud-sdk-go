@@ -65,6 +65,14 @@ type Config struct {
 	Timeout time.Duration
 }
 
+// RequestParams contains all the optional request URL parameters
+type RequestParams struct {
+	// Body parameter
+	Body interface{}
+	// Additional headers
+	Headers map[string]string
+}
+
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
