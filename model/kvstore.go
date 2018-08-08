@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package model
 
 // CollectionStats collection stats
@@ -22,37 +27,31 @@ type CollectionStats struct {
 	TotalIndexSize int64 `json:"totalIndexSize"`
 }
 
-// CollectionDescription collection description
-type CollectionDescription struct {
-
-	// The list of indexes on this collection
-	Indexes []*IndexDescription `json:"indexes"`
-
-	// The collection name
-	Name string `json:"name,omitempty"`
-
-	// The namespace containing the collection
-	Namespace string `json:"namespace,omitempty"`
-}
-
-// CreateCollectionParamsBody create collection params body
-type CreateCollectionParamsBody struct {
-	// name
-	// Max Length: 45
-	// Min Length: 1
-	Name *string `json:"name"`
-}
-
 // CollectionDefinition collection definition
 type CollectionDefinition struct {
 
 	// The collection name
 	// Max Length: 45
 	// Min Length: 1
-	Collection *string `json:"collection"`
+	Collection string `json:"collection"`
+}
 
-	// The namespace containing the collection
-	Namespace *string `json:"namespace"`
+// Error error reason
+type Error struct {
+
+	// The reason of the error
+	Code int64 `json:"code"`
+	// Error message
+	Message string `json:"message"`
+	// State Storage error code
+	SsCode int64 `json:"ssCode"`
+}
+
+// AuthError auth error reason
+type AuthError struct {
+
+	// The reason of the auth error
+	Reason string `json:"reason"`
 }
 
 // PingOKBody ping ok body
@@ -63,19 +62,21 @@ type PingOKBody struct {
 
 	// Database status
 	// Enum: [healthy unhealthy unknown]
-	Status string `json:"status"`
+	Status PingOKBodyStatus `json:"status"`
 }
 
-const (
+// PingOKBodyStatus used to force type expectation for KVStore Ping endpoint response
+type PingOKBodyStatus string
 
+const (
 	// PingOKBodyStatusHealthy captures enum value "healthy"
-	PingOKBodyStatusHealthy string = "healthy"
+	PingOKBodyStatusHealthy PingOKBodyStatus = "healthy"
 
 	// PingOKBodyStatusUnhealthy captures enum value "unhealthy"
-	PingOKBodyStatusUnhealthy string = "unhealthy"
+	PingOKBodyStatusUnhealthy PingOKBodyStatus = "unhealthy"
 
 	// PingOKBodyStatusUnknown captures enum value "unknown"
-	PingOKBodyStatusUnknown string = "unknown"
+	PingOKBodyStatusUnknown PingOKBodyStatus = "unknown"
 )
 
 // IndexFieldDefinition index field definition
@@ -86,6 +87,16 @@ type IndexFieldDefinition struct {
 
 	// The name of the field to index
 	Field string `json:"field"`
+}
+
+// IndexDefinition index field definition
+type IndexDefinition struct {
+
+	// The name of the index
+	Name string `json:"name,omitempty"`
+
+	// fields
+	Fields []IndexFieldDefinition `json:"fields"`
 }
 
 // IndexDescription index description
@@ -99,19 +110,6 @@ type IndexDescription struct {
 
 	// The name of the index
 	Name string `json:"name,omitempty"`
-
-	// The namespace containing the collection
-	Namespace string `json:"namespace,omitempty"`
-}
-
-// NamespaceDescription namespace description
-type NamespaceDescription struct {
-
-	// The list of collections
-	Collections []*CollectionDescription `json:"collections"`
-
-	// The name of the namespace
-	Name string `json:"name,omitempty"`
 }
 
 // LookupValue Value tuple used for lookup
@@ -124,3 +122,14 @@ type Key struct {
 
 // Record is a JSON document entity contained in collections
 type Record map[string]interface{}
+
+// ExportCollectionContentType used to specify the export collection file content type
+type ExportCollectionContentType string
+
+const (
+	// CSV captures enum value "csv"
+	CSV ExportCollectionContentType = "csv"
+
+	// GZIP captures enum value "gzip"
+	GZIP ExportCollectionContentType = "gzip"
+)

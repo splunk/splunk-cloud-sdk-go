@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 /*
 Package service implements a service client which is used to communicate
 with Search Service endpoints
@@ -93,7 +98,7 @@ type service struct {
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*Request, error) {
+func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -102,6 +107,11 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*Request, e
 		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
 	}
 	request.Header.Set("Content-Type", "application/json")
+	if len(headers) != 0 {
+		for key, value := range headers {
+			request.Header.Set(key, value)
+		}
+	}
 	retryRequest := &Request{request, 0, make(map[string]uint)}
 	return retryRequest, nil
 }
@@ -188,38 +198,43 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 
 // Get implements HTTP Get call
 func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodGet, getURL, nil)
+	return c.DoRequest(http.MethodGet, getURL, nil, nil)
+}
+
+// GetWithHeaders implements HTTP Get call with additional headers
+func (c *Client) GetWithHeaders(getURL url.URL, headers map[string]string) (*http.Response, error) {
+	return c.DoRequest(http.MethodGet, getURL, nil, headers)
 }
 
 // Post implements HTTP POST call
 func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPost, postURL, body)
+	return c.DoRequest(http.MethodPost, postURL, body, nil)
 }
 
 // Put implements HTTP PUT call
 func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPut, putURL, body)
+	return c.DoRequest(http.MethodPut, putURL, body, nil)
 }
 
 // Delete implements HTTP DELETE call
 func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, nil)
+	return c.DoRequest(http.MethodDelete, deleteURL, nil, nil)
 }
 
 // DeleteWithBody implements HTTP DELETE call with a request body
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
 func (c *Client) DeleteWithBody(deleteURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, body)
+	return c.DoRequest(http.MethodDelete, deleteURL, body, nil)
 }
 
 // Patch implements HTTP Patch call
 func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPatch, patchURL, body)
+	return c.DoRequest(http.MethodPatch, patchURL, body, nil)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
+func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}, headers map[string]string) (*http.Response, error) {
 	var buffer *bytes.Buffer
 	if contentBytes, ok := body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
@@ -230,7 +245,7 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 			return nil, err
 		}
 	}
-	request, err := c.NewRequest(method, requestURL.String(), buffer)
+	request, err := c.NewRequest(method, requestURL.String(), buffer, headers)
 	if err != nil {
 		return nil, err
 	}
@@ -303,6 +318,7 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 		ErrorChan:        errorChan,
 		IsRunning:        false,
 		chanWaitInMilSec: 300,
+		callbackFunc:     nil,
 	}
 
 	return batchEventsSender, nil
