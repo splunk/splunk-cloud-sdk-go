@@ -35,6 +35,7 @@ type BatchEventsSender struct {
 	callbackFunc     UserErrHandler
 	stopMux          sync.Mutex
 	chanWaitInMilSec int
+	resetMux         sync.Mutex
 }
 
 // SetCallbackHandler allows users to pass their own callback function
@@ -191,6 +192,24 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
 func (b *BatchEventsSender) ResetQueue() {
 	b.EventsQueue = b.EventsQueue[:0]
+}
+
+// Restart will reset batch event sender, clear up queue, error msg, timer etc.
+func (b *BatchEventsSender) Restart() {
+	defer b.resetMux.Unlock()
+	b.resetMux.Lock()
+
+	if b.IsRunning {
+		b.Stop()
+	}
+
+	// reopen channels
+	b.EventsChan = make(chan model.Event, b.BatchSize)
+	b.ErrorChan = make(chan string, cap(b.ErrorChan))
+
+	b.ResetQueue();
+	b.errorMsg = "";
+	b.Run();
 }
 
 // GetErrors return all the error messages as an array

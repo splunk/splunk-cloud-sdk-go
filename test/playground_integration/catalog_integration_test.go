@@ -20,7 +20,7 @@ import (
 // Test Rule variables
 var ruleName = "goSdkTestrRule1"
 var ruleModule = "catalog"
-var ruleMatch = "host::integration_test_match"
+var ruleMatch = "sourcetype::newtype"
 var owner = "splunk"
 
 // Test Dataset variables

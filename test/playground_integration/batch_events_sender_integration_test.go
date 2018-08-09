@@ -171,3 +171,39 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 	assert.Equal(t, "call from callback function", callbackPrint)
 	collector.Stop()
 }
+
+func TestBatchEventsSenderRestart(t *testing.T) {
+	var client= getInvalidClient(t)
+	event1 := model.Event{Host: "host1", Event: "test10"}
+
+	maxAllowedErr := 4
+
+	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+
+	// Initial run of the batchSender
+	collector.Run()
+	// start 15 threads to send data simultaneously
+	wg.Add(8)
+	for i := 0; i < 8; i++ {
+		go addEventBatch(collector, event1)
+	}
+	wg.Wait()
+
+	// batchSender should have stopped due to maxError hit
+	assert.False(t, collector.IsRunning);
+	assert.True(t, len(collector.GetErrors()) >= 4)
+
+	// restart the batchSender and resend events, everything should work just like the initial run
+	collector.Restart();
+	assert.True(t, len(collector.GetErrors()) == 0)
+	assert.True(t, collector.IsRunning);
+
+	// start 15 threads to send data simultaneously
+	wg.Add(8)
+	for i := 0; i < 8; i++ {
+		go addEventBatch(collector, event1)
+	}
+	wg.Wait()
+	assert.True(t, len(collector.GetErrors()) >= 4)
+}
