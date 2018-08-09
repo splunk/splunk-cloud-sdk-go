@@ -64,12 +64,13 @@ func (b *BatchEventsSender) loop() {
 		case err := <-b.ErrorChan:
 			errorMsgCount++
 			b.errorMsg += err + errMsgSplitter
-			if b.callbackFunc != nil {
-				go b.callbackFunc(b)
-			}
 
 			if errorMsgCount >= cap(b.ErrorChan) {
 				b.Stop()
+			}
+
+			if b.callbackFunc != nil {
+				go b.callbackFunc(b)
 			}
 
 		case <-b.QuitChan:
