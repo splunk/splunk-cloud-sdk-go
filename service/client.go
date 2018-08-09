@@ -48,7 +48,7 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
-	// ResponseHandler to support additional response handling logic
+	// responseHandler to support additional response handling logic
 	responseHandler ResponseHandler
 }
 
@@ -69,7 +69,7 @@ func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	return 0
 }
 
-// UpdateToken replaces the access token in the Authorization: Bearer header
+// UpdateToken replaces the access token in the `Authorization: Bearer` header
 func (r *Request) UpdateToken(accessToken string) {
 	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 }
