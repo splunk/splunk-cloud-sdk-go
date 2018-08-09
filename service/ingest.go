@@ -23,7 +23,7 @@ func (h *IngestService) CreateEvent(event model.Event) error {
 	if err != nil {
 		return err
 	}
-	response, err := h.client.Post(url, event)
+	response, err := h.client.Post(RequestParams{URL: url, Body: event})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -40,7 +40,7 @@ func (h *IngestService) CreateEvents(events []model.Event) error {
 	if err != nil {
 		return err
 	}
-	response, err := h.client.Post(url, ingestEvents)
+	response, err := h.client.Post(RequestParams{URL: url, Body: ingestEvents})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -56,7 +56,7 @@ func (h *IngestService) CreateRawEvent(event model.Event) error {
 	if param := util.ParseURLParams(event).Encode(); len(param) > 0 {
 		url.RawQuery = param
 	}
-	response, err := h.client.Post(url, event.Event)
+	response, err := h.client.Post(RequestParams{URL: url, Body: event.Event})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -80,7 +80,7 @@ func (h *IngestService) CreateMetricEvents(events []model.MetricEvent) error {
 		return err
 	}
 
-	response, err := h.client.Post(url, jsonBytes)
+	response, err := h.client.Post(RequestParams{URL: url, Body: jsonBytes})
 	if response != nil {
 		defer response.Body.Close()
 	}
