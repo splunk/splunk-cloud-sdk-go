@@ -65,6 +65,18 @@ type Config struct {
 	Timeout time.Duration
 }
 
+// RequestParams contains all the optional request URL parameters
+type RequestParams struct {
+	// Http method name
+	Method string
+	// Http url
+	URL url.URL
+	// Body parameter
+	Body interface{}
+	// Additional headers
+	Headers map[string]string
+}
+
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
@@ -258,55 +270,50 @@ func parseRefreshData(body []byte) (*refreshData, error) {
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodGet, getURL, nil, nil)
-}
-
-// GetWithHeaders implements HTTP Get call with additional headers
-func (c *Client) GetWithHeaders(getURL url.URL, headers map[string]string) (*http.Response, error) {
-	return c.DoRequest(http.MethodGet, getURL, nil, headers)
+func (c *Client) Get(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodGet
+	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPost, postURL, body, nil)
+func (c *Client) Post(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPost
+	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPut, putURL, body, nil)
+func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPut
+	return c.DoRequest(requestParams)
 }
 
 // Delete implements HTTP DELETE call
-func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, nil, nil)
-}
-
-// DeleteWithBody implements HTTP DELETE call with a request body
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *Client) DeleteWithBody(deleteURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, body, nil)
+func (c *Client) Delete(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodDelete
+	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPatch, patchURL, body, nil)
+func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPatch
+	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}, headers map[string]string) (*http.Response, error) {
+func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
-	if contentBytes, ok := body.([]byte); ok {
+	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
 	} else {
-		if content, err := json.Marshal(body); err == nil {
+		if content, err := json.Marshal(requestParams.Body); err == nil {
 			buffer = bytes.NewBuffer(content)
 		} else {
 			return nil, err
 		}
 	}
-	request, err := c.NewRequest(method, requestURL.String(), buffer, headers)
+	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {
 		return nil, err
 	}
