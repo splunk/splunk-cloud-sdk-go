@@ -13,7 +13,6 @@ import (
 
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 
 	"net/http"
