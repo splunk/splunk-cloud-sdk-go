@@ -112,7 +112,6 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.NotNil(t, err)
 
 	assert.Equal(t, 500, resp.StatusCode)
-	assert.Contains(t, err.(*util.HTTPError).Body, "{\"message\":\"Something exploded\"}")
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {
