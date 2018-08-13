@@ -21,9 +21,6 @@ import (
 	"sync"
 	"time"
 
-	"io/ioutil"
-	"os"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -51,11 +48,41 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
+	// responseHandler to support additional response handling logic
+	responseHandler ResponseHandler
+}
+
+// Request extends net/http.Request to track number of total attempts and error
+// counts by type of error
+type Request struct {
+	*http.Request
+	NumAttempts     uint
+	NumErrorsByType map[string]uint
+}
+
+// GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
+func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
+	code := fmt.Sprintf("%d", respCode)
+	if val, ok := r.NumErrorsByType[code]; ok {
+		return val
+	}
+	return 0
+}
+
+// UpdateToken replaces the access token in the `Authorization: Bearer` header
+func (r *Request) UpdateToken(accessToken string) {
+	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
+}
+
+// ResponseHandler defines the interface for implementing custom response
+// handling logic
+type ResponseHandler interface {
+	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
 }
 
 // Config is used to set the client specific attributes
 type Config struct {
-	// Authorization token
+	// Token to be sent in the Authorization: Bearer header
 	Token string
 	// Url string
 	URL string
@@ -77,22 +104,13 @@ type RequestParams struct {
 	Headers map[string]string
 }
 
-// RefreshToken - RefreshToken to refresh the bearer token if expired
-var RefreshToken = os.Getenv("REFRESH_TOKEN")
-
-// RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
-var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
-
-// ClientID - Okta app Client Id for SDK
-var ClientID = os.Getenv("CLIENT_ID")
-
 // service provides the interface between client and services
 type service struct {
 	client *Client
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*http.Request, error) {
+func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -106,7 +124,8 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 			request.Header.Set(key, value)
 		}
 	}
-	return request, nil
+	retryRequest := &Request{request, 0, make(map[string]uint)}
+	return retryRequest, nil
 }
 
 // BuildURL creates full SSC URL with the client cached tenantID
@@ -166,107 +185,27 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *http.Request) (*http.Response, error) {
-	response, err := c.httpClient.Do(req)
-
+func (c *Client) Do(req *Request) (*http.Response, error) {
+	req.NumAttempts++
+	response, err := c.httpClient.Do(req.Request)
 	if err != nil {
 		return nil, err
 	}
-
-	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
-	if response != nil && response.StatusCode == 401 && len(RefreshToken) != 0 {
-		response, err = c.onUnauthorizedRequest(req)
-		return response, err
-	}
-	return response, err
-}
-
-func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error) {
-	// refresh and retry request here
-	httpMethod := req.Method
-
-	//Refresh access token with refresh token
-	var accessToken string
-	var err error
-	accessToken, err = c.GetNewAccessToken()
-	if err != nil || len(accessToken) == 0 {
-		return nil, err
-	}
-	// Update the client with the newly obtained access token
-	c.UpdateToken(accessToken)
-	body, err := req.GetBody()
-	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
-	request.Header.Set("Content-Type", "application/json")
-
-	// retry request with new access token
-	response, err := c.httpClient.Do(request)
-
-	return response, err
-}
-
-type refreshData struct {
-	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"`
-	ExpireIn     int    `json:"expires_in"`
-	Scope        string `json:"scope"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-// GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
-func (c *Client) GetNewAccessToken() (string, error) {
-	var accessToken = ""
-	client := http.Client{}
-	var urlPath = ""
-	urlPath = path.Join(RefreshTokenEndpoint)
-
-	data := url.Values{}
-	data.Set("refresh_token", RefreshToken)
-	data.Add("grant_type", "refresh_token")
-	data.Add("client_id", ClientID)
-	data.Add("scope", "openid email profile")
-
-	tokenURL := url.URL{
-		Scheme:   "https",
-		Path:     urlPath,
-		RawQuery: data.Encode(),
-	}
-
-	req, err := http.NewRequest("POST", tokenURL.String(), nil)
-	if err != nil {
-		return accessToken, err
-	}
-	req.Header.Set("accept", "application/json")
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	response, err := client.Do(req)
-
-	if response != nil && response.StatusCode == 200 {
-		defer response.Body.Close()
-		body, err := ioutil.ReadAll(response.Body)
-
-		if err == nil {
-			s, err := parseRefreshData([]byte(body))
-			if err != nil {
-				return accessToken, err
-			}
-			accessToken = s.AccessToken
-			return accessToken, err
+	// If error response found, record number of errors by response code
+	if response.StatusCode >= 400 {
+		// TODO: This could be extended to include specific SSC error fields in
+		// addition to response code
+		code := fmt.Sprintf("%d", response.StatusCode)
+		if _, ok := req.NumErrorsByType[code]; ok {
+			req.NumErrorsByType[code]++
+		} else {
+			req.NumErrorsByType[code] = 1
 		}
-
-		return accessToken, err
 	}
-	return accessToken, err
-}
-
-func parseRefreshData(body []byte) (*refreshData, error) {
-	var refreshJSON = new(refreshData)
-	err := json.Unmarshal(body, &refreshJSON)
-
-	return refreshJSON, err
+	if c.responseHandler != nil {
+		response, err = c.responseHandler.HandleResponse(c, req, response)
+	}
+	return response, err
 }
 
 // Get implements HTTP Get call
@@ -324,9 +263,9 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// UpdateToken updates the authorization token
-func (c *Client) UpdateToken(token string) {
-	c.config.Token = token
+// UpdateToken the access token in the Authorization: Bearer header
+func (c *Client) UpdateToken(accessToken string) {
+	c.config.Token = accessToken
 }
 
 // GetURL returns the client config url string as a url.URL
@@ -338,10 +277,15 @@ func (c *Client) GetURL() (*url.URL, error) {
 	return parsed, nil
 }
 
+// SetResponseHandler sets the response handler for all requests made by the client
+func (c *Client) SetResponseHandler(rh ResponseHandler) {
+	c.responseHandler = rh
+}
+
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
-	if config.TenantID == "" || config.Token == "" || config.URL == "" {
-		return nil, errors.New("at least one of tenantID, token, or url must be set")
+	if config.TenantID == "" || config.URL == "" {
+		return nil, errors.New("tenantID and url must be set")
 	}
 
 	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
@@ -351,6 +295,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
+	c.responseHandler = nil
 	return c, nil
 }
 
