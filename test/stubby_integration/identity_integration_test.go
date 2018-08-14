@@ -80,3 +80,16 @@ func TestIdentityService_DeleteTenantUsers(t *testing.T) {
 	})
 	assert.Nil(t, err)
 }
+
+
+func TestIdentityService_GetMember(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetMember("mem1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetMembers(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetMembers()
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}

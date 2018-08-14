@@ -11,7 +11,7 @@ import (
 )
 
 const identityServicePrefix = "identity"
-const identityServiceVersion = "v2"
+const identityServiceVersion = "v1"
 
 // IdentityService talks to the IAC service
 type IdentityService service
@@ -134,3 +134,100 @@ func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User)
 	}
 	return err
 }
+
+// GetMembers returns the list of members in the given tenant
+func (c *IdentityService) GetMembers() ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"members")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetMember gets a member of the given tenant
+func (c *IdentityService) GetMember(name string) (*model.Member, error) {
+	var result model.Member
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"members", name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetMemberGroups returns the list of groups a member belongs to within a tenant
+func (c *IdentityService) GetMemberGroups(name string) ([]model.Group, error) {
+	var result []model.Group
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"member", name,"groups")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetMemberRoles returns the set of roles thet member posesses within the tenant
+func (c *IdentityService) GetMemberRoles(name string) ([]model.GroupRole, error) {
+	var result []model.GroupRole
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"member", name,"roles")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
