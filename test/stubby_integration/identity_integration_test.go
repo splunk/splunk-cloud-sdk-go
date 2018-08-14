@@ -81,7 +81,6 @@ func TestIdentityService_DeleteTenantUsers(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-
 func TestIdentityService_GetMember(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetMember("mem1")
 	assert.Nil(t, err)
@@ -90,6 +89,36 @@ func TestIdentityService_GetMember(t *testing.T) {
 
 func TestIdentityService_GetMembers(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetMembers()
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetMemberGroups(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetMemberGroups("mem1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetMemberPermissions(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetMemberPermissions("mem1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetMemberRoles(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetMemberRoles("mem1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetRoles(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetRoles()
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetRole(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetRole("role2")
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
 }

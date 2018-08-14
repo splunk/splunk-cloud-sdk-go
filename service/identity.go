@@ -184,11 +184,11 @@ func (c *IdentityService) GetMember(name string) (*model.Member, error) {
 }
 
 // GetMemberGroups returns the list of groups a member belongs to within a tenant
-func (c *IdentityService) GetMemberGroups(name string) ([]model.Group, error) {
-	var result []model.Group
+func (c *IdentityService) GetMemberGroups(name string) ([]string, error) {
+	var result []string
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
-		"member", name,"groups")
+		"members", name,"groups")
 
 	if err != nil {
 		return nil, err
@@ -208,11 +208,11 @@ func (c *IdentityService) GetMemberGroups(name string) ([]model.Group, error) {
 }
 
 // GetMemberRoles returns the set of roles thet member posesses within the tenant
-func (c *IdentityService) GetMemberRoles(name string) ([]model.GroupRole, error) {
-	var result []model.GroupRole
+func (c *IdentityService) GetMemberRoles(name string) ([]string, error) {
+	var result []string
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
-		"member", name,"roles")
+		"members", name,"roles")
 
 	if err != nil {
 		return nil, err
@@ -229,5 +229,77 @@ func (c *IdentityService) GetMemberRoles(name string) ([]model.GroupRole, error)
 
 	err = util.ParseResponse(&result, response)
 	return result, err
+}
+
+// GetMemberPermissions returns the set of permissions granted to the member within the tenant
+func (c *IdentityService) GetMemberPermissions(name string) ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"members", name,"permissions")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetRoles get all roles for the given tenant
+func (c *IdentityService) GetRoles() ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"roles")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetRole get a role for the given tenant
+func (c *IdentityService) GetRole(name string) (*model.Role, error) {
+	var result model.Role
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"roles",name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
 }
 
