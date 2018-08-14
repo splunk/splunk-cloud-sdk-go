@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"github.com/splunk/ssc-client-go/util"
 
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
@@ -111,6 +112,8 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.NotNil(t, err)
 
 	assert.Equal(t, 500, resp.StatusCode)
+	assert.Equal(t, err.(*util.HTTPError).Body, "{\"details\":[{\"code\":\"123\",\"field\":\"username\",\"message\":\"Username must be at least 8 characters\"},{\"code\":\"456\",\"field\":\"password\",\"message\":\"Password must not be blank\"}],\"message\":\"error response\",\"code\":\"1234\",\"moreInfo\":\"/url/test\"}")
+
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {
