@@ -13,7 +13,6 @@ import (
 
 	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/assert"
 
 	"net/http"
@@ -112,7 +111,6 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.NotNil(t, err)
 
 	assert.Equal(t, 500, resp.StatusCode)
-	assert.Equal(t, "{\"message\":\"Something exploded\"}", err.(*util.HTTPError).Body)
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {

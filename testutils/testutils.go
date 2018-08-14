@@ -6,9 +6,13 @@
 package testutils
 
 import (
+	"fmt"
 	"os"
 	"time"
 )
+
+// timeSec denotes the current timestamp
+var timeSec = time.Now().Unix()
 
 // TestURLProtocol - the url protocol for the test api to be used
 var TestURLProtocol = os.Getenv("TEST_URL_PROTOCOL")
@@ -25,11 +29,14 @@ var TestTenantID = os.Getenv("TEST_TENANT_ID")
 // TestInvalidTestTenantID - the invalid tenant ID that denies permission to make requests against the api
 var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
 
-// TestNamespace - A namespace for testing
-var TestNamespace = "testnamespace0"
+// TestNamespace - A namespace for integration testing
+var TestNamespace = fmt.Sprintf("gonamespace%d", timeSec)
 
-// TestCollection - A collection for testing
-var TestCollection = "testcollection0"
+// TestCollection - A collection for integration testing
+var TestCollection = fmt.Sprintf("gocollection%d", timeSec)
+
+// StubbyTestCollection - A collection for stubby testing
+var StubbyTestCollection = "testcollection0"
 
 // TestTimeOut - the timeout to be used for requests to the api
 var TestTimeOut = time.Second * 5
