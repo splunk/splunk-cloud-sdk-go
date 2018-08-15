@@ -10,6 +10,7 @@ import (
 
 	"github.com/splunk/ssc-client-go/idp"
 	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/ssc-client-go/util"
 )
 
 const (
@@ -57,7 +58,7 @@ type RefreshTokenAuthnResponseHandler struct {
 	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
 	Scope string
 	// RefreshToken to use to authenticate in order to generate an access token
-	RefreshToken string
+	RefreshToken *util.Credential
 }
 
 // NewRefreshTokenAuthnResponseHandler initializes a new response handler
@@ -66,7 +67,7 @@ func NewRefreshTokenAuthnResponseHandler(idpHost string, clientID string, scope 
 		AuthnResponseHandler: &AuthnResponseHandler{IdpClient: idp.NewDefaultClient(idpHost)},
 		ClientID:             clientID,
 		Scope:                scope,
-		RefreshToken:         refreshToken,
+		RefreshToken:         &util.Credential{refreshToken},
 	}
 	handler.TokenRetriever = handler
 	return handler
@@ -74,7 +75,7 @@ func NewRefreshTokenAuthnResponseHandler(idpHost string, clientID string, scope 
 
 // GetAccessToken gets a new access token from the identity provider
 func (rh *RefreshTokenAuthnResponseHandler) GetAccessToken() (token string, err error) {
-	ctx, err := rh.IdpClient.Refresh(rh.ClientID, rh.Scope, rh.RefreshToken)
+	ctx, err := rh.IdpClient.Refresh(rh.ClientID, rh.Scope, rh.RefreshToken.ClearText())
 	if err != nil {
 		return "", err
 	}
@@ -87,7 +88,7 @@ type ClientCredentialsAuthnResponseHandler struct {
 	// ClientID to authenticate as which corresponds to a Client Credentials flow supported IdP client
 	ClientID string
 	// ClientSecret corresponding to the ClientID above
-	ClientSecret string
+	ClientSecret *util.Credential
 	// Scope(s) to request, separated by spaces -- this will be a custom scope, for example: "backend_service"
 	Scope string
 }
@@ -99,7 +100,7 @@ func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, c
 			IdpClient: idp.NewDefaultClient(idpHost),
 		},
 		ClientID:     clientID,
-		ClientSecret: clientSecret,
+		ClientSecret: &util.Credential{clientSecret},
 		Scope:        scope,
 	}
 	handler.TokenRetriever = handler
@@ -108,7 +109,7 @@ func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, c
 
 // GetAccessToken gets a new access token from the identity provider
 func (rh *ClientCredentialsAuthnResponseHandler) GetAccessToken() (token string, err error) {
-	ctx, err := rh.IdpClient.ClientFlow(rh.ClientID, rh.ClientSecret, rh.Scope)
+	ctx, err := rh.IdpClient.ClientFlow(rh.ClientID, rh.ClientSecret.ClearText(), rh.Scope)
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +128,7 @@ type PKCEAuthnResponseHandler struct {
 	// Username to authenticate as which must be registered to the ClientID in the IdP
 	Username string
 	// Password corresponding to the Username above
-	Password string
+	Password *util.Credential
 }
 
 // NewPKCEAuthnResponseHandler initializes a new response handler
@@ -140,7 +141,7 @@ func NewPKCEAuthnResponseHandler(idpHost string, clientID string, redirectURI st
 		RedirectURI: redirectURI,
 		Scope:       scope,
 		Username:    username,
-		Password:    password,
+		Password:    &util.Credential{password},
 	}
 	handler.TokenRetriever = handler
 	return handler
@@ -148,7 +149,7 @@ func NewPKCEAuthnResponseHandler(idpHost string, clientID string, redirectURI st
 
 // GetAccessToken gets a new access token from the identity provider
 func (rh *PKCEAuthnResponseHandler) GetAccessToken() (token string, err error) {
-	ctx, err := rh.IdpClient.PKCEFlow(rh.ClientID, rh.RedirectURI, rh.Scope, rh.Username, rh.Password)
+	ctx, err := rh.IdpClient.PKCEFlow(rh.ClientID, rh.RedirectURI, rh.Scope, rh.Username, rh.Password.ClearText())
 	if err != nil {
 		return "", err
 	}
