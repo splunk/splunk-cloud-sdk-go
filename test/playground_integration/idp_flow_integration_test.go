@@ -20,7 +20,7 @@ import (
 )
 
 //Expired token
-var TestAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
+var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
@@ -48,7 +48,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	client, err := service.NewClient(&service.Config{
-		Token:    TestAuthenticationToken,
+		Token:    ExpiredAuthenticationToken,
 		URL:      url,
 		TenantID: testutils.TestTenantID,
 		Timeout:  testutils.TestTimeOut,
@@ -61,7 +61,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
+	_ = getClient(t).IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
 
 	timeValue := float64(1529945178)
 	testIngestEvent := model.Event{
@@ -82,7 +82,7 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 
 	client, err := service.NewClient(&service.Config{
-		Token:    TestAuthenticationToken,
+		Token:    ExpiredAuthenticationToken,
 		URL:      url,
 		TenantID: testutils.TestTenantID,
 		Timeout:  testutils.TestTimeOut,
