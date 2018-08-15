@@ -115,7 +115,7 @@ func (rh *ClientCredentialsAuthnResponseHandler) GetAccessToken() (token string,
 	return ctx.AccessToken, nil
 }
 
-// PKCEAuthnResponseHandlerResponseHandler retries a request after gettting a new access token from the identity provider using the Proof Key for Code Exchange (PKCE) flow
+// PKCEAuthnResponseHandler retries a request after gettting a new access token from the identity provider using the Proof Key for Code Exchange (PKCE) flow
 type PKCEAuthnResponseHandler struct {
 	*AuthnResponseHandler
 	// ClientID corresponding to a PKCE flow supported IdP client
