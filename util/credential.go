@@ -12,6 +12,11 @@ type Credential struct {
 	string
 }
 
+// NewCredential creates a Credential from a simple string
+func NewCredential(s string) *Credential {
+	return &Credential{s}
+}
+
 // String returns a redacted string
 func (c *Credential) String() string {
 	return "XXXXX"

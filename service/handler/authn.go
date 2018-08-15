@@ -67,7 +67,7 @@ func NewRefreshTokenAuthnResponseHandler(idpHost string, clientID string, scope 
 		AuthnResponseHandler: &AuthnResponseHandler{IdpClient: idp.NewDefaultClient(idpHost)},
 		ClientID:             clientID,
 		Scope:                scope,
-		RefreshToken:         &util.Credential{refreshToken},
+		RefreshToken:         util.NewCredential(refreshToken),
 	}
 	handler.TokenRetriever = handler
 	return handler
@@ -100,7 +100,7 @@ func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, c
 			IdpClient: idp.NewDefaultClient(idpHost),
 		},
 		ClientID:     clientID,
-		ClientSecret: &util.Credential{clientSecret},
+		ClientSecret: util.NewCredential(clientSecret),
 		Scope:        scope,
 	}
 	handler.TokenRetriever = handler
@@ -141,7 +141,7 @@ func NewPKCEAuthnResponseHandler(idpHost string, clientID string, redirectURI st
 		RedirectURI: redirectURI,
 		Scope:       scope,
 		Username:    username,
-		Password:    &util.Credential{password},
+		Password:    util.NewCredential(password),
 	}
 	handler.TokenRetriever = handler
 	return handler

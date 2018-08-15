@@ -13,7 +13,7 @@ import (
 )
 
 func TestCredentialOutputRedactedString(t *testing.T) {
-	pw := &Credential{"mypassword"}
+	pw := NewCredential("mypassword")
 	assert.Equal(t, fmt.Sprintf("%s", pw), "XXXXX")
 	assert.Equal(t, fmt.Sprintf("%s", pw.ClearText()), "mypassword")
 }
