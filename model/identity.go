@@ -7,6 +7,7 @@ package model
 import (
 	"github.com/go-openapi/strfmt"
 
+	"time"
 )
 // Member Represents a member that belongs to a tenant.
 // swagger:model Member
@@ -123,6 +124,16 @@ type GroupRole struct {
 	// Required: true
 	Tenant *string `json:"tenant"`
 }
+
+// Represents a permission assigned to a role.
+type RolePermission struct {
+	Tenant     string
+	Role       string
+	Permission string
+	AddedAt    time.Time
+	AddedBy    string
+}
+
 //
 //// TenantDetails tenant details
 //// swagger:model TenantDetails

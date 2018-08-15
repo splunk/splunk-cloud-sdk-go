@@ -303,3 +303,194 @@ func (c *IdentityService) GetRole(name string) (*model.Role, error) {
 	return &result, err
 }
 
+// GetRolePermissions gets permissions for a role in this tenant
+func (c *IdentityService) GetRolePermissions(roleName string) ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"roles",roleName,"permissions")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetRolePermissions gets permissions for a role in this tenant
+func (c *IdentityService) GetRolePermission(roleName string, permissionName string) (*model.RolePermission, error) {
+	var result model.RolePermission
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"roles", roleName, "permissions", permissionName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetGroups list groups that exist int he tenant
+func (c *IdentityService) GetGroups() ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetGroup gets a group in the given tenant
+func (c *IdentityService) GetGroup(name string) (*model.Group, error) {
+	var result model.Group
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups", name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetGroupRoles lists the roles attached to the group
+func (c *IdentityService) GetGroupRoles(groupName string) ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups",groupName, "roles")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetGroupRole returns group-role relationship details
+func (c *IdentityService) GetGroupRole(groupName string, roleName string) (*model.GroupRole, error) {
+	var result model.GroupRole
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups", groupName, "roles", roleName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetGroupRoles lists the members attached to the group
+func (c *IdentityService) GetGroupMembers(groupName string) ([]string, error) {
+	var result []string
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups",groupName, "members")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetGroupRole returns group-member relationship details
+func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*model.GroupRole, error) {
+	var result model.GroupRole
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"groups", groupName, "members", memberName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}

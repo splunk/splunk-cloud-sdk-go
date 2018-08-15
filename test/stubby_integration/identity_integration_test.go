@@ -122,3 +122,52 @@ func TestIdentityService_GetRole(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, result)
 }
+
+func TestIdentityService_GetRolePermissions(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetRolePermissions("role2")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetRolePermission(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetRolePermission("role2","perm2")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+
+func TestIdentityService_GetGroups(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroups()
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetGroup(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroup("grp1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetGroupRoles(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroupRoles("grp1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetGroupRole(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroupRole("grp1","role1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetGroupMembers(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroupMembers("grp1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
+
+func TestIdentityService_GetGroupMember(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetGroupMember("grp1", "mem1")
+	assert.Nil(t, err)
+	assert.NotNil(t, result)
+}
