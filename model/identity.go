@@ -7,7 +7,6 @@ package model
 import (
 	"github.com/go-openapi/strfmt"
 
-	"time"
 )
 // Member Represents a member that belongs to a tenant.
 // swagger:model Member
@@ -15,19 +14,19 @@ type Member struct {
 
 	// When the principal was added to the tenant.
 	// Required: true
-	AddedAt *strfmt.DateTime `json:"addedAt"`
+	AddedAt strfmt.DateTime `json:"addedAt"`
 
 	// added by
 	// Required: true
-	AddedBy *string `json:"addedBy"`
+	AddedBy string `json:"addedBy"`
 
 	// name
 	// Required: true
-	Name *string `json:"name"`
+	Name string `json:"name"`
 
 	// tenant
 	// Required: true
-	Tenant *string `json:"tenant"`
+	Tenant string `json:"tenant"`
 }
 
 // Principal principal
@@ -36,19 +35,19 @@ type Principal struct {
 
 	// created at
 	// Required: true
-	CreatedAt *strfmt.DateTime `json:"createdAt"`
+	CreatedAt strfmt.DateTime `json:"createdAt"`
 
 	// created by
 	// Required: true
-	CreatedBy *string `json:"createdBy"`
+	CreatedBy string `json:"createdBy"`
 
 	// kind
 	// Required: true
-	Kind *string `json:"kind"`
+	Kind string `json:"kind"`
 
 	// name
 	// Required: true
-	Name *string `json:"name"`
+	Name string `json:"name"`
 
 	// profile
 	Profile interface{} `json:"profile,omitempty"`
@@ -64,19 +63,19 @@ type Role struct {
 
 	// created at
 	// Required: true
-	CreatedAt *strfmt.DateTime `json:"createdAt"`
+	CreatedAt strfmt.DateTime `json:"createdAt"`
 
 	// created by
 	// Required: true
-	CreatedBy *string `json:"createdBy"`
+	CreatedBy string `json:"createdBy"`
 
 	// name
 	// Required: true
-	Name *string `json:"name"`
+	Name string `json:"name"`
 
 	// tenant
 	// Required: true
-	Tenant *string `json:"tenant"`
+	Tenant string `json:"tenant"`
 }
 
 // Group group
@@ -85,19 +84,19 @@ type Group struct {
 
 	// created at
 	// Required: true
-	CreatedAt *strfmt.DateTime `json:"createdAt"`
+	CreatedAt strfmt.DateTime `json:"createdAt"`
 
 	// created by
 	// Required: true
-	CreatedBy *string `json:"createdBy"`
+	CreatedBy string `json:"createdBy"`
 
 	// name
 	// Required: true
-	Name *string `json:"name"`
+	Name string `json:"name"`
 
 	// tenant
 	// Required: true
-	Tenant *string `json:"tenant"`
+	Tenant string `json:"tenant"`
 }
 
 // GroupRole Represents a role that is assigned to a group
@@ -106,32 +105,49 @@ type GroupRole struct {
 
 	// added at
 	// Required: true
-	AddedAt *strfmt.DateTime `json:"addedAt"`
+	AddedAt strfmt.DateTime `json:"addedAt"`
 
 	// added by
 	// Required: true
-	AddedBy *string `json:"addedBy"`
+	AddedBy string `json:"addedBy"`
 
 	// group
 	// Required: true
-	Group *string `json:"group"`
+	Group string `json:"group"`
 
 	// role
 	// Required: true
-	Role *string `json:"role"`
+	Role string `json:"role"`
 
 	// tenant
 	// Required: true
-	Tenant *string `json:"tenant"`
+	Tenant string `json:"tenant"`
 }
 
-// Represents a permission assigned to a role.
+// RolePermission role permission
+// swagger:model RolePermission
 type RolePermission struct {
-	Tenant     string
-	Role       string
-	Permission string
-	AddedAt    time.Time
-	AddedBy    string
+
+	// added at
+	// Required: true
+	// Format: date-time
+	AddedAt strfmt.DateTime `json:"addedAt"`
+
+	// added by
+	// Required: true
+	AddedBy string `json:"addedBy"`
+
+	// permission
+	// Required: true
+	Permission string `json:"permission"`
+
+	// role
+	// Required: true
+	Role string `json:"role"`
+
+	// tenant
+	// Required: true
+	Tenant string `json:"tenant"`
 }
 
 //
@@ -141,19 +157,19 @@ type RolePermission struct {
 //
 //	// created at
 //	// Required: true
-//	CreatedAt *strfmt.DateTime `json:"createdAt"`
+//	CreatedAt strfmt.DateTime `json:"createdAt"`
 //
 //	// created by
 //	// Required: true
-//	CreatedBy *string `json:"createdBy"`
+//	CreatedBy string `json:"createdBy"`
 //
 //	// modified at
 //	// Required: true
-//	ModifiedAt *strfmt.DateTime `json:"modifiedAt"`
+//	ModifiedAt strfmt.DateTime `json:"modifiedAt"`
 //
 //	// modified by
 //	// Required: true
-//	ModifiedBy *string `json:"modifiedBy"`
+//	ModifiedBy string `json:"modifiedBy"`
 //
 //	// status
 //	// Required: true
@@ -162,5 +178,5 @@ type RolePermission struct {
 //	// tenant Id
 //	// Required: true
 //	// Pattern: [a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*
-//	TenantID *string `json:"tenantId"`
+//	TenantID string `json:"tenantId"`
 //}
