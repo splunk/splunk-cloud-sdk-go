@@ -28,11 +28,14 @@ var RefreshToken = os.Getenv("REFRESH_TOKEN")
 // IDPHost - host to retrieve access token from
 var IDPHost = os.Getenv("IDP_HOST")
 
-// RefreshClientID - Okta app Client Id for SDK Native App
-var RefreshClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
+// NativeClientID - Okta app Client Id for SDK Native App
+var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 
-// RefreshTokenScope - scope for obtaining access token using refresh
-const RefreshTokenScope = "openid email profile"
+// UserIDPScope - scope for individial users to request
+const UserIDPScope = "openid email profile"
+
+// NativeAppRedirectURI is one of the redirect uris configured for the app
+const NativeAppRedirectURI = "http://localhost:9090"
 
 // BackendClientID - Okta app Client id for client credentials flow
 var BackendClientID = os.Getenv("BACKEND_CLIENT_ID")
@@ -42,6 +45,12 @@ var BackendClientSecret = os.Getenv("BACKEND_CLIENT_SECRET")
 
 // BackendServiceScope - scope for obtaining access token for client credentials flow
 const BackendServiceScope = "backend_service"
+
+// TestUsername corresponds to the test user for integration testing
+var TestUsername = os.Getenv("TEST_USERNAME")
+
+// TestPassword corresponds to the test user's password for integration testing
+var TestPassword = os.Getenv("TEST_PASSWORD")
 
 //Test ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
@@ -54,7 +63,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		Timeout:  testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken)
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, UserIDPScope, RefreshToken)
 	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
@@ -63,7 +72,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_ = getClient(t).IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
 
-	timeValue := float64(1529945178)
+	timeValue := float64(1529945001)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
 		Index:      "main",
@@ -74,7 +83,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		Fields:     map[string]string{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
-	assert.Emptyf(t, err, "Error ingesting test event using refresh logic: %s", err)
+	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
 }
 
 //Test ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
@@ -97,7 +106,7 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
 
-	timeValue := float64(1529945178)
+	timeValue := float64(1529945002)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
 		Index:      "main",
@@ -108,5 +117,36 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 		Fields:     map[string]string{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
-	assert.Emptyf(t, err, "Error ingesting test event using client credentials logic error: %s", err)
+	assert.Emptyf(t, err, "Error ingesting test event using client credentials flow error: %s", err)
+}
+
+//Test ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
+func TestIntegrationPKCEWorkflow(t *testing.T) {
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+
+	client, err := service.NewClient(&service.Config{
+		Token:    ExpiredAuthenticationToken,
+		URL:      url,
+		TenantID: testutils.TestTenantID,
+		Timeout:  testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, UserIDPScope, TestUsername, TestPassword)
+	client.SetResponseHandler(rh)
+
+	clientURL, err := client.GetURL()
+	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	timeValue := float64(1529945003)
+	testIngestEvent := model.Event{
+		Host:       clientURL.RequestURI(),
+		Index:      "main",
+		Event:      "pkcetest",
+		Sourcetype: "sourcetype:pkcetest",
+		Source:     "manual-events",
+		Time:       &timeValue,
+		Fields:     map[string]string{"testKey": "testValue"}}
+
+	err = client.IngestService.CreateEvent(testIngestEvent)
+	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
 }

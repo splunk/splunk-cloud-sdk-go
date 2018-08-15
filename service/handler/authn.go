@@ -52,8 +52,11 @@ func (rh *AuthnResponseHandler) HandleResponse(client *service.Client, request *
 // RefreshTokenAuthnResponseHandler retries a request after gettting a new access token from the identity provider using a RefreshToken
 type RefreshTokenAuthnResponseHandler struct {
 	*AuthnResponseHandler
-	ClientID     string
-	Scope        string
+	// ClientID which corresponds to an Refresh Token ("offline_access" scope) supported IdP client
+	ClientID string
+	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
+	Scope string
+	// RefreshToken to use to authenticate in order to generate an access token
 	RefreshToken string
 }
 
@@ -81,9 +84,12 @@ func (rh *RefreshTokenAuthnResponseHandler) GetAccessToken() (token string, err 
 // ClientCredentialsAuthnResponseHandler retries a request after gettting a new access token from the identity provider using the Client Credentials flow
 type ClientCredentialsAuthnResponseHandler struct {
 	*AuthnResponseHandler
-	ClientID     string
+	// ClientID to authenticate as which corresponds to a Client Credentials flow supported IdP client
+	ClientID string
+	// ClientSecret corresponding to the ClientID above
 	ClientSecret string
-	Scope        string
+	// Scope(s) to request, separated by spaces -- this will be a custom scope, for example: "backend_service"
+	Scope string
 }
 
 // NewClientCredentialsAuthnResponseHandler initializes a new response handler
@@ -103,6 +109,46 @@ func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, c
 // GetAccessToken gets a new access token from the identity provider
 func (rh *ClientCredentialsAuthnResponseHandler) GetAccessToken() (token string, err error) {
 	ctx, err := rh.IdpClient.ClientFlow(rh.ClientID, rh.ClientSecret, rh.Scope)
+	if err != nil {
+		return "", err
+	}
+	return ctx.AccessToken, nil
+}
+
+// PKCEAuthnResponseHandlerResponseHandler retries a request after gettting a new access token from the identity provider using the Proof Key for Code Exchange (PKCE) flow
+type PKCEAuthnResponseHandler struct {
+	*AuthnResponseHandler
+	// ClientID corresponding to a PKCE flow supported IdP client
+	ClientID string
+	// RedirectURI that has been whitelisted according to the ClientID (NOTE: redirection is not actually needed for this implementation but this URI must match one specified by the IdP)
+	RedirectURI string
+	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
+	Scope string
+	// Username to authenticate as which must be registered to the ClientID in the IdP
+	Username string
+	// Password corresponding to the Username above
+	Password string
+}
+
+// NewPKCEAuthnResponseHandler initializes a new response handler
+func NewPKCEAuthnResponseHandler(idpHost string, clientID string, redirectURI string, scope string, username string, password string) *PKCEAuthnResponseHandler {
+	handler := &PKCEAuthnResponseHandler{
+		AuthnResponseHandler: &AuthnResponseHandler{
+			IdpClient: idp.NewDefaultClient(idpHost),
+		},
+		ClientID:    clientID,
+		RedirectURI: redirectURI,
+		Scope:       scope,
+		Username:    username,
+		Password:    password,
+	}
+	handler.TokenRetriever = handler
+	return handler
+}
+
+// GetAccessToken gets a new access token from the identity provider
+func (rh *PKCEAuthnResponseHandler) GetAccessToken() (token string, err error) {
+	ctx, err := rh.IdpClient.PKCEFlow(rh.ClientID, rh.RedirectURI, rh.Scope, rh.Username, rh.Password)
 	if err != nil {
 		return "", err
 	}
