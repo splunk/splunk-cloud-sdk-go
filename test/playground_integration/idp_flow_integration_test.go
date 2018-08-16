@@ -31,9 +31,6 @@ var IDPHost = os.Getenv("IDP_HOST")
 // NativeClientID - Okta app Client Id for SDK Native App
 var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 
-// UserIDPScope - scope for individial users to request
-const UserIDPScope = "openid email profile"
-
 // NativeAppRedirectURI is one of the redirect uris configured for the app
 const NativeAppRedirectURI = "http://localhost:9090"
 
@@ -63,7 +60,7 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 		Timeout:  testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, UserIDPScope, RefreshToken)
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
 	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
@@ -131,7 +128,7 @@ func TestIntegrationPKCEWorkflow(t *testing.T) {
 		Timeout:  testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, UserIDPScope, TestUsername, TestPassword)
+	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
 	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()

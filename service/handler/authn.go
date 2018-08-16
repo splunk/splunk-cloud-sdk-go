@@ -6,6 +6,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/splunk/ssc-client-go/idp"
@@ -16,6 +17,11 @@ import (
 const (
 	// DefaultMaxAuthnAttempts defines the maximum number of retries that will be performed for a request encountering an authentication issue
 	DefaultMaxAuthnAttempts = 1
+)
+
+var (
+	// DefaultOIDCScopes defines the default OpenID Connect scopes to use in authn requests - "openid email profile"
+	DefaultOIDCScopes = fmt.Sprintf("%s %s %s", idp.ScopeOpenID, idp.ScopeEmail, idp.ScopeProfile)
 )
 
 // TokenRetriever retrieves an access token

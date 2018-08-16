@@ -52,6 +52,24 @@ import (
 // time session token, which when used with these flows, will result in the
 // requested grants being returned directly in the redirect url.
 
+// OIDCScope defines scopes that are OpenID Connect compatible, see: https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims
+type OIDCScope string
+
+const (
+	// ScopeOpenID - The basic (and required) scope for OpenID Connect
+	ScopeOpenID  OIDCScope = "openid"
+	// ScopeEmail - This scope value requests access to the email and email_verified Claims
+	ScopeEmail   OIDCScope = "email"
+	// ScopeProfile - This scope value requests access to the End-User's default profile Claims, which are: name, family_name,
+	// given_name, middle_name, nickname, preferred_username, profile, picture, website, gender, birthdate, zoneinfo,
+	// locale, and updated_at
+	ScopeProfile OIDCScope = "profile"
+	// ScopeAddress - This scope value requests access to the address Claim
+	ScopeAddress OIDCScope = "address"
+	// ScopePhone - This scope value requests access to the phone_number and phone_number_verified Claims
+	ScopePhone   OIDCScope = "phone"
+)
+
 // Read and decode JSON data from given reader and return as a map.
 func load(r io.Reader) (map[string]interface{}, error) {
 	var data map[string]interface{}
