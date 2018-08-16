@@ -21,18 +21,20 @@ else
     exit 1
 fi
 
+COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v /vendor/ | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
+
 # Required to run just the service tests
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
-    go test -v -coverpkg github.com/splunk/ssc-client-go/model,github.com/splunk/ssc-client-go/service \
+    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
                -covermode=count \
                -coverprofile="codecov.integration.out" \
                ./test/playground_integration/...
     exit 0
 else
     echo "Running integration tests and gating on failures..."
-    go test -v -coverpkg github.com/splunk/ssc-client-go/model,github.com/splunk/ssc-client-go/service \
+    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
                -covermode=count \
                -coverprofile="codecov.integration.out" \
                ./test/playground_integration/...
