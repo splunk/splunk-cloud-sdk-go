@@ -25,13 +25,18 @@ fi
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
-    go test -v -cover -covermode=count -coverprofile="codecov.integration.out" ./test/playground_integration/...
+    go test -v -coverpkg github.com/splunk/ssc-client-go/model,github.com/splunk/ssc-client-go/service \
+               -covermode=count \
+               -coverprofile="codecov.integration.out" \
+               ./test/playground_integration/...
     exit 0
 else
     echo "Running integration tests and gating on failures..."
-    go test -v -cover -covermode=count -coverprofile="codecov.integration.out" ./test/playground_integration/... || exit 1
+    go test -v -coverpkg github.com/splunk/ssc-client-go/model,github.com/splunk/ssc-client-go/service \
+               -covermode=count \
+               -coverprofile="codecov.integration.out" \
+               ./test/playground_integration/...
 fi
 
 # Upload coverage information
-./ci/codecov -f "codecov.integration.out" -F integration
-
+sh ./ci/codecov -f "codecov.integration.out" -F integration
