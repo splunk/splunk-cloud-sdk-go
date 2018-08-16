@@ -177,7 +177,7 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		err := b.EventService.CreateEvents(events[i:end])
 		i = i + b.BatchSize
 		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+			str := fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, events)
 
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
