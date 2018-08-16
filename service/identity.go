@@ -472,8 +472,8 @@ func (c *IdentityService) GetGroupMembers(groupName string) ([]string, error) {
 }
 
 // GetGroupRole returns group-member relationship details
-func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*model.GroupRole, error) {
-	var result model.GroupRole
+func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*model.GroupMember, error) {
+	var result model.GroupMember
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", groupName, "members", memberName)

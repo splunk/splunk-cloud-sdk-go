@@ -124,6 +124,31 @@ type GroupRole struct {
 	Tenant string `json:"tenant"`
 }
 
+// GroupMember Represents a member that belongs to a group
+// swagger:model GroupMember
+type GroupMember struct {
+
+	// added at
+	// Required: true
+	AddedAt strfmt.DateTime `json:"addedAt"`
+
+	// added by
+	// Required: true
+	AddedBy string `json:"addedBy"`
+
+	// group
+	// Required: true
+	Group string `json:"group"`
+
+	// principal
+	// Required: true
+	Principal string `json:"principal"`
+
+	// tenant
+	// Required: true
+	Tenant string `json:"tenant"`
+}
+
 // RolePermission role permission
 // swagger:model RolePermission
 type RolePermission struct {
