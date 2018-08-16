@@ -1,5 +1,4 @@
 # Starting from the latest Golang image
-#FROM golang:1.11rc1-alpine
 FROM golang:1.9.4-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
