@@ -5,8 +5,6 @@ echo "Beginning unit tests"
 echo "==============================================="
 
 GO_NON_TEST_NON_VENDOR_PACKAGES=$(go list ./... | grep -v /vendor/ | grep -v test)
-#GO_NON_TEST_NON_VENDOR_PACKAGE_NAMES=$(go list -f "{{.Name}}" ./... | grep -v /vendor/ | grep -v test)
-#echo $GO_NON_TEST_NON_VENDOR_PACKAGE_NAMES
 
 PACKAGE_COVERAGE_PREFIX=./ci/unit_tests/
 PACKAGE_COVERAGE_SUFFIX=_unit_test_code_cov.out
@@ -37,12 +35,7 @@ do
     fi
 done
 
-
-echo "==============================================="
-echo "PERFORMING COMMAND"
-echo "./ci/codecov -f "codecov.integration.out" -F unit -t $CODECOV_TOKEN"
-echo "==============================================="
-
+# Upload code cov report
 if [[ -z "$CODECOV_TOKEN" ]];
 then
     echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
