@@ -41,7 +41,7 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	err := invalidClient.IngestService.CreateEvent(testIngestEvent)
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).Status)
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 

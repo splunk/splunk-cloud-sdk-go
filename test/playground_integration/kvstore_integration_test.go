@@ -112,7 +112,7 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 422, "Expected error code 422")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 422, "Expected error code 422")
 	assert.True(t, err.(*util.HTTPError).Message == "422 Unprocessable Entity", "Expected error message should be 422 Unprocessable Entity")
 }
 
@@ -133,7 +133,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
 
@@ -152,7 +152,7 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 	// DeleteIndex
 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
 
