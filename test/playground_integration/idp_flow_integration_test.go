@@ -3,8 +3,6 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-// +build !integration
-
 package playgroundintegration
 
 import (
