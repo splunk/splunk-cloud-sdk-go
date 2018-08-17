@@ -40,7 +40,6 @@ done
 
 echo "==============================================="
 echo "PERFORMING COMMAND"
-echo "TOKEN: $CODECOV_TOKEN"
 echo "./ci/codecov -f "codecov.integration.out" -F unit -t $CODECOV_TOKEN"
 echo "==============================================="
 

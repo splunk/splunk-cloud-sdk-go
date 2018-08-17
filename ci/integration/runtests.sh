@@ -45,7 +45,6 @@ fi
 
 echo "==============================================="
 echo "PERFORMING COMMAND"
-echo "TOKEN: $CODECOV_TOKEN"
 echo "./ci/codecov -f $FULL_INTEGRATION_TEST_CODECOV_PATH -F integration -t $CODECOV_TOKEN"
 echo "==============================================="
 
