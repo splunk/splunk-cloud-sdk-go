@@ -151,7 +151,7 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 
 	// DeleteIndex
 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	require.NotNil(t, err)
+	require.NotNil(t, err, err)
 	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
 	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
 }
