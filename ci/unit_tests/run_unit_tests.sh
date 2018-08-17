@@ -38,4 +38,4 @@ do
 done
 
 # Upload coverage information with the tag unit
-./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t:$CODECOV_TOKEN
+sh ./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t:$CODECOV_TOKEN
