@@ -1,5 +1,0 @@
-#!/bin/bash
-
-go test -v -covermode=count -coverprofile="codecov.out" -tags=integration ./... || exit 1
-
-ci/codecov -f "codecov.out" -F unit
