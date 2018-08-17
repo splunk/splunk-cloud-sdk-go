@@ -41,4 +41,4 @@ else
 fi
 
 # Upload coverage information
-sh ./ci/codecov -f "codecov.integration.out" -F integration -t:$CODECOV_TOKEN
+./ci/codecov -f "codecov.integration.out" -F integration -t:$CODECOV_TOKEN
