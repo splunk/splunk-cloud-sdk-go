@@ -40,5 +40,8 @@ else
                ./test/playground_integration/...
 fi
 
+echo "PERFORMING COMMAND"
+echo "./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN"
+
 # Upload coverage information
-./ci/codecov -f "codecov.integration.out" -F integration -t:$CODECOV_TOKEN
+./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN

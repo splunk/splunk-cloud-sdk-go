@@ -37,5 +37,9 @@ do
     fi
 done
 
+
+echo "PERFORMING COMMAND"
+echo "./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t $CODECOV_TOKEN"
+
 # Upload coverage information
-./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t:$CODECOV_TOKEN
+./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t $CODECOV_TOKEN
