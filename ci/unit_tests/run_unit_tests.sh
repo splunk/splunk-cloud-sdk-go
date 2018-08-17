@@ -30,7 +30,7 @@ do
 
     go test -v -covermode=count -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE || ERROR="Error testing $PACKAGE"
 
-    if [ -f /tmp/foo.txt ]; then
+    if [ -f $COVERAGE_PACKAGE_OUTPUT_FILE ]; then
         cat $COVERAGE_PACKAGE_OUTPUT_FILE >> $FULL_UNIT_TEST_CODECOV_PATH
     else
         echo "No unit test results were found for $PACKAGE"
@@ -38,4 +38,4 @@ do
 done
 
 # Upload coverage information with the tag unit
-sh ./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit
+./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit
