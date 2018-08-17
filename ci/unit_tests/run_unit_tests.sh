@@ -28,7 +28,7 @@ do
     # echo $SANITIZED_PACKAGE_NAME
     # echo $COVERAGE_PACKAGE_OUTPUT_FILE
 
-    go test -v -covermode=count -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE || ERROR="Error testing $PACKAGE"
+    go test -v -covermode=count -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE
 
     if [ -f $COVERAGE_PACKAGE_OUTPUT_FILE ]; then
         cat $COVERAGE_PACKAGE_OUTPUT_FILE >> $FULL_UNIT_TEST_CODECOV_PATH
