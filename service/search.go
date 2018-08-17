@@ -82,7 +82,7 @@ func (search *Search) Wait() error {
 	if search.isCancelling == true {
 		return errors.New("search has been cancelled")
 	}
-	if err != nil && err.(*util.HTTPError).Status == 404 {
+	if err != nil && err.(*util.HTTPError).HTTPStatusCode == 404 {
 		return errors.New("search has been cancelled")
 	}
 	return err
