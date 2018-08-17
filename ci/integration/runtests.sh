@@ -23,27 +23,31 @@ fi
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v /vendor/ | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
+PACKAGE_COVERAGE_PREFIX=./ci/integration/
+FULL_INTEGRATION_TEST_CODECOV_FILE_NAME=integration_test_codecov.out
+FULL_INTEGRATION_TEST_CODECOV_PATH=$PACKAGE_COVERAGE_PREFIX$FULL_INTEGRATION_TEST_CODECOV_FILE_NAME
+
 # Required to run just the service tests
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
     go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
                -covermode=count \
-               -coverprofile="codecov.integration.out" \
+               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
                ./test/playground_integration/...
     exit 0
 else
     echo "Running integration tests and gating on failures..."
     go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
                -covermode=count \
-               -coverprofile="codecov.integration.out" \
+               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
                ./test/playground_integration/...
 fi
 
 echo "==============================================="
 echo "PERFORMING COMMAND"
 echo "TOKEN: $CODECOV_TOKEN"
-echo "./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN"
+echo "./ci/codecov -f $FULL_INTEGRATION_TEST_CODECOV_PATH -F integration -t $CODECOV_TOKEN"
 echo "==============================================="
 
 if [[ -z "$CODECOV_TOKEN" ]];
@@ -51,5 +55,5 @@ then
     echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
 else
     # Upload coverage information
-    ./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN
+    ./ci/codecov -f $FULL_INTEGRATION_TEST_CODECOV_PATH -F integration -t $CODECOV_TOKEN
 fi
