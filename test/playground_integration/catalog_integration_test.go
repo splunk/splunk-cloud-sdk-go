@@ -120,7 +120,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 			ExternalName: externalName,
 		})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 409, "Expected error code 409")
 }
 
 // Test CreateDataset for 401 Unauthorized operation error
@@ -132,7 +132,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	_, err := invalidClient.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -145,7 +145,7 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	_, err := client.CatalogService.CreateDataset(
 		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 400, "Expected error code 400")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 400, "Expected error code 400")
 }
 
 // Test GetDatasets
@@ -176,7 +176,7 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 
 	_, err := invalidClient.CatalogService.GetDatasets()
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -208,7 +208,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -220,7 +220,7 @@ func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 
 	_, err := client.CatalogService.GetDataset("123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test UpdateDataset
@@ -255,7 +255,7 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 
 	_, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName, Version: 2}, "123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test DeleteDataset
@@ -273,7 +273,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 
 	_, err = client.CatalogService.GetDataset(dataset.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test DeleteDataset for 401 Unauthorized operation error
@@ -288,7 +288,7 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 
 	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -300,7 +300,7 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteDataset("123")
 	assert.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
@@ -338,7 +338,7 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 
 	_, err = client.CatalogService.CreateRule(model.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 409, "Expected error code 409")
 }
 
 // Test CreateRule for 401 Unauthorized operation error
@@ -350,7 +350,7 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	// create rule
 	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -379,7 +379,7 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 
 	_, err := invalidClient.CatalogService.GetRules()
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -413,7 +413,7 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	_, err = invalidClient.CatalogService.GetRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -425,7 +425,7 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 
 	_, err := client.CatalogService.GetRule("123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test DeleteRule by ID
@@ -457,7 +457,7 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	err = invalidClient.CatalogService.DeleteRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
@@ -469,7 +469,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteRule("123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test GetDatasetFields
@@ -597,7 +597,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
 	require.NotNil(t, err)
 	assert.Empty(t, result)
-	assert.True(t, err.(*util.HTTPError).Status == 404)
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404)
 }
 
 // Test PostDatasetField for 401 error
@@ -615,7 +615,7 @@ func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	resultField, err := invalidClient.CatalogService.PostDatasetField(dataset.ID, testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 }
 
 // Test PostDatasetField for 409 error
@@ -636,7 +636,7 @@ func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, duplicateTestField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.True(t, err.(*util.HTTPError).Status == 409, "Expected error code 409")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 409, "Expected error code 409")
 }
 
 // Test PostDatasetField for 500 error
@@ -654,7 +654,7 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.True(t, err.(*util.HTTPError).Status == 500, "Expected error code 500")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 500, "Expected error code 500")
 }
 
 // Test GetDatasetFields for 401 Unauthorized operation error
@@ -675,7 +675,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID, nil)
 	require.NotNil(t, err)
 	assert.Empty(t, result)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 }
 
 // Test PatchDatasetField for 401 error
@@ -702,7 +702,7 @@ func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 	resultField, err = invalidClient.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 }
 
 // Test PatchDatasetField for 404 error
@@ -728,7 +728,7 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, "123", model.Field{DataType: "O"})
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 // Test DeleteDatasetField for 401 error
@@ -748,7 +748,7 @@ func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 	// Delete dataset field
 	err = invalidClient.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 401, "Expected error code 401")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
 }
 
 // Test DeleteDatasetField for 404 error
@@ -764,7 +764,7 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	// Delete dataset field
 	err = client.CatalogService.DeleteDatasetField(dataset.ID, "123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).Status == 404, "Expected error code 404")
+	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
 func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
