@@ -44,5 +44,9 @@ echo "TOKEN: $CODECOV_TOKEN"
 echo "./ci/codecov -f "codecov.integration.out" -F unit -t $CODECOV_TOKEN"
 echo "==============================================="
 
+if [ ! -z "$CODECOV_TOKEN" ]
+then
+    echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV WILL NOT BE UPLOADED."
+fi
 # Upload coverage information
 ./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t $CODECOV_TOKEN
