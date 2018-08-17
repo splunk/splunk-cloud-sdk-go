@@ -494,3 +494,119 @@ func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
+
+// AddMember adds a member to the given tenant
+func (c *IdentityService) AddMember(memberName string) (*model.Member, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":memberName}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Member
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// CreateRole creates a new authorization role in the given tenant
+func (c *IdentityService) CreateRole(name string) (*model.Role, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":name}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Role
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// AddPermissionToRole Adds permission to a role in this tenant
+func (c *IdentityService) AddPermissionToRole(roleName string, permissionName string) (*model.RolePermission, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":permissionName}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.RolePermission
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// CreateGroup creates a new group in the given tenant
+func (c *IdentityService) CreateGroup(name string) (*model.Group, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups")
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":name}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Group
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// AddRoleToGroup adds a role to the group
+func (c *IdentityService) AddRoleToGroup(groupName string, roleName string) (*model.GroupRole, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups",groupName,"roles")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":roleName}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.GroupRole
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// AddMemberToGroup adds a member to the group
+func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) (*model.GroupMember, error) {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups",groupName,"members")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":memberName}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.GroupMember
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+

@@ -188,3 +188,49 @@ func TestIdentityService_GetGroupMember(t *testing.T) {
 	assert.Equal(t, "grp1", result.Group)
 	assert.Equal(t, "devtestTenant", result.Tenant)
 }
+
+func TestIdentityService_CreateGroup(t *testing.T) {
+	result, err := getClient(t).IdentityService.CreateGroup("sdk-group")
+	assert.Nil(t, err)
+	assert.Equal(t, "sdk-group", result.Name)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
+func TestIdentityService_CreateRole(t *testing.T) {
+	result, err := getClient(t).IdentityService.CreateRole("roles.sdk-test")
+	assert.Nil(t, err)
+	assert.Equal(t, "roles.sdk-test", result.Name)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
+func TestIdentityService_AddMember(t *testing.T) {
+	result, err := getClient(t).IdentityService.AddMember("mem1")
+	assert.Nil(t, err)
+	assert.Equal(t, "mem1", result.Name)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
+func TestIdentityService_AddMemberToGroup(t *testing.T) {
+	result, err := getClient(t).IdentityService.AddMemberToGroup("sdk-group","sdk-int-test@splunk.com")
+	assert.Nil(t, err)
+	assert.Equal(t, "sdk-int-test@splunk.com", result.Principal)
+	assert.Equal(t, "sdk-group", result.Group)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
+func TestIdentityService_AddPermissionToRole(t *testing.T) {
+	result, err := getClient(t).IdentityService.AddPermissionToRole("roles.sdk-test","devtestTenant%3A%2A%3Akvstore.%2A")
+	assert.Nil(t, err)
+	assert.Equal(t, "devtestTenant%3A%2A%3Akvstore.%2A", result.Permission)
+	assert.Equal(t, "roles.sdk-test", result.Role)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
+func TestIdentityService_AddRoleToGroup(t *testing.T) {
+	result, err := getClient(t).IdentityService.AddRoleToGroup("sdk-group","sdk-test-role")
+	assert.Nil(t, err)
+	assert.Equal(t, "sdk-test-role", result.Role)
+	assert.Equal(t, "sdk-group", result.Group)
+	assert.Equal(t, "devtestTenant", result.Tenant)
+}
+
