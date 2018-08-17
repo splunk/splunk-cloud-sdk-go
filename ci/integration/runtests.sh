@@ -35,7 +35,6 @@ if [ "$allow_failures" -eq "1" ]; then
                -covermode=count \
                -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
                ./test/playground_integration/...
-    exit 0
 else
     echo "Running integration tests and gating on failures..."
     go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
