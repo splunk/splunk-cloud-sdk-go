@@ -38,8 +38,11 @@ do
 done
 
 
+echo "==============================================="
 echo "PERFORMING COMMAND"
-echo "./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t $CODECOV_TOKEN"
+echo "TOKEN: $CODECOV_TOKEN"
+echo "./ci/codecov -f "codecov.integration.out" -F unit -t $CODECOV_TOKEN"
+echo "==============================================="
 
 # Upload coverage information
 ./ci/codecov -f $FULL_UNIT_TEST_CODECOV_PATH -F unit -t $CODECOV_TOKEN
