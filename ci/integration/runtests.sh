@@ -49,6 +49,7 @@ echo "==============================================="
 if [[ -z "$CODECOV_TOKEN" ]];
 then
     echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
+else
+    # Upload coverage information
+    ./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN
 fi
-# Upload coverage information
-./ci/codecov -f "codecov.integration.out" -F integration -t $CODECOV_TOKEN
