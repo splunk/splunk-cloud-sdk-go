@@ -610,3 +610,104 @@ func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) 
 	return &result, err
 }
 
+// DeleteMember removes a member fromt the given tenant
+func (c *IdentityService) DeleteMember(name string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members",name)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteRole deletes a defined role for the given tenant
+func (c *IdentityService) DeleteRole(name string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles",name)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveRolePermission Removes a permission from the role
+func (c *IdentityService) RemoveRolePermission(roleName string, permissionName string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles",roleName, "permissions",permissionName)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteGroup deletes a group in the given tenant
+func (c *IdentityService) DeleteGroup(name string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups",name)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveGroupRole removes the role from the group
+func (c *IdentityService) RemoveGroupRole(groupName string, roleName string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups",groupName, "roles", roleName)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveGroupRole removes the memeber from the group
+func (c *IdentityService) RemoveGroupMember(groupName string, memberName string) error {
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups",groupName, "members", memberName)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

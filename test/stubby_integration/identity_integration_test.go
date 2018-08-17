@@ -234,3 +234,35 @@ func TestIdentityService_AddRoleToGroup(t *testing.T) {
 	assert.Equal(t, "devtestTenant", result.Tenant)
 }
 
+
+func TestIdentityService_DeleteGroup(t *testing.T) {
+	err := getClient(t).IdentityService.DeleteGroup("sdk-group")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_DeleteMember(t *testing.T) {
+	err := getClient(t).IdentityService.DeleteMember("mem1")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_DeleteRole(t *testing.T) {
+	err := getClient(t).IdentityService.DeleteRole("roles.sdk-test")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_RemoveGroupMember(t *testing.T) {
+	err := getClient(t).IdentityService.RemoveGroupMember("sdk-group","sdk-int-test@splunk.com")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_RemoveGroupRole(t *testing.T) {
+	err := getClient(t).IdentityService.RemoveGroupRole("sdk-group","roles.sdk-test")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_RemoveRolePermission(t *testing.T) {
+	err := getClient(t).IdentityService.RemoveRolePermission("roles.sdk-test", "TEST_TENANT%3A%2A%3Akvstore.%2A")
+	assert.Nil(t, err)
+}
+
+
