@@ -261,7 +261,7 @@ func TestIdentityService_RemoveGroupRole(t *testing.T) {
 }
 
 func TestIdentityService_RemoveRolePermission(t *testing.T) {
-	err := getClient(t).IdentityService.RemoveRolePermission("roles.sdk-test", "TEST_TENANT%3A%2A%3Akvstore.%2A")
+	err := getClient(t).IdentityService.RemoveRolePermission("roles.sdk-test", "TEST_TENANT:*:kvstore.*")
 	assert.Nil(t, err)
 }
 

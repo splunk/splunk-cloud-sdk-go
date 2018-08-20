@@ -18,7 +18,7 @@ type IdentityService service
 
 // CreateTenant creates a tenant
 func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, "v2",
 		"tenants")
 	if err != nil {
 		return err
@@ -30,9 +30,10 @@ func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
 	return err
 }
 
+
 // DeleteTenant deletes a tenant by tenantID
 func (c *IdentityService) DeleteTenant(tenantID string) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, "v2",
 		"tenants", tenantID)
 	if err != nil {
 		return err
@@ -53,7 +54,7 @@ func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 	if len(tenantID) == 0 {
 		scope = "system"
 	}
-	url, err := c.client.BuildURLWithTenantID(scope, nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID(scope, nil, identityServicePrefix, "v2",
 		"userprofile")
 
 	if err != nil {
@@ -74,7 +75,7 @@ func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 // GetTenantUsers returns users registered with the tenant
 func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) {
 	var users []model.User
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
 		"users")
 	if err != nil {
 		return nil, err
@@ -92,7 +93,7 @@ func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) 
 
 // ReplaceTenantUsers replaces existing users on a tenant with the provided user list
 func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
 		"users")
 	if err != nil {
 		return err
@@ -107,7 +108,7 @@ func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User
 
 // AddTenantUsers adds users to a tenant
 func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
 		"users")
 	if err != nil {
 		return err
@@ -122,7 +123,7 @@ func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) er
 
 // DeleteTenantUsers deletes users from a tenant
 func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
 		"users")
 	if err != nil {
 		return err
@@ -134,6 +135,21 @@ func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User)
 	}
 	return err
 }
+
+//// CreateTenant creates a tenant
+//func (c *IdentityService) CreateTenant(name string) error {
+//	url, err := c.client.BuildURLWithTenantID("system", nil, "system",identityServicePrefix, identityServiceVersion,
+//		"tenants")
+//	if err != nil {
+//		return err
+//	}
+//	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
+//	if response != nil {
+//		defer response.Body.Close()
+//	}
+//	return err
+//}
+
 
 // GetMembers returns the list of members in the given tenant
 func (c *IdentityService) GetMembers() ([]string, error) {
