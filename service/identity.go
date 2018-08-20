@@ -539,7 +539,7 @@ func (c *IdentityService) AddPermissionToRole(roleName string, permissionName st
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string] string{"name":permissionName}})
+	response, err := c.client.Post(RequestParams{URL: url, Body: permissionName})
 	if response != nil {
 		defer response.Body.Close()
 	}
