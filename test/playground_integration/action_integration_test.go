@@ -277,6 +277,6 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 			Payload: webhookPayload,
 		})
 	require.NotNil(t, err)
-	assert.Equal(t, 403, err.(*util.HTTPError).Status)
+	assert.Equal(t, 403, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "403 Forbidden", err.(*util.HTTPError).Message)
 }
