@@ -193,7 +193,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "422 Unprocessable Entity", err.(*util.HTTPError).Message)
+	assert.Equal(t, "validation-failed", err.(*util.HTTPError).Code)
 }
 
 // Test UpdateAction updates with the new fields in the action
