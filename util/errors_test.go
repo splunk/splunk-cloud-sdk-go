@@ -34,7 +34,7 @@ func TestParseHTTPStatusCodeInResponseBadResponseNilBody(t *testing.T) {
 		Body:       nil,
 	}
 	expectErrMsg := "Http Error: [400] 400 Bad Request "
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).Status != 400 || err.Error() != expectErrMsg {
+	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
 		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error for bad responses, got %v", err)
 	}
 }
@@ -46,7 +46,7 @@ func TestParseHTTPStatusCodeInResponseEmptyBody(t *testing.T) {
 		Body:       ioutil.NopCloser(bytes.NewReader([]byte(""))),
 	}
 	expectErrMsg := "Http Error: [400] 400 Bad Request "
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).Status != 400 || err.Error() != expectErrMsg {
+	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
 		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error with body, got %v", err)
 	}
 }
@@ -58,7 +58,7 @@ func TestParseHTTPStatusCodeInResponseBodyMsg(t *testing.T) {
 		Body:       ioutil.NopCloser(bytes.NewReader([]byte("unknown sid"))),
 	}
 	expectErrMsg := "Http Error: [400] 400 Bad Request unknown sid"
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).Status != 400 || err.Error() != expectErrMsg {
+	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
 		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error with body, got %v", err)
 	}
 }
