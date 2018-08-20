@@ -16,7 +16,8 @@ import (
 const actionServicePrefix = "action"
 const actionServiceVersion = "v1"
 
-// ActionService talks to the SSC action service
+// ActionService - A service the receives incoming notifications and uses
+// pre-defined templates to turn those notifications into meaningful actions
 type ActionService service
 
 // GetActions get all actions
