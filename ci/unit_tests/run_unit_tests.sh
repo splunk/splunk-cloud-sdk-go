@@ -4,7 +4,7 @@ echo "==============================================="
 echo "Beginning unit tests"
 echo "==============================================="
 
-GO_NON_TEST_NON_VENDOR_PACKAGES=$(go list ./... | grep -v /vendor/ | grep -v test)
+GO_NON_TEST_PACKAGES=$(go list ./... | grep -v test)
 
 PACKAGE_COVERAGE_PREFIX=./ci/unit_tests/
 PACKAGE_COVERAGE_SUFFIX=_unit_test_code_cov.out
@@ -15,7 +15,7 @@ echo "--------------------------------------------------------------------------
 echo "Unit tests will be output to $FULL_UNIT_TEST_CODECOV_PATH"
 echo "------------------------------------------------------------------------------"
 
-for PACKAGE in $GO_NON_TEST_NON_VENDOR_PACKAGES
+for PACKAGE in $GO_NON_TEST_PACKAGES
 do
     echo "-------------------------------------------------------------------"
     echo "Beginning unit tests for $PACKAGE"

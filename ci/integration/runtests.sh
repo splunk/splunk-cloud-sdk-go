@@ -21,7 +21,7 @@ else
     exit 1
 fi
 
-COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v /vendor/ | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
+COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
 PACKAGE_COVERAGE_PREFIX=./ci/integration/
 FULL_INTEGRATION_TEST_CODECOV_FILE_NAME=integration_test_codecov.out
