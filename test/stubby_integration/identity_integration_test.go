@@ -84,7 +84,7 @@ func TestIdentityService_GetMember(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetMember("mem1")
 	assert.Nil(t, err)
 	assert.Equal(t, "mem1", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_GetMembers(t *testing.T) {
@@ -126,7 +126,7 @@ func TestIdentityService_GetRole(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetRole("role2")
 	assert.Nil(t, err)
 	assert.Equal(t, "role2", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_GetRolePermissions(t *testing.T) {
@@ -141,7 +141,7 @@ func TestIdentityService_GetRolePermission(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "role2", result.Role)
 	assert.Equal(t, "perm2", result.Permission)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 
@@ -156,7 +156,7 @@ func TestIdentityService_GetGroup(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetGroup("grp1")
 	assert.Nil(t, err)
 	assert.Equal(t, "grp1", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_GetGroupRoles(t *testing.T) {
@@ -171,7 +171,7 @@ func TestIdentityService_GetGroupRole(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "grp1", result.Group)
 	assert.Equal(t, "role1", result.Role)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_GetGroupMembers(t *testing.T) {
@@ -186,28 +186,28 @@ func TestIdentityService_GetGroupMember(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "mem1", result.Principal)
 	assert.Equal(t, "grp1", result.Group)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_CreateGroup(t *testing.T) {
 	result, err := getClient(t).IdentityService.CreateGroup("sdk-group")
 	assert.Nil(t, err)
 	assert.Equal(t, "sdk-group", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_CreateRole(t *testing.T) {
 	result, err := getClient(t).IdentityService.CreateRole("roles.sdk-test")
 	assert.Nil(t, err)
 	assert.Equal(t, "roles.sdk-test", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_AddMember(t *testing.T) {
 	result, err := getClient(t).IdentityService.AddMember("mem1")
 	assert.Nil(t, err)
 	assert.Equal(t, "mem1", result.Name)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_AddMemberToGroup(t *testing.T) {
@@ -215,15 +215,15 @@ func TestIdentityService_AddMemberToGroup(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "sdk-int-test@splunk.com", result.Principal)
 	assert.Equal(t, "sdk-group", result.Group)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_AddPermissionToRole(t *testing.T) {
-	result, err := getClient(t).IdentityService.AddPermissionToRole("roles.sdk-test","devtestTenant%3A%2A%3Akvstore.%2A")
+	result, err := getClient(t).IdentityService.AddPermissionToRole("roles.sdk-test","TEST_TENANT%3A%2A%3Akvstore.%2A")
 	assert.Nil(t, err)
-	assert.Equal(t, "devtestTenant%3A%2A%3Akvstore.%2A", result.Permission)
+	assert.Equal(t, "TEST_TENANT%3A%2A%3Akvstore.%2A", result.Permission)
 	assert.Equal(t, "roles.sdk-test", result.Role)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 func TestIdentityService_AddRoleToGroup(t *testing.T) {
@@ -231,7 +231,7 @@ func TestIdentityService_AddRoleToGroup(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "sdk-test-role", result.Role)
 	assert.Equal(t, "sdk-group", result.Group)
-	assert.Equal(t, "devtestTenant", result.Tenant)
+	assert.Equal(t, "TEST_TENANT", result.Tenant)
 }
 
 
