@@ -49,13 +49,13 @@ func cleanupAction(client *service.Client, name string) {
 
 func validateUnauthenticatedActionError(t *testing.T, err error) {
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).Status)
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 
 func validateNotFoundActionError(t *testing.T, err error) {
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 404, err.(*util.HTTPError).Status)
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
 }
 
@@ -112,7 +112,7 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	_, err := client.ActionService.GetAction("Dontexist")
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 404, err.(*util.HTTPError).Status)
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
 }
 
@@ -129,7 +129,7 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 
 	_, err = client.ActionService.CreateAction(*emailAction)
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 409, err.(*util.HTTPError).Status)
+	assert.Equal(t, 409, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "409 Conflict", err.(*util.HTTPError).Message)
 }
 
@@ -192,7 +192,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 		})
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 422, err.(*util.HTTPError).Status)
+	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "422 Unprocessable Entity", err.(*util.HTTPError).Message)
 }
 

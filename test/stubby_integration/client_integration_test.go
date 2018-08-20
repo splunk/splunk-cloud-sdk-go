@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+	//"encoding/json"
 )
 
 func getClient(t *testing.T) *service.Client {
@@ -112,8 +113,13 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.NotNil(t, err)
 
 	assert.Equal(t, 500, resp.StatusCode)
-	assert.Equal(t, err.(*util.HTTPError).Body, "{\"details\":[{\"code\":\"123\",\"field\":\"username\",\"message\":\"Username must be at least 8 characters\"},{\"code\":\"456\",\"field\":\"password\",\"message\":\"Password must not be blank\"}],\"message\":\"error response\",\"code\":\"1234\",\"moreInfo\":\"/url/test\"}")
 
+	assert.Equal(t, err.(*util.HTTPError).Code, "1234")
+	assert.Equal(t, err.(*util.HTTPError).MoreInfo, "/url/test" )
+	assert.Equal(t, err.(*util.HTTPError).Message, "error response" )
+	assert.Equal(t, err.(*util.HTTPError).Details[0]["code"], "123")
+	assert.Equal(t, err.(*util.HTTPError).Details[0]["field"], "username")
+	assert.Equal(t, err.(*util.HTTPError).Details[0]["message"], "Username must be at least 8 characters")
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {

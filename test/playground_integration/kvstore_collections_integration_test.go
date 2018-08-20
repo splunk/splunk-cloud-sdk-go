@@ -654,6 +654,7 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 
 // Test GetCollections to retrieve all the collections belonging to the tenant
 func TestIntegrationGetCollections(t *testing.T) {
+	cleanupDatasets(t)
 	// Create the test collection
 	createKVCollectionDataset(t,
 		testutils.TestNamespace,
