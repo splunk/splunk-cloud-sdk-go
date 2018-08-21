@@ -189,7 +189,6 @@ type FetchResultsRequest struct {
 	Count      int      `key:"count"`
 	Offset     int      `key:"offset"`
 	Fields     []string `key:"f"`
-	OutputMode string   `key:"outputMode"`
 	Search     string   `key:"search"`
 }
 
@@ -201,7 +200,6 @@ type FetchEventsRequest struct {
 	Fields           []string `key:"f"`
 	LatestTime       string   `key:"latestTime"`
 	MaxLines         *uint    `key:"maxLines"`
-	OutputMode       string   `key:"outputMode"`
 	TimeFormat       string   `key:"timeFormat"`
 	OutputTimeFormat string   `key:"outputTimeFormat"`
 	Search           string   `key:"search"`
