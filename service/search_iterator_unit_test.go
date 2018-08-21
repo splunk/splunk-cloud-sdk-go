@@ -7,10 +7,10 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"encoding/json"
 )
 
 func TestNewSearchIterator(t *testing.T) {
@@ -51,11 +51,16 @@ func TestNextSuccess(t *testing.T) {
 	var hasNext bool
 	batch := 2
 	max := 5
-	results := make([]*model.Result, max)
-	var searchResults *model.SearchResults
-	for i := 0; i < max; i++ {
-		results = append(results, &model.Result{Raw: fmt.Sprintf("test data %v", i)})
+
+	byt := []byte(`[{"Raw":"test"},{"Raw":"test2"},{"Raw":"test3"},{"Raw":"test4"},{"Raw":"test5"}]`)
+	var results []map[string]interface{}
+
+	if err := json.Unmarshal(byt, &results); err != nil {
+		panic(err)
 	}
+
+	var searchResults *model.SearchResults
+
 	iterator := NewSearchIterator(batch, 0, max,
 		func(count, offset int) (*model.SearchResults, error) {
 			if offset < count {
@@ -114,11 +119,14 @@ func TestNextOnErr(t *testing.T) {
 func TestNextOnZeroBatch(t *testing.T) {
 	batch := 0
 	max := 5
-	results := make([]*model.Result, max)
-	var searchResults *model.SearchResults
-	for i := 0; i < max; i++ {
-		results = append(results, &model.Result{Raw: fmt.Sprintf("test data %v", i)})
+	var results []map[string]interface{}
+	byt := []byte(`[{"Raw":"test"},{"Raw":"test2"},{"Raw":"test3"},{"Raw":"test4"},{"Raw":"test5"}]`)
+	if err := json.Unmarshal(byt, &results); err != nil {
+		panic(err)
 	}
+
+	var searchResults *model.SearchResults
+
 	iterator := NewSearchIterator(batch, 0, max,
 		func(count, offset int) (*model.SearchResults, error) {
 			if count == 0 {
@@ -148,14 +156,13 @@ func TestNextOnFnErr(t *testing.T) {
 func TestNextNoMoreResults(t *testing.T) {
 	batch := 0
 	max := 5
-	// results := make([]*model.Result, max)
+	var results []map[string]interface{}
+
 	var searchResults *model.SearchResults
-	// for i := 0; i < max; i++ {
-	// 	results = append(results, &model.Result{Raw: fmt.Sprintf("test data %v", i)})
-	// }
+
 	iterator := NewSearchIterator(batch, 0, max,
 		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{Results: []*model.Result{}}, nil
+			return &model.SearchResults{Results: results}, nil
 		})
 	assert.False(t, iterator.Next())
 	searchResultsActual, _ := iterator.Value()
