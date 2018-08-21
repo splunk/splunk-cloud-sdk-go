@@ -51,17 +51,16 @@ var TestPassword = os.Getenv("TEST_PASSWORD")
 
 //Test ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
 	client, err := service.NewClient(&service.Config{
-		Token:    ExpiredAuthenticationToken,
-		URL:      url,
-		TenantID: testutils.TestTenantID,
-		Timeout:  testutils.TestTimeOut,
+		Token:            ExpiredAuthenticationToken,
+		URL:              url,
+		TenantID:         testutils.TestTenantID,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: []service.ResponseHandler{rh},
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
-	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
@@ -85,17 +84,16 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 
 //Test ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
 	client, err := service.NewClient(&service.Config{
-		Token:    ExpiredAuthenticationToken,
-		URL:      url,
-		TenantID: testutils.TestTenantID,
-		Timeout:  testutils.TestTimeOut,
+		Token:            ExpiredAuthenticationToken,
+		URL:              url,
+		TenantID:         testutils.TestTenantID,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: []service.ResponseHandler{rh},
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
-	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
@@ -119,17 +117,17 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 
 //Test ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCEWorkflow(t *testing.T) {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
 
 	client, err := service.NewClient(&service.Config{
-		Token:    ExpiredAuthenticationToken,
-		URL:      url,
-		TenantID: testutils.TestTenantID,
-		Timeout:  testutils.TestTimeOut,
+		Token:            ExpiredAuthenticationToken,
+		URL:              url,
+		TenantID:         testutils.TestTenantID,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: []service.ResponseHandler{rh},
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
-	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
-	client.SetResponseHandler(rh)
 
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)

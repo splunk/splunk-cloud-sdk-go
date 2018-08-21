@@ -90,6 +90,8 @@ type Config struct {
 	TenantID string
 	// Timeout
 	Timeout time.Duration
+	// ResponseHandlers is a slice of handlers to call after a response has been received in the client
+	ResponseHandlers []ResponseHandler
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -202,8 +204,8 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 			req.NumErrorsByType[code] = 1
 		}
 	}
-	if c.responseHandler != nil {
-		response, err = c.responseHandler.HandleResponse(c, req, response)
+	for _, handler := range c.config.ResponseHandlers {
+		response, err = handler.HandleResponse(c, req, response)
 	}
 	return response, err
 }
@@ -277,11 +279,6 @@ func (c *Client) GetURL() (*url.URL, error) {
 	return parsed, nil
 }
 
-// SetResponseHandler sets the response handler for all requests made by the client
-func (c *Client) SetResponseHandler(rh ResponseHandler) {
-	c.responseHandler = rh
-}
-
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
 	if config.TenantID == "" || config.URL == "" {
@@ -295,7 +292,6 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
-	c.responseHandler = nil
 	return c, nil
 }
 
