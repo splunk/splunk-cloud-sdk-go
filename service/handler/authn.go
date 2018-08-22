@@ -24,16 +24,11 @@ var (
 	DefaultOIDCScopes = fmt.Sprintf("%s %s %s", idp.ScopeOpenID, idp.ScopeEmail, idp.ScopeProfile)
 )
 
-// TokenRetriever retrieves an access token
-type TokenRetriever interface {
-	GetAccessToken() (token string, err error)
-}
-
 // AuthnResponseHandler handles logic for updating the client access token in
 // response to 401 errors
 type AuthnResponseHandler struct {
 	IdpClient      *idp.Client
-	TokenRetriever TokenRetriever
+	TokenRetriever service.TokenRetriever
 }
 
 // HandleResponse will retry a request once after re-authenticating if a 401 response code is encountered
@@ -41,17 +36,17 @@ func (rh *AuthnResponseHandler) HandleResponse(client *service.Client, request *
 	if response.StatusCode != 401 || rh.TokenRetriever == nil || request.GetNumErrorsByResponseCode(401) > DefaultMaxAuthnAttempts {
 		return response, nil
 	}
-	token, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	if err != nil {
 		return response, err
 	}
 	// Replace the access token in the request's Authorization: Bearer header
-	request.UpdateToken(token)
+	request.UpdateToken(ctx.AccessToken)
 	// Re-initialize body (otherwise body is empty)
 	body, err := request.GetBody()
 	request.Body = body
-	// Update the client such that future requests will use the new access token
-	client.UpdateToken(token)
+	// Update the client such that future requests will use the new access token and retain context information
+	client.UpdateTokenContext(ctx)
 	// Retry the request with the updated token
 	return client.Do(request)
 }
@@ -79,13 +74,13 @@ func NewRefreshTokenAuthnResponseHandler(idpHost string, clientID string, scope 
 	return handler
 }
 
-// GetAccessToken gets a new access token from the identity provider
-func (rh *RefreshTokenAuthnResponseHandler) GetAccessToken() (token string, err error) {
+// GetTokenContext gets a new access token context from the identity provider
+func (rh *RefreshTokenAuthnResponseHandler) GetTokenContext() (*idp.Context, error) {
 	ctx, err := rh.IdpClient.Refresh(rh.ClientID, rh.Scope, rh.RefreshToken.ClearText())
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return ctx.AccessToken, nil
+	return ctx, nil
 }
 
 // ClientCredentialsAuthnResponseHandler retries a request after gettting a new access token from the identity provider using the Client Credentials flow
@@ -113,13 +108,13 @@ func NewClientCredentialsAuthnResponseHandler(idpHost string, clientID string, c
 	return handler
 }
 
-// GetAccessToken gets a new access token from the identity provider
-func (rh *ClientCredentialsAuthnResponseHandler) GetAccessToken() (token string, err error) {
+// GetTokenContext gets a new access token context from the identity provider
+func (rh *ClientCredentialsAuthnResponseHandler) GetTokenContext() (*idp.Context, error) {
 	ctx, err := rh.IdpClient.ClientFlow(rh.ClientID, rh.ClientSecret.ClearText(), rh.Scope)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return ctx.AccessToken, nil
+	return ctx, nil
 }
 
 // PKCEAuthnResponseHandler retries a request after gettting a new access token from the identity provider using the Proof Key for Code Exchange (PKCE) flow
@@ -153,11 +148,11 @@ func NewPKCEAuthnResponseHandler(idpHost string, clientID string, redirectURI st
 	return handler
 }
 
-// GetAccessToken gets a new access token from the identity provider
-func (rh *PKCEAuthnResponseHandler) GetAccessToken() (token string, err error) {
+// GetTokenContext gets a new access token context from the identity provider
+func (rh *PKCEAuthnResponseHandler) GetTokenContext() (*idp.Context, error) {
 	ctx, err := rh.IdpClient.PKCEFlow(rh.ClientID, rh.RedirectURI, rh.Scope, rh.Username, rh.Password.ClearText())
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return ctx.AccessToken, nil
+	return ctx, nil
 }

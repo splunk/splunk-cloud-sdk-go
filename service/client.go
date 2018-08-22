@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/splunk/ssc-client-go/idp"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -34,6 +35,8 @@ const (
 type Client struct {
 	// config
 	config *Config
+	// tokenContext is the access token to include in "Authorization: Bearer" headers and related context information
+	tokenContext *idp.Context
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// SearchService talks to the SSC search service
@@ -80,9 +83,26 @@ type ResponseHandler interface {
 	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
 }
 
+// TokenRetriever retrieves an access token with context
+type TokenRetriever interface {
+	GetTokenContext() (*idp.Context, error)
+}
+
+// noOpTokenRetriever just returns the same static Context
+type noOpTokenRetriever struct {
+	Context *idp.Context
+}
+
+// GetTokenContext just returns the same static Context
+func (tr *noOpTokenRetriever) GetTokenContext() (*idp.Context, error) {
+	return tr.Context, nil
+}
+
 // Config is used to set the client specific attributes
 type Config struct {
-	// Token to be sent in the Authorization: Bearer header
+	// TokenRetriever gather access tokens to be sent in the Authorization: Bearer header
+	TokenRetriever TokenRetriever
+	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
 	// Url string
 	URL string
@@ -117,8 +137,8 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	if err != nil {
 		return nil, err
 	}
-	if len(c.config.Token) > 0 {
-		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
+	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
 	}
 	request.Header.Set("Content-Type", "application/json")
 	if len(headers) != 0 {
@@ -265,9 +285,9 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// UpdateToken the access token in the Authorization: Bearer header
-func (c *Client) UpdateToken(accessToken string) {
-	c.config.Token = accessToken
+// UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information
+func (c *Client) UpdateTokenContext(ctx *idp.Context) {
+	c.tokenContext = ctx
 }
 
 // GetURL returns the client config url string as a url.URL
@@ -285,7 +305,21 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, errors.New("tenantID and url must be set")
 	}
 
-	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
+	// TODO: Token will eventually be fully replaced by TokenRetriever, it is retained for now for backwards compatibility
+	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
+		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
+	}
+	if config.Token != "" {
+		config.TokenRetriever = &noOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
+	}
+
+	// Start by retrieving the access token
+	ctx, err := config.TokenRetriever.GetTokenContext()
+	if err != nil {
+		return nil, fmt.Errorf("service.NewClient: error retrieving token: %s", err)
+	}
+
+	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}, tokenContext: ctx}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}

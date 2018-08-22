@@ -17,14 +17,14 @@ const retrievedToken = "MY.RETRIEVED.TOKEN"
 
 type testTokenRetriever struct{}
 
-func (tr *testTokenRetriever) GetAccessToken() (token string, err error) {
-	return retrievedToken, nil
+func (tr *testTokenRetriever) GetTokenContext() (*idp.Context, error) {
+	return &idp.Context{AccessToken: retrievedToken}, nil
 }
 
 type testErrTokenRetriever struct{}
 
-func (tr *testErrTokenRetriever) GetAccessToken() (token string, err error) {
-	return "", fmt.Errorf("no luck with that token")
+func (tr *testErrTokenRetriever) GetTokenContext() (*idp.Context, error) {
+	return nil, fmt.Errorf("no luck with that token")
 }
 
 func TestAuthnResponseHandlerGoodToken(t *testing.T) {
@@ -32,9 +32,10 @@ func TestAuthnResponseHandlerGoodToken(t *testing.T) {
 		IdpClient:      idp.NewDefaultClient("myhost"),
 		TokenRetriever: &testTokenRetriever{},
 	}
-	tok, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.Nil(t, err)
-	assert.Equal(t, tok, retrievedToken)
+	assert.NotNil(t, ctx)
+	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }
 
 func TestAuthnResponseHandlerErrorToken(t *testing.T) {
@@ -42,31 +43,34 @@ func TestAuthnResponseHandlerErrorToken(t *testing.T) {
 		IdpClient:      idp.NewDefaultClient("myhost"),
 		TokenRetriever: &testErrTokenRetriever{},
 	}
-	tok, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.NotNil(t, err)
-	assert.Empty(t, tok)
+	assert.Nil(t, ctx)
 }
 
 func TestRefreshTokenAuthnResponseHandler(t *testing.T) {
 	rh := NewRefreshTokenAuthnResponseHandler("myhost", "myclientid", "myscope", "myrefreshtoken")
 	rh.TokenRetriever = &testTokenRetriever{}
-	tok, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.Nil(t, err)
-	assert.Equal(t, tok, retrievedToken)
+	assert.NotNil(t, ctx)
+	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }
 
 func TestClientCredentialsAuthnResponseHandler(t *testing.T) {
 	rh := NewClientCredentialsAuthnResponseHandler("myhost", "myclientid", "myclientsecret", "myscope")
 	rh.TokenRetriever = &testTokenRetriever{}
-	tok, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.Nil(t, err)
-	assert.Equal(t, tok, retrievedToken)
+	assert.NotNil(t, ctx)
+	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }
 
 func TestPKCEAuthnResponseHandler(t *testing.T) {
 	rh := NewPKCEAuthnResponseHandler("myhost", "myclientid", "myredirect", "myscope", "myusername", "mypassword")
 	rh.TokenRetriever = &testTokenRetriever{}
-	tok, err := rh.TokenRetriever.GetAccessToken()
+	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.Nil(t, err)
-	assert.Equal(t, tok, retrievedToken)
+	assert.NotNil(t, ctx)
+	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }

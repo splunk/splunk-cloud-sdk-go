@@ -7,9 +7,10 @@ package service
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBuildURL(t *testing.T) {
@@ -20,7 +21,7 @@ func TestBuildURL(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, _ = NewClient(&Config{token, apiURL, tenant, timeout})
+	var client, _ = NewClient(&Config{Token: token, URL: apiURL, TenantID: tenant, Timeout: timeout})
 
 	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
 
@@ -40,7 +41,7 @@ func TestNewClient(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, err = NewClient(&Config{token, apiURL, tenant, timeout})
+	var client, err = NewClient(&Config{Token: token, URL: apiURL, TenantID: tenant, Timeout: timeout})
 	var searchService = &SearchService{client: client}
 	var catalogService = &CatalogService{client: client}
 	var identityService = &IdentityService{client: client}
