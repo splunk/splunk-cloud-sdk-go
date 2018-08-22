@@ -9,6 +9,13 @@ package playgroundintegration
 
 import (
 	"os"
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/stretchr/testify/require"
+	"github.com/splunk/ssc-client-go/service/handler"
 )
 
 //Expired token
@@ -35,70 +42,70 @@ var BackendClientSecret = os.Getenv("BACKEND_CLIENT_SECRET")
 // BackendServiceScope - scope for obtaining access token for client credentials flow
 const BackendServiceScope = "backend_service"
 
-////Test ingesting event with invalid access token then retrying after obtaining new access token with refresh token
-//func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
-//	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-//
-//	client, err := service.NewClient(&service.Config{
-//		Token:    ExpiredAuthenticationToken,
-//		URL:      url,
-//		TenantID: testutils.TestTenantID,
-//		Timeout:  testutils.TestTimeOut,
-//	})
-//	require.Emptyf(t, err, "Error initializing client: %s", err)
-//	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken)
-//	client.SetResponseHandler(rh)
-//
-//	clientURL, err := client.GetURL()
-//	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
-//
-//	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-//	_ = getClient(t).IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
-//
-//	timeValue := float64(1529945178)
-//	testIngestEvent := model.Event{
-//		Host:       clientURL.RequestURI(),
-//		Index:      "main",
-//		Event:      "refreshtokentest",
-//		Sourcetype: "sourcetype:refreshtokentest",
-//		Source:     "manual-events",
-//		Time:       &timeValue,
-//		Fields:     map[string]string{"testKey": "testValue"}}
-//
-//	err = client.IngestService.CreateEvent(testIngestEvent)
-//	assert.Emptyf(t, err, "Error ingesting test event using refresh logic: %s", err)
-//}
-//
-////Test ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
-//func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
-//	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-//
-//	client, err := service.NewClient(&service.Config{
-//		Token:    ExpiredAuthenticationToken,
-//		URL:      url,
-//		TenantID: testutils.TestTenantID,
-//		Timeout:  testutils.TestTimeOut,
-//	})
-//	require.Emptyf(t, err, "Error initializing client: %s", err)
-//	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
-//	client.SetResponseHandler(rh)
-//
-//	clientURL, err := client.GetURL()
-//	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
-//
-//	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-//	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
-//
-//	timeValue := float64(1529945178)
-//	testIngestEvent := model.Event{
-//		Host:       clientURL.RequestURI(),
-//		Index:      "main",
-//		Event:      "clientcredentialstest",
-//		Sourcetype: "sourcetype:clientcredentialstest",
-//		Source:     "manual-events",
-//		Time:       &timeValue,
-//		Fields:     map[string]string{"testKey": "testValue"}}
-//
-//	err = client.IngestService.CreateEvent(testIngestEvent)
-//	assert.Emptyf(t, err, "Error ingesting test event using client credentials logic error: %s", err)
-//}
+//Test ingesting event with invalid access token then retrying after obtaining new access token with refresh token
+func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+
+	client, err := service.NewClient(&service.Config{
+		Token:    ExpiredAuthenticationToken,
+		URL:      url,
+		TenantID: testutils.TestTenantID,
+		Timeout:  testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, RefreshClientID, RefreshTokenScope, RefreshToken)
+	client.SetResponseHandler(rh)
+
+	clientURL, err := client.GetURL()
+	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
+	_,_ = getClient(t).IdentityService.AddMember(BackendClientID)
+
+	timeValue := float64(1529945178)
+	testIngestEvent := model.Event{
+		Host:       clientURL.RequestURI(),
+		Index:      "main",
+		Event:      "refreshtokentest",
+		Sourcetype: "sourcetype:refreshtokentest",
+		Source:     "manual-events",
+		Time:       &timeValue,
+		Fields:     map[string]string{"testKey": "testValue"}}
+
+	err = client.IngestService.CreateEvent(testIngestEvent)
+	assert.Emptyf(t, err, "Error ingesting test event using refresh logic: %s", err)
+}
+
+//Test ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
+func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+
+	client, err := service.NewClient(&service.Config{
+		Token:    ExpiredAuthenticationToken,
+		URL:      url,
+		TenantID: testutils.TestTenantID,
+		Timeout:  testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	client.SetResponseHandler(rh)
+
+	clientURL, err := client.GetURL()
+	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
+	_,_ = client.IdentityService.AddMember( BackendClientID)
+
+	timeValue := float64(1529945178)
+	testIngestEvent := model.Event{
+		Host:       clientURL.RequestURI(),
+		Index:      "main",
+		Event:      "clientcredentialstest",
+		Sourcetype: "sourcetype:clientcredentialstest",
+		Source:     "manual-events",
+		Time:       &timeValue,
+		Fields:     map[string]string{"testKey": "testValue"}}
+
+	err = client.IngestService.CreateEvent(testIngestEvent)
+	assert.Emptyf(t, err, "Error ingesting test event using client credentials logic error: %s", err)
+}

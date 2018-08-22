@@ -9,10 +9,6 @@ import (
 
 )
 
-// TenantStatus tenant status
-// swagger:model TenantStatus
-type TenantStatus string
-
 // Tenant tenant
 // swagger:model Tenant
 type Tenant struct {
@@ -217,34 +213,3 @@ type RolePermission struct {
 	// Required: true
 	Tenant string `json:"tenant"`
 }
-
-//
-//// TenantDetails tenant details
-//// swagger:model TenantDetails
-//type TenantDetails struct {
-//
-//	// created at
-//	// Required: true
-//	CreatedAt strfmt.DateTime `json:"createdAt"`
-//
-//	// created by
-//	// Required: true
-//	CreatedBy string `json:"createdBy"`
-//
-//	// modified at
-//	// Required: true
-//	ModifiedAt strfmt.DateTime `json:"modifiedAt"`
-//
-//	// modified by
-//	// Required: true
-//	ModifiedBy string `json:"modifiedBy"`
-//
-//	// status
-//	// Required: true
-//	Status TenantStatusValue `json:"status"`
-//
-//	// tenant Id
-//	// Required: true
-//	// Pattern: [a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*
-//	TenantID string `json:"tenantId"`
-//}
