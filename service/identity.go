@@ -17,24 +17,101 @@ const identityServiceVersion = "v1"
 type IdentityService service
 
 // CreateTenant creates a tenant
-func (c *IdentityService) CreateTenant(tenant model.Tenant) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, "v2",
+func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: tenant})
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Tenant
+	err = util.ParseResponse(&result, response)
+	return &result, err
 }
 
+// GetTenants returns the list of tenants in the system
+func (c *IdentityService) GetTenants() ([]string, error) {
+	var result []string
 
-// DeleteTenant deletes a tenant by tenantID
-func (c *IdentityService) DeleteTenant(tenantID string) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, "v2",
-		"tenants", tenantID)
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"tenants")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetTenant returns  the tenant details
+func (c *IdentityService) GetTenant(name string) (*model.Tenant, error) {
+	var result model.Tenant
+
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"tenants", name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// ValidateTenant validates the access token obtained from authorization header and returns the principal name and tenant memberships
+func (c *IdentityService) ValidateTenant() (*model.ValidateInfo, error) {
+	var result model.ValidateInfo
+
+	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+		"validate")
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// DeleteTenant deletes a tenant by name
+func (c *IdentityService) DeleteTenant(name string) error {
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"tenants", name)
 	if err != nil {
 		return err
 	}
@@ -46,16 +123,12 @@ func (c *IdentityService) DeleteTenant(tenantID string) error {
 	return err
 }
 
-// GetUserProfile retrieves the user profile associated with the current cached auth token
-func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
-	var user model.User
-	var scope = tenantID
+// GetPrincipals returns the list of principals known to IAC
+func (c *IdentityService) GetPrincipals() ([]string, error) {
+	var result []string
 
-	if len(tenantID) == 0 {
-		scope = "system"
-	}
-	url, err := c.client.BuildURLWithTenantID(scope, nil, identityServicePrefix, "v2",
-		"userprofile")
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"principals")
 
 	if err != nil {
 		return nil, err
@@ -65,91 +138,53 @@ func (c *IdentityService) GetUserProfile(tenantID string) (*model.User, error) {
 	if response != nil {
 		defer response.Body.Close()
 	}
+
 	if err != nil {
 		return nil, err
 	}
-	err = util.ParseResponse(&user, response)
-	return &user, err
+
+	err = util.ParseResponse(&result, response)
+	return result, err
 }
 
-// GetTenantUsers returns users registered with the tenant
-func (c *IdentityService) GetTenantUsers(tenantID string) ([]model.User, error) {
-	var users []model.User
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
-		"users")
+// GetPrincipal returns the principal details
+func (c *IdentityService) GetPrincipal(name string) (*model.Principal, error) {
+	var result model.Principal
+
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"principals", name)
+
 	if err != nil {
 		return nil, err
 	}
+
 	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
+
 	if err != nil {
 		return nil, err
 	}
-	err = util.ParseResponse(&users, response)
-	return users, err
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
 }
 
-// ReplaceTenantUsers replaces existing users on a tenant with the provided user list
-func (c *IdentityService) ReplaceTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
-		"users")
+// DeletePrincipal deletes a principal by name
+func (c *IdentityService) DeletePrincipal(name string) error {
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+		"tenants", name)
 	if err != nil {
 		return err
 	}
 
-	response, err := c.client.Put(RequestParams{URL: url, Body: users})
+	response, err := c.client.Delete(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	return err
 }
-
-// AddTenantUsers adds users to a tenant
-func (c *IdentityService) AddTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
-		"users")
-	if err != nil {
-		return err
-	}
-
-	response, err := c.client.Patch(RequestParams{URL: url, Body: users})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	return err
-}
-
-// DeleteTenantUsers deletes users from a tenant
-func (c *IdentityService) DeleteTenantUsers(tenantID string, users []model.User) error {
-	url, err := c.client.BuildURLWithTenantID(tenantID, nil, identityServicePrefix, "v2",
-		"users")
-	if err != nil {
-		return err
-	}
-
-	response, err := c.client.Delete(RequestParams{URL: url, Body: users})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	return err
-}
-
-//// CreateTenant creates a tenant
-//func (c *IdentityService) CreateTenant(name string) error {
-//	url, err := c.client.BuildURLWithTenantID("system", nil, "system",identityServicePrefix, identityServiceVersion,
-//		"tenants")
-//	if err != nil {
-//		return err
-//	}
-//	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
-//	if response != nil {
-//		defer response.Body.Close()
-//	}
-//	return err
-//}
-
 
 // GetMembers returns the list of members in the given tenant
 func (c *IdentityService) GetMembers() ([]string, error) {
@@ -507,6 +542,25 @@ func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*
 		return nil, err
 	}
 
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// CreatePrincipal creates a new principal
+func (c *IdentityService) CreatePrincipal(name string, kind string) (*model.Principal, error) {
+	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion, "principals")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name, "kind": kind}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.Principal
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }

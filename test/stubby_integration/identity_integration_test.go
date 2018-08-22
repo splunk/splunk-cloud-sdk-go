@@ -11,74 +11,66 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-//func TestIdentityService_GetUserProfile_TenantId(t *testing.T) {
-//	user, err := getClient(t).IdentityService.GetUserProfile("devtestTenant")
-//	assert.Nil(t, err)
-//	assert.Equal(t, "devtest@splunk.com", user.ID)
-//	assert.Equal(t, "devtest@splunk.com", user.Email)
-//	assert.Equal(t, "Dev", user.FirstName)
-//	assert.Equal(t, "Test", user.LastName)
-//	assert.Equal(t, "Dev Test", user.Name)
-//	assert.Equal(t, "en-US", user.Locale)
-//	assert.Equal(t, 1, len(user.TenantMemberships))
-//	assert.Equal(t, "devtestTenant", user.TenantMemberships[0])
-//}
-//
-//func TestIdentityService_GetUserProfile_System(t *testing.T) {
-//	user, err := getClient(t).IdentityService.GetUserProfile("")
-//	assert.Nil(t, err)
-//	assert.Equal(t, "devtest@splunk.com", user.ID)
-//	assert.Equal(t, "devtest@splunk.com", user.Email)
-//	assert.Equal(t, "Dev", user.FirstName)
-//	assert.Equal(t, "Test", user.LastName)
-//	assert.Equal(t, "Dev Test", user.Name)
-//	assert.Equal(t, "en-US", user.Locale)
-//	assert.Equal(t, 1, len(user.TenantMemberships))
-//	assert.Equal(t, "devtestTenant", user.TenantMemberships[0])
-//}
-//
-//func TestIdentityService_CreateTenant(t *testing.T) {
-//	err := getClient(t).IdentityService.CreateTenant(model.Tenant{TenantID: "devtestTenant"})
-//	assert.Nil(t, err)
-//}
-//
-//func TestIdentityService_DeleteTenant(t *testing.T) {
-//	err := getClient(t).IdentityService.DeleteTenant("devtestTenant")
-//	assert.Nil(t, err)
-//}
-//
-//func TestIdentityService_GetTenantUsers(t *testing.T) {
-//	users, err := getClient(t).IdentityService.GetTenantUsers("devtestTenant")
-//	assert.Nil(t, err)
-//	assert.Equal(t, 1, len(users))
-//	assert.Equal(t, "devtest1@splunk.com", users[0].ID)
-//}
-//
-//func TestIdentityService_ReplaceTenantUsers(t *testing.T) {
-//	err := getClient(t).IdentityService.ReplaceTenantUsers("devtestTenant", []model.User{
-//		{ID: "devtest2@splunk.com"},
-//		{ID: "devtest3@splunk.com"},
-//		{ID: "devtest4@splunk.com"},
-//		{ID: "devtest5@splunk.com"},
-//	})
-//	assert.Nil(t, err)
-//}
-//
-//func TestIdentityService_AddTenantUsers(t *testing.T) {
-//	err := getClient(t).IdentityService.AddTenantUsers("devtestTenant", []model.User{
-//		{ID: "devtest7@splunk.com"},
-//		{ID: "devtest8@splunk.com"},
-//	})
-//	assert.Nil(t, err)
-//}
-//
-//func TestIdentityService_DeleteTenantUsers(t *testing.T) {
-//	err := getClient(t).IdentityService.DeleteTenantUsers("devtestTenant", []model.User{
-//		{ID: "devtest4@splunk.com"},
-//		{ID: "devtest5@splunk.com"},
-//	})
-//	assert.Nil(t, err)
-//}
+
+func TestIdentityService_CreateTenant(t *testing.T) {
+	result, err := getClient(t).IdentityService.CreateTenant("devtestTenant")
+	assert.Nil(t, err)
+	assert.Equal(t, "devtestTenant", result.Name)
+	assert.Equal(t, "provisioning", result.Status)
+}
+
+func TestIdentityService_DeleteTenant(t *testing.T) {
+	err := getClient(t).IdentityService.DeleteTenant("devtestTenant")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_GetTenant(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetTenant("devtestTenant")
+	assert.Nil(t, err)
+	assert.Equal(t, "devtestTenant", result.Name)
+}
+
+func TestIdentityService_GetTenants(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetTenants()
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len( result))
+	assert.Equal(t, "devtestTenant", result[0])
+
+	}
+
+
+func TestIdentityService_GetValidate(t *testing.T) {
+	result, err := getClient(t).IdentityService.ValidateTenant()
+	assert.Nil(t, err)
+	assert.Equal(t, "TEST_TENANT", result.Name)
+	assert.Equal(t, 2, len(result.Tenants))
+}
+
+func TestIdentityService_CreatePrincipal(t *testing.T) {
+	result, err := getClient(t).IdentityService.CreatePrincipal("mem1","user")
+	assert.Nil(t, err)
+	assert.Equal(t, "mem1", result.Name)
+	assert.Equal(t, "user", result.Kind)
+	assert.NotNil(t, result.Profile)
+}
+
+func TestIdentityService_DeletePrincipal(t *testing.T) {
+	err := getClient(t).IdentityService.DeletePrincipal("devtestTenant")
+	assert.Nil(t, err)
+}
+
+func TestIdentityService_GetPrincipal(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetPrincipal("mem1")
+	assert.Nil(t, err)
+	assert.Equal(t, "mem1", result.Name)
+}
+
+func TestIdentityService_GetPrincipals(t *testing.T) {
+	result, err := getClient(t).IdentityService.GetPrincipals()
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len( result))
+	assert.Equal(t, "mem2", result[1])
+}
 
 func TestIdentityService_GetMember(t *testing.T) {
 	result, err := getClient(t).IdentityService.GetMember("mem1")

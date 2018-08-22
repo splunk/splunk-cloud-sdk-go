@@ -8,6 +8,49 @@ import (
 	"github.com/go-openapi/strfmt"
 
 )
+
+// TenantStatus tenant status
+// swagger:model TenantStatus
+type TenantStatus string
+
+// Tenant tenant
+// swagger:model Tenant
+type Tenant struct {
+
+	// created at
+	// Required: true
+	// Format: date-time
+	CreatedAt strfmt.DateTime `json:"createdAt"`
+
+	// created by
+	// Required: true
+	CreatedBy string `json:"createdBy"`
+
+	// name
+	// Required: true
+	Name string `json:"name"`
+
+	// status
+	// Required: true
+	Status string `json:"status"`
+}
+
+
+// ValidateInfo validate info
+// swagger:model ValidateInfo
+type ValidateInfo struct {
+
+	// name
+	// Required: true
+	// Max Length: 36
+	// Min Length: 4
+	Name string `json:"name"`
+
+	// tenants
+	// Required: true
+	Tenants []string `json:"tenants"`
+}
+
 // Member Represents a member that belongs to a tenant.
 // swagger:model Member
 type Member struct {
