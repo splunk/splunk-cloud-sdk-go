@@ -23,8 +23,6 @@ const (
 
 // ActionUpdateFields defines the fields that may be updated for an existing Action
 type ActionUpdateFields struct {
-	// ID of action assigned by action service, all actions have this field
-	ID string `json:"id" binding:"omitempty"`
 	// Email action fields:
 	// HTMLPart to send via Email action
 	HTMLPart string `json:"htmlPart,omitempty"`
@@ -36,11 +34,13 @@ type ActionUpdateFields struct {
 	TemplateName string `json:"templateName,omitempty"`
 	// Addresses to send to when Email action triggered
 	Addresses []string `json:"addresses" binding:"required"`
+
 	// SNS action fields:
 	// Topic to trigger SNS action
 	Topic string `json:"topic" binding:"required"`
 	// Message to send via SNS or Webhook action
 	Message string `json:"message" binding:"required"`
+
 	// Webhook action fields:
 	// WebhookURL to trigger Webhook action
 	WebhookURL string `json:"webhookUrl" binding:"required"`
@@ -112,9 +112,9 @@ const (
 
 // ActionStatus defines the state information
 type ActionStatus struct {
-	State   ActionStatusState `json:"state"`
-	ID      string            `json:"statusId"`
-	Message string            `json:"message,omitempty"`
+	State    ActionStatusState `json:"state"`
+	StatusID string            `json:"statusId"`
+	Message  string            `json:"message,omitempty"`
 }
 
 // ActionTriggerResponse for returning status url and parsed statusID (if possible)

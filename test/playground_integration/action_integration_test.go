@@ -193,7 +193,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "422 Unprocessable Entity", err.(*util.HTTPError).Message)
+	assert.Equal(t, "validation-failed", err.(*util.HTTPError).Code)
 }
 
 // Test UpdateAction updates with the new fields in the action
@@ -238,7 +238,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 	validateNotFoundActionError(t, err)
 }
 
-// Test GetActionStatus gets the status of the action after it is triggered
+// TestGetActionStatus gets the status of the action after it is triggered
 func TestGetActionStatus(t *testing.T) {
 	client := getClient(t)
 	webhookActionName := fmt.Sprintf("w-stat-%d", timeSec)
@@ -259,4 +259,24 @@ func TestGetActionStatus(t *testing.T) {
 	stat, err := client.ActionService.GetActionStatus(webhookAction.Name, *resp.StatusID)
 	assert.Nil(t, err)
 	assert.NotNil(t, stat)
+}
+
+// TestTriggerActionTenantMismatch triggers an action with tenant not matching the URL
+func TestTriggerActionTenantMismatch(t *testing.T) {
+	client := getClient(t)
+	webhookActionName := fmt.Sprintf("w-badten-%d", timeSec)
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	defer cleanupAction(client, webhookAction.Name)
+	action, err := client.ActionService.CreateAction(*webhookAction)
+	require.Nil(t, err)
+	require.NotNil(t, action)
+	_, err = client.ActionService.TriggerAction(webhookAction.Name,
+		model.ActionNotification{
+			Kind:    model.RawJSONPayloadKind,
+			Tenant:  "INCORRECT_TENANT",
+			Payload: webhookPayload,
+		})
+	require.NotNil(t, err)
+	assert.Equal(t, 403, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "403 Forbidden", err.(*util.HTTPError).Message)
 }
