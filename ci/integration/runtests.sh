@@ -40,7 +40,8 @@ else
     go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
                -covermode=count \
                -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
-               ./test/playground_integration/...
+               ./test/playground_integration/... \
+        || exit 1
 fi
 
 # Upload code cov report
