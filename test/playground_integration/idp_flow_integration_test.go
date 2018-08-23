@@ -49,8 +49,24 @@ var TestUsername = os.Getenv("TEST_USERNAME")
 // TestPassword corresponds to the test user's password for integration testing
 var TestPassword = os.Getenv("TEST_PASSWORD")
 
-//Test ingesting event with invalid access token then retrying after obtaining new access token with refresh token
-func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
+// TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
+func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: rh,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+
+	_, err = client.SearchService.GetJobs(nil)
+	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+}
+
+// TestIntegrationRefreshTokenRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with refresh token
+func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
 	client, err := service.NewClient(&service.Config{
@@ -82,8 +98,24 @@ func TestIntegrationRefreshTokenWorkflow(t *testing.T) {
 	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
 }
 
-//Test ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
-func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
+// TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
+func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: rh,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+
+	_, err = client.SearchService.GetJobs(nil)
+	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+}
+
+// TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
+func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
 	client, err := service.NewClient(&service.Config{
@@ -115,8 +147,24 @@ func TestIntegrationClientCredentialsWorkflow(t *testing.T) {
 	assert.Emptyf(t, err, "Error ingesting test event using client credentials flow error: %s", err)
 }
 
-//Test ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
-func TestIntegrationPKCEWorkflow(t *testing.T) {
+// TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
+func TestIntegrationPKCEInitWorkflow(t *testing.T) {
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: rh,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+
+	_, err = client.SearchService.GetJobs(nil)
+	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+}
+
+// TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
+func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
 	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
 

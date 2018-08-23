@@ -51,8 +51,6 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
-	// responseHandler to support additional response handling logic
-	responseHandler ResponseHandler
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -100,7 +98,7 @@ func (tr *noOpTokenRetriever) GetTokenContext() (*idp.Context, error) {
 
 // Config is used to set the client specific attributes
 type Config struct {
-	// TokenRetriever gather access tokens to be sent in the Authorization: Bearer header
+	// TokenRetriever to gather access tokens to be sent in the Authorization: Bearer header
 	TokenRetriever TokenRetriever
 	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
