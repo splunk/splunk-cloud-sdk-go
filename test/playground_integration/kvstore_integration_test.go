@@ -85,8 +85,7 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	assert.Equal(t, indexes[0].Name, testIndex)
 
 	// Delete the test index
-	response, err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	assert.NotNil(t, response)
+	_, err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	assert.Nil(t, err)
 
 	// Validate if the index was deleted
