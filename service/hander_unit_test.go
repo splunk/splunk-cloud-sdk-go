@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package handler
+package service
 
 import (
 	"fmt"
@@ -29,7 +29,6 @@ func (tr *testErrTokenRetriever) GetTokenContext() (*idp.Context, error) {
 
 func TestAuthnResponseHandlerGoodToken(t *testing.T) {
 	rh := AuthnResponseHandler{
-		IdpClient:      idp.NewDefaultClient("myhost"),
 		TokenRetriever: &testTokenRetriever{},
 	}
 	ctx, err := rh.TokenRetriever.GetTokenContext()
@@ -40,37 +39,9 @@ func TestAuthnResponseHandlerGoodToken(t *testing.T) {
 
 func TestAuthnResponseHandlerErrorToken(t *testing.T) {
 	rh := AuthnResponseHandler{
-		IdpClient:      idp.NewDefaultClient("myhost"),
 		TokenRetriever: &testErrTokenRetriever{},
 	}
 	ctx, err := rh.TokenRetriever.GetTokenContext()
 	assert.NotNil(t, err)
 	assert.Nil(t, ctx)
-}
-
-func TestRefreshTokenAuthnResponseHandler(t *testing.T) {
-	rh := NewRefreshTokenAuthnResponseHandler("myhost", "myclientid", "myscope", "myrefreshtoken")
-	rh.TokenRetriever = &testTokenRetriever{}
-	ctx, err := rh.TokenRetriever.GetTokenContext()
-	assert.Nil(t, err)
-	assert.NotNil(t, ctx)
-	assert.Equal(t, ctx.AccessToken, retrievedToken)
-}
-
-func TestClientCredentialsAuthnResponseHandler(t *testing.T) {
-	rh := NewClientCredentialsAuthnResponseHandler("myhost", "myclientid", "myclientsecret", "myscope")
-	rh.TokenRetriever = &testTokenRetriever{}
-	ctx, err := rh.TokenRetriever.GetTokenContext()
-	assert.Nil(t, err)
-	assert.NotNil(t, ctx)
-	assert.Equal(t, ctx.AccessToken, retrievedToken)
-}
-
-func TestPKCEAuthnResponseHandler(t *testing.T) {
-	rh := NewPKCEAuthnResponseHandler("myhost", "myclientid", "myredirect", "myscope", "myusername", "mypassword")
-	rh.TokenRetriever = &testTokenRetriever{}
-	ctx, err := rh.TokenRetriever.GetTokenContext()
-	assert.Nil(t, err)
-	assert.NotNil(t, ctx)
-	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }

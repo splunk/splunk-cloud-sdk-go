@@ -58,6 +58,11 @@ const (
 	ScopePhone OIDCScope = "phone"
 )
 
+var (
+	// DefaultOIDCScopes defines the default OpenID Connect scopes to use in authn requests - "openid email profile"
+	DefaultOIDCScopes = fmt.Sprintf("%s %s %s", ScopeOpenID, ScopeEmail, ScopeProfile)
+)
+
 // Read and decode JSON data from given reader and return as a map.
 func load(r io.Reader) (map[string]interface{}, error) {
 	var data map[string]interface{}

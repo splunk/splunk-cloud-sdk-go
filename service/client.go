@@ -39,6 +39,8 @@ type Client struct {
 	tokenContext *idp.Context
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
+	// responseHandlers is a slice of handlers to call after a response has been received in the client
+	responseHandlers []ResponseHandler
 	// SearchService talks to the SSC search service
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
@@ -75,31 +77,10 @@ func (r *Request) UpdateToken(accessToken string) {
 	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 }
 
-// ResponseHandler defines the interface for implementing custom response
-// handling logic
-type ResponseHandler interface {
-	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
-}
-
-// TokenRetriever retrieves an access token with context
-type TokenRetriever interface {
-	GetTokenContext() (*idp.Context, error)
-}
-
-// noOpTokenRetriever just returns the same static Context
-type noOpTokenRetriever struct {
-	Context *idp.Context
-}
-
-// GetTokenContext just returns the same static Context
-func (tr *noOpTokenRetriever) GetTokenContext() (*idp.Context, error) {
-	return tr.Context, nil
-}
-
 // Config is used to set the client specific attributes
 type Config struct {
-	// TokenRetriever to gather access tokens to be sent in the Authorization: Bearer header
-	TokenRetriever TokenRetriever
+	// TokenRetriever to gather access tokens to be sent in the Authorization: Bearer header on client initialization and upon encountering a 401 response
+	TokenRetriever idp.TokenRetriever
 	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
 	// Url string
@@ -222,8 +203,8 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 			req.NumErrorsByType[code] = 1
 		}
 	}
-	for _, handler := range c.config.ResponseHandlers {
-		response, err = handler.HandleResponse(c, req, response)
+	for _, hr := range c.responseHandlers {
+		response, err = hr.HandleResponse(c, req, response)
 	}
 	return response, err
 }
@@ -308,7 +289,7 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
 	}
 	if config.Token != "" {
-		config.TokenRetriever = &noOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
+		config.TokenRetriever = &idp.NoOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
 	}
 
 	// Start by retrieving the access token
@@ -317,7 +298,16 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, fmt.Errorf("service.NewClient: error retrieving token: %s", err)
 	}
 
-	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}, tokenContext: ctx}
+	// Add an authentication handler along with any custom handlers
+	authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
+
+	// Finally, initialize the Client
+	c := &Client{
+		config:           config,
+		httpClient:       &http.Client{Timeout: config.Timeout},
+		tokenContext:     ctx,
+		responseHandlers: append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...),
+	}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}

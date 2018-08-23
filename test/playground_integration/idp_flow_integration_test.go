@@ -11,15 +11,16 @@ import (
 	"os"
 	"testing"
 
+	"github.com/splunk/ssc-client-go/idp"
+
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/service/handler"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-//Expired token
+// ExpiredAuthenticationToken - to test authentication retries
 var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
 // RefreshToken - RefreshToken to refresh the bearer token if expired
@@ -49,12 +50,27 @@ var TestUsername = os.Getenv("TEST_USERNAME")
 // TestPassword corresponds to the test user's password for integration testing
 var TestPassword = os.Getenv("TEST_PASSWORD")
 
+type retryTokenRetriever struct {
+	TR idp.TokenRetriever
+	n  int
+}
+
+func (r *retryTokenRetriever) GetTokenContext() (*idp.Context, error) {
+	r.n++
+	// Return a bad access token the first time for testing 401 retry logic
+	if r.n == 1 {
+		return &idp.Context{AccessToken: ExpiredAuthenticationToken}, nil
+	}
+	// For subsequent requests get the real token using the real TokenRetriever
+	return r.TR.GetTokenContext()
+}
+
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
+	tr := idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)
 	client, err := service.NewClient(&service.Config{
-		TokenRetriever: rh,
+		TokenRetriever: tr,
 		URL:            url,
 		TenantID:       testutils.TestTenantID,
 		Timeout:        testutils.TestTimeOut,
@@ -68,13 +84,12 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 // TestIntegrationRefreshTokenRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewRefreshTokenAuthnResponseHandler(IDPHost, NativeClientID, handler.DefaultOIDCScopes, RefreshToken)
+	tr := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)}
 	client, err := service.NewClient(&service.Config{
-		Token:            ExpiredAuthenticationToken,
-		URL:              url,
-		TenantID:         testutils.TestTenantID,
-		Timeout:          testutils.TestTimeOut,
-		ResponseHandlers: []service.ResponseHandler{rh},
+		TokenRetriever: tr,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
@@ -101,9 +116,9 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 // TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	tr := idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
 	client, err := service.NewClient(&service.Config{
-		TokenRetriever: rh,
+		TokenRetriever: tr,
 		URL:            url,
 		TenantID:       testutils.TestTenantID,
 		Timeout:        testutils.TestTimeOut,
@@ -117,13 +132,12 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 // TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewClientCredentialsAuthnResponseHandler(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)}
 	client, err := service.NewClient(&service.Config{
-		Token:            ExpiredAuthenticationToken,
-		URL:              url,
-		TenantID:         testutils.TestTenantID,
-		Timeout:          testutils.TestTimeOut,
-		ResponseHandlers: []service.ResponseHandler{rh},
+		TokenRetriever: tr,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
@@ -150,9 +164,9 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 // TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
 func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
+	tr := idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)
 	client, err := service.NewClient(&service.Config{
-		TokenRetriever: rh,
+		TokenRetriever: tr,
 		URL:            url,
 		TenantID:       testutils.TestTenantID,
 		Timeout:        testutils.TestTimeOut,
@@ -166,14 +180,13 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 // TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
-	rh := handler.NewPKCEAuthnResponseHandler(IDPHost, NativeClientID, NativeAppRedirectURI, handler.DefaultOIDCScopes, TestUsername, TestPassword)
+	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)}
 
 	client, err := service.NewClient(&service.Config{
-		Token:            ExpiredAuthenticationToken,
-		URL:              url,
-		TenantID:         testutils.TestTenantID,
-		Timeout:          testutils.TestTimeOut,
-		ResponseHandlers: []service.ResponseHandler{rh},
+		TokenRetriever: tr,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
