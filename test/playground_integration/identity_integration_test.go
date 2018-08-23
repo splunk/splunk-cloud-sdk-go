@@ -6,11 +6,10 @@
 package playgroundintegration
 
 import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-
+	"fmt"
 	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestCRUDGroups(t *testing.T) {
@@ -20,7 +19,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Nil(t, err)
 	groupNum := len(res)
 
-	groupName := "testcrudgroup"
+	groupName := fmt.Sprintf("grouptest%d", timeSec)
 
 	// create/get/delete group and groups
 	resultgroup, err := client.IdentityService.CreateGroup(groupName)
@@ -42,7 +41,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
-	roleName := "testcrudgrouprole"
+	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
 	res2, err := client.IdentityService.GetGroupRoles(groupName)
 	assert.Nil(t, err)
 	roleNum := len(res2)
@@ -100,7 +99,6 @@ func TestCRUDGroups(t *testing.T) {
 
 	err = client.IdentityService.DeleteGroup(groupName)
 	assert.Nil(t, err)
-
 }
 
 func TestCRUDRoles(t *testing.T) {
@@ -110,7 +108,7 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Nil(t, err)
 	roleNum := len(res)
 
-	roleName := "testcrudgroup"
+	roleName := fmt.Sprintf("roletest%d", timeSec)
 
 	// create/get/delete role and roles
 	resultrole, err := client.IdentityService.CreateRole(roleName)
@@ -132,7 +130,7 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions
-	permissionName := "perm1"
+	permissionName := fmt.Sprintf("perm1-%d", timeSec)
 	result1, err := client.IdentityService.GetRolePermissions(roleName)
 	assert.Nil(t, err)
 	permNum := len(result1)
