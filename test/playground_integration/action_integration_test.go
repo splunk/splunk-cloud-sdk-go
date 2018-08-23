@@ -48,15 +48,19 @@ func cleanupAction(client *service.Client, name string) {
 }
 
 func validateUnauthenticatedActionError(t *testing.T, err error) {
-	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 401, httpErr.HTTPStatusCode)
+	assert.Equal(t, "401 Unauthorized", httpErr.Message)
 }
 
 func validateNotFoundActionError(t *testing.T, err error) {
-	assert.NotEmpty(t, err)
-	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+	assert.Equal(t, "404 Not Found", httpErr.Message)
 }
 
 // Test GetActions which returns the list of all actions for the tenant
@@ -111,9 +115,11 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	// Get Invalid Action
 	_, err := client.ActionService.GetAction("Dontexist")
 
-	assert.NotEmpty(t, err)
-	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+	assert.Equal(t, "404 Not Found", httpErr.Message)
 }
 
 // Create Existing action should result in 409 Conflict
@@ -128,19 +134,19 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	assert.EqualValues(t, action, emailAction)
 
 	_, err = client.ActionService.CreateAction(*emailAction)
-	assert.NotEmpty(t, err)
-	assert.Equal(t, 409, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "409 Conflict", err.(*util.HTTPError).Message)
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 409, httpErr.HTTPStatusCode)
+	assert.Equal(t, "409 Conflict", httpErr.Message)
 }
 
 // Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
 func TestActionFailUnauthenticatedClient(t *testing.T) {
-	invalidClient := getInvalidClient(t)
 	client := getClient(t)
 	webhookActionName := fmt.Sprintf("w-unauth-%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
-
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
 
@@ -148,6 +154,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	// This shouldn't be needed since the CreateAction should fail for 401:
 	// defer cleanupAction(client, emailAction.Name)
+	invalidClient := getInvalidClient(t)
 
 	_, err = invalidClient.ActionService.CreateAction(*emailAction)
 	validateUnauthenticatedActionError(t, err)
@@ -191,9 +198,11 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 			Payload: webhookPayload,
 		})
 
-	assert.NotEmpty(t, err)
-	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "validation-failed", err.(*util.HTTPError).Code)
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 422, httpErr.HTTPStatusCode)
+	assert.Equal(t, "validation-failed", httpErr.Code)
 }
 
 // Test UpdateAction updates with the new fields in the action
@@ -277,6 +286,8 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 			Payload: webhookPayload,
 		})
 	require.NotNil(t, err)
-	assert.Equal(t, 403, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "403 Forbidden", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 403, httpErr.HTTPStatusCode)
+	assert.Equal(t, "403 Forbidden", httpErr.Message)
 }
