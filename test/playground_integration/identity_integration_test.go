@@ -100,7 +100,7 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	}
 }
 
-// test Erros with auth endpoints
+// test Errors with auth endpoints
 func TestIntegrationTenantErrors(t *testing.T) {
 	client := getClient(t)
 
@@ -108,13 +108,10 @@ func TestIntegrationTenantErrors(t *testing.T) {
 	testTenantID := testutils.TestTenantID
 
 	//create duplicate tenant should return 409
-	// TODO: uncomment when tenant Maestro gets better at handling tenant creation/deletion
-	// err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-	// assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
-
-	//add duplicate tenant user
-	addedUserName := "newUser@splunk.com"
-	_ = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	err := client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-	assert.True(t, strings.Contains(err.Error(), "405 Method Not Allowed"))
+	if testutils.TenantCreationOn {
+		err := client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
+		assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
+	} else {
+		t.Skip("Tenant creation tests were skipped, to turn them on set the TENANT_CREATION env to 1")
+	}
 }
