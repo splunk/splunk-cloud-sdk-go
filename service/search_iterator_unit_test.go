@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"encoding/json"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewSearchIterator(t *testing.T) {
@@ -56,7 +57,7 @@ func TestNextSuccess(t *testing.T) {
 	var results []map[string]interface{}
 
 	if err := json.Unmarshal(byt, &results); err != nil {
-		panic(err)
+		require.Nil(t, err)
 	}
 
 	var searchResults *model.SearchResults
@@ -122,7 +123,7 @@ func TestNextOnZeroBatch(t *testing.T) {
 	var results []map[string]interface{}
 	byt := []byte(`[{"Raw":"test"},{"Raw":"test2"},{"Raw":"test3"},{"Raw":"test4"},{"Raw":"test5"}]`)
 	if err := json.Unmarshal(byt, &results); err != nil {
-		panic(err)
+		require.Nil(t, err)
 	}
 
 	var searchResults *model.SearchResults
