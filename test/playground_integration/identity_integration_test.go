@@ -191,3 +191,12 @@ func TestCRUDMembers(t *testing.T) {
 	err = client.IdentityService.DeleteMember(memberName)
 	assert.Emptyf(t, err, "Error:%s", err)
 }
+
+func TestValidate(t *testing.T) {
+	client := getClient(t)
+
+	res, err := client.IdentityService.ValidateTenant()
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, "test1@splunk.com", res.Name)
+	assert.Contains(t, res.Tenants, testutils.TestTenantID)
+}
