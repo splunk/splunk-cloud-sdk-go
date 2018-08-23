@@ -6,20 +6,19 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"encoding/json"
 )
 
 // HTTPError is raised when status code is not 2xx
 type HTTPError struct {
-	HTTPStatusCode  int
-	Message string
-	Code    string
-	MoreInfo string
-	Details []map[string]string
-	Blah string
+	HTTPStatusCode int
+	Message        string
+	Code           string
+	MoreInfo       string
+	Details        []map[string]string
 }
 
 // This allows HTTPError to satisfy the error interface
@@ -32,9 +31,8 @@ func (he *HTTPError) Error() string {
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
 	if response != nil && (response.StatusCode < 200 || response.StatusCode >= 400) {
 		httpErr := &HTTPError{
-			HTTPStatusCode:  response.StatusCode,
-			Message: response.Status,
-
+			HTTPStatusCode: response.StatusCode,
+			Message:        response.Status,
 		}
 		if response.Body != nil {
 			body, err := ioutil.ReadAll(response.Body)
