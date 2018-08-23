@@ -11,6 +11,7 @@ import (
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
+	"net/http"
 )
 
 const kvStoreServicePrefix = "kvstore"
@@ -144,19 +145,19 @@ func (c *KVStoreService) ListIndexes(collectionName string) ([]model.IndexDefini
 }
 
 // DeleteIndex deletes the specified index in a given collection
-func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) error {
+func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) (*http.Response, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes", indexName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := c.client.Delete(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return response, nil
 }
 
 // InsertRecords posts new records to the collection.

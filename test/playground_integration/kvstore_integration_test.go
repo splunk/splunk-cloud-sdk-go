@@ -6,16 +6,15 @@
 package playgroundintegration
 
 import (
-	"encoding/json"
-	"net/url"
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/splunk/ssc-client-go/util"
-	"github.com/stretchr/testify/require"
+	"encoding/json"
+	"net/url"
 )
 
 // Test variables
@@ -25,7 +24,6 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 // --------------------------------------------------------------------------------
 // Admin Endpoints
 // --------------------------------------------------------------------------------
-
 // Test GetCollectionStatus against nova playground
 func TestIntegrationGetCollectionStatus(t *testing.T) {
 	// Create the test collection
@@ -87,7 +85,8 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	assert.Equal(t, indexes[0].Name, testIndex)
 
 	// Delete the test index
-	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	response, err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	assert.NotNil(t, response)
 	assert.Nil(t, err)
 
 	// Validate if the index was deleted
@@ -133,12 +132,13 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
+	assert.EqualValues(t,  "Collection not found: ", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
-func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
+func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 	// Create the test collection
 	createKVCollectionDataset(t,
 		testutils.TestNamespace,
@@ -150,10 +150,10 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	// DeleteIndex
-	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+	response, err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	require.NotNil(t, response)
+	require.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
 }
 
 // --------------------------------------------------------------------------------
@@ -260,24 +260,24 @@ func TestDeleteRecord(t *testing.T) {
 // Create test record
 func CreateTestRecord(t *testing.T) []string {
 	var integrationTestRecord = `[
-         {
-          "capacity_gb": 8,
-          "size": "tiny",
-          "description": "This is a tiny amount of GB",
-          "_raw": ""
-         },
-         {
-          "capacity_gb": 16,
-          "size": "small",
-          "description": "This is a small amount of GB",
-          "_raw": ""
-         },
-         {
-          "type": "A",
-          "name": "test_record",
-          "count_of_fields": 3
-         }
-        ]`
+        {
+         "capacity_gb": 8,
+         "size": "tiny",
+         "description": "This is a tiny amount of GB",
+         "_raw": ""
+        },
+        {
+         "capacity_gb": 16,
+         "size": "small",
+         "description": "This is a small amount of GB",
+         "_raw": ""
+        },
+        {
+         "type": "A",
+         "name": "test_record",
+         "count_of_fields": 3
+        }
+       ]`
 	var res []model.Record
 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
 	require.Nil(t, err)
