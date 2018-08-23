@@ -141,6 +141,48 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	assert.Equal(t, "409 Conflict", httpErr.Message)
 }
 
+// Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
+func TestActionFailUnauthenticatedClient(t *testing.T) {
+	client := getClient(t)
+	webhookActionName := fmt.Sprintf("w-unauth-%d", timeSec)
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	defer cleanupAction(client, webhookAction.Name)
+	_, err := client.ActionService.CreateAction(*webhookAction)
+	require.Nil(t, err)
+
+	emailActionName := fmt.Sprintf("e-unauth-%d", timeSec)
+	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
+	// This shouldn't be needed since the CreateAction should fail for 401:
+	// defer cleanupAction(client, emailAction.Name)
+	invalidClient := getInvalidClient(t)
+
+	_, err = invalidClient.ActionService.CreateAction(*emailAction)
+	validateUnauthenticatedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetAction(webhookAction.Name)
+	validateUnauthenticatedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetActions()
+	validateUnauthenticatedActionError(t, err)
+
+	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
+		model.ActionNotification{
+			Kind:    model.RawJSONPayloadKind,
+			Tenant:  testutils.TestTenantID,
+			Payload: webhookPayload,
+		})
+	validateUnauthenticatedActionError(t, err)
+
+	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.ActionUpdateFields{TextPart: "updated email text"})
+	validateUnauthenticatedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetActionStatus("Action123", "statusID")
+	validateUnauthenticatedActionError(t, err)
+
+	err = invalidClient.ActionService.DeleteAction(webhookActionName)
+	validateUnauthenticatedActionError(t, err)
+}
+
 // Trigger action with invalid fields results in a 422 Unprocessable Entity error
 func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getClient(t)
