@@ -70,7 +70,8 @@ func TestCreateIndex(t *testing.T) {
 
 // Stubby test for DeleteIndex() kvstore service endpoint
 func TestDeleteIndex(t *testing.T) {
-	err := getClient(t).KVStoreService.DeleteIndex(testutils.StubbyTestCollection, testIndex1)
+	response, err := getClient(t).KVStoreService.DeleteIndex(testutils.StubbyTestCollection, testIndex1)
+	require.NotNil(t, response)
 	require.Nil(t, err)
 }
 
