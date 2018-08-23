@@ -40,3 +40,6 @@ var StubbyTestCollection = "testcollection0"
 
 // TestTimeOut - the timeout to be used for requests to the api
 var TestTimeOut = time.Second * 5
+
+// TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
+var TenantCreationOn = (os.Getenv("TENANT_CREATION") == "1")
