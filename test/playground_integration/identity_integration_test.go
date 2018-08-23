@@ -16,9 +16,9 @@ import (
 func TestCRUDGroups(t *testing.T) {
 	client := getClient(t)
 
-	res,err:= client.IdentityService.GetGroups()
-	assert.Nil(t,err)
-	groupNum:=len(res)
+	res, err := client.IdentityService.GetGroups()
+	assert.Nil(t, err)
+	groupNum := len(res)
 
 	groupName := "testcrudgroup"
 
@@ -38,15 +38,14 @@ func TestCRUDGroups(t *testing.T) {
 
 	resultgroup2, err := client.IdentityService.GetGroups()
 	assert.Nil(t, err)
-	assert.Equal(t, groupNum+1,len(resultgroup2))
-	assert.Contains(t,resultgroup2,groupName )
-
+	assert.Equal(t, groupNum+1, len(resultgroup2))
+	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
-	roleName:="testcrudgrouprole"
+	roleName := "testcrudgrouprole"
 	res2, err := client.IdentityService.GetGroupRoles(groupName)
 	assert.Nil(t, err)
-	roleNum:=len(res2)
+	roleNum := len(res2)
 
 	resultrole, err := client.IdentityService.CreateRole(roleName)
 	defer client.IdentityService.DeleteRole(roleName)
@@ -55,8 +54,8 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
 	assert.Equal(t, testutils.TestTenantID, resultrole.Tenant)
 
-	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName,roleName)
-	defer client.IdentityService.RemoveGroupRole(groupName,roleName)
+	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName, roleName)
+	defer client.IdentityService.RemoveGroupRole(groupName, roleName)
 	assert.Nil(t, err)
 	assert.Equal(t, roleName, resultrole1.Role)
 	assert.Equal(t, groupName, resultrole1.Group)
@@ -64,13 +63,36 @@ func TestCRUDGroups(t *testing.T) {
 
 	resultrole2, err := client.IdentityService.GetGroupRoles(groupName)
 	assert.Nil(t, err)
-	assert.Equal(t,roleNum+1,len(resultrole2))
-	assert.Contains(t,resultrole2, roleName)
+	assert.Equal(t, roleNum+1, len(resultrole2))
+	assert.Contains(t, resultrole2, roleName)
 
-	// todo group-members
+	//group-members
+	memberName := "test1@splunk.com"
+	res3, err := client.IdentityService.GetGroupMembers(groupName)
+	assert.Nil(t, err)
+	memberNum := len(res3)
+
+	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	assert.Nil(t, err)
+	assert.Equal(t, memberName, resultmember1.Principal)
+	assert.Equal(t, groupName, resultmember1.Group)
+	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
+
+	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
+	assert.Nil(t, err)
+	assert.Equal(t, memberNum+1, len(resultmember2))
+	assert.Contains(t, resultmember2, memberName)
+
+	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
+	assert.Nil(t, err)
+	assert.Equal(t, memberName, resultmember3.Principal)
 
 	//delete
-	err = client.IdentityService.RemoveGroupRole(groupName,roleName)
+	err = client.IdentityService.RemoveGroupMember(groupName, memberName)
+	assert.Nil(t, err)
+
+	err = client.IdentityService.RemoveGroupRole(groupName, roleName)
 	assert.Nil(t, err)
 
 	err = client.IdentityService.DeleteRole(roleName)
@@ -84,9 +106,9 @@ func TestCRUDGroups(t *testing.T) {
 func TestCRUDRoles(t *testing.T) {
 	client := getClient(t)
 
-	res,err:= client.IdentityService.GetRoles()
-	assert.Nil(t,err)
-	roleNum:=len(res)
+	res, err := client.IdentityService.GetRoles()
+	assert.Nil(t, err)
+	roleNum := len(res)
 
 	roleName := "testcrudgroup"
 
@@ -106,24 +128,24 @@ func TestCRUDRoles(t *testing.T) {
 
 	resultrole2, err := client.IdentityService.GetRoles()
 	assert.Nil(t, err)
-	assert.Equal(t, roleNum+1,len(resultrole2))
-	assert.Contains(t,resultrole2,roleName )
+	assert.Equal(t, roleNum+1, len(resultrole2))
+	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions
-	permissionName:="perm1"
+	permissionName := "perm1"
 	result1, err := client.IdentityService.GetRolePermissions(roleName)
 	assert.Nil(t, err)
-	permNum:=len(result1)
+	permNum := len(result1)
 
-	resultroleperm, err := client.IdentityService.AddPermissionToRole(roleName,permissionName)
-	defer client.IdentityService.RemoveRolePermission(roleName,permissionName)
+	resultroleperm, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
+	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
 	assert.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm.Role)
 	assert.Equal(t, permissionName, resultroleperm.Permission)
 	assert.Equal(t, "test1@splunk.com", resultroleperm.AddedBy)
 	assert.Equal(t, testutils.TestTenantID, resultroleperm.Tenant)
 
-	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName,permissionName)
+	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName, permissionName)
 	assert.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm1.Role)
 	assert.Equal(t, permissionName, resultroleperm1.Permission)
@@ -133,12 +155,41 @@ func TestCRUDRoles(t *testing.T) {
 	resultroleperm2, err := client.IdentityService.GetRolePermissions(roleName)
 	assert.Nil(t, err)
 	assert.Equal(t, permNum+1, len(resultroleperm2))
-	assert.Contains(t, resultroleperm2,permissionName)
-
+	assert.Contains(t, resultroleperm2, permissionName)
 
 	// delete
-	err = client.IdentityService.RemoveRolePermission(roleName,permissionName)
+	err = client.IdentityService.RemoveRolePermission(roleName, permissionName)
 	assert.Nil(t, err)
 	err = client.IdentityService.DeleteRole(roleName)
+	assert.Nil(t, err)
+}
+
+func TestCRUDMembers(t *testing.T) {
+	client := getClient(t)
+
+	res, err := client.IdentityService.GetMembers()
+	assert.Nil(t, err)
+	memNum := len(res)
+
+	memberName := "ljiang@splunk.com"
+
+	// create/get/delete member and members
+	result, err := client.IdentityService.AddMember(memberName)
+	defer client.IdentityService.DeleteMember(memberName)
+	assert.Nil(t, err)
+	assert.Equal(t, memberName, result.Name)
+	assert.Equal(t, testutils.TestTenantID, result.Tenant)
+
+	result1, err := client.IdentityService.GetMembers()
+	assert.Nil(t, err)
+	assert.Equal(t, memNum+1, len(result1))
+	assert.Contains(t, result1, memberName)
+
+	result3, err := client.IdentityService.GetMember(memberName)
+	assert.Nil(t, err)
+	assert.Equal(t, memberName, result3.Name)
+	assert.Equal(t, testutils.TestTenantID, result3.Tenant)
+	// delete
+	err = client.IdentityService.DeleteMember(memberName)
 	assert.Nil(t, err)
 }
