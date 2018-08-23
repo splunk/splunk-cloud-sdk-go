@@ -288,8 +288,16 @@ func NewClient(config *Config) (*Client, error) {
 	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
 		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
 	}
+
+	var handlers []ResponseHandler
 	if config.Token != "" {
+		// If static Token is provided then set the token retriever to no-op (just return static token)
 		config.TokenRetriever = &idp.NoOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
+		handlers = config.ResponseHandlers
+	} else {
+		// If TokenRetriever is provided, create an AuthnHandler to retry 401 requests using this interface and prepend before any custom handlers from the config
+		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
+		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
 	}
 
 	// Start by retrieving the access token
@@ -298,15 +306,12 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, fmt.Errorf("service.NewClient: error retrieving token: %s", err)
 	}
 
-	// Add an authentication handler along with any custom handlers
-	authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
-
 	// Finally, initialize the Client
 	c := &Client{
 		config:           config,
 		httpClient:       &http.Client{Timeout: config.Timeout},
 		tokenContext:     ctx,
-		responseHandlers: append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...),
+		responseHandlers: handlers,
 	}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
