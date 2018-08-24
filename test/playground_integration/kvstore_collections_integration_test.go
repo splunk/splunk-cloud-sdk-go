@@ -654,7 +654,6 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 
 // Test GetCollections to retrieve all the collections belonging to the tenant
 func TestIntegrationGetCollections(t *testing.T) {
-	cleanupDatasets(t)
 	// Create the test collection
 	createKVCollectionDataset(t,
 		testutils.TestNamespace,
@@ -669,7 +668,7 @@ func TestIntegrationGetCollections(t *testing.T) {
 	collections, err := getClient(t).KVStoreService.GetCollections()
 	require.Nil(t, err)
 	require.NotNil(t, collections)
-	assert.Len(t, collections, 1)
+	assert.Contains(t, collections, model.CollectionDefinition{kvCollection})
 }
 
 // Test ExportCollection to retrieve collection records for content-type text/csv
