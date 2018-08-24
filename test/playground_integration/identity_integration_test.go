@@ -26,19 +26,19 @@ func TestIntegrationCRUDTenant(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", userSystem.ID)
 	assert.Equal(t, "test1@splunk.com", userSystem.Email)
-	assert.Equal(t, "test1@splunk.com", userSystem.FirstName)
-	assert.Equal(t, "test1@splunk.com", userSystem.LastName)
-	assert.Equal(t, "test1@splunk.com", userSystem.Name)
-	assert.Equal(t, "US", userSystem.Locale)
+	assert.Equal(t, "Test1", userSystem.FirstName)
+	assert.Equal(t, "Splunk", userSystem.LastName)
+	assert.Equal(t, "Test1 Splunk", userSystem.Name)
+	assert.Equal(t, "en-US", userSystem.Locale)
 
 	userTenant, errTenant := client.IdentityService.GetUserProfile(testutils.TestTenantID)
 	assert.Nil(t, errTenant)
 	assert.Equal(t, "test1@splunk.com", userTenant.ID)
 	assert.Equal(t, "test1@splunk.com", userTenant.Email)
-	assert.Equal(t, "test1@splunk.com", userTenant.FirstName)
-	assert.Equal(t, "test1@splunk.com", userTenant.LastName)
-	assert.Equal(t, "test1@splunk.com", userTenant.Name)
-	assert.Equal(t, "US", userTenant.Locale)
+	assert.Equal(t, "Test1", userTenant.FirstName)
+	assert.Equal(t, "Splunk", userTenant.LastName)
+	assert.Equal(t, "Test1 Splunk", userTenant.Name)
+	assert.Equal(t, "en-US", userTenant.Locale)
 
 	if testutils.TenantCreationOn {
 		//prepare a temp tenant that will be deleted
