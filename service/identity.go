@@ -235,11 +235,11 @@ func (c *IdentityService) GetMember(name string) (*model.Member, error) {
 }
 
 // GetMemberGroups returns the list of groups a member belongs to within a tenant
-func (c *IdentityService) GetMemberGroups(name string) ([]string, error) {
+func (c *IdentityService) GetMemberGroups(memberName string) ([]string, error) {
 	var result []string
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
-		"members", name, "groups")
+		"members", memberName, "groups")
 
 	if err != nil {
 		return nil, err
@@ -259,11 +259,11 @@ func (c *IdentityService) GetMemberGroups(name string) ([]string, error) {
 }
 
 // GetMemberRoles returns the set of roles thet member posesses within the tenant
-func (c *IdentityService) GetMemberRoles(name string) ([]string, error) {
+func (c *IdentityService) GetMemberRoles(memberName string) ([]string, error) {
 	var result []string
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
-		"members", name, "roles")
+		"members", memberName, "roles")
 
 	if err != nil {
 		return nil, err
@@ -283,11 +283,11 @@ func (c *IdentityService) GetMemberRoles(name string) ([]string, error) {
 }
 
 // GetMemberPermissions returns the set of permissions granted to the member within the tenant
-func (c *IdentityService) GetMemberPermissions(name string) ([]string, error) {
+func (c *IdentityService) GetMemberPermissions(memberName string) ([]string, error) {
 	var result []string
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
-		"members", name, "permissions")
+		"members", memberName, "permissions")
 
 	if err != nil {
 		return nil, err
@@ -566,12 +566,12 @@ func (c *IdentityService) CreatePrincipal(name string, kind string) (*model.Prin
 }
 
 // AddMember adds a member to the given tenant
-func (c *IdentityService) AddMember(memberName string) (*model.Member, error) {
+func (c *IdentityService) AddMember(name string) (*model.Member, error) {
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": memberName}})
+	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
