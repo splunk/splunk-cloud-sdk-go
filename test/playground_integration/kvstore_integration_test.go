@@ -133,12 +133,13 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
+	assert.EqualValues(t,  "Collection not found: ", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
-func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
+func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 	// Create the test collection
 	createKVCollectionDataset(t,
 		testutils.TestNamespace,
@@ -151,9 +152,7 @@ func TestIntegrationDeleteNonExitingIndex(t *testing.T) {
 
 	// DeleteIndex
 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
-	assert.True(t, err.(*util.HTTPError).Message == "404 Not Found", "Expected error message should be 404 Not Found")
+	require.Nil(t, err)
 }
 
 // --------------------------------------------------------------------------------
