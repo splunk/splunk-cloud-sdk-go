@@ -668,7 +668,7 @@ func TestIntegrationGetCollections(t *testing.T) {
 	collections, err := getClient(t).KVStoreService.GetCollections()
 	require.Nil(t, err)
 	require.NotNil(t, collections)
-	assert.Contains(t, collections, model.CollectionDefinition{kvCollection})
+	assert.Contains(t, collections, model.CollectionDefinition{Collection: kvCollection})
 }
 
 // Test ExportCollection to retrieve collection records for content-type text/csv
