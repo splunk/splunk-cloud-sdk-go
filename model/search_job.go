@@ -189,7 +189,6 @@ type FetchResultsRequest struct {
 	Count      int      `key:"count"`
 	Offset     int      `key:"offset"`
 	Fields     []string `key:"f"`
-	OutputMode string   `key:"outputMode"`
 	Search     string   `key:"search"`
 }
 
@@ -201,7 +200,6 @@ type FetchEventsRequest struct {
 	Fields           []string `key:"f"`
 	LatestTime       string   `key:"latestTime"`
 	MaxLines         *uint    `key:"maxLines"`
-	OutputMode       string   `key:"outputMode"`
 	TimeFormat       string   `key:"timeFormat"`
 	OutputTimeFormat string   `key:"outputTimeFormat"`
 	Search           string   `key:"search"`
@@ -214,28 +212,7 @@ type SearchResults struct {
 	Preview     bool          `json:"preview"`
 	InitOffset  int           `json:"init_offset"`
 	Messages    []interface{} `json:"messages"`
-	Results     []*Result
+	Results     []map[string]interface{} `json:"results"`
 	Fields      []map[string]interface{} `json:"fields"`
 	Highlighted map[string]interface{}   `json:"highlighted"`
-}
-
-// Result contains information about the search
-type Result struct {
-	Bkt                string   `json:"_bkt"`
-	Cd                 string   `json:"_cd"`
-	IndexTime          string   `json:"_indextime"`
-	Raw                string   `json:"_raw"`
-	Serial             string   `json:"_serial"`
-	Si                 []string `json:"_si"`
-	OriginalSourceType string   `json:"_sourcetype"`
-	Time               string   `json:"_time"`
-	Entity             []string `json:"entity"`
-	Host               string   `json:"host"`
-	Index              string   `json:"index"`
-	LineCount          string   `json:"linecount"`
-	Log                string   `json:"log"`
-	Punct              string   `json:"punct"`
-	Source             string   `json:"source"`
-	SourceType         string   `json:"sourcetype"`
-	SplunkServer       string   `json:"splunk_server"`
 }
