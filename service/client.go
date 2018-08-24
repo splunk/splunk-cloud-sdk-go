@@ -21,6 +21,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/splunk/ssc-client-go/idp"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
 )
@@ -34,8 +35,12 @@ const (
 type Client struct {
 	// config
 	config *Config
+	// tokenContext is the access token to include in "Authorization: Bearer" headers and related context information
+	tokenContext *idp.Context
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
+	// responseHandlers is a slice of handlers to call after a response has been received in the client
+	responseHandlers []ResponseHandler
 	// SearchService talks to the SSC search service
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
@@ -48,8 +53,6 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
-	// responseHandler to support additional response handling logic
-	responseHandler ResponseHandler
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -74,15 +77,11 @@ func (r *Request) UpdateToken(accessToken string) {
 	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 }
 
-// ResponseHandler defines the interface for implementing custom response
-// handling logic
-type ResponseHandler interface {
-	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
-}
-
 // Config is used to set the client specific attributes
 type Config struct {
-	// Token to be sent in the Authorization: Bearer header
+	// TokenRetriever to gather access tokens to be sent in the Authorization: Bearer header on client initialization and upon encountering a 401 response
+	TokenRetriever idp.TokenRetriever
+	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
 	// Url string
 	URL string
@@ -90,6 +89,8 @@ type Config struct {
 	TenantID string
 	// Timeout
 	Timeout time.Duration
+	// ResponseHandlers is a slice of handlers to call after a response has been received in the client
+	ResponseHandlers []ResponseHandler
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -115,8 +116,8 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	if err != nil {
 		return nil, err
 	}
-	if len(c.config.Token) > 0 {
-		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
+	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
 	}
 	request.Header.Set("Content-Type", "application/json")
 	if len(headers) != 0 {
@@ -202,8 +203,8 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 			req.NumErrorsByType[code] = 1
 		}
 	}
-	if c.responseHandler != nil {
-		response, err = c.responseHandler.HandleResponse(c, req, response)
+	for _, hr := range c.responseHandlers {
+		response, err = hr.HandleResponse(c, req, response)
 	}
 	return response, err
 }
@@ -263,9 +264,9 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// UpdateToken the access token in the Authorization: Bearer header
-func (c *Client) UpdateToken(accessToken string) {
-	c.config.Token = accessToken
+// UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information
+func (c *Client) UpdateTokenContext(ctx *idp.Context) {
+	c.tokenContext = ctx
 }
 
 // GetURL returns the client config url string as a url.URL
@@ -277,25 +278,47 @@ func (c *Client) GetURL() (*url.URL, error) {
 	return parsed, nil
 }
 
-// SetResponseHandler sets the response handler for all requests made by the client
-func (c *Client) SetResponseHandler(rh ResponseHandler) {
-	c.responseHandler = rh
-}
-
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
 	if config.TenantID == "" || config.URL == "" {
 		return nil, errors.New("tenantID and url must be set")
 	}
 
-	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
+	// TODO: Token will eventually be fully replaced by TokenRetriever, it is retained for now for backwards compatibility
+	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
+		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
+	}
+
+	var handlers []ResponseHandler
+	if config.Token != "" {
+		// If static Token is provided then set the token retriever to no-op (just return static token)
+		config.TokenRetriever = &idp.NoOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
+		handlers = config.ResponseHandlers
+	} else {
+		// If TokenRetriever is provided, create an AuthnHandler to retry 401 requests using this interface and prepend before any custom handlers from the config
+		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
+		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
+	}
+
+	// Start by retrieving the access token
+	ctx, err := config.TokenRetriever.GetTokenContext()
+	if err != nil {
+		return nil, fmt.Errorf("service.NewClient: error retrieving token: %s", err)
+	}
+
+	// Finally, initialize the Client
+	c := &Client{
+		config:           config,
+		httpClient:       &http.Client{Timeout: config.Timeout},
+		tokenContext:     ctx,
+		responseHandlers: handlers,
+	}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
-	c.responseHandler = nil
 	return c, nil
 }
 
