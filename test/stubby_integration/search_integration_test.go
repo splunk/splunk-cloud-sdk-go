@@ -40,7 +40,7 @@ func TestGetResults(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
-	assert.NotEmpty(t, response.Results[0].Index)
+	assert.NotEmpty(t, response.Results[0])
 	assert.NotEmpty(t, response.Fields)
 	validateResponse(response, t)
 }
@@ -50,7 +50,7 @@ func TestGetEvents(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)
-	assert.NotEmpty(t, response.Results[0].Index)
+	assert.NotEmpty(t, response.Results[0])
 	assert.NotEmpty(t, response.Fields)
 	validateResponse(response, t)
 }
