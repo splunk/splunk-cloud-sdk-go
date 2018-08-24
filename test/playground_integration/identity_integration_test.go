@@ -183,10 +183,42 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memNum+1, len(result1))
 	assert.Contains(t, result1, memberName)
 
-	result3, err := client.IdentityService.GetMember(memberName)
+	result2, err := client.IdentityService.GetMember(memberName)
 	assert.Emptyf(t, err, "Error:%s", err)
-	assert.Equal(t, memberName, result3.Name)
-	assert.Equal(t, testutils.TestTenantID, result3.Tenant)
+	assert.Equal(t, memberName, result2.Name)
+	assert.Equal(t, testutils.TestTenantID, result2.Tenant)
+
+	// add member to group
+	groupName := "users" //pre-defined group
+	result3, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, groupName, result3.Group)
+
+	result4, err := client.IdentityService.GetMemberGroups(memberName)
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, 1, len(result4))
+	assert.Contains(t, result4, groupName)
+
+	roleName := "user" //pre-defind role
+	result5, err := client.IdentityService.GetMemberRoles(memberName)
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, 1, len(result5))
+	assert.Contains(t, result5, roleName)
+
+	// add permission to role
+	permissionName := "myperm"
+	result6, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
+	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, roleName, result6.Role)
+	assert.Equal(t, permissionName, result6.Permission)
+
+	result7, err := client.IdentityService.GetMemberPermissions(memberName)
+	assert.Emptyf(t, err, "Error:%s", err)
+	assert.Equal(t, 1, len(result7))
+	assert.Contains(t, result7, permissionName)
+
 	// delete
 	err = client.IdentityService.DeleteMember(memberName)
 	assert.Emptyf(t, err, "Error:%s", err)
