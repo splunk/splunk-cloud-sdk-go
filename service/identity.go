@@ -680,7 +680,7 @@ func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) 
 	return &result, err
 }
 
-// DeleteMember removes a member fromt the given tenant
+// DeleteMember removes a member from the given tenant
 func (c *IdentityService) DeleteMember(name string) error {
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members", name)
 	if err != nil {
@@ -714,7 +714,7 @@ func (c *IdentityService) DeleteRole(name string) error {
 	return nil
 }
 
-// RemoveRolePermission Removes a permission from the role
+// RemoveRolePermission removes a permission from the role
 func (c *IdentityService) RemoveRolePermission(roleName string, permissionName string) error {
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions", permissionName)
 	if err != nil {
@@ -765,7 +765,7 @@ func (c *IdentityService) RemoveGroupRole(groupName string, roleName string) err
 	return nil
 }
 
-// RemoveGroupMember removes the memeber from the group
+// RemoveGroupMember removes the member from the group
 func (c *IdentityService) RemoveGroupMember(groupName string, memberName string) error {
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "members", memberName)
 	if err != nil {

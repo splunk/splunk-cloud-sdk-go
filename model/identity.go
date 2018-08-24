@@ -10,7 +10,6 @@ import (
 )
 
 // Tenant tenant
-// swagger:model Tenant
 type Tenant struct {
 
 	// created at
@@ -33,7 +32,6 @@ type Tenant struct {
 
 
 // ValidateInfo validate info
-// swagger:model ValidateInfo
 type ValidateInfo struct {
 
 	// name
@@ -48,7 +46,6 @@ type ValidateInfo struct {
 }
 
 // Member Represents a member that belongs to a tenant.
-// swagger:model Member
 type Member struct {
 
 	// When the principal was added to the tenant.
@@ -69,7 +66,6 @@ type Member struct {
 }
 
 // Principal principal
-// swagger:model Principal
 type Principal struct {
 
 	// created at
@@ -97,7 +93,6 @@ type Principal struct {
 }
 
 // Role role
-// swagger:model Role
 type Role struct {
 
 	// created at
@@ -118,7 +113,6 @@ type Role struct {
 }
 
 // Group group
-// swagger:model Group
 type Group struct {
 
 	// created at
@@ -139,7 +133,6 @@ type Group struct {
 }
 
 // GroupRole Represents a role that is assigned to a group
-// swagger:model GroupRole
 type GroupRole struct {
 
 	// added at
@@ -164,7 +157,6 @@ type GroupRole struct {
 }
 
 // GroupMember Represents a member that belongs to a group
-// swagger:model GroupMember
 type GroupMember struct {
 
 	// added at
@@ -189,7 +181,6 @@ type GroupMember struct {
 }
 
 // RolePermission role permission
-// swagger:model RolePermission
 type RolePermission struct {
 
 	// added at

@@ -230,4 +230,5 @@ func TestValidate(t *testing.T) {
 	res, err := client.IdentityService.ValidateTenant()
 	assert.Emptyf(t, err, "Error:%s", err)
 	assert.Equal(t, "test1@splunk.com", res.Name)
+
 }
