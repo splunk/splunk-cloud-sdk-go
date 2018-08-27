@@ -1,7 +1,13 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package model
 
 // DispatchState describes dispatchState of a job
 type DispatchState string
+
 // Supported DispatchState constants
 const (
 	QUEUED     DispatchState = "QUEUED"
@@ -126,19 +132,20 @@ func NewDefaultPaginationParams() *JobsRequest {
 
 // SearchJob specifies the fields returned for a /search/jobs/ entry for a specific job
 type SearchJob struct {
-	Sid           string           `json:"sid"`
-	Content       SearchJobContent `json:"content"`
-	Context       *SearchContext
+	Sid     string           `json:"sid"`
+	Content SearchJobContent `json:"content"`
+	Context *SearchContext
 }
+
 // SearchJobContent represents the content json object from /search/jobs response
 type SearchJobContent struct {
-	Sid              string                 `json:"sid"`
-	EventCount       int                    `json:"eventCount"`
-	DispatchState    DispatchState          `json:"dispatchState"`
-	DiskUsage        int64                  `json:"diskUsage"`
-	IsFinalized      bool                   `json:"isFinalized"`
-	OptimizedSearch  string                 `json:"optimizedSearch"`
-	ScanCount        int64                  `json:"scanCount"`
+	Sid             string        `json:"sid"`
+	EventCount      int           `json:"eventCount"`
+	DispatchState   DispatchState `json:"dispatchState"`
+	DiskUsage       int64         `json:"diskUsage"`
+	IsFinalized     bool          `json:"isFinalized"`
+	OptimizedSearch string        `json:"optimizedSearch"`
+	ScanCount       int64         `json:"scanCount"`
 }
 
 // SearchContext specifies the user and app context for a search job
@@ -146,24 +153,27 @@ type SearchContext struct {
 	User string
 	App  string
 }
+
 // JobAction defines the action that can be posted on a job
 type JobAction string
+
 // Supported JobAction constants
 const (
-	PAUSE JobAction = "pause"
-	UNPAUSE JobAction = "unpause"
-	FINALIZE JobAction = "finalize"
-	CANCEL JobAction = "cancel"
-	TOUCH JobAction = "touch"
-	SAVE JobAction = "save"
-	SETTTL JobAction = "setttl"
-	ENABLEPREVIEW JobAction = "enablepreview"
+	PAUSE          JobAction = "pause"
+	UNPAUSE        JobAction = "unpause"
+	FINALIZE       JobAction = "finalize"
+	CANCEL         JobAction = "cancel"
+	TOUCH          JobAction = "touch"
+	SAVE           JobAction = "save"
+	SETTTL         JobAction = "setttl"
+	ENABLEPREVIEW  JobAction = "enablepreview"
 	DISABLEPREVIEW JobAction = "disablepreview"
 )
+
 // JobControlAction specifies the action needs to be taken on a job
 type JobControlAction struct {
 	Action JobAction `json:"action"`
-	TTL    int    `json:"ttl"`
+	TTL    int       `json:"ttl"`
 }
 
 // JobControlReplyMsg displays messages returned from taking a job control
@@ -179,7 +189,6 @@ type FetchResultsRequest struct {
 	Count      int      `key:"count"`
 	Offset     int      `key:"offset"`
 	Fields     []string `key:"f"`
-	OutputMode string   `key:"outputMode"`
 	Search     string   `key:"search"`
 }
 
@@ -191,7 +200,6 @@ type FetchEventsRequest struct {
 	Fields           []string `key:"f"`
 	LatestTime       string   `key:"latestTime"`
 	MaxLines         *uint    `key:"maxLines"`
-	OutputMode       string   `key:"outputMode"`
 	TimeFormat       string   `key:"timeFormat"`
 	OutputTimeFormat string   `key:"outputTimeFormat"`
 	Search           string   `key:"search"`
@@ -201,31 +209,10 @@ type FetchEventsRequest struct {
 
 // SearchResults represents the /search/jobs/{sid}/events or /search/jobs/{sid}/results response
 type SearchResults struct {
-	Preview     bool                     `json:"preview"`
-	InitOffset  int                      `json:"init_offset"`
-	Messages    []interface{}            `json:"messages"`
-	Results     []*Result
+	Preview     bool          `json:"preview"`
+	InitOffset  int           `json:"init_offset"`
+	Messages    []interface{} `json:"messages"`
+	Results     []map[string]interface{} `json:"results"`
 	Fields      []map[string]interface{} `json:"fields"`
 	Highlighted map[string]interface{}   `json:"highlighted"`
-}
-
-// Result contains information about the search
-type Result struct {
-	Bkt                string   `json:"_bkt"`
-	Cd                 string   `json:"_cd"`
-	IndexTime          string   `json:"_indextime"`
-	Raw                string   `json:"_raw"`
-	Serial             string   `json:"_serial"`
-	Si                 []string `json:"_si"`
-	OriginalSourceType string   `json:"_sourcetype"`
-	Time               string   `json:"_time"`
-	Entity             []string `json:"entity"`
-	Host               string   `json:"host"`
-	Index              string   `json:"index"`
-	LineCount          string   `json:"linecount"`
-	Log                string   `json:"log"`
-	Punct              string   `json:"punct"`
-	Source             string   `json:"source"`
-	SourceType         string   `json:"sourcetype"`
-	SplunkServer       string   `json:"splunk_server"`
 }

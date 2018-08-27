@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package service
 
 import (
@@ -19,7 +24,7 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -37,7 +42,7 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -55,7 +60,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(url, dataset)
+	response, err := c.client.Post(RequestParams{URL: url, Body: dataset})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -73,7 +78,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Patch(url, dataset)
+	response, err := c.client.Patch(RequestParams{URL: url, Body: dataset})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -91,7 +96,7 @@ func (c *CatalogService) DeleteDataset(datasetID string) error {
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(url)
+	response, err := c.client.Delete(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -104,7 +109,7 @@ func (c *CatalogService) DeleteRule(ruleID string) error {
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(getDeleteURL)
+	response, err := c.client.Delete(RequestParams{URL: getDeleteURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -117,7 +122,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(getRuleURL)
+	response, err := c.client.Get(RequestParams{URL: getRuleURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -135,7 +140,7 @@ func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(getRuleURL)
+	response, err := c.client.Get(RequestParams{URL: getRuleURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -153,7 +158,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(postRuleURL, rule)
+	response, err := c.client.Post(RequestParams{URL: postRuleURL, Body: rule})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -171,7 +176,7 @@ func (c *CatalogService) GetDatasetFields(datasetID string, values url.Values) (
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -189,7 +194,7 @@ func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(url)
+	response, err := c.client.Get(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -207,7 +212,7 @@ func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.F
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(url, datasetField)
+	response, err := c.client.Post(RequestParams{URL: url, Body: datasetField})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -225,7 +230,7 @@ func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID stri
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Patch(url, datasetField)
+	response, err := c.client.Patch(RequestParams{URL: url, Body: datasetField})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -243,7 +248,7 @@ func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID str
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(url)
+	response, err := c.client.Delete(RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}

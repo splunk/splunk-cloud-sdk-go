@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package service
 
 import (
@@ -77,7 +82,7 @@ func (search *Search) Wait() error {
 	if search.isCancelling == true {
 		return errors.New("search has been cancelled")
 	}
-	if err != nil && err.(*util.HTTPError).Status == 404 {
+	if err != nil && err.(*util.HTTPError).HTTPStatusCode == 404 {
 		return errors.New("search has been cancelled")
 	}
 	return err
@@ -157,7 +162,7 @@ func (service *SearchService) GetJobs(params *model.JobsRequest) ([]model.Search
 	if err != nil {
 		return jobs, err
 	}
-	response, err := service.client.Get(jobsURL)
+	response, err := service.client.Get(RequestParams{URL: jobsURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -175,7 +180,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, err
 	if err != nil {
 		return "", err
 	}
-	response, err := service.client.Post(jobURL, job)
+	response, err := service.client.Post(RequestParams{URL: jobURL, Body: job})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -197,7 +202,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, err
 func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, error) {
 	var jobsResponse model.SearchJobContent
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
-	response, err := service.client.Get(jobURL)
+	response, err := service.client.Get(RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -215,7 +220,7 @@ func (service *SearchService) PostJobControl(jobID string, action *model.JobCont
 	if err != nil {
 		return nil, err
 	}
-	response, err := service.client.Post(jobURL, action)
+	response, err := service.client.Post(RequestParams{URL: jobURL, Body: action})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -237,7 +242,7 @@ func (service *SearchService) GetJobResults(jobID string, params *model.FetchRes
 	if err != nil {
 		return nil, err
 	}
-	response, err := service.client.Get(jobURL)
+	response, err := service.client.Get(RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -259,7 +264,7 @@ func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEven
 	if err != nil {
 		return nil, err
 	}
-	response, err := service.client.Get(jobURL)
+	response, err := service.client.Get(RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
 	}

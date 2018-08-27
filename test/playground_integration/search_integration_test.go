@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package playgroundintegration
 
 import (
@@ -77,7 +82,7 @@ func TestGetJobResults(t *testing.T) {
 	assert.Emptyf(t, err, "Error creating job: %s", err)
 	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5, OutputMode: "json"})
+	response, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 5})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 5, len(response.Results))
@@ -90,7 +95,7 @@ func TestGetJobEvents(t *testing.T) {
 	assert.Emptyf(t, err, "Error creating job: %s", err)
 	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	response, err := client.SearchService.GetJobEvents(sid, &model.FetchEventsRequest{Count: 5, OutputMode: "json"})
+	response, err := client.SearchService.GetJobEvents(sid, &model.FetchEventsRequest{Count: 5})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 5, len(response.Results))
@@ -112,7 +117,8 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{Status: 400, Message: "400 Bad Request", Body: "{\"code\":\"1019\",\"message\":\"{\\\"type\\\":\\\"ERROR_SPL_PARSE\\\",\\\"reason\\\":\\\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\\\",\\\"rule\\\":\\\"search\\\",\\\"line\\\":1,\\\"position\\\":27,\\\"token\\\":\\\"dfsdfdshead\\\",\\\"ok\\\":false}\"}"}
+	expectedError := &util.HTTPError{HTTPStatusCode:400, Message:"{\"type\":\"ERROR_SPL_PARSE\",\"reason\":\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\",\"rule\":\"search\",\"line\":1,\"position\":27,\"token\":\"dfsdfdshead\",\"ok\":false}", Code:"1019"}
+
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	assert.Empty(t, response)
@@ -185,7 +191,7 @@ func TestIntegrationGetJobResults(t *testing.T) {
 	assert.NotNil(t, sid)
 	err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -200,7 +206,7 @@ func TestIntegrationGetJobResultsTTL(t *testing.T) {
 	assert.NotNil(t, response)
 	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -215,7 +221,7 @@ func TestIntegrationGetJobResultsLimit(t *testing.T) {
 	assert.NotNil(t, response)
 	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -230,7 +236,7 @@ func TestIntegrationGetJobResultsDisableAutoFinalization(t *testing.T) {
 	assert.NotNil(t, response)
 	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -245,7 +251,7 @@ func TestIntegrationGetJobResultsMultipleArgs(t *testing.T) {
 	assert.NotNil(t, response)
 	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -260,7 +266,7 @@ func TestIntegrationGetJobResultsLowThresholds(t *testing.T) {
 	assert.NotNil(t, response)
 	err = client.SearchService.WaitForJob(response, 1000*time.Millisecond)
 	assert.Emptyf(t, err, "Error waiting for job: %s", err)
-	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults(response, &model.FetchResultsRequest{Count: 30})
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	validateResponses(resp, t)
@@ -271,9 +277,9 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	// HTTP Code 500 Error
-	expectedError := &util.HTTPError{Status: 404, Message: "404 Not Found", Body: "{\"code\":\"404\",\"message\":\"404 Not Found\"}"}
+	expectedError := &util.HTTPError{HTTPStatusCode: 404, Message: "404 Not Found", Code:"404"}
 
-	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{OutputMode: "json", Count: 30})
+	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{Count: 30})
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
 	// empty SearchResults

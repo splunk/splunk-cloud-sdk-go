@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 /*
 Package service implements a service client which is used to communicate
 with Search Service endpoints
@@ -16,10 +21,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/splunk/ssc-client-go/idp"
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/util"
-	"io/ioutil"
-	"os"
 )
 
 // Declare constants for service package
@@ -31,8 +35,12 @@ const (
 type Client struct {
 	// config
 	config *Config
+	// tokenContext is the access token to include in "Authorization: Bearer" headers and related context information
+	tokenContext *idp.Context
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
+	// responseHandlers is a slice of handlers to call after a response has been received in the client
+	responseHandlers []ResponseHandler
 	// SearchService talks to the SSC search service
 	SearchService *SearchService
 	// CatalogService talks to the SSC catalog service
@@ -43,11 +51,37 @@ type Client struct {
 	IdentityService *IdentityService
 	// KVStoreService talks to SSC kvstore service
 	KVStoreService *KVStoreService
+	// ActionService talks to SSC action service
+	ActionService *ActionService
+}
+
+// Request extends net/http.Request to track number of total attempts and error
+// counts by type of error
+type Request struct {
+	*http.Request
+	NumAttempts     uint
+	NumErrorsByType map[string]uint
+}
+
+// GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
+func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
+	code := fmt.Sprintf("%d", respCode)
+	if val, ok := r.NumErrorsByType[code]; ok {
+		return val
+	}
+	return 0
+}
+
+// UpdateToken replaces the access token in the `Authorization: Bearer` header
+func (r *Request) UpdateToken(accessToken string) {
+	r.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
 }
 
 // Config is used to set the client specific attributes
 type Config struct {
-	// Authorization token
+	// TokenRetriever to gather access tokens to be sent in the Authorization: Bearer header on client initialization and upon encountering a 401 response
+	TokenRetriever idp.TokenRetriever
+	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
 	// Url string
 	URL string
@@ -55,16 +89,21 @@ type Config struct {
 	TenantID string
 	// Timeout
 	Timeout time.Duration
+	// ResponseHandlers is a slice of handlers to call after a response has been received in the client
+	ResponseHandlers []ResponseHandler
 }
 
-// RefreshToken - RefreshToken to refresh the bearer token if expired
-var RefreshToken = os.Getenv("REFRESH_TOKEN")
-
-// RefreshTokenEndpoint - Okta end point to hit to retrieve the bearer token
-var RefreshTokenEndpoint = os.Getenv("REFRESH_TOKEN_ENDPOINT")
-
-// ClientID - Okta app Client Id for SDK
-var ClientID = os.Getenv("CLIENT_ID")
+// RequestParams contains all the optional request URL parameters
+type RequestParams struct {
+	// Http method name
+	Method string
+	// Http url
+	URL url.URL
+	// Body parameter
+	Body interface{}
+	// Additional headers
+	Headers map[string]string
+}
 
 // service provides the interface between client and services
 type service struct {
@@ -72,16 +111,22 @@ type service struct {
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader) (*http.Request, error) {
+func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
 	}
-	if len(c.config.Token) > 0 {
-		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.config.Token))
+	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
+		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
 	}
 	request.Header.Set("Content-Type", "application/json")
-	return request, nil
+	if len(headers) != 0 {
+		for key, value := range headers {
+			request.Header.Set(key, value)
+		}
+	}
+	retryRequest := &Request{request, 0, make(map[string]uint)}
+	return retryRequest, nil
 }
 
 // BuildURL creates full SSC URL with the client cached tenantID
@@ -141,154 +186,74 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *http.Request) (*http.Response, error) {
-	response, err := c.httpClient.Do(req)
-
+func (c *Client) Do(req *Request) (*http.Response, error) {
+	req.NumAttempts++
+	response, err := c.httpClient.Do(req.Request)
 	if err != nil {
 		return nil, err
 	}
-
-	//If bearer token results in a 401 and there is a refresh token available, get a new bearer token
-	if response != nil && response.StatusCode == 401 && len(RefreshToken) != 0 {
-		response, err = c.onUnauthorizedRequest(req)
-		return response, err
-	}
-	return response, err
-}
-
-func (c *Client) onUnauthorizedRequest(req *http.Request) (*http.Response, error) {
-	// refresh and retry request here
-	httpMethod := req.Method
-
-	//Refresh access token with refresh token
-	var accessToken string
-	var err error
-	accessToken, err = c.GetNewAccessToken()
-	if err != nil || len(accessToken) == 0 {
-		return nil, err
-	}
-	// Update the client with the newly obtained access token
-	c.UpdateToken(accessToken)
-	body, err := req.GetBody()
-	request, err := http.NewRequest(httpMethod, req.URL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, accessToken))
-	request.Header.Set("Content-Type", "application/json")
-
-	// retry request with new access token
-	response, err := c.httpClient.Do(request)
-
-	return response, err
-}
-
-type refreshData struct {
-	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"`
-	ExpireIn     int    `json:"expires_in"`
-	Scope        string `json:"scope"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-// GetNewAccessToken gets a new bearer token from the okta token endpoint given the refresh token
-func (c *Client) GetNewAccessToken() (string, error) {
-	var accessToken = ""
-	client := http.Client{}
-	var urlPath = ""
-	urlPath = path.Join(RefreshTokenEndpoint)
-
-	data := url.Values{}
-	data.Set("refresh_token", RefreshToken)
-	data.Add("grant_type", "refresh_token")
-	data.Add("client_id", ClientID)
-	data.Add("scope", "openid email profile")
-
-	tokenURL := url.URL{
-		Scheme:   "https",
-		Path:     urlPath,
-		RawQuery: data.Encode(),
-	}
-
-	req, err := http.NewRequest("POST", tokenURL.String(), nil)
-	if err != nil {
-		return accessToken, err
-	}
-	req.Header.Set("accept", "application/json")
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-
-	response, err := client.Do(req)
-
-	if response != nil && response.StatusCode == 200 {
-		defer response.Body.Close()
-		body, err := ioutil.ReadAll(response.Body)
-
-		if err == nil {
-			s, err := parseRefreshData([]byte(body))
-			if err != nil {
-				return accessToken, err
-			}
-			accessToken = s.AccessToken
-			return accessToken, err
+	// If error response found, record number of errors by response code
+	if response.StatusCode >= 400 {
+		// TODO: This could be extended to include specific SSC error fields in
+		// addition to response code
+		code := fmt.Sprintf("%d", response.StatusCode)
+		if _, ok := req.NumErrorsByType[code]; ok {
+			req.NumErrorsByType[code]++
+		} else {
+			req.NumErrorsByType[code] = 1
 		}
-
-		return accessToken, err
 	}
-	return accessToken, err
-}
-
-func parseRefreshData(body []byte) (*refreshData, error) {
-	var refreshJSON = new(refreshData)
-	err := json.Unmarshal(body, &refreshJSON)
-
-	return refreshJSON, err
+	for _, hr := range c.responseHandlers {
+		response, err = hr.HandleResponse(c, req, response)
+	}
+	return response, err
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(getURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodGet, getURL, nil)
+func (c *Client) Get(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodGet
+	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(postURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPost, postURL, body)
+func (c *Client) Post(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPost
+	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(putURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPut, putURL, body)
+func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPut
+	return c.DoRequest(requestParams)
 }
 
 // Delete implements HTTP DELETE call
-func (c *Client) Delete(deleteURL url.URL) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, nil)
-}
-
-// DeleteWithBody implements HTTP DELETE call with a request body
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *Client) DeleteWithBody(deleteURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodDelete, deleteURL, body)
+func (c *Client) Delete(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodDelete
+	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(patchURL url.URL, body interface{}) (*http.Response, error) {
-	return c.DoRequest(http.MethodPatch, patchURL, body)
+func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
+	requestParams.Method = http.MethodPatch
+	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) (*http.Response, error) {
+func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
-	if contentBytes, ok := body.([]byte); ok {
+	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
 	} else {
-		if content, err := json.Marshal(body); err == nil {
+		if content, err := json.Marshal(requestParams.Body); err == nil {
 			buffer = bytes.NewBuffer(content)
 		} else {
 			return nil, err
 		}
 	}
-	request, err := c.NewRequest(method, requestURL.String(), buffer)
+	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {
 		return nil, err
 	}
@@ -299,9 +264,9 @@ func (c *Client) DoRequest(method string, requestURL url.URL, body interface{}) 
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-// UpdateToken updates the authorization token
-func (c *Client) UpdateToken(token string) {
-	c.config.Token = token
+// UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information
+func (c *Client) UpdateTokenContext(ctx *idp.Context) {
+	c.tokenContext = ctx
 }
 
 // GetURL returns the client config url string as a url.URL
@@ -313,19 +278,47 @@ func (c *Client) GetURL() (*url.URL, error) {
 	return parsed, nil
 }
 
-
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
-	if config.TenantID == "" || config.Token == "" || config.URL == "" {
-		return nil, errors.New("at least one of tenantID, token, or url must be set")
+	if config.TenantID == "" || config.URL == "" {
+		return nil, errors.New("tenantID and url must be set")
 	}
 
-	c := &Client{config: config, httpClient: &http.Client{Timeout: config.Timeout}}
+	// TODO: Token will eventually be fully replaced by TokenRetriever, it is retained for now for backwards compatibility
+	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
+		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
+	}
+
+	var handlers []ResponseHandler
+	if config.Token != "" {
+		// If static Token is provided then set the token retriever to no-op (just return static token)
+		config.TokenRetriever = &idp.NoOpTokenRetriever{Context: &idp.Context{AccessToken: config.Token}}
+		handlers = config.ResponseHandlers
+	} else {
+		// If TokenRetriever is provided, create an AuthnHandler to retry 401 requests using this interface and prepend before any custom handlers from the config
+		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
+		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
+	}
+
+	// Start by retrieving the access token
+	ctx, err := config.TokenRetriever.GetTokenContext()
+	if err != nil {
+		return nil, fmt.Errorf("service.NewClient: error retrieving token: %s", err)
+	}
+
+	// Finally, initialize the Client
+	c := &Client{
+		config:           config,
+		httpClient:       &http.Client{Timeout: config.Timeout},
+		tokenContext:     ctx,
+		responseHandlers: handlers,
+	}
 	c.SearchService = &SearchService{client: c}
 	c.CatalogService = &CatalogService{client: c}
 	c.IdentityService = &IdentityService{client: c}
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
+	c.ActionService = &ActionService{client: c}
 	return c, nil
 }
 
@@ -361,6 +354,7 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 		ErrorChan:        errorChan,
 		IsRunning:        false,
 		chanWaitInMilSec: 300,
+		callbackFunc:     nil,
 	}
 
 	return batchEventsSender, nil

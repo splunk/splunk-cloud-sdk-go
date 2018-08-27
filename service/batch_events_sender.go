@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package service
 
 import (
@@ -16,20 +21,21 @@ const errMsgSplitter = "[insErrSplit]"
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
 type BatchEventsSender struct {
-	BatchSize    int
-	EventsChan   chan model.Event
-	EventsQueue  []model.Event
-	QuitChan     chan struct{}
-	EventService *IngestService
-	IngestTicker *model.Ticker
-	WaitGroup    *sync.WaitGroup
-	ErrorChan    chan string
-	errorMsg     string
-	IsRunning    bool
-	mux          sync.Mutex
-	callbackFunc UserErrHandler
-	stopMux      sync.Mutex
+	BatchSize        int
+	EventsChan       chan model.Event
+	EventsQueue      []model.Event
+	QuitChan         chan struct{}
+	EventService     *IngestService
+	IngestTicker     *model.Ticker
+	WaitGroup        *sync.WaitGroup
+	ErrorChan        chan string
+	errorMsg         string
+	IsRunning        bool
+	mux              sync.Mutex
+	callbackFunc     UserErrHandler
+	stopMux          sync.Mutex
 	chanWaitInMilSec int
+	resetMux         sync.Mutex
 }
 
 // SetCallbackHandler allows users to pass their own callback function
@@ -58,12 +64,13 @@ func (b *BatchEventsSender) loop() {
 		case err := <-b.ErrorChan:
 			errorMsgCount++
 			b.errorMsg += err + errMsgSplitter
-			if b.callbackFunc != nil {
-				go b.callbackFunc(b)
-			}
 
 			if errorMsgCount >= cap(b.ErrorChan) {
 				b.Stop()
+			}
+
+			if b.callbackFunc != nil {
+				go b.callbackFunc(b)
 			}
 
 		case <-b.QuitChan:
@@ -170,7 +177,7 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		err := b.EventService.CreateEvents(events[i:end])
 		i = i + b.BatchSize
 		if err != nil {
-			str := fmt.Sprintf("Failed to send all events for batch: %v\n\tError: %v", events, err)
+			str := fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, events)
 
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
@@ -186,6 +193,24 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
 func (b *BatchEventsSender) ResetQueue() {
 	b.EventsQueue = b.EventsQueue[:0]
+}
+
+// Restart will reset batch event sender, clear up queue, error msg, timer etc.
+func (b *BatchEventsSender) Restart() {
+	defer b.resetMux.Unlock()
+	b.resetMux.Lock()
+
+	if b.IsRunning {
+		b.Stop()
+	}
+
+	// reopen channels
+	b.EventsChan = make(chan model.Event, b.BatchSize)
+	b.ErrorChan = make(chan string, cap(b.ErrorChan))
+
+	b.ResetQueue();
+	b.errorMsg = "";
+	b.Run();
 }
 
 // GetErrors return all the error messages as an array

@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package stubbyintegration
 
 import (
@@ -29,10 +34,10 @@ func TestCreateRawEventSuccess(t *testing.T) {
 }
 
 func TestIngestEventFail(t *testing.T) {
-	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol+"://"+testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second*5})
+	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
 	err := client.IngestService.CreateEvent(model.Event{Event: "failed test"})
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).Status)
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 

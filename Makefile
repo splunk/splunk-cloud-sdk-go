@@ -1,8 +1,12 @@
-# Copyright 2018 Splunk
+# Copyright © 2018 Splunk Inc.
+# SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
+#
 
 .DEFAULT_GOAL := noop
 
 GO_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/)
+GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | grep -v test)
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
@@ -30,8 +34,7 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
-	go build ./model/... \
-			 ./service/...
+	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 encrypt:
 	@if [ -f ci/secret.env ]; then \
@@ -90,8 +93,7 @@ debug_docker_environment_variables:
 	@echo
 
 run_unit_tests:
-	go test -v ./model/... \
-			   ./service/...
+	go test -v $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 run_local_stubby_tests: debug_local_environment_variables
 	TEST_URL_PROTOCOL=$(LOCAL_TEST_URL_PROTOCOL) \

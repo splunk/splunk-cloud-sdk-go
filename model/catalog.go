@@ -1,3 +1,8 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package model
 
 // DatasetInfoKind enumerates the kinds of datasets known to the system.
@@ -14,20 +19,20 @@ const (
 
 // DatasetInfo represents the sources of data that can be serched by Splunk
 type DatasetInfo struct {
-	ID    string          `json:"id,omitempty"`
-	Name  string          `json:"name"`
-	Kind  DatasetInfoKind `json:"kind"`
-	Owner string          `json:"owner"`
-	Module       string   `json:"module,omitempty"`
-	Created      string   `json:"created,omitempty"`
-	Modified     string   `json:"modified,omitempty"`
-	CreatedBy    string   `json:"createdBy,omitempty"`
-	ModifiedBy   string   `json:"modifiedBy,omitempty"`
-	Capabilities string   `json:"capabilities"`
-	Version      int      `json:"version,omitempty"`
-	Fields       []Field  `json:"fields,omitempty"`
-	Readroles    []string `json:"readroles,omitempty"`
-	Writeroles   []string `json:"writeroles,omitempty"`
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Owner        string          `json:"owner"`
+	Module       string          `json:"module,omitempty"`
+	Created      string          `json:"created,omitempty"`
+	Modified     string          `json:"modified,omitempty"`
+	CreatedBy    string          `json:"createdBy,omitempty"`
+	ModifiedBy   string          `json:"modifiedBy,omitempty"`
+	Capabilities string          `json:"capabilities"`
+	Version      int             `json:"version,omitempty"`
+	Fields       []Field         `json:"fields,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
@@ -119,55 +124,55 @@ const (
 	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
 )
 
-// ActionKind enumerates the kinds of search time transformation action known by the service.
-type ActionKind string
+// CatalogActionKind enumerates the kinds of search time transformation action known by the service.
+type CatalogActionKind string
 
 const (
 	// ALIAS action
-	ALIAS ActionKind = "ALIAS"
+	ALIAS CatalogActionKind = "ALIAS"
 	// AUTOKV action
-	AUTOKV ActionKind = "AUTOKV"
+	AUTOKV CatalogActionKind = "AUTOKV"
 	// REGEX action
-	REGEX ActionKind = "REGEX"
+	REGEX CatalogActionKind = "REGEX"
 	// EVAL action
-	EVAL ActionKind = "EVAL"
+	EVAL CatalogActionKind = "EVAL"
 	// LOOKUPACTION action
-	LOOKUPACTION ActionKind = "LOOKUP"
+	LOOKUPACTION CatalogActionKind = "LOOKUP"
 )
 
 // Rule represents a rule for transforming results at search time.
 // A rule consits of a `match` clause and a collection of transformation actions
 type Rule struct {
-	ID         string   `json:"id,omitempty"`
-	Name       string   `json:"name" binding:"required"`
-	Module     string   `json:"module,omitempty"`
-	Match      string   `json:"match" binding:"required"`
-	Actions    []Action `json:"actions,omitempty"`
-	Owner      string   `json:"owner" binding:"required"`
-	Created    string   `json:"created,omitempty"`
-	Modified   string   `json:"modified,omitempty"`
-	CreatedBy  string   `json:"createdBy,omitempty"`
-	ModifiedBy string   `json:"modifiedBy,omitempty"`
-	Version    int      `json:"version,omitempty"`
+	ID         string          `json:"id,omitempty"`
+	Name       string          `json:"name" binding:"required"`
+	Module     string          `json:"module,omitempty"`
+	Match      string          `json:"match" binding:"required"`
+	Actions    []CatalogAction `json:"actions,omitempty"`
+	Owner      string          `json:"owner" binding:"required"`
+	Created    string          `json:"created,omitempty"`
+	Modified   string          `json:"modified,omitempty"`
+	CreatedBy  string          `json:"createdBy,omitempty"`
+	ModifiedBy string          `json:"modifiedBy,omitempty"`
+	Version    int             `json:"version,omitempty"`
 }
 
-// Action represents a specific search time transformation action.
-type Action struct {
-	ID         string     `json:"id,omitempty"`
-	RuleID     string     `json:"ruleid,omitempty"`
-	Kind       ActionKind `json:"kind" binding:"required"`
-	Owner      string     `json:"owner" binding:"required"`
-	Created    string     `json:"created,omitempty"`
-	Modified   string     `json:"modified,omitempty"`
-	CreatedBy  string     `json:"createdBy,omitempty"`
-	ModifiedBy string     `json:"modifiedBy,omitempty"`
-	Version    int        `json:"version,omitempty"`
-	Field      string     `json:"field,omitempty"`
-	Alias      string     `json:"alias,omitempty"`
-	Mode       AutoMode   `json:"mode,omitempty"`
-	Expression string     `json:"expression,omitempty"`
-	Pattern    string     `json:"pattern,omitempty"`
-	Limit      int        `json:"limit,omitempty"`
+// CatalogAction represents a specific search time transformation action.
+type CatalogAction struct {
+	ID         string            `json:"id,omitempty"`
+	RuleID     string            `json:"ruleid,omitempty"`
+	Kind       CatalogActionKind `json:"kind" binding:"required"`
+	Owner      string            `json:"owner" binding:"required"`
+	Created    string            `json:"created,omitempty"`
+	Modified   string            `json:"modified,omitempty"`
+	CreatedBy  string            `json:"createdBy,omitempty"`
+	ModifiedBy string            `json:"modifiedBy,omitempty"`
+	Version    int               `json:"version,omitempty"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       AutoMode          `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      int               `json:"limit,omitempty"`
 }
 
 // AutoMode enumerates the automatic key/value extraction modes.

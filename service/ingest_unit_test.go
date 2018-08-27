@@ -1,10 +1,16 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBuildMultiEventsPayload(t *testing.T) {
@@ -15,7 +21,7 @@ func TestBuildMultiEventsPayload(t *testing.T) {
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 5
-	var client, _ = NewClient(&Config{token, apiURL, tenant, timeout})
+	var client, _ = NewClient(&Config{Token: token, URL: apiURL, TenantID: tenant, Timeout: timeout})
 
 	event1 := model.Event{Host: "host1", Event: "test1"}
 	event2 := model.Event{Host: "host2", Event: "test2"}

@@ -1,16 +1,22 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package playgroundintegration
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"math/rand"
 	"strings"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var wg sync.WaitGroup
@@ -126,8 +132,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(errors) >= maxAllowedErr)
 
-	assert.True(t, strings.Contains(errors[0], "Failed to send all events for batch: [{host1    <nil> test10 map[]}"))
-	assert.True(t, strings.Contains(errors[0], "\n\tError: Http Error: [401] 401 Unauthorized {\"reason\":\"Error validating request\"}"))
+	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [401], Message: 401 Unauthorized"))
+	assert.True(t, strings.Contains(errors[0], "EventPayload:[{host1    <nil> test10 map[]}"))
 
 	collector.Stop()
 }
@@ -165,4 +171,40 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 	assert.Equal(t, "call from callback function", callbackPrint)
 	collector.Stop()
+}
+
+func TestBatchEventsSenderRestart(t *testing.T) {
+	var client = getInvalidClient(t)
+	event1 := model.Event{Host: "host1", Event: "test10"}
+
+	maxAllowedErr := 4
+
+	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+
+	// Initial run of the batchSender
+	collector.Run()
+	// start 15 threads to send data simultaneously
+	wg.Add(8)
+	for i := 0; i < 8; i++ {
+		go addEventBatch(collector, event1)
+	}
+	wg.Wait()
+
+	// batchSender should have stopped due to maxError hit
+	assert.False(t, collector.IsRunning)
+	assert.True(t, len(collector.GetErrors()) >= 4)
+
+	// restart the batchSender and resend events, everything should work just like the initial run
+	collector.Restart()
+	assert.True(t, len(collector.GetErrors()) == 0)
+	assert.True(t, collector.IsRunning)
+
+	// start 15 threads to send data simultaneously
+	wg.Add(8)
+	for i := 0; i < 8; i++ {
+		go addEventBatch(collector, event1)
+	}
+	wg.Wait()
+	assert.True(t, len(collector.GetErrors()) >= 4)
 }
