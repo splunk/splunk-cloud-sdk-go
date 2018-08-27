@@ -28,6 +28,13 @@ do
 
     go test -v -covermode=count -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE
 
+    RESULT=$?
+    if [ $RESULT -ne 0 ]
+        then
+            echo "There was an error testing the $PACKAGE package's unit tests."
+            exit 1
+    fi
+
     if [ -f $COVERAGE_PACKAGE_OUTPUT_FILE ]; then
         cat $COVERAGE_PACKAGE_OUTPUT_FILE >> $FULL_UNIT_TEST_CODECOV_PATH
     else
