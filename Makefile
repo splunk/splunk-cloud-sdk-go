@@ -6,7 +6,7 @@
 .DEFAULT_GOAL := noop
 
 GO_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/)
-GO_NON_TEST_PACKAGES := $(shell go list ./... | grep -v test)
+GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | grep -v test)
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
@@ -34,7 +34,7 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
-	go build $(GO_NON_TEST_PACKAGES)
+	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 encrypt:
 	@if [ -f ci/secret.env ]; then \
