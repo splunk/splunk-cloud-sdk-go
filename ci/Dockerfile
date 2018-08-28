@@ -1,5 +1,5 @@
 # Starting from the latest Golang image
-FROM golang:1.10-alpine
+FROM golang:1.9.4-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
 ENV DEP_VERSION=0.4.1
@@ -10,6 +10,8 @@ RUN apk update && apk upgrade && \
     apk add --no-cache make && \
     apk add --no-cache curl && \
     apk add --no-cache jq && \
+    # Needed for gcc in order to support Go
+    apk add build-base && \
     curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
