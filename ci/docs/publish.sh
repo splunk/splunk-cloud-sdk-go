@@ -3,3 +3,4 @@
 cd "$(dirname "$0")"
 npm add -D @splunk/cicd-tools --registry https://repo.splunk.com/artifactory/api/npm/npm
 yarn cicd-publish-docs ../../docs/
+echo "Docs built and packaged into $(dirname "$0")/build"
