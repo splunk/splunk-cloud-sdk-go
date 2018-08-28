@@ -37,7 +37,7 @@ func TestIdentityService_GetTenants(t *testing.T) {
 }
 
 func TestIdentityService_GetValidate(t *testing.T) {
-	result, err := getClient(t).IdentityService.ValidateTenant()
+	result, err := getClient(t).IdentityService.Validate()
 	assert.Nil(t, err)
 	assert.Equal(t, "TEST_TENANT", result.Name)
 	assert.Equal(t, 2, len(result.Tenants))

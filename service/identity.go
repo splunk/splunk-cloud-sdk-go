@@ -84,8 +84,8 @@ func (c *IdentityService) GetTenant(name string) (*model.Tenant, error) {
 	return &result, err
 }
 
-// ValidateTenant validates the access token obtained from authorization header and returns the principal name and tenant memberships
-func (c *IdentityService) ValidateTenant() (*model.ValidateInfo, error) {
+// Validate validates the access token obtained from authorization header and returns the principal name and tenant memberships
+func (c *IdentityService) Validate() (*model.ValidateInfo, error) {
 	var result model.ValidateInfo
 
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,

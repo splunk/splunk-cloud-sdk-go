@@ -228,7 +228,7 @@ func TestCRUDMembers(t *testing.T) {
 func TestValidate(t *testing.T) {
 	client := getClient(t)
 
-	res, err := client.IdentityService.ValidateTenant()
+	res, err := client.IdentityService.Validate()
 	require.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", res.Name)
 }
