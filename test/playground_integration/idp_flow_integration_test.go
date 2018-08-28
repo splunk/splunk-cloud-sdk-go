@@ -3,8 +3,6 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-// +build !integration
-
 package playgroundintegration
 
 import (
@@ -12,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/splunk/ssc-client-go/idp"
+	"github.com/splunk/ssc-client-go/util"
 
 	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/service"
@@ -63,6 +62,16 @@ func (r *retryTokenRetriever) GetTokenContext() (*idp.Context, error) {
 	}
 	// For subsequent requests get the real token using the real TokenRetriever
 	return r.TR.GetTokenContext()
+}
+
+type badTokenRetriever struct {
+	N int
+}
+
+func (r *badTokenRetriever) GetTokenContext() (*idp.Context, error) {
+	r.N++
+	// Return a bad access token every time
+	return &idp.Context{AccessToken: ExpiredAuthenticationToken}, nil
 }
 
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
@@ -205,4 +214,38 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
+}
+
+// TestBadTokenRetryWorkflow tests to make sure that a 401 is returned to the end user when a bad token is retrieved and requests are re-tried exactly once
+func TestBadTokenRetryWorkflow(t *testing.T) {
+	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	tr := &badTokenRetriever{}
+
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: tr,
+		URL:            url,
+		TenantID:       testutils.TestTenantID,
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
+
+	clientURL, err := client.GetURL()
+	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
+
+	timeValue := float64(1529945004)
+	testIngestEvent := model.Event{
+		Host:       clientURL.RequestURI(),
+		Index:      "main",
+		Event:      "badtokentest",
+		Sourcetype: "sourcetype:badtokentest",
+		Source:     "manual-events",
+		Time:       &timeValue,
+		Fields:     map[string]string{"testKey": "testValue"}}
+
+	err = client.IngestService.CreateEvent(testIngestEvent)
+	assert.Equal(t, tr.N, 2, "Expected exactly two calls to TokenRetriever.GetTokenContext(): 1) at client initialization and 2) after 401 is encountered when client.IngestService.CreateEvent is called")
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, "Expected err to be util.HTTPError")
+	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401 for multiple attempts with expired access tokens")
 }

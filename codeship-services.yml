@@ -1,7 +1,8 @@
 ssc-client-go:
   build:
-    image: splunk/ssc-client-go
     dockerfile: ci/Dockerfile
+    image: splunk/ssc-client-go
+  encrypted_env_file: ci/env.encrypted
 
 ssc-sdk-shared-token-fetcher:
   image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:latest
