@@ -99,7 +99,7 @@ debug_docker_environment_variables:
 	@echo
 
 run_unit_tests:
-	go test -v $(GO_NON_TEST_NON_VENDOR_PACKAGES)
+	sh ./ci/unit_tests/run_unit_tests.sh
 
 run_local_stubby_tests: debug_local_environment_variables
 	TEST_URL_PROTOCOL=$(LOCAL_TEST_URL_PROTOCOL) \
