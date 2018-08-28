@@ -27,3 +27,8 @@ secret.env
 # used by token fetcher
 okta/.token
 okta/token
+
+# Docs/build info
+ci/docs/node_modules
+ci/docs/build
+docs
