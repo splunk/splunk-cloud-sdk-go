@@ -1,5 +1,0 @@
-{
-    "name": "@splunk/ssc-client-go",
-    "version": "0.3.0",
-    "description": "Splunk SSC SDK for Go"
-}
