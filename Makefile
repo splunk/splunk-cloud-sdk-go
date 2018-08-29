@@ -35,7 +35,7 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
-	sed -i '' -e 's/[0-9].[0-9].[0-9]/$(GIT_VERSION_TAG)/g' service/client_info.go
+	$(shell sed -i '' -e 's/[0-9].[0-9].[0-9]/$(GIT_VERSION_TAG)/g' service/client_info.go)
 	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 encrypt:
