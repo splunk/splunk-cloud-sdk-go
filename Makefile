@@ -34,10 +34,8 @@ lint:
 vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
-set_version:
-	sed -i -e 's/[0-9].[0-9].[0-9]/$(GIT_VERSION_TAG)/g' service/client_info.go
-
 build:
+	sed -i '' -e 's/[0-9].[0-9].[0-9]/$(GIT_VERSION_TAG)/g' service/client_info.go
 	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 encrypt:
