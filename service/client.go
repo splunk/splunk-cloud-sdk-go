@@ -118,7 +118,7 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	}
 	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
 		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
-		request.Header.Set("Splunk-Client", fmt.Sprintf("%s/%s", UserAgent, Version))
+		request.Header.Set("splunk-client", fmt.Sprintf("%s/%s", UserAgent, Version))
 	}
 	request.Header.Set("Content-Type", "application/json")
 	if len(headers) != 0 {
