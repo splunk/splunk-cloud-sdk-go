@@ -205,6 +205,9 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 	}
 	for _, hr := range c.responseHandlers {
 		response, err = hr.HandleResponse(c, req, response)
+		if err != nil {
+			return response, err
+		}
 	}
 	return response, err
 }
