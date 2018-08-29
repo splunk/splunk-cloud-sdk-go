@@ -1,42 +1,52 @@
 - type: parallel
   steps:
- 
-  - type: parallel
-    name: code quality checks
-    steps:
-      - name: lint
-        service: ssc-client-go
-        command: bash -c "make lint"
-      - name: vet
-        service: ssc-client-go
-        command: bash -c "make vet"
-      - name: build
-        service: ssc-client-go
-        command: bash -c "make build"
-
-
-  - name: unit tests
-    service: ssc-client-go
-    command: bash -c "make run_unit_tests"
-
-  - name: functional tests
-    service: ssc-client-go-with-stubby
-    command: bash -c "make run_docker_stubby_tests"
+#
+#  - type: parallel
+#    name: code quality checks
+#    steps:
+#      - name: lint
+#        service: ssc-client-go
+#        command: bash -c "make lint"
+#      - name: vet
+#        service: ssc-client-go
+#        command: bash -c "make vet"
+#      - name: build
+#        service: ssc-client-go
+#        command: bash -c "make build"
+#
+#
+#  - name: unit tests
+#    service: ssc-client-go
+#    command: bash -c "make run_unit_tests"
+#
+#  - name: functional tests
+#    service: ssc-client-go-with-stubby
+#    command: bash -c "make run_docker_stubby_tests"
 
   - type: serial
     name: integration steps
     steps:
-    - name: fetch Okta token
-      service: ssc-sdk-shared-token-fetcher
-      command: true
+#    - name: fetch Okta token
+#      service: ssc-sdk-shared-token-fetcher
+#      command: true
     - type: parallel
       name: integration tests
       steps:
-        - name: integration tests - not gated
-          service: ssc-client-go-against-playground
-          exclude: ^(master|develop)$
-          command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
-        - name: integration tests - gated
-          service: ssc-client-go-against-playground
-          tag: ^(master|develop)$
-          command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
+#        - name: integration tests - not gated
+#          service: ssc-client-go-against-playground
+#          exclude: ^(master|develop)$
+#          command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
+#        - name: integration tests - gated
+#          service: ssc-client-go-against-playground
+#          tag: ^(master|develop)$
+#          command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
+         - name: WhiteSource Testing
+           service: ssc-client-go-whitesource
+           command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
+                                   -c /go/src/github.com/splunk/ssc-client-go/ci/whitesource/whitesource-fs-agent.config \
+                                   -d /go/src/github.com/splunk/ssc-client-go \
+                                   -apiKey $WHITESOURCE_API_KEY \
+                                   -productToken $WHITESOURCE_PRODUCT_TOKEN \
+                                   -userKey $WHITESOURCE_USER_KEY"
+#           tag: ^(master|develop)$
+
