@@ -60,6 +60,12 @@ decrypt:
 		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
 	fi;
 
+docs_md:
+	./ci/docs/docs_md.sh
+
+docs_publish: docs_md
+	./ci/docs/publish.sh
+
 install_local:
 	printf "Installing dep to manage Go dependencies ..." && \
 	make install_dep
