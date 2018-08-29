@@ -221,7 +221,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result7, permissionName)
 
 	// delete
-	err = client.IdentityService.DeleteMember(memberName)
+	err = client.IdentityService.RemoveMember(memberName)
 	require.Nil(t, err)
 }
 
