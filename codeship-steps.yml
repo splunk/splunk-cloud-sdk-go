@@ -1,6 +1,6 @@
 - type: parallel
   steps:
- 
+
   - type: parallel
     name: code quality checks
     steps:
@@ -40,3 +40,13 @@
           service: ssc-client-go-against-playground
           tag: ^(master|develop)$
           command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
+        - name: WhiteSource Testing
+          service: ssc-client-go-whitesource
+          command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
+                                      -c /go/src/github.com/splunk/ssc-client-go/ci/whitesource/whitesource-fs-agent.config \
+                                      -d /go/src/github.com/splunk/ssc-client-go \
+                                      -apiKey $WHITESOURCE_API_KEY \
+                                      -productToken $WHITESOURCE_PRODUCT_TOKEN \
+                                      -userKey $WHITESOURCE_USER_KEY"
+          tag: ^(master|develop)$
+
