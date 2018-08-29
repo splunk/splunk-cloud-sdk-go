@@ -229,7 +229,7 @@ func TestIdentityService_DeleteGroup(t *testing.T) {
 }
 
 func TestIdentityService_DeleteMember(t *testing.T) {
-	err := getClient(t).IdentityService.DeleteMember("mem1")
+	err := getClient(t).IdentityService.RemoveMember("mem1")
 	require.Nil(t, err)
 }
 

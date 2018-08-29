@@ -174,7 +174,7 @@ func TestCRUDMembers(t *testing.T) {
 
 	// create/get/delete member and members
 	result, err := client.IdentityService.AddMember(memberName)
-	defer client.IdentityService.DeleteMember(memberName)
+	defer client.IdentityService.RemoveMember(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, memberName, result.Name)
 	assert.Equal(t, testutils.TestTenantID, result.Tenant)

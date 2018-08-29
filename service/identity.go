@@ -680,8 +680,8 @@ func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) 
 	return &result, err
 }
 
-// DeleteMember removes a member from the given tenant
-func (c *IdentityService) DeleteMember(name string) error {
+// RemoveMember removes a member from the given tenant
+func (c *IdentityService) RemoveMember(name string) error {
 	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members", name)
 	if err != nil {
 		return err
