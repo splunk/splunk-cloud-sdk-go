@@ -55,15 +55,6 @@ func TestGetEvents(t *testing.T) {
 	validateResponse(response, t)
 }
 
-func TestJobActionControl(t *testing.T) {
-	response, err := getClient(t).SearchService.PostJobControl("SEARCH_ID", &model.JobControlAction{Action: "pause"})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, response)
-	assert.Equal(t, 1, len(response.Msg))
-	assert.Equal(t, "INFO", response.Msg[0].TypeKey)
-	assert.Equal(t, "Search job paused.", response.Msg[0].Text)
-}
-
 //Validate response results
 func validateResponse(response *model.SearchResults, t *testing.T) {
 
