@@ -67,23 +67,29 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	//group-members
-	memberName := "test1@splunk.com"
+	memberName := "test2@splunk.com"
 	res3, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	memberNum := len(res3)
 
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
 
-	/*resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	//add group member
+	_, err = client.IdentityService.AddMember(memberName)
+	defer client.IdentityService.RemoveMember(memberName)
+	_, err = client.IdentityService.AddMemberToGroup("admin", memberName)
+	defer client.IdentityService.RemoveGroupMember("admin", memberName)
+
+	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
 	require.Nil(t, err)
 	assert.Equal(t, memberName, resultmember1.Principal)
 	assert.Equal(t, groupName, resultmember1.Group)
-	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)*/
+	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
 
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
-	assert.Equal(t, memberNum, len(resultmember2))
+	assert.Equal(t, memberNum+1, len(resultmember2))
 	assert.Contains(t, resultmember2, memberName)
 
 	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
