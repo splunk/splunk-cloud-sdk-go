@@ -26,7 +26,7 @@ const (
 	templateName = "template1000"
 	snsTopic     = "myTopic"
 	snsMsg       = "SNS Message"
-	webhookURL   = "https://locahost:9999/test"
+	webhookURL   = "https://webhook.site/test"
 	webhookMsg   = "{{ .name }} is a {{ .species }}"
 	actionUserID = "sdk_tester"
 )
