@@ -36,6 +36,9 @@ func cleanupDatasets(t *testing.T) {
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 
 	for _, item := range result {
+		if item.Name=="main" || item.Name=="metrics" {
+			continue
+		}
 		err = client.CatalogService.DeleteDataset(item.ID)
 		assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 	}
