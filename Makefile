@@ -10,6 +10,7 @@ GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | gr
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+GIT_VERSION_TAG := $(shell git describe origin/develop --tags --match="v*" | sed 's/v//g')
 
 LOCAL_TEST_URL_PROTOCOL := http
 LOCAL_TEST_SSC_HOST := localhost:8882
@@ -34,6 +35,7 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
+	$(shell sed -i '' -e 's/[0-9].[0-9].[0-9]/$(GIT_VERSION_TAG)/g' service/client_info.go)
 	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 encrypt:
@@ -55,6 +57,12 @@ decrypt:
 		jet decrypt ci/shared/env.encrypted ci/shared/secret.env && \
 		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
 	fi;
+
+docs_md:
+	./ci/docs/docs_md.sh
+
+docs_publish: docs_md
+	./ci/docs/publish.sh
 
 install_local:
 	printf "Installing dep to manage Go dependencies ..." && \
@@ -93,7 +101,7 @@ debug_docker_environment_variables:
 	@echo
 
 run_unit_tests:
-	go test -v $(GO_NON_TEST_NON_VENDOR_PACKAGES)
+	sh ./ci/unit_tests/run_unit_tests.sh
 
 run_local_stubby_tests: debug_local_environment_variables
 	TEST_URL_PROTOCOL=$(LOCAL_TEST_URL_PROTOCOL) \

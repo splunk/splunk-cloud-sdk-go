@@ -8,12 +8,7 @@ echo "==============================================="
 env | grep TEST_SSC_HOST
 env | grep TEST_URL_PROTOCOL
 env | grep TEST_TENANT_ID
-# TODO: Flag output to say if the bearer token was set or not
-#if [ -z ${var+x} ]; then
-#    echo "TEST_BEARER_TOKEN was set.";
-#else
-#    echo "TEST_BEARER_TOKEN was set.";
-#fi
+
 echo "==============================================="
 
 # Get the BEARER_TOKEN setup
@@ -26,19 +21,34 @@ else
     exit 1
 fi
 
-# Required to run just the service tests
-# cd service
+COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
+PACKAGE_COVERAGE_PREFIX=./ci/integration/
+FULL_INTEGRATION_TEST_CODECOV_FILE_NAME=integration_test_codecov.out
+FULL_INTEGRATION_TEST_CODECOV_PATH=$PACKAGE_COVERAGE_PREFIX$FULL_INTEGRATION_TEST_CODECOV_FILE_NAME
+
+# Required to run just the service tests
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running integration tests but not gating on failures..."
     set +e
-    go test -v -covermode=count -coverprofile="codecov.integration.out" ./test/playground_integration/...
-    exit 0
+    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
+               -covermode=count \
+               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
+               ./test/playground_integration/...
 else
     echo "Running integration tests and gating on failures..."
-    go test -v -covermode=count -coverprofile="codecov.integration.out" ./test/playground_integration/... || exit 1
+    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
+               -covermode=count \
+               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
+               ./test/playground_integration/... \
+        || exit 1
 fi
 
-# Upload coverage information
-./ci/codecov -f "codecov.integration.out" -F integration
-
+# Upload code cov report
+if [[ -z "$CODECOV_TOKEN" ]];
+then
+    echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
+else
+    # Upload coverage information
+    ./ci/codecov -f $FULL_INTEGRATION_TEST_CODECOV_PATH -F integration -t $CODECOV_TOKEN
+fi
