@@ -10,7 +10,7 @@ GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | gr
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-GIT_VERSION_TAG := $(shell git describe origin/master --tags --match="v*" | sed 's/v//g')
+GIT_VERSION_TAG := $(shell git describe origin/develop --tags --match="v*" | sed 's/v//g')
 
 LOCAL_TEST_URL_PROTOCOL := http
 LOCAL_TEST_SSC_HOST := localhost:8882
