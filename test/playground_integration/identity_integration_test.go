@@ -215,10 +215,14 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, roleName, result6.Role)
 	assert.Equal(t, permissionName, result6.Permission)
 
+	permissionName1 := fmt.Sprintf("%v:users:identity.groups.read", testutils.TestTenantID)
+	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenantID, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, 3, len(result7))
 	assert.Contains(t, result7, permissionName)
+	assert.Contains(t,result7, permissionName1)
+	assert.Contains(t,result7, permissionName2)
 
 	// delete
 	err = client.IdentityService.RemoveMember(memberName)
