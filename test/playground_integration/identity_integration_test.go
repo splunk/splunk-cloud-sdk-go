@@ -72,13 +72,7 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	memberNum := len(res3)
 
-	/* TODO: 409 conflict, to be revisited
-	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
-	require.Nil(t, err)
-	assert.Equal(t, memberName, resultmember1.Principal)
-	assert.Equal(t, groupName, resultmember1.Group)
-	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant) */
 
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
