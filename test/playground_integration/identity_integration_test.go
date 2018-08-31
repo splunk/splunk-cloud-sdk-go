@@ -72,8 +72,6 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	memberNum := len(res3)
 
-	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
-
 	//add group member
 	_, err = client.IdentityService.AddMember(memberName)
 	require.Nil(t, err)
