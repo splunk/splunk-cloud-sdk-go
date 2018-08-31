@@ -53,5 +53,5 @@
                                 -apiKey $WHITESOURCE_API_KEY \
                                 -productToken $WHITESOURCE_PRODUCT_TOKEN \
                                 -userKey $WHITESOURCE_USER_KEY"
-    tag: ^(master|develop|APPLAT-2336-example)$
+    tag: ^(master|develop)$
 

@@ -33,6 +33,6 @@ if [ "$allow_failures" -eq "1" ]; then
     go run -v  ./examples/ingestSearch.go
 else
     echo "Running examples and gating on failures..."
-    go test -v ./examples/ingestSearch.go
+    go run -v ./examples/ingestSearch.go \
         || exit 1
 fi
