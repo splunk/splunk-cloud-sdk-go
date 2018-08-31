@@ -66,17 +66,22 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, roleNum+1, len(resultrole2))
 	assert.Contains(t, resultrole2, roleName)
 
-	//group-members
-	memberName := "test1@splunk.com"
+	//group-members TODO: To replace with a generic user account
+	memberName := "pupadhyaya@splunk.com"
 	res3, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	memberNum := len(res3)
 
+	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	require.Nil(t, err)
+	assert.Equal(t, memberName, resultmember1.Principal)
+	assert.Equal(t, groupName, resultmember1.Group)
+	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
 
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
-	assert.Equal(t, memberNum, len(resultmember2))
+	assert.Equal(t, memberNum+2, len(resultmember2))
 	assert.Contains(t, resultmember2, memberName)
 
 	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
