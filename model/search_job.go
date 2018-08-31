@@ -13,7 +13,6 @@ const (
 	QUEUED     DispatchState = "QUEUED"
 	PARSING    DispatchState = "PARSING"
 	RUNNING    DispatchState = "RUNNING"
-	PAUSED     DispatchState = "PAUSED"
 	FINALIZING DispatchState = "FINALIZING"
 	FAILED     DispatchState = "FAILED"
 	DONE       DispatchState = "DONE"
@@ -35,11 +34,6 @@ type PostJobsRequest struct {
 	//auto_finalize_ec    Number    0    Auto-finalize the search after at least this many events are processed.
 	//Specify 0 to indicate no limit.
 	AutoFinalizeEventCount *uint `json:"autoFinalizeEc"`
-
-	//auto_pause    Number    0    If specified, the search job pauses after this many seconds of inactivity. (0 means never auto-pause.)
-	//To restart a paused search job, specify unpause as an action to POST search/jobs/{search_id}/control.
-	//auto_pause only goes into effect once. Unpausing after auto_pause does not put auto_pause into effect again.
-	AutoPause *uint `json:"autoPause"`
 
 	//custom fields
 	CustomFields map[string]interface{}
@@ -159,8 +153,6 @@ type JobAction string
 
 // Supported JobAction constants
 const (
-	PAUSE          JobAction = "pause"
-	UNPAUSE        JobAction = "unpause"
 	FINALIZE       JobAction = "finalize"
 	CANCEL         JobAction = "cancel"
 	TOUCH          JobAction = "touch"
