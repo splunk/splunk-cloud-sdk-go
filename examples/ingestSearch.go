@@ -27,15 +27,26 @@ func main() {
 		defer client.CatalogService.DeleteDataset(id)
 	}
 
-	//Ingest data
-	fmt.Println("Ingest data")
-	host, source := ingestData(client, index)
+	////Ingest data
+	//fmt.Println("Ingest data")
+	//host, source := ingestData(client, index)
+
+	//Ingest metrics data
+	fmt.Println("Ingest metrics data")
+	ingestMetric(client, index)
 
 	//Do search and verify results
-	fmt.Println("Search data")
-	query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
+	//fmt.Println("Search event data")
+	//query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
+	//fmt.Println(query)
+	//search(client, query, 5)
+
+	fmt.Println("Search metric data")
+	query := fmt.Sprintf("|mstats avg(_value) as vals WHERE source="gcp.appengine.system.memory.usage" span=10s
+	")
 	fmt.Println(query)
 	search(client, query, 5)
+
 }
 
 func checkIfQuit(err error) {
@@ -79,6 +90,44 @@ func createIndex(client *service.Client) (string, string) {
 	// it will take some time for the new index to finish the provisioning
 	time.Sleep(30 * time.Second)
 	return index, result.ID
+}
+
+func ingestMetric(client *service.Client, index string) (string, string) {
+	source := fmt.Sprintf("mysource-%v", float64(time.Now().Second()))
+	host := fmt.Sprintf("myhost-%v", float64(time.Now().Second()))
+
+	metrics := []model.Metric{
+		{Name: "CPU", Value: float64(time.Now().Second()/10),
+			Dimensions: map[string]string{"Server": "redhat"}, Unit: "percentage"},
+
+		{Name: "Memory", Value: 20.27,
+			Dimensions: map[string]string{"Region": "us-east-5"}, Type: "g"},
+
+		{Name: "Disk", Value: 15.444,
+			Unit: "GB"},
+	}
+
+	metricEvent1 := model.MetricEvent{
+		Body:       metrics,
+		Timestamp:  time.Now().Unix() * 1000,
+		Nanos:      1,
+		Source:     source,
+		Sourcetype: "mysourcetype",
+		Host:       host,
+		ID:         "metric0001",
+		Attributes: model.MetricAttribute{
+			DefaultDimensions: map[string]string{"defaultDimensions": ""},
+			DefaultType:       "g",
+			DefaultUnit:       "MB",
+		},
+	}
+
+
+	// Use the Ingest Service raw endpoint to send data
+	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1,metricEvent1})
+	checkIfQuit(err)
+
+	return host, source
 }
 
 func ingestData(client *service.Client, index string) (string, string) {
@@ -136,6 +185,7 @@ func search(client *service.Client, query string, expected int) {
 		checkIfQuit(err)
 
 		resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 100})
+		fmt.Println(resp.Results)
 		checkIfQuit(err)
 
 		if len(resp.Results) == expected {
