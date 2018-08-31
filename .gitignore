@@ -23,7 +23,14 @@ debug
 codeship.aes
 vendor
 secret.env
+tmp/
 
 # used by token fetcher
 okta/.token
 okta/token
+
+# Docs/build info
+ci/docs/node_modules
+ci/docs/build
+ci/docs/package.json
+docs

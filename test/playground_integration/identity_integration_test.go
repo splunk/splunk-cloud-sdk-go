@@ -7,111 +7,228 @@ package playgroundintegration
 
 import (
 	"fmt"
-	"strings"
-	"testing"
-	"time"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
 	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"testing"
 )
 
-// CRUD tenant and add/delete user to the tenant
-func TestIntegrationCRUDTenant(t *testing.T) {
+func TestCRUDGroups(t *testing.T) {
 	client := getClient(t)
 
-	//get user profile
-	userSystem, err := client.IdentityService.GetUserProfile("")
-	assert.Nil(t, err)
-	assert.Equal(t, "test1@splunk.com", userSystem.ID)
-	assert.Equal(t, "test1@splunk.com", userSystem.Email)
-	assert.Equal(t, "Test1", userSystem.FirstName)
-	assert.Equal(t, "Splunk", userSystem.LastName)
-	assert.Equal(t, "Test1 Splunk", userSystem.Name)
-	assert.Equal(t, "en-US", userSystem.Locale)
+	res, err := client.IdentityService.GetGroups()
+	require.Nil(t, err)
+	groupNum := len(res)
 
-	userTenant, errTenant := client.IdentityService.GetUserProfile(testutils.TestTenantID)
-	assert.Nil(t, errTenant)
-	assert.Equal(t, "test1@splunk.com", userTenant.ID)
-	assert.Equal(t, "test1@splunk.com", userTenant.Email)
-	assert.Equal(t, "Test1", userTenant.FirstName)
-	assert.Equal(t, "Splunk", userTenant.LastName)
-	assert.Equal(t, "Test1 Splunk", userTenant.Name)
-	assert.Equal(t, "en-US", userTenant.Locale)
+	groupName := fmt.Sprintf("grouptest%d", timeSec)
 
-	if testutils.TenantCreationOn {
-		//prepare a temp tenant that will be deleted
-		testTenantID := fmt.Sprintf("%d-sdk-integration", time.Now().Unix())
+	// create/get/delete group and groups
+	resultgroup, err := client.IdentityService.CreateGroup(groupName)
+	defer client.IdentityService.DeleteGroup(groupName)
+	require.Nil(t, err)
+	assert.Equal(t, groupName, resultgroup.Name)
+	assert.Equal(t, "test1@splunk.com", resultgroup.CreatedBy)
+	assert.Equal(t, testutils.TestTenantID, resultgroup.Tenant)
 
-		defer client.IdentityService.DeleteTenant(testTenantID)
+	resultgroup1, err := client.IdentityService.GetGroup(groupName)
+	require.Nil(t, err)
+	assert.Equal(t, groupName, resultgroup1.Name)
+	assert.Equal(t, "test1@splunk.com", resultgroup1.CreatedBy)
+	assert.Equal(t, testutils.TestTenantID, resultgroup1.Tenant)
 
-		//create tenant
-		err = client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-		assert.Nil(t, err)
+	resultgroup2, err := client.IdentityService.GetGroups()
+	require.Nil(t, err)
+	assert.Equal(t, groupNum+1, len(resultgroup2))
+	assert.Contains(t, resultgroup2, groupName)
 
-		//add tenant user
-		addedUserName := "newUser@splunk.com"
-		err = client.IdentityService.AddTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-		assert.Nil(t, err)
+	// group-roles
+	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+	res2, err := client.IdentityService.GetGroupRoles(groupName)
+	require.Nil(t, err)
+	roleNum := len(res2)
 
-		//get tennant users
-		users, err := client.IdentityService.GetTenantUsers(testTenantID)
-		assert.Nil(t, err)
-		assert.Equal(t, 2, len(users))
+	resultrole, err := client.IdentityService.CreateRole(roleName)
+	defer client.IdentityService.DeleteRole(roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole.Name)
+	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestTenantID, resultrole.Tenant)
 
-		found := false
-		for _, v := range users {
-			if v.ID == addedUserName {
-				found = true
-				break
-			}
-		}
-		assert.True(t, found)
+	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName, roleName)
+	defer client.IdentityService.RemoveGroupRole(groupName, roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole1.Role)
+	assert.Equal(t, groupName, resultrole1.Group)
+	assert.Equal(t, testutils.TestTenantID, resultrole1.Tenant)
 
-		//delete tenant user
-		err = client.IdentityService.DeleteTenantUsers(testTenantID, []model.User{{ID: addedUserName}})
-		assert.Nil(t, err)
+	resultrole2, err := client.IdentityService.GetGroupRoles(groupName)
+	require.Nil(t, err)
+	assert.Equal(t, roleNum+1, len(resultrole2))
+	assert.Contains(t, resultrole2, roleName)
 
-		users, err = client.IdentityService.GetTenantUsers(testTenantID)
-		found = false
-		for _, v := range users {
-			if v.ID == addedUserName {
-				found = true
-				break
-			}
-		}
-		assert.False(t, found)
+	//group-members
+	memberName := "test1@splunk.com"
+	res3, err := client.IdentityService.GetGroupMembers(groupName)
+	require.Nil(t, err)
+	memberNum := len(res3)
 
-		//replace tenant users
-		err = client.IdentityService.ReplaceTenantUsers(testTenantID, []model.User{
-			{ID: "devtest2@splunk.com"},
-			{ID: "devtest3@splunk.com"}})
+	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	require.Nil(t, err)
+	assert.Equal(t, memberName, resultmember1.Principal)
+	assert.Equal(t, groupName, resultmember1.Group)
+	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
 
-		users, err = client.IdentityService.GetTenantUsers(testTenantID)
-		assert.Nil(t, err)
-		assert.Equal(t, 3, len(users))
+	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
+	require.Nil(t, err)
+	assert.Equal(t, memberNum+1, len(resultmember2))
+	assert.Contains(t, resultmember2, memberName)
 
-		//delete tenant
-		err = client.IdentityService.DeleteTenant(testTenantID)
-		assert.Nil(t, err)
-	} else {
-		t.Skip("Tenant creation tests were skipped, to turn them on set the TENANT_CREATION env to 1")
-	}
+	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
+	require.Nil(t, err)
+	assert.Equal(t, memberName, resultmember3.Principal)
+
+	//delete
+	err = client.IdentityService.RemoveGroupMember(groupName, memberName)
+	require.Nil(t, err)
+
+	err = client.IdentityService.RemoveGroupRole(groupName, roleName)
+	require.Nil(t, err)
+
+	err = client.IdentityService.DeleteRole(roleName)
+	require.Nil(t, err)
+
+	err = client.IdentityService.DeleteGroup(groupName)
+	require.Nil(t, err)
 }
 
-// test Errors with auth endpoints
-func TestIntegrationTenantErrors(t *testing.T) {
+func TestCRUDRoles(t *testing.T) {
 	client := getClient(t)
 
-	//integration test tenant should already exist
-	testTenantID := testutils.TestTenantID
+	res, err := client.IdentityService.GetRoles()
+	require.Nil(t, err)
+	roleNum := len(res)
 
-	//create duplicate tenant should return 409
-	if testutils.TenantCreationOn {
-		err := client.IdentityService.CreateTenant(model.Tenant{TenantID: testTenantID})
-		assert.True(t, strings.Contains(err.Error(), "409 Conflict"))
-	} else {
-		t.Skip("Tenant creation tests were skipped, to turn them on set the TENANT_CREATION env to 1")
-	}
+	roleName := fmt.Sprintf("roletest%d", timeSec)
+
+	// create/get/delete role and roles
+	resultrole, err := client.IdentityService.CreateRole(roleName)
+	defer client.IdentityService.DeleteRole(roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole.Name)
+	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestTenantID, resultrole.Tenant)
+
+	resultrole1, err := client.IdentityService.GetRole(roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole1.Name)
+	assert.Equal(t, "test1@splunk.com", resultrole1.CreatedBy)
+	assert.Equal(t, testutils.TestTenantID, resultrole1.Tenant)
+
+	resultrole2, err := client.IdentityService.GetRoles()
+	require.Nil(t, err)
+	assert.Equal(t, roleNum+1, len(resultrole2))
+	assert.Contains(t, resultrole2, roleName)
+
+	// role-permissions
+	permissionName := fmt.Sprintf("perm1-%d", timeSec)
+	result1, err := client.IdentityService.GetRolePermissions(roleName)
+	require.Nil(t, err)
+	permNum := len(result1)
+
+	resultroleperm, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
+	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultroleperm.Role)
+	assert.Equal(t, permissionName, resultroleperm.Permission)
+	assert.Equal(t, "test1@splunk.com", resultroleperm.AddedBy)
+	assert.Equal(t, testutils.TestTenantID, resultroleperm.Tenant)
+
+	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName, permissionName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultroleperm1.Role)
+	assert.Equal(t, permissionName, resultroleperm1.Permission)
+	assert.Equal(t, "test1@splunk.com", resultroleperm1.AddedBy)
+	assert.Equal(t, testutils.TestTenantID, resultroleperm1.Tenant)
+
+	resultroleperm2, err := client.IdentityService.GetRolePermissions(roleName)
+	require.Nil(t, err)
+	assert.Equal(t, permNum+1, len(resultroleperm2))
+	assert.Contains(t, resultroleperm2, permissionName)
+
+	// delete
+	err = client.IdentityService.RemoveRolePermission(roleName, permissionName)
+	require.Nil(t, err)
+	err = client.IdentityService.DeleteRole(roleName)
+	require.Nil(t, err)
+}
+
+func TestCRUDMembers(t *testing.T) {
+	client := getClient(t)
+
+	res, err := client.IdentityService.GetMembers()
+	require.Nil(t, err)
+	memNum := len(res)
+
+	memberName := "ljiang@splunk.com"
+
+	// create/get/delete member and members
+	result, err := client.IdentityService.AddMember(memberName)
+	defer client.IdentityService.RemoveMember(memberName)
+	require.Nil(t, err)
+	assert.Equal(t, memberName, result.Name)
+	assert.Equal(t, testutils.TestTenantID, result.Tenant)
+
+	result1, err := client.IdentityService.GetMembers()
+	require.Nil(t, err)
+	assert.Equal(t, memNum+1, len(result1))
+	assert.Contains(t, result1, memberName)
+
+	result2, err := client.IdentityService.GetMember(memberName)
+	require.Nil(t, err)
+	assert.Equal(t, memberName, result2.Name)
+	assert.Equal(t, testutils.TestTenantID, result2.Tenant)
+
+	// add member to group
+	groupName := "users" //pre-defined group
+	result3, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	require.Nil(t, err)
+	assert.Equal(t, groupName, result3.Group)
+
+	result4, err := client.IdentityService.GetMemberGroups(memberName)
+	require.Nil(t, err)
+	assert.Equal(t, 1, len(result4))
+	assert.Contains(t, result4, groupName)
+
+	roleName := "user" //pre-defind role
+	result5, err := client.IdentityService.GetMemberRoles(memberName)
+	require.Nil(t, err)
+	assert.Equal(t, 1, len(result5))
+	assert.Contains(t, result5, roleName)
+
+	// add permission to role
+	permissionName := "myperm"
+	result6, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
+	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, result6.Role)
+	assert.Equal(t, permissionName, result6.Permission)
+
+	result7, err := client.IdentityService.GetMemberPermissions(memberName)
+	require.Nil(t, err)
+	assert.Equal(t, 1, len(result7))
+	assert.Contains(t, result7, permissionName)
+
+	// delete
+	err = client.IdentityService.RemoveMember(memberName)
+	require.Nil(t, err)
+}
+
+func TestValidate(t *testing.T) {
+	client := getClient(t)
+
+	res, err := client.IdentityService.Validate()
+	require.Nil(t, err)
+	assert.Equal(t, "test1@splunk.com", res.Name)
 }

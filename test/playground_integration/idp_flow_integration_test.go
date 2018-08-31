@@ -3,8 +3,6 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-// +build !integration
-
 package playgroundintegration
 
 import (
@@ -108,7 +106,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	_ = getClient(t).IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
+	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
 
 	timeValue := float64(1529945001)
 	testIngestEvent := model.Event{
@@ -156,7 +154,7 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	_ = client.IdentityService.AddTenantUsers(testutils.TestTenantID, []model.User{{ID: BackendClientID}})
+	_, _ = client.IdentityService.AddMember(BackendClientID)
 
 	timeValue := float64(1529945002)
 	testIngestEvent := model.Event{
