@@ -16,34 +16,37 @@ import (
 )
 
 func TestCreateEventSuccess(t *testing.T) {
-	timeValue := float64(1523637597)
+	timeValue := int64(1523637597)
 
 	client := getClient(t)
 	clientURL, err := client.GetURL()
 	assert.Empty(t, err)
+	attributes := make(map[string]interface{})
+	attributes["testKey"] = "testValue"
 
 	err = client.IngestService.CreateEvent(
-		model.Event{Host: clientURL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
-	assert.Empty(t, err)
-}
-
-func TestCreateRawEventSuccess(t *testing.T) {
-	err := getClient(t).IngestService.CreateRawEvent(
-		model.Event{Event: "test"})
+		model.Event{
+			Host:       clientURL.RequestURI(),
+			Body:      "test",
+			Sourcetype: "sourcetype:eventgen",
+			Source:     "manual-events",
+			Timestamp:   timeValue,
+			Attributes:  attributes,
+		})
 	assert.Empty(t, err)
 }
 
 func TestIngestEventFail(t *testing.T) {
 	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
-	err := client.IngestService.CreateEvent(model.Event{Event: "failed test"})
+	err := client.IngestService.CreateEvent(model.Event{Body: "failed test"})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 
 func TestCreateEvents(t *testing.T) {
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
+	event1 := model.Event{Host: "host1", Body: "test1"}
+	event2 := model.Event{Host: "host2", Body: "test2"}
 	err := getClient(t).IngestService.CreateEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }

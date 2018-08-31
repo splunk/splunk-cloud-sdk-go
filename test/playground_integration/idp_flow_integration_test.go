@@ -108,15 +108,14 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
 
-	timeValue := float64(1529945001)
+	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "refreshtokentest",
+		Body:      "refreshtokentest",
 		Sourcetype: "sourcetype:refreshtokentest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes:  map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
@@ -156,15 +155,14 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_, _ = client.IdentityService.AddMember(BackendClientID)
 
-	timeValue := float64(1529945002)
+	timeValue := int64(1529945002)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "clientcredentialstest",
+		Body:       "clientcredentialstest",
 		Sourcetype: "sourcetype:clientcredentialstest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using client credentials flow error: %s", err)
@@ -202,15 +200,14 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
-	timeValue := float64(1529945003)
+	timeValue := int64(1529945003)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "pkcetest",
+		Body:      "pkcetest",
 		Sourcetype: "sourcetype:pkcetest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+	    Attributes: map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
@@ -232,15 +229,14 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
-	timeValue := float64(1529945004)
+	timeValue := int64(1529945004)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "badtokentest",
+		Body:      "badtokentest",
 		Sourcetype: "sourcetype:badtokentest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Equal(t, tr.N, 2, "Expected exactly two calls to TokenRetriever.GetTokenContext(): 1) at client initialization and 2) after 401 is encountered when client.IngestService.CreateEvent is called")

@@ -12,23 +12,25 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/ssc-client-go/service"
 	"github.com/splunk/ssc-client-go/util"
 )
 
 func TestIntegrationCreateEventSuccess(t *testing.T) {
-	timeValue := float64(time.Now().Unix() * 1000) // Unix millis
-	client := getClient(t)
+	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
+	// client := getClient(t)
+	client, _ := service.NewClient(&service.Config{Token:"eyJraWQiOiJIR1RMbXJGUWNsSGVTRUZzdTIzQ1k4cTZ3S3pjR2JwUGtvT014R2hQVVBVIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlJYdkI0dlNXWEQwMEtObVRtOG5JT2VOWXVibl9EOGhVbEFzSEgxMmh3STQiLCJpc3MiOiJodHRwczovL3NwbHVuay1jaWFtLm9rdGEuY29tL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTUzNTY2OTcyMiwiZXhwIjoxNTM1NzEyOTIyLCJjaWQiOiIwb2FwYmcyem1MYW1wV2daNDJwNiIsInVpZCI6IjAwdXpsMHdlZFdxM2tvWEFDMnA2Iiwic2NwIjpbInByb2ZpbGUiLCJlbWFpbCIsIm9wZW5pZCJdLCJzdWIiOiJ4Y2hlbmdAc3BsdW5rLmNvbSJ9.TLvTMjp1s6ADz_-rKCUpskMz9g2WiKVSiRYosi9hRk-nSPHY9Ce3jzVoqdyCD54RUufW3DpeBZwF9A4LyrOW11wxOuUQyvlGXFbtJjbA0uNNUzhONsXzkOrStzwCdEw_4bwwKRdCd52wawyaTQJsKJ9NWurEy2lDDf0r8OzH9fdO6pU2aWxxjCDt2Z6ZE9vlc7NhyPs-_MUcBvdPQxb8Nl377JwoRNUNa-ysd35KMUPoj7oX77vqG-XSFQ8kV5rcAor3ume2sH-gUrwkTcYodFm87oFQ4eJyPLBV3T6Eft6fLQkbQIFxkMohwTb10H5aLp0mcWCtJvD1x-KaOI1Mtw" , URL: "https://api.playground.splunkbeta.com/xcheng-workshop", TenantID: "xcheng-workshop3", Timeout: time.Second * 5})
 	clientURL, err := client.GetURL()
 	assert.Empty(t, err)
-
+	attributes := make(map[string]interface{})
+	attributes["testKey"] = "testValue"
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "test",
+		Body:      "test",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:   timeValue,
+		Attributes:  attributes}
 
 	err = client.IngestService.CreateEvent(testIngestEvent)
 	assert.Empty(t, err)
@@ -37,7 +39,7 @@ func TestIntegrationCreateEventSuccess(t *testing.T) {
 // TODO: Deal with later
 func TestIntegrationIngestEventFail(t *testing.T) {
 	invalidClient := getInvalidClient(t)
-	testIngestEvent := model.Event{Event: "failed test"}
+	testIngestEvent := model.Event{Body: "failed test"}
 	err := invalidClient.IngestService.CreateEvent(testIngestEvent)
 
 	assert.NotEmpty(t, err)
@@ -45,18 +47,10 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
 }
 
-func TestIntegrationCreateRawEventSuccess(t *testing.T) {
-	client := getClient(t)
-	testEvent := model.Event{Event: "test"}
-
-	err := client.IngestService.CreateRawEvent(testEvent)
-	assert.Empty(t, err)
-}
-
 func TestIntegrationCreateEvents(t *testing.T) {
 	client := getClient(t)
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
+	event1 := model.Event{Host: "host1", Body: "test1"}
+	event2 := model.Event{Host: "host2", Body: "test2"}
 	err := client.IngestService.CreateEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }

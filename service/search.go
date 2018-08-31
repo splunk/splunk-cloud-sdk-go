@@ -42,8 +42,8 @@ func (search *Search) Touch() (*model.JobControlReplyMsg, error) {
 }
 
 // SetTTL posts a setttl action to the search job
-func (search *Search) SetTTL() (*model.JobControlReplyMsg, error) {
-	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.SETTTL})
+func (search *Search) SetTTL(ttl int) (*model.JobControlReplyMsg, error) {
+	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.SETTTL, TTL: ttl})
 }
 
 // Finalize posts a finalize action to the search job
