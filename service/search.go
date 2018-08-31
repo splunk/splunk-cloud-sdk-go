@@ -36,16 +36,6 @@ func (search *Search) Cancel() (*model.JobControlReplyMsg, error) {
 	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.CANCEL})
 }
 
-// Pause posts a pause action to the search job
-func (search *Search) Pause() (*model.JobControlReplyMsg, error) {
-	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.PAUSE})
-}
-
-// Unpause posts an unpause action to the search job
-func (search *Search) Unpause() (*model.JobControlReplyMsg, error) {
-	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.UNPAUSE})
-}
-
 // Touch posts a touch action to the search job
 func (search *Search) Touch() (*model.JobControlReplyMsg, error) {
 	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.TOUCH})

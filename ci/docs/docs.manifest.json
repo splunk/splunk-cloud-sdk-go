@@ -1,0 +1,5 @@
+{
+    "category": "sdks",
+    "name": "SSC Client for Go",
+    "description": "A Go client for making requests to Splunk Self Service Cloud hosted services."
+}
