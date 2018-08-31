@@ -76,9 +76,8 @@ func TestCRUDGroups(t *testing.T) {
 
 	//add group member
 	_, err = client.IdentityService.AddMember(memberName)
+	require.Nil(t, err)
 	defer client.IdentityService.RemoveMember(memberName)
-	_, err = client.IdentityService.AddMemberToGroup("admin", memberName)
-	defer client.IdentityService.RemoveGroupMember("admin", memberName)
 
 	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
