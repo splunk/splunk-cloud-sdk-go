@@ -8,9 +8,8 @@ package stubbyintegration
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIntegrationEnvironment(t *testing.T) {

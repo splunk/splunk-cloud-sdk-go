@@ -6,11 +6,11 @@
 package service
 
 import (
+	"io/ioutil"
 	"net/url"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"io/ioutil"
 )
 
 const kvStoreServicePrefix = "kvstore"

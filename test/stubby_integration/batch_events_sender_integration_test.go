@@ -9,9 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 // Should flush when ticker ticked and queue is not full

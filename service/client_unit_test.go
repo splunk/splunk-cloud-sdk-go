@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
-
 	"github.com/stretchr/testify/assert"
 )
 

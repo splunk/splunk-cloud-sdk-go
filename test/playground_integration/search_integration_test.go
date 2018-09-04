@@ -11,10 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"

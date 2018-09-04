@@ -6,9 +6,10 @@
 package service
 
 import (
+	"net/url"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"net/url"
 )
 
 // catalog service url prefix

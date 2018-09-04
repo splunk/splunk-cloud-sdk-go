@@ -9,10 +9,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 )
 
 func TestCRUDGroups(t *testing.T) {

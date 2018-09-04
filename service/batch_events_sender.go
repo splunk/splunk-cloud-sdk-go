@@ -8,10 +8,11 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 //UserErrHandler defines the type of user callback function for batchEventSender

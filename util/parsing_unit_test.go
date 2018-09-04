@@ -12,9 +12,8 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseResponseParsingError(t *testing.T) {

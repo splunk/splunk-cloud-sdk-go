@@ -7,12 +7,13 @@ package service
 
 import (
 	"errors"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"io/ioutil"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const searchServicePrefix = "search"
