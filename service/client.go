@@ -53,6 +53,8 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to SSC action service
 	ActionService *ActionService
+	// StreamsService talks to SSC streams service
+	StreamsService *StreamsService
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -323,6 +325,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
+	c.StreamsService = &StreamsService{client: c}
 	return c, nil
 }
 
