@@ -23,6 +23,7 @@ debug
 codeship.aes
 vendor
 secret.env
+tmp/
 
 # used by token fetcher
 okta/.token

@@ -6,7 +6,7 @@
 package idp
 
 import (
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // TokenRetriever retrieves an access token with context
