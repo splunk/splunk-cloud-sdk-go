@@ -11,20 +11,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 )
 
 func getClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 
 	//fmt.Printf("=================================================================")
 	//fmt.Printf("CREATING A CLIENT WITH THESE SETTINGS")
 	//fmt.Printf("=================================================================")
 	//fmt.Printf("Authentication Token: " + testutils.TestAuthenticationToken + "\n")
-	//fmt.Printf("SSC Host API: " + testutils.TestSSCHost + "\n")
+	//fmt.Printf("Splunk Cloud Host API: " + testutils.TestSplunkCloudHost + "\n")
 	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
 	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
 	//fmt.Printf("Fully Qualified URL: " + url + "\n")
@@ -34,7 +35,7 @@ func getClient(t *testing.T) *service.Client {
 }
 
 func getInvalidClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 
 	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestInvalidTestTenantID, Timeout: testutils.TestTimeOut})
 	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
@@ -62,7 +63,7 @@ func (rh *rHandlerErr) HandleResponse(client *service.Client, request *service.R
 }
 
 func TestClientMultipleResponseHandlers(t *testing.T) {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	var handler1 = &noOpHandler{}
 	var handler2 = &rHandlerErr{}
 	var handler3 = &noOpHandler{}

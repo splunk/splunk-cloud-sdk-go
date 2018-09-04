@@ -6,9 +6,11 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 func TestCreateJob(t *testing.T) {

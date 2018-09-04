@@ -8,7 +8,7 @@ package service
 import (
 	"net/http"
 
-	"github.com/splunk/ssc-client-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
 )
 
 const (

@@ -7,8 +7,8 @@ package service
 
 import (
 	"errors"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"io/ioutil"
 	"net/url"
 	"strconv"
@@ -139,7 +139,7 @@ func (search *Search) QueryResults(batchSize, offset int, params *model.FetchRes
 	return iterator, nil
 }
 
-// SearchService talks to the SSC search service
+// SearchService talks to the Splunk Cloud search service
 type SearchService service
 
 // GetJobs gets details of all current searches.

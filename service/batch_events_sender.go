@@ -8,7 +8,7 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"strings"
 	"sync"
 	"time"
@@ -208,9 +208,9 @@ func (b *BatchEventsSender) Restart() {
 	b.EventsChan = make(chan model.Event, b.BatchSize)
 	b.ErrorChan = make(chan string, cap(b.ErrorChan))
 
-	b.ResetQueue();
-	b.errorMsg = "";
-	b.Run();
+	b.ResetQueue()
+	b.errorMsg = ""
+	b.Run()
 }
 
 // GetErrors return all the error messages as an array

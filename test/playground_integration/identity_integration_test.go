@@ -7,10 +7,12 @@ package playgroundintegration
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/testutils"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 )
 
 func TestCRUDGroups(t *testing.T) {
@@ -226,8 +228,8 @@ func TestCRUDMembers(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, 3, len(result7))
 	assert.Contains(t, result7, permissionName)
-	assert.Contains(t,result7, permissionName1)
-	assert.Contains(t,result7, permissionName2)
+	assert.Contains(t, result7, permissionName1)
+	assert.Contains(t, result7, permissionName2)
 
 	// delete
 	err = client.IdentityService.RemoveMember(memberName)

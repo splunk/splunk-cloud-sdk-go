@@ -11,11 +11,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/require"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // Test variables
@@ -73,8 +73,8 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	indexDescription, err := getClient(t).KVStoreService.CreateIndex(kvCollection,
 		model.IndexDefinition{
-		Name:   testIndex,
-		Fields: fields[:]})
+			Name:   testIndex,
+			Fields: fields[:]})
 	require.Nil(t, err)
 	require.NotEmpty(t, indexDescription)
 	assert.Equal(t, indexDescription.Collection, kvCollection)
@@ -135,7 +135,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	require.NotNil(t, err)
 	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-	assert.EqualValues(t,  "Collection not found: ", err.(*util.HTTPError).Message)
+	assert.EqualValues(t, "Collection not found: ", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
