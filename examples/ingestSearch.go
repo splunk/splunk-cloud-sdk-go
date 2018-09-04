@@ -27,26 +27,25 @@ func main() {
 		defer client.CatalogService.DeleteDataset(id)
 	}
 
-	////Ingest data
-	//fmt.Println("Ingest data")
-	//host, source := ingestData(client, index)
+	//Ingest data
+	fmt.Println("Ingest data")
+	host, source := ingestData(client, index)
 
 	//Ingest metrics data
 	fmt.Println("Ingest metrics data")
-	ingestMetric(client, index)
+	metric_host := ingestMetric(client, index)
 
 	//Do search and verify results
-	//fmt.Println("Search event data")
-	//query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
-	//fmt.Println(query)
-	//search(client, query, 5)
-
-	fmt.Println("Search metric data")
-	query := fmt.Sprintf("|mstats avg(_value) as vals WHERE source="gcp.appengine.system.memory.usage" span=10s
-	")
+	fmt.Println("Search event data")
+	query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
 	fmt.Println(query)
 	search(client, query, 5)
 
+	//Search metrics data and verify
+	fmt.Println("Search metric data")
+	query = fmt.Sprintf("| from metric:metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metric_host)
+	fmt.Println(query)
+	search(client, query, 1)
 }
 
 func checkIfQuit(err error) {
@@ -92,12 +91,11 @@ func createIndex(client *service.Client) (string, string) {
 	return index, result.ID
 }
 
-func ingestMetric(client *service.Client, index string) (string, string) {
-	source := fmt.Sprintf("mysource-%v", float64(time.Now().Second()))
-	host := fmt.Sprintf("myhost-%v", float64(time.Now().Second()))
+func ingestMetric(client *service.Client, index string) string {
+	host := fmt.Sprintf("gohost%v", time.Now().Unix())
 
 	metrics := []model.Metric{
-		{Name: "CPU", Value: float64(time.Now().Second()/10),
+		{Name: "CPU", Value: 100,
 			Dimensions: map[string]string{"Server": "redhat"}, Unit: "percentage"},
 
 		{Name: "Memory", Value: 20.27,
@@ -111,8 +109,8 @@ func ingestMetric(client *service.Client, index string) (string, string) {
 		Body:       metrics,
 		Timestamp:  time.Now().Unix() * 1000,
 		Nanos:      1,
-		Source:     source,
-		Sourcetype: "mysourcetype",
+		Source:     "mysource",
+		Sourcetype: "newsourcetype",
 		Host:       host,
 		ID:         "metric0001",
 		Attributes: model.MetricAttribute{
@@ -122,12 +120,11 @@ func ingestMetric(client *service.Client, index string) (string, string) {
 		},
 	}
 
-
 	// Use the Ingest Service raw endpoint to send data
-	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1,metricEvent1})
+	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
 	checkIfQuit(err)
 
-	return host, source
+	return host
 }
 
 func ingestData(client *service.Client, index string) (string, string) {
