@@ -43,8 +43,8 @@
         - name: WhiteSource Testing
           service: ssc-client-go-whitesource
           command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
-                                      -c /go/src/github.com/splunk/ssc-client-go/ci/whitesource/whitesource-fs-agent.config \
-                                      -d /go/src/github.com/splunk/ssc-client-go \
+                                      -c /go/src/github.com/splunk/splunk-cloud-sdk-go/ci/whitesource/whitesource-fs-agent.config \
+                                      -d /go/src/github.com/splunk/splunk-cloud-sdk-go \
                                       -apiKey $WHITESOURCE_API_KEY \
                                       -productToken $WHITESOURCE_PRODUCT_TOKEN \
                                       -userKey $WHITESOURCE_USER_KEY"
