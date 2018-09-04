@@ -44,6 +44,10 @@
           service: ssc-client-go-against-playground
           tag: ^(master)$
           command: bash -c "allow_failures=0 ./ci/integration/runexamples.sh"
+        - name: run example - not gated
+          service: ssc-client-go-against-playground
+          exclue: ^(master)$
+          command: bash -c "allow_failures=1 ./ci/integration/runexamples.sh"
 
   - name: WhiteSource Testing
     service: ssc-client-go-whitesource
