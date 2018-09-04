@@ -28,7 +28,7 @@ type SearchParameters struct {
 	Latest   string `json:"latest,omitempty"`
 }
 
-// JobStatus describes status of a search job
+// SearchJobStatus describes status of a search job
 type SearchJobStatus string
 
 // Supported SearchJobStatus constants
@@ -104,4 +104,10 @@ type SearchResults struct {
 	Messages    SearchJobMessages        `json:"messages"`
 	Results     []map[string]interface{} `json:"results"`
 	Fields      []map[string]interface{} `json:"fields"`
+}
+
+// EmptyResultsResponse represents the response when no search results is ready
+type EmptyResultsResponse struct {
+	NextLink string `json:"nextLink"`
+	WaitTime string `json:"wait"`
 }
