@@ -8,10 +8,11 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 //UserErrHandler defines the type of user callback function for batchEventSender
@@ -208,9 +209,9 @@ func (b *BatchEventsSender) Restart() {
 	b.EventsChan = make(chan model.Event, b.BatchSize)
 	b.ErrorChan = make(chan string, cap(b.ErrorChan))
 
-	b.ResetQueue();
-	b.errorMsg = "";
-	b.Run();
+	b.ResetQueue()
+	b.errorMsg = ""
+	b.Run()
 }
 
 // GetErrors return all the error messages as an array

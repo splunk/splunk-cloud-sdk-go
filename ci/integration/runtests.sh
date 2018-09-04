@@ -5,7 +5,7 @@ source ./ci/integration/okta.sh
 echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
-env | grep TEST_SSC_HOST
+env | grep TEST_SPLUNK_CLOUD_HOST
 env | grep TEST_URL_PROTOCOL
 env | grep TEST_TENANT_ID
 
