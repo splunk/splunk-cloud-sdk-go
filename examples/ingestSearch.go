@@ -33,7 +33,7 @@ func main() {
 
 	//Ingest metrics data
 	fmt.Println("Ingest metrics data")
-	metric_host := ingestMetric(client, index)
+	metricHost := ingestMetric(client, index)
 
 	//Do search and verify results
 	fmt.Println("Search event data")
@@ -43,7 +43,7 @@ func main() {
 
 	//Search metrics data and verify
 	fmt.Println("Search metric data")
-	query = fmt.Sprintf("| from metric:metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metric_host)
+	query = fmt.Sprintf("| from metric:metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metricHost)
 	fmt.Println(query)
 	search(client, query, 1)
 }
