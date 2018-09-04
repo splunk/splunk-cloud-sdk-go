@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"net/url"
-	"strings"
 )
 
 // Test Rule variables
@@ -37,7 +36,7 @@ func cleanupDatasets(t *testing.T) {
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 
 	for _, item := range result {
-		if !strings.HasPrefix(item.Name, "gonamespace") {
+		if item.Name=="main" || item.Name=="metrics" {
 			continue
 		}
 		err = client.CatalogService.DeleteDataset(item.ID)
