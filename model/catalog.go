@@ -211,12 +211,11 @@ type DatasetImportPayload struct {
 
 
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(ruleID string, field string, alias string,  owner string,version *int) *CatalogAction {
+func NewAliasAction(field string, alias string,  owner string,version int) *CatalogAction {
 	return &CatalogAction{
 		Kind:"alias",
-		RuleID: ruleID,
 		Owner:owner,
-		Version:*version,
+		Version:version,
 		Alias:alias,
 		Field:field,
 	}

@@ -311,8 +311,8 @@ func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
 }
 
 // CreateRuleAction creates a new Action on the rule specified
-func (c *CatalogService) CreateRuleAction(ruleID string, action model.CatalogAction) (error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "acitons")
+func (c *CatalogService) CreateRuleAction(resourceNameOrRuleID string, action model.CatalogAction) (error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrRuleID, "actions")
 	if err != nil {
 		return  err
 	}

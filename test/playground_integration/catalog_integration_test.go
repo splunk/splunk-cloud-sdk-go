@@ -15,6 +15,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"fmt"
 )
 
 // Test Rule variables
@@ -488,8 +489,8 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
 	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
-	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField1)
-	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
+	_, err = client.CatalogService.CreateDatasetField(dataset.ID, testField1)
+	_, err = client.CatalogService.CreateDatasetField(dataset.ID, testField2)
 
 	// Validate the creation of new dataset fields
 	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
@@ -513,8 +514,8 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
 	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
-	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField1)
-	_, err = client.CatalogService.PostDatasetField(dataset.ID, testField2)
+	_, err = client.CatalogService.CreateDatasetField(dataset.ID, testField1)
+	_, err = client.CatalogService.CreateDatasetField(dataset.ID, testField2)
 
 	filter := make(url.Values)
 	filter.Add("filter", "name==\"integ_test_field2\"")
@@ -568,7 +569,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
-	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
+	resultField, err = client.CatalogService.UpdateDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
 	require.Nil(t, err)
 	assert.NotEmpty(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
@@ -615,7 +616,7 @@ func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 
 	// Create a new dataset field
 	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
-	resultField, err := invalidClient.CatalogService.PostDatasetField(dataset.ID, testField)
+	resultField, err := invalidClient.CatalogService.CreateDatasetField(dataset.ID, testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
@@ -636,7 +637,7 @@ func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 
 	// Post an already created dataset field
 	duplicateTestField := model.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
-	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, duplicateTestField)
+	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, duplicateTestField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 409, "Expected error code 409")
@@ -654,7 +655,7 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 
 	// Create a new dataset field
 	testField := model.Field{Name: "integ_test_field"}
-	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, testField)
+	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 500, "Expected error code 500")
@@ -702,7 +703,7 @@ func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
-	resultField, err = invalidClient.CatalogService.PatchDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
+	resultField, err = invalidClient.CatalogService.UpdateDatasetField(dataset.ID, resultField.ID, model.Field{DataType: "O"})
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
@@ -728,7 +729,7 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
 
 	// Update the existing dataset field
-	resultField, err = client.CatalogService.PatchDatasetField(dataset.ID, "123", model.Field{DataType: "O"})
+	resultField, err = client.CatalogService.UpdateDatasetField(dataset.ID, "123", model.Field{DataType: "O"})
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
@@ -770,10 +771,54 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
+// Test rule actions endpoints
+func TestRuleActions(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	defer client.CatalogService.DeleteDataset(dataset.ID)
+	require.Nil(t, err)
+
+	// create new fields in the dataset
+	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	field, err := client.CatalogService.CreateDatasetField(dataset.ID, testField1)
+	defer client.CatalogService.DeleteDatasetField(dataset.ID,field.ID)
+	require.Nil(t, err)
+
+	// Create rule action
+	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
+	defer client.CatalogService.DeleteRule(rule.ID)
+	require.Nil(t, err)
+
+	err = client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", "",1))
+	defer client.CatalogService.DeleteRuleAction(rule.ID, "newalias")
+	require.Nil(t, err)
+
+	//get rule actions
+	rules, err := client.CatalogService.GetRuleActions(rule.ID)
+	require.NotNil(t, rules)
+	assert.Equal(t, 1, len(rules))
+
+	rule1, err := client.CatalogService.GetRuleAction(rule.ID, rules[0].Alias)
+	require.NotNil(t, rule1)
+
+	// Delete dataset field
+	err = client.CatalogService.DeleteRuleAction(rule.ID, "newalias")
+	require.Nil(t, err)
+
+	err = client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v",ruleModule,ruleName))
+
+	require.NotNil(t, err)
+}
+
+
 func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
 	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
 
-	resultField, err := client.CatalogService.PostDatasetField(dataset.ID, testField)
+	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, testField)
 	require.Nil(t, err)
 	assert.NotEmpty(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
