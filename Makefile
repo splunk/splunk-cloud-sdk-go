@@ -13,12 +13,12 @@ GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 GIT_VERSION_TAG := $(shell git describe origin/develop --tags --match="v*" | sed 's/v//g')
 
 LOCAL_TEST_URL_PROTOCOL := http
-LOCAL_TEST_SSC_HOST := localhost:8882
+LOCAL_TEST_SPLUNK_CLOUD_HOST := localhost:8882
 LOCAL_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
 LOCAL_TEST_TENANT_ID := TEST_TENANT
 
 DOCKER_STUBBY_TEST_URL_PROTOCOL := http
-DOCKER_STUBBY_TEST_SSC_HOST := ssc-sdk-shared-stubby:8882
+DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST := ssc-sdk-shared-stubby:8882
 DOCKER_STUBBY_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
 DOCKER_STUBBY_TEST_TENANT_ID := TEST_TENANT
 
@@ -87,7 +87,7 @@ dependencies_update:
 debug_local_environment_variables:
 	@echo "Local Testing Environment Variables"
 	@echo "LOCAL_TEST_URL_PROTOCOL: $(LOCAL_TEST_URL_PROTOCOL)"
-	@echo "LOCAL_TEST_SSC_HOST: $(LOCAL_TEST_SSC_HOST)"
+	@echo "LOCAL_TEST_SPLUNK_CLOUD_HOST: $(LOCAL_TEST_SPLUNK_CLOUD_HOST)"
 	@echo "LOCAL_TEST_BEARER_TOKEN: $(LOCAL_TEST_BEARER_TOKEN)"
 	@echo "LOCAL_TEST_TENANT_ID: $(LOCAL_TEST_TENANT_ID)"
 	@echo
@@ -95,7 +95,7 @@ debug_local_environment_variables:
 debug_docker_environment_variables:
 	@echo "Docker Testing Environment Variables"
 	@echo "DOCKER_STUBBY_TEST_URL_PROTOCOL: $(DOCKER_STUBBY_TEST_URL_PROTOCOL)"
-	@echo "DOCKER_STUBBY_TEST_SSC_HOST: $(DOCKER_STUBBY_TEST_SSC_HOST)"
+	@echo "DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST: $(DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST)"
 	@echo "DOCKER_STUBBY_TEST_BEARER_TOKEN: $(DOCKER_STUBBY_TEST_BEARER_TOKEN)"
 	@echo "DOCKER_STUBBY_TEST_TENANT_ID: $(DOCKER_STUBBY_TEST_TENANT_ID)"
 	@echo
@@ -105,14 +105,14 @@ run_unit_tests:
 
 run_local_stubby_tests: debug_local_environment_variables
 	TEST_URL_PROTOCOL=$(LOCAL_TEST_URL_PROTOCOL) \
-	TEST_SSC_HOST=$(LOCAL_TEST_SSC_HOST) \
+	TEST_SPLUNK_CLOUD_HOST=$(LOCAL_TEST_SPLUNK_CLOUD_HOST) \
 	TEST_BEARER_TOKEN=$(LOCAL_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(LOCAL_TEST_TENANT_ID) \
 	go test -v ./test/stubby_integration/...
 
 run_docker_stubby_tests: debug_docker_environment_variables
 	TEST_URL_PROTOCOL=$(DOCKER_STUBBY_TEST_URL_PROTOCOL) \
-	TEST_SSC_HOST=$(DOCKER_STUBBY_TEST_SSC_HOST) \
+	TEST_SPLUNK_CLOUD_HOST=$(DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST) \
 	TEST_BEARER_TOKEN=$(DOCKER_STUBBY_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(DOCKER_STUBBY_TEST_TENANT_ID) \
 	go test -v ./test/stubby_integration/...

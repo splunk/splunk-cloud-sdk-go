@@ -178,10 +178,10 @@ type JobControlReplyMsg struct {
 
 // FetchResultsRequest specifies the query params when fetching job results
 type FetchResultsRequest struct {
-	Count      int      `key:"count"`
-	Offset     int      `key:"offset"`
-	Fields     []string `key:"f"`
-	Search     string   `key:"search"`
+	Count  int      `key:"count"`
+	Offset int      `key:"offset"`
+	Fields []string `key:"f"`
+	Search string   `key:"search"`
 }
 
 // FetchEventsRequest specifies the query params when fetching job events
@@ -201,9 +201,9 @@ type FetchEventsRequest struct {
 
 // SearchResults represents the /search/jobs/{sid}/events or /search/jobs/{sid}/results response
 type SearchResults struct {
-	Preview     bool          `json:"preview"`
-	InitOffset  int           `json:"init_offset"`
-	Messages    []interface{} `json:"messages"`
+	Preview     bool                     `json:"preview"`
+	InitOffset  int                      `json:"init_offset"`
+	Messages    []interface{}            `json:"messages"`
 	Results     []map[string]interface{} `json:"results"`
 	Fields      []map[string]interface{} `json:"fields"`
 	Highlighted map[string]interface{}   `json:"highlighted"`
