@@ -23,7 +23,7 @@ RUN curl --fail \
     && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
-WORKDIR /go/src/github.com/splunk/ssc-client-go
+WORKDIR /go/src/github.com/splunk/splunk-cloud-sdk-go
 
 # Copy the content of your repository into the image
 COPY . ./
@@ -33,4 +33,4 @@ COPY . ./
 # Go versions after 1.5.1 include support for a vendor directory
 RUN make dependencies
 
-VOLUME /go/src/github.com/splunk/ssc-client-go
+VOLUME /go/src/github.com/splunk/splunk-cloud-sdk-go

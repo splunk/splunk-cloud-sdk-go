@@ -6,13 +6,14 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateEventSuccess(t *testing.T) {
@@ -34,7 +35,7 @@ func TestCreateRawEventSuccess(t *testing.T) {
 }
 
 func TestIngestEventFail(t *testing.T) {
-	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
+	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
 	err := client.IngestService.CreateEvent(model.Event{Event: "failed test"})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)

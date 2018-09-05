@@ -3,9 +3,9 @@
 cd "$(dirname "$0")"
 rm package.json
 PACKAGE_JSON="{
-    \"name\": \"@splunk/ssc-client-go\",
+    \"name\": \"@splunk/splunk-cloud-sdk-go\",
     \"version\": \"$(git describe --abbrev=0 --tags | sed 's/v//')\",
-    \"description\": \"Splunk SSC SDK for Go\"
+    \"description\": \"Splunk Cloud SDK for Go\"
 }"
 echo $PACKAGE_JSON > package.json
 rm -rf build/

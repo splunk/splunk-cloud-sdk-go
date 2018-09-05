@@ -7,7 +7,8 @@ package service
 
 import (
 	"errors"
-	"github.com/splunk/ssc-client-go/model"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 type queryFunc func(step, start int) (*model.SearchResults, error)

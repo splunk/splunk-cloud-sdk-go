@@ -8,13 +8,14 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const ingestServicePrefix = "ingest"
 
-// IngestService talks to the SSC ingest service
+// IngestService talks to the Splunk Cloud ingest service
 type IngestService service
 
 // CreateEvent implements Ingest event endpoint

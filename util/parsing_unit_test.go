@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/stretchr/testify/assert"
 )
 

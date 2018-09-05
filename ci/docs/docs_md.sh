@@ -8,7 +8,7 @@ mkdir -p docs/pkg
 
 DOC_INDEX="
 
-#  github.com/splunk/ssc-client-go
+#  github.com/splunk/splunk-cloud-sdk-go
 
 ## Packages
 

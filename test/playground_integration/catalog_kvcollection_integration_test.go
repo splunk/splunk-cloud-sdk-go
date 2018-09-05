@@ -8,10 +8,9 @@ package playgroundintegration
 import (
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
 func TestDatastoreKVStoreCreationSuccess(t *testing.T) {

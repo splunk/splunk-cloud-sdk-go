@@ -17,8 +17,8 @@ var timeSec = time.Now().Unix()
 // TestURLProtocol - the url protocol for the test api to be used
 var TestURLProtocol = os.Getenv("TEST_URL_PROTOCOL")
 
-// TestSSCHost - the url for the test api to be used
-var TestSSCHost = os.Getenv("TEST_SSC_HOST")
+// TestSplunkCloudHost - the url for the test api to be used
+var TestSplunkCloudHost = os.Getenv("TEST_SPLUNK_CLOUD_HOST")
 
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
 var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")

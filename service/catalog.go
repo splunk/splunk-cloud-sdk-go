@@ -6,16 +6,17 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 	"net/url"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // catalog service url prefix
 const catalogServicePrefix = "catalog"
 const catalogServiceVersion = "v1"
 
-// CatalogService talks to the SSC catalog service
+// CatalogService talks to the Splunk Cloud catalog service
 type CatalogService service
 
 // GetDatasets returns all Datasets
