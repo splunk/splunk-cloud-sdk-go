@@ -58,6 +58,8 @@ decrypt:
 		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
 	fi;
 
+docs: docs_md
+
 docs_md:
 	./ci/docs/docs_md.sh
 
