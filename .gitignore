@@ -22,7 +22,7 @@ debug
 # codeship encrypted files, used by codecov
 codeship.aes
 vendor
-secret.env
+*.env
 tmp/
 
 # used by token fetcher
