@@ -8,9 +8,9 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"os"
 	"time"
 )
@@ -56,7 +56,7 @@ func checkIfQuit(err error) {
 }
 
 func getClient() *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 
 	client, err := service.NewClient(&service.Config{
 		Token:    testutils.TestAuthenticationToken,
