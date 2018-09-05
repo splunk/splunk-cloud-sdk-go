@@ -156,6 +156,16 @@ type Rule struct {
 	Version    int             `json:"version,omitempty"`
 }
 
+// Rule represents a rule for transforming results at search time.
+type PartialRule struct {
+	Name       string          `json:"name,omitempty" `
+	Module     string          `json:"module,omitempty"`
+	Match      string          `json:"match,omitempty" `
+	Owner      string          `json:"owner,omitempty" `
+	ModifiedBy string          `json:"modifiedBy,omitempty"`
+	Version    int             `json:"version,omitempty"`
+}
+
 // CatalogAction represents a specific search time transformation action.
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
@@ -191,3 +201,23 @@ const (
 	// JSON Automode
 	JSON AutoMode = "JSON"
 )
+
+// DatasetImportPayload represents the dataset import payload
+type DatasetImportPayload struct {
+	Modeule string `json:"module"`
+	Name    string `json:"name"`
+	Owner   string `json:"owner"`
+}
+
+
+// NewAliasAction creates a new alias kind action
+func NewAliasAction(ruleID string, field string, alias string,  owner string,version *int) *CatalogAction {
+	return &CatalogAction{
+		Kind:"alias",
+		RuleID: ruleID,
+		Owner:owner,
+		Version:*version,
+		Alias:alias,
+		Field:field,
+	}
+}
