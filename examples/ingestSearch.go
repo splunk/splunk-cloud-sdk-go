@@ -48,7 +48,7 @@ func main() {
 	search(client, query, 1)
 }
 
-func checkIfQuit(err error) {
+func exitOnError(err error) {
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -64,7 +64,7 @@ func getClient() *service.Client {
 		TenantID: testutils.TestTenantID,
 		Timeout:  testutils.TestTimeOut})
 
-	checkIfQuit(err)
+	exitOnError(err)
 
 	return client
 }
@@ -84,7 +84,7 @@ func createIndex(client *service.Client) (string, string) {
 	}
 
 	result, err := client.CatalogService.CreateDataset(indexinfo)
-	checkIfQuit(err)
+	exitOnError(err)
 
 	// it will take some time for the new index to finish the provisioning
 	time.Sleep(30 * time.Second)
@@ -122,7 +122,7 @@ func ingestMetric(client *service.Client, index string) string {
 
 	// Use the Ingest Service raw endpoint to send data
 	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
-	checkIfQuit(err)
+	exitOnError(err)
 
 	return host
 }
@@ -154,15 +154,15 @@ func ingestData(client *service.Client, index string) (string, string) {
 
 	// Use the Ingest Service raw endpoint to send data
 	err := client.IngestService.CreateRawEvent(event1)
-	checkIfQuit(err)
+	exitOnError(err)
 
 	// Use the Ingest Service endpoint to send one event
 	err = client.IngestService.CreateEvent(event1)
-	checkIfQuit(err)
+	exitOnError(err)
 
 	// Use the Ingest endpoint to send multiple events
 	err = client.IngestService.CreateEvents([]model.Event{event1, event2, event3})
-	checkIfQuit(err)
+	exitOnError(err)
 
 	return host, source
 }
@@ -172,18 +172,18 @@ func search(client *service.Client, query string, expected int) {
 	timeout := 60 * time.Second
 	for {
 		if time.Now().Sub(start) > timeout {
-			checkIfQuit(errors.New("Search failed due to timeout "))
+			exitOnError(errors.New("Search failed due to timeout "))
 		}
 
 		sid, err := client.SearchService.CreateJob(&model.PostJobsRequest{Search: query})
-		checkIfQuit(err)
+		exitOnError(err)
 
 		err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
-		checkIfQuit(err)
+		exitOnError(err)
 
 		resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 100})
 		fmt.Println(resp.Results)
-		checkIfQuit(err)
+		exitOnError(err)
 
 		if len(resp.Results) == expected {
 			fmt.Println("Search succeed")
@@ -195,7 +195,7 @@ func search(client *service.Client, query string, expected int) {
 			fmt.Println("Not found all yet, keep searching")
 			time.Sleep(20 * time.Second)
 		} else {
-			checkIfQuit(errors.New("Search failed: Get more results than expected"))
+			exitOnError(errors.New("Search failed: Get more results than expected"))
 		}
 	}
 }
