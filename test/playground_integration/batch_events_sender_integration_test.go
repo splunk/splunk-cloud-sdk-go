@@ -131,9 +131,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(errors) >= maxAllowedErr)
-
-	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [401], Message: 401 Unauthorized"))
-	assert.True(t, strings.Contains(errors[0], "EventPayload:[{host1    <nil> test10 map[]}"))
+	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [404], Message: Error validating request"))
+	assert.True(t, strings.Contains(errors[0], "EventPayload:[{map[] test10 0 0   host1 } {map[] test10 0 0   host1 }]"))
 
 	collector.Stop()
 }
