@@ -44,8 +44,8 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	err := invalidClient.IngestService.PostEvents(&testIngestEvent)
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
