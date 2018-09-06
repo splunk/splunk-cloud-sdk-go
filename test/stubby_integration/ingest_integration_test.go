@@ -17,7 +17,7 @@ import (
 
 func TestIngestEventFail(t *testing.T) {
 	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
-	err := client.IngestService.CreateEvents([]model.Event{{Body: "failed test"}})
+	err := client.IngestService.PostEvents([]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
@@ -41,7 +41,7 @@ func TestCreateEvents(t *testing.T) {
 		Source:     "manual-events",
 		Timestamp:   timeValue,
 		Attributes:  attributes}
-	err := getClient(t).IngestService.CreateEvents([]model.Event{event1, event2})
+	err := getClient(t).IngestService.PostEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
@@ -73,6 +73,6 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	}
-	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1})
+	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1})
 	assert.Empty(t, err)
 }

@@ -18,8 +18,8 @@ const ingestServiceVersionV2 = "v2"
 // IngestService talks to the SSC ingest service
 type IngestService service
 
-// CreateEvents post multiple events in one payload
-func (h *IngestService) CreateEvents(events []model.Event) error {
+// PostEvents post single or multiple events to ingest service
+func (h *IngestService) PostEvents(events *[]model.Event) error {
 	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersionV2, "events")
 	if err != nil {
 		return err
@@ -35,8 +35,8 @@ func (h *IngestService) CreateEvents(events []model.Event) error {
 	return err
 }
 
-// CreateMetricEvents implements Ingest metrics endpoint to send multipe metric events
-func (h *IngestService) CreateMetricEvents(events []model.MetricEvent) error {
+// PostMetrics posts single or multiple metric events to ingest service
+func (h *IngestService) PostMetrics(events *[]model.MetricEvent) error {
 	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "metrics")
 	if err != nil {
 		return err

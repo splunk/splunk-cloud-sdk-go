@@ -13,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"fmt"
 )
 
 func TestParseResponseParsingError(t *testing.T) {
@@ -80,7 +79,6 @@ func TestParseUrlParams(t *testing.T) {
 	}
 	params := Event{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
-	fmt.Println(values)
 	assert.Equal(t, "http://ssc-sdk-shared-stubby:8882", values.Get("host"))
 	assert.Equal(t, "manual-events", values.Get("source"))
 	assert.Equal(t, "sourcetype:eventgen", values.Get("sourcetype"))

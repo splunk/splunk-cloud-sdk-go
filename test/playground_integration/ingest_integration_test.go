@@ -35,14 +35,14 @@ func TestIntegrationCreateEventsSuccess(t *testing.T) {
 		Source:     "manual-events",
 		Timestamp:   timeValue,
 		Attributes:  attributes}
-	err = client.IngestService.CreateEvents([]model.Event{event1, event2})
+	err = client.IngestService.PostEvents(&[]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
 func TestIntegrationIngestEventFail(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 	testIngestEvent := []model.Event{{Body: "failed test"}}
-	err := invalidClient.IngestService.CreateEvents(testIngestEvent)
+	err := invalidClient.IngestService.PostEvents(&testIngestEvent)
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
@@ -51,7 +51,7 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
 	client := getClient(t)
-	err := client.IngestService.CreateEvents(nil)
+	err := client.IngestService.PostEvents(nil)
 
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
@@ -88,9 +88,9 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	}
-	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1})
+	err := client.IngestService.PostMetrics(&[]model.MetricEvent{metricEvent1})
 	assert.Empty(t, err)
 
-	err1 := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1})
+	err1 := client.IngestService.PostMetrics(&[]model.MetricEvent{metricEvent1, metricEvent1})
 	assert.Empty(t, err1)
 }
