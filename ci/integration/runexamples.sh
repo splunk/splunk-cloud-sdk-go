@@ -3,7 +3,7 @@
 source ./ci/integration/okta.sh
 
 echo "==============================================="
-echo "Beginning integration tests"
+echo "Running examples"
 echo "==============================================="
 env | grep TEST_SPLUNK_CLOUD_HOST
 env | grep TEST_URL_PROTOCOL
