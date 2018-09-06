@@ -7,7 +7,7 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/splunk/ssc-client-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 const ingestServicePrefix = "ingest"
@@ -15,7 +15,7 @@ const ingestServiceVersion = "v1"
 // this is temporary. All endpoints will be reset to v1
 const ingestServiceVersionV2 = "v2"
 
-// IngestService talks to the SSC ingest service
+// IngestService talks to the Splunk Cloud ingest service
 type IngestService service
 
 // PostEvents post single or multiple events to ingest service
