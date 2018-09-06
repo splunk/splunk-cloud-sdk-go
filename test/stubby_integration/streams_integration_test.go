@@ -2,10 +2,10 @@ package stubbyintegration
 
 import (
 	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 )
 
 var testPipelineID = "TEST_PIPELINE_01"

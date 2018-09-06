@@ -57,22 +57,6 @@ type UplNodeCommon struct {
 	Op         string                 `json:"op"`
 }
 
-/*func main() {
-	t1 := type1{msg: "Hey! I'm type1", gen2: gen2{x: "12", y: "13"}}
-
-	tl := []generic{t1}
-
-	for _, i := range tl {
-		switch v := i.(type) {
-		case type1:
-			fmt.Println(v.msg)
-			//case type2:
-			//fmt.Println(v.say())
-			// fmt.Println(v.msg) Uncomment to see that type2 has no msg attribute.
-		}
-	}
-}*/
-
 // KafkaReader contains fields of the read-kafka pipeline node
 type KafkaReader struct {
 	UplNodeCommon
