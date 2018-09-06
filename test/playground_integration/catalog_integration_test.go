@@ -794,29 +794,34 @@ func TestRuleActions(t *testing.T) {
 	require.Nil(t, err)
 
 	// Create rule action
-	action1, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", "", 1))
+	action1, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
 
-	action2, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAutoKVAction("mymode", "owner1",  1))
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAutoKVAction("mymode", "owner1"))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewEvalAction(field.Name, "some expression", "", 1))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewEvalAction(field.Name, "some expression", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
 
-	action4, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewLookupAction( "myexpression2", "", 1))
+	action4, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewLookupAction("myexpression2", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
+
+	limit := 0
+	action5, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewRegexAction(field.Name, "some pattern", &limit, ""))
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
 
 	//Get rule actions
 	actions, err := client.CatalogService.GetRuleActions(rule.ID)
 	require.NotNil(t, actions)
-	assert.Equal(t, 4, len(actions))
+	assert.Equal(t, 5, len(actions))
 
-	action5, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
-	require.NotNil(t, action5)
+	action6, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
+	require.NotNil(t, action6)
 
 	// Delete action
 	err = client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)

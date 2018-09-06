@@ -211,55 +211,55 @@ type DatasetImportPayload struct {
 
 
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string,  owner string,version int) *CatalogAction {
+func NewAliasAction(field string, alias string,  owner string) *CatalogAction {
 	return &CatalogAction{
 		Kind:"ALIAS",
 		Owner:owner,
-		Version:version,
 		Alias:alias,
 		Field:field,
 	}
 }
 
 // NewAutoKVAction creates a new autokv kind action
-func NewAutoKVAction(mode string, owner string,version int) *CatalogAction {
+func NewAutoKVAction(mode string, owner string) *CatalogAction {
 	return &CatalogAction{
 		Kind:"AUTOKV",
 		Owner:owner,
-		Version:version,
 		Mode:mode,
 	}
 }
 
 // NewEvalAction creates a new autokv kind action
-func NewEvalAction(field string, expression string, owner string,version int) *CatalogAction {
+func NewEvalAction(field string, expression string, owner string) *CatalogAction {
 	return &CatalogAction{
 		Kind:"EVAL",
 		Owner:owner,
-		Version:version,
 		Field:field,
 		Expression:expression,
 	}
 }
 
 // NewLookupAction creates a new autokv kind action
-func NewLookupAction(expression string, owner string,version int) *CatalogAction {
+func NewLookupAction(expression string, owner string) *CatalogAction {
 	return &CatalogAction{
 		Kind:"LOOKUP",
 		Owner:owner,
-		Version:version,
 		Expression:expression,
 	}
 }
 
 // NewLookupAction creates a new autokv kind action
-func NewRegexAction(field string, pattern string, limit *int, owner string,version int) *CatalogAction {
-	return &CatalogAction{
-		Kind:"LOOKUP",
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
+	action := CatalogAction{
+		Kind:"REGEX",
 		Owner:owner,
-		Version:version,
 		Field:field,
 		Pattern:pattern,
-		Limit:limit,
 	}
+
+	if limit!=nil {
+		action.Limit=*limit
+	}
+
+	return &action
 }
