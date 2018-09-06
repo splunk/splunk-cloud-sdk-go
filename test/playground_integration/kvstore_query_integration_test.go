@@ -9,9 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
 // --------------------------------------------------------------------------------

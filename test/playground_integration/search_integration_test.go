@@ -7,15 +7,13 @@ package playgroundintegration
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
-
-	"strconv"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -117,7 +115,7 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
 	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{HTTPStatusCode:400, Message:"{\"type\":\"ERROR_SPL_PARSE\",\"reason\":\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\",\"rule\":\"search\",\"line\":1,\"position\":27,\"token\":\"dfsdfdshead\",\"ok\":false}", Code:"1019"}
+	expectedError := &util.HTTPError{HTTPStatusCode: 400, Message: "{\"type\":\"ERROR_SPL_PARSE\",\"reason\":\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\",\"rule\":\"search\",\"line\":1,\"position\":27,\"token\":\"dfsdfdshead\",\"ok\":false}", Code: "1019"}
 
 	assert.NotNil(t, err)
 	assert.Equal(t, expectedError, err)
@@ -277,7 +275,7 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	// HTTP Code 500 Error
-	expectedError := &util.HTTPError{HTTPStatusCode: 404, Message: "404 Not Found", Code:"404"}
+	expectedError := &util.HTTPError{HTTPStatusCode: 404, Message: "404 Not Found", Code: "404"}
 
 	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{Count: 30})
 	assert.NotNil(t, err)

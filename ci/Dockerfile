@@ -3,19 +3,27 @@ FROM golang:1.9.4-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
 ENV DEP_VERSION=0.4.1
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash && \
-    apk add --no-cache openssh && \
-    apk add --no-cache git && \
-    apk add --no-cache make && \
-    apk add --no-cache curl && \
-    apk add --no-cache jq && \
-    # Needed for gcc in order to support Go
-    apk add build-base && \
-    curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache bash \
+                       # Needed for gcc in order to support Go
+                       build-base \
+                       curl \
+                       git \
+                       jq \
+                       make \
+                       openssh
+
+RUN curl --fail \
+         --silent \
+         --show-error \
+         --location \
+         --output /usr/local/bin/dep \
+         --url https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 \
+    && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH
-WORKDIR /go/src/github.com/splunk/ssc-client-go
+WORKDIR /go/src/github.com/splunk/splunk-cloud-sdk-go
 
 # Copy the content of your repository into the image
 COPY . ./
@@ -24,3 +32,5 @@ COPY . ./
 # Vendoring can be done with an external tool like godep or glide
 # Go versions after 1.5.1 include support for a vendor directory
 RUN make dependencies
+
+VOLUME /go/src/github.com/splunk/splunk-cloud-sdk-go

@@ -6,14 +6,15 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIntegrationEnvironment(t *testing.T) {
 	assert.NotEmpty(t, testutils.TestAuthenticationToken)
-	assert.NotEmpty(t, testutils.TestSSCHost)
+	assert.NotEmpty(t, testutils.TestSplunkCloudHost)
 	assert.NotEmpty(t, testutils.TestTenantID)
 	assert.NotEmpty(t, testutils.TestURLProtocol)
 }

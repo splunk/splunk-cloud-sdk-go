@@ -6,9 +6,10 @@
 package service
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example.com", TenantID: "EXAMPLE_TENANT", Timeout: time.Second * 5}

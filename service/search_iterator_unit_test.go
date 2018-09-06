@@ -6,11 +6,12 @@
 package service
 
 import (
-	"errors"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
-	"testing"
 	"encoding/json"
+	"errors"
+	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
