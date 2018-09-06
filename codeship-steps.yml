@@ -22,6 +22,7 @@
   - name: functional tests
     service: ssc-client-go-with-stubby
     command: bash -c "make run_docker_stubby_tests"
+    encrypted_dockercfg_path: ci/dockercfg.encrypted
 
   - type: serial
     name: integration steps
@@ -29,6 +30,7 @@
     - name: fetch Okta token
       service: ssc-sdk-shared-token-fetcher
       command: true
+      encrypted_dockercfg_path: ci/dockercfg.encrypted
     - type: parallel
       name: integration tests
       steps:
@@ -36,18 +38,21 @@
           service: ssc-client-go-against-playground
           exclude: ^(master|develop)$
           command: bash -c "allow_failures=1 ./ci/integration/runtests.sh"
+          encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: integration tests - gated
-          service: ssc-client-go-against-playground
+          service: splunk-cloud-sdk-go-against-playground
           tag: ^(master|develop)$
           command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
         - name: run example - gated
           service: ssc-client-go-against-playground
           tag: ^(master)$
           command: bash -c "allow_failures=0 ./ci/integration/runexamples.sh"
+          encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: run example - not gated
           service: ssc-client-go-against-playground
           exclue: ^(master)$
           command: bash -c "allow_failures=1 ./ci/integration/runexamples.sh"
+          encrypted_dockercfg_path: ci/dockercfg.encrypted
 
   - name: WhiteSource Testing
     service: ssc-client-go-whitesource
@@ -57,5 +62,4 @@
                                 -apiKey $WHITESOURCE_API_KEY \
                                 -productToken $WHITESOURCE_PRODUCT_TOKEN \
                                 -userKey $WHITESOURCE_USER_KEY"
-    tag: ^(master|develop)$
-
+    encrypted_dockercfg_path: ci/dockercfg.encrypted
