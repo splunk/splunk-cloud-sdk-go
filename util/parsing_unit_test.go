@@ -77,9 +77,9 @@ func TestParseUrlParams(t *testing.T) {
 		Source     string            `key:"source"`
 		Sourcetype string            `key:"sourcetype"`
 	}
-	params := Event{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
+	params := Event{Host: "http://splunk-cloud-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
-	assert.Equal(t, "http://ssc-sdk-shared-stubby:8882", values.Get("host"))
+	assert.Equal(t, "http://splunk-cloud-sdk-shared-stubby:8882", values.Get("host"))
 	assert.Equal(t, "manual-events", values.Get("source"))
 	assert.Equal(t, "sourcetype:eventgen", values.Get("sourcetype"))
 	assert.Empty(t, values["event"])

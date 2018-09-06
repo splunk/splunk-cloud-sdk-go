@@ -6,18 +6,19 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestIngestEventFail(t *testing.T) {
-	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSSCHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
-	err := client.IngestService.PostEvents([]model.Event{{Body: "failed test"}})
+	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
+	err := client.IngestService.PostEvents(&[]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
@@ -41,7 +42,7 @@ func TestCreateEvents(t *testing.T) {
 		Source:     "manual-events",
 		Timestamp:   timeValue,
 		Attributes:  attributes}
-	err := getClient(t).IngestService.PostEvents([]model.Event{event1, event2})
+	err := getClient(t).IngestService.PostEvents(&[]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
@@ -73,6 +74,6 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	}
-	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1})
+	err := client.IngestService.PostMetrics(&[]model.MetricEvent{metricEvent1})
 	assert.Empty(t, err)
 }
