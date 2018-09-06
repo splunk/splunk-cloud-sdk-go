@@ -179,28 +179,28 @@ type CatalogAction struct {
 	Version    int               `json:"version,omitempty"`
 	Field      string            `json:"field,omitempty"`
 	Alias      string            `json:"alias,omitempty"`
-	Mode       AutoMode          `json:"mode,omitempty"`
+	Mode       string          `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
 	Limit      int               `json:"limit,omitempty"`
 }
 
-// AutoMode enumerates the automatic key/value extraction modes.
-// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
-type AutoMode string
-
-const (
-	// NONE Automode
-	NONE AutoMode = "NONE"
-	// AUTO Automode
-	AUTO AutoMode = "AUTO"
-	// MULTIKV Automode
-	MULTIKV AutoMode = "MULTIKV"
-	// XML Automode
-	XML AutoMode = "XML"
-	// JSON Automode
-	JSON AutoMode = "JSON"
-)
+//// AutoMode enumerates the automatic key/value extraction modes.
+//// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
+//type AutoMode string
+//
+//const (
+//	// NONE Automode
+//	NONE AutoMode = "NONE"
+//	// AUTO Automode
+//	AUTO AutoMode = "AUTO"
+//	// MULTIKV Automode
+//	MULTIKV AutoMode = "MULTIKV"
+//	// XML Automode
+//	XML AutoMode = "XML"
+//	// JSON Automode
+//	JSON AutoMode = "JSON"
+//)
 
 // DatasetImportPayload represents the dataset import payload
 type DatasetImportPayload struct {
@@ -213,10 +213,53 @@ type DatasetImportPayload struct {
 // NewAliasAction creates a new alias kind action
 func NewAliasAction(field string, alias string,  owner string,version int) *CatalogAction {
 	return &CatalogAction{
-		Kind:"alias",
+		Kind:"ALIAS",
 		Owner:owner,
 		Version:version,
 		Alias:alias,
 		Field:field,
+	}
+}
+
+// NewAutoKVAction creates a new autokv kind action
+func NewAutoKVAction(mode string, owner string,version int) *CatalogAction {
+	return &CatalogAction{
+		Kind:"AUTOKV",
+		Owner:owner,
+		Version:version,
+		Mode:mode,
+	}
+}
+
+// NewEvalAction creates a new autokv kind action
+func NewEvalAction(field string, expression string, owner string,version int) *CatalogAction {
+	return &CatalogAction{
+		Kind:"EVAL",
+		Owner:owner,
+		Version:version,
+		Field:field,
+		Expression:expression,
+	}
+}
+
+// NewLookupAction creates a new autokv kind action
+func NewLookupAction(expression string, owner string,version int) *CatalogAction {
+	return &CatalogAction{
+		Kind:"LOOKUP",
+		Owner:owner,
+		Version:version,
+		Expression:expression,
+	}
+}
+
+// NewLookupAction creates a new autokv kind action
+func NewRegexAction(field string, pattern string, limit *int, owner string,version int) *CatalogAction {
+	return &CatalogAction{
+		Kind:"LOOKUP",
+		Owner:owner,
+		Version:version,
+		Field:field,
+		Pattern:pattern,
+		Limit:limit,
 	}
 }

@@ -779,39 +779,66 @@ func TestRuleActions(t *testing.T) {
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
-	defer client.CatalogService.DeleteDataset(dataset.ID)
 	require.Nil(t, err)
+	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
 
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
 	field, err := client.CatalogService.CreateDatasetField(dataset.ID, testField1)
-	defer client.CatalogService.DeleteDatasetField(dataset.ID,field.ID)
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
+
+	// Create rule and rule action
+	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
+	defer client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v", ruleModule, ruleName))
 	require.Nil(t, err)
 
 	// Create rule action
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	defer client.CatalogService.DeleteRule(rule.ID)
+	action1, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", "", 1))
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
+
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAutoKVAction("mymode", "owner1",  1))
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
+
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewEvalAction(field.Name, "some expression", "", 1))
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
+
+	action4, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewLookupAction( "myexpression2", "", 1))
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
+
+	//Get rule actions
+	actions, err := client.CatalogService.GetRuleActions(rule.ID)
+	require.NotNil(t, actions)
+	assert.Equal(t, 4, len(actions))
+
+	action5, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
+	require.NotNil(t, action5)
+
+	// Delete action
+	err = client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
+	require.Nil(t, err)
+	err = client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
+	require.Nil(t, err)
+	err = client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
+	require.Nil(t, err)
+	err = client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
 	require.Nil(t, err)
 
-	err = client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", "",1))
-	defer client.CatalogService.DeleteRuleAction(rule.ID, "newalias")
+	// Delete rule with resource name
+	err = client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v", ruleModule, ruleName))
 	require.Nil(t, err)
-
-	//get rule actions
-	rules, err := client.CatalogService.GetRuleActions(rule.ID)
-	require.NotNil(t, rules)
-	assert.Equal(t, 1, len(rules))
-
-	rule1, err := client.CatalogService.GetRuleAction(rule.ID, rules[0].Alias)
-	require.NotNil(t, rule1)
 
 	// Delete dataset field
-	err = client.CatalogService.DeleteRuleAction(rule.ID, "newalias")
+	err = client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
 	require.Nil(t, err)
 
-	err = client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v",ruleModule,ruleName))
-
-	require.NotNil(t, err)
+	// Delete dataset
+	err = client.CatalogService.DeleteDataset(dataset.ID)
+	require.Nil(t, err)
 }
 
 
