@@ -21,9 +21,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/splunk/ssc-client-go/idp"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // Declare constants for service package
@@ -41,17 +41,17 @@ type Client struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	// SearchService talks to the SSC search service
+	// SearchService talks to the Splunk Cloud search service
 	SearchService *SearchService
-	// CatalogService talks to the SSC catalog service
+	// CatalogService talks to the Splunk Cloud catalog service
 	CatalogService *CatalogService
-	// IngestService talks to the SSC ingest service
+	// IngestService talks to the Splunk Cloud ingest service
 	IngestService *IngestService
-	// IdentityService talks to SSC IAC service
+	// IdentityService talks to Splunk Cloud IAC service
 	IdentityService *IdentityService
-	// KVStoreService talks to SSC kvstore service
+	// KVStoreService talks to Splunk Cloud kvstore service
 	KVStoreService *KVStoreService
-	// ActionService talks to SSC action service
+	// ActionService talks to Splunk Cloud action service
 	ActionService *ActionService
 }
 
@@ -118,6 +118,7 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	}
 	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
 		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
+		request.Header.Set("Splunk-Client", fmt.Sprintf("%s/%s", UserAgent, Version))
 	}
 	request.Header.Set("Content-Type", "application/json")
 	if len(headers) != 0 {
@@ -129,7 +130,7 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	return retryRequest, nil
 }
 
-// BuildURL creates full SSC URL with the client cached tenantID
+// BuildURL creates full Splunk Cloud URL with the client cached tenantID
 func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
@@ -157,7 +158,7 @@ func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.U
 	return u, nil
 }
 
-// BuildURLWithTenantID creates full SSC URL with tenantID
+// BuildURLWithTenantID creates full Splunk Cloud URL with tenantID
 func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
@@ -194,7 +195,7 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 	}
 	// If error response found, record number of errors by response code
 	if response.StatusCode >= 400 {
-		// TODO: This could be extended to include specific SSC error fields in
+		// TODO: This could be extended to include specific Splunk Cloud error fields in
 		// addition to response code
 		code := fmt.Sprintf("%d", response.StatusCode)
 		if _, ok := req.NumErrorsByType[code]; ok {

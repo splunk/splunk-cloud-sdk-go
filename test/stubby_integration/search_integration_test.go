@@ -6,9 +6,10 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateJob(t *testing.T) {
@@ -53,15 +54,6 @@ func TestGetEvents(t *testing.T) {
 	assert.NotEmpty(t, response.Results[0])
 	assert.NotEmpty(t, response.Fields)
 	validateResponse(response, t)
-}
-
-func TestJobActionControl(t *testing.T) {
-	response, err := getClient(t).SearchService.PostJobControl("SEARCH_ID", &model.JobControlAction{Action: "pause"})
-	assert.Nil(t, err)
-	assert.NotEmpty(t, response)
-	assert.Equal(t, 1, len(response.Msg))
-	assert.Equal(t, "INFO", response.Msg[0].TypeKey)
-	assert.Equal(t, "Search job paused.", response.Msg[0].Text)
 }
 
 //Validate response results

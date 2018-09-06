@@ -7,12 +7,13 @@ package service
 
 import (
 	"errors"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 	"io/ioutil"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const searchServicePrefix = "search"
@@ -34,16 +35,6 @@ func (search *Search) Status() (*model.SearchJobContent, error) {
 func (search *Search) Cancel() (*model.JobControlReplyMsg, error) {
 	search.isCancelling = true
 	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.CANCEL})
-}
-
-// Pause posts a pause action to the search job
-func (search *Search) Pause() (*model.JobControlReplyMsg, error) {
-	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.PAUSE})
-}
-
-// Unpause posts an unpause action to the search job
-func (search *Search) Unpause() (*model.JobControlReplyMsg, error) {
-	return search.svc.PostJobControl(search.sid, &model.JobControlAction{Action: model.UNPAUSE})
 }
 
 // Touch posts a touch action to the search job
@@ -149,7 +140,7 @@ func (search *Search) QueryResults(batchSize, offset int, params *model.FetchRes
 	return iterator, nil
 }
 
-// SearchService talks to the SSC search service
+// SearchService talks to the Splunk Cloud search service
 type SearchService service
 
 // GetJobs gets details of all current searches.

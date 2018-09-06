@@ -13,7 +13,6 @@ const (
 	QUEUED     DispatchState = "QUEUED"
 	PARSING    DispatchState = "PARSING"
 	RUNNING    DispatchState = "RUNNING"
-	PAUSED     DispatchState = "PAUSED"
 	FINALIZING DispatchState = "FINALIZING"
 	FAILED     DispatchState = "FAILED"
 	DONE       DispatchState = "DONE"
@@ -35,11 +34,6 @@ type PostJobsRequest struct {
 	//auto_finalize_ec    Number    0    Auto-finalize the search after at least this many events are processed.
 	//Specify 0 to indicate no limit.
 	AutoFinalizeEventCount *uint `json:"autoFinalizeEc"`
-
-	//auto_pause    Number    0    If specified, the search job pauses after this many seconds of inactivity. (0 means never auto-pause.)
-	//To restart a paused search job, specify unpause as an action to POST search/jobs/{search_id}/control.
-	//auto_pause only goes into effect once. Unpausing after auto_pause does not put auto_pause into effect again.
-	AutoPause *uint `json:"autoPause"`
 
 	//custom fields
 	CustomFields map[string]interface{}
@@ -159,8 +153,6 @@ type JobAction string
 
 // Supported JobAction constants
 const (
-	PAUSE          JobAction = "pause"
-	UNPAUSE        JobAction = "unpause"
 	FINALIZE       JobAction = "finalize"
 	CANCEL         JobAction = "cancel"
 	TOUCH          JobAction = "touch"
@@ -186,10 +178,10 @@ type JobControlReplyMsg struct {
 
 // FetchResultsRequest specifies the query params when fetching job results
 type FetchResultsRequest struct {
-	Count      int      `key:"count"`
-	Offset     int      `key:"offset"`
-	Fields     []string `key:"f"`
-	Search     string   `key:"search"`
+	Count  int      `key:"count"`
+	Offset int      `key:"offset"`
+	Fields []string `key:"f"`
+	Search string   `key:"search"`
 }
 
 // FetchEventsRequest specifies the query params when fetching job events
@@ -209,9 +201,9 @@ type FetchEventsRequest struct {
 
 // SearchResults represents the /search/jobs/{sid}/events or /search/jobs/{sid}/results response
 type SearchResults struct {
-	Preview     bool          `json:"preview"`
-	InitOffset  int           `json:"init_offset"`
-	Messages    []interface{} `json:"messages"`
+	Preview     bool                     `json:"preview"`
+	InitOffset  int                      `json:"init_offset"`
+	Messages    []interface{}            `json:"messages"`
 	Results     []map[string]interface{} `json:"results"`
 	Fields      []map[string]interface{} `json:"fields"`
 	Highlighted map[string]interface{}   `json:"highlighted"`
