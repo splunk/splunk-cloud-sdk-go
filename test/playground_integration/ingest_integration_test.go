@@ -9,10 +9,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 )
 
 func TestIntegrationCreateEventsSuccess(t *testing.T) {

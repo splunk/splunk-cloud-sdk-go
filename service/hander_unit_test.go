@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/stretchr/testify/assert"
 )
 

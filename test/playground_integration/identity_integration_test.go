@@ -7,10 +7,11 @@ package playgroundintegration
 
 import (
 	"fmt"
-	"github.com/splunk/ssc-client-go/testutils"
+	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCRUDGroups(t *testing.T) {
@@ -67,23 +68,26 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	//group-members
-	memberName := "test1@splunk.com"
+	memberName := "test2@splunk.com"
 	res3, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	memberNum := len(res3)
 
-	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
+	//add group member
+	_, err = client.IdentityService.AddMember(memberName)
+	require.Nil(t, err)
+	defer client.IdentityService.RemoveMember(memberName)
 
-	/*resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
+	resultmember1, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
 	require.Nil(t, err)
 	assert.Equal(t, memberName, resultmember1.Principal)
 	assert.Equal(t, groupName, resultmember1.Group)
-	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)*/
+	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
 
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
-	assert.Equal(t, memberNum, len(resultmember2))
+	assert.Equal(t, memberNum+1, len(resultmember2))
 	assert.Contains(t, resultmember2, memberName)
 
 	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
@@ -223,8 +227,8 @@ func TestCRUDMembers(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, 3, len(result7))
 	assert.Contains(t, result7, permissionName)
-	assert.Contains(t,result7, permissionName1)
-	assert.Contains(t,result7, permissionName2)
+	assert.Contains(t, result7, permissionName1)
+	assert.Contains(t, result7, permissionName2)
 
 	// delete
 	err = client.IdentityService.RemoveMember(memberName)

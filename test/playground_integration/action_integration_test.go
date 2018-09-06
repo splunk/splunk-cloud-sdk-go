@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
