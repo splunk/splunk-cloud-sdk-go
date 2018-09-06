@@ -156,7 +156,7 @@ type Rule struct {
 	Version    int             `json:"version,omitempty"`
 }
 
-// Rule represents a rule for transforming results at search time.
+// PartialRule represents the set of rule properties that can be updated
 type PartialRule struct {
 	Name       string          `json:"name,omitempty" `
 	Module     string          `json:"module,omitempty"`
@@ -179,28 +179,11 @@ type CatalogAction struct {
 	Version    int               `json:"version,omitempty"`
 	Field      string            `json:"field,omitempty"`
 	Alias      string            `json:"alias,omitempty"`
-	Mode       string          `json:"mode,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
 	Limit      int               `json:"limit,omitempty"`
 }
-
-//// AutoMode enumerates the automatic key/value extraction modes.
-//// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
-//type AutoMode string
-//
-//const (
-//	// NONE Automode
-//	NONE AutoMode = "NONE"
-//	// AUTO Automode
-//	AUTO AutoMode = "AUTO"
-//	// MULTIKV Automode
-//	MULTIKV AutoMode = "MULTIKV"
-//	// XML Automode
-//	XML AutoMode = "XML"
-//	// JSON Automode
-//	JSON AutoMode = "JSON"
-//)
 
 // DatasetImportPayload represents the dataset import payload
 type DatasetImportPayload struct {
@@ -248,7 +231,7 @@ func NewLookupAction(expression string, owner string) *CatalogAction {
 	}
 }
 
-// NewLookupAction creates a new autokv kind action
+// NewRegexAction creates a new autokv kind action
 func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
 	action := CatalogAction{
 		Kind:"REGEX",
