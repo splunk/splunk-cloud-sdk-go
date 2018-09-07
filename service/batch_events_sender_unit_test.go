@@ -16,7 +16,6 @@ var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
 	var client, _ = NewClient(config)
-	//var client = getClient()
 	_, err := client.NewBatchEventsSender(0, 0)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
