@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./ci/integration/okta.sh
+
 echo "==============================================="
 echo "Running examples"
 echo "==============================================="
