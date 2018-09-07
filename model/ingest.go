@@ -5,15 +5,26 @@
 
 package model
 
-// Event contains metadata about the event
+// Event defines raw event send to event endpoint
 type Event struct {
-	Host       string            `json:"host,omitempty" key:"host"`
-	Index      string            `json:"index,omitempty" key:"index"`
-	Sourcetype string            `json:"sourcetype,omitempty" key:"sourcetype"`
-	Source     string            `json:"source,omitempty" key:"source"`
-	Time       *float64          `json:"time,omitempty" key:"time"`
-	Event      interface{}       `json:"event"`
-	Fields     map[string]string `json:"fields,omitempty"`
+	// Specifies a JSON object that contains explicit custom fields to be defined at index time.
+	Attributes map[string]interface{} `json:"attributes"`
+	// JSON object for the event.
+	Body interface{} `json:"body"`
+	// Epoch time in milliseconds.
+	Timestamp int64 `json:"timestamp"`
+	// Optional nanoseconds part of the timestamp.
+	Nanos int32 `json:"nanos"`
+	// The source value to assign to the event data. For example, if you are sending data from an app that you are developing,
+	// set this key to the name of the app.
+	Source string `json:"source"`
+	// The sourcetype value assigned to the event data.
+	Sourcetype string `json:"sourcetype"`
+	// The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.
+	Host string `json:"host"`
+	// An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.
+	// If ID is not specified, it will be assigned by the system.
+	ID string `json:"id"`
 }
 
 // MetricEvent define event send to metric endpoint
