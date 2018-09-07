@@ -21,9 +21,6 @@ fi
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
-PACKAGE_COVERAGE_PREFIX=./ci/integration/
-FULL_INTEGRATION_TEST_CODECOV_FILE_NAME=integration_test_codecov.out
-FULL_INTEGRATION_TEST_CODECOV_PATH=$PACKAGE_COVERAGE_PREFIX$FULL_INTEGRATION_TEST_CODECOV_FILE_NAME
 
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running examples but not gating on failures..."
