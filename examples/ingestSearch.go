@@ -41,7 +41,7 @@ func main() {
 	fmt.Println("Search event data")
 	query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
 	fmt.Println(query)
-	search(client, query, 5)
+	search(client, query, 3)
 
 	//Search metrics data and verify
 	fmt.Println("Search metric data")

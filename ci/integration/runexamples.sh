@@ -23,13 +23,12 @@ fi
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
-
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running examples but not gating on failures..."
-    set +e
-    go run -v  ./examples/ingestSearch.go
+    go run -v  ./examples/ingestSearch.go ||exit 0
 else
     echo "Running examples and gating on failures..."
+    set +e
     go run -v ./examples/ingestSearch.go \
         || exit 1
 fi
