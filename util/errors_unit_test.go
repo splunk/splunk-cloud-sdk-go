@@ -7,10 +7,11 @@ package util
 
 import (
 	"bytes"
-	"github.com/splunk/splunk-cloud-sdk-go/.vendor-new/github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseHTTPStatusCodeInResponseOKResponse(t *testing.T) {
