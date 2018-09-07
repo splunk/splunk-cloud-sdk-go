@@ -34,4 +34,4 @@ okta/token
 ci/docs/node_modules
 ci/docs/build
 ci/docs/package.json
-docs
+docs/docs.manifest.json
