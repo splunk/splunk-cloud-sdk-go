@@ -23,43 +23,42 @@ A Go client for Splunk Cloud services
 package main
 
 import (
-    "fmt"
-    "os"
-    "time"
-    
-    "github.com/splunk/splunk-cloud-sdk-go/service"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/service"
 )
 
 func main() {
-    checkForTenantToken()
-    // Initialize the client
-    client, err := service.NewClient(&service.Config{
-        Token: os.Getenv("BEARER_TOKEN"),
-        TenantID: os.Getenv("TENANT"),
-        URL: "https://playground.api.splunkbeta.com",
-        Timeout: time.Second * 5,
-    })
-    exitOnErr(err)
-    
-    // Validate access to the platform
-    info, err := client.IdentityService.Validate()
-    exitOnErr(err)
-    fmt.Printf("info: %+v", info)
+	checkForTenantToken()
+	// Initialize the client
+	client, err := service.NewClient(&service.Config{
+		Token: os.Getenv("BEARER_TOKEN"),
+		TenantID: os.Getenv("TENANT"),
+		URL: "https://playground.api.splunkbeta.com",
+		Timeout: time.Second * 5,
+	})
+	exitOnErr(err)
+	// Validate access to the platform
+	info, err := client.IdentityService.Validate()
+	exitOnErr(err)
+	fmt.Printf("info: %+v", info)
 }
 
 func exitOnErr(err error) {
-    if err != nil {
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
 func checkForTenantToken() {
-    if os.Getenv("BEARER_TOKEN") == "" {
-        exitOnErr(fmt.Errorf("$BEARER_TOKEN must be set"))
-    }
-    if os.Getenv("TENANT") == "" {
-        exitOnErr(fmt.Errorf("$TENANT must be set"))
-    }
+	if os.Getenv("BEARER_TOKEN") == "" {
+		exitOnErr(fmt.Errorf("$BEARER_TOKEN must be set"))
+	}
+	if os.Getenv("TENANT") == "" {
+		exitOnErr(fmt.Errorf("$TENANT must be set"))
+	}
 }
 ```
