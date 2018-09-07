@@ -19,7 +19,7 @@ A Go client for Self Service Cloud services
 * For encypting or decrypting secrets you will need to [download the AES key from Codeship](https://app.codeship.com/projects/283638/configure) and move/rename it to `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go/codeship.aes`
 
 ### Running a stubby server locally for testing
-* Download the shared stubby Docker image from ECR using `jet load ssc-sdk-shared-stubby`
+* Download the shared stubby Docker image from ECR using `jet load splunk-cloud-sdk-go-with-stubby`
 * Run the stubby server locally with `make stubby_local`
 * Test by visiting http://localhost:8882/error in your browser. You should see `{"message":"Something exploded"}`
 * NOTE: At the moment the stubby container does not fail gracefully, you may need to stop and rm all containers in another shell terminal using `docker stop $(docker ps -a -q)` and `docker rm $(docker ps -a -q)`

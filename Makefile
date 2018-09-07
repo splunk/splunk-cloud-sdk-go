@@ -18,7 +18,7 @@ LOCAL_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
 LOCAL_TEST_TENANT_ID := TEST_TENANT
 
 DOCKER_STUBBY_TEST_URL_PROTOCOL := http
-DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST := ssc-sdk-shared-stubby:8882
+DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST := splunk-cloud-sdk-shared-stubby:8882
 DOCKER_STUBBY_TEST_BEARER_TOKEN := TEST_AUTH_TOKEN
 DOCKER_STUBBY_TEST_TENANT_ID := TEST_TENANT
 
@@ -26,7 +26,7 @@ noop:
 	@echo "No make target specified."
 
 clean:
-	docker rmi -f 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
+	docker rmi -f cloudrepo-docker-playground.jfrog.io/sdk/shared/stubby
 
 lint:
 	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)
@@ -58,6 +58,8 @@ decrypt:
 		printf "Decrypted ci/shared/env.encrypted to ci/shared/env.encrypted\n"; \
 	fi;
 
+docs: docs_md
+
 docs_md:
 	./ci/docs/docs_md.sh
 
@@ -71,7 +73,7 @@ install_local:
 	brew cask install codeship/taps/jet
 
 stubby_local:
-	jet load ssc-client-go-with-stubby
+	jet load splunk-cloud-sdk-go-with-stubby
 	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
 
 install_dep:
