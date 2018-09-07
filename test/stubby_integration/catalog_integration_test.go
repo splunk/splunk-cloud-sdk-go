@@ -110,7 +110,7 @@ func TestGetDatasetField(t *testing.T) {
 // Stubby test for PostDatasetField() catalog service endpoint
 func TestPostDatasetField(t *testing.T) {
 	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "S", FieldType: "D", Prevalence: "A"}
-	result, err := getClient(t).CatalogService.PostDatasetField(testDatasetID, testField)
+	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testDatasetID, testField)
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -124,7 +124,7 @@ func TestPostDatasetField(t *testing.T) {
 // Stubby test for PatchDatasetField() catalog service endpoint
 func TestPatchDatasetField(t *testing.T) {
 	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "N", FieldType: "D", Prevalence: "A"}
-	result, err := getClient(t).CatalogService.PatchDatasetField(testDatasetID, testFieldID1, testField)
+	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, testField)
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -145,7 +145,7 @@ func TestDeleteDatasetField(t *testing.T) {
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions [3]model.CatalogAction
-	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", model.NONE, "", "", "", 0)
+	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", "NONE", "", "", "", 0)
 	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
 	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
 
@@ -155,6 +155,16 @@ func TestPostRule(t *testing.T) {
 	assert.Equal(t, "_internal", result.Name)
 	assert.Equal(t, "test_match", result.Match)
 	assert.Equal(t, 3, len(result.Actions))
+}
+
+// Stubby test for DeleteDatasetField() catalog service endpoint
+func TestCreateRuleAction(t *testing.T) {
+	limit := 0
+	action, err := getClient(t).CatalogService.CreateRuleAction("rule1", model.NewRegexAction("integ_test_field1", "some pattern", &limit, ""))
+	require.Empty(t, err)
+	assert.Equal(t, "integ_test_field1", action.Field)
+	assert.Equal(t, "some pattern", action.Pattern)
+	assert.Equal(t, 0, action.Pattern)
 }
 
 // creates a rule to post
@@ -169,7 +179,7 @@ func CreateRule(name string, match string, module string, owner string, actions 
 }
 
 // creates an action for rule to post
-func CreateAction(kind model.CatalogActionKind, owner string, version int, field string, mode model.AutoMode, expression string, pattern string, alias string, limit int) model.CatalogAction {
+func CreateAction(kind model.CatalogActionKind, owner string, version int, field string, mode string, expression string, pattern string, alias string, limit int) model.CatalogAction {
 	return model.CatalogAction{
 		Kind:       kind,
 		Owner:      owner,

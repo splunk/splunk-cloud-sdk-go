@@ -794,24 +794,24 @@ func TestRuleActions(t *testing.T) {
 	require.Nil(t, err)
 
 	// Create rule action
-	action1, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAliasAction(field.Name, "myfieldalias", ""))
+	action1, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAliasAction(field.Name, "myfieldalias", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
 
-	action2, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewAutoKVAction("mymode", "owner1"))
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("mymode", "owner1"))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewEvalAction(field.Name, "some expression", ""))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewEvalAction(field.Name, "some expression", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
 
-	action4, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewLookupAction("myexpression2", ""))
+	action4, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewLookupAction("myexpression2", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
 
 	limit := 0
-	action5, err := client.CatalogService.CreateRuleAction(rule.ID, *model.NewRegexAction(field.Name, "some pattern", &limit, ""))
+	action5, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", &limit, ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
 
