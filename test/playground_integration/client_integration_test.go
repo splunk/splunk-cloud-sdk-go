@@ -34,9 +34,9 @@ func getClient(t *testing.T) *service.Client {
 }
 
 func getInvalidClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
+	// var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 
-	client, err := service.NewClient(&service.Config{Token: testutils.TestInvalidAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
+	client, err := service.NewClient(&service.Config{Token: testutils.TestInvalidAuthenticationToken, URL: "https://api.playground.splunkbeta.com", TenantID: "xcheng-workshop3", Timeout: testutils.TestTimeOut})
 	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
 	return client
 }
