@@ -20,16 +20,18 @@ func main() {
 	fmt.Println("Get client")
 	client := getClient()
 
-	//Create index
-	fmt.Println("Create index")
-	index, id := createIndex(client)
-	if index != "main" {
-		defer client.CatalogService.DeleteDataset(id)
-	}
+	//todo will need to wait pipeline to get index data to non-main index
+	////Create index
+	//fmt.Println("Create index")
+	//index, id := createIndex(client)
+	//if index != "main" {
+	//	defer client.CatalogService.DeleteDataset(id)
+	//}
+	index:="main"
 
 	//Ingest data
-	fmt.Println("Ingest data")
-	host, source := ingestData(client, index)
+	fmt.Println("Ingest event data")
+	host, source := ingestEvent(client, index)
 
 	//Ingest metrics data
 	fmt.Println("Ingest metrics data")
@@ -87,6 +89,7 @@ func createIndex(client *service.Client) (string, string) {
 	exitOnError(err)
 
 	// it will take some time for the new index to finish the provisioning
+	// todo: user dataset endpoint to check the readyness
 	time.Sleep(30 * time.Second)
 	return index, result.ID
 }
@@ -120,48 +123,40 @@ func ingestMetric(client *service.Client, index string) string {
 		},
 	}
 
-	// Use the Ingest Service raw endpoint to send data
-	err := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
+	// Use the Ingest Service send metrics
+	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
 	exitOnError(err)
 
 	return host
 }
 
-func ingestData(client *service.Client, index string) (string, string) {
+func ingestEvent(client *service.Client, index string) (string, string) {
 	source := fmt.Sprintf("mysource-%v", float64(time.Now().Second()))
 	host := fmt.Sprintf("myhost-%v", float64(time.Now().Second()))
 
 	event1 := model.Event{
 		Host:   host,
 		Source: source,
-		Event:  fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source),
-		Index:  index}
+		Body:  fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source),
+		}
 
 	event2 := model.Event{
 		Host:   host,
 		Source: source,
-		Event:  fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
-		Fields: map[string]string{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
-		Index:  index}
+		Body:  fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
+		Attributes: map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
+		}
 
 	event3 := model.Event{
 		Host:       host,
 		Source:     source,
 		Sourcetype: "splunkd",
-		Event:      fmt.Sprintf("04-24-2018 12:32:23.258 -0700 INFO device_id:aa2 device_id=[code]error3: haha2 \"9765f1bebdb4\" %v,%v", host, source),
-		Fields:     map[string]string{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
-		Index:      index}
-
-	// Use the Ingest Service raw endpoint to send data
-	err := client.IngestService.CreateRawEvent(event1)
-	exitOnError(err)
-
-	// Use the Ingest Service endpoint to send one event
-	err = client.IngestService.CreateEvent(event1)
-	exitOnError(err)
+		Body:      fmt.Sprintf("04-24-2018 12:32:23.258 -0700 INFO device_id:aa2 device_id=[code]error3: haha2 \"9765f1bebdb4\" %v,%v", host, source),
+		Attributes:     map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
+		}
 
 	// Use the Ingest endpoint to send multiple events
-	err = client.IngestService.CreateEvents([]model.Event{event1, event2, event3})
+	err := client.IngestService.PostEvents([]model.Event{event1,event2,event3})
 	exitOnError(err)
 
 	return host, source

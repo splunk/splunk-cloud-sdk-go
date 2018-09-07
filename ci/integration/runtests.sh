@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ./ci/integration/okta.sh
-
 echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
