@@ -7,6 +7,7 @@ package util
 
 import (
 	"bytes"
+	"github.com/splunk/splunk-cloud-sdk-go/.vendor-new/github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -33,10 +34,11 @@ func TestParseHTTPStatusCodeInResponseBadResponseNilBody(t *testing.T) {
 		Status:     "400 Bad Request",
 		Body:       nil,
 	}
-	expectErrMsg := "Http Error - HTTPStatusCode: [400], Message: 400 Bad Request"
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
-		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error for bad responses, got %v", err)
-	}
+	expectErrMsg := `{"HTTPStatusCode":400,"HTTPStatus":"400 Bad Request"}`
+	_, err := ParseHTTPStatusCodeInResponse(httpResp)
+	assert.Equal(t, 400, err.(*HTTPError).HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", err.(*HTTPError).HTTPStatus)
+	assert.Equal(t, err.Error(), expectErrMsg)
 }
 
 func TestParseHTTPStatusCodeInResponseEmptyBody(t *testing.T) {
@@ -45,20 +47,24 @@ func TestParseHTTPStatusCodeInResponseEmptyBody(t *testing.T) {
 		Status:     "400 Bad Request",
 		Body:       ioutil.NopCloser(bytes.NewReader([]byte(""))),
 	}
-	expectErrMsg := "Http Error - HTTPStatusCode: [400], Message: 400 Bad Request"
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
-		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error with body, got %v", err)
-	}
+	expectErrMsg := `{"HTTPStatusCode":400,"HTTPStatus":"400 Bad Request"}`
+	_, err := ParseHTTPStatusCodeInResponse(httpResp)
+	assert.Equal(t, 400, err.(*HTTPError).HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", err.(*HTTPError).HTTPStatus)
+	assert.Equal(t, err.Error(), expectErrMsg)
 }
 
 func TestParseHTTPStatusCodeInResponseBodyMsg(t *testing.T) {
 	httpResp := &http.Response{
 		StatusCode: 400,
 		Status:     "400 Bad Request",
-		Body:       ioutil.NopCloser(bytes.NewReader([]byte("unknown sid"))),
+		Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{"code": "1017","message": "Validation Failed"}`))),
 	}
-	expectErrMsg := "Http Error - HTTPStatusCode: [400], Message: 400 Bad Request"
-	if _, err := ParseHTTPStatusCodeInResponse(httpResp); err == nil || err.(*HTTPError).HTTPStatusCode != 400 || err.Error() != expectErrMsg {
-		t.Errorf("ParseHTTPStatusCodeInResponse expected to return an error with body, got %v", err)
-	}
+	expectErrMsg := `{"HTTPStatusCode":400,"HTTPStatus":"400 Bad Request","message":"Validation Failed","code":"1017"}`
+	_, err := ParseHTTPStatusCodeInResponse(httpResp)
+	assert.Equal(t, 400, err.(*HTTPError).HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", err.(*HTTPError).HTTPStatus)
+	assert.Equal(t, "1017", err.(*HTTPError).Code)
+	assert.Equal(t, "Validation Failed", err.(*HTTPError).Message)
+	assert.Equal(t, err.Error(), expectErrMsg)
 }

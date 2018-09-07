@@ -21,7 +21,7 @@ func TestIngestEventFail(t *testing.T) {
 	err := client.IngestService.PostEvents(&[]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).HTTPStatus)
 }
 
 func TestCreateEvents(t *testing.T) {
@@ -33,15 +33,15 @@ func TestCreateEvents(t *testing.T) {
 		Body:       "event1",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Timestamp:   timeValue,
-		Attributes:  attributes}
+		Timestamp:  timeValue,
+		Attributes: attributes}
 	event2 := model.Event{
 		Host:       "stubby",
 		Body:       "event2",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Timestamp:   timeValue,
-		Attributes:  attributes}
+		Timestamp:  timeValue,
+		Attributes: attributes}
 	err := getClient(t).IngestService.PostEvents(&[]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
