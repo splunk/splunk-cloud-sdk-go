@@ -14,37 +14,52 @@ A Go client for Splunk Cloud services
 * [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
 * [Install Go and Setup your Go environment](https://golang.org/doc/install) and checkout this repository into `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go`
 * Recommended Go tools:
-  * go get -u github.com/golang/dep/cmd/dep
-  * go get golang.org/x/lint/golint
-  * go get -u golang.org/x/tools/cmd/goimports
+  * `go get -u github.com/golang/dep/cmd/dep`
+  * `go get golang.org/x/lint/golint`
+  * `go get -u golang.org/x/tools/cmd/goimports`
 * Clone/unzip our splunk/splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
 * Initialize a new client:
-```
+```go
 package main
 
 import (
     "fmt"
+    "os"
     "time"
     
     "github.com/splunk/splunk-cloud-sdk-go/service"
 )
 
 func main() {
+    checkForTenantToken()
+    // Initialize the client
     client, err := service.NewClient(&service.Config{
-        Token: "<INSERT.ACCESS.TOKEN.HERE>",
+        Token: os.Getenv("BEARER_TOKEN"),
+        TenantID: os.Getenv("TENANT"),
         URL: "https://playground.api.splunkbeta.com",
-        TenantID: testutils.TestTenantID,
         Timeout: time.Second * 5,
     })
-    if err != nil {
-        panic("error initializing client: %s", err)
-    }
+    exitOnErr(err)
     
-    // Validate yourself
+    // Validate access to the platform
     info, err := client.IdentityService.Validate()
-    if err != nil {
-        panic("error calling Validate(): %s", err)
-    }
+    exitOnErr(err)
     fmt.Printf("info: %+v", info)
+}
+
+func exitOnErr(err error) {
+    if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func checkForTenantToken() {
+    if os.Getenv("BEARER_TOKEN") == "" {
+        exitOnErr(fmt.Errorf("$BEARER_TOKEN must be set"))
+    }
+    if os.Getenv("TENANT") == "" {
+        exitOnErr(fmt.Errorf("$TENANT must be set"))
+    }
 }
 ```
