@@ -1,11 +1,12 @@
 package stubbyintegration
 
 import (
-	"github.com/splunk/ssc-client-go/model"
+	"encoding/json"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 )
 
 var testPipelineID = "TEST_PIPELINE_01"
@@ -16,8 +17,51 @@ var testNodeID3 = "TEST_NODE_03"
 var testNodeID4 = "TEST_NODE_04"
 var testRootNodeID = "ROOT_NODE_01"
 var testJobID = "JOB_ID_01"
-var testInputPort = "input"
-var testOutputPort = "output"
+
+// Stubby test for GetPipelines() streams service endpoint
+func TestCompileDslToUpl(t *testing.T) {
+
+	// Create a test UPL JSON from a test DSL and verify the data
+	result, err := getClient(t).StreamsService.CompileDslToUpl(model.DslCompilationRequest{Dsl: "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"})
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
+
+	require.NotEmpty(t, result.Nodes)
+	assert.Equal(t, 4, len(result.Nodes))
+
+	dataNode1 := result.Nodes[0].(map[string]interface{})
+	assert.NotEmpty(t, dataNode1["id"])
+	assert.Equal(t, "read-kafka", dataNode1["op"])
+	assert.Equal(t, "localhost:9092", dataNode1["brokers"])
+	assert.Equal(t, "intopic", dataNode1["topic"])
+
+	dataNode2 := result.Nodes[1].(map[string]interface{})
+	assert.NotEmpty(t, dataNode2["id"])
+	assert.Equal(t, "deserialize-events", dataNode2["op"])
+	assert.Empty(t, dataNode2["attributes"])
+
+	dataNode3 := result.Nodes[2].(map[string]interface{})
+	assert.NotEmpty(t, dataNode3["id"])
+	assert.Equal(t, "serialize-events", dataNode3["op"])
+	assert.Equal(t, "output-topic-1", dataNode3["topic"])
+
+	dataNode4 := result.Nodes[3].(map[string]interface{})
+	assert.NotEmpty(t, dataNode4["id"])
+	assert.Equal(t, "write-kafka", dataNode4["op"])
+	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
+	assert.Empty(t, dataNode4["producer-properties"])
+
+	require.NotEmpty(t, result.Edges)
+	assert.Equal(t, 3, len(result.Edges))
+	assert.NotEmpty(t, result.Edges[0].SourceNode)
+	assert.NotEmpty(t, result.Edges[0].TargetNode)
+	assert.NotEmpty(t, result.Edges[1].SourceNode)
+	assert.NotEmpty(t, result.Edges[1].TargetNode)
+	assert.NotEmpty(t, result.Edges[2].SourceNode)
+	assert.NotEmpty(t, result.Edges[2].TargetNode)
+
+	assert.NotEmpty(t, result.RootNode)
+}
 
 // Stubby test for GetPipelines() streams service endpoint
 func TestGetPipelines(t *testing.T) {
@@ -34,7 +78,7 @@ func TestGetPipelines(t *testing.T) {
 // Stubby test for CreatePipeline() streams service endpoint
 func TestCreatePipeline(t *testing.T) {
 
-	result, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest("TEST_PIPELINE", "Stubby Test Pipeline"))
+	result, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, "TEST_PIPELINE", "Stubby Test Pipeline"))
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -42,6 +86,7 @@ func TestCreatePipeline(t *testing.T) {
 	assert.Equal(t, testPipelineName, result.Name)
 	assert.Equal(t, testutils.TestTenantID, result.CreateUserID)
 
+	require.NotEmpty(t, result.Data)
 	require.NotEmpty(t, result.Data.Nodes)
 	assert.Equal(t, 4, len(result.Data.Nodes))
 
@@ -67,6 +112,7 @@ func TestCreatePipeline(t *testing.T) {
 	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
 	assert.Empty(t, dataNode4["producer-properties"])
 
+	require.NotEmpty(t, result.Data.Edges)
 	assert.Equal(t, 3, len(result.Data.Edges))
 	assert.Equal(t, testNodeID1, result.Data.Edges[0].SourceNode)
 	assert.Equal(t, testNodeID2, result.Data.Edges[0].TargetNode)
@@ -81,7 +127,7 @@ func TestCreatePipeline(t *testing.T) {
 // Stubby test for UpdatePipeline() streams service endpoint
 func TestUpdatePipeline(t *testing.T) {
 
-	result, err := getClient(t).StreamsService.UpdatePipeline(testPipelineID, CreatePipelineRequest("UPDATED_TEST_PIPELINE", "Updated Stubby Test Pipeline"))
+	result, err := getClient(t).StreamsService.UpdatePipeline(testPipelineID, CreatePipelineRequest(t, "UPDATED_TEST_PIPELINE", "Updated Stubby Test Pipeline"))
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -90,6 +136,7 @@ func TestUpdatePipeline(t *testing.T) {
 	assert.Equal(t, "Updated Stubby Test Pipeline", result.Description)
 	assert.Equal(t, testutils.TestTenantID, result.CreateUserID)
 
+	require.NotEmpty(t, result.Data)
 	require.NotEmpty(t, result.Data.Nodes)
 	assert.Equal(t, 4, len(result.Data.Nodes))
 
@@ -115,6 +162,7 @@ func TestUpdatePipeline(t *testing.T) {
 	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
 	assert.Empty(t, dataNode4["producer-properties"])
 
+	require.NotEmpty(t, result.Data.Edges)
 	assert.Equal(t, 3, len(result.Data.Edges))
 	assert.Equal(t, testNodeID1, result.Data.Edges[0].SourceNode)
 	assert.Equal(t, testNodeID2, result.Data.Edges[0].TargetNode)
@@ -179,150 +227,75 @@ func TestDeletePipeline(t *testing.T) {
 }
 
 // Creates a pipeline request
-func CreatePipelineRequest(name string, description string) model.PipelineRequest {
-	/*var nodeAttributesJson1 = `"attributes": {
-	          "inputs": [],
-	          "outputs": [
-	            "output"
-	          ],
-	          "isValid": true,
-	          "name": "Kafka Source",
-	          "dsl": {},
-	          "isSource": true,
-	          "isSink": false,
-	          "arguments": {
-	            "brokers": {
-	              "type": "string"
-	            },
-	            "topic": {
-	              "type": "string"
-	            },
-	            "consumer-properties": {
-	              "type": "Map",
-	              "element-type": {
-	                "key-type": "string",
-	                "value-type": "string"
-	              }
-	            }
-	          },
-	          "formData": {
-	            "brokers": "localhost:8884",
-	            "topic": "intopic",
-	            "consumer-properties": {}
-	          },
-	          "isActive": true
-	        }`
+func CreatePipelineRequest(t *testing.T, name string, description string) model.PipelineRequest {
+	uplPipelineData := []byte(`{
+                 "nodes": [
+                   {
+                     "op": "read-kafka",
+                     "id": "TEST_NODE_01",
+                     "attributes": null,
+                     "brokers": "localhost:9092",
+                     "consumer-properties": {},
+                     "topic": "intopic"
+                   },
+                   {
+                     "op": "deserialize-events",
+                     "id": "TEST_NODE_02",
+                     "attributes": null
+                   },
+                   {
+                     "op": "serialize-events",
+                     "id": "TEST_NODE_03",
+                     "attributes": null,
+                     "topic": "output-topic-1"
+                   },
+                   {
+                     "op": "write-kafka",
+                     "id": "TEST_NODE_04",
+                     "attributes": null,
+                     "producer-properties": {},
+                     "brokers": "localhost:9092"
+                   }
+                 ],
+                 "edges": [
+                   {
+                     "attributes": null,
+                     "sourceNode": "TEST_NODE_01",
+                     "sourcePort": "output",
+                     "targetNode": "TEST_NODE_02",
+                     "targetPort": "input"
+                   },
+                   {
+                     "attributes": null,
+                     "sourceNode": "TEST_NODE_02",
+                     "sourcePort": "output",
+                     "targetNode": "TEST_NODE_03",
+                     "targetPort": "input"
+                   },
+                   {
+                     "attributes": null,
+                     "sourceNode": "TEST_NODE_03",
+                     "sourcePort": "output",
+                     "targetNode": "TEST_NODE_04",
+                     "targetPort": "input"
+                   }
+                 ],
+                 "root-node": [
+                   "TEST_NODE_04"
+                 ],
+                 "version": 3
+               }`)
 
-		var nodeAttributes1 map[string]interface{}
-		err := json.Unmarshal([]byte(nodeAttributesJson1), &nodeAttributes1)
-
-		var nodeAttributesJson2 = `{
-	          "inputs": [
-	            "input"
-	          ],
-	          "outputs": [
-	            "output"
-	          ],
-	          "isValid": true,
-	          "name": "Parse Events",
-	          "dsl": {},
-	          "isSource": false,
-	          "isSink": false,
-	          "arguments": {},
-	          "formData": {},
-	          "isActive": false
-	        }`
-
-		var nodeAttributes2 map[string]interface{}
-		err = json.Unmarshal([]byte(nodeAttributesJson2), &nodeAttributes2)
-
-		var nodeAttributesJson3 = `{
-	          "inputs": [
-	            "input"
-	          ],
-	          "outputs": [
-	            "output"
-	          ],
-	          "name": "To Events",
-	          "isValid": true,
-	          "dsl": {},
-	          "isSource": false,
-	          "isSink": false,
-	          "arguments": {
-	            "topic": {
-	              "type": "string"
-	            }
-	          },
-	          "formData": {
-	            "topic": "output-topic-1"
-	          },
-	          "isActive": false
-	        }`
-
-		var nodeAttributes3 map[string]interface{}
-		err = json.Unmarshal([]byte(nodeAttributesJson3), &nodeAttributes3)
-
-		var nodeAttributesJson4 = `{
-	          "inputs": [
-	            "input"
-	          ],
-	          "outputs": [],
-	          "isValid": true,
-	          "name": "Kafka Write",
-	          "dsl": {},
-	          "isSource": false,
-	          "isSink": true,
-	          "arguments": {
-	            "brokers": {
-	              "type": "string"
-	            },
-	            "producer-properties": {
-	              "type": "Map",
-	              "element-type": {
-	                "key-type": "string",
-	                "value-type": "string"
-	              }
-	            }
-	          },
-	          "formData": {
-	            "brokers": "localhost:8884",
-	            "producer-properties": {}
-	          },
-	          "isActive": false
-	        }`
-
-		var nodeAttributes4 map[string]interface{}
-		err = json.Unmarshal([]byte(nodeAttributesJson4), &nodeAttributes4)
-		fmt.Println(err)*/
-	var producerProperties struct{}
-	uplNode1 := model.UplNodeCommon{Op: "read-kafka", ID: testNodeID1}
-	node1 := model.KafkaReader{UplNodeCommon: uplNode1, Brokers: "localhost:9092", Topic: "intopic"}
-
-	node2 := model.UplNodeCommon{Op: "deserialize-events", ID: testNodeID2}
-
-	uplNode3 := model.UplNodeCommon{Op: "serialize-events", ID: testNodeID3}
-	node3 := model.SerializeEvents{UplNodeCommon: uplNode3, Topic: "output-topic-1"}
-
-	uplNode4 := model.UplNodeCommon{Op: "write-kafka", ID: testNodeID4}
-	node4 := model.KafkaWriter{UplNodeCommon: uplNode4, Brokers: "localhost:9092", ProducerProperties: producerProperties}
-
-	nodes := []model.UplNode{node1, node2, node3, node4}
-	/*nodes := []model.KafkaReader{{UplNode: model.UplNode{Op: "read-kafka", ID: testNodeID1}, Brokers: "localhost:8884", Topic: "intopic"},
-	{Op: "deserialize-events", ID: testNodeID2},
-	{Op: "serialize-events", ID: testNodeID3},
-	{Op: "write-kafka", ID: testNodeID4}}*/
-
-	edges := []model.UplEdge{{SourceNode: testNodeID1, SourcePort: testOutputPort, TargetNode: testNodeID2, TargetPort: testInputPort},
-		{SourceNode: testNodeID2, SourcePort: testOutputPort, TargetNode: testNodeID3, TargetPort: testInputPort},
-		{SourceNode: testNodeID3, SourcePort: testOutputPort, TargetNode: testNodeID4, TargetPort: testInputPort}}
-
-	data := model.UplPipeline{Version: 3, RootNode: []string{"TEST_NODE_04"}, Nodes: nodes, Edges: edges}
-
+	var uplPipeline model.UplPipeline
+	err := json.Unmarshal(uplPipelineData, &uplPipeline)
+	if err != nil {
+		t.Errorf("Unable to unmarshal upl pipeline json object, the error message is %v", err)
+	}
 	return model.PipelineRequest{
 		BypassValidation: true,
 		Name:             name,
 		Description:      description,
 		CreateUserID:     testutils.TestTenantID,
-		Data:             data,
+		Data:             uplPipeline,
 	}
 }

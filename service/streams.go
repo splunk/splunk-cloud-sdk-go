@@ -6,8 +6,8 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // streams service url prefix
@@ -17,7 +17,28 @@ const streamsServiceVersion = "v1"
 // StreamsService - A service that deals with pipelines
 type StreamsService service
 
-// GetPipelines gets all pipelines
+// CompileDslToUpl creates a Upl Json from DSL
+func (c *StreamsService) CompileDslToUpl(dsl model.DslCompilationRequest) (*model.UplPipeline, error) {
+	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "compile-dsl")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: dsl})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.UplPipeline
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetPipelines gets all the pipelines
 func (c *StreamsService) GetPipelines(query map[string][]string) (*model.PaginatedPipelineResponse, error) {
 	url, err := c.client.BuildURL(query, streamsServicePrefix, streamsServiceVersion, "pipelines")
 	if err != nil {
