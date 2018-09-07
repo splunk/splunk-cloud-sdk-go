@@ -22,7 +22,7 @@ var testJobID = "JOB_ID_01"
 func TestCompileDslToUpl(t *testing.T) {
 
 	// Create a test UPL JSON from a test DSL and verify the data
-	result, err := getClient(t).StreamsService.CompileDslToUpl(model.DslCompilationRequest{Dsl: "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"})
+	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -177,7 +177,7 @@ func TestUpdatePipeline(t *testing.T) {
 // Stubby test for ActivatePipeline() streams service endpoint
 func TestActivatePipeline(t *testing.T) {
 	ids := []string{testPipelineID}
-	result, err := getClient(t).StreamsService.ActivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	result, err := getClient(t).StreamsService.ActivatePipeline(ids)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -187,7 +187,7 @@ func TestActivatePipeline(t *testing.T) {
 // Stubby test for DeactivatePipeline() streams service endpoint
 func TestDeactivatePipeline(t *testing.T) {
 	ids := []string{testPipelineID}
-	result, err := getClient(t).StreamsService.DeactivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	result, err := getClient(t).StreamsService.DeactivatePipeline(ids)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -227,7 +227,7 @@ func TestDeletePipeline(t *testing.T) {
 }
 
 // Creates a pipeline request
-func CreatePipelineRequest(t *testing.T, name string, description string) model.PipelineRequest {
+func CreatePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	uplPipelineData := []byte(`{
                  "nodes": [
                    {
@@ -291,7 +291,7 @@ func CreatePipelineRequest(t *testing.T, name string, description string) model.
 	if err != nil {
 		t.Errorf("Unable to unmarshal upl pipeline json object, the error message is %v", err)
 	}
-	return model.PipelineRequest{
+	return &model.PipelineRequest{
 		BypassValidation: true,
 		Name:             name,
 		Description:      description,

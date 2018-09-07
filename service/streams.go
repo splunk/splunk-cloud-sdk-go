@@ -18,7 +18,7 @@ const streamsServiceVersion = "v1"
 type StreamsService service
 
 // CompileDslToUpl creates a Upl Json from DSL
-func (c *StreamsService) CompileDslToUpl(dsl model.DslCompilationRequest) (*model.UplPipeline, error) {
+func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*model.UplPipeline, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "compile-dsl")
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (c *StreamsService) GetPipelines(query map[string][]string) (*model.Paginat
 }
 
 // CreatePipeline creates a new pipeline
-func (c *StreamsService) CreatePipeline(pipeline model.PipelineRequest) (*model.Pipeline, error) {
+func (c *StreamsService) CreatePipeline(pipeline *model.PipelineRequest) (*model.Pipeline, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines")
 	if err != nil {
 		return nil, err
@@ -81,12 +81,12 @@ func (c *StreamsService) CreatePipeline(pipeline model.PipelineRequest) (*model.
 }
 
 // ActivatePipeline activates an existing pipeline
-func (c *StreamsService) ActivatePipeline(activatePipelineRequest model.ActivatePipelineRequest) (model.AdditionalProperties, error) {
+func (c *StreamsService) ActivatePipeline(ids []string) (model.AdditionalProperties, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "activate")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: activatePipelineRequest})
+	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -102,12 +102,12 @@ func (c *StreamsService) ActivatePipeline(activatePipelineRequest model.Activate
 }
 
 // DeactivatePipeline deactivates an existing pipeline
-func (c *StreamsService) DeactivatePipeline(activatePipelineRequest model.ActivatePipelineRequest) (model.AdditionalProperties, error) {
+func (c *StreamsService) DeactivatePipeline(ids []string) (model.AdditionalProperties, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "deactivate")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: activatePipelineRequest})
+	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -144,7 +144,7 @@ func (c *StreamsService) GetPipeline(id string) (*model.Pipeline, error) {
 }
 
 // UpdatePipeline updates an existing pipeline
-func (c *StreamsService) UpdatePipeline(id string, pipeline model.PipelineRequest) (*model.Pipeline, error) {
+func (c *StreamsService) UpdatePipeline(id string, pipeline *model.PipelineRequest) (*model.Pipeline, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err

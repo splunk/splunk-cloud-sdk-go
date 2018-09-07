@@ -3,6 +3,7 @@ package playgroundintegration
 import (
 	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,6 +20,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 	// Create two test pipelines
 	pipeline1, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline1)
 	assert.Equal(t, model.Created, pipeline1.Status)
@@ -26,6 +28,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline1.Description)
 
 	pipeline2, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName2, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline2)
 	assert.Equal(t, model.Created, pipeline2.Status)
@@ -39,7 +42,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 	// Activate the second test pipeline
 	ids := []string{pipeline2.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline2.ID}, activatePipelineResponse["activated"])
@@ -57,15 +60,6 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	require.NotEmpty(t, result.Items)
 	assert.Equal(t, pipelineName2, result.Items[0].Name)
 	// TODO Check count
-
-	// Delete the test pipelines
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline1.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
-
-	deletePipelineResponse, err = getClient(t).StreamsService.DeletePipeline(pipeline2.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test CreatePipeline streams endpoint
@@ -74,6 +68,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	// Create a test pipeline and verify that the pipeline was created
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -114,11 +109,6 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	assert.Equal(t, "write-kafka", dataNode4["op"])
 	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
 	assert.Empty(t, dataNode4["producer-properties"])
-
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test ActivatePipeline streams endpoint
@@ -127,6 +117,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -135,7 +126,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 	// Activate the test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
@@ -162,6 +153,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -170,13 +162,13 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	// Activate the newly created test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 
 	// Deactivate the active test pipeline
-	deactivatePipelineResponse, err := getClient(t).StreamsService.DeactivatePipeline(model.ActivatePipelineRequest{IDs: ids})
+	deactivatePipelineResponse, err := getClient(t).StreamsService.DeactivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, deactivatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, deactivatePipelineResponse["deactivated"])
@@ -189,11 +181,6 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 	assert.Equal(t, "Deactivated", pipeline.StatusMessage)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
-
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test UpdatePipeline streams endpoint
@@ -202,6 +189,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -215,26 +203,52 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 	assert.Equal(t, updatedPipelineName, updatedPipeline.Name)
 	assert.Equal(t, "Updated Integration Test Pipeline", updatedPipeline.Description)
 	assert.Equal(t, pipeline.CurrentVersion+1, updatedPipeline.CurrentVersion)
+}
+
+// Test DeletePipeline streams endpoint
+func TestIntegrationDeletePipeline(t *testing.T) {
+	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+
+	// Create a test pipeline
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	require.Nil(t, err)
+	require.NotEmpty(t, pipeline)
+	assert.Equal(t, model.Created, pipeline.Status)
+	assert.Equal(t, pipelineName, pipeline.Name)
+	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
 	// Delete the test pipeline
 	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
 	require.Nil(t, err)
 	require.NotNil(t, deletePipelineResponse)
+
+	// Get the test pipeline and verify that its deleted
+	pipeline, err = getClient(t).StreamsService.GetPipeline(pipeline.ID)
+	require.NotEmpty(t, err)
+	require.Empty(t, pipeline)
 }
 
 // Creates a pipeline request
-func CreatePipelineRequest(t *testing.T, name string, description string) model.PipelineRequest {
+func CreatePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	// Create a test UPL JSON from a test DSL
 	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
-	result, err := getClient(t).StreamsService.CompileDslToUpl(model.DslCompilationRequest{Dsl: dsl})
+	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
-	return model.PipelineRequest{
+	return &model.PipelineRequest{
 		BypassValidation: true,
 		Name:             name,
 		Description:      description,
 		CreateUserID:     testutils.TestTenantID,
 		Data:             result,
+	}
+}
+
+// Deletes the test pipeline
+func cleanupPipeline(client *service.Client, id string, name string) {
+	_, err := client.StreamsService.DeletePipeline(id)
+	if err != nil {
+		fmt.Printf("WARN: error deleting pipeline: name:%s, err: %s", name, err)
 	}
 }
