@@ -60,7 +60,7 @@ func validateNotFoundActionError(t *testing.T, err error) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.Message)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
 }
 
 // Test GetActions which returns the list of all actions for the tenant
