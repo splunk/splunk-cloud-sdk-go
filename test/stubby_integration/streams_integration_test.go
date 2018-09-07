@@ -296,6 +296,6 @@ func CreatePipelineRequest(t *testing.T, name string, description string) model.
 		Name:             name,
 		Description:      description,
 		CreateUserID:     testutils.TestTenantID,
-		Data:             uplPipeline,
+		Data:             &uplPipeline,
 	}
 }

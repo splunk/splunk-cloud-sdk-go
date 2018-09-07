@@ -224,7 +224,6 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 // Creates a pipeline request
 func CreatePipelineRequest(t *testing.T, name string, description string) model.PipelineRequest {
-
 	// Create a test UPL JSON from a test DSL
 	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
 	result, err := getClient(t).StreamsService.CompileDslToUpl(model.DslCompilationRequest{Dsl: dsl})
@@ -236,6 +235,6 @@ func CreatePipelineRequest(t *testing.T, name string, description string) model.
 		Name:             name,
 		Description:      description,
 		CreateUserID:     testutils.TestTenantID,
-		Data:             *result,
+		Data:             result,
 	}
 }

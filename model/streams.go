@@ -50,12 +50,12 @@ type PipelineDeleteResponse struct {
 
 // PipelineRequest contains the pipeline data
 type PipelineRequest struct {
-	BypassValidation         bool        `json:"bypassValidation"`
-	CreateUserID             string      `json:"createUserId"`
-	Data                     UplPipeline `json:"data"`
-	Description              string      `json:"description"`
-	Name                     string      `json:"name"`
-	StreamingConfigurationID *int64      `json:"streamingConfigurationId,omitempty"`
+	BypassValidation         bool         `json:"bypassValidation"`
+	CreateUserID             string       `json:"createUserId"`
+	Data                     *UplPipeline `json:"data"`
+	Description              string       `json:"description"`
+	Name                     string       `json:"name"`
+	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
 }
 
 // PipelineStatus reflects the status of a pipeline
