@@ -20,23 +20,23 @@ type UserErrHandler func(*BatchEventsSender)
 
 const errMsgSplitter = "[insErrSplit]"
 
-// BatchEventsSender sends events in batches or periodically if batch is not full to Splunk HTTP Event Collector endpoint
+// BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
-	BatchSize        int
-	EventsChan       chan model.Event
-	EventsQueue      []model.Event
-	QuitChan         chan struct{}
-	EventService     *IngestService
-	IngestTicker     *model.Ticker
-	WaitGroup        *sync.WaitGroup
-	ErrorChan        chan string
-	errorMsg         string
-	IsRunning        bool
-	mux              sync.Mutex
-	callbackFunc     UserErrHandler
-	stopMux          sync.Mutex
-	chanWaitInMilSec int
-	resetMux         sync.Mutex
+	BatchSize      int
+	EventsChan     chan model.Event
+	EventsQueue    []model.Event
+	QuitChan       chan struct{}
+	EventService   *IngestService
+	IngestTicker   *model.Ticker
+	WaitGroup      *sync.WaitGroup
+	ErrorChan      chan string
+	errorMsg       string
+	IsRunning      bool
+	mux            sync.Mutex
+	callbackFunc   UserErrHandler
+	stopMux        sync.Mutex
+	chanWaitMillis int
+	resetMux       sync.Mutex
 }
 
 // SetCallbackHandler allows users to pass their own callback function
@@ -51,9 +51,6 @@ func (b *BatchEventsSender) Run() {
 }
 
 // loop is a infinity loop which listens to three channels
-// ticker.C: ticker channel to be used for timer
-// QuitChan: shut down signal channel
-// EventsChan: events channel
 // the loop will break only if there's signal in QuitChan
 // otherwise it'll constantly checking conditions for ticker and events
 func (b *BatchEventsSender) loop() {
@@ -130,7 +127,7 @@ func (b *BatchEventsSender) AddEvent(event model.Event) error {
 	}
 
 	for len(b.EventsChan) >= cap(b.EventsChan) {
-		time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
+		time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)
 	}
 
 	if b.IsRunning {
@@ -174,14 +171,14 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		if i+b.BatchSize < len(events) {
 			end = i + b.BatchSize
 		}
-
-		err := b.EventService.CreateEvents(events[i:end])
+		batchedEvents := events[i:end]
+		err := b.EventService.PostEvents(&batchedEvents)
 		i = i + b.BatchSize
 		if err != nil {
 			str := fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, events)
 
 			for len(b.EventsChan) >= cap(b.EventsChan) {
-				time.Sleep(time.Duration(b.chanWaitInMilSec) * time.Millisecond)
+				time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)
 			}
 
 			if b.IsRunning {
