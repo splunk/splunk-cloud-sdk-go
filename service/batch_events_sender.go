@@ -171,7 +171,7 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 			end = i + b.BatchSize
 		}
 		batchedEvents := events[i:end]
-		err := b.EventService.PostEvents(&batchedEvents)
+		err := b.EventService.PostEvents(batchedEvents)
 		i = i + b.BatchSize
 		if err != nil {
 			var errString string
