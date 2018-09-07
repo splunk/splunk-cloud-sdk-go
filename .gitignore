@@ -22,7 +22,8 @@ debug
 # codeship encrypted files, used by codecov
 codeship.aes
 vendor
-secret.env
+.vendor-new
+*.env
 tmp/
 
 # used by token fetcher
@@ -33,4 +34,4 @@ okta/token
 ci/docs/node_modules
 ci/docs/build
 ci/docs/package.json
-docs
+docs/docs.manifest.json
