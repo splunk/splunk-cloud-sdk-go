@@ -14,17 +14,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var recordOne = map[string]string{
+var recordOne = model.Record {
 	"TEST_KEY_01": "A",
 	"TEST_KEY_02": "B",
 	"TEST_KEY_03": "C",
 }
-var recordTwo = map[string]string{
+var recordTwo = model.Record {
 	"TEST_KEY_01": "B",
 	"TEST_KEY_02": "C",
 	"TEST_KEY_03": "A",
 }
-var recordThree = map[string]string{
+var recordThree = model.Record {
 	"TEST_KEY_01": "C",
 	"TEST_KEY_02": "A",
 	"TEST_KEY_03": "B",
