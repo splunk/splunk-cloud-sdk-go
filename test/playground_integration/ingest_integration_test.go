@@ -9,56 +9,54 @@ import (
 	"testing"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 )
 
-func TestIntegrationCreateEventSuccess(t *testing.T) {
-	timeValue := float64(time.Now().Unix() * 1000) // Unix millis
+func TestIntegrationCreateEventsSuccess(t *testing.T) {
 	client := getClient(t)
+	attributes := make(map[string]interface{})
+	attributes["testKey"] = "testValue"
+	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
 	clientURL, err := client.GetURL()
-	assert.Empty(t, err)
-
-	testIngestEvent := model.Event{
+	event1 := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "test",
+		Body:       "event1",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
-
-	err = client.IngestService.CreateEvent(testIngestEvent)
+		Timestamp:   timeValue,
+		Attributes:  attributes}
+	event2 := model.Event{
+		Host:       clientURL.RequestURI(),
+		Body:       "event2",
+		Sourcetype: "sourcetype:eventgen",
+		Source:     "manual-events",
+		Timestamp:   timeValue,
+		Attributes:  attributes}
+	err = client.IngestService.PostEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
-// TODO: Deal with later
 func TestIntegrationIngestEventFail(t *testing.T) {
 	invalidClient := getInvalidClient(t)
-	testIngestEvent := model.Event{Event: "failed test"}
-	err := invalidClient.IngestService.CreateEvent(testIngestEvent)
+	testIngestEvent := []model.Event{{Body: "failed test"}}
+	err := invalidClient.IngestService.PostEvents(testIngestEvent)
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
-func TestIntegrationCreateRawEventSuccess(t *testing.T) {
+func TestIntegrationIngestEventBadRequest(t *testing.T) {
 	client := getClient(t)
-	testEvent := model.Event{Event: "test"}
+	err := client.IngestService.PostEvents(nil)
 
-	err := client.IngestService.CreateRawEvent(testEvent)
-	assert.Empty(t, err)
-}
-
-func TestIntegrationCreateEvents(t *testing.T) {
-	client := getClient(t)
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
-	err := client.IngestService.CreateEvents([]model.Event{event1, event2})
-	assert.Empty(t, err)
+	assert.NotEmpty(t, err)
+	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Invalid data format", err.(*util.HTTPError).Message)
+	assert.Equal(t, "INVALID_DATA", err.(*util.HTTPError).Code)
+	assert.Equal(t, "", err.(*util.HTTPError).MoreInfo)
 }
 
 func TestIntegrationCreateMetrics(t *testing.T) {
@@ -89,9 +87,9 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	}
-	err := client.IngestService.CreateMetricEvent(metricEvent1)
+	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1})
 	assert.Empty(t, err)
 
-	err1 := client.IngestService.CreateMetricEvents([]model.MetricEvent{metricEvent1, metricEvent1})
+	err1 := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1, metricEvent1})
 	assert.Empty(t, err1)
 }

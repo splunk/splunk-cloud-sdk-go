@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -72,9 +71,15 @@ func TestParseEmptyResponse(t *testing.T) {
 }
 
 func TestParseUrlParams(t *testing.T) {
-	params := model.Event{Host: "http://ssc-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
+	type Event struct {
+		Host       string            `key:"host"`
+		Event      interface{}       `json:"event"`
+		Source     string            `key:"source"`
+		Sourcetype string            `key:"sourcetype"`
+	}
+	params := Event{Host: "http://splunk-cloud-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
-	assert.Equal(t, "http://ssc-sdk-shared-stubby:8882", values.Get("host"))
+	assert.Equal(t, "http://splunk-cloud-sdk-shared-stubby:8882", values.Get("host"))
 	assert.Equal(t, "manual-events", values.Get("source"))
 	assert.Equal(t, "sourcetype:eventgen", values.Get("sourcetype"))
 	assert.Empty(t, values["event"])

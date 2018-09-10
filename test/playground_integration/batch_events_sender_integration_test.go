@@ -13,8 +13,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,9 +25,9 @@ var wg sync.WaitGroup
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
-	event3 := model.Event{Host: "host3", Event: "test3"}
+	event1 := model.Event{Host: "host1", Body: "test1"}
+	event2 := model.Event{Host: "host2", Body: "test2"}
+	event3 := model.Event{Host: "host3", Body: "test3"}
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
@@ -50,9 +50,9 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
-	event3 := model.Event{Host: "host3", Event: "test3"}
+	event1 := model.Event{Host: "host1", Body: "test1"}
+	event2 := model.Event{Host: "host2", Body: "test2"}
+	event3 := model.Event{Host: "host3", Body: "test3"}
 	done := make(chan bool, 1)
 
 	collector, err := client.NewBatchEventsSender(5, 1000)
@@ -74,7 +74,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
 	var client = getClient(t)
 
-	event1 := model.Event{Host: "host1", Event: "test1"}
+	event1 := model.Event{Host: "host1", Body: "test1"}
 	done := make(chan bool, 1)
 	collector, err := client.NewBatchEventsSender(5, 1000)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
@@ -109,7 +109,7 @@ func addEventBatch(collector *service.BatchEventsSender, event1 model.Event) {
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	var client = getInvalidClient(t)
 
-	event1 := model.Event{Host: "host1", Event: "test10"}
+	event1 := model.Event{Host: "host1", Body: "test10"}
 
 	maxAllowedErr := 4
 
@@ -131,9 +131,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(errors) >= maxAllowedErr)
-
-	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [401], Message: 401 Unauthorized"))
-	assert.True(t, strings.Contains(errors[0], "EventPayload:[{host1    <nil> test10 map[]}"))
+	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [404], Message: Error validating request"))
+	assert.True(t, strings.Contains(errors[0], "EventPayload:[{map[] test10 0 0   host1 } {map[] test10 0 0   host1 }]"))
 
 	collector.Stop()
 }
@@ -141,7 +140,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 	var client = getInvalidClient(t)
 
-	event1 := model.Event{Host: "host1", Event: "test10"}
+	event1 := model.Event{Host: "host1", Body: "test10"}
 
 	maxAllowedErr := 5
 
@@ -175,7 +174,7 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 func TestBatchEventsSenderRestart(t *testing.T) {
 	var client = getInvalidClient(t)
-	event1 := model.Event{Host: "host1", Event: "test10"}
+	event1 := model.Event{Host: "host1", Body: "test10"}
 
 	maxAllowedErr := 4
 

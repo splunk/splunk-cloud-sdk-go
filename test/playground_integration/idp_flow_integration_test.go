@@ -9,12 +9,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/idp"
-	"github.com/splunk/ssc-client-go/util"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -76,7 +75,7 @@ func (r *badTokenRetriever) GetTokenContext() (*idp.Context, error) {
 
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
@@ -92,7 +91,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 
 // TestIntegrationRefreshTokenRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
@@ -108,23 +107,22 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
 
-	timeValue := float64(1529945001)
+	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "refreshtokentest",
+		Body:      "refreshtokentest",
 		Sourcetype: "sourcetype:refreshtokentest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes:  map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.CreateEvent(testIngestEvent)
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
 }
 
 // TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
@@ -140,7 +138,7 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 
 // TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
@@ -156,23 +154,22 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
 	_, _ = client.IdentityService.AddMember(BackendClientID)
 
-	timeValue := float64(1529945002)
+	timeValue := int64(1529945002)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "clientcredentialstest",
+		Body:       "clientcredentialstest",
 		Sourcetype: "sourcetype:clientcredentialstest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.CreateEvent(testIngestEvent)
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using client credentials flow error: %s", err)
 }
 
 // TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
 func TestIntegrationPKCEInitWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
@@ -188,7 +185,7 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 
 // TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCERetryWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)}
 
 	client, err := service.NewClient(&service.Config{
@@ -202,23 +199,22 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
-	timeValue := float64(1529945003)
+	timeValue := int64(1529945003)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "pkcetest",
+		Body:      "pkcetest",
 		Sourcetype: "sourcetype:pkcetest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+	    Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.CreateEvent(testIngestEvent)
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
 }
 
 // TestBadTokenRetryWorkflow tests to make sure that a 401 is returned to the end user when a bad token is retrieved and requests are re-tried exactly once
 func TestBadTokenRetryWorkflow(t *testing.T) {
-	url := testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	url := testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	tr := &badTokenRetriever{}
 
 	client, err := service.NewClient(&service.Config{
@@ -232,17 +228,16 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 	clientURL, err := client.GetURL()
 	require.Emptyf(t, err, "Error retrieving client URL: %s", err)
 
-	timeValue := float64(1529945004)
+	timeValue := int64(1529945004)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Index:      "main",
-		Event:      "badtokentest",
+		Body:      "badtokentest",
 		Sourcetype: "sourcetype:badtokentest",
 		Source:     "manual-events",
-		Time:       &timeValue,
-		Fields:     map[string]string{"testKey": "testValue"}}
+		Timestamp:  timeValue,
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.CreateEvent(testIngestEvent)
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Equal(t, tr.N, 2, "Expected exactly two calls to TokenRetriever.GetTokenContext(): 1) at client initialization and 2) after 401 is encountered when client.IngestService.CreateEvent is called")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
