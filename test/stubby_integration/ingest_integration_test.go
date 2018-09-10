@@ -19,7 +19,7 @@ func TestIngestEventFail(t *testing.T) {
 	err := client.IngestService.PostEvents([]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).HTTPStatus)
 }
 
 func TestCreateEvents(t *testing.T) {
