@@ -26,13 +26,13 @@ type HTTPError struct {
 func (he *HTTPError) Error() string {
 	jsonErrMsg, err := json.Marshal(he)
 	if err != nil {
-		return fmt.Sprintf("Unknown Http Error - HTTPStatusCode: [%v], HTTPStatus: %v, Error Message: %v, Error Code: %v",
+		return fmt.Sprintf("Http Error - HTTPStatusCode: [%v], HTTPStatus: %v, Error Message: %v, Error Code: %v",
 			he.HTTPStatusCode, he.HTTPStatus, he.Message, he.Code)
 	}
 	return string(jsonErrMsg)
 }
 
-// ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and message
+// ParseHTTPStatusCodeInResponse returns http response and HTTPError struct based on response status code
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
 	if response != nil && (response.StatusCode < 200 || response.StatusCode >= 400) {
 		httpErr := &HTTPError{
