@@ -46,7 +46,7 @@ type DatasetInfo struct {
 	Disabled bool   `json:"disabled"`
 }
 
-// DatasetInfo represents the sources of data that can be serched by Splunk
+// DatasetCreationPayload represents the sources of data that can be serched by Splunk
 type DatasetCreationPayload struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
