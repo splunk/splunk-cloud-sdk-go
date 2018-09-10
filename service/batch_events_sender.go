@@ -177,9 +177,9 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 			var errString string
 			jsonEvents, parsingErr := json.Marshal(events)
 			if parsingErr != nil {
-				errString = fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, events)
+				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, events)
 			} else {
-				errString = fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, string(jsonEvents))
+				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, string(jsonEvents))
 			}
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)
