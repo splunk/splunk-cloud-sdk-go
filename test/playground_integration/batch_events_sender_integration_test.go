@@ -70,7 +70,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
 
-//Should flush when quit signal is sent
+// Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
 	var client = getClient(t)
 
@@ -131,9 +131,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(errors) >= maxAllowedErr)
-	assert.True(t, strings.Contains(errors[0], "Failed to send all events:Http Error - HTTPStatusCode: [404], Message: Error validating request"))
-	assert.True(t, strings.Contains(errors[0], "EventPayload:[{map[] test10 0 0   host1 } {map[] test10 0 0   host1 }]"))
-
+	assert.True(t, strings.Contains(errors[0], `failed to send all events:{"HTTPStatusCode":401,"HTTPStatus":"401 Unauthorized","message":"Error validating request"}`))
+	assert.True(t, strings.Contains(errors[0], `EventPayload:[{"attributes":null,"body":"test10","timestamp":0,"nanos":0,"source":"","sourcetype":"","host":"host1","id":""},{"attributes":null,"body":"test10","timestamp":0,"nanos":0,"source":"","sourcetype":"","host":"host1","id":""}]`))
 	collector.Stop()
 }
 

@@ -8,6 +8,7 @@ package playgroundintegration
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -114,11 +115,10 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestBadRequest)
-	// HTTP 400 Error Code
-	expectedError := &util.HTTPError{HTTPStatusCode: 400, Message: "{\"type\":\"ERROR_SPL_PARSE\",\"reason\":\"no viable alternative at input '|searchhahdkfdksf=main|dfsdfdshead'\",\"rule\":\"search\",\"line\":1,\"position\":27,\"token\":\"dfsdfdshead\",\"ok\":false}", Code: "1019"}
-
 	assert.NotNil(t, err)
-	assert.Equal(t, expectedError, err)
+	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "1019", err.(*util.HTTPError).Code)
+	assert.True(t, strings.Contains(err.(*util.HTTPError).Message, "\"type\":\"ERROR_SPL_PARSE\""))
 	assert.Empty(t, response)
 }
 
