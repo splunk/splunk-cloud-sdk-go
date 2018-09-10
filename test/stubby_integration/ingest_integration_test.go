@@ -16,36 +16,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateEventSuccess(t *testing.T) {
-	timeValue := float64(1523637597)
-
-	client := getClient(t)
-	clientURL, err := client.GetURL()
-	assert.Empty(t, err)
-
-	err = client.IngestService.CreateEvent(
-		model.Event{Host: clientURL.RequestURI(), Index: "main", Event: "test", Sourcetype: "sourcetype:eventgen", Source: "manual-events", Time: &timeValue, Fields: map[string]string{"testKey": "testValue"}})
-	assert.Empty(t, err)
-}
-
-func TestCreateRawEventSuccess(t *testing.T) {
-	err := getClient(t).IngestService.CreateRawEvent(
-		model.Event{Event: "test"})
-	assert.Empty(t, err)
-}
-
 func TestIngestEventFail(t *testing.T) {
 	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
-	err := client.IngestService.CreateEvent(model.Event{Event: "failed test"})
+	err := client.IngestService.PostEvents([]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).Message)
+	assert.Equal(t, "401 Unauthorized", err.(*util.HTTPError).HTTPStatus)
 }
 
 func TestCreateEvents(t *testing.T) {
-	event1 := model.Event{Host: "host1", Event: "test1"}
-	event2 := model.Event{Host: "host2", Event: "test2"}
-	err := getClient(t).IngestService.CreateEvents([]model.Event{event1, event2})
+	attributes := make(map[string]interface{})
+	attributes["testKey"] = "testValue"
+	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
+	event1 := model.Event{
+		Host:       "stubby",
+		Body:       "event1",
+		Sourcetype: "sourcetype:eventgen",
+		Source:     "manual-events",
+		Timestamp:  timeValue,
+		Attributes: attributes}
+	event2 := model.Event{
+		Host:       "stubby",
+		Body:       "event2",
+		Sourcetype: "sourcetype:eventgen",
+		Source:     "manual-events",
+		Timestamp:  timeValue,
+		Attributes: attributes}
+	err := getClient(t).IngestService.PostEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 
@@ -77,6 +74,6 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			DefaultUnit:       "MB",
 		},
 	}
-	err := client.IngestService.CreateMetricEvent(metricEvent1)
+	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1})
 	assert.Empty(t, err)
 }

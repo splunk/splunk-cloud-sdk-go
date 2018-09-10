@@ -136,7 +136,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 		model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.True(t, err.(*util.HTTPError).HTTPStatus == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
@@ -180,7 +180,7 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	_, err := invalidClient.CatalogService.GetDatasets()
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.True(t, err.(*util.HTTPError).HTTPStatus == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
 }
 
 // Test GetDataset by ID
