@@ -104,6 +104,22 @@ func (service *SearchService) GetJobResults(jobID string, params *model.JobResul
 	if err != nil {
 		return nil, err
 	}
+
+	// // check NextLink field
+	// var emptyResponse model.ResultsNotReadyResponse
+	// err = util.ParseResponse(&emptyResponse, response)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// // change NextLink to be a string pointer
+	// if emptyResponse.NextLink != nil {
+	// 	return emptyResponse, nil
+	// }
+	// // return available results
+	// var jobResponse model.SearchResults
+	// err = util.ParseResponse(&jobResponse, response)
+	// return &jobResponse, err
+
 	// check if there's any search result available
 	jobStatus, err := service.GetJob(jobID)
 	if err != nil {
