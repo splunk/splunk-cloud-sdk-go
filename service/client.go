@@ -250,6 +250,11 @@ func (c *Client) UpdateTokenContext(ctx *idp.Context) {
 	c.tokenContext = ctx
 }
 
+// SetDefaultTenant updates the tenant used to form most request URIs
+func (c *Client) SetDefaultTenant(tenant string) {
+	c.defaultTenant = tenant
+}
+
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *Client) GetURL() *url.URL {
 	return &url.URL{

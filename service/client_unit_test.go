@@ -41,6 +41,27 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	assert.Empty(t, testURL.Fragment)
 }
 
+func TestBuildURLSetDefaultTenant(t *testing.T) {
+	var tenant = "EXAMPLE_TENANT"
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token:  token,
+		Tenant: tenant,
+	})
+	require.Nil(t, err)
+	testURL, err := client.BuildURLDefaultTenant(nil, "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+	// Set to new tenant
+	tenant = "NEW_TENANT"
+	client.SetDefaultTenant(tenant)
+	testURL, err = client.BuildURLDefaultTenant(nil, "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+}
+
 func TestNewTokenClient(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
