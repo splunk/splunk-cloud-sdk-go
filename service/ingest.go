@@ -20,7 +20,7 @@ type IngestService service
 
 // PostEvents post single or multiple events to ingest service
 func (h *IngestService) PostEvents(events []model.Event) error {
-	url, err := h.client.BuildURLDefaultTenant(nil, ingestServicePrefix, ingestServiceVersionV2, "events")
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersionV2, "events")
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (h *IngestService) PostEvents(events []model.Event) error {
 
 // PostMetrics posts single or multiple metric events to ingest service
 func (h *IngestService) PostMetrics(events []model.MetricEvent) error {
-	url, err := h.client.BuildURLDefaultTenant(nil, ingestServicePrefix, ingestServiceVersion, "metrics")
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "metrics")
 	if err != nil {
 		return err
 	}

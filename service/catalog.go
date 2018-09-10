@@ -21,7 +21,7 @@ type CatalogService service
 
 // GetDatasets returns all Datasets
 func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 
 // GetDataset returns the Dataset by name
 func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", id)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", id)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 
 // CreateDataset creates a new Dataset
 func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.Datase
 
 // UpdateDataset updates an existing Dataset
 func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 
 // DeleteDataset implements delete Dataset endpoint
 func (c *CatalogService) DeleteDataset(datasetID string) error {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (c *CatalogService) DeleteDataset(datasetID string) error {
 
 // DeleteRule deletes the rule by the given path.
 func (c *CatalogService) DeleteRule(ruleID string) error {
-	getDeleteURL, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
+	getDeleteURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
 	if err != nil {
 		return err
 	}
@@ -119,7 +119,7 @@ func (c *CatalogService) DeleteRule(ruleID string) error {
 
 // GetRules returns all the rules.
 func (c *CatalogService) GetRules() ([]model.Rule, error) {
-	getRuleURL, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "rules")
+	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 
 // GetRule returns rule by an ID.
 func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
-	getRuleURL, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
+	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
 
 // CreateRule posts a new rule.
 func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
-	postRuleURL, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "rules")
+	postRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 
 // GetDatasetFields returns all the fields belonging to the specified dataset
 func (c *CatalogService) GetDatasetFields(datasetID string, values url.Values) ([]model.Field, error) {
-	url, err := c.client.BuildURLDefaultTenant(values, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+	url, err := c.client.BuildURL(values, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +191,7 @@ func (c *CatalogService) GetDatasetFields(datasetID string, values url.Values) (
 
 // GetDatasetField returns the field belonging to the specified dataset with the id datasetFieldID
 func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string) (*model.Field, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +209,7 @@ func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string
 
 // PostDatasetField creates a new field in the specified dataset
 func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.Field) (*model.Field, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +227,7 @@ func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.F
 
 // PatchDatasetField updates an already existing field in the specified dataset
 func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID string, datasetField model.Field) (*model.Field, error) {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -245,7 +245,7 @@ func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID stri
 
 // DeleteDatasetField deletes the field belonging to the specified dataset with the id datasetFieldID
 func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID string) error {
-	url, err := c.client.BuildURLDefaultTenant(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return err
 	}

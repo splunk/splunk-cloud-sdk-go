@@ -136,13 +136,13 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	return retryRequest, nil
 }
 
-// BuildURLDefaultTenant creates full Splunk Cloud URL using the client's defaultTenant
-func (c *Client) BuildURLDefaultTenant(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
-	return c.BuildURL(c.defaultTenant, queryValues, urlPathParts...)
+// BuildURL creates full Splunk Cloud URL using the client's defaultTenant
+func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
 }
 
-// BuildURL creates full Splunk Cloud URL with tenant
-func (c *Client) BuildURL(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+// BuildURLWithTenant creates full Splunk Cloud URL with tenant
+func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")

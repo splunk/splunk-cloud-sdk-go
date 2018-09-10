@@ -30,7 +30,7 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	})
 	require.Nil(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
-	testURL, err := client.BuildURLDefaultTenant(nil, "services", "search", "jobs")
+	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
 
 	require.Nil(t, err)
 	assert.Equal(t, apiHostname, testURL.Hostname())
@@ -49,14 +49,14 @@ func TestBuildURLSetDefaultTenant(t *testing.T) {
 		Tenant: tenant,
 	})
 	require.Nil(t, err)
-	testURL, err := client.BuildURLDefaultTenant(nil, "services", "search", "jobs")
+	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
 	require.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 	// Set to new tenant
 	tenant = "NEW_TENANT"
 	client.SetDefaultTenant(tenant)
-	testURL, err = client.BuildURLDefaultTenant(nil, "services", "search", "jobs")
+	testURL, err = client.BuildURL(nil, "services", "search", "jobs")
 	require.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
