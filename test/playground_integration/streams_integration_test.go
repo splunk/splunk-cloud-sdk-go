@@ -139,12 +139,6 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	assert.Equal(t, model.Activated, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
-
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	fmt.Println(deletePipelineResponse)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test DeactivatePipeline streams endpoint TODO (Parul): Contact streams service team with the deactivated status message query
