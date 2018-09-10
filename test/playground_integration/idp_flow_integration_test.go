@@ -116,7 +116,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 		Timestamp:  timeValue,
 		Attributes:  map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.PostEvents(&[]model.Event{testIngestEvent})
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
 }
 
@@ -163,7 +163,7 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 		Timestamp:  timeValue,
 		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.PostEvents(&[]model.Event{testIngestEvent})
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using client credentials flow error: %s", err)
 }
 
@@ -208,7 +208,7 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 		Timestamp:  timeValue,
 	    Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.PostEvents(&[]model.Event{testIngestEvent})
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
 }
 
@@ -237,7 +237,7 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 		Timestamp:  timeValue,
 		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
-	err = client.IngestService.PostEvents(&[]model.Event{testIngestEvent})
+	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Equal(t, tr.N, 2, "Expected exactly two calls to TokenRetriever.GetTokenContext(): 1) at client initialization and 2) after 401 is encountered when client.IngestService.CreateEvent is called")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
