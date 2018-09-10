@@ -140,9 +140,9 @@ func (service *SearchService) GetJobResults(jobID string, params *model.JobResul
 }
 
 // WaitForJob polls the job until it's completed or errors out
-func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration) (interface{}, error) {
+func (service *SearchService) WaitForJob(jobId string, pollInterval time.Duration) (interface{}, error) {
 	for {
-		job, err := service.GetJob(sid)
+		job, err := service.GetJob(jobId)
 		if err != nil {
 			return nil, err
 		}
@@ -154,4 +154,27 @@ func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration)
 			time.Sleep(pollInterval)
 		}
 	}
+}
+
+// QueryResults waits for job to complete and returns an iterator. If offset and batchSize are specified,
+// the iterator will return that window of results with each Next() call
+func (service *SearchService) QueryResults(jobId string, batchSize, offset int, params *model.JobResultsParams) (*SearchIterator, error) {
+	// err := search.Wait()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// jobStatus, err := search.Status()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if jobStatus.EventCount == 0 {
+	// 	return nil, errors.New("no results are retrieved from the search")
+	// }
+	// iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
+	// 	func(count, offset int) (*model.SearchResults, error) {
+	// 		params.Count = count
+	// 		params.Offset = offset
+	// 		return service.GetJobResults(jobId, params)
+	// 	})
+	return iterator, nil
 }
