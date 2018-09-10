@@ -58,13 +58,12 @@ func exitOnError(err error) {
 }
 
 func getClient() *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
-
 	client, err := service.NewClient(&service.Config{
-		Token:    testutils.TestAuthenticationToken,
-		URL:      url,
-		TenantID: testutils.TestTenantID,
-		Timeout:  testutils.TestTimeOut})
+		Token:  testutils.TestAuthenticationToken,
+		Scheme: testutils.TestURLProtocol,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: testutils.TestTenantID,
+	})
 
 	exitOnError(err)
 

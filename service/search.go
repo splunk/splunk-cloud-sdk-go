@@ -149,7 +149,7 @@ func (service *SearchService) GetJobs(params *model.JobsRequest) ([]model.Search
 	if params == nil {
 		params = model.NewDefaultPaginationParams()
 	}
-	jobsURL, err := service.client.BuildURL(util.ParseURLParams(*params), searchServicePrefix, searchServiceVersion, "jobs")
+	jobsURL, err := service.client.BuildURLDefaultTenant(util.ParseURLParams(*params), searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
 		return jobs, err
 	}
@@ -167,7 +167,7 @@ func (service *SearchService) GetJobs(params *model.JobsRequest) ([]model.Search
 // CreateJob dispatches a search and returns sid.
 func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, error) {
 	// var postJobResponse model.PostJobResponse
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
+	jobURL, err := service.client.BuildURLDefaultTenant(nil, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
 		return "", err
 	}
@@ -192,7 +192,7 @@ func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, err
 // GetJob retrieves information about the specified search.
 func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, error) {
 	var jobsResponse model.SearchJobContent
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
+	jobURL, err := service.client.BuildURLDefaultTenant(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
 	response, err := service.client.Get(RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
@@ -207,7 +207,7 @@ func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, err
 // PostJobControl runs a job control command for the specified search.
 func (service *SearchService) PostJobControl(jobID string, action *model.JobControlAction) (*model.JobControlReplyMsg, error) {
 	var msg model.JobControlReplyMsg
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID, "control")
+	jobURL, err := service.client.BuildURLDefaultTenant(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID, "control")
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +229,7 @@ func (service *SearchService) GetJobResults(jobID string, params *model.FetchRes
 	if params != nil {
 		query = util.ParseURLParams(*params)
 	}
-	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	jobURL, err := service.client.BuildURLDefaultTenant(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +251,7 @@ func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEven
 	if params != nil {
 		query = util.ParseURLParams(*params)
 	}
-	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "events")
+	jobURL, err := service.client.BuildURLDefaultTenant(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "events")
 	if err != nil {
 		return nil, err
 	}

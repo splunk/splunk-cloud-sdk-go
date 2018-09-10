@@ -29,6 +29,9 @@ var TestTenantID = os.Getenv("TEST_TENANT_ID")
 // TestInvalidTestTenantID - the invalid tenant ID that denies permission to make requests against the api
 var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
 
+// ExpiredAuthenticationToken - to test authentication retries
+var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
+
 // TestNamespace - A namespace for integration testing
 var TestNamespace = fmt.Sprintf("gonamespace%d", timeSec)
 

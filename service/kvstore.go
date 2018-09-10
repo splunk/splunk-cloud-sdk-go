@@ -22,7 +22,7 @@ type KVStoreService service
 
 // GetCollectionStats returns Collection Stats for the collection
 func (c *KVStoreService) GetCollectionStats(collection string) (*model.CollectionStats, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collection, "stats")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collection, "stats")
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (c *KVStoreService) GetCollectionStats(collection string) (*model.Collectio
 
 // GetServiceHealthStatus returns Service Health Status
 func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 
 // GetCollections gets all the collections
 func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 
 // ExportCollection exports the specified collection records to an external file
 func (c *KVStoreService) ExportCollection(collectionName string, contentType model.ExportCollectionContentType) (string, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName, "export")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName, "export")
 	if err != nil {
 		return "", err
 	}
@@ -109,7 +109,7 @@ func (c *KVStoreService) ExportCollection(collectionName string, contentType mod
 
 // CreateIndex posts a new index to be added to the collection.
 func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDefinition) (*model.IndexDescription, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDef
 
 // ListIndexes retrieves all the indexes in a given collection
 func (c *KVStoreService) ListIndexes(collectionName string) ([]model.IndexDefinition, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func (c *KVStoreService) ListIndexes(collectionName string) ([]model.IndexDefini
 
 // DeleteIndex deletes the specified index in a given collection
 func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes", indexName)
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes", indexName)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,7 @@ func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) er
 
 // InsertRecords posts new records to the collection.
 func (c *KVStoreService) InsertRecords(collectionName string, records []model.Record) ([]string, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "batch")
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "batch")
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func (c *KVStoreService) InsertRecords(collectionName string, records []model.Re
 
 // QueryRecords queries records present in a given collection.
 func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) ([]model.Record, error) {
-	url, err := c.client.BuildURL(values,
+	url, err := c.client.BuildURLDefaultTenant(values,
 		kvStoreServicePrefix,
 		kvStoreServiceVersion,
 		"collections",
@@ -206,7 +206,7 @@ func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) 
 
 // GetRecordByKey queries a particular record present in a given collection based on the key value provided by the user.
 func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) (model.Record, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) 
 
 // DeleteRecords deletes records present in a given collection based on the provided query.
 func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values) error {
-	url, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "query")
+	url, err := c.client.BuildURLDefaultTenant(values, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "query")
 	if err != nil {
 		return err
 	}
@@ -240,7 +240,7 @@ func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values)
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
 func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
+	url, err := c.client.BuildURLDefaultTenant(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
 	if err != nil {
 		return err
 	}
@@ -256,7 +256,7 @@ func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue strin
 
 // ListRecords - List the records created for the tenant's specified collection TODO: include count, offset and orderBy
 func (c *KVStoreService) ListRecords(collectionName string, filters map[string][]string) ([]map[string]interface{}, error) {
-	url, err := c.client.BuildURL(
+	url, err := c.client.BuildURLDefaultTenant(
 		filters,
 		kvStoreServicePrefix,
 		kvStoreServiceVersion,
@@ -285,7 +285,7 @@ func (c *KVStoreService) ListRecords(collectionName string, filters map[string][
 
 // InsertRecord - Create a new record in the tenant's specified collection
 func (c *KVStoreService) InsertRecord(collectionName string, record map[string]string) (map[string]string, error) {
-	url, err := c.client.BuildURL(
+	url, err := c.client.BuildURLDefaultTenant(
 		nil,
 		kvStoreServicePrefix,
 		kvStoreServiceVersion,

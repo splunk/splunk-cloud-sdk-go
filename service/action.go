@@ -22,7 +22,7 @@ type ActionService service
 
 // GetActions get all actions
 func (c *ActionService) GetActions() ([]model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (c *ActionService) GetActions() ([]model.Action, error) {
 
 // CreateAction creates an action
 func (c *ActionService) CreateAction(action model.Action) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *ActionService) CreateAction(action model.Action) (*model.Action, error)
 
 // GetAction get an action by name
 func (c *ActionService) GetAction(name string) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (c *ActionService) GetAction(name string) (*model.Action, error) {
 
 // TriggerAction triggers an action from a notification
 func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) (*model.ActionTriggerResponse, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 
 // UpdateAction updates and action by name
 func (c *ActionService) UpdateAction(name string, action model.ActionUpdateFields) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (c *ActionService) UpdateAction(name string, action model.ActionUpdateField
 
 // DeleteAction deletes an action by name
 func (c *ActionService) DeleteAction(name string) error {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func (c *ActionService) DeleteAction(name string) error {
 
 // GetActionStatus returns an action's status by name
 func (c *ActionService) GetActionStatus(name string, statusID string) (*model.ActionStatus, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name, "status", statusID)
+	url, err := c.client.BuildURLDefaultTenant(nil, actionServicePrefix, actionServiceVersion, "actions", name, "status", statusID)
 	if err != nil {
 		return nil, err
 	}
