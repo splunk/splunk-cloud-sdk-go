@@ -11,6 +11,7 @@ import (
 
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 // --------------------------------------------------------------------------------
@@ -604,7 +605,7 @@ func TestKVStoreQueryAllParametersSuccess(t *testing.T) {
 //There is no separation for the testing the insertion of a record when using an incorrect collections
 //because BOTH are required in order to make a dataset of kvcollection via the catalog service
 func TestKVStoreQueryInsertRecordIntoMissingCollection(t *testing.T) {
-	record := map[string]string{
+	record := model.Record {
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
@@ -621,7 +622,7 @@ func TestKVStoreQueryInsertRecordIntoMissingCollection(t *testing.T) {
 
 // Inserts a record into the specified tenant's collection
 func TestKVStoreQueryInsertRecordSuccess(t *testing.T) {
-	record := map[string]string{
+	record := model.Record {
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
