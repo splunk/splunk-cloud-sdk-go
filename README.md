@@ -19,6 +19,7 @@ A Go client for Splunk Cloud services
   * `go get -u golang.org/x/tools/cmd/goimports`
 * Clone/unzip our splunk/splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
 * Initialize a new client:
+
 ```go
 package main
 
@@ -36,7 +37,7 @@ func main() {
 	client, err := service.NewClient(&service.Config{
 		Token: os.Getenv("BEARER_TOKEN"),
 		TenantID: os.Getenv("TENANT"),
-		URL: "https://playground.api.splunkbeta.com",
+		URL: "https://api.splunkbeta.com",
 		Timeout: time.Second * 5,
 	})
 	exitOnErr(err)
