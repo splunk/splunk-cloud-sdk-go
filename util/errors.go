@@ -15,29 +15,33 @@ import (
 // HTTPError is raised when status code is not 2xx
 type HTTPError struct {
 	HTTPStatusCode int
-	Message        string
-	Code           string
-	MoreInfo       string
-	Details        []map[string]string
+	HTTPStatus     string
+	Message        string              `json:"message,omitempty"`
+	Code           string              `json:"code,omitempty"`
+	MoreInfo       string              `json:"moreInfo,omitempty"`
+	Details        []map[string]string `json:"details,omitempty"`
 }
 
 // This allows HTTPError to satisfy the error interface
 func (he *HTTPError) Error() string {
-	return fmt.Sprintf("Http Error - HTTPStatusCode: [%v], Message: %v",
-		he.HTTPStatusCode, he.Message)
+	jsonErrMsg, err := json.Marshal(he)
+	if err != nil {
+		return fmt.Sprintf("Http Error - HTTPStatusCode: [%v], HTTPStatus: %v, Error Message: %v, Error Code: %v",
+			he.HTTPStatusCode, he.HTTPStatus, he.Message, he.Code)
+	}
+	return string(jsonErrMsg)
 }
 
-// ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and message
+// ParseHTTPStatusCodeInResponse returns http response and HTTPError struct based on response status code
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
 	if response != nil && (response.StatusCode < 200 || response.StatusCode >= 400) {
 		httpErr := &HTTPError{
 			HTTPStatusCode: response.StatusCode,
-			Message:        response.Status,
+			HTTPStatus:     response.Status,
 		}
 		if response.Body != nil {
 			body, err := ioutil.ReadAll(response.Body)
 			if err != nil {
-
 				return response, err
 			}
 			json.Unmarshal(body, &httpErr)
