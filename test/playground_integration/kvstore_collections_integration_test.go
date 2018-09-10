@@ -30,7 +30,7 @@ var recordThree = map[string]string{
 	"TEST_KEY_03": "B",
 }
 
-func createRecord(t *testing.T, collection string, record map[string]string) (map[string]string, error) {
+func createRecord(t *testing.T, collection string, record model.Record) (map[string]string, error) {
 	// Insert a new record into the kvstore
 	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
 		collection,
@@ -594,7 +594,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 //There is no separation for the testing the insertion of a record when using an incorrect collections
 //because BOTH are required in order to make a dataset of kvcollection via the catalog service
 func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
-	record := map[string]string{
+	record := model.Record{
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
@@ -611,7 +611,7 @@ func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
 
 // Inserts a record into the specified tenant's collection
 func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
-	record := map[string]string{
+	record := model.Record {
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
