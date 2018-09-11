@@ -34,7 +34,7 @@ func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 		return nil, err
 	}
 	err = util.ParseResponse(&searchJobs, response)
-	return &searchJobs, err
+	return searchJobs, err
 }
 
 // CreateJob creates a new search job
