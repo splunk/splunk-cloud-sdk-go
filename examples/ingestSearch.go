@@ -144,7 +144,7 @@ func ingestEvent(client *service.Client, index string) (string, string) {
 		Host:       host,
 		Source:     source,
 		Body:       fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
-		Attributes: map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
+		Attributes: map[string]interface{}{"index": index},
 	}
 
 	event3 := model.Event{
@@ -152,7 +152,7 @@ func ingestEvent(client *service.Client, index string) (string, string) {
 		Source:     source,
 		Sourcetype: "splunkd",
 		Body:       fmt.Sprintf("04-24-2018 12:32:23.258 -0700 INFO device_id:aa2 device_id=[code]error3: haha2 \"9765f1bebdb4\" %v,%v", host, source),
-		Attributes: map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
+		Attributes: map[string]interface{}{"index": index},
 	}
 
 	// Use the Ingest endpoint to send multiple events
@@ -170,23 +170,24 @@ func search(client *service.Client, query string, expected int) {
 			exitOnError(errors.New("Search failed due to timeout "))
 		}
 
-		sid, err := client.SearchService.CreateJob(&model.PostJobsRequest{Search: query})
+		job, err := client.SearchService.CreateJob(&model.CreateJobRequest{Query: query})
 		exitOnError(err)
 
-		err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
+		_, err = client.SearchService.WaitForJob(job.Id, 1000*time.Millisecond)
 		exitOnError(err)
 
-		resp, err := client.SearchService.GetResults(sid, &model.FetchResultsRequest{Count: 100})
-		fmt.Println(resp.Results)
+		resp, err := client.SearchService.GetResults(job.Id, 100, 0)
+		results := resp.(*model.SearchResults).Results
+		fmt.Println(results)
 		exitOnError(err)
 
-		if len(resp.Results) == expected {
+		if len(results) == expected {
 			fmt.Println("Search succeed")
 
 			return
 		}
 
-		if len(resp.Results) < expected {
+		if len(results) < expected {
 			fmt.Println("Not found all yet, keep searching")
 			time.Sleep(20 * time.Second)
 		} else {
