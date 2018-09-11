@@ -168,7 +168,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	validateUnauthenticatedActionError(t, err)
@@ -259,7 +259,7 @@ func TestGetActionStatus(t *testing.T) {
 	resp, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	require.Nil(t, err)

@@ -10,14 +10,12 @@ import (
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/service"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestIngestEventFail(t *testing.T) {
-	client, _ := service.NewClient(&service.Config{Token: "wrongToken", URL: testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost, TenantID: testutils.TestTenantID, Timeout: time.Second * 5})
+	client := getInvalidTokenClient(t)
 	err := client.IngestService.PostEvents([]model.Event{{Body: "failed test"}})
 	assert.NotEmpty(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)

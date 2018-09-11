@@ -7,7 +7,6 @@ package stubbyintegration
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -19,26 +18,30 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func getClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	return client
+}
 
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("CREATING A CLIENT WITH THESE SETTINGS")
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("Authentication Token: " + testutils.TestAuthenticationToken + "\n")
-	//fmt.Printf("Splunk Cloud Host API: " + testutils.TestSplunkCloudHost + "\n")
-	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
-	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
-	//fmt.Printf("Fully Qualified URL: " + url + "\n")
-
-	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
-	if err != nil {
-		fmt.Println(err.Error())
-		t.FailNow()
-	}
-
+func getInvalidTokenClient(t *testing.T) *service.Client {
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.ExpiredAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
 	return client
 }
 

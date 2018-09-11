@@ -29,13 +29,13 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup.Name)
 	assert.Equal(t, "test1@splunk.com", resultgroup.CreatedBy)
-	assert.Equal(t, testutils.TestTenantID, resultgroup.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
 
 	resultgroup1, err := client.IdentityService.GetGroup(groupName)
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup1.Name)
 	assert.Equal(t, "test1@splunk.com", resultgroup1.CreatedBy)
-	assert.Equal(t, testutils.TestTenantID, resultgroup1.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultgroup1.Tenant)
 
 	resultgroup2, err := client.IdentityService.GetGroups()
 	require.Nil(t, err)
@@ -53,14 +53,14 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole.Name)
 	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
-	assert.Equal(t, testutils.TestTenantID, resultrole.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
 	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName, roleName)
 	defer client.IdentityService.RemoveGroupRole(groupName, roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole1.Role)
 	assert.Equal(t, groupName, resultrole1.Group)
-	assert.Equal(t, testutils.TestTenantID, resultrole1.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
 	resultrole2, err := client.IdentityService.GetGroupRoles(groupName)
 	require.Nil(t, err)
@@ -83,7 +83,7 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, memberName, resultmember1.Principal)
 	assert.Equal(t, groupName, resultmember1.Group)
-	assert.Equal(t, testutils.TestTenantID, resultmember1.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultmember1.Tenant)
 
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
@@ -123,13 +123,13 @@ func TestCRUDRoles(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole.Name)
 	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
-	assert.Equal(t, testutils.TestTenantID, resultrole.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
 	resultrole1, err := client.IdentityService.GetRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole1.Name)
 	assert.Equal(t, "test1@splunk.com", resultrole1.CreatedBy)
-	assert.Equal(t, testutils.TestTenantID, resultrole1.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
 	resultrole2, err := client.IdentityService.GetRoles()
 	require.Nil(t, err)
@@ -148,14 +148,14 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Equal(t, roleName, resultroleperm.Role)
 	assert.Equal(t, permissionName, resultroleperm.Permission)
 	assert.Equal(t, "test1@splunk.com", resultroleperm.AddedBy)
-	assert.Equal(t, testutils.TestTenantID, resultroleperm.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultroleperm.Tenant)
 
 	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName, permissionName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm1.Role)
 	assert.Equal(t, permissionName, resultroleperm1.Permission)
 	assert.Equal(t, "test1@splunk.com", resultroleperm1.AddedBy)
-	assert.Equal(t, testutils.TestTenantID, resultroleperm1.Tenant)
+	assert.Equal(t, testutils.TestTenant, resultroleperm1.Tenant)
 
 	resultroleperm2, err := client.IdentityService.GetRolePermissions(roleName)
 	require.Nil(t, err)
@@ -183,7 +183,7 @@ func TestCRUDMembers(t *testing.T) {
 	defer client.IdentityService.RemoveMember(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, memberName, result.Name)
-	assert.Equal(t, testutils.TestTenantID, result.Tenant)
+	assert.Equal(t, testutils.TestTenant, result.Tenant)
 
 	result1, err := client.IdentityService.GetMembers()
 	require.Nil(t, err)
@@ -193,7 +193,7 @@ func TestCRUDMembers(t *testing.T) {
 	result2, err := client.IdentityService.GetMember(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, memberName, result2.Name)
-	assert.Equal(t, testutils.TestTenantID, result2.Tenant)
+	assert.Equal(t, testutils.TestTenant, result2.Tenant)
 
 	// add member to group
 	groupName := "users" //pre-defined group
@@ -221,8 +221,8 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, roleName, result6.Role)
 	assert.Equal(t, permissionName, result6.Permission)
 
-	permissionName1 := fmt.Sprintf("%v:users:identity.groups.read", testutils.TestTenantID)
-	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenantID, memberName)
+	permissionName1 := fmt.Sprintf("%v:users:identity.groups.read", testutils.TestTenant)
+	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, 3, len(result7))
