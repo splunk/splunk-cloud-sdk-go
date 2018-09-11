@@ -82,7 +82,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
@@ -126,7 +126,7 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
@@ -170,7 +170,7 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
