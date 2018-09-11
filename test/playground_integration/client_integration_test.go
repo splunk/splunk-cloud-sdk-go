@@ -34,7 +34,7 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 		Token:   testutils.TestAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestInvalidTestTenantID,
+		Tenant:  testutils.TestInvalidTestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
@@ -82,7 +82,7 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 		Token:            testutils.TestAuthenticationToken,
 		Scheme:           testutils.TestURLProtocol,
 		Host:             testutils.TestSplunkCloudHost,
-		Tenant:           testutils.TestInvalidTestTenantID,
+		Tenant:           testutils.TestInvalidTestTenant,
 		Timeout:          testutils.TestTimeOut,
 		ResponseHandlers: handlers,
 	})
