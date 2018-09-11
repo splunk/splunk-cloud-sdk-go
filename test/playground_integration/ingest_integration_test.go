@@ -19,22 +19,22 @@ func TestIntegrationCreateEventsSuccess(t *testing.T) {
 	attributes := make(map[string]interface{})
 	attributes["testKey"] = "testValue"
 	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
-	clientURL, err := client.GetURL()
+	clientURL := client.GetURL()
 	event1 := model.Event{
 		Host:       clientURL.RequestURI(),
 		Body:       "event1",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Timestamp:   timeValue,
-		Attributes:  attributes}
+		Timestamp:  timeValue,
+		Attributes: attributes}
 	event2 := model.Event{
 		Host:       clientURL.RequestURI(),
 		Body:       "event2",
 		Sourcetype: "sourcetype:eventgen",
 		Source:     "manual-events",
-		Timestamp:   timeValue,
-		Attributes:  attributes}
-	err = client.IngestService.PostEvents([]model.Event{event1, event2})
+		Timestamp:  timeValue,
+		Attributes: attributes}
+	err := client.IngestService.PostEvents([]model.Event{event1, event2})
 	assert.Empty(t, err)
 }
 

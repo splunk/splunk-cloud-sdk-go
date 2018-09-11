@@ -18,26 +18,38 @@ import (
 )
 
 func getClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	return client
+}
 
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("CREATING A CLIENT WITH THESE SETTINGS")
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("Authentication Token: " + testutils.TestAuthenticationToken + "\n")
-	//fmt.Printf("Splunk Cloud Host API: " + testutils.TestSplunkCloudHost + "\n")
-	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
-	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
-	//fmt.Printf("Fully Qualified URL: " + url + "\n")
-	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
-	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
+func getInvalidTenantClient(t *testing.T) *service.Client {
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestInvalidTestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
 	return client
 }
 
 func getInvalidClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
-
-	client, err := service.NewClient(&service.Config{Token: testutils.TestInvalidAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
-	require.Emptyf(t, err, "Error calling service.NewClient(): %s", err)
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.ExpiredAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
 	return client
 }
 
@@ -62,12 +74,18 @@ func (rh *rHandlerErr) HandleResponse(client *service.Client, request *service.R
 }
 
 func TestClientMultipleResponseHandlers(t *testing.T) {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
 	var handler1 = &noOpHandler{}
 	var handler2 = &rHandlerErr{}
 	var handler3 = &noOpHandler{}
 	var handlers = []service.ResponseHandler{handler1, handler2, handler3}
-	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestInvalidTestTenantID, Timeout: testutils.TestTimeOut, ResponseHandlers: handlers})
+	client, err := service.NewClient(&service.Config{
+		Token:            testutils.TestAuthenticationToken,
+		Scheme:           testutils.TestURLProtocol,
+		Host:             testutils.TestSplunkCloudHost,
+		Tenant:           testutils.TestInvalidTestTenant,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: handlers,
+	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 	_, err = client.SearchService.GetJobs(nil)
 	assert.True(t, strings.Contains(err.Error(), rHandlerErrMsg), "error should match custom error from response handler")
