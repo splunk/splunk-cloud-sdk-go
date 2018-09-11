@@ -24,7 +24,7 @@ func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
 	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
-		return &searchJobs, err
+		return searchJobs, err
 	}
 	response, err := service.client.Get(RequestParams{URL: jobsURL})
 	if response != nil {
