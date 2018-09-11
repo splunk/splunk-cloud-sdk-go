@@ -382,8 +382,8 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 
 	_, err := invalidClient.CatalogService.GetRules()
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode == 401)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message, )
 }
 
 // Test GetRule By ID
@@ -416,8 +416,8 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	_, err = invalidClient.CatalogService.GetRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode == 401)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message, )
 }
 
 // Test GetRules for 404 Rule not found error
@@ -460,8 +460,8 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	err = invalidClient.CatalogService.DeleteRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode == 401)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message, )
 }
 
 // Test DeleteRule for 404 Rule not found error
@@ -472,7 +472,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteRule("123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 }
 
 // Test GetDatasetFields
