@@ -74,11 +74,12 @@ func getClient() *service.Client {
 func createIndex(client *service.Client) (string, string) {
 	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
 	index := "main"
-	indexinfo := model.DatasetInfo{
+	disabled := false
+	indexinfo := model.DatasetCreationPayload{
 		Owner:    "splunk",
 		Name:     index,
 		Kind:     "index",
-		Disabled: false,
+		Disabled: &disabled,
 	}
 
 	if index == "main" {
