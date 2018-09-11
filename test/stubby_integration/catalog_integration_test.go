@@ -37,8 +37,9 @@ func TestGetDatasets(t *testing.T) {
 
 // Stubby test for CreateDataset() catalog service endpoint
 func TestPostDataset(t *testing.T) {
+	disabled := true
 	result, err := getClient(t).CatalogService.CreateDataset(
-		model.DatasetCreationPayload{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: true})
+		model.DatasetCreationPayload{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: &disabled})
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
