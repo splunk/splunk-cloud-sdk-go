@@ -275,7 +275,7 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	// HTTP Code 500 Error
-	expectedError := &util.HTTPError{HTTPStatusCode: 404, Message: "404 Not Found", Code: "404"}
+	expectedError := &util.HTTPError{HTTPStatusCode:404, HTTPStatus:"404 Not Found", Message:"", Code:"", MoreInfo:"", Details:[]map[string]string(nil)}
 
 	resp, err := client.SearchService.GetJobResults("NON_EXISTING_SEARCH_ID", &model.FetchResultsRequest{Count: 30})
 	assert.NotNil(t, err)
