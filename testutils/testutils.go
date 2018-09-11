@@ -15,19 +15,19 @@ import (
 var timeSec = time.Now().Unix()
 
 // TestURLProtocol - the url protocol for the test api to be used
-var TestURLProtocol = os.Getenv("TEST_URL_PROTOCOL")
+var TestURLProtocol = "https"
 
 // TestSplunkCloudHost - the url for the test api to be used
-var TestSplunkCloudHost = os.Getenv("TEST_SPLUNK_CLOUD_HOST")
+var TestSplunkCloudHost ="api.playground.splunkbeta.com"
 
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
-var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")
+var TestAuthenticationToken = "eyJraWQiOiJIR1RMbXJGUWNsSGVTRUZzdTIzQ1k4cTZ3S3pjR2JwUGtvT014R2hQVVBVIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmhCcjRiekVYUGlsb2F2MHQ3dTJWU3RZeGNtQ0RwRTZuR2hQT29jWjN6ZVkiLCJpc3MiOiJodHRwczovL3NwbHVuay1jaWFtLm9rdGEuY29tL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTUzNjYwMTc3OSwiZXhwIjoxNTM2NjQ0OTc5LCJjaWQiOiIwb2FwYmcyem1MYW1wV2daNDJwNiIsInVpZCI6IjAwdTEwa20yMWhiT3BUbzdTMnA3Iiwic2NwIjpbInByb2ZpbGUiLCJlbWFpbCIsIm9wZW5pZCJdLCJzdWIiOiJ0ZXN0MUBzcGx1bmsuY29tIn0.XzITtjDgws7AFzYv39eoL_5QmC5LR_U0rTL1egupWSq_crDGt3JqRk-kyGe8YPkIJdTsQ97bdVXR0mEsxxixdHWCw6IRtBPPIMENkr6Qc6ZtGK7ESaQPPFEUuyU9fMdfJ2Gh-Z4YDhCo758yptwFItVdOJwXrA1TU6R4XHvZKXaoVNjUhKNSXtkEIwXHIaGeYk_d88q-L_XYD7OIZZdlVIgxCkAMLaWwqHX_rlBbvoN4aNQl7BrtZ0ofS41isNbPxQSFJBwD27f6ZTuQTGjhfBeTyH3146Qt5TlXlfkJ6WigeV3VnzmWB9QNqOZN_8LriB06INYw6gmtqHYah7wQKg"
 
 // TestInvalidAuthenticationToken - the invalid access token that denies permission to make requests against the api
 var TestInvalidAuthenticationToken = "INVALID_TOKEN"
 
 // TestTenantID - the tenant to be used for the API
-var TestTenantID = os.Getenv("TEST_TENANT_ID")
+var TestTenantID = "ljiang6"
 
 // TestInvalidTestTenantID - the invalid tenant ID that denies permission to make requests against the api
 var TestInvalidTestTenantID = "INVALID_TEST_TENANT_ID"
@@ -46,3 +46,5 @@ var TestTimeOut = time.Second * 5
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
 var TenantCreationOn = (os.Getenv("TENANT_CREATION") == "1")
+
+

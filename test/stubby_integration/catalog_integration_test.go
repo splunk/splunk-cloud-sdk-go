@@ -110,14 +110,14 @@ func TestGetDatasetField(t *testing.T) {
 
 // Stubby test for PostDatasetField() catalog service endpoint
 func TestPostDatasetField(t *testing.T) {
-	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "S", FieldType: "D", Prevalence: "A"}
-	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testDatasetID, testField)
+	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "N", FieldType: "D", Prevalence: "A"}
+	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, testField)
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
 	assert.Equal(t, testFieldID1, result.ID)
 	assert.Equal(t, "test_data", result.Name)
-	assert.Equal(t, model.STRING, result.DataType)
+	assert.Equal(t, model.NUMBER, result.DataType)
 	assert.Equal(t, model.DIMENSION, result.FieldType)
 	assert.Equal(t, model.ALL, result.Prevalence)
 }
@@ -146,9 +146,9 @@ func TestDeleteDatasetField(t *testing.T) {
 // Stubby test for CreateRule() catalog service endpoint
 func TestPostRule(t *testing.T) {
 	var actions [3]model.CatalogAction
-	actions[0] = CreateAction("AUTOKV", "Splunk", 0, "", "NONE", "", "", "", 0)
-	actions[1] = CreateAction("EVAL", "Splunk", 0, "Splunk", "", "string", "", "", 0)
-	actions[2] = CreateAction("LOOKUP", "Splunk", 0, "", "", "string", "", "", 0)
+	actions[0] = CreateAction("AUTOKV", "Splunk", "", "NONE", "", "", "", 0)
+	actions[1] = CreateAction("EVAL", "Splunk",  "Splunk", "", "string", "", "", 0)
+	actions[2] = CreateAction("LOOKUP", "Splunk" , "", "", "string", "", "", 0)
 
 	result, err := getClient(t).CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
 
@@ -158,14 +158,60 @@ func TestPostRule(t *testing.T) {
 	assert.Equal(t, 3, len(result.Actions))
 }
 
-// Stubby test for DeleteDatasetField() catalog service endpoint
+// Stubby test for CreateRuleAction() catalog service endpoint
 func TestCreateRuleAction(t *testing.T) {
-	limit := 0
-	action, err := getClient(t).CatalogService.CreateRuleAction("rule1", model.NewRegexAction("integ_test_field1", "some pattern", &limit, ""))
+	//type test1 struct {
+	//	Version    *int            `json:"version,omitempty"`
+	//}
+	//
+	//ver:=100
+	//test11:= test1{Version:&ver}
+	//if content, err := json.Marshal(test11); err == nil {
+	//	buffer := bytes.NewBuffer(content)
+	//	htmlData,err1 := ioutil.ReadAll(buffer) //<--- here!
+	//	fmt.Println("buffer:")
+	//	fmt.Println(string(htmlData))
+	//	fmt.Println(err1)
+	//}
+	//
+	//
+	//var test22 test1
+	//buffer1 := bytes.NewBuffer([]byte("{\"version\":100}"))
+	//
+	//err := json.NewDecoder(buffer1).Decode(&test22)
+	//fmt.Println(test22)
+
+	limit := 5
+	action, err := getClient(t).CatalogService.CreateRuleAction("rule1", model.NewRegexAction("integ_test_field1", "some pa", &limit, "me"))
 	require.Empty(t, err)
 	assert.Equal(t, "integ_test_field1", action.Field)
-	assert.Equal(t, "some pattern", action.Pattern)
-	assert.Equal(t, 0, action.Pattern)
+	assert.Equal(t, "some pa", action.Pattern)
+	assert.Equal(t, 5, action.Limit)
+}
+
+// Stubby test for GetRuleActions() catalog service endpoint
+func TestGetRuleActions(t *testing.T) {
+	actions, err := getClient(t).CatalogService.GetRuleActions("rule1")
+	require.Empty(t, err)
+	require.Equal(t, 1, len(actions))
+	assert.Equal(t, model.CatalogActionKind("REGEX"), actions[0].Kind)
+	assert.Equal(t, "some pa", actions[0].Pattern)
+	assert.Equal(t, "integ_test_field1", actions[0].Field)
+}
+
+// Stubby test for GetRuleAction() catalog service endpoint
+func TestGetRuleAction(t *testing.T) {
+	action, err := getClient(t).CatalogService.GetRuleAction("rule1", "5b91a0ff4949b40001acf2c8")
+	require.Empty(t, err)
+	assert.Equal(t, model.CatalogActionKind("REGEX"), action.Kind)
+	assert.Equal(t, "some pa", action.Pattern)
+	assert.Equal(t, "integ_test_field1", action.Field)
+}
+
+// Stubby test for GetRuleAction() catalog service endpoint
+func TestDeleteRuleAction(t *testing.T) {
+	err := getClient(t).CatalogService.DeleteRuleAction("rule1", "5b91a0ff4949b40001acf2c8")
+	require.Empty(t, err)
 }
 
 // creates a rule to post
@@ -180,11 +226,10 @@ func CreateRule(name string, match string, module string, owner string, actions 
 }
 
 // creates an action for rule to post
-func CreateAction(kind model.CatalogActionKind, owner string, version int, field string, mode string, expression string, pattern string, alias string, limit int) model.CatalogAction {
+func CreateAction(kind model.CatalogActionKind, owner string, field string, mode string, expression string, pattern string, alias string, limit int) model.CatalogAction {
 	return model.CatalogAction{
 		Kind:       kind,
 		Owner:      owner,
-		Version:    version,
 		Field:      field,
 		Mode:       mode,
 		Expression: expression,

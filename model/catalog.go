@@ -60,14 +60,14 @@ type DatasetCreationPayload struct {
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	CaseSensitiveMatch *bool   `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int   `json:"maxMatches,omitempty"`
-	MinMatches         *int   `json:"minMatches,omitempty"`
+	MaxMatches         *int    `json:"maxMatches,omitempty"`
+	MinMatches         *int    `json:"minMatches,omitempty"`
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
+	Disabled *bool   `json:"disabled,omitempty"`
 }
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
@@ -216,10 +216,23 @@ type DatasetImportPayload struct {
 	Owner   string `json:"owner"`
 }
 
+// CatalogAction represents a specific search time transformation action.
+type CatalogActionCreationPayload struct {
+	RuleID     string            `json:"ruleid,omitempty"`
+	Kind       CatalogActionKind `json:"kind" binding:"required"`
+	Owner      string            `json:"owner" binding:"required"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      *int              `json:"limit,omitempty"`
+}
+
 
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string,  owner string) *CatalogAction {
-	return &CatalogAction{
+func NewAliasAction(field string, alias string,  owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
 		Kind:"ALIAS",
 		Owner:owner,
 		Alias:alias,
@@ -228,8 +241,8 @@ func NewAliasAction(field string, alias string,  owner string) *CatalogAction {
 }
 
 // NewAutoKVAction creates a new autokv kind action
-func NewAutoKVAction(mode string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
 		Kind:"AUTOKV",
 		Owner:owner,
 		Mode:mode,
@@ -237,8 +250,8 @@ func NewAutoKVAction(mode string, owner string) *CatalogAction {
 }
 
 // NewEvalAction creates a new autokv kind action
-func NewEvalAction(field string, expression string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
 		Kind:"EVAL",
 		Owner:owner,
 		Field:field,
@@ -247,8 +260,8 @@ func NewEvalAction(field string, expression string, owner string) *CatalogAction
 }
 
 // NewLookupAction creates a new autokv kind action
-func NewLookupAction(expression string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
 		Kind:"LOOKUP",
 		Owner:owner,
 		Expression:expression,
@@ -256,16 +269,17 @@ func NewLookupAction(expression string, owner string) *CatalogAction {
 }
 
 // NewRegexAction creates a new autokv kind action
-func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
-	action := CatalogAction{
-		Kind:"REGEX",
-		Owner:owner,
-		Field:field,
-		Pattern:pattern,
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload {
+	action := CatalogActionCreationPayload{
+		Kind:    "REGEX",
+		Owner:   owner,
+		Field:   field,
+		Pattern: pattern,
+		Limit:   limit,
 	}
 
-	if limit!=nil {
-		action.Limit=*limit
+	if limit != nil {
+		action.Limit = limit
 	}
 
 	return &action

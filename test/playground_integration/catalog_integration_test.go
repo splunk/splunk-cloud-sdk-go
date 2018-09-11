@@ -778,7 +778,7 @@ func TestRuleActions(t *testing.T) {
 	client := getClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	dataset, err := client.CatalogService.CreateDataset(createKVCollectionDataset())
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
 
