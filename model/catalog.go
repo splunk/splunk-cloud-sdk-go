@@ -62,12 +62,12 @@ type DatasetCreationPayload struct {
 	ExternalName       string `json:"externalName,omitempty"`
 	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int    `json:"maxMatches,omitempty"`
-	MinMatches         *int    `json:"minMatches,omitempty"`
+	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool   `json:"disabled,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
 }
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
