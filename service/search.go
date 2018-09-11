@@ -19,7 +19,7 @@ const searchServiceVersion = "v2"
 // SearchService talks to the Splunk Cloud search service
 type SearchService service
 
-// GetJobs gets the matching list of search jobs
+// ListJobs gets the matching list of search jobs
 func (service *SearchService) ListJobs() (*[]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
 	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
@@ -56,9 +56,9 @@ func (service *SearchService) CreateJob(job *model.CreateJobRequest) (*model.Sea
 }
 
 // GetJob retrieves information about the specified search.
-func (service *SearchService) GetJob(jobId string) (*model.SearchJob, error) {
+func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error) {
 	var searchJob model.SearchJob
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobId)
+	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
 	response, err := service.client.Get(RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
@@ -71,9 +71,9 @@ func (service *SearchService) GetJob(jobId string) (*model.SearchJob, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (service *SearchService) UpdateJob(jobId string, action model.JobAction) (*model.PatchJobResponse, error) {
+func (service *SearchService) UpdateJob(jobID string, action model.JobAction) (*model.PatchJobResponse, error) {
 	var patchResponse model.PatchJobResponse
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobId)
+	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
@@ -120,18 +120,17 @@ func (service *SearchService) GetResults(jobID string, count, offset int) (inter
 		var emptyResponse model.ResultsNotReadyResponse
 		err = util.ParseResponse(&emptyResponse, response)
 		return &emptyResponse, err
-	} else {
-		// NextLink does not exist
-		var results model.SearchResults
-		err = util.ParseResponse(&results, response)
-		return &results, err
 	}
+	// NextLink does not exist
+	var results model.SearchResults
+	err = util.ParseResponse(&results, response)
+	return &results, err
 }
 
 // WaitForJob polls the job until it's completed or errors out
-func (service *SearchService) WaitForJob(jobId string, pollInterval time.Duration) (interface{}, error) {
+func (service *SearchService) WaitForJob(jobID string, pollInterval time.Duration) (interface{}, error) {
 	for {
-		job, err := service.GetJob(jobId)
+		job, err := service.GetJob(jobID)
 		if err != nil {
 			return nil, err
 		}

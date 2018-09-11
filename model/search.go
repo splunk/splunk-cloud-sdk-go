@@ -64,7 +64,7 @@ type SearchJob struct {
 	// Represents parameters on the search job such as 'earliest' and 'latest'.
 	Parameters SearchParameters `json:"parameters,omitempty"`
 	// The id assigned to the search job
-	Id string `json:"sid,omitempty"`
+	ID string `json:"sid,omitempty"`
 	// The current status of the job
 	Status SearchJobStatus `json:"status,omitempty"`
 	// An estimate of how close the job is to completing.
@@ -78,6 +78,7 @@ type SearchJob struct {
 // JobAction defines actions to be taken on an existing search job.
 type JobAction string
 
+// Define supported job actions
 const (
 	CancelJob   JobAction = "cancel"
 	FinalizeJob JobAction = "finalize"
@@ -85,8 +86,10 @@ const (
 	SaveJob     JobAction = "save"
 )
 
+// JobMessageType defines type of messages from Splunkd
 type JobMessageType string
 
+// Define supported message type
 const (
 	InfoType  JobMessageType = "INFO"
 	FatalType JobMessageType = "FATAL"

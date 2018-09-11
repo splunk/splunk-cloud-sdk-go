@@ -24,7 +24,7 @@ var RefreshToken = os.Getenv("REFRESH_TOKEN")
 // IDPHost - host to retrieve access token from
 var IDPHost = os.Getenv("IDP_HOST")
 
-// NativeClientID - Okta app Client Id for SDK Native App
+// NativeClientID - Okta app Client ID for SDK Native App
 var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 
 // NativeAppRedirectURI is one of the redirect uris configured for the app

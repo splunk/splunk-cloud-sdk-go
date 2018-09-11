@@ -173,10 +173,10 @@ func search(client *service.Client, query string, expected int) {
 		job, err := client.SearchService.CreateJob(&model.CreateJobRequest{Query: query})
 		exitOnError(err)
 
-		_, err = client.SearchService.WaitForJob(job.Id, 1000*time.Millisecond)
+		_, err = client.SearchService.WaitForJob(job.ID, 1000*time.Millisecond)
 		exitOnError(err)
 
-		resp, err := client.SearchService.GetResults(job.Id, 100, 0)
+		resp, err := client.SearchService.GetResults(job.ID, 100, 0)
 		results := resp.(*model.SearchResults).Results
 		fmt.Println(results)
 		exitOnError(err)
