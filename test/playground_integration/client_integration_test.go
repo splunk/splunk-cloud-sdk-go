@@ -22,7 +22,7 @@ func getClient(t *testing.T) *service.Client {
 		Token:   testutils.TestAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestTenantID,
+		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
@@ -46,7 +46,7 @@ func getInvalidClient(t *testing.T) *service.Client {
 		Token:   testutils.ExpiredAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestTenantID,
+		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)

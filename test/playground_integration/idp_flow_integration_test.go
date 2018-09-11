@@ -77,7 +77,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -93,7 +93,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -121,7 +121,7 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -137,7 +137,7 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -165,7 +165,7 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -182,7 +182,7 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
@@ -208,7 +208,7 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenantID,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)

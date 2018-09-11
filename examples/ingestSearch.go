@@ -62,7 +62,7 @@ func getClient() *service.Client {
 		Token:  testutils.TestAuthenticationToken,
 		Scheme: testutils.TestURLProtocol,
 		Host:   testutils.TestSplunkCloudHost,
-		Tenant: testutils.TestTenantID,
+		Tenant: testutils.TestTenant,
 	})
 
 	exitOnError(err)

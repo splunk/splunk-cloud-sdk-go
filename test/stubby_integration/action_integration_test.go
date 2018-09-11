@@ -28,7 +28,7 @@ func TestCreateAction(t *testing.T) {
 // Stubby test for Post trigger action
 func TestTriggerWebHookAction(t *testing.T) {
 	var payloadweb = &map[string]interface{}{"name": "bean bag"}
-	actionNotificationData := model.ActionNotification{Kind: model.RawJSONPayloadKind, Tenant: testutils.TestTenantID, Payload: payloadweb}
+	actionNotificationData := model.ActionNotification{Kind: model.RawJSONPayloadKind, Tenant: testutils.TestTenant, Payload: payloadweb}
 	u, err := getClient(t).ActionService.TriggerAction("test10", actionNotificationData)
 	assert.Empty(t, err)
 	assert.NotEmpty(t, u)
