@@ -16,16 +16,16 @@ git add service/client_info.go
 echo "Updating docs and generating cicd-publish artifact ..."
 make docs_publish
 git add docs/
-echo "Creating (but not pushing) local commit for client_info.go and docs changes ..."
-git commit -m "Release v$NEW_VERSION"
-echo "Creating (but not pushing) tag: v$NEW_VERSION ..."
-git tag -a v$NEW_VERSION -m "Release v$NEW_VERSION"
 echo "Showing changes with `git status` ..."
 git status
-echo "Review the git status above and if your changes look good press y followed by [ENTER] to push your release branch and git tag:"
+echo "Review the git status above and if your changes look good press y followed by [ENTER] to commit and push your release branch and release tag:"
 read PUSH_TO_GIT
 if [ "$PUSH_TO_GIT" -eq "y" ]
 then
+    echo "Creating commit for client_info.go and docs/ changes ..."
+    git commit -m "Release v$NEW_VERSION"
+    echo "Creating tag: v$NEW_VERSION ..."
+    git tag -a v$NEW_VERSION -m "Release v$NEW_VERSION"
     echo "Pushing branch $BRANCH_NAME ..."
     git push origin $BRANCH_NAME
     echo "Pushing tag v$NEW_VERSION ..."
@@ -33,5 +33,5 @@ then
     echo "PRs should be created for $BRANCH_NAME -> master AND $BRANCH_NAME -> develop ..."
     echo "Finally, the docs package in ci/docs/build/ should be delivered to the portals team ..."
 else
-    echo "Changes not pushed, branch, commit, and tag only exist locally ..."
+    echo "No changes pushed, branch $BRANCH_NAME only created locally ..."
 fi
