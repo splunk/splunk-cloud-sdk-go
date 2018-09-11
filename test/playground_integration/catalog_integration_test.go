@@ -9,13 +9,13 @@ import (
 	"net/url"
 	"testing"
 
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"fmt"
 )
 
 // Test Rule variables
@@ -771,6 +771,49 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
 
+// Test getfield(s) endpoints
+func TestGetFields(t *testing.T) {
+	defer cleanupDatasets(t)
+
+	client := getClient(t)
+
+	// Create dataset
+	dataset, err := client.CatalogService.CreateDataset(
+		model.DatasetCreationPayload{
+			Name:         testutils.TestCollection,
+			Kind:         model.KVCOLLECTION,
+			Owner:        datasetOwner,
+			Module:       testutils.TestNamespace,
+			Capabilities: datasetCapabilities,
+		})
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
+
+	// create new fields in the dataset
+	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	field, err := client.CatalogService.CreateDatasetField(dataset.ID, testField1)
+	require.Nil(t, err)
+	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
+
+	// get fields
+	fields, err := client.CatalogService.GetFields()
+	require.Nil(t, err)
+	assert.True(t, len(fields) > 0)
+
+	field1, err := client.CatalogService.GetField(field.Name)
+	require.Nil(t, err)
+	assert.Equal(t, field.Name, field1.Name)
+	assert.Equal(t, field.ID, field1.ID)
+
+	// Delete dataset field
+	err = client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
+	require.Nil(t, err)
+
+	// Delete dataset
+	err = client.CatalogService.DeleteDataset(dataset.ID)
+	require.Nil(t, err)
+}
+
 // Test rule actions endpoints
 func TestRuleActions(t *testing.T) {
 	defer cleanupDatasets(t)
@@ -778,7 +821,13 @@ func TestRuleActions(t *testing.T) {
 	client := getClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(createKVCollectionDataset())
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetCreationPayload{
+		Name:         testutils.TestCollection,
+		Kind:         model.KVCOLLECTION,
+		Owner:        datasetOwner,
+		Module:       testutils.TestNamespace,
+		Capabilities: datasetCapabilities,
+	})
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
 
@@ -845,7 +894,6 @@ func TestRuleActions(t *testing.T) {
 	err = client.CatalogService.DeleteDataset(dataset.ID)
 	require.Nil(t, err)
 }
-
 
 func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
 	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}

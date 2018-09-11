@@ -24,7 +24,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"io/ioutil"
 )
 
 // Declare constants for service package
@@ -113,13 +112,6 @@ type service struct {
 
 // NewRequest creates a new HTTP Request and set proper header
 func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
-	//fmt.Println("thrid")
-	//htmlData, err := ioutil.ReadAll(body) //<--- here!
-	//fmt.Println(string(httpMethod)) //<-- here !
-	//fmt.Println(headers) //<-- here !
-	//fmt.Println(string(url)) //<-- here !
-	//fmt.Println(string(htmlData)) //<-- here !
-
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -267,14 +259,7 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 		}
 	}
 
-	htmlData, err := ioutil.ReadAll(buffer) //<--- here!
-	fmt.Println("first")
-	fmt.Println(string(htmlData)) //<-- here !
-
 	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
-	//htmlData, err = ioutil.ReadAll(request.Body) //<--- here!
-	//fmt.Println("second")
-	//fmt.Println(string(htmlData)) //<-- here !
 
 	if err != nil {
 		return nil, err

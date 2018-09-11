@@ -144,7 +144,7 @@ func TestDeleteDatasetField(t *testing.T) {
 }
 
 // Stubby test for CreateRule() catalog service endpoint
-func TestPostRule(t *testing.T) {
+func TestCreateRule(t *testing.T) {
 	var actions [3]model.CatalogAction
 	actions[0] = CreateAction("AUTOKV", "Splunk", "", "NONE", "", "", "", 0)
 	actions[1] = CreateAction("EVAL", "Splunk",  "Splunk", "", "string", "", "", 0)
@@ -160,27 +160,6 @@ func TestPostRule(t *testing.T) {
 
 // Stubby test for CreateRuleAction() catalog service endpoint
 func TestCreateRuleAction(t *testing.T) {
-	//type test1 struct {
-	//	Version    *int            `json:"version,omitempty"`
-	//}
-	//
-	//ver:=100
-	//test11:= test1{Version:&ver}
-	//if content, err := json.Marshal(test11); err == nil {
-	//	buffer := bytes.NewBuffer(content)
-	//	htmlData,err1 := ioutil.ReadAll(buffer) //<--- here!
-	//	fmt.Println("buffer:")
-	//	fmt.Println(string(htmlData))
-	//	fmt.Println(err1)
-	//}
-	//
-	//
-	//var test22 test1
-	//buffer1 := bytes.NewBuffer([]byte("{\"version\":100}"))
-	//
-	//err := json.NewDecoder(buffer1).Decode(&test22)
-	//fmt.Println(test22)
-
 	limit := 5
 	action, err := getClient(t).CatalogService.CreateRuleAction("rule1", model.NewRegexAction("integ_test_field1", "some pa", &limit, "me"))
 	require.Empty(t, err)
@@ -208,10 +187,18 @@ func TestGetRuleAction(t *testing.T) {
 	assert.Equal(t, "integ_test_field1", action.Field)
 }
 
-// Stubby test for GetRuleAction() catalog service endpoint
+// Stubby test for DeleteRuleAction() catalog service endpoint
 func TestDeleteRuleAction(t *testing.T) {
 	err := getClient(t).CatalogService.DeleteRuleAction("rule1", "5b91a0ff4949b40001acf2c8")
 	require.Empty(t, err)
+}
+
+// Stubby test for TestGetField() catalog service endpoint
+func TestGetField(t *testing.T) {
+	field, err := getClient(t).CatalogService.GetField("field1")
+	require.Empty(t, err)
+	assert.Equal(t, "field1", field.Name)
+	assert.Equal(t, "dataset1", field.DatasetID)
 }
 
 // creates a rule to post

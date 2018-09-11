@@ -172,7 +172,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // UpdateRule updates the rule with the specified name or ID
-func (c *CatalogService) UpdateRule(dataset model.PartialRule, resourceNameOrID string) (*model.Rule, error) {
+func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset model.PartialRule) (*model.Rule, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -324,10 +324,6 @@ func (c *CatalogService) CreateRuleAction(resourceNameOrRuleID string, action *m
 		return nil, err
 	}
 
-	//htmlData, err := ioutil.ReadAll(response.Body) //<--- here!
-	//fmt.Println("response:")
-	//fmt.Println(string(htmlData))
-	//
 	var result model.CatalogAction
 	err = util.ParseResponse(&result, response)
 	return &result, err
