@@ -18,6 +18,7 @@ type Ticker struct {
 
 // Reset resets ticker
 func (t *Ticker) Reset() {
+	t.ticker.Stop()
 	t.ticker = time.NewTicker(t.duration)
 }
 
