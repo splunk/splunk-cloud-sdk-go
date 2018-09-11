@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"encoding/json"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
@@ -161,11 +162,9 @@ func (b *BatchEventsSender) flush(flushSource int) {
 
 // sendEventInBatches slices events into batch size to send
 func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
-
 	if len(events) <= 0 {
 		return
 	}
-
 	for i := 0; i < len(events); {
 		end := len(events)
 		if i+b.BatchSize < len(events) {
@@ -175,14 +174,18 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		err := b.EventService.PostEvents(batchedEvents)
 		i = i + b.BatchSize
 		if err != nil {
-			str := fmt.Sprintf("Failed to send all events:%v\nEventPayload:%v", err, events)
-
+			var errString string
+			jsonEvents, parsingErr := json.Marshal(events)
+			if parsingErr != nil {
+				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, events)
+			} else {
+				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, string(jsonEvents))
+			}
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)
 			}
-
 			if b.IsRunning {
-				b.ErrorChan <- str
+				b.ErrorChan <- errString
 			}
 		}
 	}

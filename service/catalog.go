@@ -56,7 +56,7 @@ func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo
 }
 
 // CreateDataset creates a new Dataset
-func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error) {
+func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
