@@ -37,7 +37,7 @@ func TestGetJob(t *testing.T) {
 }
 
 func TestGetResults(t *testing.T) {
-	response, err := getClient(t).SearchService.GetJobResults("SEARCH_ID", nil)
+	response, err := getClient(t).SearchService.GetResults("SEARCH_ID", nil)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.Results)

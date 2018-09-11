@@ -85,7 +85,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
@@ -110,11 +110,11 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Body:      "refreshtokentest",
+		Body:       "refreshtokentest",
 		Sourcetype: "sourcetype:refreshtokentest",
 		Source:     "manual-events",
 		Timestamp:  timeValue,
-		Attributes:  map[string]interface{}{"testKey": "testValue"}}
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using refresh token: %s", err)
@@ -132,7 +132,7 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
@@ -179,7 +179,7 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
 }
 
@@ -202,11 +202,11 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 	timeValue := int64(1529945003)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Body:      "pkcetest",
+		Body:       "pkcetest",
 		Sourcetype: "sourcetype:pkcetest",
 		Source:     "manual-events",
 		Timestamp:  timeValue,
-	    Attributes: map[string]interface{}{"testKey": "testValue"}}
+		Attributes: map[string]interface{}{"testKey": "testValue"}}
 
 	err = client.IngestService.PostEvents([]model.Event{testIngestEvent})
 	assert.Emptyf(t, err, "Error ingesting test event using PKCE flow error: %s", err)
@@ -231,7 +231,7 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 	timeValue := int64(1529945004)
 	testIngestEvent := model.Event{
 		Host:       clientURL.RequestURI(),
-		Body:      "badtokentest",
+		Body:       "badtokentest",
 		Sourcetype: "sourcetype:badtokentest",
 		Source:     "manual-events",
 		Timestamp:  timeValue,

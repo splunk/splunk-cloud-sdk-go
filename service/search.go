@@ -6,6 +6,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"net/url"
@@ -37,7 +38,7 @@ func (service *SearchService) ListJobs() (*[]model.SearchJob, error) {
 }
 
 // CreateJob creates a new search job
-func (service *SearchService) CreateJob(job *model.SearchJobBase) (*model.SearchJob, error) {
+func (service *SearchService) CreateJob(job *model.CreateJobRequest) (*model.SearchJob, error) {
 	var postJobResponse model.SearchJob
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
@@ -70,13 +71,16 @@ func (service *SearchService) GetJob(jobId string) (*model.SearchJob, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (service *SearchService) UpdateJob(jobId string, patch *model.PatchJob) (*model.PatchJobResponse, error) {
+func (service *SearchService) UpdateJob(jobId string, action model.JobAction) (*model.PatchJobResponse, error) {
 	var patchResponse model.PatchJobResponse
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobId)
 	if err != nil {
 		return nil, err
 	}
-	response, err := service.client.Patch(RequestParams{URL: jobURL, Body: patch})
+	requestBody := struct {
+		Action model.JobAction `json:"action"`
+	}{action}
+	response, err := service.client.Patch(RequestParams{URL: jobURL, Body: requestBody})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -87,12 +91,11 @@ func (service *SearchService) UpdateJob(jobId string, patch *model.PatchJob) (*m
 	return &patchResponse, err
 }
 
-// GetJobResults Returns the job results with the given `id`.
-func (service *SearchService) GetJobResults(jobID string, params *model.JobResultsParams) (interface{}, error) {
+// GetResults Returns the job results with the given `id`.
+func (service *SearchService) GetResults(jobID string, count, offset int) (interface{}, error) {
 	var query url.Values
-	if params != nil {
-		query = util.ParseURLParams(*params)
-	}
+	query.Add("count", fmt.Sprintf("%d", count))
+	query.Add("offset", fmt.Sprintf("%d", offset))
 	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
@@ -104,38 +107,24 @@ func (service *SearchService) GetJobResults(jobID string, params *model.JobResul
 	if err != nil {
 		return nil, err
 	}
-
-	// // check NextLink field
-	// var emptyResponse model.ResultsNotReadyResponse
-	// err = util.ParseResponse(&emptyResponse, response)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// // change NextLink to be a string pointer
-	// if emptyResponse.NextLink != nil {
-	// 	return emptyResponse, nil
-	// }
-	// // return available results
-	// var jobResponse model.SearchResults
-	// err = util.ParseResponse(&jobResponse, response)
-	// return &jobResponse, err
-
-	// check if there's any search result available
-	jobStatus, err := service.GetJob(jobID)
+	// Create a temporary struct to check if nextLink field exists in payload
+	var tempNextLinkModel struct {
+		NextLink *string `json:"nextLink,omitempty"`
+	}
+	err = util.ParseResponse(&tempNextLinkModel, response)
 	if err != nil {
 		return nil, err
 	}
-
-	// return ResultsNotReadyResponse model if no results is available
-	if jobStatus.ResultsAvailable == 0 {
+	// NextLink exists
+	if tempNextLinkModel.NextLink != nil {
 		var emptyResponse model.ResultsNotReadyResponse
 		err = util.ParseResponse(&emptyResponse, response)
 		return &emptyResponse, err
 	} else {
-		// return available results
-		var jobResponse model.SearchResults
-		err = util.ParseResponse(&jobResponse, response)
-		return &jobResponse, err
+		// NextLink does not exist
+		var results model.SearchResults
+		err = util.ParseResponse(&results, response)
+		return &results, err
 	}
 }
 
@@ -154,27 +143,4 @@ func (service *SearchService) WaitForJob(jobId string, pollInterval time.Duratio
 			time.Sleep(pollInterval)
 		}
 	}
-}
-
-// QueryResults waits for job to complete and returns an iterator. If offset and batchSize are specified,
-// the iterator will return that window of results with each Next() call
-func (service *SearchService) QueryResults(jobId string, batchSize, offset int, params *model.JobResultsParams) (*SearchIterator, error) {
-	// err := search.Wait()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// jobStatus, err := search.Status()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if jobStatus.EventCount == 0 {
-	// 	return nil, errors.New("no results are retrieved from the search")
-	// }
-	// iterator := NewSearchIterator(batchSize, offset, jobStatus.EventCount,
-	// 	func(count, offset int) (*model.SearchResults, error) {
-	// 		params.Count = count
-	// 		params.Offset = offset
-	// 		return service.GetJobResults(jobId, params)
-	// 	})
-	return iterator, nil
 }

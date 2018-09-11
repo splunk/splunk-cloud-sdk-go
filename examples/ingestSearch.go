@@ -27,7 +27,7 @@ func main() {
 	//if index != "main" {
 	//	defer client.CatalogService.DeleteDataset(id)
 	//}
-	index:="main"
+	index := "main"
 
 	//Ingest data
 	fmt.Println("Ingest event data")
@@ -137,26 +137,26 @@ func ingestEvent(client *service.Client, index string) (string, string) {
 	event1 := model.Event{
 		Host:   host,
 		Source: source,
-		Body:  fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source),
-		}
+		Body:   fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source),
+	}
 
 	event2 := model.Event{
-		Host:   host,
-		Source: source,
-		Body:  fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
+		Host:       host,
+		Source:     source,
+		Body:       fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
 		Attributes: map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
-		}
+	}
 
 	event3 := model.Event{
 		Host:       host,
 		Source:     source,
 		Sourcetype: "splunkd",
-		Body:      fmt.Sprintf("04-24-2018 12:32:23.258 -0700 INFO device_id:aa2 device_id=[code]error3: haha2 \"9765f1bebdb4\" %v,%v", host, source),
-		Attributes:     map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
-		}
+		Body:       fmt.Sprintf("04-24-2018 12:32:23.258 -0700 INFO device_id:aa2 device_id=[code]error3: haha2 \"9765f1bebdb4\" %v,%v", host, source),
+		Attributes: map[string]interface{}{"fieldkey1": "fieldval1", "fieldkey2": "fieldkey2"},
+	}
 
 	// Use the Ingest endpoint to send multiple events
-	err := client.IngestService.PostEvents([]model.Event{event1,event2,event3})
+	err := client.IngestService.PostEvents([]model.Event{event1, event2, event3})
 	exitOnError(err)
 
 	return host, source
@@ -176,7 +176,7 @@ func search(client *service.Client, query string, expected int) {
 		err = client.SearchService.WaitForJob(sid, 1000*time.Millisecond)
 		exitOnError(err)
 
-		resp, err := client.SearchService.GetJobResults(sid, &model.FetchResultsRequest{Count: 100})
+		resp, err := client.SearchService.GetResults(sid, &model.FetchResultsRequest{Count: 100})
 		fmt.Println(resp.Results)
 		exitOnError(err)
 
