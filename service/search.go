@@ -20,7 +20,7 @@ const searchServiceVersion = "v2"
 type SearchService service
 
 // ListJobs gets the matching list of search jobs
-func (service *SearchService) ListJobs() (*[]model.SearchJob, error) {
+func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
 	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {

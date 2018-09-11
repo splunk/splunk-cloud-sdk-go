@@ -14,7 +14,7 @@ import (
 
 func TestCreateJob(t *testing.T) {
 	client := getClient(t)
-	response, err := client.SearchService.CreateJob(&model.PostJobsRequest{Search: "search index=*"})
+	response, err := client.SearchService.CreateJob(&model.CreateJobRequest{Query: "search index=*"})
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, "SEARCH_ID", response)
@@ -22,41 +22,31 @@ func TestCreateJob(t *testing.T) {
 }
 
 func TestGetJobs(t *testing.T) {
-	response, err := getClient(t).SearchService.GetJobs(nil)
+	response, err := getClient(t).SearchService.ListJobs()
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, 1, len(response))
-	assert.Equal(t, "SEARCH_ID", response[0].Sid)
+	assert.Equal(t, "SEARCH_ID", response[0].ID)
 }
 
 func TestGetJob(t *testing.T) {
 	response, err := getClient(t).SearchService.GetJob("SEARCH_ID")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
-	assert.Equal(t, "SEARCH_ID", response.Sid)
+	assert.Equal(t, "SEARCH_ID", response.ID)
 }
 
 func TestGetResults(t *testing.T) {
-	response, err := getClient(t).SearchService.GetResults("SEARCH_ID", nil)
+	response, err := getClient(t).SearchService.GetResults("SEARCH_ID", 0, 0)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, response)
-	assert.NotEmpty(t, response.Results)
-	assert.NotEmpty(t, response.Results[0])
-	assert.NotEmpty(t, response.Fields)
-	validateResponse(response, t)
+	assert.NotEmpty(t, response.(*model.SearchResults).Results)
+	assert.NotEmpty(t, response.(*model.SearchResults).Results[0])
+	assert.NotEmpty(t, response.(*model.SearchResults).Fields)
+	validateResponse(response.(*model.SearchResults), t)
 }
 
-func TestGetEvents(t *testing.T) {
-	response, err := getClient(t).SearchService.GetJobEvents("SEARCH_ID", nil)
-	assert.Nil(t, err)
-	assert.NotEmpty(t, response)
-	assert.NotEmpty(t, response.Results)
-	assert.NotEmpty(t, response.Results[0])
-	assert.NotEmpty(t, response.Fields)
-	validateResponse(response, t)
-}
-
-//Validate response results
+// Validate response results
 func validateResponse(response *model.SearchResults, t *testing.T) {
 
 	var indexFound bool
