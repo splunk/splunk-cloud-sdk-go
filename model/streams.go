@@ -50,14 +50,14 @@ type PipelineDeleteResponse struct {
 
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
-	Offset       int32  `json:"offset,omitempty"`
-	PageSize     int32  `json:"pageSize,omitempty"`
-	SortField    string `json:"sortField,omitempty"`
-	SortDir      string `json:"sortDir,omitempty"`
-	Activated    bool   `json:"activated,omitempty"`
-	CreateUserID string `json:"createUserId,omitempty"`
-	Name         string `json:"name,omitempty"`
-	IncludeData  bool   `json:"includeData,omitempty"`
+	Offset       *int32  `json:"offset,omitempty"`
+	PageSize     *int32  `json:"pageSize,omitempty"`
+	SortField    *string `json:"sortField,omitempty"`
+	SortDir      *string `json:"sortDir,omitempty"`
+	Activated    *bool   `json:"activated,omitempty"`
+	CreateUserID *string `json:"createUserId,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	IncludeData  *bool   `json:"includeData,omitempty"`
 }
 
 // PipelineRequest contains the pipeline data

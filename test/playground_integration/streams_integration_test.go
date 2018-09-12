@@ -49,7 +49,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	// Get and verify the pipelines based on filters
-	result, err = getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{Name: pipelineName2})
+	result, err = getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{Name: &pipelineName2})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 	assert.Equal(t, int64(1), result.Total)
