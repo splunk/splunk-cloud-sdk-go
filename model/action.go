@@ -33,18 +33,18 @@ type ActionUpdateFields struct {
 	// TemplateName to send via Email action
 	TemplateName string `json:"templateName,omitempty"`
 	// Addresses to send to when Email action triggered
-	Addresses []string `json:"addresses" binding:"required"`
+	Addresses []string `json:"addresses"`
 
 	// SNS action fields:
 	// Topic to trigger SNS action
-	Topic string `json:"topic" binding:"required"`
+	Topic string `json:"topic"`
 	// Message to send via SNS or Webhook action
-	Message string `json:"message" binding:"required"`
+	Message string `json:"message"`
 
 	// Webhook action fields:
 	// WebhookURL to trigger Webhook action
-	WebhookURL string `json:"webhookUrl" binding:"required"`
-	// Message string `json:"message" binding:"required"` (defined above)
+	WebhookURL string `json:"webhookUrl"`
+	// Message string `json:"message"`(defined above)
 }
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
