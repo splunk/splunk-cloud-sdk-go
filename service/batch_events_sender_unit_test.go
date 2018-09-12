@@ -7,12 +7,11 @@ package service
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
-var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example.com", TenantID: "EXAMPLE_TENANT", Timeout: time.Second * 5}
+var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"}
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
 	var client, _ = NewClient(config)

@@ -26,7 +26,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 )
@@ -36,9 +35,7 @@ func main() {
 	// Initialize the client
 	client, err := service.NewClient(&service.Config{
 		Token: os.Getenv("BEARER_TOKEN"),
-		TenantID: os.Getenv("TENANT"),
-		URL: "https://api.splunkbeta.com",
-		Timeout: time.Second * 5,
+		Tenant: os.Getenv("TENANT"),
 	})
 	exitOnErr(err)
 	// Validate access to the platform
