@@ -229,7 +229,7 @@ func CreatePipelineRequest(t *testing.T, name string, description string) *model
 		BypassValidation: true,
 		Name:             name,
 		Description:      description,
-		CreateUserID:     testutils.TestTenantID,
+		CreateUserID:     testutils.TestTenant,
 		Data:             result,
 	}
 }

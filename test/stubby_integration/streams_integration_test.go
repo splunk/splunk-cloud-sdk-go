@@ -72,7 +72,7 @@ func TestGetPipelines(t *testing.T) {
 	assert.Equal(t, 1, len(result.Items))
 	assert.Equal(t, int64(1), result.Total)
 	assert.Equal(t, testPipelineID, result.Items[0].ID)
-	assert.Equal(t, testutils.TestTenantID, result.Items[0].CreateUserID)
+	assert.Equal(t, testutils.TestTenant, result.Items[0].CreateUserID)
 }
 
 // Stubby test for CreatePipeline() streams service endpoint
@@ -84,7 +84,7 @@ func TestCreatePipeline(t *testing.T) {
 
 	assert.Equal(t, testPipelineID, result.ID)
 	assert.Equal(t, testPipelineName, result.Name)
-	assert.Equal(t, testutils.TestTenantID, result.CreateUserID)
+	assert.Equal(t, testutils.TestTenant, result.CreateUserID)
 
 	require.NotEmpty(t, result.Data)
 	require.NotEmpty(t, result.Data.Nodes)
@@ -134,7 +134,7 @@ func TestUpdatePipeline(t *testing.T) {
 	assert.Equal(t, testPipelineID, result.ID)
 	assert.Equal(t, "UPDATED_TEST_PIPELINE", result.Name)
 	assert.Equal(t, "Updated Stubby Test Pipeline", result.Description)
-	assert.Equal(t, testutils.TestTenantID, result.CreateUserID)
+	assert.Equal(t, testutils.TestTenant, result.CreateUserID)
 
 	require.NotEmpty(t, result.Data)
 	require.NotEmpty(t, result.Data.Nodes)
@@ -201,7 +201,7 @@ func TestGetPipeline(t *testing.T) {
 	require.NotEmpty(t, result)
 
 	assert.Equal(t, testPipelineID, result.ID)
-	assert.Equal(t, testutils.TestTenantID, result.CreateUserID)
+	assert.Equal(t, testutils.TestTenant, result.CreateUserID)
 	assert.Equal(t, 2, len(result.Data.Nodes))
 	assert.Equal(t, testNodeID1, result.Data.Nodes[0].(map[string]interface{})["id"])
 	assert.Equal(t, testNodeID2, result.Data.Nodes[1].(map[string]interface{})["id"])
@@ -295,7 +295,7 @@ func CreatePipelineRequest(t *testing.T, name string, description string) *model
 		BypassValidation: true,
 		Name:             name,
 		Description:      description,
-		CreateUserID:     testutils.TestTenantID,
+		CreateUserID:     testutils.TestTenant,
 		Data:             &uplPipeline,
 	}
 }
