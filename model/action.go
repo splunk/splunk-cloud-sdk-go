@@ -33,7 +33,7 @@ type ActionUpdateFields struct {
 	// TemplateName to send via Email action
 	TemplateName string `json:"templateName,omitempty"`
 	// Addresses to send to when Email action triggered
-	Addresses []string `json:"addresses"`
+	Addresses []string `json:"addresses,omitempty"`
 
 	// SNS action fields:
 	// Topic to trigger SNS action
