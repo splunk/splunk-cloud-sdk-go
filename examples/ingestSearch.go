@@ -58,13 +58,12 @@ func exitOnError(err error) {
 }
 
 func getClient() *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSplunkCloudHost
-
 	client, err := service.NewClient(&service.Config{
-		Token:    testutils.TestAuthenticationToken,
-		URL:      url,
-		TenantID: testutils.TestTenantID,
-		Timeout:  testutils.TestTimeOut})
+		Token:  testutils.TestAuthenticationToken,
+		Scheme: testutils.TestURLProtocol,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: testutils.TestTenant,
+	})
 
 	exitOnError(err)
 
@@ -74,11 +73,12 @@ func getClient() *service.Client {
 func createIndex(client *service.Client) (string, string) {
 	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
 	index := "main"
-	indexinfo := model.DatasetInfo{
+	disabled := false
+	indexinfo := model.DatasetCreationPayload{
 		Owner:    "splunk",
 		Name:     index,
 		Kind:     "index",
-		Disabled: false,
+		Disabled: &disabled,
 	}
 
 	if index == "main" {

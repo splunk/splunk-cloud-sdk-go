@@ -52,7 +52,7 @@ func validateUnauthenticatedActionError(t *testing.T, err error) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", httpErr.Message)
+	assert.Equal(t, "401 Unauthorized", httpErr.HTTPStatus)
 }
 
 func validateNotFoundActionError(t *testing.T, err error) {
@@ -60,7 +60,7 @@ func validateNotFoundActionError(t *testing.T, err error) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.Message)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
 }
 
 // Test GetActions which returns the list of all actions for the tenant
@@ -119,7 +119,7 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.Message)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
 }
 
 // Create Existing action should result in 409 Conflict
@@ -138,7 +138,7 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 409, httpErr.HTTPStatusCode)
-	assert.Equal(t, "409 Conflict", httpErr.Message)
+	assert.Equal(t, "409 Conflict", httpErr.HTTPStatus)
 }
 
 // Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
@@ -168,7 +168,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	validateUnauthenticatedActionError(t, err)
@@ -259,7 +259,7 @@ func TestGetActionStatus(t *testing.T) {
 	resp, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	require.Nil(t, err)
@@ -289,5 +289,5 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 403, httpErr.HTTPStatusCode)
-	assert.Equal(t, "403 Forbidden", httpErr.Message)
+	assert.Equal(t, "403 Forbidden", httpErr.HTTPStatus)
 }

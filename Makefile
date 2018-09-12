@@ -10,7 +10,6 @@ GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | gr
 
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-GIT_VERSION_TAG := $(shell git describe origin/master --tags --match="v*" | sed 's/v//g')
 
 LOCAL_TEST_URL_PROTOCOL := http
 LOCAL_TEST_SPLUNK_CLOUD_HOST := localhost:8882
@@ -59,11 +58,14 @@ decrypt:
 
 docs: docs_md
 
-docs_md:
+docs_md: .FORCE
 	./ci/docs/docs_md.sh
 
 docs_publish: docs_md
 	./ci/docs/publish.sh
+
+release: .FORCE
+	./cd/release.sh
 
 install_local:
 	printf "Installing dep to manage Go dependencies ..." && \
@@ -117,3 +119,5 @@ run_docker_stubby_tests: debug_docker_environment_variables
 	TEST_BEARER_TOKEN=$(DOCKER_STUBBY_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(DOCKER_STUBBY_TEST_TENANT_ID) \
 	go test -v ./test/stubby_integration/...
+
+.FORCE:

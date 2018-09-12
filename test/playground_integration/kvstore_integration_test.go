@@ -111,8 +111,8 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 422, "Expected error code 422")
-	assert.True(t, err.(*util.HTTPError).Message == "422 Unprocessable Entity", "Expected error message should be 422 Unprocessable Entity")
+	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "", err.(*util.HTTPError).Message)
 }
 
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection

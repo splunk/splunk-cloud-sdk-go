@@ -57,7 +57,7 @@ func cleanupRules(t *testing.T) {
 
 // createDatastoreKVCollection - Helper function for creating a valid KV Collection in Catalog
 func createLookupDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, externalKind string, externalName string) (*model.DatasetInfo, error) {
-	createLookupDatasetInfo := model.DatasetInfo{
+	createLookupDatasetInfo := model.DatasetCreationPayload{
 		Name:         collectionName,
 		Kind:         model.LOOKUP,
 		Owner:        datasetOwner,
@@ -77,7 +77,7 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 }
 
 func createKVCollectionDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
-	createKVCollectionDatasetInfo := model.DatasetInfo{
+	createKVCollectionDatasetInfo := model.DatasetCreationPayload{
 		Name:         collectionName,
 		Kind:         model.KVCOLLECTION,
 		Owner:        datasetOwner,
@@ -113,7 +113,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 
 	_, err := client.CatalogService.CreateDataset(
-		model.DatasetInfo{
+		model.DatasetCreationPayload{
 			Name:         testutils.TestCollection,
 			Kind:         model.LOOKUP,
 			Owner:        datasetOwner,
@@ -133,10 +133,10 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	_, err := invalidClient.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
+		model.DatasetCreationPayload{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
@@ -146,7 +146,7 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	client := getClient(t)
 
 	_, err := client.CatalogService.CreateDataset(
-		model.DatasetInfo{Name: "integ_dataset_4000", Kind: model.LOOKUP})
+		model.DatasetCreationPayload{Name: "integ_dataset_4000", Kind: model.LOOKUP})
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 400, "Expected error code 400")
 }
@@ -179,8 +179,8 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 
 	_, err := invalidClient.CatalogService.GetDatasets()
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test GetDataset by ID
@@ -206,13 +206,13 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create dataset
-	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetCreationPayload{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test GetDataset for 404 DatasetInfo not found error
@@ -291,8 +291,8 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 
 	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteDataset for 404 DatasetInfo not found error
@@ -353,8 +353,8 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	// create rule
 	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test GetRules
@@ -382,8 +382,8 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 
 	_, err := invalidClient.CatalogService.GetRules()
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test GetRule By ID
@@ -416,8 +416,8 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	_, err = invalidClient.CatalogService.GetRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test GetRules for 404 Rule not found error
@@ -460,8 +460,8 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 
 	err = invalidClient.CatalogService.DeleteRule(rule.ID)
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 401, "Expected error code 401")
-	assert.True(t, err.(*util.HTTPError).Message == "401 Unauthorized", "Expected error message should be 401 Unauthorized")
+	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteRule for 404 Rule not found error
@@ -472,7 +472,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 
 	err := client.CatalogService.DeleteRule("123")
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 }
 
 // Test GetDatasetFields
@@ -506,7 +506,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	client := getClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(model.DatasetInfo{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	dataset, err := client.CatalogService.CreateDataset(model.DatasetCreationPayload{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	require.Nil(t, err)
 	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
 

@@ -284,7 +284,7 @@ func (c *KVStoreService) ListRecords(collectionName string, filters map[string][
 }
 
 // InsertRecord - Create a new record in the tenant's specified collection
-func (c *KVStoreService) InsertRecord(collectionName string, record map[string]string) (map[string]string, error) {
+func (c *KVStoreService) InsertRecord(collectionName string, record model.Record) (map[string]string, error) {
 	url, err := c.client.BuildURL(
 		nil,
 		kvStoreServicePrefix,

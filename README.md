@@ -1,5 +1,5 @@
 # splunk-cloud-sdk-go
-A Go client for Self Service Cloud services
+A Go client for Splunk Cloud services
 
 | Branch | Codeship | Coverage |
 |:------:|:--------:|:--------:|
@@ -7,23 +7,56 @@ A Go client for Self Service Cloud services
 | master | [![Codeship Status for splunk/splunk-cloud-sdk-go](https://app.codeship.com/projects/d0ec9ea0-15c2-0136-e7ad-1a0f3e5cdd95/status?branch=master)](https://app.codeship.com/projects/283638) | [![codecov](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master/graph/badge.svg?token=o4BjP93wQt)](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master) |
 
 
-# Development
+# Getting started
 ---
-### Getting setup with macOS
+### macOS
 * [Install Brew](https://brew.sh/)
 * [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
-* [Setup your Go environment](https://golang.org/doc/install) and checkout this repository into `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go`
-* Install local development tools using `make install_local`
+* [Install Go and Setup your Go environment](https://golang.org/doc/install) and checkout this repository into `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go`
+* Recommended Go tools:
+  * `go get -u github.com/golang/dep/cmd/dep`
+  * `go get golang.org/x/lint/golint`
+  * `go get -u golang.org/x/tools/cmd/goimports`
+* Clone/unzip our splunk/splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
+* Initialize a new client:
 
-### Optional
-* For encypting or decrypting secrets you will need to [download the AES key from Codeship](https://app.codeship.com/projects/283638/configure) and move/rename it to `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go/codeship.aes`
+```go
+package main
 
-### Running a stubby server locally for testing
-* Download the shared stubby Docker image from ECR using `jet load splunk-cloud-sdk-go-with-stubby`
-* Run the stubby server locally with `make stubby_local`
-* Test by visiting http://localhost:8882/error in your browser. You should see `{"message":"Something exploded"}`
-* NOTE: At the moment the stubby container does not fail gracefully, you may need to stop and rm all containers in another shell terminal using `docker stop $(docker ps -a -q)` and `docker rm $(docker ps -a -q)`
+import (
+	"fmt"
+	"os"
 
-### Making updates to imported libraries
-* This repo uses `dep` for dependency management
-* If you have imported an outside library as part of your changes and are seeing errors when running `make vet` such as `cannot find package` you will need to update the dependencies using `make dependencies_update` which may regenerate the `Gopkg.*` files. Changes to the `Gopkg.*` should be commited along with your imports in code.
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+)
+
+func main() {
+	checkForTenantToken()
+	// Initialize the client
+	client, err := service.NewClient(&service.Config{
+		Token: os.Getenv("BEARER_TOKEN"),
+		Tenant: os.Getenv("TENANT"),
+	})
+	exitOnErr(err)
+	// Validate access to the platform
+	info, err := client.IdentityService.Validate()
+	exitOnErr(err)
+	fmt.Printf("info: %+v", info)
+}
+
+func exitOnErr(err error) {
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func checkForTenantToken() {
+	if os.Getenv("BEARER_TOKEN") == "" {
+		exitOnErr(fmt.Errorf("$BEARER_TOKEN must be set"))
+	}
+	if os.Getenv("TENANT") == "" {
+		exitOnErr(fmt.Errorf("$TENANT must be set"))
+	}
+}
+```
