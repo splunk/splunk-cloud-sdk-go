@@ -58,11 +58,14 @@ decrypt:
 
 docs: docs_md
 
-docs_md:
+docs_md: .FORCE
 	./ci/docs/docs_md.sh
 
 docs_publish: docs_md
 	./ci/docs/publish.sh
+
+release: .FORCE
+	./cd/release.sh
 
 install_local:
 	printf "Installing dep to manage Go dependencies ..." && \
@@ -116,3 +119,5 @@ run_docker_stubby_tests: debug_docker_environment_variables
 	TEST_BEARER_TOKEN=$(DOCKER_STUBBY_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(DOCKER_STUBBY_TEST_TENANT_ID) \
 	go test -v ./test/stubby_integration/...
+
+.FORCE:
