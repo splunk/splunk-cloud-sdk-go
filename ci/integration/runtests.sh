@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ./ci/integration/okta.sh
-
 echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
@@ -15,7 +13,7 @@ echo "==============================================="
 CONFIG_FILE="./okta/.token"
 if [ -f $CONFIG_FILE ]; then
     echo "Token found in $CONFIG_FILE"
-    TEST_BEARER_TOKEN=$(cat $CONFIG_FILE)
+    export TEST_BEARER_TOKEN=$(cat $CONFIG_FILE)
 else
     echo "Token was not set to $CONFIG_FILE"
     exit 1
