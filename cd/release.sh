@@ -20,7 +20,7 @@ echo "Showing changes with `git status` ..."
 git status
 echo "Review the git status above and if your changes look good press y followed by [ENTER] to commit and push your release branch and release tag:"
 read PUSH_TO_GIT
-if [ "$PUSH_TO_GIT" -eq "y" ]
+if [ "$PUSH_TO_GIT" = "y" ]
 then
     echo "Creating commit for client_info.go and docs/ changes ..."
     git commit -m "Release v$NEW_VERSION"
@@ -30,8 +30,8 @@ then
     git push origin $BRANCH_NAME
     echo "Pushing tag v$NEW_VERSION ..."
     git push origin v$NEW_VERSION
-    echo "PRs should be created for $BRANCH_NAME -> master AND $BRANCH_NAME -> develop ..."
-    echo "Finally, the docs package in ci/docs/build/ should be delivered to the portals team ..."
+    echo "TODO: PRs should be created for $BRANCH_NAME -> master AND $BRANCH_NAME -> develop ..."
+    echo "Finally, the docs package in ci/docs/build/ should be delivered to the portals team (NOTE: the version in the tgz is likely one version behind and needs renaming) ..."
 else
     echo "No changes pushed, branch $BRANCH_NAME only created locally ..."
 fi

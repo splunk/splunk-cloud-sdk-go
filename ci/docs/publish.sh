@@ -10,5 +10,5 @@ PACKAGE_JSON="{
 echo $PACKAGE_JSON > package.json
 rm -rf build/
 npm add -D @splunk/cicd-tools --registry https://repo.splunk.com/artifactory/api/npm/npm
-yarn cicd-publish-docs ../../docs/
+yarn cicd-publish-docs --force --preflight ../../docs/
 echo "Docs built and packaged into $(dirname "$0")/build"
