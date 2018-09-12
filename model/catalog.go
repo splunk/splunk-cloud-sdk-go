@@ -60,14 +60,14 @@ type DatasetCreationPayload struct {
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch *bool   `json:"caseSensitiveMatch,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int    `json:"maxMatches,omitempty"`
-	MinMatches         *int    `json:"minMatches,omitempty"`
+	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool   `json:"disabled,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
 }
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
@@ -228,7 +228,6 @@ type CatalogActionCreationPayload struct {
 	Limit      *int              `json:"limit,omitempty"`
 }
 
-
 // NewAliasAction creates a new alias kind action
 func NewAliasAction(field string, alias string,  owner string) *CatalogActionCreationPayload {
 	return &CatalogActionCreationPayload{
@@ -248,7 +247,7 @@ func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
 	}
 }
 
-// NewEvalAction creates a new autokv kind action
+// NewEvalAction creates a new eval kind action
 func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload {
 	return &CatalogActionCreationPayload{
 		Kind:"EVAL",
@@ -258,7 +257,7 @@ func NewEvalAction(field string, expression string, owner string) *CatalogAction
 	}
 }
 
-// NewLookupAction creates a new autokv kind action
+// NewLookupAction creates a new lookup kind action
 func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload {
 	return &CatalogActionCreationPayload{
 		Kind:"LOOKUP",
@@ -267,7 +266,7 @@ func NewLookupAction(expression string, owner string) *CatalogActionCreationPayl
 	}
 }
 
-// NewRegexAction creates a new autokv kind action
+// NewRegexAction creates a new regex kind action
 func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload {
 	action := CatalogActionCreationPayload{
 		Kind:    "REGEX",

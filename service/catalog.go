@@ -37,7 +37,7 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	return result, err
 }
 
-// GetDataset returns the Dataset by name or ID
+// GetDataset returns the Dataset by resourceName or ID
 func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*m
 	return &result, err
 }
 
-// UpdateDataset updates an existing Dataset with the specified name or ID
+// UpdateDataset updates an existing Dataset with the specified resourceName or ID
 func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, resourceNameOrID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
@@ -91,7 +91,7 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, resourc
 	return &result, err
 }
 
-// DeleteDataset implements delete Dataset endpoint with the specified name or ID
+// DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
 func (c *CatalogService) DeleteDataset(resourceNameOrID string) error {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
@@ -104,7 +104,7 @@ func (c *CatalogService) DeleteDataset(resourceNameOrID string) error {
 	return err
 }
 
-// DeleteRule deletes the rule and its dependencies with the specified rule id or name
+// DeleteRule deletes the rule and its dependencies with the specified rule id or resourceName
 func (c *CatalogService) DeleteRule(resourceNameOrID string) error {
 	getDeleteURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
@@ -135,7 +135,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	return result, err
 }
 
-// GetRule returns rule by an with the specified rule name or ID.
+// GetRule returns rule by an with the specified rule resourceName or ID.
 func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) {
 	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
@@ -171,7 +171,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 	return &result, err
 }
 
-// UpdateRule updates the rule with the specified name or ID
+// UpdateRule updates the rule with the specified resourceName or ID
 func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset model.PartialRule) (*model.Rule, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
@@ -292,7 +292,7 @@ func (c *CatalogService) GetFields() ([]model.Field, error) {
 	return result, err
 }
 
-// GetField returns he Field corresponding to fieldid
+// GetField returns the Field corresponding to fieldid
 func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion,  "fields", fieldID)
 	if err != nil {
