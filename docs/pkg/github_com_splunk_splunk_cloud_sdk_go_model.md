@@ -168,21 +168,39 @@ type ActionUpdateFields struct {
 	// TemplateName to send via Email action
 	TemplateName string `json:"templateName,omitempty"`
 	// Addresses to send to when Email action triggered
-	Addresses []string `json:"addresses" binding:"required"`
+	Addresses []string `json:"addresses,omitempty"`
 
 	// SNS action fields:
 	// Topic to trigger SNS action
-	Topic string `json:"topic" binding:"required"`
+	Topic string `json:"topic,omitempty"`
 	// Message to send via SNS or Webhook action
-	Message string `json:"message" binding:"required"`
+	Message string `json:"message,omitempty"`
 
 	// Webhook action fields:
 	// WebhookURL to trigger Webhook action
-	WebhookURL string `json:"webhookUrl" binding:"required"`
+	WebhookURL string `json:"webhookUrl,omitempty"`
 }
 ```
 
 ActionUpdateFields defines the fields that may be updated for an existing Action
+
+#### type ActivatePipelineRequest
+
+```go
+type ActivatePipelineRequest struct {
+	IDs []string `json:"ids"`
+}
+```
+
+ActivatePipelineRequest contains the request to activate the pipeline
+
+#### type AdditionalProperties
+
+```go
+type AdditionalProperties map[string][]string
+```
+
+AdditionalProperties contain the properties in an activate/deactivate response
 
 #### type AuthError
 
@@ -332,6 +350,36 @@ const (
 )
 ```
 
+#### type DatasetCreationPayload
+
+```go
+type DatasetCreationPayload struct {
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Owner        string          `json:"owner"`
+	Module       string          `json:"module,omitempty"`
+	Capabilities string          `json:"capabilities"`
+	Fields       []Field         `json:"fields,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
+}
+```
+
+DatasetCreationPayload represents the sources of data that can be serched by
+Splunk
+
 #### type DatasetInfo
 
 ```go
@@ -360,7 +408,7 @@ type DatasetInfo struct {
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
+	Disabled bool   `json:"disabled"`
 }
 ```
 
@@ -405,6 +453,17 @@ const (
 ```
 Supported DispatchState constants
 
+#### type DslCompilationRequest
+
+```go
+type DslCompilationRequest struct {
+	Dsl string `json:"dsl"`
+}
+```
+
+DslCompilationRequest contains the DSL that needs to be compiled into a valid
+UPL JSON
+
 #### type Error
 
 ```go
@@ -425,17 +484,28 @@ Error error reason
 
 ```go
 type Event struct {
-	Host       string            `json:"host,omitempty" key:"host"`
-	Index      string            `json:"index,omitempty" key:"index"`
-	Sourcetype string            `json:"sourcetype,omitempty" key:"sourcetype"`
-	Source     string            `json:"source,omitempty" key:"source"`
-	Time       *float64          `json:"time,omitempty" key:"time"`
-	Event      interface{}       `json:"event"`
-	Fields     map[string]string `json:"fields,omitempty"`
+	// Specifies a JSON object that contains explicit custom fields to be defined at index time.
+	Attributes map[string]interface{} `json:"attributes"`
+	// JSON object for the event.
+	Body interface{} `json:"body"`
+	// Epoch time in milliseconds.
+	Timestamp int64 `json:"timestamp"`
+	// Optional nanoseconds part of the timestamp.
+	Nanos int32 `json:"nanos"`
+	// The source value to assign to the event data. For example, if you are sending data from an app that you are developing,
+	// set this key to the name of the app.
+	Source string `json:"source"`
+	// The sourcetype value assigned to the event data.
+	Sourcetype string `json:"sourcetype"`
+	// The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.
+	Host string `json:"host"`
+	// An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.
+	// If ID is not specified, it will be assigned by the system.
+	ID string `json:"id"`
 }
 ```
 
-Event contains metadata about the event
+Event defines raw event send to event endpoint
 
 #### type ExportCollectionContentType
 
@@ -824,6 +894,17 @@ type MetricEvent struct {
 
 MetricEvent define event send to metric endpoint
 
+#### type PaginatedPipelineResponse
+
+```go
+type PaginatedPipelineResponse struct {
+	Items []Pipeline `json:"items"`
+	Total int64      `json:"total"`
+}
+```
+
+PaginatedPipelineResponse contains the pipeline response
+
 #### type PagingInfo
 
 ```go
@@ -903,6 +984,96 @@ const (
 
 	// PingOKBodyStatusUnknown captures enum value "unknown"
 	PingOKBodyStatusUnknown PingOKBodyStatus = "unknown"
+)
+```
+
+#### type Pipeline
+
+```go
+type Pipeline struct {
+	ActivatedDate            int64          `json:"activatedDate"`
+	ActivatedUserID          string         `json:"activatedUserId"`
+	ActivatedVersion         int64          `json:"activatedVersion"`
+	CreateDate               int64          `json:"createDate"`
+	CreateUserID             string         `json:"createUserId"`
+	CurrentVersion           int64          `json:"currentVersion"`
+	Data                     UplPipeline    `json:"data"`
+	Description              string         `json:"description"`
+	ID                       string         `json:"id"`
+	JobID                    string         `json:"jobId"`
+	LastUpdateDate           int64          `json:"lastUpdateDate"`
+	LastUpdateUserID         string         `json:"lastUpdateUserId"`
+	Name                     string         `json:"name"`
+	Status                   PipelineStatus `json:"status"`
+	StatusMessage            string         `json:"statusMessage"`
+	StreamingConfigurationID int64          `json:"streamingConfigurationId"`
+	TenantID                 string         `json:"tenantId"`
+	ValidationMessages       []string       `json:"validationMessages"`
+	Version                  int64          `json:"version"`
+}
+```
+
+Pipeline defines a pipeline object
+
+#### type PipelineDeleteResponse
+
+```go
+type PipelineDeleteResponse struct {
+	CouldDeactivate bool `json:"couldDeactivate"`
+	Running         bool `json:"running"`
+}
+```
+
+PipelineDeleteResponse contains the response returned as a result of a delete
+pipeline call
+
+#### type PipelineQueryParams
+
+```go
+type PipelineQueryParams struct {
+	Offset       *int32  `json:"offset,omitempty"`
+	PageSize     *int32  `json:"pageSize,omitempty"`
+	SortField    *string `json:"sortField,omitempty"`
+	SortDir      *string `json:"sortDir,omitempty"`
+	Activated    *bool   `json:"activated,omitempty"`
+	CreateUserID *string `json:"createUserId,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	IncludeData  *bool   `json:"includeData,omitempty"`
+}
+```
+
+PipelineQueryParams contains the query parameters that can be provided by the
+user to fetch specific pipelines
+
+#### type PipelineRequest
+
+```go
+type PipelineRequest struct {
+	BypassValidation         bool         `json:"bypassValidation"`
+	CreateUserID             string       `json:"createUserId"`
+	Data                     *UplPipeline `json:"data"`
+	Description              string       `json:"description"`
+	Name                     string       `json:"name"`
+	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
+}
+```
+
+PipelineRequest contains the pipeline data
+
+#### type PipelineStatus
+
+```go
+type PipelineStatus string
+```
+
+PipelineStatus reflects the status of a pipeline
+
+```go
+const (
+	// Created status
+	Created PipelineStatus = "CREATED"
+	// Activated status
+	Activated PipelineStatus = "ACTIVATED"
 )
 ```
 
@@ -1288,6 +1459,41 @@ Start starts a new ticker and set property running to true
 func (t *Ticker) Stop()
 ```
 Stop stops ticker and set property running to false
+
+#### type UplEdge
+
+```go
+type UplEdge struct {
+	Attributes interface{} `json:"attributes"`
+	SourceNode string      `json:"sourceNode"`
+	SourcePort string      `json:"sourcePort"`
+	TargetNode string      `json:"targetNode"`
+	TargetPort string      `json:"targetPort"`
+}
+```
+
+UplEdge contains information on the edges between two pipeline nodes
+
+#### type UplNode
+
+```go
+type UplNode interface{}
+```
+
+UplNode defines the nodes forming a pipeline
+
+#### type UplPipeline
+
+```go
+type UplPipeline struct {
+	Edges    []UplEdge `json:"edges"`
+	Nodes    []UplNode `json:"nodes"`
+	RootNode []string  `json:"root-node"`
+	Version  int32     `json:"version"`
+}
+```
+
+UplPipeline contains the pipeline data
 
 #### type User
 
