@@ -6,10 +6,10 @@
 package playgroundintegration
 
 import (
+	"fmt"
 	"net/url"
 	"testing"
 
-	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
@@ -800,7 +800,7 @@ func TestGetFields(t *testing.T) {
 	require.Nil(t, err)
 	assert.True(t, len(fields) > 0)
 
-	field1, err := client.CatalogService.GetField(field.Name)
+	field1, err := client.CatalogService.GetField(field.ID)
 	require.Nil(t, err)
 	assert.Equal(t, field.Name, field1.Name)
 	assert.Equal(t, field.ID, field1.ID)

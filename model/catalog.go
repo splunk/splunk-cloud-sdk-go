@@ -186,7 +186,6 @@ type PartialRule struct {
 	Module     string          `json:"module,omitempty"`
 	Match      string          `json:"match,omitempty" `
 	Owner      string          `json:"owner,omitempty" `
-	ModifiedBy string          `json:"modifiedBy,omitempty"`
 	Version    int             `json:"version,omitempty"`
 }
 
@@ -216,7 +215,7 @@ type DatasetImportPayload struct {
 	Owner   string `json:"owner"`
 }
 
-// CatalogAction represents a specific search time transformation action.
+// CatalogActionCreationPayload represents the payload to create a catalog action.
 type CatalogActionCreationPayload struct {
 	RuleID     string            `json:"ruleid,omitempty"`
 	Kind       CatalogActionKind `json:"kind" binding:"required"`

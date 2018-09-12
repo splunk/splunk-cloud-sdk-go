@@ -248,7 +248,6 @@ func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
 // DoRequest creates and execute a new request
 func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
-
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
 	} else {
@@ -258,9 +257,7 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 			return nil, err
 		}
 	}
-
 	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
-
 	if err != nil {
 		return nil, err
 	}
