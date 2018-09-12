@@ -43,7 +43,31 @@ type DatasetInfo struct {
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
+	Disabled bool   `json:"disabled"`
+}
+
+// DatasetCreationPayload represents the sources of data that can be serched by Splunk
+type DatasetCreationPayload struct {
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Owner        string          `json:"owner"`
+	Module       string          `json:"module,omitempty"`
+	Capabilities string          `json:"capabilities"`
+	Fields       []Field         `json:"fields,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
 }
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo

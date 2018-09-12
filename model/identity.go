@@ -4,9 +4,9 @@
 //
 
 package model
+
 import (
 	"github.com/go-openapi/strfmt"
-
 )
 
 // Tenant tenant
@@ -29,7 +29,6 @@ type Tenant struct {
 	// Required: true
 	Status string `json:"status"`
 }
-
 
 // ValidateInfo validate info
 type ValidateInfo struct {

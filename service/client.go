@@ -21,9 +21,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/splunk/ssc-client-go/idp"
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // Declare constants for service package
@@ -33,26 +33,32 @@ const (
 
 // A Client is used to communicate with service endpoints
 type Client struct {
-	// config
-	config *Config
-	// tokenContext is the access token to include in "Authorization: Bearer" headers and related context information
+	// defaultTenant is the Splunk Cloud tenant to use to form requests
+	defaultTenant string
+	// host is the Splunk Cloud host or host:port used to form requests, `"api.splunkbeta.com"` by default
+	host string
+	// scheme is the HTTP scheme used to form requests, `"https"` by default
+	scheme string
+	// tokenContext is the access token to include in `"Authorization: Bearer"` headers and related context information
 	tokenContext *idp.Context
 	// HTTP Client used to interact with endpoints
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	// SearchService talks to the SSC search service
+	// SearchService talks to the Splunk Cloud search service
 	SearchService *SearchService
-	// CatalogService talks to the SSC catalog service
+	// CatalogService talks to the Splunk Cloud catalog service
 	CatalogService *CatalogService
-	// IngestService talks to the SSC ingest service
+	// IngestService talks to the Splunk Cloud ingest service
 	IngestService *IngestService
-	// IdentityService talks to SSC IAC service
+	// IdentityService talks to Splunk Cloud IAC service
 	IdentityService *IdentityService
-	// KVStoreService talks to SSC kvstore service
+	// KVStoreService talks to Splunk Cloud kvstore service
 	KVStoreService *KVStoreService
-	// ActionService talks to SSC action service
+	// ActionService talks to Splunk Cloud action service
 	ActionService *ActionService
+	// StreamsService talks to SSC streams service
+	StreamsService *StreamsService
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -83,25 +89,27 @@ type Config struct {
 	TokenRetriever idp.TokenRetriever
 	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
-	// Url string
-	URL string
-	// TenantID
-	TenantID string
-	// Timeout
+	// Tenant is the default Tenant used to form requests
+	Tenant string
+	// Host is the (optional) default host or host:port used to form requests, `"api.splunkbeta.com"` by default
+	Host string
+	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
+	Scheme string
+	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
 	Timeout time.Duration
-	// ResponseHandlers is a slice of handlers to call after a response has been received in the client
+	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
 }
 
 // RequestParams contains all the optional request URL parameters
 type RequestParams struct {
-	// Http method name
+	// Method is the HTTP method of the request
 	Method string
-	// Http url
+	// URL is the URL of the request
 	URL url.URL
-	// Body parameter
+	// Body is the body of the request
 	Body interface{}
-	// Additional headers
+	// Headers are additional headers to add to the request
 	Headers map[string]string
 }
 
@@ -130,36 +138,17 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 	return retryRequest, nil
 }
 
-// BuildURL creates full SSC URL with the client cached tenantID
+// BuildURL creates full Splunk Cloud URL using the client's defaultTenant
 func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
-	var buildPath = ""
-	for _, pathPart := range urlPathParts {
-		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
-	}
-	if queryValues == nil {
-		queryValues = url.Values{}
-	}
-	var u url.URL
-	if len(c.config.TenantID) == 0 {
-		return u, errors.New("A non-empty tenant ID must be set on client")
-	}
-
-	clientURL, err := c.GetURL()
-	if err != nil {
-		return u, err
-	}
-
-	u = url.URL{
-		Scheme:   clientURL.Scheme,
-		Host:     clientURL.Host,
-		Path:     path.Join(c.config.TenantID, buildPath),
-		RawQuery: queryValues.Encode(),
-	}
-	return u, nil
+	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
 }
 
-// BuildURLWithTenantID creates full SSC URL with tenantID
-func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+// BuildURLWithTenant creates full Splunk Cloud URL with tenant
+func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+	var u url.URL
+	if len(tenant) == 0 {
+		return u, errors.New("a non-empty tenant must be specified")
+	}
 	var buildPath = ""
 	for _, pathPart := range urlPathParts {
 		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
@@ -167,20 +156,10 @@ func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	var u url.URL
-	if len(tenantID) == 0 {
-		return u, errors.New("A non-empty tenant ID must be passed in for BuildURLWithTenantID")
-	}
-
-	clientURL, err := c.GetURL()
-	if err != nil {
-		return u, err
-	}
-
 	u = url.URL{
-		Scheme:   clientURL.Scheme,
-		Host:     clientURL.Host,
-		Path:     path.Join(tenantID, buildPath),
+		Scheme:   c.scheme,
+		Host:     c.host,
+		Path:     path.Join(tenant, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -195,7 +174,7 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 	}
 	// If error response found, record number of errors by response code
 	if response.StatusCode >= 400 {
-		// TODO: This could be extended to include specific SSC error fields in
+		// TODO: This could be extended to include specific Splunk Cloud error fields in
 		// addition to response code
 		code := fmt.Sprintf("%d", response.StatusCode)
 		if _, ok := req.NumErrorsByType[code]; ok {
@@ -273,22 +252,35 @@ func (c *Client) UpdateTokenContext(ctx *idp.Context) {
 	c.tokenContext = ctx
 }
 
-// GetURL returns the client config url string as a url.URL
-func (c *Client) GetURL() (*url.URL, error) {
-	parsed, err := url.Parse(c.config.URL)
-	if c.config.URL == "" || err != nil {
-		return nil, errors.New("url is not correct")
+// SetDefaultTenant updates the tenant used to form most request URIs
+func (c *Client) SetDefaultTenant(tenant string) {
+	c.defaultTenant = tenant
+}
+
+// GetURL returns the Splunk Cloud scheme/host formed as URL
+func (c *Client) GetURL() *url.URL {
+	return &url.URL{
+		Scheme: c.scheme,
+		Host:   c.host,
 	}
-	return parsed, nil
 }
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*Client, error) {
-	if config.TenantID == "" || config.URL == "" {
-		return nil, errors.New("tenantID and url must be set")
+	host := "api.splunkbeta.com"
+	if config.Host != "" {
+		host = config.Host
+	}
+	scheme := "https"
+	if config.Scheme != "" {
+		scheme = config.Scheme
+	}
+	timeout := 5 * time.Second
+	if config.Timeout != 0 {
+		timeout = config.Timeout
 	}
 
-	// TODO: Token will eventually be fully replaced by TokenRetriever, it is retained for now for backwards compatibility
+	// Enforce that exactly one of TokenRetriever or Token must be specified
 	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
 		return nil, errors.New("either config.TokenRetriever or config.Token must be set, not both")
 	}
@@ -312,8 +304,10 @@ func NewClient(config *Config) (*Client, error) {
 
 	// Finally, initialize the Client
 	c := &Client{
-		config:           config,
-		httpClient:       &http.Client{Timeout: config.Timeout},
+		host:             host,
+		scheme:           scheme,
+		defaultTenant:    config.Tenant,
+		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
 	}
@@ -323,6 +317,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
+	c.StreamsService = &StreamsService{client: c}
 	return c, nil
 }
 
@@ -348,17 +343,17 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 	errorChan := make(chan string, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
-		BatchSize:        batchSize,
-		EventsChan:       eventsChan,
-		EventsQueue:      eventsQueue,
-		EventService:     c.IngestService,
-		QuitChan:         quit,
-		IngestTicker:     ticker,
-		WaitGroup:        &wg,
-		ErrorChan:        errorChan,
-		IsRunning:        false,
-		chanWaitInMilSec: 300,
-		callbackFunc:     nil,
+		BatchSize:      batchSize,
+		EventsChan:     eventsChan,
+		EventsQueue:    eventsQueue,
+		EventService:   c.IngestService,
+		QuitChan:       quit,
+		IngestTicker:   ticker,
+		WaitGroup:      &wg,
+		ErrorChan:      errorChan,
+		IsRunning:      false,
+		chanWaitMillis: 300,
+		callbackFunc:   nil,
 	}
 
 	return batchEventsSender, nil

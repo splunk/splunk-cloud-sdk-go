@@ -8,10 +8,9 @@ package playgroundintegration
 import (
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
 )
 
 func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
@@ -26,7 +25,7 @@ func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
 }
 
 func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
-	createDatasetInfo := model.DatasetInfo{
+	createDatasetInfo := model.DatasetCreationPayload{
 		Kind:         model.KVCOLLECTION,
 		Owner:        datasetOwner,
 		Module:       testutils.TestNamespace,
@@ -40,7 +39,7 @@ func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
 }
 
 func TestDatastoreKVStoreCreationWithMissingNamespace(t *testing.T) {
-	createDatasetInfo := model.DatasetInfo{
+	createDatasetInfo := model.DatasetCreationPayload{
 		Name:         testutils.TestCollection,
 		Kind:         model.KVCOLLECTION,
 		Owner:        datasetOwner,

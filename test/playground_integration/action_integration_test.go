@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -34,8 +34,8 @@ const (
 // Test vars
 var (
 	timeSec           = time.Now().Unix()
-	snsActionName     = fmt.Sprintf("sact-%d", timeSec)
-	webhookActionName = fmt.Sprintf("wact-%d", timeSec)
+	snsActionName     = fmt.Sprintf("sact_%d", timeSec)
+	webhookActionName = fmt.Sprintf("wact_%d", timeSec)
 	addresses         = []string{"test1@splunk.com", "test2@splunk.com"}
 	webhookPayload    = &map[string]interface{}{"name": "bean bag", "species": "cat"}
 )
@@ -52,7 +52,7 @@ func validateUnauthenticatedActionError(t *testing.T, err error) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "401 Unauthorized", httpErr.Message)
+	assert.Equal(t, "401 Unauthorized", httpErr.HTTPStatus)
 }
 
 func validateNotFoundActionError(t *testing.T, err error) {
@@ -60,7 +60,7 @@ func validateNotFoundActionError(t *testing.T, err error) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.Message)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
 }
 
 // Test GetActions which returns the list of all actions for the tenant
@@ -76,7 +76,7 @@ func TestIntegrationGetActions(t *testing.T) {
 // Test CreateAction / GetAction for EmailAction
 func TestGetCreateActionEmail(t *testing.T) {
 	client := getClient(t)
-	emailActionName := fmt.Sprintf("e-cr-%d", timeSec)
+	emailActionName := fmt.Sprintf("e_cr_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
@@ -88,7 +88,7 @@ func TestGetCreateActionEmail(t *testing.T) {
 // Test CreateAction / GetAction for SNSAction
 func TestGetCreateActionSNS(t *testing.T) {
 	client := getClient(t)
-	snsActionName := fmt.Sprintf("s-cr-%d", timeSec)
+	snsActionName := fmt.Sprintf("s_cr_%d", timeSec)
 	snsAction := model.NewSNSAction(snsActionName, snsTopic, snsMsg)
 	defer cleanupAction(client, snsAction.Name)
 	_, err := client.ActionService.CreateAction(*snsAction)
@@ -100,7 +100,7 @@ func TestGetCreateActionSNS(t *testing.T) {
 // Test CreateAction / GetAction for WebhookAction
 func TestGetCreateActionWebhook(t *testing.T) {
 	client := getClient(t)
-	webhookActionName := fmt.Sprintf("w-cr-%d", timeSec)
+	webhookActionName := fmt.Sprintf("w_cr_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
@@ -119,13 +119,13 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.Message)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
 }
 
 // Create Existing action should result in 409 Conflict
 func TestCreateActionFailExistingAction(t *testing.T) {
 	client := getClient(t)
-	emailActionName := fmt.Sprintf("e-confl-%d", timeSec)
+	emailActionName := fmt.Sprintf("e_confl_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
@@ -138,19 +138,19 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 409, httpErr.HTTPStatusCode)
-	assert.Equal(t, "409 Conflict", httpErr.Message)
+	assert.Equal(t, "409 Conflict", httpErr.HTTPStatus)
 }
 
 // Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
 func TestActionFailUnauthenticatedClient(t *testing.T) {
 	client := getClient(t)
-	webhookActionName := fmt.Sprintf("w-unauth-%d", timeSec)
+	webhookActionName := fmt.Sprintf("w_unauth_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
 
-	emailActionName := fmt.Sprintf("e-unauth-%d", timeSec)
+	emailActionName := fmt.Sprintf("e_unauth_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	// This shouldn't be needed since the CreateAction should fail for 401:
 	// defer cleanupAction(client, emailAction.Name)
@@ -168,7 +168,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	validateUnauthenticatedActionError(t, err)
@@ -186,7 +186,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 // Trigger action with invalid fields results in a 422 Unprocessable Entity error
 func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getClient(t)
-	webhookActionName := fmt.Sprintf("w-unproc-%d", timeSec)
+	webhookActionName := fmt.Sprintf("w_unproc_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
@@ -208,7 +208,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 // Test UpdateAction updates with the new fields in the action
 func TestUpdateAction(t *testing.T) {
 	client := getClient(t)
-	emailActionName := fmt.Sprintf("e-up-%d", timeSec)
+	emailActionName := fmt.Sprintf("e_up_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
@@ -222,7 +222,7 @@ func TestUpdateAction(t *testing.T) {
 // Test DeleteAction deletes the action specified
 func TestDeleteAction(t *testing.T) {
 	client := getClient(t)
-	emailActionName := fmt.Sprintf("e-del-%d", timeSec)
+	emailActionName := fmt.Sprintf("e_del_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
@@ -250,7 +250,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 // TestGetActionStatus gets the status of the action after it is triggered
 func TestGetActionStatus(t *testing.T) {
 	client := getClient(t)
-	webhookActionName := fmt.Sprintf("w-stat-%d", timeSec)
+	webhookActionName := fmt.Sprintf("w_stat_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.CreateAction(*webhookAction)
@@ -259,7 +259,7 @@ func TestGetActionStatus(t *testing.T) {
 	resp, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
-			Tenant:  testutils.TestTenantID,
+			Tenant:  testutils.TestTenant,
 			Payload: webhookPayload,
 		})
 	require.Nil(t, err)
@@ -273,7 +273,7 @@ func TestGetActionStatus(t *testing.T) {
 // TestTriggerActionTenantMismatch triggers an action with tenant not matching the URL
 func TestTriggerActionTenantMismatch(t *testing.T) {
 	client := getClient(t)
-	webhookActionName := fmt.Sprintf("w-badten-%d", timeSec)
+	webhookActionName := fmt.Sprintf("w_badten_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.CreateAction(*webhookAction)
@@ -289,5 +289,5 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 403, httpErr.HTTPStatusCode)
-	assert.Equal(t, "403 Forbidden", httpErr.Message)
+	assert.Equal(t, "403 Forbidden", httpErr.HTTPStatus)
 }

@@ -6,16 +6,15 @@
 package service
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
-var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN", URL: "http://example.com", TenantID: "EXAMPLE_TENANT", Timeout: time.Second * 5}
+var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"}
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
 	var client, _ = NewClient(config)
-	//var client = getClient()
 	_, err := client.NewBatchEventsSender(0, 0)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }

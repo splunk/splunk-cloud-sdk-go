@@ -10,11 +10,10 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
-
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/splunk/ssc-client-go/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,8 +72,8 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	indexDescription, err := getClient(t).KVStoreService.CreateIndex(kvCollection,
 		model.IndexDefinition{
-		Name:   testIndex,
-		Fields: fields[:]})
+			Name:   testIndex,
+			Fields: fields[:]})
 	require.Nil(t, err)
 	require.NotEmpty(t, indexDescription)
 	assert.Equal(t, indexDescription.Collection, kvCollection)
@@ -112,8 +111,8 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
-	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 422, "Expected error code 422")
-	assert.True(t, err.(*util.HTTPError).Message == "422 Unprocessable Entity", "Expected error message should be 422 Unprocessable Entity")
+	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "", err.(*util.HTTPError).Message)
 }
 
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
@@ -135,7 +134,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	require.NotNil(t, err)
 	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-	assert.EqualValues(t,  "Collection not found: ", err.(*util.HTTPError).Message)
+	assert.EqualValues(t, "Collection not found: ", err.(*util.HTTPError).Message)
 }
 
 // Test DeleteIndex for 404 Index not found error

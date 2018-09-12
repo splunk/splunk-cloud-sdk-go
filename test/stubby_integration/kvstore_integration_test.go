@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -200,7 +200,7 @@ func TestListRecords(t *testing.T) {
 
 // Inserts a record into the specified tenant's namespace collection
 func TestInsertRecord(t *testing.T) {
-	record := map[string]string{
+	record := model.Record {
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",

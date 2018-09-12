@@ -7,40 +7,41 @@ package stubbyintegration
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
-	"github.com/splunk/ssc-client-go/util"
-
-	"github.com/splunk/ssc-client-go/service"
-	"github.com/splunk/ssc-client-go/testutils"
-	"github.com/stretchr/testify/assert"
-
 	"net/http"
 	"net/url"
 	"reflect"
 	"testing"
-	//"encoding/json"
+
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func getClient(t *testing.T) *service.Client {
-	var url = testutils.TestURLProtocol + "://" + testutils.TestSSCHost
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	return client
+}
 
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("CREATING A CLIENT WITH THESE SETTINGS")
-	//fmt.Printf("=================================================================")
-	//fmt.Printf("Authentication Token: " + testutils.TestAuthenticationToken + "\n")
-	//fmt.Printf("SSC Host API: " + testutils.TestSSCHost + "\n")
-	//fmt.Printf("Tenant ID: " + testutils.TestTenantID + "\n")
-	//fmt.Printf("URL Protocol: " + testutils.TestURLProtocol + "\n")
-	//fmt.Printf("Fully Qualified URL: " + url + "\n")
-
-	client, err := service.NewClient(&service.Config{Token: testutils.TestAuthenticationToken, URL: url, TenantID: testutils.TestTenantID, Timeout: testutils.TestTimeOut})
-	if err != nil {
-		fmt.Println(err.Error())
-		t.FailNow()
-	}
-
+func getInvalidTokenClient(t *testing.T) *service.Client {
+	client, err := service.NewClient(&service.Config{
+		Token:   testutils.ExpiredAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
 	return client
 }
 
@@ -54,11 +55,11 @@ func TestNewRequest(t *testing.T) {
 		url    string
 		body   io.Reader
 	}{
-		{http.MethodGet, testutils.TestSSCHost, nil},
-		{http.MethodPost, testutils.TestSSCHost, requestBody},
-		{http.MethodPut, testutils.TestSSCHost, requestBody},
-		{http.MethodPatch, testutils.TestSSCHost, requestBody},
-		{http.MethodDelete, testutils.TestSSCHost, nil},
+		{http.MethodGet, testutils.TestSplunkCloudHost, nil},
+		{http.MethodPost, testutils.TestSplunkCloudHost, requestBody},
+		{http.MethodPut, testutils.TestSplunkCloudHost, requestBody},
+		{http.MethodPatch, testutils.TestSplunkCloudHost, requestBody},
+		{http.MethodDelete, testutils.TestSplunkCloudHost, nil},
 	}
 	for _, test := range tests {
 		req, err := client.NewRequest(test.method, test.url, test.body, nil)
@@ -87,7 +88,7 @@ func TestNewRequest(t *testing.T) {
 
 func TestNewRequestBearerAuthHeader(t *testing.T) {
 	client := getClient(t)
-	req, err := client.NewRequest(http.MethodGet, testutils.TestSSCHost, nil, nil)
+	req, err := client.NewRequest(http.MethodGet, testutils.TestSplunkCloudHost, nil, nil)
 	if err != nil {
 		t.Errorf("NewRequest returns unexpected error %v", err)
 	}
@@ -99,7 +100,7 @@ func TestNewRequestBearerAuthHeader(t *testing.T) {
 
 func TestNewRequestError(t *testing.T) {
 	client := getClient(t)
-	_, err := client.NewRequest("#~/", testutils.TestSSCHost, nil, nil)
+	_, err := client.NewRequest("#~/", testutils.TestSplunkCloudHost, nil, nil)
 	if err == nil {
 		t.Errorf("NewRequest expected to return error, got %v", err)
 	}
@@ -107,7 +108,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, err := client.DoRequest(service.RequestParams{Method: http.MethodGet, URL: url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSSCHost, Path: "/error"}})
+	resp, err := client.DoRequest(service.RequestParams{Method: http.MethodGet, URL: url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSplunkCloudHost, Path: "/error"}})
 	defer resp.Body.Close()
 
 	assert.NotNil(t, err)
@@ -115,8 +116,8 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.Equal(t, 500, resp.StatusCode)
 
 	assert.Equal(t, err.(*util.HTTPError).Code, "1234")
-	assert.Equal(t, err.(*util.HTTPError).MoreInfo, "/url/test" )
-	assert.Equal(t, err.(*util.HTTPError).Message, "error response" )
+	assert.Equal(t, err.(*util.HTTPError).MoreInfo, "/url/test")
+	assert.Equal(t, err.(*util.HTTPError).Message, "error response")
 	assert.Equal(t, err.(*util.HTTPError).Details[0]["code"], "123")
 	assert.Equal(t, err.(*util.HTTPError).Details[0]["field"], "username")
 	assert.Equal(t, err.(*util.HTTPError).Details[0]["message"], "Username must be at least 8 characters")

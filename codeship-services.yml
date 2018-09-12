@@ -1,48 +1,40 @@
-ssc-client-go:
+splunk-cloud-sdk-go:
   build:
     dockerfile: ci/Dockerfile
-    image: splunk/ssc-client-go
+    image: splunk/splunk-cloud-sdk-go
   encrypted_env_file: ci/env.encrypted
 
-ssc-sdk-shared-token-fetcher:
-  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-token-fetcher:latest
-  dockercfg_service: aws-generator
+splunk-cloud-sdk-shared-token-fetcher:
+  image: cloudrepo-docker-playground.jfrog.io/sdk/shared/token-fetcher:latest
   encrypted_env_file: ci/env.encrypted
   volumes:
     - ./okta:/okta
 
-ssc-client-go-with-stubby:
+splunk-cloud-sdk-go-with-stubby:
   build:
-    image: splunk/ssc-client-go-with-stubby
+    image: splunk/splunk-cloud-sdk-go-with-stubby
     dockerfile: ci/Dockerfile
   encrypted_env_file: ci/env.encrypted
   depends_on:
-    - ssc-sdk-shared-stubby
+    - splunk-cloud-sdk-shared-stubby
 
-ssc-client-go-whitesource:
+splunk-cloud-sdk-go-whitesource:
   depends_on:
-    - ssc-client-go
-  dockercfg_service: aws-generator
+    - splunk-cloud-sdk-go
   encrypted_env_file: ci/env.encrypted
-  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-whitesource:latest
+  image: cloudrepo-docker-playground.jfrog.io/sdk/shared/whitesource:latest
   volumes_from:
-    - ssc-client-go
+    - splunk-cloud-sdk-go
 
-ssc-client-go-against-playground:
+splunk-cloud-sdk-go-against-playground:
   build:
-    image: splunk/ssc-client-go-against-playground
+    image: splunk/splunk-cloud-sdk-go-against-playground
     dockerfile: ci/Dockerfile
   encrypted_env_file: ci/env.encrypted
   volumes_from:
-    - ssc-sdk-shared-token-fetcher
+    - splunk-cloud-sdk-shared-token-fetcher
   depends_on:
-    - ssc-sdk-shared-token-fetcher
+    - splunk-cloud-sdk-shared-token-fetcher
 
-ssc-sdk-shared-stubby:
-  image: 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby:latest
-  dockercfg_service: aws-generator
-
-aws-generator:
-  add_docker: true
-  image: codeship/aws-ecr-dockercfg-generator
-  encrypted_env_file: ci/shared/env.encrypted
+splunk-cloud-sdk-shared-stubby:
+  image: cloudrepo-docker-playground.jfrog.io/sdk/shared/stubby:latest

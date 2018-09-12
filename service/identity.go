@@ -6,8 +6,8 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const identityServicePrefix = "identity"
@@ -18,7 +18,7 @@ type IdentityService service
 
 // CreateTenant creates a tenant
 func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
 func (c *IdentityService) GetTenants() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (c *IdentityService) GetTenants() ([]string, error) {
 func (c *IdentityService) GetTenant(name string) (*model.Tenant, error) {
 	var result model.Tenant
 
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 
 	if err != nil {
@@ -110,7 +110,7 @@ func (c *IdentityService) Validate() (*model.ValidateInfo, error) {
 
 // DeleteTenant deletes a tenant by name
 func (c *IdentityService) DeleteTenant(name string) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 	if err != nil {
 		return err
@@ -127,7 +127,7 @@ func (c *IdentityService) DeleteTenant(name string) error {
 func (c *IdentityService) GetPrincipals() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"principals")
 
 	if err != nil {
@@ -151,7 +151,7 @@ func (c *IdentityService) GetPrincipals() ([]string, error) {
 func (c *IdentityService) GetPrincipal(name string) (*model.Principal, error) {
 	var result model.Principal
 
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"principals", name)
 
 	if err != nil {
@@ -173,7 +173,7 @@ func (c *IdentityService) GetPrincipal(name string) (*model.Principal, error) {
 
 // DeletePrincipal deletes a principal by name
 func (c *IdentityService) DeletePrincipal(name string) error {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 	if err != nil {
 		return err
@@ -548,7 +548,7 @@ func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*
 
 // CreatePrincipal creates a new principal
 func (c *IdentityService) CreatePrincipal(name string, kind string) (*model.Principal, error) {
-	url, err := c.client.BuildURLWithTenantID("system", nil, identityServicePrefix, identityServiceVersion, "principals")
+	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion, "principals")
 	if err != nil {
 		return nil, err
 	}

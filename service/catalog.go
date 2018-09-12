@@ -6,16 +6,17 @@
 package service
 
 import (
-	"github.com/splunk/ssc-client-go/model"
-	"github.com/splunk/ssc-client-go/util"
 	"net/url"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // catalog service url prefix
 const catalogServicePrefix = "catalog"
 const catalogServiceVersion = "v1"
 
-// CatalogService talks to the SSC catalog service
+// CatalogService talks to the Splunk Cloud catalog service
 type CatalogService service
 
 // GetDatasets returns all Datasets
@@ -55,7 +56,7 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 }
 
 // CreateDataset creates a new Dataset
-func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error) {
+func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
