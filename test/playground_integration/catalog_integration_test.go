@@ -237,7 +237,7 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	updateVersion := 6
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 
-	updatedDataset, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Version: updateVersion}, dataset.ID)
+	updatedDataset, err := client.CatalogService.UpdateDataset(model.UpdateDatasetInfoFields{Version: updateVersion}, dataset.ID)
 	assert.Emptyf(t, err, "Error updating dataset: %s", err)
 	assert.NotNil(t, updatedDataset)
 	assert.IsType(t, &(model.DatasetInfo{}), updatedDataset)
@@ -257,7 +257,7 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 
 	client := getClient(t)
 
-	_, err := client.CatalogService.UpdateDataset(model.PartialDatasetInfo{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName, Version: 2}, "123")
+	_, err := client.CatalogService.UpdateDataset(model.UpdateDatasetInfoFields{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName, Version: 2}, "123")
 	require.NotNil(t, err)
 	assert.True(t, err.(*util.HTTPError).HTTPStatusCode == 404, "Expected error code 404")
 }
@@ -859,15 +859,21 @@ func TestRuleActions(t *testing.T) {
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
 
-	limit := 0
+	limit := 5
 	action5, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", &limit, ""))
 	require.Nil(t, err)
+	assert.Equal(t, 5, *action5.Limit)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
+
+	action7, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", nil, ""))
+	require.Nil(t, err)
+	assert.Equal(t, (*int)(nil), action7.Limit)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
 
 	//Get rule actions
 	actions, err := client.CatalogService.GetRuleActions(rule.ID)
 	require.NotNil(t, actions)
-	assert.Equal(t, 5, len(actions))
+	assert.Equal(t, 6, len(actions))
 
 	action6, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
 	require.NotNil(t, action6)

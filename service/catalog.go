@@ -74,7 +74,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*m
 }
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, resourceNameOrID string) (*model.DatasetInfo, error) {
+func (c *CatalogService) UpdateDataset(dataset model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err

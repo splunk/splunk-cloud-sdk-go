@@ -71,7 +71,7 @@ type DatasetCreationPayload struct {
 }
 
 // PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
-type PartialDatasetInfo struct {
+type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
 	Owner        string          `json:"owner,omitempty"`
@@ -93,7 +93,7 @@ type PartialDatasetInfo struct {
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
+	Disabled *bool   `json:"disabled,omitempty"`
 }
 
 // Field represents the fields belonging to the specified Dataset
@@ -205,7 +205,7 @@ type CatalogAction struct {
 	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
-	Limit      int               `json:"limit,omitempty"`
+	Limit      *int              `json:"limit"`
 }
 
 // DatasetImportPayload represents the dataset import payload
@@ -274,10 +274,6 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 		Field:   field,
 		Pattern: pattern,
 		Limit:   limit,
-	}
-
-	if limit != nil {
-		action.Limit = limit
 	}
 
 	return &action
