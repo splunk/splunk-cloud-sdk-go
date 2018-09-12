@@ -36,7 +36,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline2.Description)
 
 	// Get all the pipelines
-	result, err := getClient(t).StreamsService.GetPipelines(nil)
+	result, err := getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
@@ -48,18 +48,13 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Equal(t, []string{pipeline2.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
-	// Create Query to get pipeline based on the specified name
-	filters := map[string][]string{
-		"name": {pipelineName2},
-	}
-
 	// Get and verify the pipelines based on filters
-	result, err = getClient(t).StreamsService.GetPipelines(filters)
+	result, err = getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{Name: pipelineName2})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
+	assert.Equal(t, int64(1), result.Total)
 	require.NotEmpty(t, result.Items)
 	assert.Equal(t, pipelineName2, result.Items[0].Name)
-	// TODO Check count
 }
 
 // Test CreatePipeline streams endpoint

@@ -65,7 +65,7 @@ func TestCompileDslToUpl(t *testing.T) {
 
 // Stubby test for GetPipelines() streams service endpoint
 func TestGetPipelines(t *testing.T) {
-	result, err := getClient(t).StreamsService.GetPipelines(nil)
+	result, err := getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 

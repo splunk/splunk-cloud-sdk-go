@@ -6,8 +6,11 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"net/url"
 )
 
 // streams service url prefix
@@ -39,8 +42,10 @@ func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*mod
 }
 
 // GetPipelines gets all the pipelines
-func (c *StreamsService) GetPipelines(query map[string][]string) (*model.PaginatedPipelineResponse, error) {
-	url, err := c.client.BuildURL(query, streamsServicePrefix, streamsServiceVersion, "pipelines")
+func (c *StreamsService) GetPipelines(queryParams model.PipelineQueryParams) (*model.PaginatedPipelineResponse, error) {
+	queryValues, err := convertToURLQueryValues(queryParams)
+
+	url, err := c.client.BuildURL(queryValues, streamsServicePrefix, streamsServiceVersion, "pipelines")
 	if err != nil {
 		return nil, err
 	}
@@ -183,4 +188,25 @@ func (c *StreamsService) DeletePipeline(id string) (*model.PipelineDeleteRespons
 		return nil, err
 	}
 	return &result, nil
+}
+
+// TODO: Change input parameters to take in generic struct
+// Converts the Pipeline query parameters to url.Values type
+func convertToURLQueryValues(queryParams model.PipelineQueryParams) (url.Values, error) {
+	jsonQueryParams, err := json.Marshal(queryParams)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := url.Values{}
+	interfaceMap := make(map[string]interface{})
+	err = json.Unmarshal(jsonQueryParams, &interfaceMap)
+	if err != nil {
+		return nil, err
+	}
+
+	for key, value := range interfaceMap {
+		queryValues.Set(key, fmt.Sprintf("%v", value))
+	}
+	return queryValues, err
 }
