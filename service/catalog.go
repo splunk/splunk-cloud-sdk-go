@@ -172,7 +172,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // UpdateRule updates the rule with the specified resourceName or ID
-func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset model.PartialRule) (*model.Rule, error) {
+func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset model.RuleUpdateFields) (*model.Rule, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err

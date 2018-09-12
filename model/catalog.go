@@ -165,7 +165,7 @@ const (
 )
 
 // Rule represents a rule for transforming results at search time.
-// A rule consits of a `match` clause and a collection of transformation actions
+// A rule consists of a `match` clause and a collection of transformation actions
 type Rule struct {
 	ID         string          `json:"id,omitempty"`
 	Name       string          `json:"name" binding:"required"`
@@ -180,8 +180,8 @@ type Rule struct {
 	Version    int             `json:"version,omitempty"`
 }
 
-// PartialRule represents the set of rule properties that can be updated
-type PartialRule struct {
+// RuleUpdateFields represents the set of rule properties that can be updated
+type RuleUpdateFields struct {
 	Name       string          `json:"name,omitempty" `
 	Module     string          `json:"module,omitempty"`
 	Match      string          `json:"match,omitempty" `
@@ -210,7 +210,7 @@ type CatalogAction struct {
 
 // DatasetImportPayload represents the dataset import payload
 type DatasetImportPayload struct {
-	Modeule string `json:"module"`
+	Module string `json:"module"`
 	Name    string `json:"name"`
 	Owner   string `json:"owner"`
 }
@@ -218,8 +218,8 @@ type DatasetImportPayload struct {
 // CatalogActionCreationPayload represents the payload to create a catalog action.
 type CatalogActionCreationPayload struct {
 	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind" binding:"required"`
-	Owner      string            `json:"owner" binding:"required"`
+	Kind       CatalogActionKind `json:"kind" `
+	Owner      string            `json:"owner"`
 	Field      string            `json:"field,omitempty"`
 	Alias      string            `json:"alias,omitempty"`
 	Mode       string            `json:"mode,omitempty"`
