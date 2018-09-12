@@ -37,13 +37,13 @@ type ActionUpdateFields struct {
 
 	// SNS action fields:
 	// Topic to trigger SNS action
-	Topic string `json:"topic"`
+	Topic string `json:"topic,omitempty"`
 	// Message to send via SNS or Webhook action
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
 
 	// Webhook action fields:
 	// WebhookURL to trigger Webhook action
-	WebhookURL string `json:"webhookUrl"`
+	WebhookURL string `json:"webhookUrl,omitempty"`
 	// Message string `json:"message"`(defined above)
 }
 
