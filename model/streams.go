@@ -98,7 +98,7 @@ type UplNode struct {
 	Op         string      `json:"op"`
 }*/
 
-// UplEdge contains information on the edges between two pipeline nodes TODO: Come up with a better description
+// UplEdge contains information on the edges between two pipeline nodes
 type UplEdge struct {
 	Attributes interface{} `json:"attributes"`
 	SourceNode string      `json:"sourceNode"`
@@ -106,5 +106,3 @@ type UplEdge struct {
 	TargetNode string      `json:"targetNode"`
 	TargetPort string      `json:"targetPort"`
 }
-
-// TODO: Changed the type from a struct of id, op and attributes to an interface to accommodate the arguments of the concrete node implementations till api specs is updated
