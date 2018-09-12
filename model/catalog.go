@@ -70,7 +70,7 @@ type DatasetCreationPayload struct {
 	Disabled *bool  `json:"disabled,omitempty"`
 }
 
-// PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
+// UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
 type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
@@ -93,7 +93,7 @@ type UpdateDatasetInfoFields struct {
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool   `json:"disabled,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
 }
 
 // Field represents the fields belonging to the specified Dataset

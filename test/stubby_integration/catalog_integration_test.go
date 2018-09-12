@@ -49,8 +49,9 @@ func TestPostDataset(t *testing.T) {
 
 // Stubby test for UpdateDataset() catalog service endpoint
 func TestUpdateDataset(t *testing.T) {
+	disabled := true
 	result, err := getClient(t).CatalogService.UpdateDataset(
-		model.PartialDatasetInfo{Disabled: true, Version: 5}, "ds1")
+		model.UpdateDatasetInfoFields{Disabled: &disabled, Version: 5}, "ds1")
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
 	assert.IsType(t, &(model.DatasetInfo{}), result)
@@ -145,10 +146,11 @@ func TestDeleteDatasetField(t *testing.T) {
 
 // Stubby test for CreateRule() catalog service endpoint
 func TestCreateRule(t *testing.T) {
+	limit := 0
 	var actions [3]model.CatalogAction
-	actions[0] = CreateAction("AUTOKV", "Splunk", "", "NONE", "", "", "", 0)
-	actions[1] = CreateAction("EVAL", "Splunk",  "Splunk", "", "string", "", "", 0)
-	actions[2] = CreateAction("LOOKUP", "Splunk" , "", "", "string", "", "", 0)
+	actions[0] = CreateAction("AUTOKV", "Splunk", "", "NONE", "", "", "", &limit)
+	actions[1] = CreateAction("EVAL", "Splunk",  "Splunk", "", "string", "", "", &limit)
+	actions[2] = CreateAction("LOOKUP", "Splunk" , "", "", "string", "", "", &limit)
 
 	result, err := getClient(t).CatalogService.CreateRule(CreateRule("_internal", "test_match", "splunk", "Splunk", actions[:]))
 
@@ -165,7 +167,7 @@ func TestCreateRuleAction(t *testing.T) {
 	require.Empty(t, err)
 	assert.Equal(t, "integ_test_field1", action.Field)
 	assert.Equal(t, "some pa", action.Pattern)
-	assert.Equal(t, 5, action.Limit)
+	assert.Equal(t, 5, *action.Limit)
 }
 
 // Stubby test for GetRuleActions() catalog service endpoint
@@ -213,7 +215,7 @@ func CreateRule(name string, match string, module string, owner string, actions 
 }
 
 // creates an action for rule to post
-func CreateAction(kind model.CatalogActionKind, owner string, field string, mode string, expression string, pattern string, alias string, limit int) model.CatalogAction {
+func CreateAction(kind model.CatalogActionKind, owner string, field string, mode string, expression string, pattern string, alias string, limit *int) model.CatalogAction {
 	return model.CatalogAction{
 		Kind:       kind,
 		Owner:      owner,
