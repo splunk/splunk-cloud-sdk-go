@@ -91,13 +91,6 @@ type UplPipeline struct {
 // UplNode defines the nodes forming a pipeline
 type UplNode interface{}
 
-/*// UplNode defines the nodes forming a pipeline
-type UplNode struct {
-	Attributes interface{} `json:"attributes"`
-	ID         string      `json:"id"`
-	Op         string      `json:"op"`
-}*/
-
 // UplEdge contains information on the edges between two pipeline nodes
 type UplEdge struct {
 	Attributes interface{} `json:"attributes"`
