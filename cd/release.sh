@@ -11,7 +11,7 @@ echo "Checking out a release/v$NEW_VERSION branch ..."
 BRANCH_NAME=release/v$NEW_VERSION
 git checkout -b $BRANCH_NAME
 echo "Updating Version in service/client_info.go ..."
-sed -i '' -e "s/[0-9].[0-9].[0-9]/$NEW_VERSION/g" service/client_info.go
+sed -i '' -e "s/[0-9]+.[0-9]+.[0-9]+/$NEW_VERSION/g" service/client_info.go
 git add service/client_info.go
 echo "Updating docs and generating cicd-publish artifact ..."
 make docs_publish
