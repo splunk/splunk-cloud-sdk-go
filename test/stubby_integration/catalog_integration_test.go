@@ -39,7 +39,7 @@ func TestGetDatasets(t *testing.T) {
 func TestPostDataset(t *testing.T) {
 	disabled := true
 	result, err := getClient(t).CatalogService.CreateDataset(
-		model.DatasetCreationPayload{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: &disabled})
+		&model.DatasetCreationPayload{Name: "stubby_dataset_1", Kind: model.INDEX, Owner: "Splunk", Capabilities: "1101-00000:11010", Disabled: &disabled})
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result.ID)
@@ -51,7 +51,7 @@ func TestPostDataset(t *testing.T) {
 func TestUpdateDataset(t *testing.T) {
 	disabled := true
 	result, err := getClient(t).CatalogService.UpdateDataset(
-		model.UpdateDatasetInfoFields{Disabled: &disabled, Version: 5}, "ds1")
+		&model.UpdateDatasetInfoFields{Disabled: &disabled, Version: 5}, "ds1")
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
 	assert.IsType(t, &(model.DatasetInfo{}), result)
@@ -112,7 +112,7 @@ func TestGetDatasetField(t *testing.T) {
 // Stubby test for PostDatasetField() catalog service endpoint
 func TestPostDatasetField(t *testing.T) {
 	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "N", FieldType: "D", Prevalence: "A"}
-	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, testField)
+	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, &testField)
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
@@ -126,7 +126,7 @@ func TestPostDatasetField(t *testing.T) {
 // Stubby test for PatchDatasetField() catalog service endpoint
 func TestPatchDatasetField(t *testing.T) {
 	testField := model.Field{Name: "test_data", DatasetID: testDatasetID, DataType: "N", FieldType: "D", Prevalence: "A"}
-	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, testField)
+	result, err := getClient(t).CatalogService.UpdateDatasetField(testDatasetID, testFieldID1, &testField)
 
 	require.Empty(t, err)
 	assert.NotEmpty(t, result)
