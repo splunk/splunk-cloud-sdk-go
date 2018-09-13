@@ -27,7 +27,7 @@ const UserAgent = "client-go"
 UserAgent SDK Client Identifier
 
 ```go
-const Version = "0.0.4-218-g77dabca7e9e8"
+const Version = "0.5.0"
 ```
 Version the released version of the SDK
 
@@ -126,7 +126,7 @@ type BatchEventsSender struct {
 ```
 
 BatchEventsSender sends events in batches or periodically if batch is not full
-to Splunk HTTP Event Collector endpoint
+to Splunk Cloud ingest service endpoints
 
 #### func (*BatchEventsSender) AddEvent
 
@@ -190,7 +190,7 @@ CatalogService talks to the Splunk Cloud catalog service
 #### func (*CatalogService) CreateDataset
 
 ```go
-func (c *CatalogService) CreateDataset(dataset model.DatasetInfo) (*model.DatasetInfo, error)
+func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error)
 ```
 CreateDataset creates a new Dataset
 
@@ -304,6 +304,8 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to Splunk Cloud action service
 	ActionService *ActionService
+	// StreamsService talks to SSC streams service
+	StreamsService *StreamsService
 }
 ```
 
@@ -321,14 +323,14 @@ NewClient creates a Client with config values passed in
 ```go
 func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error)
 ```
-BuildURL creates full Splunk Cloud URL with the client cached tenantID
+BuildURL creates full Splunk Cloud URL using the client's defaultTenant
 
-#### func (*Client) BuildURLWithTenantID
+#### func (*Client) BuildURLWithTenant
 
 ```go
-func (c *Client) BuildURLWithTenantID(tenantID string, queryValues url.Values, urlPathParts ...string) (url.URL, error)
+func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error)
 ```
-BuildURLWithTenantID creates full Splunk Cloud URL with tenantID
+BuildURLWithTenant creates full Splunk Cloud URL with tenant
 
 #### func (*Client) Delete
 
@@ -363,9 +365,9 @@ Get implements HTTP Get call
 #### func (*Client) GetURL
 
 ```go
-func (c *Client) GetURL() (*url.URL, error)
+func (c *Client) GetURL() *url.URL
 ```
-GetURL returns the client config url string as a url.URL
+GetURL returns the Splunk Cloud scheme/host formed as URL
 
 #### func (*Client) NewBatchEventsSender
 
@@ -411,6 +413,13 @@ func (c *Client) Put(requestParams RequestParams) (*http.Response, error)
 ```
 Put implements HTTP PUT call
 
+#### func (*Client) SetDefaultTenant
+
+```go
+func (c *Client) SetDefaultTenant(tenant string)
+```
+SetDefaultTenant updates the tenant used to form most request URIs
+
 #### func (*Client) UpdateTokenContext
 
 ```go
@@ -427,13 +436,15 @@ type Config struct {
 	TokenRetriever idp.TokenRetriever
 	// Token to be sent in the Authorization: Bearer header (not required if TokenRetriever is specified)
 	Token string
-	// Url string
-	URL string
-	// TenantID
-	TenantID string
-	// Timeout
+	// Tenant is the default Tenant used to form requests
+	Tenant string
+	// Host is the (optional) default host or host:port used to form requests, `"api.splunkbeta.com"` by default
+	Host string
+	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
+	Scheme string
+	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
 	Timeout time.Duration
-	// ResponseHandlers is a slice of handlers to call after a response has been received in the client
+	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
 }
 ```
@@ -710,41 +721,19 @@ type IngestService service
 
 IngestService talks to the Splunk Cloud ingest service
 
-#### func (*IngestService) CreateEvent
+#### func (*IngestService) PostEvents
 
 ```go
-func (h *IngestService) CreateEvent(event model.Event) error
+func (h *IngestService) PostEvents(events []model.Event) error
 ```
-CreateEvent implements Ingest event endpoint
+PostEvents post single or multiple events to ingest service
 
-#### func (*IngestService) CreateEvents
+#### func (*IngestService) PostMetrics
 
 ```go
-func (h *IngestService) CreateEvents(events []model.Event) error
+func (h *IngestService) PostMetrics(events []model.MetricEvent) error
 ```
-CreateEvents post multiple events in one payload
-
-#### func (*IngestService) CreateMetricEvent
-
-```go
-func (h *IngestService) CreateMetricEvent(event model.MetricEvent) error
-```
-CreateMetricEvent implements Ingest metrics endpoint to send one metric event
-
-#### func (*IngestService) CreateMetricEvents
-
-```go
-func (h *IngestService) CreateMetricEvents(events []model.MetricEvent) error
-```
-CreateMetricEvents implements Ingest metrics endpoint to send multipe metric
-events
-
-#### func (*IngestService) CreateRawEvent
-
-```go
-func (h *IngestService) CreateRawEvent(event model.Event) error
-```
-CreateRawEvent implements Ingest raw endpoint
+PostMetrics posts single or multiple metric events to ingest service
 
 #### type KVStoreService
 
@@ -823,7 +812,7 @@ GetServiceHealthStatus returns Service Health Status
 #### func (*KVStoreService) InsertRecord
 
 ```go
-func (c *KVStoreService) InsertRecord(collectionName string, record map[string]string) (map[string]string, error)
+func (c *KVStoreService) InsertRecord(collectionName string, record model.Record) (map[string]string, error)
 ```
 InsertRecord - Create a new record in the tenant's specified collection
 
@@ -888,13 +877,13 @@ UpdateToken replaces the access token in the `Authorization: Bearer` header
 
 ```go
 type RequestParams struct {
-	// Http method name
+	// Method is the HTTP method of the request
 	Method string
-	// Http url
+	// URL is the URL of the request
 	URL url.URL
-	// Body parameter
+	// Body is the body of the request
 	Body interface{}
-	// Additional headers
+	// Headers are additional headers to add to the request
 	Headers map[string]string
 }
 ```
@@ -991,7 +980,7 @@ Save posts a save action to the search job
 #### func (*Search) SetTTL
 
 ```go
-func (search *Search) SetTTL() (*model.JobControlReplyMsg, error)
+func (search *Search) SetTTL(ttl int) (*model.JobControlReplyMsg, error)
 ```
 SetTTL posts a setttl action to the search job
 
@@ -1140,6 +1129,70 @@ SubmitSearch creates a search job and wraps the response in an object
 func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration) error
 ```
 WaitForJob polls the job until it's completed or errors out
+
+#### type StreamsService
+
+```go
+type StreamsService service
+```
+
+StreamsService - A service that deals with pipelines
+
+#### func (*StreamsService) ActivatePipeline
+
+```go
+func (c *StreamsService) ActivatePipeline(ids []string) (model.AdditionalProperties, error)
+```
+ActivatePipeline activates an existing pipeline
+
+#### func (*StreamsService) CompileDslToUpl
+
+```go
+func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*model.UplPipeline, error)
+```
+CompileDslToUpl creates a Upl Json from DSL
+
+#### func (*StreamsService) CreatePipeline
+
+```go
+func (c *StreamsService) CreatePipeline(pipeline *model.PipelineRequest) (*model.Pipeline, error)
+```
+CreatePipeline creates a new pipeline
+
+#### func (*StreamsService) DeactivatePipeline
+
+```go
+func (c *StreamsService) DeactivatePipeline(ids []string) (model.AdditionalProperties, error)
+```
+DeactivatePipeline deactivates an existing pipeline
+
+#### func (*StreamsService) DeletePipeline
+
+```go
+func (c *StreamsService) DeletePipeline(id string) (*model.PipelineDeleteResponse, error)
+```
+DeletePipeline deletes a pipeline
+
+#### func (*StreamsService) GetPipeline
+
+```go
+func (c *StreamsService) GetPipeline(id string) (*model.Pipeline, error)
+```
+GetPipeline gets an individual pipeline
+
+#### func (*StreamsService) GetPipelines
+
+```go
+func (c *StreamsService) GetPipelines(queryParams model.PipelineQueryParams) (*model.PaginatedPipelineResponse, error)
+```
+GetPipelines gets all the pipelines
+
+#### func (*StreamsService) UpdatePipeline
+
+```go
+func (c *StreamsService) UpdatePipeline(id string, pipeline *model.PipelineRequest) (*model.Pipeline, error)
+```
+UpdatePipeline updates an existing pipeline
 
 #### type UserErrHandler
 

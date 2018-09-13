@@ -10,8 +10,8 @@
 ```go
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error)
 ```
-ParseHTTPStatusCodeInResponse creates a HTTPError from http status code and
-message
+ParseHTTPStatusCodeInResponse returns http response and HTTPError struct based
+on response status code
 
 #### func  ParseResponse
 
@@ -66,10 +66,11 @@ String returns a redacted string
 ```go
 type HTTPError struct {
 	HTTPStatusCode int
-	Message        string
-	Code           string
-	MoreInfo       string
-	Details        []map[string]string
+	HTTPStatus     string
+	Message        string              `json:"message,omitempty"`
+	Code           string              `json:"code,omitempty"`
+	MoreInfo       string              `json:"moreInfo,omitempty"`
+	Details        []map[string]string `json:"details,omitempty"`
 }
 ```
 
