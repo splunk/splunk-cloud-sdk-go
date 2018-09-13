@@ -56,7 +56,7 @@ func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo
 }
 
 // CreateDataset creates a new Dataset
-func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error) {
+func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*m
 }
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
-func (c *CatalogService) UpdateDataset(dataset model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
+func (c *CatalogService) UpdateDataset(dataset *model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -172,7 +172,7 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // UpdateRule updates the rule with the specified resourceName or ID
-func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset model.RuleUpdateFields) (*model.Rule, error) {
+func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset *model.RuleUpdateFields) (*model.Rule, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -226,7 +226,7 @@ func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string
 }
 
 // CreateDatasetField creates a new field in the specified dataset
-func (c *CatalogService) CreateDatasetField(datasetID string, datasetField model.Field) (*model.Field, error) {
+func (c *CatalogService) CreateDatasetField(datasetID string, datasetField *model.Field) (*model.Field, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
@@ -244,7 +244,7 @@ func (c *CatalogService) CreateDatasetField(datasetID string, datasetField model
 }
 
 // UpdateDatasetField updates an already existing field in the specified dataset
-func (c *CatalogService) UpdateDatasetField(datasetID string, datasetFieldID string, datasetField model.Field) (*model.Field, error) {
+func (c *CatalogService) UpdateDatasetField(datasetID string, datasetFieldID string, datasetField *model.Field) (*model.Field, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
