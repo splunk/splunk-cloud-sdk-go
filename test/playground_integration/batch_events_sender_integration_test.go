@@ -125,14 +125,12 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	}
 	wg.Wait()
 
-	errors := collector.GetErrors()
-
 	// it is possible that the stop signal is set by the maxAllowedErr constraint,
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
-	assert.True(t, len(errors) >= maxAllowedErr)
-	assert.True(t, strings.Contains(errors[0], `failed to send all events:{"HTTPStatusCode":401,"HTTPStatus":"401 Unauthorized","message":"Error validating request"}`))
-	assert.True(t, strings.Contains(errors[0], `EventPayload:[{"attributes":null,"body":"test10","timestamp":0,"nanos":0,"source":"","sourcetype":"","host":"host1","id":""},{"attributes":null,"body":"test10","timestamp":0,"nanos":0,"source":"","sourcetype":"","host":"host1","id":""}]`))
+	assert.True(t, len(collector.Errors) >= maxAllowedErr)
+	assert.True(t, strings.Contains(collector.Errors[0].Error.Error(), `{"HTTPStatusCode":401,"HTTPStatus":"401 Unauthorized","message":"Error validating request"}`))
+	assert.Equal(t, "host1", collector.Errors[0].Events[0].Host)
 	collector.Stop()
 }
 
@@ -148,7 +146,7 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 	callbackPrint := ""
 	callback := func(b *service.BatchEventsSender) {
-		assert.True(t, len(b.GetErrors()) > 0)
+		assert.True(t, len(b.Errors) > 0)
 		callbackPrint = "call from callback function"
 	}
 
@@ -191,11 +189,11 @@ func TestBatchEventsSenderRestart(t *testing.T) {
 
 	// batchSender should have stopped due to maxError hit
 	assert.False(t, collector.IsRunning)
-	assert.True(t, len(collector.GetErrors()) >= 4)
+	assert.True(t, len(collector.Errors) >= 4)
 
 	// restart the batchSender and resend events, everything should work just like the initial run
 	collector.Restart()
-	assert.True(t, len(collector.GetErrors()) == 0)
+	assert.True(t, len(collector.Errors) == 0)
 	assert.True(t, collector.IsRunning)
 
 	// start 15 threads to send data simultaneously
@@ -204,5 +202,5 @@ func TestBatchEventsSenderRestart(t *testing.T) {
 		go addEventBatch(collector, event1)
 	}
 	wg.Wait()
-	assert.True(t, len(collector.GetErrors()) >= 4)
+	assert.True(t, len(collector.Errors) >= 4)
 }
