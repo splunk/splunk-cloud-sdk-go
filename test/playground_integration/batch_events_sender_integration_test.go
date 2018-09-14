@@ -193,7 +193,7 @@ func TestBatchEventsSenderRestart(t *testing.T) {
 
 	// restart the batchSender and resend events, everything should work just like the initial run
 	collector.Restart()
-	assert.True(t, len(collector.Errors) == 0)
+	assert.Nil(t, collector.Errors)
 	assert.True(t, collector.IsRunning)
 
 	// start 15 threads to send data simultaneously

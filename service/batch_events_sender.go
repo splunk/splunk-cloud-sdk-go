@@ -16,6 +16,7 @@ import (
 //UserErrHandler defines the type of user callback function for batchEventSender
 type UserErrHandler func(*BatchEventsSender)
 
+//IngestErrorAndEventPayload defines the type of the event payload sent and ingest error incurred
 type IngestErrorAndEventPayload struct {
 	Error  error
 	Events []model.Event
@@ -203,6 +204,7 @@ func (b *BatchEventsSender) Restart() {
 	b.EventsChan = make(chan model.Event, b.BatchSize)
 	b.ErrorChan = make(chan struct{}, cap(b.ErrorChan))
 
+	b.Errors = nil
 	b.ResetQueue()
 	b.Run()
 }
