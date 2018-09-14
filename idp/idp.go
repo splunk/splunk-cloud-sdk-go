@@ -275,7 +275,7 @@ func state() string {
 }
 
 // Return a full URL basd on the given path template.
-func (c *Client) url(path string) string {
+func (c *Client) makeURL(path string) string {
 	return fmt.Sprintf("%s%s", c.ProviderURL, path)
 }
 
@@ -284,7 +284,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 	form := url.Values{
 		"grant_type": {"client_credentials"},
 		"scope":      {scope}}
-	request, err := newFormPost(c.url(c.PathToken), form)
+	request, err := newFormPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +306,7 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 	body := map[string]string{
 		"username": username,
 		"password": password}
-	response, err := post(c.url(c.PathAuthn), body)
+	response, err := post(c.makeURL(c.PathAuthn), body)
 	if err != nil {
 		return "", err
 	}
@@ -374,7 +374,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"scope":                 {scope},
 		"sessionToken":          {sessionToken},
 		"state":                 {state()}}
-	response, err := get(c.url(c.PathAuthorize), params)
+	response, err := get(c.makeURL(c.PathAuthorize), params)
 	if err != nil {
 		return nil, err
 	}
@@ -397,7 +397,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"code_verifier": {cv},
 		"grant_type":    {"authorization_code"},
 		"redirect_uri":  {redirectURI}}
-	response, err = formPost(c.url(c.PathToken), form)
+	response, err = formPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
@@ -454,7 +454,7 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
-	response, err := formPost(c.url(c.PathToken), form)
+	response, err := formPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
