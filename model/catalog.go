@@ -60,7 +60,7 @@ type DatasetCreationPayload struct {
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
 	MaxMatches         *int   `json:"maxMatches,omitempty"`
 	MinMatches         *int   `json:"minMatches,omitempty"`
@@ -70,8 +70,8 @@ type DatasetCreationPayload struct {
 	Disabled *bool  `json:"disabled,omitempty"`
 }
 
-// PartialDatasetInfo represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
-type PartialDatasetInfo struct {
+// UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
+type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
 	Owner        string          `json:"owner,omitempty"`
@@ -93,7 +93,7 @@ type PartialDatasetInfo struct {
 	DefaultMatch       string `json:"defaultMatch,omitempty"`
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
 }
 
 // Field represents the fields belonging to the specified Dataset
@@ -165,7 +165,7 @@ const (
 )
 
 // Rule represents a rule for transforming results at search time.
-// A rule consits of a `match` clause and a collection of transformation actions
+// A rule consists of a `match` clause and a collection of transformation actions
 type Rule struct {
 	ID         string          `json:"id,omitempty"`
 	Name       string          `json:"name" binding:"required"`
@@ -177,6 +177,15 @@ type Rule struct {
 	Modified   string          `json:"modified,omitempty"`
 	CreatedBy  string          `json:"createdBy,omitempty"`
 	ModifiedBy string          `json:"modifiedBy,omitempty"`
+	Version    int             `json:"version,omitempty"`
+}
+
+// RuleUpdateFields represents the set of rule properties that can be updated
+type RuleUpdateFields struct {
+	Name       string          `json:"name,omitempty" `
+	Module     string          `json:"module,omitempty"`
+	Match      string          `json:"match,omitempty" `
+	Owner      string          `json:"owner,omitempty" `
 	Version    int             `json:"version,omitempty"`
 }
 
@@ -193,25 +202,79 @@ type CatalogAction struct {
 	Version    int               `json:"version,omitempty"`
 	Field      string            `json:"field,omitempty"`
 	Alias      string            `json:"alias,omitempty"`
-	Mode       AutoMode          `json:"mode,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
-	Limit      int               `json:"limit,omitempty"`
+	Limit      *int              `json:"limit"`
 }
 
-// AutoMode enumerates the automatic key/value extraction modes.
-// One of "NONE", "AUTO", "MULTIKV", "XML", "JSON".
-type AutoMode string
+// DatasetImportPayload represents the dataset import payload
+type DatasetImportPayload struct {
+	Module string `json:"module"`
+	Name    string `json:"name"`
+	Owner   string `json:"owner"`
+}
 
-const (
-	// NONE Automode
-	NONE AutoMode = "NONE"
-	// AUTO Automode
-	AUTO AutoMode = "AUTO"
-	// MULTIKV Automode
-	MULTIKV AutoMode = "MULTIKV"
-	// XML Automode
-	XML AutoMode = "XML"
-	// JSON Automode
-	JSON AutoMode = "JSON"
-)
+// CatalogActionCreationPayload represents the payload to create a catalog action.
+type CatalogActionCreationPayload struct {
+	RuleID     string            `json:"ruleid,omitempty"`
+	Kind       CatalogActionKind `json:"kind" `
+	Owner      string            `json:"owner"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      *int              `json:"limit,omitempty"`
+}
+
+// NewAliasAction creates a new alias kind action
+func NewAliasAction(field string, alias string,  owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
+		Kind:"ALIAS",
+		Owner:owner,
+		Alias:alias,
+		Field:field,
+	}
+}
+
+// NewAutoKVAction creates a new autokv kind action
+func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
+		Kind:"AUTOKV",
+		Owner:owner,
+		Mode:mode,
+	}
+}
+
+// NewEvalAction creates a new eval kind action
+func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
+		Kind:"EVAL",
+		Owner:owner,
+		Field:field,
+		Expression:expression,
+	}
+}
+
+// NewLookupAction creates a new lookup kind action
+func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload {
+	return &CatalogActionCreationPayload{
+		Kind:"LOOKUP",
+		Owner:owner,
+		Expression:expression,
+	}
+}
+
+// NewRegexAction creates a new regex kind action
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload {
+	action := CatalogActionCreationPayload{
+		Kind:    "REGEX",
+		Owner:   owner,
+		Field:   field,
+		Pattern: pattern,
+		Limit:   limit,
+	}
+
+	return &action
+}
