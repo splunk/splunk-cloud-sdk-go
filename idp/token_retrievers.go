@@ -9,6 +9,13 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
+const (
+	// SplunkCloudIdpURL is the default identity provider host for Splunk Cloud
+	SplunkCloudIdpURL = "https://login.splunkbeta.com"
+	// SplunkCloudIdpAuthzServer is the default identity provider authorization server name for Splunk Cloud
+	SplunkCloudIdpAuthzServer = "aus1vigjbbW3KwZJ72p7"
+)
+
 // TokenRetriever retrieves an access token with context
 type TokenRetriever interface {
 	GetTokenContext() (*Context, error)
@@ -24,6 +31,16 @@ func (tr *NoOpTokenRetriever) GetTokenContext() (*Context, error) {
 	return tr.Context, nil
 }
 
+func makeClientWithAuthz(idpURL string, authzServer string) *Client {
+	if idpURL == "" {
+		idpURL = SplunkCloudIdpURL
+	}
+	if authzServer == "" {
+		authzServer = SplunkCloudIdpAuthzServer
+	}
+	return NewClientWithAuthzName(idpURL, authzServer)
+}
+
 // RefreshTokenRetriever retries a request after gettting a new access token from the identity provider using a RefreshToken
 type RefreshTokenRetriever struct {
 	*Client
@@ -36,9 +53,13 @@ type RefreshTokenRetriever struct {
 }
 
 // NewRefreshTokenRetriever initializes a new token context retriever
-func NewRefreshTokenRetriever(idpHost string, clientID string, scope string, refreshToken string) *RefreshTokenRetriever {
+//   idpURL: should be of the form https://example.com or optionally https://example.com:port
+//     - if "" is specified then SplunkCloudIdpURL will be used.
+//   authzServer: should be the name of the authorization server used to form IdP paths
+//     e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
+func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string, idpURL string, authzServer string) *RefreshTokenRetriever {
 	return &RefreshTokenRetriever{
-		Client:       NewDefaultClient(idpHost),
+		Client:       makeClientWithAuthz(idpURL, authzServer),
 		ClientID:     clientID,
 		Scope:        scope,
 		RefreshToken: util.NewCredential(refreshToken),
@@ -66,9 +87,13 @@ type ClientCredentialsRetriever struct {
 }
 
 // NewClientCredentialsRetriever initializes a new token context retriever
-func NewClientCredentialsRetriever(idpHost string, clientID string, clientSecret string, scope string) *ClientCredentialsRetriever {
+//   idpURL: should be of the form https://example.com or optionally https://example.com:port
+//     - if "" is specified then SplunkCloudIdpURL will be used.
+//   authzServer: should be the name of the authorization server used to form IdP paths
+//     e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
+func NewClientCredentialsRetriever(clientID string, clientSecret string, scope string, idpURL string, authzServer string) *ClientCredentialsRetriever {
 	return &ClientCredentialsRetriever{
-		Client:       NewDefaultClient(idpHost),
+		Client:       makeClientWithAuthz(idpURL, authzServer),
 		ClientID:     clientID,
 		ClientSecret: util.NewCredential(clientSecret),
 		Scope:        scope,
@@ -100,9 +125,13 @@ type PKCERetriever struct {
 }
 
 // NewPKCERetriever initializes a new token context retriever
-func NewPKCERetriever(idpHost string, clientID string, redirectURI string, scope string, username string, password string) *PKCERetriever {
+//   idpURL: should be of the form https://example.com or optionally https://example.com:port
+//     - if "" is specified then SplunkCloudIdpURL will be used.
+//   authzServer: should be the name of the authorization server used to form IdP paths
+//     e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
+func NewPKCERetriever(clientID string, redirectURI string, scope string, username string, password string, idpURL string, authzServer string) *PKCERetriever {
 	return &PKCERetriever{
-		Client:      NewDefaultClient(idpHost),
+		Client:      makeClientWithAuthz(idpURL, authzServer),
 		ClientID:    clientID,
 		RedirectURI: redirectURI,
 		Scope:       scope,

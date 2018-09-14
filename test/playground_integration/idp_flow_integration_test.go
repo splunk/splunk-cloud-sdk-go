@@ -21,8 +21,11 @@ import (
 // RefreshToken - RefreshToken to refresh the bearer token if expired
 var RefreshToken = os.Getenv("REFRESH_TOKEN")
 
+// IdpURL - host to retrieve access token from
+var IdpURL = os.Getenv("IDP_URL")
+
 // IDPHost - host to retrieve access token from
-var IDPHost = os.Getenv("IDP_HOST")
+var IdpAuthz = os.Getenv("IDP_AUTHZ_SERVER")
 
 // NativeClientID - Okta app Client Id for SDK Native App
 var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
@@ -37,7 +40,7 @@ var BackendClientID = os.Getenv("BACKEND_CLIENT_ID")
 var BackendClientSecret = os.Getenv("BACKEND_CLIENT_SECRET")
 
 // BackendServiceScope - scope for obtaining access token for client credentials flow
-const BackendServiceScope = "backend_service"
+const BackendServiceScope = ""
 
 // TestUsername corresponds to the test user for integration testing
 var TestUsername = os.Getenv("TEST_USERNAME")
@@ -72,23 +75,23 @@ func (r *badTokenRetriever) GetTokenContext() (*idp.Context, error) {
 
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
-	tr := idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)
+	tr := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenant,
+		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
-	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from refresh token: %s", err)
 }
 
 // TestIntegrationRefreshTokenRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
-	tr := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(IDPHost, NativeClientID, idp.DefaultOIDCScopes, RefreshToken)}
+	tr := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
@@ -116,23 +119,23 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 
 // TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
-	tr := idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)
+	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenant,
+		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
-	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from client credentials: %s", err)
 }
 
 // TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
-	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(IDPHost, BackendClientID, BackendClientSecret, BackendServiceScope)}
+	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
@@ -160,23 +163,23 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 
 // TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
 func TestIntegrationPKCEInitWorkflow(t *testing.T) {
-	tr := idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)
+	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
 		Scheme:         testutils.TestURLProtocol,
 		Host:           testutils.TestSplunkCloudHost,
-		Tenant:         testutils.TestTenant,
+		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	_, err = client.SearchService.GetJobs(nil)
-	assert.Emptyf(t, err, "Error searching using access token generated from refresh token: %s", err)
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 }
 
 // TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCERetryWorkflow(t *testing.T) {
-	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(IDPHost, NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword)}
+	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpURL, IdpAuthz)}
 
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
