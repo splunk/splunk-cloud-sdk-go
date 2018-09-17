@@ -340,7 +340,7 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 	quit := make(chan struct{}, 1)
 	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
-	errorChan := make(chan string, maxErrorsAllowed)
+	errorChan := make(chan struct{}, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
 		BatchSize:      batchSize,
