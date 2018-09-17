@@ -16,8 +16,8 @@ import (
 //UserErrHandler defines the type of user callback function for batchEventSender
 type UserErrHandler func(*BatchEventsSender)
 
-//IngestErrorAndEventPayload defines the type of the event payload sent and ingest error incurred
-type IngestErrorAndEventPayload struct {
+//ingestError defines the type of the event payload sent and ingest error incurred
+type ingestError struct {
 	Error  error
 	Events []model.Event
 }
@@ -38,7 +38,7 @@ type BatchEventsSender struct {
 	stopMux        sync.Mutex
 	chanWaitMillis int
 	resetMux       sync.Mutex
-	Errors         []IngestErrorAndEventPayload
+	Errors         []ingestError
 }
 
 // SetCallbackHandler allows users to pass their own callback function
@@ -174,7 +174,7 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		err := b.EventService.PostEvents(batchedEvents)
 		i = i + b.BatchSize
 		if err != nil {
-			b.Errors = append(b.Errors, IngestErrorAndEventPayload{Error: err, Events: events})
+			b.Errors = append(b.Errors, ingestError{Error: err, Events: events})
 
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)

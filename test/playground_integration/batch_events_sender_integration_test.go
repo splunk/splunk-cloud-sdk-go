@@ -8,7 +8,6 @@ package playgroundintegration
 import (
 	"fmt"
 	"math/rand"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -17,6 +16,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 var wg sync.WaitGroup
@@ -129,7 +129,13 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	// but while there are some events are pushed to the queue by some threads before we do last flush
 	// therefore the last flush that flush all content in queue will add more errors than maxAllowedErr
 	assert.True(t, len(collector.Errors) >= maxAllowedErr)
-	assert.True(t, strings.Contains(collector.Errors[0].Error.Error(), `{"HTTPStatusCode":401,"HTTPStatus":"401 Unauthorized","message":"Error validating request"}`))
+
+	httpError, ok:=collector.Errors[0].Error.(*util.HTTPError)
+	assert.True(t,ok)
+	assert.Equal(t, httpError.HTTPStatusCode, 401)
+	assert.Equal(t, httpError.HTTPStatus, "401 Unauthorized")
+	assert.Equal(t, httpError.Message, "Error validating request")
+
 	assert.Equal(t, "host1", collector.Errors[0].Events[0].Host)
 	collector.Stop()
 }
