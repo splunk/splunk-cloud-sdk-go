@@ -57,6 +57,8 @@ type Client struct {
 	KVStoreService *KVStoreService
 	// ActionService talks to Splunk Cloud action service
 	ActionService *ActionService
+	// StreamsService talks to SSC streams service
+	StreamsService *StreamsService
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -315,6 +317,7 @@ func NewClient(config *Config) (*Client, error) {
 	c.IngestService = &IngestService{client: c}
 	c.KVStoreService = &KVStoreService{client: c}
 	c.ActionService = &ActionService{client: c}
+	c.StreamsService = &StreamsService{client: c}
 	return c, nil
 }
 
@@ -337,7 +340,7 @@ func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval
 	quit := make(chan struct{}, 1)
 	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
 	var wg sync.WaitGroup
-	errorChan := make(chan string, maxErrorsAllowed)
+	errorChan := make(chan struct{}, maxErrorsAllowed)
 
 	batchEventsSender := &BatchEventsSender{
 		BatchSize:      batchSize,

@@ -58,11 +58,14 @@ decrypt:
 
 docs: docs_md
 
-docs_md:
+docs_md: .FORCE
 	./ci/docs/docs_md.sh
 
 docs_publish: docs_md
 	./ci/docs/publish.sh
+
+release: .FORCE
+	./cd/release.sh
 
 install_local:
 	printf "Installing dep to manage Go dependencies ..." && \
@@ -72,7 +75,7 @@ install_local:
 
 stubby_local:
 	jet load splunk-cloud-sdk-go-with-stubby
-	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 137462835382.dkr.ecr.us-west-1.amazonaws.com/ssc-sdk-shared-stubby
+	docker run -p 8889:8889 -p 8882:8882 -p 7443:7443 splunk/splunk-cloud-sdk-shared-stubby
 
 install_dep:
 	go get -u github.com/golang/dep/cmd/dep
@@ -108,11 +111,13 @@ run_local_stubby_tests: debug_local_environment_variables
 	TEST_SPLUNK_CLOUD_HOST=$(LOCAL_TEST_SPLUNK_CLOUD_HOST) \
 	TEST_BEARER_TOKEN=$(LOCAL_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(LOCAL_TEST_TENANT_ID) \
-	go test -v ./test/stubby_integration/...
+	sh ./ci/functional/runtests.sh
 
 run_docker_stubby_tests: debug_docker_environment_variables
 	TEST_URL_PROTOCOL=$(DOCKER_STUBBY_TEST_URL_PROTOCOL) \
 	TEST_SPLUNK_CLOUD_HOST=$(DOCKER_STUBBY_TEST_SPLUNK_CLOUD_HOST) \
 	TEST_BEARER_TOKEN=$(DOCKER_STUBBY_TEST_BEARER_TOKEN) \
 	TEST_TENANT_ID=$(DOCKER_STUBBY_TEST_TENANT_ID) \
-	go test -v ./test/stubby_integration/...
+	sh ./ci/functional/runtests.sh
+
+.FORCE:

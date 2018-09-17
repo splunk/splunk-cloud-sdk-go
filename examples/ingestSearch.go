@@ -85,7 +85,7 @@ func createIndex(client *service.Client) (string, string) {
 		return index, ""
 	}
 
-	result, err := client.CatalogService.CreateDataset(indexinfo)
+	result, err := client.CatalogService.CreateDataset(&indexinfo)
 	exitOnError(err)
 
 	// it will take some time for the new index to finish the provisioning

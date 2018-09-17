@@ -8,6 +8,7 @@ package idp
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -16,24 +17,42 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const host = "https://myhost.net"
-
 func TestNewDefaultClient(t *testing.T) {
-	client := NewDefaultClient(host)
-	assert.Equal(t, client.Host, host)
+	const providerURL = "https://myhost.net"
+	client := NewDefaultClient(providerURL)
+	// URL is appended with "/"
+	assert.Equal(t, client.ProviderURL, providerURL+"/")
 	assert.Equal(t, client.PathAuthn, defaultAuthnPath)
-	assert.Equal(t, client.PathAuthorize, defaultAuthorizePath)
-	assert.Equal(t, client.PathKeys, defaultKeysPath)
-	assert.Equal(t, client.PathToken, defaultTokenPath)
+	assert.Equal(t, client.PathAuthorize, fmt.Sprintf(customAuthorizePath, "default"))
+	assert.Equal(t, client.PathKeys, fmt.Sprintf(customKeysPath, "default"))
+	assert.Equal(t, client.PathToken, fmt.Sprintf(customTokenPath, "default"))
 }
 
 func TestNewClient(t *testing.T) {
-	client := NewClient(host, "custom/authn", "custom/authz", "custom/keys", "custom/token")
-	assert.Equal(t, client.Host, host)
+	const providerURL = "https://myhost.net/"
+	client := NewClient(providerURL, "custom/authn", "custom/authz", "custom/keys", "custom/token")
+	assert.Equal(t, client.ProviderURL, providerURL)
 	assert.Equal(t, client.PathAuthn, "custom/authn")
 	assert.Equal(t, client.PathAuthorize, "custom/authz")
 	assert.Equal(t, client.PathKeys, "custom/keys")
 	assert.Equal(t, client.PathToken, "custom/token")
+	clientEmptyParams := NewClient(providerURL, "", "", "", "")
+	assert.Equal(t, clientEmptyParams.ProviderURL, providerURL)
+	assert.Equal(t, clientEmptyParams.PathAuthn, defaultAuthnPath)
+	assert.Equal(t, clientEmptyParams.PathAuthorize, fmt.Sprintf(customAuthorizePath, "default"))
+	assert.Equal(t, clientEmptyParams.PathKeys, fmt.Sprintf(customKeysPath, "default"))
+	assert.Equal(t, clientEmptyParams.PathToken, fmt.Sprintf(customTokenPath, "default"))
+}
+
+func TestNewClientCustomAuthz(t *testing.T) {
+	const providerURL = "https://myhost.net/"
+	const authz = "custom99"
+	client := NewClientWithAuthzName(providerURL, authz)
+	assert.Equal(t, client.ProviderURL, providerURL)
+	assert.Equal(t, client.PathAuthn, defaultAuthnPath)
+	assert.Equal(t, client.PathAuthorize, fmt.Sprintf(customAuthorizePath, authz))
+	assert.Equal(t, client.PathKeys, fmt.Sprintf(customKeysPath, authz))
+	assert.Equal(t, client.PathToken, fmt.Sprintf(customTokenPath, authz))
 }
 
 func TestEncode(t *testing.T) {
