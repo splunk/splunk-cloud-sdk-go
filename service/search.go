@@ -14,7 +14,7 @@ import (
 )
 
 const searchServicePrefix = "search"
-const searchServiceVersion = "v2"
+const searchServiceVersion = "v1beta1"
 
 // SearchService talks to the Splunk Cloud search service
 type SearchService service
@@ -71,14 +71,14 @@ func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (service *SearchService) UpdateJob(jobID string, action model.JobAction) (*model.PatchJobResponse, error) {
+func (service *SearchService) UpdateJob(jobID string, action model.JobStatus) (*model.PatchJobResponse, error) {
 	var patchResponse model.PatchJobResponse
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
 	requestBody := struct {
-		Action model.JobAction `json:"action"`
+		Action model.JobStatus `json:"action"`
 	}{action}
 	response, err := service.client.Patch(RequestParams{URL: jobURL, Body: requestBody})
 	if response != nil {
@@ -91,11 +91,13 @@ func (service *SearchService) UpdateJob(jobID string, action model.JobAction) (*
 	return &patchResponse, err
 }
 
-// GetResults Returns the job results with the given `id`.
+// GetResults Returns the job results with the given `id`. count=0 returns default number of results from search
 func (service *SearchService) GetResults(jobID string, count, offset int) (interface{}, error) {
-	var query url.Values
-	query.Add("count", fmt.Sprintf("%d", count))
-	query.Add("offset", fmt.Sprintf("%d", offset))
+	query := url.Values{}
+	if count > 0 {
+		query.Set("count", fmt.Sprintf("%d", count))
+	}
+	query.Set("offset", fmt.Sprintf("%d", offset))
 	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err

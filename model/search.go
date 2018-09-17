@@ -24,8 +24,8 @@ type CreateJobRequest struct {
 	Latest string `json:"latest,omitempty"`
 }
 
-// SearchParameters is the type representing parameters currently earliest & latest on search.
-type SearchParameters struct {
+// QueryParameters is the type representing parameters currently earliest & latest on search.
+type QueryParameters struct {
 	// The earliest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
 	Earliest string `json:"earliest,omitempty"`
 	// The latest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
@@ -45,12 +45,12 @@ const (
 	Done       SearchJobStatus = "done"
 )
 
-// SearchJob represents fully constructed search job including readonly fields.
+// SearchJob represents a fully-constructed search job, including read-only fields.
 type SearchJob struct {
 	// The SPL query string.
 	Query string `json:"query"`
 	// Determine whether the Search service extracts all available fields in the data, including fields not mentioned in the SPL for the search job.
-	// Set to 'false' for better search performance. Defaults to 'false'.
+	// Set to 'false' for better search performance.
 	ExtractAllFields bool `json:"extractAllFields"`
 	// Converts a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
 	TimeFormat string `json:"timeFormat,omitempty"`
@@ -62,10 +62,10 @@ type SearchJob struct {
 	// Defaults to the current system time when the search job is created.
 	TimeOfSearch string `json:"timeOfSearch,omitempty"`
 	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	Parameters SearchParameters `json:"parameters,omitempty"`
-	// The id assigned to the search job
+	QueryParameters QueryParameters `json:"parameters,omitempty"`
+	// The ID assigned to the search job.
 	ID string `json:"sid,omitempty"`
-	// The current status of the job
+	// The current status of the search job.
 	Status SearchJobStatus `json:"status,omitempty"`
 	// An estimate of how close the job is to completing.
 	PercentComplete float64 `json:"percentComplete,omitempty"`
@@ -75,15 +75,13 @@ type SearchJob struct {
 	Messages SearchJobMessages `json:"messages,omitempty"`
 }
 
-// JobAction defines actions to be taken on an existing search job.
-type JobAction string
+// JobStatus defines actions to be taken on an existing search job.
+type JobStatus string
 
 // Define supported job actions
 const (
-	CancelJob   JobAction = "cancel"
-	FinalizeJob JobAction = "finalize"
-	TouchJob    JobAction = "touch"
-	SaveJob     JobAction = "save"
+	JobCanceled  JobStatus = "canceled"
+	JobFinalized JobStatus = "finalized"
 )
 
 // JobMessageType defines type of messages from Splunkd
@@ -101,7 +99,7 @@ const (
 type SearchJobMessages []struct {
 	// Enum [INFO, FATAL, ERROR, DEBUG]
 	Type string `json:"type"`
-	// Message text
+	// message text
 	Text string `json:"text"`
 }
 
@@ -119,8 +117,6 @@ type JobResultsParams struct {
 
 // SearchResults represents results from a search job
 type SearchResults struct {
-	Preview    bool `json:"preview"`
-	InitOffset int  `json:"init_offset"`
 	// Run time messages from Splunkd.
 	Messages SearchJobMessages        `json:"messages"`
 	Results  []map[string]interface{} `json:"results"`
@@ -132,5 +128,5 @@ type ResultsNotReadyResponse struct {
 	// URL for job results
 	NextLink string `json:"nextLink,omitempty"`
 	// Number of milliseconds to wait before retrying
-	Wait string `json:"wait,omitempty"`
+	Wait int `json:"wait,omitempty"`
 }

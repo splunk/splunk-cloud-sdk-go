@@ -56,7 +56,7 @@ func TestCreateJobWithTimerange(t *testing.T) {
 	require.NotEmpty(t, response)
 	assert.Equal(t, PostJobsRequest.Query, response.Query)
 	assert.Equal(t, model.Running, response.Status)
-	assert.Equal(t, "12h@h", response.Parameters.Earliest)
+	assert.Equal(t, "12h@h", response.QueryParameters.Earliest)
 }
 
 func TestCreateJobWithModule(t *testing.T) {
@@ -78,7 +78,7 @@ func TestUpdateJob(t *testing.T) {
 	assert.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
-	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.CancelJob)
+	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.JobCanceled)
 	assert.Nil(t, err)
 	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
 	assert.Equal(t, "Search job cancelled.", patchResponse.Messages[0].Text)
