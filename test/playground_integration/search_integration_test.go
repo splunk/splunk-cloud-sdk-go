@@ -6,8 +6,6 @@
 package playgroundintegration
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 	"time"
 
@@ -23,7 +21,8 @@ var (
 	PostJobsRequest             = &model.CreateJobRequest{Query: DefaultSearchQuery}
 	PostJobsBadRequest          = &model.CreateJobRequest{Query: "hahdkfdksf=main | dfsdfdshead 5"}
 	PostJobsRequestModule       = &model.CreateJobRequest{Query: DefaultSearchQuery, Module: ""} // Empty string until catalog is updated
-	PostJobsRequestWithEarliest = &model.CreateJobRequest{Query: DefaultSearchQuery, Earliest: "12h@h"}
+	QueryParams = &model.QueryParameters{Earliest: "-12h@h"}
+	PostJobsRequestWithEarliest = &model.CreateJobRequest{Query: DefaultSearchQuery, QueryParameters: QueryParams}
 )
 
 func TestListJobs(t *testing.T) {
@@ -56,7 +55,7 @@ func TestCreateJobWithTimerange(t *testing.T) {
 	require.NotEmpty(t, response)
 	assert.Equal(t, PostJobsRequest.Query, response.Query)
 	assert.Equal(t, model.Running, response.Status)
-	assert.Equal(t, "12h@h", response.QueryParameters.Earliest)
+	assert.Equal(t, "-12h@h", response.QueryParameters.Earliest)
 }
 
 func TestCreateJobWithModule(t *testing.T) {
@@ -70,24 +69,36 @@ func TestCreateJobWithModule(t *testing.T) {
 	assert.NotNil(t, response.Messages)
 	assert.Equal(t, job.ID, response.ID)
 	assert.NotEmpty(t, response.Status)
-	assert.Equal(t, PostJobsRequestModule, response.Query)
+	assert.Equal(t, PostJobsRequestModule.Query, response.Query)
 }
 
-func TestUpdateJob(t *testing.T) {
+func TestUpdateJobToBeCanceled(t *testing.T) {
 	client := getClient(t)
 	assert.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.JobCanceled)
-	assert.Nil(t, err)
+	require.Nil(t, err)
+	require.NotEmpty(t, patchResponse)
 	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
 	assert.Equal(t, "Search job cancelled.", patchResponse.Messages[0].Text)
-	assert.NotEmpty(t, patchResponse)
 	_, err = client.SearchService.GetJob(job.ID)
-	fmt.Println(job.ID)
 	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).Message)
+	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
+	assert.Equal(t, "Failed to get search job status by sid", err.(*util.HTTPError).Message)
 	assert.NotNil(t, err)
+}
+
+func TestUpdateJobToBeFinalized(t *testing.T) {
+	client := getClient(t)
+	assert.NotNil(t, client)
+	job, err := client.SearchService.CreateJob(PostJobsRequest)
+	require.Emptyf(t, err, "Error creating job: %s", err)
+	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.JobFinalized)
+	require.Nil(t, err)
+	require.NotEmpty(t, patchResponse)
+	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
+	assert.Equal(t, "Search job finalized.", patchResponse.Messages[0].Text)
 }
 
 func TestGetJobResultsNextLink(t *testing.T) {
@@ -96,7 +107,7 @@ func TestGetJobResultsNextLink(t *testing.T) {
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetResults(job.ID, 0, 0)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.(*model.ResultsNotReadyResponse).NextLink)
 }
@@ -121,21 +132,19 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	assert.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsBadRequest)
 	require.NotNil(t, err)
-	assert.True(t, strings.Contains(err.(*util.HTTPError).Message, "ERROR_SPL_PARSE"))
-	assert.Equal(t, "400", err.(*util.HTTPError).HTTPStatusCode)
 	assert.Empty(t, response)
+	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", err.(*util.HTTPError).HTTPStatus)
 }
 
 // TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
-	expectedError := &util.HTTPError{HTTPStatusCode: 404, HTTPStatus: "404 Not Found", Code: "404"}
+	require.NotNil(t, client)
 	resp, err := client.SearchService.GetResults("NON_EXISTING_SEARCH_ID", 0, 0)
 	require.NotNil(t, err)
-	assert.Equal(t, expectedError, err)
-	// empty SearchResults
-	var expectedSearchEvent *model.SearchResults
+	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
+	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
 	assert.Nil(t, resp)
-	assert.EqualValues(t, expectedSearchEvent, resp)
 }

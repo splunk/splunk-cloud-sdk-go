@@ -6,9 +6,12 @@
 package service
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"io/ioutil"
 	"net/url"
 	"time"
 )
@@ -71,15 +74,15 @@ func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (service *SearchService) UpdateJob(jobID string, action model.JobStatus) (*model.PatchJobResponse, error) {
+func (service *SearchService) UpdateJob(jobID string, jobStatus model.JobStatus) (*model.PatchJobResponse, error) {
 	var patchResponse model.PatchJobResponse
 	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
 	requestBody := struct {
-		Action model.JobStatus `json:"action"`
-	}{action}
+		Status model.JobStatus `json:"status"`
+	}{jobStatus}
 	response, err := service.client.Patch(RequestParams{URL: jobURL, Body: requestBody})
 	if response != nil {
 		defer response.Body.Close()
@@ -109,22 +112,29 @@ func (service *SearchService) GetResults(jobID string, count, offset int) (inter
 	if err != nil {
 		return nil, err
 	}
+	// assign response.Body to a variable so that we can reuse response.Body later
+	bodyBytes, _ := ioutil.ReadAll(response.Body)
 	// Create a temporary struct to check if nextLink field exists in payload
 	var tempNextLinkModel struct {
-		NextLink *string `json:"nextLink,omitempty"`
+		NextLink *string `json:"nextLink"`
+		Wait string `json:"wait"`
 	}
-	err = util.ParseResponse(&tempNextLinkModel, response)
+	err = json.Unmarshal(bodyBytes, &tempNextLinkModel)
 	if err != nil {
 		return nil, err
 	}
 	// NextLink exists
 	if tempNextLinkModel.NextLink != nil {
 		var emptyResponse model.ResultsNotReadyResponse
+		// reset the response body to the original state
+		response.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 		err = util.ParseResponse(&emptyResponse, response)
 		return &emptyResponse, err
 	}
 	// NextLink does not exist
 	var results model.SearchResults
+	// reset the response body to the original state
+	response.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 	err = util.ParseResponse(&results, response)
 	return &results, err
 }

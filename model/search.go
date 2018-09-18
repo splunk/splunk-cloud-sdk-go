@@ -16,12 +16,8 @@ type CreateJobRequest struct {
 	// the absolute time used for any relative time specifier in the search.
 	// Defaults to the current system time when the Job is created.
 	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-	// The earliest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	// Default is last 24 hour
-	Earliest string `json:"earliest,omitempty"`
-	// The latest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	// Default is now
-	Latest string `json:"latest,omitempty"`
+	// Represents parameters on the search job such as 'earliest' and 'latest'.
+	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
 }
 
 // QueryParameters is the type representing parameters currently earliest & latest on search.
@@ -62,7 +58,7 @@ type SearchJob struct {
 	// Defaults to the current system time when the search job is created.
 	TimeOfSearch string `json:"timeOfSearch,omitempty"`
 	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	QueryParameters QueryParameters `json:"parameters,omitempty"`
+	QueryParameters QueryParameters `json:"queryParameters,omitempty"`
 	// The ID assigned to the search job.
 	ID string `json:"sid,omitempty"`
 	// The current status of the search job.
@@ -128,5 +124,5 @@ type ResultsNotReadyResponse struct {
 	// URL for job results
 	NextLink string `json:"nextLink,omitempty"`
 	// Number of milliseconds to wait before retrying
-	Wait int `json:"wait,omitempty"`
+	Wait string `json:"wait,omitempty"`
 }
