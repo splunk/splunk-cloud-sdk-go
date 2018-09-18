@@ -45,7 +45,7 @@ func main() {
 
 	//Search metrics data and verify
 	fmt.Println("Search metric data")
-	query = fmt.Sprintf("| from metric:metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metricHost)
+	query = fmt.Sprintf("| from metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metricHost)
 	fmt.Println(query)
 	search(client, query, 1)
 }
