@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/.vendor-new/github.com/stretchr/testify/require"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
