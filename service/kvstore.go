@@ -14,7 +14,7 @@ import (
 )
 
 const kvStoreServicePrefix = "kvstore"
-const kvStoreServiceVersion = "v1"
+const kvStoreServiceVersion = "v1beta1"
 const kvStoreCollectionsResource = "collections"
 
 // KVStoreService talks to kvstore service

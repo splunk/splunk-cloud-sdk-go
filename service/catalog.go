@@ -14,7 +14,7 @@ import (
 
 // catalog service url prefix
 const catalogServicePrefix = "catalog"
-const catalogServiceVersion = "v1"
+const catalogServiceVersion = "v1beta1"
 
 // CatalogService talks to the Splunk Cloud catalog service
 type CatalogService service
