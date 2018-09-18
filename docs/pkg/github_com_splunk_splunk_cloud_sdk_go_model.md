@@ -214,30 +214,6 @@ type AuthError struct {
 
 AuthError auth error reason
 
-#### type AutoMode
-
-```go
-type AutoMode string
-```
-
-AutoMode enumerates the automatic key/value extraction modes. One of "NONE",
-"AUTO", "MULTIKV", "XML", "JSON".
-
-```go
-const (
-	// NONE Automode
-	NONE AutoMode = "NONE"
-	// AUTO Automode
-	AUTO AutoMode = "AUTO"
-	// MULTIKV Automode
-	MULTIKV AutoMode = "MULTIKV"
-	// XML Automode
-	XML AutoMode = "XML"
-	// JSON Automode
-	JSON AutoMode = "JSON"
-)
-```
-
 #### type CatalogAction
 
 ```go
@@ -253,14 +229,67 @@ type CatalogAction struct {
 	Version    int               `json:"version,omitempty"`
 	Field      string            `json:"field,omitempty"`
 	Alias      string            `json:"alias,omitempty"`
-	Mode       AutoMode          `json:"mode,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
-	Limit      int               `json:"limit,omitempty"`
+	Limit      *int              `json:"limit"`
 }
 ```
 
 CatalogAction represents a specific search time transformation action.
+
+#### type CatalogActionCreationPayload
+
+```go
+type CatalogActionCreationPayload struct {
+	RuleID     string            `json:"ruleid,omitempty"`
+	Kind       CatalogActionKind `json:"kind" `
+	Owner      string            `json:"owner"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      *int              `json:"limit,omitempty"`
+}
+```
+
+CatalogActionCreationPayload represents the payload to create a catalog action.
+
+#### func  NewAliasAction
+
+```go
+func NewAliasAction(field string, alias string, owner string) *CatalogActionCreationPayload
+```
+NewAliasAction creates a new alias kind action
+
+#### func  NewAutoKVAction
+
+```go
+func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload
+```
+NewAutoKVAction creates a new autokv kind action
+
+#### func  NewEvalAction
+
+```go
+func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload
+```
+NewEvalAction creates a new eval kind action
+
+#### func  NewLookupAction
+
+```go
+func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload
+```
+NewLookupAction creates a new lookup kind action
+
+#### func  NewRegexAction
+
+```go
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload
+```
+NewRegexAction creates a new regex kind action
 
 #### type CatalogActionKind
 
@@ -327,6 +356,32 @@ type CollectionStats struct {
 
 CollectionStats collection stats
 
+#### type CreateJobRequest
+
+```go
+type CreateJobRequest struct {
+	// The SPL query string.
+	Query string `json:"query"`
+	// The module to run the search in.
+	Module string `json:"module"`
+	// Should SplunkD produce all fields (including those not explicitly mentioned in the SPL)
+	ExtractAllFields bool `json:"extractAllFields"`
+	// The number of seconds to run this search before finalizing.
+	MaxTime uint `json:"maxTime,omitempty"`
+	// Used to convert a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
+	TimeFormat string `json:"timeFormat,omitempty"`
+	// The System time at the time the search job was created. Specify a time string to set
+	// the absolute time used for any relative time specifier in the search.
+	// Defaults to the current system time when the Job is created.
+	TimeOfSearch string `json:"timeOfSearch,omitempty"`
+	// Represents parameters on the search job such as 'earliest' and 'latest'.
+	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
+}
+```
+
+CreateJobRequest defines properties allowed (and possibly required) in fully
+constructed Searchjobs in POST payloads and responses
+
 #### type DataType
 
 ```go
@@ -366,7 +421,7 @@ type DatasetCreationPayload struct {
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
 	MaxMatches         *int   `json:"maxMatches,omitempty"`
 	MinMatches         *int   `json:"minMatches,omitempty"`
@@ -379,6 +434,18 @@ type DatasetCreationPayload struct {
 
 DatasetCreationPayload represents the sources of data that can be serched by
 Splunk
+
+#### type DatasetImportPayload
+
+```go
+type DatasetImportPayload struct {
+	Module string `json:"module"`
+	Name   string `json:"name"`
+	Owner  string `json:"owner"`
+}
+```
+
+DatasetImportPayload represents the dataset import payload
 
 #### type DatasetInfo
 
@@ -432,26 +499,6 @@ const (
 	INDEX DatasetInfoKind = "index"
 )
 ```
-
-#### type DispatchState
-
-```go
-type DispatchState string
-```
-
-DispatchState describes dispatchState of a job
-
-```go
-const (
-	QUEUED     DispatchState = "QUEUED"
-	PARSING    DispatchState = "PARSING"
-	RUNNING    DispatchState = "RUNNING"
-	FINALIZING DispatchState = "FINALIZING"
-	FAILED     DispatchState = "FAILED"
-	DONE       DispatchState = "DONE"
-)
-```
-Supported DispatchState constants
 
 #### type DslCompilationRequest
 
@@ -525,39 +572,6 @@ const (
 	GZIP ExportCollectionContentType = "gzip"
 )
 ```
-
-#### type FetchEventsRequest
-
-```go
-type FetchEventsRequest struct {
-	Count            int      `key:"count"`
-	Offset           int      `key:"offset"`
-	EarliestTime     string   `key:"earliestTime"`
-	Fields           []string `key:"f"`
-	LatestTime       string   `key:"latestTime"`
-	MaxLines         *uint    `key:"maxLines"`
-	TimeFormat       string   `key:"timeFormat"`
-	OutputTimeFormat string   `key:"outputTimeFormat"`
-	Search           string   `key:"search"`
-	TruncationMode   string   `key:"truncationMode"`
-	Segmentation     string   `key:"segmentation"`
-}
-```
-
-FetchEventsRequest specifies the query params when fetching job events
-
-#### type FetchResultsRequest
-
-```go
-type FetchResultsRequest struct {
-	Count  int      `key:"count"`
-	Offset int      `key:"offset"`
-	Fields []string `key:"f"`
-	Search string   `key:"search"`
-}
-```
-
-FetchResultsRequest specifies the query params when fetching job results
 
 #### type Field
 
@@ -726,69 +740,50 @@ type IndexFieldDefinition struct {
 
 IndexFieldDefinition index field definition
 
-#### type JobAction
+#### type JobMessageType
 
 ```go
-type JobAction string
+type JobMessageType string
 ```
 
-JobAction defines the action that can be posted on a job
+JobMessageType defines type of messages from Splunkd
 
 ```go
 const (
-	FINALIZE       JobAction = "finalize"
-	CANCEL         JobAction = "cancel"
-	TOUCH          JobAction = "touch"
-	SAVE           JobAction = "save"
-	SETTTL         JobAction = "setttl"
-	ENABLEPREVIEW  JobAction = "enablepreview"
-	DISABLEPREVIEW JobAction = "disablepreview"
+	InfoType  JobMessageType = "INFO"
+	FatalType JobMessageType = "FATAL"
+	ErrorType JobMessageType = "ERROR"
+	DebugType JobMessageType = "DEBUG"
 )
 ```
-Supported JobAction constants
+Define supported message type
 
-#### type JobControlAction
+#### type JobResultsParams
 
 ```go
-type JobControlAction struct {
-	Action JobAction `json:"action"`
-	TTL    int       `json:"ttl"`
+type JobResultsParams struct {
+	Count  int `key:"count"`
+	Offset int `key:"offset"`
 }
 ```
 
-JobControlAction specifies the action needs to be taken on a job
+JobResultsParams specifies the query params when fetching job results
 
-#### type JobControlReplyMsg
-
-```go
-type JobControlReplyMsg struct {
-	Msg []struct {
-		TypeKey string `json:"type"`
-		Text    string `json:"text"`
-	} `json:"messages"`
-}
-```
-
-JobControlReplyMsg displays messages returned from taking a job control
-
-#### type JobsRequest
+#### type JobStatus
 
 ```go
-type JobsRequest struct {
-	Count  uint `key:"count"`
-	Offset uint `key:"offset"`
-}
+type JobStatus string
 ```
 
-JobsRequest specifies pagination parameters for certain supported requests
-
-#### func  NewDefaultPaginationParams
+JobStatus defines actions to be taken on an existing search job.
 
 ```go
-func NewDefaultPaginationParams() *JobsRequest
+const (
+	JobCanceled  JobStatus = "canceled"
+	JobFinalized JobStatus = "finalized"
+)
 ```
-NewDefaultPaginationParams creates search pagination parameters according to
-Splunk Enterprise defaults
+Define supported job actions
 
 #### type Key
 
@@ -905,49 +900,16 @@ type PaginatedPipelineResponse struct {
 
 PaginatedPipelineResponse contains the pipeline response
 
-#### type PagingInfo
+#### type PatchJobResponse
 
 ```go
-type PagingInfo struct {
-	Total   float64 `json:"total"`
-	PerPage float64 `json:"perPage"`
-	Offset  float64 `json:"offset"`
+type PatchJobResponse struct {
+	// Run time messages from Splunkd.
+	Messages SearchJobMessages `json:"messages"`
 }
 ```
 
-PagingInfo captures fields returned for endpoints supporting paging
-
-#### type PartialDatasetInfo
-
-```go
-type PartialDatasetInfo struct {
-	Name         string          `json:"name,omitempty"`
-	Kind         DatasetInfoKind `json:"kind,omitempty"`
-	Owner        string          `json:"owner,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
-}
-```
-
-PartialDatasetInfo represents the sources of data that can be updated by Splunk,
-same structure as DatasetInfo
+PatchJobResponse defines the response from patch endpoint
 
 #### type PingOKBody
 
@@ -1077,96 +1039,6 @@ const (
 )
 ```
 
-#### type PostJobsRequest
-
-```go
-type PostJobsRequest struct {
-
-	//sample_ratio this is not documented on docs.splunk.com
-	SampleRatio string `json:"sampleRatio"`
-
-	//adhoc_search_level    String        Use one of the following search modes.
-	//[ verbose | fast | smart ]
-	AdhocSearchLevel string `json:"adhocSearchLevel"`
-
-	//auto_cancel    Number    0    If specified, the job automatically cancels after this many seconds of inactivity. (0 means never auto-cancel)
-	AutoCancel *uint `json:"autoCancel"`
-
-	//auto_finalize_ec    Number    0    Auto-finalize the search after at least this many events are processed.
-	//Specify 0 to indicate no limit.
-	AutoFinalizeEventCount *uint `json:"autoFinalizeEc"`
-
-	//custom fields
-	CustomFields map[string]interface{}
-
-	//earliest_time    String        Specify a time string. Sets the earliest (inclusive), respectively, time bounds for the search.
-	//The time string can be either a UTC time (with fractional seconds), a relative time specifier (to now) or a formatted time string. Refer to Time modifiers for search for information and examples of specifying a time string.
-	//Compare to index_earliest parameter. Also see comment for the search_mode parameter.
-	EarliestTime string `json:"earliestTime"`
-
-	//enable_lookups    Boolean    true    Indicates whether lookups should be applied to events.
-	//Specifying true (the default) may slow searches significantly depending on the nature of the lookups.
-	EnableLookUps *bool `json:"enableLookups"`
-
-	//exec_mode    Enum    normal    Valid values: (blocking | oneshot | normal)
-	//If set to normal, runs an asynchronous search.
-	//If set to blocking, returns the sid when the job is complete.
-	//If set to oneshot, returns results in the same call. In this case, you can specify the format for the output (for example, json output) using the output_mode parameter as described in GET search/jobs/export. Default format for output is xml.
-	ExecuteMode string `json:"execMode"`
-
-	//id    String        Optional string to specify the search ID (<sid>). If unspecified, a random ID is generated.
-	ID string `json:"id"`
-
-	//latest_time    String        Specify a time string. Sets the latest (exclusive), respectively, time bounds for the search.
-	//The time string can be either a UTC time (with fractional seconds), a relative time specifier (to now) or a formatted time string.
-	//Refer to Time modifiers for search for information and examples of specifying a time string.
-	//Compare to index_latest parameter. Also see comment for the search_mode parameter.
-	LatestTime string `json:"latestTime"`
-
-	//limit max events
-	Limit int64 `json:"limit"`
-	//max_count    Number    10000    The number of events that can be accessible in any given status bucket.
-	//Also, in transforming mode, the maximum number of results to store. Specifically, in all calls, codeoffset+count max_count.
-	MaxCount *uint `json:"maxCount"`
-
-	//max_time    Number    0    The number of seconds to run this search before finalizing. Specify 0 to never finalize.
-	MaxTime *uint `json:"maxTime"`
-
-	//module	String		The Module to run the search in.
-	Module string `json:"module"`
-
-	//now    String    current system time    Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time.
-	//You can specify a relative time modifier for this parameter. For example, specify +2d to specify the current time plus two days.
-	//If you specify a relative time modifier both in this parameter and in the search string, the search string modifier takes precedence.
-	//Refer to Time modifiers for search for details on specifying relative time modifiers.
-	Now string `json:"now"`
-
-	//reduce_freq    Number    0    Determines how frequently to run the MapReduce reduce phase on accumulated map values.
-	ReduceFrequency *uint `json:"reduceFreq"`
-
-	//search required    String        The search language string to execute, taking results from the local and remote servers.
-	//Examples:
-	//"search *"
-	//"search * | outputcsv"
-	Search string `json:"query"`
-
-	//status_buckets    Number    0    The most status buckets to generate.
-	//0 indicates to not generate timeline information.
-	StatusBuckets *uint `json:"statusBuckets"`
-
-	//time_format    String     %FT%T.%Q%:z    Used to convert a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
-	TimeFormat string `json:"timeFormat"`
-
-	//timeout    Number    86400    The number of seconds to keep this search after processing has stopped.
-	Timeout *uint `json:"timeout"`
-
-	// search timeout
-	TTL int `json:"ttl"`
-}
-```
-
-PostJobsRequest represents the search job post params
-
 #### type PrevalenceType
 
 ```go
@@ -1218,6 +1090,20 @@ type Principal struct {
 
 Principal principal
 
+#### type QueryParameters
+
+```go
+type QueryParameters struct {
+	// The earliest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
+	Earliest string `json:"earliest,omitempty"`
+	// The latest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
+	Latest string `json:"latest,omitempty"`
+}
+```
+
+QueryParameters is the type representing parameters currently earliest & latest
+on search.
+
 #### type RawJSONPayload
 
 ```go
@@ -1233,6 +1119,19 @@ type Record map[string]interface{}
 ```
 
 Record is a JSON document entity contained in collections
+
+#### type ResultsNotReadyResponse
+
+```go
+type ResultsNotReadyResponse struct {
+	// URL for job results
+	NextLink string `json:"nextLink,omitempty"`
+	// Number of milliseconds to wait before retrying
+	Wait string `json:"wait,omitempty"`
+}
+```
+
+ResultsNotReadyResponse represents the response when no search results is ready
 
 #### type Role
 
@@ -1307,64 +1206,103 @@ type Rule struct {
 }
 ```
 
-Rule represents a rule for transforming results at search time. A rule consits
+Rule represents a rule for transforming results at search time. A rule consists
 of a `match` clause and a collection of transformation actions
 
-#### type SearchContext
+#### type RuleUpdateFields
 
 ```go
-type SearchContext struct {
-	User string
-	App  string
+type RuleUpdateFields struct {
+	Name    string `json:"name,omitempty" `
+	Module  string `json:"module,omitempty"`
+	Match   string `json:"match,omitempty" `
+	Owner   string `json:"owner,omitempty" `
+	Version int    `json:"version,omitempty"`
 }
 ```
 
-SearchContext specifies the user and app context for a search job
+RuleUpdateFields represents the set of rule properties that can be updated
 
 #### type SearchJob
 
 ```go
 type SearchJob struct {
-	Sid     string           `json:"sid"`
-	Content SearchJobContent `json:"content"`
-	Context *SearchContext
+	// The SPL query string.
+	Query string `json:"query"`
+	// Determine whether the Search service extracts all available fields in the data, including fields not mentioned in the SPL for the search job.
+	// Set to 'false' for better search performance.
+	ExtractAllFields bool `json:"extractAllFields"`
+	// Converts a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
+	TimeFormat string `json:"timeFormat,omitempty"`
+	// The module to run the search in.
+	Module string `json:"module,omitempty"`
+	// The number of seconds to run this search before finalizing.
+	MaxTime uint `json:"maxTime,omitempty"`
+	// The System time at the time the search job was created. Specify a time string to set the absolute time used for any relative time specifier in the search.
+	// Defaults to the current system time when the search job is created.
+	TimeOfSearch string `json:"timeOfSearch,omitempty"`
+	// Represents parameters on the search job such as 'earliest' and 'latest'.
+	QueryParameters QueryParameters `json:"queryParameters,omitempty"`
+	// The ID assigned to the search job.
+	ID string `json:"sid,omitempty"`
+	// The current status of the search job.
+	Status SearchJobStatus `json:"status,omitempty"`
+	// An estimate of how close the job is to completing.
+	PercentComplete float64 `json:"percentComplete,omitempty"`
+	// The number of results produced so far for the search job.
+	ResultsAvailable int64 `json:"resultsAvailable,omitempty"`
+	// Run time messages from Splunkd.
+	Messages SearchJobMessages `json:"messages,omitempty"`
 }
 ```
 
-SearchJob specifies the fields returned for a /search/jobs/ entry for a specific
-job
+SearchJob represents a fully-constructed search job, including read-only fields.
 
-#### type SearchJobContent
+#### type SearchJobMessages
 
 ```go
-type SearchJobContent struct {
-	Sid             string        `json:"sid"`
-	EventCount      int           `json:"eventCount"`
-	DispatchState   DispatchState `json:"dispatchState"`
-	DiskUsage       int64         `json:"diskUsage"`
-	IsFinalized     bool          `json:"isFinalized"`
-	OptimizedSearch string        `json:"optimizedSearch"`
-	ScanCount       int64         `json:"scanCount"`
+type SearchJobMessages []struct {
+	// Enum [INFO, FATAL, ERROR, DEBUG]
+	Type string `json:"type"`
+	// message text
+	Text string `json:"text"`
 }
 ```
 
-SearchJobContent represents the content json object from /search/jobs response
+SearchJobMessages is used in search results or search job.
+
+#### type SearchJobStatus
+
+```go
+type SearchJobStatus string
+```
+
+SearchJobStatus describes status of a search job
+
+```go
+const (
+	Queued     SearchJobStatus = "queued"
+	Parsing    SearchJobStatus = "parsing"
+	Running    SearchJobStatus = "running"
+	Finalizing SearchJobStatus = "finalizing"
+	Failed     SearchJobStatus = "failed"
+	Done       SearchJobStatus = "done"
+)
+```
+Supported SearchJobStatus constants
 
 #### type SearchResults
 
 ```go
 type SearchResults struct {
-	Preview     bool                     `json:"preview"`
-	InitOffset  int                      `json:"init_offset"`
-	Messages    []interface{}            `json:"messages"`
-	Results     []map[string]interface{} `json:"results"`
-	Fields      []map[string]interface{} `json:"fields"`
-	Highlighted map[string]interface{}   `json:"highlighted"`
+	// Run time messages from Splunkd.
+	Messages SearchJobMessages        `json:"messages"`
+	Results  []map[string]interface{} `json:"results"`
+	Fields   []map[string]interface{} `json:"fields"`
 }
 ```
 
-SearchResults represents the /search/jobs/{sid}/events or
-/search/jobs/{sid}/results response
+SearchResults represents results from a search job
 
 #### type SplunkEventPayload
 
@@ -1460,6 +1398,38 @@ func (t *Ticker) Stop()
 ```
 Stop stops ticker and set property running to false
 
+#### type UpdateDatasetInfoFields
+
+```go
+type UpdateDatasetInfoFields struct {
+	Name         string          `json:"name,omitempty"`
+	Kind         DatasetInfoKind `json:"kind,omitempty"`
+	Owner        string          `json:"owner,omitempty"`
+	Created      string          `json:"created,omitempty"`
+	Modified     string          `json:"modified,omitempty"`
+	CreatedBy    string          `json:"createdBy,omitempty"`
+	ModifiedBy   string          `json:"modifiedBy,omitempty"`
+	Capabilities string          `json:"capabilities,omitempty"`
+	Version      int             `json:"version,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         int    `json:"maxMatches,omitempty"`
+	MinMatches         int    `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
+}
+```
+
+UpdateDatasetInfoFields represents the sources of data that can be updated by
+Splunk, same structure as DatasetInfo
+
 #### type UplEdge
 
 ```go
@@ -1494,22 +1464,6 @@ type UplPipeline struct {
 ```
 
 UplPipeline contains the pipeline data
-
-#### type User
-
-```go
-type User struct {
-	ID                string   `json:"id"`
-	FirstName         string   `json:"firstName,omitempty"`
-	LastName          string   `json:"lastName,omitempty"`
-	Email             string   `json:"email,omitempty"`
-	Locale            string   `json:"locale,omitempty"`
-	Name              string   `json:"name,omitempty"`
-	TenantMemberships []string `json:"tenantMemberships,omitempty"`
-}
-```
-
-User represents a user object
 
 #### type ValidateInfo
 
