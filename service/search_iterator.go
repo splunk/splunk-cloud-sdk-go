@@ -7,7 +7,6 @@ package service
 
 import (
 	"errors"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 

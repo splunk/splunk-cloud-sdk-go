@@ -122,15 +122,15 @@ type Context struct {
 }
 
 const (
-	defaultAuthnPath     = "api/v1/authn"
-	defaultAuthorizePath = "oauth2/default/v1/authorize"
-	defaultKeysPath      = "oauth2/default/v1/keys"
-	defaultTokenPath     = "oauth2/default/v1/token"
+	defaultAuthnPath    = "api/v1/authn"
+	customAuthorizePath = "oauth2/%s/v1/authorize"
+	customKeysPath      = "oauth2/%s/v1/keys"
+	customTokenPath     = "oauth2/%s/v1/token"
 )
 
-// Client captures host and route information for the IdP endpoints
+// Client captures url and route information for the IdP endpoints
 type Client struct {
-	Host          string
+	ProviderURL   string
 	PathAuthn     string
 	PathAuthorize string
 	PathKeys      string
@@ -138,21 +138,26 @@ type Client struct {
 }
 
 // NewClient Returns a new IdP client object.
-func NewClient(host string, authnPath string, authorizePath string, keysPath string, tokenPath string) *Client {
+//   providerURL: should be of the form https://example.com or optionally https://example.com:port
+func NewClient(providerURL string, authnPath string, authorizePath string, keysPath string, tokenPath string) *Client {
+	// Add a trailing slash if none
+	if providerURL[len(providerURL)-1:] != "/" {
+		providerURL = providerURL + "/"
+	}
 	if authnPath == "" {
 		authnPath = defaultAuthnPath
 	}
 	if authorizePath == "" {
-		authorizePath = defaultAuthorizePath
+		authorizePath = fmt.Sprintf(customAuthorizePath, "default")
 	}
 	if keysPath == "" {
-		keysPath = defaultKeysPath
+		keysPath = fmt.Sprintf(customKeysPath, "default")
 	}
 	if tokenPath == "" {
-		tokenPath = defaultTokenPath
+		tokenPath = fmt.Sprintf(customTokenPath, "default")
 	}
 	return &Client{
-		Host:          host,
+		ProviderURL:   providerURL,
 		PathAuthn:     authnPath,
 		PathAuthorize: authorizePath,
 		PathKeys:      keysPath,
@@ -161,8 +166,21 @@ func NewClient(host string, authnPath string, authorizePath string, keysPath str
 }
 
 // NewDefaultClient returns a new IdP client object with default routes.
-func NewDefaultClient(host string) *Client {
-	return NewClient(host, "", "", "", "")
+//   providerURL: should be of the form https://example.com or optionally https://example.com:port
+func NewDefaultClient(providerURL string) *Client {
+	return NewClientWithAuthzName(providerURL, "default")
+}
+
+// NewClientWithAuthzName returns a new IdP client object with an authorization server name other than "default".
+//   providerURL: should be of the form https://example.com or optionally https://example.com:port
+func NewClientWithAuthzName(providerURL string, authzServerName string) *Client {
+	return NewClient(
+		providerURL,
+		defaultAuthnPath,
+		fmt.Sprintf(customAuthorizePath, authzServerName),
+		fmt.Sprintf(customKeysPath, authzServerName),
+		fmt.Sprintf(customTokenPath, authzServerName),
+	)
 }
 
 // Returns a new HTTP client object with redirects disabled.
@@ -191,8 +209,8 @@ func decode(response *http.Response) (*Context, error) {
 	return context, nil
 }
 
-func newGet(url string, params url.Values) (*http.Request, error) {
-	request, err := http.NewRequest("GET", url, nil)
+func newGet(reqURL string, params url.Values) (*http.Request, error) {
+	request, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -201,12 +219,12 @@ func newGet(url string, params url.Values) (*http.Request, error) {
 	return request, nil
 }
 
-func newPost(url string, body interface{}) (*http.Request, error) {
+func newPost(reqURL string, body interface{}) (*http.Request, error) {
 	reader, err := encode(body)
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest("POST", url, reader)
+	request, err := http.NewRequest("POST", reqURL, reader)
 	if err != nil {
 		return nil, err
 	}
@@ -215,9 +233,9 @@ func newPost(url string, body interface{}) (*http.Request, error) {
 	return request, nil
 }
 
-func newFormPost(url string, data url.Values) (*http.Request, error) {
+func newFormPost(reqURL string, data url.Values) (*http.Request, error) {
 	reader := strings.NewReader(data.Encode())
-	request, err := http.NewRequest("POST", url, reader)
+	request, err := http.NewRequest("POST", reqURL, reader)
 	if err != nil {
 		return nil, err
 	}
@@ -226,24 +244,24 @@ func newFormPost(url string, data url.Values) (*http.Request, error) {
 	return request, nil
 }
 
-func get(url string, params url.Values) (*http.Response, error) {
-	request, err := newGet(url, params)
+func get(reqURL string, params url.Values) (*http.Response, error) {
+	request, err := newGet(reqURL, params)
 	if err != nil {
 		return nil, err
 	}
 	return newHTTPClient().Do(request)
 }
 
-func post(url string, body interface{}) (*http.Response, error) {
-	request, err := newPost(url, body)
+func post(reqURL string, body interface{}) (*http.Response, error) {
+	request, err := newPost(reqURL, body)
 	if err != nil {
 		return nil, err
 	}
 	return newHTTPClient().Do(request)
 }
 
-func formPost(url string, data url.Values) (*http.Response, error) {
-	request, err := newFormPost(url, data)
+func formPost(reqURL string, data url.Values) (*http.Response, error) {
+	request, err := newFormPost(reqURL, data)
 	if err != nil {
 		return nil, err
 	}
@@ -257,8 +275,8 @@ func state() string {
 }
 
 // Return a full URL basd on the given path template.
-func (c *Client) url(path string) string {
-	return fmt.Sprintf("%s%s", c.Host, path)
+func (c *Client) makeURL(path string) string {
+	return fmt.Sprintf("%s%s", c.ProviderURL, path)
 }
 
 // ClientFlow will authenticate using the "client credentials" flow.
@@ -266,7 +284,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 	form := url.Values{
 		"grant_type": {"client_credentials"},
 		"scope":      {scope}}
-	request, err := newFormPost(c.url(c.PathToken), form)
+	request, err := newFormPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
@@ -288,7 +306,7 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 	body := map[string]string{
 		"username": username,
 		"password": password}
-	response, err := post(c.url(c.PathAuthn), body)
+	response, err := post(c.makeURL(c.PathAuthn), body)
 	if err != nil {
 		return "", err
 	}
@@ -356,7 +374,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"scope":                 {scope},
 		"sessionToken":          {sessionToken},
 		"state":                 {state()}}
-	response, err := get(c.url(c.PathAuthorize), params)
+	response, err := get(c.makeURL(c.PathAuthorize), params)
 	if err != nil {
 		return nil, err
 	}
@@ -379,7 +397,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"code_verifier": {cv},
 		"grant_type":    {"authorization_code"},
 		"redirect_uri":  {redirectURI}}
-	response, err = formPost(c.url(c.PathToken), form)
+	response, err = formPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}
@@ -436,7 +454,7 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
-	response, err := formPost(c.url(c.PathToken), form)
+	response, err := formPost(c.makeURL(c.PathToken), form)
 	if err != nil {
 		return nil, err
 	}

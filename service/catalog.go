@@ -14,7 +14,7 @@ import (
 
 // catalog service url prefix
 const catalogServicePrefix = "catalog"
-const catalogServiceVersion = "v1"
+const catalogServiceVersion = "v1beta1"
 
 // CatalogService talks to the Splunk Cloud catalog service
 type CatalogService service
@@ -37,9 +37,9 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	return result, err
 }
 
-// GetDataset returns the Dataset by name
-func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", id)
+// GetDataset returns the Dataset by resourceName or ID
+func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error) {
 }
 
 // CreateDataset creates a new Dataset
-func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error) {
+func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*model.DatasetInfo, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*m
 	return &result, err
 }
 
-// UpdateDataset updates an existing Dataset
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.DatasetInfo, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
+// UpdateDataset updates an existing Dataset with the specified resourceName or ID
+func (c *CatalogService) UpdateDataset(dataset *model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -91,9 +91,9 @@ func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, dataset
 	return &result, err
 }
 
-// DeleteDataset implements delete Dataset endpoint
-func (c *CatalogService) DeleteDataset(datasetID string) error {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID)
+// DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
+func (c *CatalogService) DeleteDataset(resourceNameOrID string) error {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return err
 	}
@@ -104,9 +104,9 @@ func (c *CatalogService) DeleteDataset(datasetID string) error {
 	return err
 }
 
-// DeleteRule deletes the rule by the given path.
-func (c *CatalogService) DeleteRule(ruleID string) error {
-	getDeleteURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
+// DeleteRule deletes the rule and its dependencies with the specified rule id or resourceName
+func (c *CatalogService) DeleteRule(resourceNameOrID string) error {
+	getDeleteURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return err
 	}
@@ -135,9 +135,9 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	return result, err
 }
 
-// GetRule returns rule by an ID.
-func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error) {
-	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID)
+// GetRule returns rule by an with the specified rule resourceName or ID.
+func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) {
+	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -160,6 +160,24 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 		return nil, err
 	}
 	response, err := c.client.Post(RequestParams{URL: postRuleURL, Body: rule})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Rule
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// UpdateRule updates the rule with the specified resourceName or ID
+func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset *model.RuleUpdateFields) (*model.Rule, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Patch(RequestParams{URL: url, Body: dataset})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -207,8 +225,8 @@ func (c *CatalogService) GetDatasetField(datasetID string, datasetFieldID string
 	return &result, err
 }
 
-// PostDatasetField creates a new field in the specified dataset
-func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.Field) (*model.Field, error) {
+// CreateDatasetField creates a new field in the specified dataset
+func (c *CatalogService) CreateDatasetField(datasetID string, datasetField *model.Field) (*model.Field, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
@@ -225,8 +243,8 @@ func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.F
 	return &result, err
 }
 
-// PatchDatasetField updates an already existing field in the specified dataset
-func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID string, datasetField model.Field) (*model.Field, error) {
+// UpdateDatasetField updates an already existing field in the specified dataset
+func (c *CatalogService) UpdateDatasetField(datasetID string, datasetFieldID string, datasetField *model.Field) (*model.Field, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
@@ -254,4 +272,128 @@ func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID str
 		defer response.Body.Close()
 	}
 	return err
+}
+
+// GetFields returns a list of all Fields on Catalog
+func (c *CatalogService) GetFields() ([]model.Field, error) {
+	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "fields")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.Field
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetField returns the Field corresponding to fieldid
+func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion,  "fields", fieldID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// CreateRuleAction creates a new Action on the rule specified
+func (c *CatalogService) CreateRuleAction(resourceNameOrRuleID string, action *model.CatalogActionCreationPayload) (*model.CatalogAction, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrRuleID, "actions")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Post(RequestParams{URL: url, Body: action})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result model.CatalogAction
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// GetRuleActions returns a list of all actions belonging to the specified rule
+func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, error) {
+	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.CatalogAction
+	err = util.ParseResponse(&result, response)
+	return result, err
+}
+
+// GetRuleAction returns the action of specified belonging to the specified rule
+func (c *CatalogService) GetRuleAction(ruleID string, actionID string) (*model.CatalogAction, error) {
+	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions",actionID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.CatalogAction
+
+	err = util.ParseResponse(&result, response)
+	return &result, err
+}
+
+// DeleteRuleAction deletes the action of specified belonging to the specified rule
+func (c *CatalogService) DeleteRuleAction(ruleID string, actionID string) error {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
+	if err != nil {
+		return err
+	}
+	response, err := c.client.Delete(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
+
+// UpdateRuleAction updates the action with the specified id for the specified Rule
+func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.Field, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Patch(RequestParams{URL: url, Body: action})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result model.Field
+	err = util.ParseResponse(&result, response)
+	return &result, err
 }

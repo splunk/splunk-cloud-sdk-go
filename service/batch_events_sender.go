@@ -7,19 +7,20 @@ package service
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 	"sync"
 	"time"
 
-	"encoding/json"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 //UserErrHandler defines the type of user callback function for batchEventSender
 type UserErrHandler func(*BatchEventsSender)
 
-const errMsgSplitter = "[insErrSplit]"
+//ingestError defines the type of the event payload sent and ingest error incurred
+type ingestError struct {
+	Error  error
+	Events []model.Event
+}
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
@@ -30,14 +31,14 @@ type BatchEventsSender struct {
 	EventService   *IngestService
 	IngestTicker   *model.Ticker
 	WaitGroup      *sync.WaitGroup
-	ErrorChan      chan string
-	errorMsg       string
+	ErrorChan      chan struct{}
 	IsRunning      bool
 	mux            sync.Mutex
 	callbackFunc   UserErrHandler
 	stopMux        sync.Mutex
 	chanWaitMillis int
 	resetMux       sync.Mutex
+	Errors         []ingestError
 }
 
 // SetCallbackHandler allows users to pass their own callback function
@@ -60,9 +61,8 @@ func (b *BatchEventsSender) loop() {
 	defer close(b.EventsChan)
 	for {
 		select {
-		case err := <-b.ErrorChan:
+		case <-b.ErrorChan:
 			errorMsgCount++
-			b.errorMsg += err + errMsgSplitter
 
 			if errorMsgCount >= cap(b.ErrorChan) {
 				b.Stop()
@@ -174,18 +174,13 @@ func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
 		err := b.EventService.PostEvents(batchedEvents)
 		i = i + b.BatchSize
 		if err != nil {
-			var errString string
-			jsonEvents, parsingErr := json.Marshal(events)
-			if parsingErr != nil {
-				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, events)
-			} else {
-				errString = fmt.Sprintf("failed to send all events:%v\nEventPayload:%v", err, string(jsonEvents))
-			}
+			b.Errors = append(b.Errors, ingestError{Error: err, Events: events})
+
 			for len(b.EventsChan) >= cap(b.EventsChan) {
 				time.Sleep(time.Duration(b.chanWaitMillis) * time.Millisecond)
 			}
 			if b.IsRunning {
-				b.ErrorChan <- errString
+				b.ErrorChan <- struct{}{}
 			}
 		}
 	}
@@ -207,19 +202,9 @@ func (b *BatchEventsSender) Restart() {
 
 	// reopen channels
 	b.EventsChan = make(chan model.Event, b.BatchSize)
-	b.ErrorChan = make(chan string, cap(b.ErrorChan))
+	b.ErrorChan = make(chan struct{}, cap(b.ErrorChan))
 
+	b.Errors = nil
 	b.ResetQueue()
-	b.errorMsg = ""
 	b.Run()
-}
-
-// GetErrors return all the error messages as an array
-func (b *BatchEventsSender) GetErrors() []string {
-	if b.errorMsg == "" {
-		return nil
-	}
-
-	errors := strings.Split(b.errorMsg, errMsgSplitter)
-	return errors[:len(errors)-1]
 }
