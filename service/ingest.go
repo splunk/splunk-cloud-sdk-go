@@ -11,16 +11,14 @@ import (
 )
 
 const ingestServicePrefix = "ingest"
-const ingestServiceVersion = "v1"
-// this is temporary. All endpoints will be reset to v1
-const ingestServiceVersionV2 = "v2"
+const ingestServiceVersion = "v1beta1"
 
 // IngestService talks to the Splunk Cloud ingest service
 type IngestService service
 
 // PostEvents post single or multiple events to ingest service
 func (h *IngestService) PostEvents(events []model.Event) error {
-	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersionV2, "events")
+	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "events")
 	if err != nil {
 		return err
 	}
