@@ -27,15 +27,15 @@ var (
 
 func TestListJobs(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobs()
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	assert.NotNil(t, response)
 }
 
 func TestGetJob(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(job.ID)
@@ -49,7 +49,7 @@ func TestGetJob(t *testing.T) {
 
 func TestCreateJobWithTimerange(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestWithEarliest)
 	assert.Nil(t, err)
 	require.NotEmpty(t, response)
@@ -60,7 +60,7 @@ func TestCreateJobWithTimerange(t *testing.T) {
 
 func TestCreateJobWithModule(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequestModule)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(job.ID)
@@ -74,11 +74,11 @@ func TestCreateJobWithModule(t *testing.T) {
 
 func TestUpdateJobToBeCanceled(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.JobCanceled)
-	require.Nil(t, err)
+	assert.Nil(t, err)
 	require.NotEmpty(t, patchResponse)
 	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
 	assert.Equal(t, "Search job cancelled.", patchResponse.Messages[0].Text)
@@ -91,11 +91,11 @@ func TestUpdateJobToBeCanceled(t *testing.T) {
 
 func TestUpdateJobToBeFinalized(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	patchResponse, err := client.SearchService.UpdateJob(job.ID, model.JobFinalized)
-	require.Nil(t, err)
+	assert.Nil(t, err)
 	require.NotEmpty(t, patchResponse)
 	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
 	assert.Equal(t, "Search job finalized.", patchResponse.Messages[0].Text)
@@ -103,7 +103,7 @@ func TestUpdateJobToBeFinalized(t *testing.T) {
 
 func TestGetJobResultsNextLink(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetResults(job.ID, 0, 0)
@@ -114,7 +114,7 @@ func TestGetJobResultsNextLink(t *testing.T) {
 
 func TestGetJobResults(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	state, err := client.SearchService.WaitForJob(job.ID, 1000*time.Millisecond)
@@ -122,14 +122,14 @@ func TestGetJobResults(t *testing.T) {
 	assert.Equal(t, model.Done, state)
 	response, err := client.SearchService.GetResults(job.ID, 5, 0)
 	assert.Nil(t, err)
-	assert.NotEmpty(t, response)
+	require.NotEmpty(t, response)
 	assert.Equal(t, 5, response.(*model.SearchResults).Results)
 }
 
 // TestIntegrationNewSearchJobBadRequest asynchronously
 func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	client := getClient(t)
-	assert.NotNil(t, client)
+	require.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsBadRequest)
 	require.NotNil(t, err)
 	assert.Empty(t, response)
