@@ -14,7 +14,7 @@ import (
 
 // action service url prefix
 const actionServicePrefix = "action"
-const actionServiceVersion = "v1"
+const actionServiceVersion = "v1beta1"
 
 // ActionService - A service the receives incoming notifications and uses
 // pre-defined templates to turn those notifications into meaningful actions
