@@ -87,7 +87,7 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 		ResponseHandlers: handlers,
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
-	_, err = client.SearchService.GetJobs(nil)
+	_, err = client.SearchService.ListJobs()
 	assert.True(t, strings.Contains(err.Error(), rHandlerErrMsg), "error should match custom error from response handler")
 	assert.Equal(t, handler1.N, 1, "first handler should have been called")
 	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
