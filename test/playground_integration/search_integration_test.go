@@ -123,7 +123,7 @@ func TestGetJobResults(t *testing.T) {
 	response, err := client.SearchService.GetResults(job.ID, 5, 0)
 	assert.Nil(t, err)
 	require.NotEmpty(t, response)
-	assert.Equal(t, 5, response.(*model.SearchResults).Results)
+	assert.Equal(t, 5, len(response.(*model.SearchResults).Results))
 }
 
 // TestIntegrationNewSearchJobBadRequest asynchronously
