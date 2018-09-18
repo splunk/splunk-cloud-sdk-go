@@ -1,7 +1,7 @@
 #!/bin/bash
 
 go get github.com/robertkrimen/godocdown
-GO_NON_TEST_PACKAGES=$(go list ./... | grep -v test)
+GO_NON_TEST_NON_EXAMPLE_PACKAGES=$(go list ./... | grep -v test | grep -v examples)
 
 rm -rf docs/
 mkdir -p docs/pkg
@@ -14,7 +14,7 @@ DOC_INDEX="
 
 "
 
-for PACKAGE in $GO_NON_TEST_PACKAGES
+for PACKAGE in $GO_NON_TEST_NON_EXAMPLE_PACKAGES
 do
     DOC_FILE=$(echo $PACKAGE | sed "s/[\.|\/|-]/_/g").md
     godocdown $PACKAGE > docs/pkg/$DOC_FILE
