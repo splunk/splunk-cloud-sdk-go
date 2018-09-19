@@ -38,7 +38,8 @@ func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestDatastoreKVStoreCreationWithMissingNamespace(t *testing.T) {
+// Not needed as now kvcollection dataset can be created without a namespace
+/*func TestDatastoreKVStoreCreationWithMissingNamespace(t *testing.T) {
 	createDatasetInfo := model.DatasetCreationPayload{
 		Name:         testutils.TestCollection,
 		Kind:         model.KVCOLLECTION,
@@ -46,8 +47,9 @@ func TestDatastoreKVStoreCreationWithMissingNamespace(t *testing.T) {
 		Capabilities: datasetCapabilities,
 	}
 
+	fmt.Println(createDatasetInfo)
 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createDatasetInfo)
 
 	assert.Nil(t, datasetInfo)
 	assert.NotNil(t, err)
-}
+}*/
