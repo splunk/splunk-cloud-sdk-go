@@ -7,7 +7,7 @@ A Go client for Splunk Cloud services
 | master | [![Codeship Status for splunk/splunk-cloud-sdk-go](https://app.codeship.com/projects/d0ec9ea0-15c2-0136-e7ad-1a0f3e5cdd95/status?branch=master)](https://app.codeship.com/projects/283638) | [![codecov](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master/graph/badge.svg?token=o4BjP93wQt)](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master) |
 
 # Terms of Service (TOS)
-[Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-terms-of-service.html)
+[Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-pre-release-terms-of-service.html)
 
 # Getting started
 ---
