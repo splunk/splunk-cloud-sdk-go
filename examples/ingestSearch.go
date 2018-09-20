@@ -131,8 +131,8 @@ func ingestMetric(client *service.Client, index string) string {
 }
 
 func ingestEvent(client *service.Client, index string) (string, string) {
-	source := fmt.Sprintf("mysource-%v", float64(time.Now().Second()))
-	host := fmt.Sprintf("myhost-%v", float64(time.Now().Second()))
+	source := fmt.Sprintf("mysource-%v",time.Now().Unix())
+	host := fmt.Sprintf("myhost-%v", time.Now().Unix())
 
 	event1 := model.Event{
 		Host:   host,
