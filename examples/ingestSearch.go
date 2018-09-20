@@ -187,7 +187,7 @@ func search(client *service.Client, query string, expected int) {
 			return
 		}
 
-		// TODO: Duplicates occurring when ingesting new data. Known issue as mentioned by ingest team. Should follow up with ingest team.
+		// TODO: Duplicates occurring when ingesting new data. Known issue (SSC-4179). Should follow up with ingest team.
 		if len(results) < expected {
 			fmt.Println("Not found all yet, keep searching")
 			time.Sleep(20 * time.Second)
