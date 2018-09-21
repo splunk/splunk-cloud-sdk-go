@@ -6,7 +6,6 @@
 package service
 
 import (
-	"io/ioutil"
 	"net/url"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
@@ -72,39 +71,6 @@ func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) 
 	var result []model.CollectionDefinition
 	err = util.ParseResponse(&result, response)
 	return result, err
-}
-
-// ExportCollection exports the specified collection records to an external file
-func (c *KVStoreService) ExportCollection(collectionName string, contentType model.ExportCollectionContentType) (string, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collectionName, "export")
-	if err != nil {
-		return "", err
-	}
-
-	var acceptType string
-	if contentType == model.CSV {
-		acceptType = "text/csv"
-	} else {
-		acceptType = "application/gzip"
-	}
-
-	headers := map[string]string{
-		"Accept": acceptType,
-	}
-	response, err := c.client.Get(RequestParams{URL: url, Headers: headers})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return "", err
-	}
-
-	records, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return string(records), nil
 }
 
 // CreateIndex posts a new index to be added to the collection.
