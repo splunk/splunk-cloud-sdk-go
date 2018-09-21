@@ -16,6 +16,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"strings"
 )
 
 // Test Rule variables
@@ -27,7 +28,9 @@ var owner = "splunk"
 // Test Dataset variables
 var datasetOwner = "Splunk"
 var datasetCapabilities = "1101-00000:11010"
-var datasetName = "integ_dataset_1000"
+var datasetName1 = "go_integ_dataset_1000"
+var datasetName2 = "go_integ_dataset_2000"
+var datasetName3 = "go_integ_dataset_3000"
 var externalKind = "kvcollection"
 var externalName = "test_externalName"
 
@@ -36,12 +39,12 @@ func cleanupDatasets(t *testing.T) {
 	result, err := client.CatalogService.GetDatasets()
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 
+	// deletes all the datasets with name containing a 'go' prefix
 	for _, item := range result {
-		if item.Name == "main" || item.Name == "metrics" {
-			continue
+		if strings.HasPrefix(item.Name, "go") {
+			err = client.CatalogService.DeleteDataset(item.ID)
+			assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 		}
-		err = client.CatalogService.DeleteDataset(item.ID)
-		assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 	}
 }
 
@@ -99,9 +102,9 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 func TestIntegrationCreateDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	createLookupDataset(t, testutils.TestNamespace, "integ_dataset_1000", datasetOwner, datasetCapabilities, externalKind, externalName)
-	createLookupDataset(t, testutils.TestNamespace, "integ_dataset_2000", datasetOwner, datasetCapabilities, externalKind, externalName)
-	createLookupDataset(t, testutils.TestNamespace, "integ_dataset_3000", datasetOwner, datasetCapabilities, externalKind, externalName)
+	createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
+	createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
+	createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
 }
 
 // Test CreateDataset for 409 DatasetInfo already present error
@@ -134,7 +137,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	_, err := invalidClient.CatalogService.CreateDataset(
-		&model.DatasetCreationPayload{Name: datasetName, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
+		&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	require.NotNil(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
@@ -158,13 +161,13 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 
 	client := getClient(t)
 
-	_, errOne := createLookupDataset(t, testutils.TestNamespace, "integ_dataset_1000", datasetOwner, datasetCapabilities, externalKind, externalName)
+	_, errOne := createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
 	assert.Emptyf(t, errOne, "Error creating dataset: %s", errOne)
 
-	_, errTwo := createLookupDataset(t, testutils.TestNamespace, "integ_dataset_2000", datasetOwner, datasetCapabilities, externalKind, externalName)
+	_, errTwo := createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
 	assert.Emptyf(t, errTwo, "Error creating dataset: %s", errTwo)
 
-	_, errThree := createLookupDataset(t, testutils.TestNamespace, "integ_dataset_3000", datasetOwner, datasetCapabilities, externalKind, externalName)
+	_, errThree := createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
 	assert.Emptyf(t, errThree, "Error creating dataset: %s", errThree)
 
 	datasets, err := client.CatalogService.GetDatasets()
@@ -207,7 +210,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// create dataset
-	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
+	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
@@ -507,7 +510,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	client := getClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: "integ_dataset_1000", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
 	require.Nil(t, err)
 	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
 
@@ -787,7 +790,7 @@ func TestGetFields(t *testing.T) {
 			Capabilities: datasetCapabilities,
 		})
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
+	defer client.CatalogService.DeleteDataset(datasetName1)
 
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
@@ -829,7 +832,7 @@ func TestRuleActions(t *testing.T) {
 		Capabilities: datasetCapabilities,
 	})
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteDataset("integ_dataset_1000")
+	defer client.CatalogService.DeleteDataset(datasetName1)
 
 	// create new fields in the dataset
 	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
