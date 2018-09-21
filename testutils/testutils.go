@@ -45,4 +45,4 @@ var StubbyTestCollection = "testcollection0"
 var TestTimeOut = time.Second * 5
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
-var TenantCreationOn = (os.Getenv("TENANT_CREATION") == "1")
+var TenantCreationOn = os.Getenv("TENANT_CREATION") == "1"
