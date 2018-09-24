@@ -850,17 +850,41 @@ func TestRuleActions(t *testing.T) {
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
 
+	//update rule action
+	tmpstr := "newaliasi"
+	updateact, err := client.CatalogService.UpdateRuleAction(rule.ID, action1.ID, model.UpdateAliasAction(nil, &tmpstr))
+	require.NotNil(t, updateact)
+	assert.Equal(t, tmpstr, updateact.Alias)
+
 	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("mymode", "owner1"))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
+
+	//update rule action
+	tmpstr = "mymode1"
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.UpdateAutoKVAction(&tmpstr))
+	require.NotNil(t, updateact)
+	assert.Equal(t, tmpstr, updateact.Mode)
 
 	action3, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewEvalAction(field.Name, "some expression", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
 
+	//update rule action
+	tmpstr = "newField"
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action3.ID, model.UpdateEvalAction(&tmpstr, nil))
+	require.NotNil(t, updateact)
+	assert.Equal(t, tmpstr, updateact.Field)
+
 	action4, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewLookupAction("myexpression2", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
+
+	//update rule action
+	tmpstr = "newexpr"
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action4.ID, model.UpdateLookupAction(&tmpstr))
+	require.NotNil(t, updateact)
+	assert.Equal(t, tmpstr, updateact.Expression)
 
 	limit := 5
 	action5, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", &limit, ""))
@@ -868,18 +892,26 @@ func TestRuleActions(t *testing.T) {
 	assert.Equal(t, 5, *action5.Limit)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
 
-	action7, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", nil, ""))
+	action6, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", nil, ""))
 	require.Nil(t, err)
-	assert.Equal(t, (*int)(nil), action7.Limit)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
+	assert.Equal(t, (*int)(nil), action6.Limit)
+	defer client.CatalogService.DeleteRuleAction(rule.ID, action6.ID)
+
+	//update rule action
+	tmpstr = "newpattern"
+	limit = 9
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, model.UpdateRegexAction(nil, &tmpstr, &limit))
+	require.NotNil(t, updateact)
+	assert.Equal(t, tmpstr, updateact.Pattern)
+	assert.Equal(t, limit, *updateact.Limit)
 
 	//Get rule actions
 	actions, err := client.CatalogService.GetRuleActions(rule.ID)
 	require.NotNil(t, actions)
 	assert.Equal(t, 6, len(actions))
 
-	action6, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
-	require.NotNil(t, action6)
+	action7, err := client.CatalogService.GetRuleAction(rule.ID, actions[0].ID)
+	require.NotNil(t, action7)
 
 	// Delete action
 	err = client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)

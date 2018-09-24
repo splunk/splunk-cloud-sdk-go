@@ -311,8 +311,8 @@ func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
 }
 
 // CreateRuleAction creates a new Action on the rule specified
-func (c *CatalogService) CreateRuleAction(resourceNameOrRuleID string, action *model.CatalogActionCreationPayload) (*model.CatalogAction, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrRuleID, "actions")
+func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAction) (*model.CatalogAction, error) {
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -381,11 +381,12 @@ func (c *CatalogService) DeleteRuleAction(ruleID string, actionID string) error 
 
 
 // UpdateRuleAction updates the action with the specified id for the specified Rule
-func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.Field, error) {
+func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.CatalogAction, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
+
 	response, err := c.client.Patch(RequestParams{URL: url, Body: action})
 	if response != nil {
 		defer response.Body.Close()
@@ -393,7 +394,7 @@ func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action
 	if err != nil {
 		return nil, err
 	}
-	var result model.Field
+	var result model.CatalogAction
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
