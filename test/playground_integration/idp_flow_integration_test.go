@@ -46,7 +46,7 @@ const BackendServiceScope = ""
 var TestUsername = os.Getenv("TEST_USERNAME")
 
 // TestPassword corresponds to the test user's password for integration testing
-var TestPassword = os.Getenv("PASSWORD")
+var TestPassword = os.Getenv("TEST_PASSWORD")
 
 type retryTokenRetriever struct {
 	TR idp.TokenRetriever
