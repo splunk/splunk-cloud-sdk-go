@@ -54,13 +54,13 @@
           command: bash -c "allow_failures=1 ./ci/integration/runexamples.sh"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
 
-  - name: WhiteSource Testing
-    service: splunk-cloud-sdk-go-whitesource
-    command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
-                                -c /go/src/github.com/splunk/splunk-cloud-sdk-go/ci/whitesource/whitesource-fs-agent.config \
-                                -d /go/src/github.com/splunk/splunk-cloud-sdk-go \
-                                -apiKey $WHITESOURCE_API_KEY \
-                                -productToken $WHITESOURCE_PRODUCT_TOKEN \
-                                -userKey $WHITESOURCE_USER_KEY"
-    tag: ^(master|develop)$
-    encrypted_dockercfg_path: ci/dockercfg.encrypted
+  # - name: WhiteSource Testing
+  #   service: splunk-cloud-sdk-go-whitesource
+  #   command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
+  #                               -c /go/src/github.com/splunk/splunk-cloud-sdk-go/ci/whitesource/whitesource-fs-agent.config \
+  #                               -d /go/src/github.com/splunk/splunk-cloud-sdk-go \
+  #                               -apiKey $WHITESOURCE_API_KEY \
+  #                               -productToken $WHITESOURCE_PRODUCT_TOKEN \
+  #                               -userKey $WHITESOURCE_USER_KEY"
+  #   tag: ^(master|develop)$
+  #   encrypted_dockercfg_path: ci/dockercfg.encrypted
