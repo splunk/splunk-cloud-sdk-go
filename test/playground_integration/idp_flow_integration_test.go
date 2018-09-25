@@ -43,7 +43,7 @@ var BackendClientSecret = os.Getenv("BACKEND_CLIENT_SECRET")
 const BackendServiceScope = ""
 
 // TestUsername corresponds to the test user for integration testing
-var TestUsername = os.Getenv("USERNAME")
+var TestUsername = os.Getenv("TEST_USERNAME")
 
 // TestPassword corresponds to the test user's password for integration testing
 var TestPassword = os.Getenv("PASSWORD")
