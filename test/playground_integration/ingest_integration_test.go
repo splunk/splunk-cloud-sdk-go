@@ -48,6 +48,31 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
+
+func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
+	client := getClient(t)
+	event1 := model.Event{Body: "some event"}
+	event2 := model.Event{}
+	err := client.IngestService.PostEvents([]model.Event{event1, event2})
+
+	assert.NotEmpty(t, err)
+
+	httperror := err.(*util.HTTPError)
+	assert.Equal(t, 400, httperror.HTTPStatusCode)
+	assert.Equal(t, "Invalid data format", httperror.Message)
+
+	details := httperror.Details.(map[string]interface{})
+	assert.NotEmpty(t, details["failedEvents"])
+
+	failedEvents := details["failedEvents"].([]interface{})
+	assert.Equal(t, 1, len(failedEvents))
+
+	failedEvent := failedEvents[0].(map[string]interface{})
+	assert.Equal(t, float64(1), failedEvent["index"])
+	assert.Equal(t, "Event body cannot be empty", failedEvent["message"])
+}
+
+
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
 	client := getClient(t)
 	err := client.IngestService.PostEvents(nil)
