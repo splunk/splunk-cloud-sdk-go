@@ -190,6 +190,7 @@ type RuleUpdateFields struct {
 }
 
 // CatalogAction represents a specific search time transformation action.
+// This struct should NOT be directly used to construct object, use the NewXXXAction() instead
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
 	RuleID     string            `json:"ruleid,omitempty"`
@@ -205,7 +206,7 @@ type CatalogAction struct {
 	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit"`
+	Limit      *int              `json:"limit,omitempty"`
 }
 
 // DatasetImportPayload represents the dataset import payload
@@ -215,22 +216,9 @@ type DatasetImportPayload struct {
 	Owner   string `json:"owner"`
 }
 
-// CatalogActionCreationPayload represents the payload to create a catalog action.
-type CatalogActionCreationPayload struct {
-	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind" `
-	Owner      string            `json:"owner"`
-	Field      string            `json:"field,omitempty"`
-	Alias      string            `json:"alias,omitempty"`
-	Mode       string            `json:"mode,omitempty"`
-	Expression string            `json:"expression,omitempty"`
-	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit,omitempty"`
-}
-
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string,  owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
+func NewAliasAction(field string, alias string,  owner string) *CatalogAction {
+	return &CatalogAction{
 		Kind:"ALIAS",
 		Owner:owner,
 		Alias:alias,
@@ -239,8 +227,8 @@ func NewAliasAction(field string, alias string,  owner string) *CatalogActionCre
 }
 
 // NewAutoKVAction creates a new autokv kind action
-func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
+func NewAutoKVAction(mode string, owner string) *CatalogAction {
+	return &CatalogAction{
 		Kind:"AUTOKV",
 		Owner:owner,
 		Mode:mode,
@@ -248,8 +236,8 @@ func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
 }
 
 // NewEvalAction creates a new eval kind action
-func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
+func NewEvalAction(field string, expression string, owner string) *CatalogAction {
+	return &CatalogAction{
 		Kind:"EVAL",
 		Owner:owner,
 		Field:field,
@@ -258,8 +246,8 @@ func NewEvalAction(field string, expression string, owner string) *CatalogAction
 }
 
 // NewLookupAction creates a new lookup kind action
-func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
+func NewLookupAction(expression string, owner string) *CatalogAction {
+	return &CatalogAction{
 		Kind:"LOOKUP",
 		Owner:owner,
 		Expression:expression,
@@ -267,8 +255,8 @@ func NewLookupAction(expression string, owner string) *CatalogActionCreationPayl
 }
 
 // NewRegexAction creates a new regex kind action
-func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload {
-	action := CatalogActionCreationPayload{
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
+	action := CatalogAction{
 		Kind:    "REGEX",
 		Owner:   owner,
 		Field:   field,
@@ -277,4 +265,77 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 	}
 
 	return &action
+}
+
+// NewUpdateAliasAction updates an existing alias kind action
+func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
+	res := CatalogAction{Kind: "ALIAS"}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if alias != nil {
+		res.Alias = *alias
+	}
+
+	return &res
+}
+
+// NewUpdateAutoKVAction updates an existing autokv kind action
+func NewUpdateAutoKVAction(mode *string) *CatalogAction {
+	res := CatalogAction{Kind: "AUTOKV"}
+
+	if mode != nil {
+		res.Mode = *mode
+	}
+
+	return &res
+
+}
+
+// NewUpdateEvalAction updates an existing eval kind action
+func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
+	res := CatalogAction{Kind: "EVAL"}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if expression != nil {
+		res.Alias = *expression
+	}
+
+	return &res
+
+}
+
+// NewUpdateLookupAction updates an existing lookup kind action
+func NewUpdateLookupAction(expression *string) *CatalogAction {
+	res := CatalogAction{Kind: "LOOKUP"}
+
+	if expression != nil {
+		res.Expression = *expression
+	}
+
+	return &res
+}
+
+// NewUpdateRegexAction updates an existing regex kind action
+func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
+	res := CatalogAction{Kind: "REGEX"}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if pattern != nil {
+		res.Pattern = *pattern
+	}
+
+	if limit != nil {
+		res.Limit = limit
+	}
+
+	return &res
 }
