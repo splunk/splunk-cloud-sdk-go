@@ -190,6 +190,7 @@ type RuleUpdateFields struct {
 }
 
 // CatalogAction represents a specific search time transformation action.
+// This struct should NOT be directly used to construct object, use the NewXXXAction() instead
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
 	RuleID     string            `json:"ruleid,omitempty"`
@@ -266,8 +267,8 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 	return &action
 }
 
-// UpdateAliasAction creates a new alias kind action
-func UpdateAliasAction(field *string, alias *string) *CatalogAction {
+// NewUpdateAliasAction updates an existing alias kind action
+func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
 	res := CatalogAction{Kind: "ALIAS"}
 
 	if field != nil {
@@ -281,8 +282,8 @@ func UpdateAliasAction(field *string, alias *string) *CatalogAction {
 	return &res
 }
 
-// UpdateAutoKVAction creates a new autokv kind action
-func UpdateAutoKVAction(mode *string) *CatalogAction {
+// NewUpdateAutoKVAction updates an existing autokv kind action
+func NewUpdateAutoKVAction(mode *string) *CatalogAction {
 	res := CatalogAction{Kind: "AUTOKV"}
 
 	if mode != nil {
@@ -293,8 +294,8 @@ func UpdateAutoKVAction(mode *string) *CatalogAction {
 
 }
 
-// UpdateEvalAction creates a new eval kind action
-func UpdateEvalAction(field *string, expression *string) *CatalogAction {
+// NewUpdateEvalAction updates an existing eval kind action
+func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
 	res := CatalogAction{Kind: "EVAL"}
 
 	if field != nil {
@@ -309,8 +310,8 @@ func UpdateEvalAction(field *string, expression *string) *CatalogAction {
 
 }
 
-// UpdateLookupAction creates a new lookup kind action
-func UpdateLookupAction(expression *string) *CatalogAction {
+// NewUpdateLookupAction updates an existing lookup kind action
+func NewUpdateLookupAction(expression *string) *CatalogAction {
 	res := CatalogAction{Kind: "LOOKUP"}
 
 	if expression != nil {
@@ -320,8 +321,8 @@ func UpdateLookupAction(expression *string) *CatalogAction {
 	return &res
 }
 
-// UpdateRegexAction creates a new regex kind action
-func UpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
+// NewUpdateRegexAction updates an existing regex kind action
+func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
 	res := CatalogAction{Kind: "REGEX"}
 
 	if field != nil {

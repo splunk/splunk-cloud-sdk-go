@@ -852,7 +852,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr := "newaliasi"
-	updateact, err := client.CatalogService.UpdateRuleAction(rule.ID, action1.ID, model.UpdateAliasAction(nil, &tmpstr))
+	updateact, err := client.CatalogService.UpdateRuleAction(rule.ID, action1.ID, model.NewUpdateAliasAction(nil, &tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Alias)
 
@@ -862,7 +862,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr = "mymode1"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.UpdateAutoKVAction(&tmpstr))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.NewUpdateAutoKVAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
 
@@ -872,7 +872,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr = "newField"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action3.ID, model.UpdateEvalAction(&tmpstr, nil))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action3.ID, model.NewUpdateEvalAction(&tmpstr, nil))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Field)
 
@@ -882,7 +882,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr = "newexpr"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action4.ID, model.UpdateLookupAction(&tmpstr))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action4.ID, model.NewUpdateLookupAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Expression)
 
@@ -900,7 +900,7 @@ func TestRuleActions(t *testing.T) {
 	//update rule action
 	tmpstr = "newpattern"
 	limit = 9
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, model.UpdateRegexAction(nil, &tmpstr, &limit))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, model.NewUpdateRegexAction(nil, &tmpstr, &limit))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Pattern)
 	assert.Equal(t, limit, *updateact.Limit)
