@@ -8,11 +8,12 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/service"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"os"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 )
 
 func main() {
