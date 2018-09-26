@@ -209,6 +209,11 @@ type CatalogAction struct {
 	Limit      *int              `json:"limit,omitempty"`
 }
 
+// DatasetImportPayload represents the dataset import payload
+type Module struct {
+	Name    string `json:"name"`
+}
+
 // NewAliasAction creates a new alias kind action
 func NewAliasAction(field string, alias string, owner string) *CatalogAction {
 	return &CatalogAction{
