@@ -3,9 +3,9 @@
 echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
-env | grep TEST_SPLUNK_CLOUD_HOST
-env | grep TEST_URL_PROTOCOL
-env | grep TEST_TENANT_ID
+env | grep SPLUNK_CLOUD_HOST
+env | grep URL_PROTOCOL
+env | grep TENANT_ID
 
 echo "==============================================="
 
@@ -13,7 +13,7 @@ echo "==============================================="
 CONFIG_FILE="./okta/.token"
 if [ -f $CONFIG_FILE ]; then
     echo "Token found in $CONFIG_FILE"
-    export TEST_BEARER_TOKEN=$(cat $CONFIG_FILE)
+    export BEARER_TOKEN=$(cat $CONFIG_FILE)
 else
     echo "Token was not set to $CONFIG_FILE"
     exit 1
@@ -48,5 +48,7 @@ then
     echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
 else
     # Upload coverage information
+    echo $FULL_INTEGRATION_TEST_CODECOV_PATH
+    cat $FULL_INTEGRATION_TEST_CODECOV_PATH
     ./ci/codecov -f $FULL_INTEGRATION_TEST_CODECOV_PATH -F integration -t $CODECOV_TOKEN
 fi
