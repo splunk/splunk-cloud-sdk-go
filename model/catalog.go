@@ -209,7 +209,7 @@ type CatalogAction struct {
 	Limit      *int              `json:"limit,omitempty"`
 }
 
-// DatasetImportPayload represents the dataset import payload
+// Module represents the dataset import payload
 type Module struct {
 	Name    string `json:"name"`
 }
