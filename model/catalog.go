@@ -194,7 +194,7 @@ type RuleUpdateFields struct {
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
 	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind"`
+	Kind       CatalogActionKind `json:"kind,omitempty"`
 	Owner      string            `json:"owner,omitempty"`
 	Created    string            `json:"created,omitempty"`
 	Modified   string            `json:"modified,omitempty"`
