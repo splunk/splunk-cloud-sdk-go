@@ -15,19 +15,19 @@ import (
 var timeSec = time.Now().Unix()
 
 // TestURLProtocol - the url protocol for the test api to be used
-var TestURLProtocol = os.Getenv("TEST_URL_PROTOCOL")
+var TestURLProtocol = os.Getenv("URL_PROTOCOL")
 
 // TestSplunkCloudHost - the url for the test api to be used
-var TestSplunkCloudHost = os.Getenv("TEST_SPLUNK_CLOUD_HOST")
+var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
 
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
-var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")
+var TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
 
 // TestTenant - the tenant to be used for the API
-var TestTenant = os.Getenv("TEST_TENANT_ID")
+var TestTenant = os.Getenv("TENANT_ID")
 
 // TestInvalidTestTenant - the invalid tenant ID that denies permission to make requests against the api
-var TestInvalidTestTenant = "INVALID_TEST_TENANT_ID"
+var TestInvalidTestTenant = "INVALID_TENANT_ID"
 
 // ExpiredAuthenticationToken - to test authentication retries
 var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
