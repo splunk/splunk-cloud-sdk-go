@@ -91,7 +91,7 @@ func (c *StreamsService) ActivatePipeline(ids []string) (model.AdditionalPropert
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids}})
+	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -112,7 +112,7 @@ func (c *StreamsService) DeactivatePipeline(ids []string) (model.AdditionalPrope
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids}})
+	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
 	if response != nil {
 		defer response.Body.Close()
 	}
