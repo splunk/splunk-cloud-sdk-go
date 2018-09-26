@@ -1,4 +1,4 @@
-package playgroundintegration
+package integration
 
 import (
 	"fmt"
