@@ -423,3 +423,21 @@ func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
+
+// GetModules returns a list of a list of modules that match a filter query if it is given, otherwise return all modules
+func (c *CatalogService) GetModules(filter url.Values ) ([]model.Module, error) {
+	url, err := c.client.BuildURL(filter, catalogServicePrefix, catalogServiceVersion, "modules")
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.client.Get(RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result []model.Module
+	err = util.ParseResponse(&result, response)
+	return result, err
+}

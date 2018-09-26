@@ -951,6 +951,24 @@ func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *tes
 	return resultField
 }
 
+// Test list modules
+func TestIntegrationGetModules(t *testing.T) {
+	client := getClient(t)
+
+	// test using NO filter
+	modules, err := client.CatalogService.GetModules(nil)
+	require.Nil(t, err)
+	assert.True(t, len(modules) > 0)
+
+	// test using filter
+	filter := make(url.Values)
+	filter.Add("filter", "module==\"\"")
+	modules, err = client.CatalogService.GetModules(filter)
+	require.Nil(t, err)
+	assert.Equal(t, 1, len(modules))
+	assert.Equal(t, "", modules[0].Name)
+}
+
 /*// Currently unable to generate a bad rule
 func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 	defer cleanupRules(t)
