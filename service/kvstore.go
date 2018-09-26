@@ -172,7 +172,7 @@ func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) 
 
 // GetRecordByKey queries a particular record present in a given collection based on the key value provided by the user.
 func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) (model.Record, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return nil, err
 	}
