@@ -17,7 +17,7 @@ const (
 	INDEX DatasetInfoKind = "index"
 )
 
-// DatasetInfo represents the sources of data that can be serched by Splunk
+// DatasetInfo represents the sources of data that can be searched by Splunk
 type DatasetInfo struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
@@ -46,7 +46,32 @@ type DatasetInfo struct {
 	Disabled bool   `json:"disabled"`
 }
 
-// DatasetCreationPayload represents the sources of data that can be serched by Splunk
+// DatasetCreationRestricted represents the possible creation fields for datasets - datasets
+// are sources of data that can be searched by Splunk
+type DatasetCreationRestricted struct {
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Module       string          `json:"module,omitempty"`
+	Capabilities string          `json:"capabilities"`
+	Fields       []Field         `json:"fields,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
+}
+
+// DatasetCreationPayload represents the sources of data that can be searched by Splunk
+// TODO: Remove me in favor of DatasetCreationRestricted
 type DatasetCreationPayload struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
@@ -70,7 +95,31 @@ type DatasetCreationPayload struct {
 	Disabled *bool  `json:"disabled,omitempty"`
 }
 
-// UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
+// UpdateDatasetRestricted represents the updateable fields for datasets - datasets
+// are sources of data that can be searched by Splunk
+type UpdateDatasetRestricted struct {
+	Name         string   `json:"name,omitempty"`
+	Owner        string   `json:"owner,omitempty"`
+	Capabilities string   `json:"capabilities,omitempty"`
+	Version      int      `json:"version,omitempty"`
+	Readroles    []string `json:"readroles,omitempty"`
+	Writeroles   []string `json:"writeroles,omitempty"`
+
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+	MaxMatches         int    `json:"maxMatches,omitempty"`
+	MinMatches         int    `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`
+
+	Datatype string `json:"datatype,omitempty"`
+	Disabled *bool  `json:"disabled,omitempty"`
+}
+
+// UpdateDatasetInfoFields represents the updateable fields for datasets - datasets
+// are sources of data that can be searched by Splunk
+// TODO: Remove me in favor of UpdateDatasetRestricted
 type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
@@ -164,15 +213,28 @@ const (
 	LOOKUPACTION CatalogActionKind = "LOOKUP"
 )
 
-// Rule represents a rule for transforming results at search time.
+// RuleCreationPayload for creating a Rule. Rules are for transforming results at search time.
+// A rule consists of a `match` clause and a collection of transformation actions
+type RuleCreationPayload struct {
+	ID     string `json:"id,omitempty"`
+	Name   string `json:"name"`
+	Module string `json:"module,omitempty"`
+	Match  string `json:"match"`
+	// TODO: Change this to []CatalogActionCreationPayload when RuleCreationPayload when the service
+	// is updated to use CreateRule(rule model.RuleCreationPayload)
+	Actions []CatalogAction `json:"actions,omitempty"`
+	Version int             `json:"version,omitempty"`
+}
+
+// Rule for getting Rule information. Rules are for transforming results at search time.
 // A rule consists of a `match` clause and a collection of transformation actions
 type Rule struct {
 	ID         string          `json:"id,omitempty"`
-	Name       string          `json:"name" binding:"required"`
+	Name       string          `json:"name"`
 	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match" binding:"required"`
+	Match      string          `json:"match"`
 	Actions    []CatalogAction `json:"actions,omitempty"`
-	Owner      string          `json:"owner" binding:"required"`
+	Owner      string          `json:"owner"`
 	Created    string          `json:"created,omitempty"`
 	Modified   string          `json:"modified,omitempty"`
 	CreatedBy  string          `json:"createdBy,omitempty"`
@@ -182,20 +244,48 @@ type Rule struct {
 
 // RuleUpdateFields represents the set of rule properties that can be updated
 type RuleUpdateFields struct {
-	Name       string          `json:"name,omitempty" `
-	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match,omitempty" `
-	Owner      string          `json:"owner,omitempty" `
-	Version    int             `json:"version,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Module  string `json:"module,omitempty"`
+	Match   string `json:"match,omitempty"`
+	Owner   string `json:"owner,omitempty"`
+	Version int    `json:"version,omitempty"`
 }
 
-// CatalogAction represents a specific search time transformation action.
-// This struct should NOT be directly used to construct object, use the NewXXXAction() instead
+// CatalogActionCreationRestricted for creating catalog actions. An action represents
+// a specific search time transformation action.
+type CatalogActionCreationRestricted struct {
+	Kind       CatalogActionKind `json:"kind"`
+	Version    int               `json:"version,omitempty"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      *int              `json:"limit,omitempty"`
+}
+
+// CatalogActionCreationPayload for creating catalog actions. An action represents
+// a specific search time transformation action.
+// TODO: Remove me in favor of CatalogActionCreationRestricted
+type CatalogActionCreationPayload struct {
+	RuleID     string            `json:"ruleid,omitempty"`
+	Kind       CatalogActionKind `json:"kind" `
+	Owner      string            `json:"owner"`
+	Field      string            `json:"field,omitempty"`
+	Alias      string            `json:"alias,omitempty"`
+	Mode       string            `json:"mode,omitempty"`
+	Expression string            `json:"expression,omitempty"`
+	Pattern    string            `json:"pattern,omitempty"`
+	Limit      *int              `json:"limit,omitempty"`
+}
+
+// CatalogAction for getting catalog actions. An action represents a specific
+// search time transformation action.
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
 	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind" binding:"required"`
-	Owner      string            `json:"owner" binding:"required"`
+	Kind       CatalogActionKind `json:"kind"`
+	Owner      string            `json:"owner"`
 	Created    string            `json:"created,omitempty"`
 	Modified   string            `json:"modified,omitempty"`
 	CreatedBy  string            `json:"createdBy,omitempty"`
@@ -209,52 +299,63 @@ type CatalogAction struct {
 	Limit      *int              `json:"limit,omitempty"`
 }
 
-// DatasetImportPayload represents the dataset import payload
-type DatasetImportPayload struct {
-	Module string `json:"module"`
-	Name    string `json:"name"`
-	Owner   string `json:"owner"`
+// CatalogActionUpdateFields for updating catalog actions. An action
+// represents a specific search time transformation action.
+type CatalogActionUpdateFields struct {
+	Owner      string `json:"owner,omitempty"`
+	Version    int    `json:"version,omitempty"`
+	Field      string `json:"field,omitempty"`
+	Alias      string `json:"alias,omitempty"`
+	Mode       string `json:"mode,omitempty"`
+	Expression string `json:"expression,omitempty"`
+	Pattern    string `json:"pattern,omitempty"`
+	Limit      *int   `json:"limit,omitempty"`
 }
 
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string,  owner string) *CatalogAction {
+// TODO: remove owner and convert to CatalogActionCreationPayload
+func NewAliasAction(field string, alias string, owner string) *CatalogAction {
 	return &CatalogAction{
-		Kind:"ALIAS",
-		Owner:owner,
-		Alias:alias,
-		Field:field,
+		Kind:  "ALIAS",
+		Owner: owner,
+		Alias: alias,
+		Field: field,
 	}
 }
 
 // NewAutoKVAction creates a new autokv kind action
+// TODO: remove owner and convert to CatalogActionCreationPayload
 func NewAutoKVAction(mode string, owner string) *CatalogAction {
 	return &CatalogAction{
-		Kind:"AUTOKV",
-		Owner:owner,
-		Mode:mode,
+		Kind:  "AUTOKV",
+		Owner: owner,
+		Mode:  mode,
 	}
 }
 
 // NewEvalAction creates a new eval kind action
+// TODO: remove owner and convert to CatalogActionCreationPayload
 func NewEvalAction(field string, expression string, owner string) *CatalogAction {
 	return &CatalogAction{
-		Kind:"EVAL",
-		Owner:owner,
-		Field:field,
-		Expression:expression,
+		Kind:       "EVAL",
+		Owner:      owner,
+		Field:      field,
+		Expression: expression,
 	}
 }
 
 // NewLookupAction creates a new lookup kind action
+// TODO: remove owner and convert to CatalogActionCreationPayload
 func NewLookupAction(expression string, owner string) *CatalogAction {
 	return &CatalogAction{
-		Kind:"LOOKUP",
-		Owner:owner,
-		Expression:expression,
+		Kind:       "LOOKUP",
+		Owner:      owner,
+		Expression: expression,
 	}
 }
 
 // NewRegexAction creates a new regex kind action
+// TODO: remove owner and convert to CatalogActionCreationPayload
 func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
 	action := CatalogAction{
 		Kind:    "REGEX",
@@ -268,8 +369,9 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 }
 
 // NewUpdateAliasAction updates an existing alias kind action
+// TODO: Change to return CatalogActionUpdateFields
 func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
-	res := CatalogAction{Kind: "ALIAS"}
+	res := CatalogAction{}
 
 	if field != nil {
 		res.Field = *field
@@ -283,8 +385,9 @@ func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
 }
 
 // NewUpdateAutoKVAction updates an existing autokv kind action
+// TODO: Change to return CatalogActionUpdateFields
 func NewUpdateAutoKVAction(mode *string) *CatalogAction {
-	res := CatalogAction{Kind: "AUTOKV"}
+	res := CatalogAction{}
 
 	if mode != nil {
 		res.Mode = *mode
@@ -295,8 +398,9 @@ func NewUpdateAutoKVAction(mode *string) *CatalogAction {
 }
 
 // NewUpdateEvalAction updates an existing eval kind action
+// TODO: Change to return CatalogActionUpdateFields
 func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
-	res := CatalogAction{Kind: "EVAL"}
+	res := CatalogAction{}
 
 	if field != nil {
 		res.Field = *field
@@ -311,8 +415,9 @@ func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
 }
 
 // NewUpdateLookupAction updates an existing lookup kind action
+// TODO: Change to return CatalogActionUpdateFields
 func NewUpdateLookupAction(expression *string) *CatalogAction {
-	res := CatalogAction{Kind: "LOOKUP"}
+	res := CatalogAction{}
 
 	if expression != nil {
 		res.Expression = *expression
@@ -322,8 +427,9 @@ func NewUpdateLookupAction(expression *string) *CatalogAction {
 }
 
 // NewUpdateRegexAction updates an existing regex kind action
+// TODO: Change to return CatalogActionUpdateFields
 func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
-	res := CatalogAction{Kind: "REGEX"}
+	res := CatalogAction{}
 
 	if field != nil {
 		res.Field = *field

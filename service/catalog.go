@@ -57,11 +57,32 @@ func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo
 
 // CreateDataset creates a new Dataset
 func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*model.DatasetInfo, error) {
+	// For backwards compatibility, convert model.DatasetCreationPayload to model.DatasetCreationRestricted omitting some disallowed fields
+	// TODO: move model.DatasetCreationRestricted fields to model.DatasetCreationPayload, remove model.DatasetCreationRestricted and remove this datasetCreate workaround
+	datasetCreate := &model.DatasetCreationRestricted{
+		ID:                 dataset.ID,
+		Name:               dataset.Name,
+		Kind:               dataset.Kind,
+		Module:             dataset.Module,
+		Capabilities:       dataset.Capabilities,
+		Fields:             dataset.Fields,
+		Readroles:          dataset.Readroles,
+		Writeroles:         dataset.Writeroles,
+		ExternalKind:       dataset.ExternalKind,
+		ExternalName:       dataset.ExternalName,
+		CaseSensitiveMatch: dataset.CaseSensitiveMatch,
+		Filter:             dataset.Filter,
+		MaxMatches:         dataset.MaxMatches,
+		MinMatches:         dataset.MinMatches,
+		DefaultMatch:       dataset.DefaultMatch,
+		Datatype:           dataset.Datatype,
+		Disabled:           dataset.Disabled,
+	}
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: dataset})
+	response, err := c.client.Post(RequestParams{URL: url, Body: datasetCreate})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -75,11 +96,30 @@ func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
 func (c *CatalogService) UpdateDataset(dataset *model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
+	// For backwards compatibility, convert model.UpdateDatasetInfoFields to model.UpdateDatasetRestricted omitting some disallowed fields
+	// TODO: move model.UpdateDatasetRestricted fields to model.UpdateDatasetInfoFields, remove model.UpdateDatasetRestricted and remove this updateDataset workaround
+	updateDataset := &model.UpdateDatasetRestricted{
+		Name:               dataset.Name,
+		Owner:              dataset.Owner,
+		Capabilities:       dataset.Capabilities,
+		Version:            dataset.Version,
+		Readroles:          dataset.Readroles,
+		Writeroles:         dataset.Writeroles,
+		ExternalKind:       dataset.ExternalKind,
+		ExternalName:       dataset.ExternalName,
+		CaseSensitiveMatch: dataset.CaseSensitiveMatch,
+		Filter:             dataset.Filter,
+		MaxMatches:         dataset.MaxMatches,
+		MinMatches:         dataset.MinMatches,
+		DefaultMatch:       dataset.DefaultMatch,
+		Datatype:           dataset.Datatype,
+		Disabled:           dataset.Disabled,
+	}
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Patch(RequestParams{URL: url, Body: dataset})
+	response, err := c.client.Patch(RequestParams{URL: url, Body: updateDataset})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -136,7 +176,7 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 }
 
 // GetRule returns rule by an with the specified rule resourceName or ID.
-func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) {
+func (c *CatalogService) GetRule(resourceNameOrID string) (*model.Rule, error) {
 	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -155,11 +195,21 @@ func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) 
 
 // CreateRule posts a new rule.
 func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
+	// For backwards compatibility, convert model.Rule to model.RuleCreationPayload omitting some disallowed fields
+	// TODO: convert this method to CreateRule(rule model.RuleCreationPayload) and remove this createRule workaround
+	createRule := &model.RuleCreationPayload{
+		ID:      rule.ID,
+		Name:    rule.Name,
+		Module:  rule.Module,
+		Match:   rule.Match,
+		Actions: rule.Actions,
+		Version: rule.Version,
+	}
 	postRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: postRuleURL, Body: rule})
+	response, err := c.client.Post(RequestParams{URL: postRuleURL, Body: createRule})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -276,7 +326,7 @@ func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID str
 
 // GetFields returns a list of all Fields on Catalog
 func (c *CatalogService) GetFields() ([]model.Field, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "fields")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +344,7 @@ func (c *CatalogService) GetFields() ([]model.Field, error) {
 
 // GetField returns the Field corresponding to fieldid
 func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion,  "fields", fieldID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "fields", fieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -312,11 +362,23 @@ func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
 
 // CreateRuleAction creates a new Action on the rule specified
 func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAction) (*model.CatalogAction, error) {
+	// For backwards compatibility, convert model.CatalogAction to model.CatalogActionCreationRestricted omitting some disallowed fields
+	// TODO: convert this method to CreateRuleAction(ruleID string, action *model.CatalogActionCreationRestricted) and remove this createAction workaround
+	createAction := &model.CatalogActionCreationRestricted{
+		Kind:       action.Kind,
+		Version:    action.Version,
+		Field:      action.Field,
+		Alias:      action.Alias,
+		Mode:       action.Mode,
+		Expression: action.Expression,
+		Pattern:    action.Pattern,
+		Limit:      action.Limit,
+	}
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: action})
+	response, err := c.client.Post(RequestParams{URL: url, Body: createAction})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -331,7 +393,7 @@ func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAc
 
 // GetRuleActions returns a list of all actions belonging to the specified rule
 func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -349,7 +411,7 @@ func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, e
 
 // GetRuleAction returns the action of specified belonging to the specified rule
 func (c *CatalogService) GetRuleAction(ruleID string, actionID string) (*model.CatalogAction, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions",actionID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
@@ -379,15 +441,26 @@ func (c *CatalogService) DeleteRuleAction(ruleID string, actionID string) error 
 	return err
 }
 
-
 // UpdateRuleAction updates the action with the specified id for the specified Rule
 func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.CatalogAction, error) {
+	// For backwards compatibility, convert model.CatalogAction to model.CatalogActionUpdateFields omitting some disallowed fields
+	// TODO: convert this method to UpdateRuleAction(ruleID string, actionID string, action *model.CatalogActionUpdateFields) and remove this updateAction workaround
+	updateAction := model.CatalogActionUpdateFields{
+		Owner:      action.Owner,
+		Version:    action.Version,
+		Field:      action.Field,
+		Alias:      action.Alias,
+		Mode:       action.Mode,
+		Expression: action.Expression,
+		Pattern:    action.Pattern,
+		Limit:      action.Limit,
+	}
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Patch(RequestParams{URL: url, Body: action})
+	response, err := c.client.Patch(RequestParams{URL: url, Body: updateAction})
 	if response != nil {
 		defer response.Body.Close()
 	}

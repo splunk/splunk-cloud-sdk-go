@@ -2,12 +2,13 @@ package playgroundintegration
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 // Test variables
@@ -20,17 +21,17 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 	// Create two test pipelines
 	pipeline1, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline1)
+	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
 	assert.Equal(t, model.Created, pipeline1.Status)
 	assert.Equal(t, pipelineName1, pipeline1.Name)
 	assert.Equal(t, testPipelineDescription, pipeline1.Description)
 
 	pipeline2, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName2, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline2)
+	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
 	assert.Equal(t, model.Created, pipeline2.Status)
 	assert.Equal(t, pipelineName2, pipeline2.Name)
 	assert.Equal(t, testPipelineDescription, pipeline2.Description)
@@ -63,9 +64,9 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	// Create a test pipeline and verify that the pipeline was created
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
@@ -112,9 +113,9 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
@@ -142,9 +143,9 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
@@ -178,9 +179,9 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
