@@ -2,8 +2,8 @@ package model
 
 // ActivatePipelineRequest contains the request to activate the pipeline
 type ActivatePipelineRequest struct {
-	IDs []string `json:"ids"`
-	SkipSavePoint bool `json:"skipSavepoint"`
+	IDs           []string `json:"ids"`
+	SkipSavePoint bool     `json:"skipSavepoint"`
 }
 
 // AdditionalProperties contain the properties in an activate/deactivate response
