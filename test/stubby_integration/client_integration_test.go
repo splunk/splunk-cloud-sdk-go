@@ -118,9 +118,10 @@ func TestNewStubbyRequest(t *testing.T) {
 	assert.Equal(t, err.(*util.HTTPError).Code, "1234")
 	assert.Equal(t, err.(*util.HTTPError).MoreInfo, "/url/test")
 	assert.Equal(t, err.(*util.HTTPError).Message, "error response")
-	assert.Equal(t, err.(*util.HTTPError).Details[0]["code"], "123")
-	assert.Equal(t, err.(*util.HTTPError).Details[0]["field"], "username")
-	assert.Equal(t, err.(*util.HTTPError).Details[0]["message"], "Username must be at least 8 characters")
+
+	assert.Equal(t, "123", (err.(*util.HTTPError).Details.([]interface{}))[0].(map[string]interface{})["code"])
+	assert.Equal(t, "username", (err.(*util.HTTPError).Details.([]interface{}))[0].(map[string]interface{})["field"])
+	assert.Equal(t, "Username must be at least 8 characters", (err.(*util.HTTPError).Details.([]interface{}))[0].(map[string]interface{})["message"])
 }
 
 func TestNewBatchEventsSenderState(t *testing.T) {

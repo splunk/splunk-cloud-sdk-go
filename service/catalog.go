@@ -57,6 +57,8 @@ func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo
 
 // CreateDataset creates a new Dataset
 func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*model.DatasetInfo, error) {
+	// TODO: remove this from model.DatasetCreationPayload
+	dataset.Owner = ""
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -75,6 +77,12 @@ func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
 func (c *CatalogService) UpdateDataset(dataset *model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error) {
+	// TODO: remove these from model.UpdateDatasetInfoFields
+	dataset.Created = ""
+	dataset.CreatedBy = ""
+	dataset.Kind = ""
+	dataset.Modified = ""
+	dataset.ModifiedBy = ""
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -135,8 +143,8 @@ func (c *CatalogService) GetRules() ([]model.Rule, error) {
 	return result, err
 }
 
-// GetRule returns rule by an with the specified rule resourceName or ID.
-func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) {
+// GetRule returns rule by the specified resourceName or ID.
+func (c *CatalogService) GetRule(resourceNameOrID string) (*model.Rule, error) {
 	getRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -155,6 +163,12 @@ func (c *CatalogService) GetRule( resourceNameOrID string) (*model.Rule, error) 
 
 // CreateRule posts a new rule.
 func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
+	// TODO: make a new model.RuleCreationPayload that omits these:
+	rule.Created = ""
+	rule.CreatedBy = ""
+	rule.Modified = ""
+	rule.ModifiedBy = ""
+	rule.Owner = ""
 	postRuleURL, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules")
 	if err != nil {
 		return nil, err
@@ -172,12 +186,12 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error) {
 }
 
 // UpdateRule updates the rule with the specified resourceName or ID
-func (c *CatalogService) UpdateRule(resourceNameOrID string, dataset *model.RuleUpdateFields) (*model.Rule, error) {
+func (c *CatalogService) UpdateRule(resourceNameOrID string, rule *model.RuleUpdateFields) (*model.Rule, error) {
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Patch(RequestParams{URL: url, Body: dataset})
+	response, err := c.client.Patch(RequestParams{URL: url, Body: rule})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -276,7 +290,7 @@ func (c *CatalogService) DeleteDatasetField(datasetID string, datasetFieldID str
 
 // GetFields returns a list of all Fields on Catalog
 func (c *CatalogService) GetFields() ([]model.Field, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "fields")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +308,7 @@ func (c *CatalogService) GetFields() ([]model.Field, error) {
 
 // GetField returns the Field corresponding to fieldid
 func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion,  "fields", fieldID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "fields", fieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -312,6 +326,12 @@ func (c *CatalogService) GetField(fieldID string) (*model.Field, error) {
 
 // CreateRuleAction creates a new Action on the rule specified
 func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAction) (*model.CatalogAction, error) {
+	// TODO: create a new model.CatalogActionCreationPayload that omits these:
+	action.Created = ""
+	action.CreatedBy = ""
+	action.Modified = ""
+	action.ModifiedBy = ""
+	action.Owner = ""
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
@@ -331,7 +351,7 @@ func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAc
 
 // GetRuleActions returns a list of all actions belonging to the specified rule
 func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions")
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -349,7 +369,7 @@ func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, e
 
 // GetRuleAction returns the action of specified belonging to the specified rule
 func (c *CatalogService) GetRuleAction(ruleID string, actionID string) (*model.CatalogAction, error) {
-	url, err := c.client.BuildURL(nil,catalogServicePrefix, catalogServiceVersion, "rules",ruleID,"actions",actionID)
+	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
@@ -379,9 +399,14 @@ func (c *CatalogService) DeleteRuleAction(ruleID string, actionID string) error 
 	return err
 }
 
-
 // UpdateRuleAction updates the action with the specified id for the specified Rule
 func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.CatalogAction, error) {
+	// TODO: create a new model.CatalogActionUpdateFields that omits these:
+	action.Created = ""
+	action.CreatedBy = ""
+	action.Kind = ""
+	action.Modified = ""
+	action.ModifiedBy = ""
 	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
