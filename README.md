@@ -14,7 +14,7 @@ A Go client for Splunk Cloud services
 ### macOS
 * [Install Brew](https://brew.sh/)
 * [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
-* [Install Go and Setup your Go environment](https://golang.org/doc/install) and checkout this repository into `$GOPATH/src/github.com/splunk/splunk-cloud-sdk-go`
+* [Install Go and Setup your Go environment](https://golang.org/doc/install)
 * Recommended Go tools:
   * `go get -u github.com/golang/dep/cmd/dep`
   * `go get golang.org/x/lint/golint`
