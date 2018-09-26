@@ -8,7 +8,7 @@ package integration
 import (
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 )
 
