@@ -5,37 +5,6 @@
 
 package model
 
-// CollectionStats collection stats
-type CollectionStats struct {
-
-	// Number of records in collection
-	Count int64 `json:"count"`
-
-	// Map of index name to index size in bytes
-	IndexSizes interface{} `json:"indexSizes"`
-
-	// Number of indexes on collection
-	Nindexes int64 `json:"nindexes"`
-
-	// Collection name
-	Ns string `json:"ns"`
-
-	// Size in bytes of collection, not including indexes
-	Size int64 `json:"size"`
-
-	// Total size of indexes
-	TotalIndexSize int64 `json:"totalIndexSize"`
-}
-
-// CollectionDefinition collection definition
-type CollectionDefinition struct {
-
-	// The collection name
-	// Max Length: 45
-	// Min Length: 1
-	Collection string `json:"collection"`
-}
-
 // Error error reason
 type Error struct {
 
