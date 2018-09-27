@@ -1,11 +1,6 @@
 # splunk-cloud-sdk-go
 A Go client for Splunk Cloud services
 
-| Branch | Codeship | Coverage |
-|:------:|:--------:|:--------:|
-| develop | [![Codeship Status for splunk/splunk-cloud-sdk-go](https://app.codeship.com/projects/d0ec9ea0-15c2-0136-e7ad-1a0f3e5cdd95/status?branch=develop)](https://app.codeship.com/projects/283638) | [![codecov](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/develop/graph/badge.svg?token=o4BjP93wQt)](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/develop) |
-| master | [![Codeship Status for splunk/splunk-cloud-sdk-go](https://app.codeship.com/projects/d0ec9ea0-15c2-0136-e7ad-1a0f3e5cdd95/status?branch=master)](https://app.codeship.com/projects/283638) | [![codecov](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master/graph/badge.svg?token=o4BjP93wQt)](https://codecov.io/gh/splunk/splunk-cloud-sdk-go/branch/master) |
-
 # Terms of Service (TOS)
 [Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-pre-release-terms-of-service.html)
 
@@ -19,7 +14,7 @@ A Go client for Splunk Cloud services
   * `go get -u github.com/golang/dep/cmd/dep`
   * `go get golang.org/x/lint/golint`
   * `go get -u golang.org/x/tools/cmd/goimports`
-* Clone/unzip our splunk/splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
+* Clone/unzip our splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
 * Initialize a new client:
 
 ```go
@@ -40,7 +35,7 @@ func main() {
 		Tenant: os.Getenv("TENANT"),
 	})
 	exitOnErr(err)
-	// Validate access to the platform
+	// Validate access to the platform and tenant
 	info, err := client.IdentityService.Validate()
 	exitOnErr(err)
 	fmt.Printf("info: %+v", info)
@@ -62,3 +57,12 @@ func checkForTenantToken() {
 	}
 }
 ```
+
+## Documentation
+For general documentation about the Splunk Cloud SDK for Go, see:
+- https://sdc.splunkbeta.com/docs/sdks/gosdk
+
+For the API reference for the Splunk Cloud SDK for Go, see:
+- https://sdc.splunkbeta.com/reference/sdk/splunk-cloud-sdk-go
+
+The API reference contains detailed information about all classes and functions, with clearly-defined parameters and return types.
