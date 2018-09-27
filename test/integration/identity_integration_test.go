@@ -3,13 +3,13 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package playgroundintegration
+package integration
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -195,8 +195,17 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memberName, result2.Name)
 	assert.Equal(t, testutils.TestTenant, result2.Tenant)
 
+	groupName := fmt.Sprintf("grouptest%d", timeSec)
+
+	// create a group
+	resultgroup, err := client.IdentityService.CreateGroup(groupName)
+	defer client.IdentityService.DeleteGroup(groupName)
+	require.Nil(t, err)
+	assert.Equal(t, groupName, resultgroup.Name)
+	assert.Equal(t, "test1@splunk.com", resultgroup.CreatedBy)
+	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
+
 	// add member to group
-	groupName := "users" //pre-defined group
 	result3, err := client.IdentityService.AddMemberToGroup(groupName, memberName)
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
 	require.Nil(t, err)
@@ -207,7 +216,25 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, 1, len(result4))
 	assert.Contains(t, result4, groupName)
 
-	roleName := "user" //pre-defind role
+	// group-role
+	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+
+	// create a test role
+	resultrole, err := client.IdentityService.CreateRole(roleName)
+	defer client.IdentityService.DeleteRole(roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole.Name)
+	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
+
+	// add role to group
+	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName, roleName)
+	defer client.IdentityService.RemoveGroupRole(groupName, roleName)
+	require.Nil(t, err)
+	assert.Equal(t, roleName, resultrole1.Role)
+	assert.Equal(t, groupName, resultrole1.Group)
+	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
+
 	result5, err := client.IdentityService.GetMemberRoles(memberName)
 	require.Nil(t, err)
 	assert.Equal(t, 1, len(result5))
@@ -221,7 +248,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, roleName, result6.Role)
 	assert.Equal(t, permissionName, result6.Permission)
 
-	permissionName1 := fmt.Sprintf("%v:users:identity.groups.read", testutils.TestTenant)
+	permissionName1 := fmt.Sprintf("%v:%v:identity.groups.read", testutils.TestTenant, groupName)
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
@@ -230,7 +257,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result7, permissionName1)
 	assert.Contains(t, result7, permissionName2)
 
-	// delete
+	// delete the test member
 	err = client.IdentityService.RemoveMember(memberName)
 	require.Nil(t, err)
 }

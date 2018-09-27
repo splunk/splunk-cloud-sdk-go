@@ -1,10 +1,10 @@
-package playgroundintegration
+package integration
 
 import (
 	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -72,7 +72,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	require.NotEmpty(t, pipeline.Data)
 	require.NotEmpty(t, pipeline.Data.Edges)
-	assert.Equal(t, 3, len(pipeline.Data.Edges))
+	require.Equal(t, 3, len(pipeline.Data.Edges))
 	assert.NotEmpty(t, pipeline.Data.Edges[0].SourceNode)
 	assert.NotEmpty(t, pipeline.Data.Edges[0].TargetNode)
 	assert.NotEmpty(t, pipeline.Data.Edges[1].SourceNode)
@@ -81,11 +81,11 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	assert.NotEmpty(t, pipeline.Data.Edges[2].TargetNode)
 
 	require.NotEmpty(t, pipeline.Data.Nodes)
-	assert.Equal(t, 4, len(pipeline.Data.Nodes))
+	require.Equal(t, 4, len(pipeline.Data.Nodes))
 
 	dataNode1 := pipeline.Data.Nodes[0].(map[string]interface{})
 	assert.NotEmpty(t, dataNode1["id"])
-	assert.Equal(t, "read-kafka", dataNode1["op"])
+	assert.Equal(t, "unauthenticated-read-kafka", dataNode1["op"])
 	assert.Equal(t, "localhost:9092", dataNode1["brokers"])
 	assert.Equal(t, "intopic", dataNode1["topic"])
 
@@ -101,7 +101,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	dataNode4 := pipeline.Data.Nodes[3].(map[string]interface{})
 	assert.NotEmpty(t, dataNode4["id"])
-	assert.Equal(t, "write-kafka", dataNode4["op"])
+	assert.Equal(t, "unauthenticated-write-kafka", dataNode4["op"])
 	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
 	assert.Empty(t, dataNode4["producer-properties"])
 }
@@ -136,7 +136,8 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 }
 
-// Test DeactivatePipeline streams endpoint TODO (Parul): Contact streams service team with the deactivated status message query
+// TODO (Parul): Known bug - BLAM-4340, until the fix is ready, setting a workaround field - skipSavePoint (=true)
+// Test DeactivatePipeline streams endpoint
 func TestIntegrationDeactivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
@@ -220,7 +221,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 // Creates a pipeline request
 func CreatePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	// Create a test UPL JSON from a test DSL
-	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(read-kafka(kafka-brokers, input-topic, {}));write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
+	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(unauthenticated-read-kafka(kafka-brokers, input-topic, {}));unauthenticated-write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
 	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)

@@ -6,6 +6,15 @@
 ## Usage
 
 ```go
+const (
+	// SplunkCloudIdpURL is the default identity provider host for Splunk Cloud
+	SplunkCloudIdpURL = "https://login.splunkbeta.com"
+	// SplunkCloudIdpAuthzServer is the default identity provider authorization server name for Splunk Cloud
+	SplunkCloudIdpAuthzServer = "aus1vigjbbW3KwZJ72p7"
+)
+```
+
+```go
 var (
 	// DefaultOIDCScopes defines the default OpenID Connect scopes to use in authn requests - "openid email profile"
 	DefaultOIDCScopes = fmt.Sprintf("%s %s %s", ScopeOpenID, ScopeEmail, ScopeProfile)
@@ -16,7 +25,7 @@ var (
 
 ```go
 type Client struct {
-	Host          string
+	ProviderURL   string
 	PathAuthn     string
 	PathAuthorize string
 	PathKeys      string
@@ -24,21 +33,35 @@ type Client struct {
 }
 ```
 
-Client captures host and route information for the IdP endpoints
+Client captures url and route information for the IdP endpoints
 
 #### func  NewClient
 
 ```go
-func NewClient(host string, authnPath string, authorizePath string, keysPath string, tokenPath string) *Client
+func NewClient(providerURL string, authnPath string, authorizePath string, keysPath string, tokenPath string) *Client
 ```
 NewClient Returns a new IdP client object.
+
+    providerURL: should be of the form https://example.com or optionally https://example.com:port
+
+#### func  NewClientWithAuthzName
+
+```go
+func NewClientWithAuthzName(providerURL string, authzServerName string) *Client
+```
+NewClientWithAuthzName returns a new IdP client object with an authorization
+server name other than "default".
+
+    providerURL: should be of the form https://example.com or optionally https://example.com:port
 
 #### func  NewDefaultClient
 
 ```go
-func NewDefaultClient(host string) *Client
+func NewDefaultClient(providerURL string) *Client
 ```
 NewDefaultClient returns a new IdP client object with default routes.
+
+    providerURL: should be of the form https://example.com or optionally https://example.com:port
 
 #### func (*Client) ClientFlow
 
@@ -89,9 +112,14 @@ from the identity provider using the Client Credentials flow
 #### func  NewClientCredentialsRetriever
 
 ```go
-func NewClientCredentialsRetriever(idpHost string, clientID string, clientSecret string, scope string) *ClientCredentialsRetriever
+func NewClientCredentialsRetriever(clientID string, clientSecret string, scope string, idpURL string, authzServer string) *ClientCredentialsRetriever
 ```
 NewClientCredentialsRetriever initializes a new token context retriever
+
+    idpURL: should be of the form https://example.com or optionally https://example.com:port
+      - if "" is specified then SplunkCloudIdpURL will be used.
+    authzServer: should be the name of the authorization server used to form IdP paths
+      e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
 
 #### func (*ClientCredentialsRetriever) GetTokenContext
 
@@ -201,9 +229,14 @@ identity provider using the Proof Key for Code Exchange (PKCE) flow
 #### func  NewPKCERetriever
 
 ```go
-func NewPKCERetriever(idpHost string, clientID string, redirectURI string, scope string, username string, password string) *PKCERetriever
+func NewPKCERetriever(clientID string, redirectURI string, scope string, username string, password string, idpURL string, authzServer string) *PKCERetriever
 ```
 NewPKCERetriever initializes a new token context retriever
+
+    idpURL: should be of the form https://example.com or optionally https://example.com:port
+      - if "" is specified then SplunkCloudIdpURL will be used.
+    authzServer: should be the name of the authorization server used to form IdP paths
+      e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
 
 #### func (*PKCERetriever) GetTokenContext
 
@@ -232,9 +265,14 @@ the identity provider using a RefreshToken
 #### func  NewRefreshTokenRetriever
 
 ```go
-func NewRefreshTokenRetriever(idpHost string, clientID string, scope string, refreshToken string) *RefreshTokenRetriever
+func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string, idpURL string, authzServer string) *RefreshTokenRetriever
 ```
 NewRefreshTokenRetriever initializes a new token context retriever
+
+    idpURL: should be of the form https://example.com or optionally https://example.com:port
+      - if "" is specified then SplunkCloudIdpURL will be used.
+    authzServer: should be the name of the authorization server used to form IdP paths
+      e.g. oauth2/<authzServer>/v1/authorize - if "" is specified SplunkCloudIdpAuthzServer will be used.
 
 #### func (*RefreshTokenRetriever) GetTokenContext
 

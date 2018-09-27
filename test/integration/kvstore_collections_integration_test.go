@@ -3,13 +3,13 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package playgroundintegration
+package integration
 
 import (
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -669,47 +669,4 @@ func TestIntegrationGetCollections(t *testing.T) {
 	require.Nil(t, err)
 	require.NotNil(t, collections)
 	assert.Contains(t, collections, model.CollectionDefinition{Collection: kvCollection})
-}
-
-// Test ExportCollection to retrieve collection records for content-type text/csv
-func TestIntegrationExportCollectionCsvContentType(t *testing.T) { // Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	// Create test records in the collection
-	CreateTestRecord(t)
-
-	// Export the collection to an external file (response is a csv content string)
-	response, err := getClient(t).KVStoreService.ExportCollection(kvCollection, model.CSV)
-	require.Nil(t, err)
-	assert.NotNil(t, response)
-	assert.NotEmpty(t, response)
-}
-
-// Test ExportCollection to retrieve collection records for content-type application/gzip
-func TestIntegrationExportCollectionGzipContentType(t *testing.T) {
-	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	// Create test records in the collection
-	CreateTestRecord(t)
-
-	// Export the collection to an external file (response is a gzipped csv content string)
-	response, err := getClient(t).KVStoreService.ExportCollection(kvCollection, model.GZIP)
-	require.Nil(t, err)
-	assert.NotNil(t, response)
-	assert.NotEmpty(t, response)
 }

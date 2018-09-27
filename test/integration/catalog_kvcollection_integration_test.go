@@ -3,13 +3,13 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package playgroundintegration
+package integration
 
 import (
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,20 +29,6 @@ func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
 		Kind:         model.KVCOLLECTION,
 		Owner:        datasetOwner,
 		Module:       testutils.TestNamespace,
-		Capabilities: datasetCapabilities,
-	}
-
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createDatasetInfo)
-
-	assert.Nil(t, datasetInfo)
-	assert.NotNil(t, err)
-}
-
-func TestDatastoreKVStoreCreationWithMissingNamespace(t *testing.T) {
-	createDatasetInfo := model.DatasetCreationPayload{
-		Name:         testutils.TestCollection,
-		Kind:         model.KVCOLLECTION,
-		Owner:        datasetOwner,
 		Capabilities: datasetCapabilities,
 	}
 

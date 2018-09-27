@@ -17,12 +17,12 @@ const (
 	INDEX DatasetInfoKind = "index"
 )
 
-// DatasetInfo represents the sources of data that can be serched by Splunk
+// DatasetInfo represents the sources of data that can be searched by Splunk
 type DatasetInfo struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
 	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner"`
+	Owner        string          `json:"owner,omitempty"`
 	Module       string          `json:"module,omitempty"`
 	Created      string          `json:"created,omitempty"`
 	Modified     string          `json:"modified,omitempty"`
@@ -46,12 +46,12 @@ type DatasetInfo struct {
 	Disabled bool   `json:"disabled"`
 }
 
-// DatasetCreationPayload represents the sources of data that can be serched by Splunk
+// DatasetCreationPayload represents the sources of data that can be searched by Splunk
 type DatasetCreationPayload struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
 	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner"`
+	Owner        string          `json:"owner,omitempty"`
 	Module       string          `json:"module,omitempty"`
 	Capabilities string          `json:"capabilities"`
 	Fields       []Field         `json:"fields,omitempty"`
@@ -168,11 +168,11 @@ const (
 // A rule consists of a `match` clause and a collection of transformation actions
 type Rule struct {
 	ID         string          `json:"id,omitempty"`
-	Name       string          `json:"name" binding:"required"`
+	Name       string          `json:"name"`
 	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match" binding:"required"`
+	Match      string          `json:"match"`
 	Actions    []CatalogAction `json:"actions,omitempty"`
-	Owner      string          `json:"owner" binding:"required"`
+	Owner      string          `json:"owner,omitempty"`
 	Created    string          `json:"created,omitempty"`
 	Modified   string          `json:"modified,omitempty"`
 	CreatedBy  string          `json:"createdBy,omitempty"`
@@ -182,19 +182,20 @@ type Rule struct {
 
 // RuleUpdateFields represents the set of rule properties that can be updated
 type RuleUpdateFields struct {
-	Name       string          `json:"name,omitempty" `
-	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match,omitempty" `
-	Owner      string          `json:"owner,omitempty" `
-	Version    int             `json:"version,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Module  string `json:"module,omitempty"`
+	Match   string `json:"match,omitempty"`
+	Owner   string `json:"owner,omitempty"`
+	Version int    `json:"version,omitempty"`
 }
 
 // CatalogAction represents a specific search time transformation action.
+// This struct should NOT be directly used to construct object, use the NewXXXAction() instead
 type CatalogAction struct {
 	ID         string            `json:"id,omitempty"`
 	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind" binding:"required"`
-	Owner      string            `json:"owner" binding:"required"`
+	Kind       CatalogActionKind `json:"kind,omitempty"`
+	Owner      string            `json:"owner,omitempty"`
 	Created    string            `json:"created,omitempty"`
 	Modified   string            `json:"modified,omitempty"`
 	CreatedBy  string            `json:"createdBy,omitempty"`
@@ -205,70 +206,55 @@ type CatalogAction struct {
 	Mode       string            `json:"mode,omitempty"`
 	Expression string            `json:"expression,omitempty"`
 	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit"`
-}
-
-// DatasetImportPayload represents the dataset import payload
-type DatasetImportPayload struct {
-	Module string `json:"module"`
-	Name    string `json:"name"`
-	Owner   string `json:"owner"`
-}
-
-// CatalogActionCreationPayload represents the payload to create a catalog action.
-type CatalogActionCreationPayload struct {
-	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind" `
-	Owner      string            `json:"owner"`
-	Field      string            `json:"field,omitempty"`
-	Alias      string            `json:"alias,omitempty"`
-	Mode       string            `json:"mode,omitempty"`
-	Expression string            `json:"expression,omitempty"`
-	Pattern    string            `json:"pattern,omitempty"`
 	Limit      *int              `json:"limit,omitempty"`
 }
 
+// Module represents catalog module
+type Module struct {
+	Name    string `json:"name"`
+}
+
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string,  owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
-		Kind:"ALIAS",
-		Owner:owner,
-		Alias:alias,
-		Field:field,
+func NewAliasAction(field string, alias string, owner string) *CatalogAction {
+	return &CatalogAction{
+		Kind:  "ALIAS",
+		Owner: owner,
+		Alias: alias,
+		Field: field,
 	}
 }
 
 // NewAutoKVAction creates a new autokv kind action
-func NewAutoKVAction(mode string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
-		Kind:"AUTOKV",
-		Owner:owner,
-		Mode:mode,
+func NewAutoKVAction(mode string, owner string) *CatalogAction {
+	return &CatalogAction{
+		Kind:  "AUTOKV",
+		Owner: owner,
+		Mode:  mode,
 	}
 }
 
 // NewEvalAction creates a new eval kind action
-func NewEvalAction(field string, expression string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
-		Kind:"EVAL",
-		Owner:owner,
-		Field:field,
-		Expression:expression,
+func NewEvalAction(field string, expression string, owner string) *CatalogAction {
+	return &CatalogAction{
+		Kind:       "EVAL",
+		Owner:      owner,
+		Field:      field,
+		Expression: expression,
 	}
 }
 
 // NewLookupAction creates a new lookup kind action
-func NewLookupAction(expression string, owner string) *CatalogActionCreationPayload {
-	return &CatalogActionCreationPayload{
-		Kind:"LOOKUP",
-		Owner:owner,
-		Expression:expression,
+func NewLookupAction(expression string, owner string) *CatalogAction {
+	return &CatalogAction{
+		Kind:       "LOOKUP",
+		Owner:      owner,
+		Expression: expression,
 	}
 }
 
 // NewRegexAction creates a new regex kind action
-func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogActionCreationPayload {
-	action := CatalogActionCreationPayload{
+func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
+	action := CatalogAction{
 		Kind:    "REGEX",
 		Owner:   owner,
 		Field:   field,
@@ -277,4 +263,77 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 	}
 
 	return &action
+}
+
+// NewUpdateAliasAction updates an existing alias kind action
+func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
+	res := CatalogAction{}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if alias != nil {
+		res.Alias = *alias
+	}
+
+	return &res
+}
+
+// NewUpdateAutoKVAction updates an existing autokv kind action
+func NewUpdateAutoKVAction(mode *string) *CatalogAction {
+	res := CatalogAction{}
+
+	if mode != nil {
+		res.Mode = *mode
+	}
+
+	return &res
+
+}
+
+// NewUpdateEvalAction updates an existing eval kind action
+func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
+	res := CatalogAction{}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if expression != nil {
+		res.Alias = *expression
+	}
+
+	return &res
+
+}
+
+// NewUpdateLookupAction updates an existing lookup kind action
+func NewUpdateLookupAction(expression *string) *CatalogAction {
+	res := CatalogAction{}
+
+	if expression != nil {
+		res.Expression = *expression
+	}
+
+	return &res
+}
+
+// NewUpdateRegexAction updates an existing regex kind action
+func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
+	res := CatalogAction{}
+
+	if field != nil {
+		res.Field = *field
+	}
+
+	if pattern != nil {
+		res.Pattern = *pattern
+	}
+
+	if limit != nil {
+		res.Limit = limit
+	}
+
+	return &res
 }

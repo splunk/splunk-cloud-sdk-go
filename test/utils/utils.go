@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package testutils
+package utils
 
 import (
 	"fmt"
@@ -22,9 +22,6 @@ var TestSplunkCloudHost = os.Getenv("TEST_SPLUNK_CLOUD_HOST")
 
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
 var TestAuthenticationToken = os.Getenv("TEST_BEARER_TOKEN")
-
-// TestInvalidAuthenticationToken - the invalid access token that denies permission to make requests against the api
-var TestInvalidAuthenticationToken = "INVALID_TOKEN"
 
 // TestTenant - the tenant to be used for the API
 var TestTenant = os.Getenv("TEST_TENANT_ID")
@@ -48,4 +45,4 @@ var StubbyTestCollection = "testcollection0"
 var TestTimeOut = time.Second * 5
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
-var TenantCreationOn = (os.Getenv("TENANT_CREATION") == "1")
+var TenantCreationOn = os.Getenv("TENANT_CREATION") == "1"

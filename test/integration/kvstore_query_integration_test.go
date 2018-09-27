@@ -3,15 +3,15 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package playgroundintegration
+package integration
 
 import (
 	"net/url"
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
-	"github.com/stretchr/testify/assert"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/stretchr/testify/assert"
 )
 
 // --------------------------------------------------------------------------------
