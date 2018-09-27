@@ -11,7 +11,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var recordOne = model.Record {
@@ -650,23 +649,4 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		assert.NotNil(t, value)
 		assert.IsType(t, "string", value)
 	}
-}
-
-// Test GetCollections to retrieve all the collections belonging to the tenant
-func TestIntegrationGetCollections(t *testing.T) {
-	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	// Retrieve all the collections present in the tenant
-	collections, err := getClient(t).KVStoreService.GetCollections()
-	require.Nil(t, err)
-	require.NotNil(t, collections)
-	assert.Contains(t, collections, model.CollectionDefinition{Collection: kvCollection})
 }

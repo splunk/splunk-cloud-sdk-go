@@ -25,23 +25,6 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 // Admin Endpoints
 // --------------------------------------------------------------------------------
 
-// Test GetCollectionStatus against nova playground
-func TestIntegrationGetCollectionStatus(t *testing.T) {
-	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	response, err := getClient(t).KVStoreService.GetCollectionStats(kvCollection)
-	require.Empty(t, err)
-	assert.NotEmpty(t, response)
-}
-
 // Test GetServiceHealthStatus against nova playground
 func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()

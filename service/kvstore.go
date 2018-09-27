@@ -19,24 +19,6 @@ const kvStoreCollectionsResource = "collections"
 // KVStoreService talks to kvstore service
 type KVStoreService service
 
-// GetCollectionStats returns Collection Stats for the collection
-func (c *KVStoreService) GetCollectionStats(collection string) (*model.CollectionStats, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource, collection, "stats")
-	if err != nil {
-		return nil, err
-	}
-	response, err := c.client.Get(RequestParams{URL: url})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, err
-	}
-	var result model.CollectionStats
-	err = util.ParseResponse(&result, response)
-	return &result, err
-}
-
 // GetServiceHealthStatus returns Service Health Status
 func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
@@ -53,24 +35,6 @@ func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	var result model.PingOKBody
 	err = util.ParseResponse(&result, response)
 	return &result, err
-}
-
-// GetCollections gets all the collections
-func (c *KVStoreService) GetCollections() ([]model.CollectionDefinition, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, kvStoreCollectionsResource)
-	if err != nil {
-		return nil, err
-	}
-	response, err := c.client.Get(RequestParams{URL: url})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, err
-	}
-	var result []model.CollectionDefinition
-	err = util.ParseResponse(&result, response)
-	return result, err
 }
 
 // CreateIndex posts a new index to be added to the collection.
