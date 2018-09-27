@@ -27,7 +27,7 @@ const UserAgent = "client-go"
 UserAgent SDK Client Identifier
 
 ```go
-const Version = "0.5.0"
+const Version = "0.6.1"
 ```
 Version the released version of the SDK
 
@@ -119,9 +119,10 @@ type BatchEventsSender struct {
 	EventService *IngestService
 	IngestTicker *model.Ticker
 	WaitGroup    *sync.WaitGroup
-	ErrorChan    chan string
+	ErrorChan    chan struct{}
+	IsRunning    bool
 
-	IsRunning bool
+	Errors []ingestError
 }
 ```
 
@@ -134,13 +135,6 @@ to Splunk Cloud ingest service endpoints
 func (b *BatchEventsSender) AddEvent(event model.Event) error
 ```
 AddEvent pushes a single event into EventsChan
-
-#### func (*BatchEventsSender) GetErrors
-
-```go
-func (b *BatchEventsSender) GetErrors() []string
-```
-GetErrors return all the error messages as an array
 
 #### func (*BatchEventsSender) ResetQueue
 
@@ -190,9 +184,16 @@ CatalogService talks to the Splunk Cloud catalog service
 #### func (*CatalogService) CreateDataset
 
 ```go
-func (c *CatalogService) CreateDataset(dataset model.DatasetCreationPayload) (*model.DatasetInfo, error)
+func (c *CatalogService) CreateDataset(dataset *model.DatasetCreationPayload) (*model.DatasetInfo, error)
 ```
 CreateDataset creates a new Dataset
+
+#### func (*CatalogService) CreateDatasetField
+
+```go
+func (c *CatalogService) CreateDatasetField(datasetID string, datasetField *model.Field) (*model.Field, error)
+```
+CreateDatasetField creates a new field in the specified dataset
 
 #### func (*CatalogService) CreateRule
 
@@ -201,12 +202,20 @@ func (c *CatalogService) CreateRule(rule model.Rule) (*model.Rule, error)
 ```
 CreateRule posts a new rule.
 
+#### func (*CatalogService) CreateRuleAction
+
+```go
+func (c *CatalogService) CreateRuleAction(ruleID string, action *model.CatalogAction) (*model.CatalogAction, error)
+```
+CreateRuleAction creates a new Action on the rule specified
+
 #### func (*CatalogService) DeleteDataset
 
 ```go
-func (c *CatalogService) DeleteDataset(datasetID string) error
+func (c *CatalogService) DeleteDataset(resourceNameOrID string) error
 ```
-DeleteDataset implements delete Dataset endpoint
+DeleteDataset implements delete Dataset endpoint with the specified resourceName
+or ID
 
 #### func (*CatalogService) DeleteDatasetField
 
@@ -219,16 +228,24 @@ id datasetFieldID
 #### func (*CatalogService) DeleteRule
 
 ```go
-func (c *CatalogService) DeleteRule(ruleID string) error
+func (c *CatalogService) DeleteRule(resourceNameOrID string) error
 ```
-DeleteRule deletes the rule by the given path.
+DeleteRule deletes the rule and its dependencies with the specified rule id or
+resourceName
+
+#### func (*CatalogService) DeleteRuleAction
+
+```go
+func (c *CatalogService) DeleteRuleAction(ruleID string, actionID string) error
+```
+DeleteRuleAction deletes the action of specified belonging to the specified rule
 
 #### func (*CatalogService) GetDataset
 
 ```go
-func (c *CatalogService) GetDataset(id string) (*model.DatasetInfo, error)
+func (c *CatalogService) GetDataset(resourceNameOrID string) (*model.DatasetInfo, error)
 ```
-GetDataset returns the Dataset by name
+GetDataset returns the Dataset by resourceName or ID
 
 #### func (*CatalogService) GetDatasetField
 
@@ -252,12 +269,48 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error)
 ```
 GetDatasets returns all Datasets
 
+#### func (*CatalogService) GetField
+
+```go
+func (c *CatalogService) GetField(fieldID string) (*model.Field, error)
+```
+GetField returns the Field corresponding to fieldid
+
+#### func (*CatalogService) GetFields
+
+```go
+func (c *CatalogService) GetFields() ([]model.Field, error)
+```
+GetFields returns a list of all Fields on Catalog
+
+#### func (*CatalogService) GetModules
+
+```go
+func (c *CatalogService) GetModules(filter url.Values) ([]model.Module, error)
+```
+GetModules returns a list of a list of modules that match a filter query if it
+is given, otherwise return all modules
+
 #### func (*CatalogService) GetRule
 
 ```go
-func (c *CatalogService) GetRule(ruleID string) (*model.Rule, error)
+func (c *CatalogService) GetRule(resourceNameOrID string) (*model.Rule, error)
 ```
-GetRule returns rule by an ID.
+GetRule returns rule by the specified resourceName or ID.
+
+#### func (*CatalogService) GetRuleAction
+
+```go
+func (c *CatalogService) GetRuleAction(ruleID string, actionID string) (*model.CatalogAction, error)
+```
+GetRuleAction returns the action of specified belonging to the specified rule
+
+#### func (*CatalogService) GetRuleActions
+
+```go
+func (c *CatalogService) GetRuleActions(ruleID string) ([]model.CatalogAction, error)
+```
+GetRuleActions returns a list of all actions belonging to the specified rule
 
 #### func (*CatalogService) GetRules
 
@@ -266,26 +319,33 @@ func (c *CatalogService) GetRules() ([]model.Rule, error)
 ```
 GetRules returns all the rules.
 
-#### func (*CatalogService) PatchDatasetField
-
-```go
-func (c *CatalogService) PatchDatasetField(datasetID string, datasetFieldID string, datasetField model.Field) (*model.Field, error)
-```
-PatchDatasetField updates an already existing field in the specified dataset
-
-#### func (*CatalogService) PostDatasetField
-
-```go
-func (c *CatalogService) PostDatasetField(datasetID string, datasetField model.Field) (*model.Field, error)
-```
-PostDatasetField creates a new field in the specified dataset
-
 #### func (*CatalogService) UpdateDataset
 
 ```go
-func (c *CatalogService) UpdateDataset(dataset model.PartialDatasetInfo, datasetID string) (*model.DatasetInfo, error)
+func (c *CatalogService) UpdateDataset(dataset *model.UpdateDatasetInfoFields, resourceNameOrID string) (*model.DatasetInfo, error)
 ```
-UpdateDataset updates an existing Dataset
+UpdateDataset updates an existing Dataset with the specified resourceName or ID
+
+#### func (*CatalogService) UpdateDatasetField
+
+```go
+func (c *CatalogService) UpdateDatasetField(datasetID string, datasetFieldID string, datasetField *model.Field) (*model.Field, error)
+```
+UpdateDatasetField updates an already existing field in the specified dataset
+
+#### func (*CatalogService) UpdateRule
+
+```go
+func (c *CatalogService) UpdateRule(resourceNameOrID string, rule *model.RuleUpdateFields) (*model.Rule, error)
+```
+UpdateRule updates the rule with the specified resourceName or ID
+
+#### func (*CatalogService) UpdateRuleAction
+
+```go
+func (c *CatalogService) UpdateRuleAction(ruleID string, actionID string, action *model.CatalogAction) (*model.CatalogAction, error)
+```
+UpdateRuleAction updates the action with the specified id for the specified Rule
 
 #### type Client
 
@@ -773,13 +833,6 @@ func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values)
 DeleteRecords deletes records present in a given collection based on the
 provided query.
 
-#### func (*KVStoreService) ExportCollection
-
-```go
-func (c *KVStoreService) ExportCollection(collectionName string, contentType model.ExportCollectionContentType) (string, error)
-```
-ExportCollection exports the specified collection records to an external file
-
 #### func (*KVStoreService) GetCollectionStats
 
 ```go
@@ -901,110 +954,6 @@ type ResponseHandler interface {
 ResponseHandler defines the interface for implementing custom response handling
 logic
 
-#### type Search
-
-```go
-type Search struct {
-}
-```
-
-Search is a wrapper class for convenient search operations
-
-#### func (*Search) Cancel
-
-```go
-func (search *Search) Cancel() (*model.JobControlReplyMsg, error)
-```
-Cancel posts a cancel action to the search job
-
-#### func (*Search) DisablePreview
-
-```go
-func (search *Search) DisablePreview() (*model.JobControlReplyMsg, error)
-```
-DisablePreview posts a disablepreview action to the search job
-
-#### func (*Search) EnablePreview
-
-```go
-func (search *Search) EnablePreview() (*model.JobControlReplyMsg, error)
-```
-EnablePreview posts an enablepreview action to the search job
-
-#### func (*Search) Finalize
-
-```go
-func (search *Search) Finalize() (*model.JobControlReplyMsg, error)
-```
-Finalize posts a finalize action to the search job
-
-#### func (*Search) GetEvents
-
-```go
-func (search *Search) GetEvents(params *model.FetchEventsRequest) (*model.SearchResults, error)
-```
-GetEvents returns events from the search
-
-#### func (*Search) GetResults
-
-```go
-func (search *Search) GetResults(params *model.FetchResultsRequest) (*model.SearchResults, error)
-```
-GetResults returns results from the search
-
-#### func (*Search) QueryEvents
-
-```go
-func (search *Search) QueryEvents(batchSize, offset int, params *model.FetchEventsRequest) (*SearchIterator, error)
-```
-QueryEvents waits for job to complete and returns an iterator. If offset and
-batchSize are specified, the iterator will return that window of results with
-each Next() call
-
-#### func (*Search) QueryResults
-
-```go
-func (search *Search) QueryResults(batchSize, offset int, params *model.FetchResultsRequest) (*SearchIterator, error)
-```
-QueryResults waits for job to complete and returns an iterator. If offset and
-batchSize are specified, the iterator will return that window of results with
-each Next() call
-
-#### func (*Search) Save
-
-```go
-func (search *Search) Save() (*model.JobControlReplyMsg, error)
-```
-Save posts a save action to the search job
-
-#### func (*Search) SetTTL
-
-```go
-func (search *Search) SetTTL(ttl int) (*model.JobControlReplyMsg, error)
-```
-SetTTL posts a setttl action to the search job
-
-#### func (*Search) Status
-
-```go
-func (search *Search) Status() (*model.SearchJobContent, error)
-```
-Status returns the status of the search job
-
-#### func (*Search) Touch
-
-```go
-func (search *Search) Touch() (*model.JobControlReplyMsg, error)
-```
-Touch posts a touch action to the search job
-
-#### func (*Search) Wait
-
-```go
-func (search *Search) Wait() error
-```
-Wait polls the job until it's completed or errors out
-
 #### type SearchIterator
 
 ```go
@@ -1077,56 +1026,43 @@ SearchService talks to the Splunk Cloud search service
 #### func (*SearchService) CreateJob
 
 ```go
-func (service *SearchService) CreateJob(job *model.PostJobsRequest) (string, error)
+func (service *SearchService) CreateJob(job *model.CreateJobRequest) (*model.SearchJob, error)
 ```
-CreateJob dispatches a search and returns sid.
+CreateJob creates a new search job
 
 #### func (*SearchService) GetJob
 
 ```go
-func (service *SearchService) GetJob(jobID string) (*model.SearchJobContent, error)
+func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error)
 ```
 GetJob retrieves information about the specified search.
 
-#### func (*SearchService) GetJobEvents
+#### func (*SearchService) GetResults
 
 ```go
-func (service *SearchService) GetJobEvents(jobID string, params *model.FetchEventsRequest) (*model.SearchResults, error)
+func (service *SearchService) GetResults(jobID string, count, offset int) (interface{}, error)
 ```
-GetJobEvents Returns the job events with the given `id`.
+GetResults Returns the job results with the given `id`. count=0 returns default
+number of results from search
 
-#### func (*SearchService) GetJobResults
+#### func (*SearchService) ListJobs
 
 ```go
-func (service *SearchService) GetJobResults(jobID string, params *model.FetchResultsRequest) (*model.SearchResults, error)
+func (service *SearchService) ListJobs() ([]model.SearchJob, error)
 ```
-GetJobResults Returns the job results with the given `id`.
+ListJobs gets the matching list of search jobs
 
-#### func (*SearchService) GetJobs
+#### func (*SearchService) UpdateJob
 
 ```go
-func (service *SearchService) GetJobs(params *model.JobsRequest) ([]model.SearchJob, error)
+func (service *SearchService) UpdateJob(jobID string, jobStatus model.JobStatus) (*model.PatchJobResponse, error)
 ```
-GetJobs gets details of all current searches.
-
-#### func (*SearchService) PostJobControl
-
-```go
-func (service *SearchService) PostJobControl(jobID string, action *model.JobControlAction) (*model.JobControlReplyMsg, error)
-```
-PostJobControl runs a job control command for the specified search.
-
-#### func (*SearchService) SubmitSearch
-
-```go
-func (service *SearchService) SubmitSearch(job *model.PostJobsRequest) (*Search, error)
-```
-SubmitSearch creates a search job and wraps the response in an object
+UpdateJob updates an existing job with actions and TTL
 
 #### func (*SearchService) WaitForJob
 
 ```go
-func (service *SearchService) WaitForJob(sid string, pollInterval time.Duration) error
+func (service *SearchService) WaitForJob(jobID string, pollInterval time.Duration) (interface{}, error)
 ```
 WaitForJob polls the job until it's completed or errors out
 
