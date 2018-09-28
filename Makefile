@@ -24,8 +24,7 @@ DOCKER_STUBBY_TEST_TENANT_ID := TEST_TENANT
 noop:
 	@echo "No make target specified."
 
-clean:
-	docker rmi -f cloudrepo-docker-playground.jfrog.io/sdk/shared/stubby
+clean: build
 
 lint:
 	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)

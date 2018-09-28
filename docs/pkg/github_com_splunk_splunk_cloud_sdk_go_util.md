@@ -67,10 +67,10 @@ String returns a redacted string
 type HTTPError struct {
 	HTTPStatusCode int
 	HTTPStatus     string
-	Message        string              `json:"message,omitempty"`
-	Code           string              `json:"code,omitempty"`
-	MoreInfo       string              `json:"moreInfo,omitempty"`
-	Details        []map[string]string `json:"details,omitempty"`
+	Message        string      `json:"message,omitempty"`
+	Code           string      `json:"code,omitempty"`
+	MoreInfo       string      `json:"moreInfo,omitempty"`
+	Details        interface{} `json:"details,omitempty"`
 }
 ```
 
