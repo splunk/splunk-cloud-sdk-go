@@ -19,9 +19,9 @@ const catalogServiceVersion = "v1beta1"
 // CatalogService talks to the Splunk Cloud catalog service
 type CatalogService service
 
-// GetDatasets returns all Datasets
-func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
-	url, err := c.client.BuildURL(nil, catalogServicePrefix, catalogServiceVersion, "datasets")
+// GetDatasetsWithParams returns all Datasets with optional filter, count, or orderby params
+func (c *CatalogService) GetDatasetsWithParams(values url.Values) ([]model.DatasetInfo, error) {
+	url, err := c.client.BuildURL(values, catalogServicePrefix, catalogServiceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +35,11 @@ func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	var result []model.DatasetInfo
 	err = util.ParseResponse(&result, response)
 	return result, err
+}
+
+// GetDatasets returns all Datasets
+func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
+	return c.GetDatasetsWithParams(nil)
 }
 
 // GetDataset returns the Dataset by resourceName or ID
