@@ -188,12 +188,12 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
-// Test GetDatasetsWithParams with nil value
+// Test ListDatasets with nil value
 func TestGetDatasetsWithParamsNil(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
-	datasets, err := getClient(t).CatalogService.GetDatasetsWithParams(nil)
+	datasets, err := getClient(t).CatalogService.ListDatasets(nil)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -206,7 +206,7 @@ func TestGetDatasetsWithParamsFilter(t *testing.T) {
 	values := make(url.Values)
 	values.Set("filter", "kind==\"kvcollection\"")
 
-	datasets, err := getClient(t).CatalogService.GetDatasetsWithParams(values)
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -219,7 +219,7 @@ func TestGetDatasetsWithParamsCount(t *testing.T) {
 	values := make(url.Values)
 	values.Set("count", "1")
 
-	datasets, err := getClient(t).CatalogService.GetDatasetsWithParams(values)
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -232,7 +232,7 @@ func TestGetDatasetsWithParamsOrderBy(t *testing.T) {
 	values := make(url.Values)
 	values.Set("orderby", "id Descending")
 
-	datasets, err := getClient(t).CatalogService.GetDatasetsWithParams(values)
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -247,7 +247,7 @@ func TestGetDatasetsWithParamsAll(t *testing.T) {
 	values.Set("count", "1")
 	values.Set("orderby", "id Descending")
 
-	datasets, err := getClient(t).CatalogService.GetDatasetsWithParams(values)
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
