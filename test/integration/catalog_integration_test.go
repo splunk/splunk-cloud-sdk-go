@@ -188,8 +188,8 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
-// Test ListDatasets with nil value
-func TestGetDatasetsWithParamsNil(t *testing.T) {
+// Test ListDatasetsNil
+func TestListDatasetsNil(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
@@ -198,8 +198,8 @@ func TestGetDatasetsWithParamsNil(t *testing.T) {
 	assert.NotNil(t, len(datasets))
 }
 
-// Test TestGetDatasetsWithParamsFilter
-func TestGetDatasetsWithParamsFilter(t *testing.T) {
+// Test TestListDatasetsFilter
+func TestListDatasetsFilter(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
@@ -211,8 +211,8 @@ func TestGetDatasetsWithParamsFilter(t *testing.T) {
 	assert.NotNil(t, len(datasets))
 }
 
-// Test TestGetDatasetsWithParamsCount
-func TestGetDatasetsWithParamsCount(t *testing.T) {
+// Test TestListDatasetsCount
+func TestListDatasetsCount(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
@@ -224,8 +224,8 @@ func TestGetDatasetsWithParamsCount(t *testing.T) {
 	assert.NotNil(t, len(datasets))
 }
 
-// Test TestGetDatasetsWithParamsOrderBy
-func TestGetDatasetsWithParamsOrderBy(t *testing.T) {
+// Test TestListDatasetsOrderBy
+func TestListDatasetsOrderBy(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
@@ -237,8 +237,8 @@ func TestGetDatasetsWithParamsOrderBy(t *testing.T) {
 	assert.NotNil(t, len(datasets))
 }
 
-// Test TestGetDatasetsWithParamsAll with filter, count, and orderby
-func TestGetDatasetsWithParamsAll(t *testing.T) {
+// Test TestListDatasetsAll with filter, count, and orderby
+func TestListDatasetsAll(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
