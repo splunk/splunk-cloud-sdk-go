@@ -3,26 +3,33 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package ingest
 
-/*
+import (
+	"errors"
+	"sync"
+	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+)
+
 //UserErrHandler defines the type of user callback function for batchEventSender
 type UserErrHandler func(*BatchEventsSender)
 
 //ingestError defines the type of the event payload sent and ingest error incurred
 type ingestError struct {
 	Error  error
-	Events []model.Event
+	Events []Event
 }
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
 	BatchSize      int
-	EventsChan     chan model.Event
-	EventsQueue    []model.Event
+	EventsChan     chan Event
+	EventsQueue    []Event
 	QuitChan       chan struct{}
-	EventService   *IngestService
-	IngestTicker   *model.Ticker
+	EventService   *Service
+	IngestTicker   *util.Ticker
 	WaitGroup      *sync.WaitGroup
 	ErrorChan      chan struct{}
 	IsRunning      bool
@@ -110,7 +117,7 @@ func (b *BatchEventsSender) Stop() {
 }
 
 // AddEvent pushes a single event into EventsChan
-func (b *BatchEventsSender) AddEvent(event model.Event) error {
+func (b *BatchEventsSender) AddEvent(event Event) error {
 	if !b.IsRunning {
 		return errors.New("Need to start the BatchEventsSender first, call Run() ")
 	}
@@ -145,7 +152,7 @@ func (b *BatchEventsSender) flush(flushSource int) {
 		return
 	}
 
-	events := append([]model.Event(nil), b.EventsQueue...)
+	events := append([]Event(nil), b.EventsQueue...)
 	b.ResetQueue()
 
 	// slice events into batch size to send
@@ -154,7 +161,7 @@ func (b *BatchEventsSender) flush(flushSource int) {
 }
 
 // sendEventInBatches slices events into batch size to send
-func (b *BatchEventsSender) sendEventInBatches(events []model.Event) {
+func (b *BatchEventsSender) sendEventInBatches(events []Event) {
 	if len(events) <= 0 {
 		return
 	}
@@ -194,11 +201,10 @@ func (b *BatchEventsSender) Restart() {
 	}
 
 	// reopen channels
-	b.EventsChan = make(chan model.Event, b.BatchSize)
+	b.EventsChan = make(chan Event, b.BatchSize)
 	b.ErrorChan = make(chan struct{}, cap(b.ErrorChan))
 
 	b.Errors = nil
 	b.ResetQueue()
 	b.Run()
 }
-*/

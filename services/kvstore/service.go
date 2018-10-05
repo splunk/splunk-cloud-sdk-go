@@ -3,16 +3,25 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package kvstore
 
-/*
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+)
+
 const kvStoreServicePrefix = "kvstore"
 const kvStoreServiceVersion = "v1beta1"
 const kvStoreCollectionsResource = "collections"
 
-// KVStoreService talks to kvstore service
-type KVStoreService service
+// Service talks to kvstore service
+type Service services.BaseService
 
+// NewService creates a new kvstore service with client
+func NewService(client *services.Client) *Service {
+	return &Service{Client: client}
+}
+
+/*
 // GetServiceHealthStatus returns Service Health Status
 func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
 	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")

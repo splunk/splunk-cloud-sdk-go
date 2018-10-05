@@ -3,9 +3,14 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package search
 
-/*
+import (
+	"errors"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+)
+
 type queryFunc func(step, start int) (*model.SearchResults, error)
 
 // SearchIterator is the result of a search query. Its cursor starts at 0 index
@@ -90,4 +95,3 @@ func (i *SearchIterator) Close() {
 func (i *SearchIterator) Err() error {
 	return i.err
 }
-*/

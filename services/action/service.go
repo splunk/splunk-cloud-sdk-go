@@ -3,18 +3,26 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package action
 
-/*
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+)
 
 // action service url prefix
 const actionServicePrefix = "action"
 const actionServiceVersion = "v1beta1"
 
-// ActionService - A service the receives incoming notifications and uses
+// Service - A service the receives incoming notifications and uses
 // pre-defined templates to turn those notifications into meaningful actions
-type ActionService service
+type Service services.BaseService
 
+// NewService creates a new action service with client
+func NewService(client *services.Client) *Service {
+	return &Service{Client: client}
+}
+
+/*
 // GetActions get all actions
 func (c *ActionService) GetActions() ([]model.Action, error) {
 	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")

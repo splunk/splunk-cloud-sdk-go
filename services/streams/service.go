@@ -3,16 +3,25 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package streams
 
-/*
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+)
+
 // streams service url prefix
 const streamsServicePrefix = "streams"
 const streamsServiceVersion = "v1"
 
-// StreamsService - A service that deals with pipelines
-type StreamsService service
+// Service - A service that deals with pipelines
+type Service services.BaseService
 
+// NewService creates a new streams service with client
+func NewService(client *services.Client) *Service {
+	return &Service{Client: client}
+}
+
+/*
 // CompileDslToUpl creates a Upl Json from DSL
 func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*model.UplPipeline, error) {
 	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "compile-dsl")

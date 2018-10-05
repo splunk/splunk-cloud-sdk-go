@@ -3,15 +3,24 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package search
 
-/*
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+)
+
 const searchServicePrefix = "search"
 const searchServiceVersion = "v1beta1"
 
-// SearchService talks to the Splunk Cloud search service
-type SearchService service
+// Service talks to the Splunk Cloud search service
+type Service services.BaseService
 
+// NewService creates a new search service with client
+func NewService(client *services.Client) *Service {
+	return &Service{Client: client}
+}
+
+/*
 // ListJobs gets the matching list of search jobs
 func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
@@ -107,7 +116,7 @@ func (service *SearchService) GetResults(jobID string, count, offset int) (inter
 	// Create a temporary struct to check if nextLink field exists in payload
 	var tempNextLinkModel struct {
 		NextLink *string `json:"nextLink"`
-		Wait string `json:"wait"`
+		Wait     string  `json:"wait"`
 	}
 	err = json.Unmarshal(bodyBytes, &tempNextLinkModel)
 	if err != nil {

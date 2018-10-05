@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package search
 
 import (
 	"encoding/json"

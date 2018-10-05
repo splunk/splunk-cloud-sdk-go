@@ -3,15 +3,24 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package identity
 
-/*
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+)
+
 const identityServicePrefix = "identity"
 const identityServiceVersion = "v1"
 
-// IdentityService talks to the IAC service
-type IdentityService service
+// Service talks to the IAC service
+type Service services.BaseService
 
+// NewService creates a new identity service with client
+func NewService(client *services.Client) *Service {
+	return &Service{Client: client}
+}
+
+/*
 // CreateTenant creates a tenant
 func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
 	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,

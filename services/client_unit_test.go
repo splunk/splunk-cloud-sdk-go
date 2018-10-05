@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package services
 
 import (
 	"fmt"
@@ -79,17 +79,6 @@ func TestNewTokenClient(t *testing.T) {
 	})
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
-	var searchService = &SearchService{client: client}
-	var catalogService = &CatalogService{client: client}
-	var identityService = &IdentityService{client: client}
-	var ingestService = &IngestService{client: client}
-	var kvStoreService = &KVStoreService{client: client}
-	assert.Equal(t, timeout, client.httpClient.Timeout)
-	assert.Equal(t, searchService, client.SearchService)
-	assert.Equal(t, catalogService, client.CatalogService)
-	assert.Equal(t, identityService, client.IdentityService)
-	assert.Equal(t, ingestService, client.IngestService)
-	assert.Equal(t, kvStoreService, client.KVStoreService)
 
 	testURL := client.GetURL()
 	assert.Equal(t, apiHostname, testURL.Hostname())

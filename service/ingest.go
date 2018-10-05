@@ -6,49 +6,8 @@
 package service
 
 import (
-	"encoding/json"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
-const ingestServicePrefix = "ingest"
-const ingestServiceVersion = "v1beta1"
-
-// IngestService talks to the Splunk Cloud ingest service
-type IngestService service
-
-// PostEvents post single or multiple events to ingest service
-func (h *IngestService) PostEvents(events []model.Event) error {
-	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "events")
-	if err != nil {
-		return err
-	}
-	jsonBytes, err := json.Marshal(events)
-	if err != nil {
-		return err
-	}
-	response, err := h.client.Post(RequestParams{URL: url, Body: jsonBytes})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	return err
-}
-
-// PostMetrics posts single or multiple metric events to ingest service
-func (h *IngestService) PostMetrics(events []model.MetricEvent) error {
-	url, err := h.client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "metrics")
-	if err != nil {
-		return err
-	}
-
-	jsonBytes, err := json.Marshal(events)
-	if err != nil {
-		return err
-	}
-
-	response, err := h.client.Post(RequestParams{URL: url, Body: jsonBytes})
-	if response != nil {
-		defer response.Body.Close()
-	}
-
-	return err
-}
+// IngestService is DEPRECATED, please use ingest.Service
+type IngestService = ingest.Service
