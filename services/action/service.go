@@ -6,7 +6,10 @@
 package action
 
 import (
+	"strings"
+
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // action service url prefix
@@ -22,21 +25,20 @@ func NewService(client *services.Client) *Service {
 	return &Service{Client: client}
 }
 
-/*
 // GetActions get all actions
-func (c *ActionService) GetActions() ([]model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
+func (s *Service) GetActions() ([]Action, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var results []model.Action
+	var results []Action
 	err = util.ParseResponse(&results, response)
 	if err != nil {
 		return nil, err
@@ -45,19 +47,19 @@ func (c *ActionService) GetActions() ([]model.Action, error) {
 }
 
 // CreateAction creates an action
-func (c *ActionService) CreateAction(action model.Action) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
+func (s *Service) CreateAction(action Action) (*Action, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: action})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: action})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Action
+	var result Action
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -66,19 +68,19 @@ func (c *ActionService) CreateAction(action model.Action) (*model.Action, error)
 }
 
 // GetAction get an action by name
-func (c *ActionService) GetAction(name string) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+func (s *Service) GetAction(name string) (*Action, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Action
+	var result Action
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -87,12 +89,12 @@ func (c *ActionService) GetAction(name string) (*model.Action, error) {
 }
 
 // TriggerAction triggers an action from a notification
-func (c *ActionService) TriggerAction(name string, notification model.ActionNotification) (*model.ActionTriggerResponse, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+func (s *Service) TriggerAction(name string, notification Notification) (*TriggerResponse, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: notification})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: notification})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -106,20 +108,20 @@ func (c *ActionService) TriggerAction(name string, notification model.ActionNoti
 	if l >= 2 && parts[l-2] == "status" {
 		// Parse the Location url for the user looking for .../status/{statusid}
 		// at the end of the URL,
-		return &model.ActionTriggerResponse{StatusID: &parts[l-1], StatusURL: u}, nil
+		return &TriggerResponse{StatusID: &parts[l-1], StatusURL: u}, nil
 	}
 	// If format doesn't match what we expect just return url
-	return &model.ActionTriggerResponse{StatusURL: u}, nil
+	return &TriggerResponse{StatusURL: u}, nil
 }
 
 // UpdateAction updates and action by name
-func (c *ActionService) UpdateAction(name string, action model.ActionUpdateFields) (*model.Action, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+func (s *Service) UpdateAction(name string, action UpdateFields) (*Action, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Patch(RequestParams{URL: url, Body: action})
+	response, err := s.Client.Patch(services.RequestParams{URL: url, Body: action})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -127,7 +129,7 @@ func (c *ActionService) UpdateAction(name string, action model.ActionUpdateField
 		return nil, err
 	}
 
-	var result model.Action
+	var result Action
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -136,12 +138,12 @@ func (c *ActionService) UpdateAction(name string, action model.ActionUpdateField
 }
 
 // DeleteAction deletes an action by name
-func (c *ActionService) DeleteAction(name string) error {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
+func (s *Service) DeleteAction(name string) error {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -152,23 +154,22 @@ func (c *ActionService) DeleteAction(name string) error {
 }
 
 // GetActionStatus returns an action's status by name
-func (c *ActionService) GetActionStatus(name string, statusID string) (*model.ActionStatus, error) {
-	url, err := c.client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name, "status", statusID)
+func (s *Service) GetActionStatus(name string, statusID string) (*Status, error) {
+	url, err := s.Client.BuildURL(nil, actionServicePrefix, actionServiceVersion, "actions", name, "status", statusID)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.ActionStatus
+	var result Status
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
-*/

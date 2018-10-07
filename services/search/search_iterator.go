@@ -7,17 +7,16 @@ package search
 
 import (
 	"errors"
-
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
-type queryFunc func(step, start int) (*model.SearchResults, error)
+// QueryFunc is the function to be executed in each Next call of the iterator
+type QueryFunc func(step, start int) (*SearchResults, error)
 
 // SearchIterator is the result of a search query. Its cursor starts at 0 index
 // of the result set. Use Next() to advance through the rows:
 //
-//  search, _ := client.SearchService.SubmitSearch(&model.PostJobsRequest{Search: "search index=main | head 5"})
-// 	pages, _ := search.QueryResults(2, 0, &model.FetchResultsRequest{Count: 5})
+//  search, _ := client.SearchService.SubmitSearch(&PostJobsRequest{Search: "search index=main | head 5"})
+// 	pages, _ := search.QueryResults(2, 0, &FetchResultsRequest{Count: 5})
 // 	defer pages.Close()
 // 	for pages.Next() {
 // 		values, err := pages.Value()
@@ -27,18 +26,18 @@ type queryFunc func(step, start int) (*model.SearchResults, error)
 // 	err := pages.Err() // get any error encountered during iteration
 //  ...
 type SearchIterator struct {
-	value    *model.SearchResults // stores current value
-	max      int                  // max number of results
-	start    int                  // index to start with fetching results, same concept as "offset"
-	offset   int                  // offset value to start iterator with. e.g. offset=5 means iterator will skip the first 5 results
-	batch    int                  // batch size of results in each Next call
-	err      error                // error encountered during iteration
-	fn       queryFunc            // function to be executed in each Next call
-	isClosed bool                 // signal indicating status of the iterator
+	value    *SearchResults // stores current value
+	max      int            // max number of results
+	start    int            // index to start with fetching results, same concept as "offset"
+	offset   int            // offset value to start iterator with. e.g. offset=5 means iterator will skip the first 5 results
+	batch    int            // batch size of results in each Next call
+	err      error          // error encountered during iteration
+	fn       QueryFunc      // function to be executed in each Next call
+	isClosed bool           // signal indicating status of the iterator
 }
 
 // NewSearchIterator creates a new reference to the iterator object
-func NewSearchIterator(batch, offset, max int, fn queryFunc) *SearchIterator {
+func NewSearchIterator(batch, offset, max int, fn QueryFunc) *SearchIterator {
 	return &SearchIterator{
 		start:    offset,
 		batch:    batch,
@@ -50,7 +49,7 @@ func NewSearchIterator(batch, offset, max int, fn queryFunc) *SearchIterator {
 }
 
 // Value returns value in current iteration or error out if iterator is closed
-func (i *SearchIterator) Value() (*model.SearchResults, error) {
+func (i *SearchIterator) Value() (*SearchResults, error) {
 	if i.isClosed == true {
 		return nil, errors.New("failed to retrieve values on a closed iterator")
 	}

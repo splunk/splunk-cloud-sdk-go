@@ -6,43 +6,11 @@
 package service
 
 import (
-	"net/http"
-
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
-const (
-	// DefaultMaxAuthnAttempts defines the maximum number of retries that will be performed for a request encountering an authentication issue
-	DefaultMaxAuthnAttempts = 1
-)
+// ResponseHandler is DEPRECATED, please use services.ResponseHandler
+type ResponseHandler = services.ResponseHandler
 
-// ResponseHandler defines the interface for implementing custom response
-// handling logic
-type ResponseHandler interface {
-	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
-}
-
-// AuthnResponseHandler handles logic for updating the client access token in response to 401 errors
-type AuthnResponseHandler struct {
-	TokenRetriever idp.TokenRetriever
-}
-
-// HandleResponse will retry a request once after re-authenticating if a 401 response code is encountered
-func (rh AuthnResponseHandler) HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error) {
-	if response.StatusCode != 401 || rh.TokenRetriever == nil || request.GetNumErrorsByResponseCode(401) > DefaultMaxAuthnAttempts {
-		return response, nil
-	}
-	ctx, err := rh.TokenRetriever.GetTokenContext()
-	if err != nil {
-		return response, err
-	}
-	// Replace the access token in the request's Authorization: Bearer header
-	request.UpdateToken(ctx.AccessToken)
-	// Re-initialize body (otherwise body is empty)
-	body, err := request.GetBody()
-	request.Body = body
-	// Update the client such that future requests will use the new access token and retain context information
-	client.UpdateTokenContext(ctx)
-	// Retry the request with the updated token
-	return client.Do(request)
-}
+// AuthnResponseHandler is DEPRECATED, please use services.AuthnResponseHandler
+type AuthnResponseHandler = services.AuthnResponseHandler
