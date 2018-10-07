@@ -5,35 +5,35 @@
 
 package integration
 
-import (
-	"testing"
+// import (
+// 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
-	"github.com/stretchr/testify/assert"
-)
+// 	"github.com/splunk/splunk-cloud-sdk-go/model"
+// 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+// 	"github.com/stretchr/testify/assert"
+// )
 
-func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+// func TestDatastoreKVStoreCreationSuccess(t *testing.T) {
+// 	createKVCollectionDataset(t,
+// 		testutils.TestNamespace,
+// 		testutils.TestCollection,
+// 		datasetOwner,
+// 		datasetCapabilities)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-}
+// 	// Remove the dataset used for testing
+// 	defer cleanupDatasets(t)
+// }
 
-func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
-	createDatasetInfo := model.DatasetCreationPayload{
-		Kind:         model.KVCOLLECTION,
-		Owner:        datasetOwner,
-		Module:       testutils.TestNamespace,
-		Capabilities: datasetCapabilities,
-	}
+// func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
+// 	createDatasetInfo := model.DatasetCreationPayload{
+// 		Kind:         model.KVCOLLECTION,
+// 		Owner:        datasetOwner,
+// 		Module:       testutils.TestNamespace,
+// 		Capabilities: datasetCapabilities,
+// 	}
 
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createDatasetInfo)
+// 	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createDatasetInfo)
 
-	assert.Nil(t, datasetInfo)
-	assert.NotNil(t, err)
-}
+// 	assert.Nil(t, datasetInfo)
+// 	assert.NotNil(t, err)
+// }

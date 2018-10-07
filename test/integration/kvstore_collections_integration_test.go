@@ -5,6 +5,7 @@
 
 package integration
 
+/*
 import (
 	"testing"
 
@@ -650,3 +651,4 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		assert.IsType(t, "string", value)
 	}
 }
+*/

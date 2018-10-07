@@ -5,6 +5,7 @@
 
 package integration
 
+/*
 import (
 	"fmt"
 	"testing"
@@ -269,3 +270,4 @@ func TestValidate(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, "test1@splunk.com", res.Name)
 }
+*/

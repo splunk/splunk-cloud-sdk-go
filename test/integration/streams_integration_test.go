@@ -1,5 +1,6 @@
 package integration
 
+/*
 import (
 	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
@@ -242,3 +243,4 @@ func cleanupPipeline(client *service.Client, id string, name string) {
 		fmt.Printf("WARN: error deleting pipeline: name:%s, err: %s", name, err)
 	}
 }
+*/

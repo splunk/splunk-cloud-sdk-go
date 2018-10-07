@@ -5,6 +5,7 @@
 
 package integration
 
+/*
 import (
 	"encoding/json"
 	"net/url"
@@ -270,3 +271,4 @@ func CreateTestRecord(t *testing.T) []string {
 
 	return keys
 }
+*/
