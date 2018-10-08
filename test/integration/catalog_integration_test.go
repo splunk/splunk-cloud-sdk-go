@@ -80,6 +80,17 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 	return datasetInfo, err
 }
 
+func createLookupDatasets(t *testing.T) {
+	_, errOne := createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
+	assert.Emptyf(t, errOne, "Error creating dataset: %s", errOne)
+
+	_, errTwo := createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
+	assert.Emptyf(t, errTwo, "Error creating dataset: %s", errTwo)
+
+	_, errThree := createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
+	assert.Emptyf(t, errThree, "Error creating dataset: %s", errThree)
+}
+
 func createKVCollectionDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
 	createKVCollectionDatasetInfo := model.DatasetCreationPayload{
 		Name:         collectionName,
@@ -158,19 +169,9 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 // Test GetDatasets
 func TestIntegrationGetAllDatasets(t *testing.T) {
 	defer cleanupDatasets(t)
+	createLookupDatasets(t)
 
-	client := getClient(t)
-
-	_, errOne := createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errOne, "Error creating dataset: %s", errOne)
-
-	_, errTwo := createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errTwo, "Error creating dataset: %s", errTwo)
-
-	_, errThree := createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errThree, "Error creating dataset: %s", errThree)
-
-	datasets, err := client.CatalogService.GetDatasets()
+	datasets, err := getClient(t).CatalogService.GetDatasets()
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -185,6 +186,70 @@ func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	require.NotNil(t, err)
 	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
+}
+
+// Test ListDatasetsNil
+func TestListDatasetsNil(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(nil)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
+// Test TestListDatasetsFilter
+func TestListDatasetsFilter(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	values := make(url.Values)
+	values.Set("filter", "kind==\"kvcollection\"")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
+// Test TestListDatasetsCount
+func TestListDatasetsCount(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	values := make(url.Values)
+	values.Set("count", "1")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
+// Test TestListDatasetsOrderBy
+func TestListDatasetsOrderBy(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	values := make(url.Values)
+	values.Set("orderby", "id Descending")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
+// Test TestListDatasetsAll with filter, count, and orderby
+func TestListDatasetsAll(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	values := make(url.Values)
+	values.Set("filter", "kind==\"kvcollection\"")
+	values.Set("count", "1")
+	values.Set("orderby", "id Descending")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
 }
 
 // Test GetDataset by ID
