@@ -4,8 +4,8 @@
 //
 
 /*
-Package service implements a service client which is used to communicate
-with Search Service endpoints
+Package services implements a service client which is used to communicate
+with Splunk Cloud endpoints, each service being split into its own package.
 */
 package services
 
