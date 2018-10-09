@@ -46,12 +46,10 @@ func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 }
 
 
-// ListJobsByQuery gets the matching list of search jobs filtered by query parameters specified
+// ListJobsByQueryParameters gets the matching list of search jobs filtered by query parameters specified
 func (service *SearchService) ListJobsByQueryParameters(query JobsQuery) ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
-
 	values := util.ParseURLParams(query)
-
 	jobsURL, err := service.client.BuildURL(values, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
 		return searchJobs, err
