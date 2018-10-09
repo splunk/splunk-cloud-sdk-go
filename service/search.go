@@ -29,20 +29,7 @@ type JobsQuery struct {
 
 // ListJobs gets the matching list of search jobs
 func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
-	var searchJobs []model.SearchJob
-	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
-	if err != nil {
-		return searchJobs, err
-	}
-	response, err := service.client.Get(RequestParams{URL: jobsURL})
-	if response != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, err
-	}
-	err = util.ParseResponse(&searchJobs, response)
-	return searchJobs, err
+	return service.ListJobsByQueryParameters(JobsQuery{})
 }
 
 
