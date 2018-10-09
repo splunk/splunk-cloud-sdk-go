@@ -6,17 +6,23 @@ A Go client for Splunk Cloud services
 
 # Getting started
 ---
-### macOS
-* [Install Brew](https://brew.sh/)
-* [Install Docker for Mac](https://docs.docker.com/docker-for-mac/install/)
+Install Go 1.11 (or later)
 * [Install Go and Setup your Go environment](https://golang.org/doc/install)
-* Recommended Go tools:
-  * `go get -u github.com/golang/dep/cmd/dep`
+
+Install recommended Go tools
   * `go get golang.org/x/lint/golint`
   * `go get -u golang.org/x/tools/cmd/goimports`
-* Clone/unzip our splunk-cloud-sdk-go repo into your project's vendor/github.com/splunk/splunk-cloud-sdk-go directory
-* Initialize a new client:
 
+Below are steps to initialize your project using Go Modules for dependency support, for more info see: https://github.com/golang/go/wiki/Modules
+
+Initialize your project which can be outside $GOPATH/src
+(NOTE: if the project is within your $GOPATH you must set `GO111MODULE=on` in your environment variables before continuing):
+```bash
+$ mkdir myproject && cd myproject
+$ go mod init github.com/example/myproject
+```
+
+Create a `myproject/main.go` file containing:
 ```go
 package main
 
@@ -56,6 +62,24 @@ func checkForTenantToken() {
 		exitOnErr(fmt.Errorf("$TENANT must be set"))
 	}
 }
+```
+
+Setup your project's Go module dependencies to point to the local copy of ./splunk-sdk-go:
+```bash
+$ go mod edit -replace=github.com/splunk/splunk-cloud-sdk-go=./splunk-cloud-sdk-go
+```
+
+Set your tenant and token, tokens can be retrieved from https://sdc.splunkbeta.com/settings:
+```bash
+$ export BEARER_TOKEN=<INSERT_TOKEN>
+$ export TENANT=<INSERT_TENANT>
+```
+
+Finally, build and run your project:
+```bash
+$ go build
+$ ./myproject
+info: &{Name:me@example.com Tenants:[]}
 ```
 
 ## Documentation
