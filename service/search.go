@@ -22,10 +22,37 @@ const searchServiceVersion = "v1beta1"
 // SearchService talks to the Splunk Cloud search service
 type SearchService service
 
+// JobsQuery represents Query Parameters that can be provided for ListJobs endpoint
+type JobsQuery struct {
+	Status string `key:"status"`
+}
+
 // ListJobs gets the matching list of search jobs
 func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
 	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
+	if err != nil {
+		return searchJobs, err
+	}
+	response, err := service.client.Get(RequestParams{URL: jobsURL})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = util.ParseResponse(&searchJobs, response)
+	return searchJobs, err
+}
+
+
+// ListJobsByQuery gets the matching list of search jobs filtered by query parameters specified
+func (service *SearchService) ListJobsByQueryParameters(query JobsQuery) ([]model.SearchJob, error) {
+	var searchJobs []model.SearchJob
+
+	values := util.ParseURLParams(query)
+
+	jobsURL, err := service.client.BuildURL(values, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
 		return searchJobs, err
 	}
