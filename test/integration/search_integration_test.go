@@ -37,7 +37,6 @@ func TestListJobs(t *testing.T) {
 func TestListJobsByStatusRunning(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
-
 	response, err := client.SearchService.ListJobsByQueryParameters(service.JobsQuery{"running"})
 	require.Nil(t, err)
 	assert.NotNil(t, response)
@@ -46,7 +45,6 @@ func TestListJobsByStatusRunning(t *testing.T) {
 func TestListJobsByMultipleStatuses(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
-
 	response, err := client.SearchService.ListJobsByQueryParameters(service.JobsQuery{"running, done"})
 	require.Nil(t, err)
 	assert.NotNil(t, response)
