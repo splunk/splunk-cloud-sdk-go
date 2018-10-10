@@ -15,14 +15,14 @@ Install recommended Go tools
 
 Below are steps to initialize your project using Go Modules for dependency support, for more info see: https://github.com/golang/go/wiki/Modules
 
-Initialize your project which can be outside $GOPATH/src
-(NOTE: if the project is within your $GOPATH you must set `GO111MODULE=on` in your environment variables before continuing):
+Initialize your project which can be outside of the `$GOPATH/src` directory. Replace `github.com/example/myproject` with the Git host, organization or username, and project name of your choosing.
+(NOTE: if the project is within your `$GOPATH` you must set `GO111MODULE=on` in your environment variables before continuing):
 ```bash
 $ mkdir myproject && cd myproject
 $ go mod init github.com/example/myproject
 ```
 
-Create a `myproject/main.go` file containing:
+Create a `main.go` file within the current `myproject/` directory containing:
 ```go
 package main
 
@@ -64,7 +64,12 @@ func checkForTenantToken() {
 }
 ```
 
-Setup your project's Go module dependencies to point to the local copy of ./splunk-sdk-go:
+Clone the splunk-cloud-sdk-go repository. From the `myproject/` directory run:
+```bash
+git clone https://github.com/splunk/splunk-cloud-sdk-go
+```
+
+Setup your project's Go Module dependencies to point to the local copy of `./splunk-cloud-sdk-go`:
 ```bash
 $ go mod edit -replace=github.com/splunk/splunk-cloud-sdk-go=./splunk-cloud-sdk-go
 ```
