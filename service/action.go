@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/action"
 )
 
-// ActionService is DEPRECATED, please use services/action.Service
+// ActionService is Deprecated: please use services/action.Service
 type ActionService = action.Service

@@ -9,14 +9,14 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
-// Event in the model package is DEPRECATED - please use service.ingest.Event
+// Event is Deprecated: please use services/ingest.Event
 type Event = ingest.Event
 
-// MetricEvent in the model package is DEPRECATED - please use service.ingest.MetricEvent
+// MetricEvent is Deprecated: please use services/ingest.MetricEvent
 type MetricEvent = ingest.MetricEvent
 
-// Metric in the model package is DEPRECATED - please use service.ingest.Metric
+// Metric is Deprecated: please use services/ingest.Metric
 type Metric = ingest.Metric
 
-// MetricAttribute in the model package is DEPRECATED - please use service.ingest.MetricAttribute
+// MetricAttribute is Deprecated: please use services/ingest.MetricAttribute
 type MetricAttribute = ingest.MetricAttribute

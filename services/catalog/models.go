@@ -148,36 +148,36 @@ const (
 	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
 )
 
-// CatalogActionKind enumerates the kinds of search time transformation action known by the service.
-type CatalogActionKind string
+// ActionKind enumerates the kinds of search time transformation action known by the service.
+type ActionKind string
 
 const (
 	// ALIAS action
-	ALIAS CatalogActionKind = "ALIAS"
+	ALIAS ActionKind = "ALIAS"
 	// AUTOKV action
-	AUTOKV CatalogActionKind = "AUTOKV"
+	AUTOKV ActionKind = "AUTOKV"
 	// REGEX action
-	REGEX CatalogActionKind = "REGEX"
+	REGEX ActionKind = "REGEX"
 	// EVAL action
-	EVAL CatalogActionKind = "EVAL"
+	EVAL ActionKind = "EVAL"
 	// LOOKUPACTION action
-	LOOKUPACTION CatalogActionKind = "LOOKUP"
+	LOOKUPACTION ActionKind = "LOOKUP"
 )
 
 // Rule represents a rule for transforming results at search time.
 // A rule consists of a `match` clause and a collection of transformation actions
 type Rule struct {
-	ID         string          `json:"id,omitempty"`
-	Name       string          `json:"name"`
-	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match"`
-	Actions    []CatalogAction `json:"actions,omitempty"`
-	Owner      string          `json:"owner,omitempty"`
-	Created    string          `json:"created,omitempty"`
-	Modified   string          `json:"modified,omitempty"`
-	CreatedBy  string          `json:"createdBy,omitempty"`
-	ModifiedBy string          `json:"modifiedBy,omitempty"`
-	Version    int             `json:"version,omitempty"`
+	ID         string   `json:"id,omitempty"`
+	Name       string   `json:"name"`
+	Module     string   `json:"module,omitempty"`
+	Match      string   `json:"match"`
+	Actions    []Action `json:"actions,omitempty"`
+	Owner      string   `json:"owner,omitempty"`
+	Created    string   `json:"created,omitempty"`
+	Modified   string   `json:"modified,omitempty"`
+	CreatedBy  string   `json:"createdBy,omitempty"`
+	ModifiedBy string   `json:"modifiedBy,omitempty"`
+	Version    int      `json:"version,omitempty"`
 }
 
 // RuleUpdateFields represents the set of rule properties that can be updated
@@ -189,24 +189,24 @@ type RuleUpdateFields struct {
 	Version int    `json:"version,omitempty"`
 }
 
-// CatalogAction represents a specific search time transformation action.
+// Action represents a specific search time transformation action.
 // This struct should NOT be directly used to construct object, use the NewXXXAction() instead
-type CatalogAction struct {
-	ID         string            `json:"id,omitempty"`
-	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind,omitempty"`
-	Owner      string            `json:"owner,omitempty"`
-	Created    string            `json:"created,omitempty"`
-	Modified   string            `json:"modified,omitempty"`
-	CreatedBy  string            `json:"createdBy,omitempty"`
-	ModifiedBy string            `json:"modifiedBy,omitempty"`
-	Version    int               `json:"version,omitempty"`
-	Field      string            `json:"field,omitempty"`
-	Alias      string            `json:"alias,omitempty"`
-	Mode       string            `json:"mode,omitempty"`
-	Expression string            `json:"expression,omitempty"`
-	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit,omitempty"`
+type Action struct {
+	ID         string     `json:"id,omitempty"`
+	RuleID     string     `json:"ruleid,omitempty"`
+	Kind       ActionKind `json:"kind,omitempty"`
+	Owner      string     `json:"owner,omitempty"`
+	Created    string     `json:"created,omitempty"`
+	Modified   string     `json:"modified,omitempty"`
+	CreatedBy  string     `json:"createdBy,omitempty"`
+	ModifiedBy string     `json:"modifiedBy,omitempty"`
+	Version    int        `json:"version,omitempty"`
+	Field      string     `json:"field,omitempty"`
+	Alias      string     `json:"alias,omitempty"`
+	Mode       string     `json:"mode,omitempty"`
+	Expression string     `json:"expression,omitempty"`
+	Pattern    string     `json:"pattern,omitempty"`
+	Limit      *int       `json:"limit,omitempty"`
 }
 
 // Module represents catalog module
@@ -215,8 +215,8 @@ type Module struct {
 }
 
 // NewAliasAction creates a new alias kind action
-func NewAliasAction(field string, alias string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewAliasAction(field string, alias string, owner string) *Action {
+	return &Action{
 		Kind:  "ALIAS",
 		Owner: owner,
 		Alias: alias,
@@ -225,8 +225,8 @@ func NewAliasAction(field string, alias string, owner string) *CatalogAction {
 }
 
 // NewAutoKVAction creates a new autokv kind action
-func NewAutoKVAction(mode string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewAutoKVAction(mode string, owner string) *Action {
+	return &Action{
 		Kind:  "AUTOKV",
 		Owner: owner,
 		Mode:  mode,
@@ -234,8 +234,8 @@ func NewAutoKVAction(mode string, owner string) *CatalogAction {
 }
 
 // NewEvalAction creates a new eval kind action
-func NewEvalAction(field string, expression string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewEvalAction(field string, expression string, owner string) *Action {
+	return &Action{
 		Kind:       "EVAL",
 		Owner:      owner,
 		Field:      field,
@@ -244,8 +244,8 @@ func NewEvalAction(field string, expression string, owner string) *CatalogAction
 }
 
 // NewLookupAction creates a new lookup kind action
-func NewLookupAction(expression string, owner string) *CatalogAction {
-	return &CatalogAction{
+func NewLookupAction(expression string, owner string) *Action {
+	return &Action{
 		Kind:       "LOOKUP",
 		Owner:      owner,
 		Expression: expression,
@@ -253,8 +253,8 @@ func NewLookupAction(expression string, owner string) *CatalogAction {
 }
 
 // NewRegexAction creates a new regex kind action
-func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
-	action := CatalogAction{
+func NewRegexAction(field string, pattern string, limit *int, owner string) *Action {
+	action := Action{
 		Kind:    "REGEX",
 		Owner:   owner,
 		Field:   field,
@@ -266,8 +266,8 @@ func NewRegexAction(field string, pattern string, limit *int, owner string) *Cat
 }
 
 // NewUpdateAliasAction updates an existing alias kind action
-func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
-	res := CatalogAction{}
+func NewUpdateAliasAction(field *string, alias *string) *Action {
+	res := Action{}
 
 	if field != nil {
 		res.Field = *field
@@ -281,8 +281,8 @@ func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
 }
 
 // NewUpdateAutoKVAction updates an existing autokv kind action
-func NewUpdateAutoKVAction(mode *string) *CatalogAction {
-	res := CatalogAction{}
+func NewUpdateAutoKVAction(mode *string) *Action {
+	res := Action{}
 
 	if mode != nil {
 		res.Mode = *mode
@@ -293,8 +293,8 @@ func NewUpdateAutoKVAction(mode *string) *CatalogAction {
 }
 
 // NewUpdateEvalAction updates an existing eval kind action
-func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
-	res := CatalogAction{}
+func NewUpdateEvalAction(field *string, expression *string) *Action {
+	res := Action{}
 
 	if field != nil {
 		res.Field = *field
@@ -309,8 +309,8 @@ func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
 }
 
 // NewUpdateLookupAction updates an existing lookup kind action
-func NewUpdateLookupAction(expression *string) *CatalogAction {
-	res := CatalogAction{}
+func NewUpdateLookupAction(expression *string) *Action {
+	res := Action{}
 
 	if expression != nil {
 		res.Expression = *expression
@@ -320,8 +320,8 @@ func NewUpdateLookupAction(expression *string) *CatalogAction {
 }
 
 // NewUpdateRegexAction updates an existing regex kind action
-func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
-	res := CatalogAction{}
+func NewUpdateRegexAction(field *string, pattern *string, limit *int) *Action {
+	res := Action{}
 
 	if field != nil {
 		res.Field = *field
