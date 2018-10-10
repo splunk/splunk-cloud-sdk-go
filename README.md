@@ -66,7 +66,7 @@ func checkForTenantToken() {
 
 Clone the splunk-cloud-sdk-go repository. From the `myproject/` directory run:
 ```bash
-git clone https://github.com/splunk/splunk-cloud-sdk-go
+$ git clone https://github.com/splunk/splunk-cloud-sdk-go
 ```
 
 Setup your project's Go Module dependencies to point to the local copy of `./splunk-cloud-sdk-go`:
