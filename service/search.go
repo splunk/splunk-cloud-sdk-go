@@ -24,6 +24,7 @@ type SearchService service
 
 // JobsQuery represents Query Parameters that can be provided for ListJobs endpoint
 type JobsQuery struct {
+	//The supported statuses are running, done and failed
 	Status string `key:"status"`
 }
 
