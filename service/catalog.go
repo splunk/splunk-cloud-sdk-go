@@ -38,6 +38,7 @@ func (c *CatalogService) ListDatasets(values url.Values) ([]model.DatasetInfo, e
 }
 
 // GetDatasets returns all Datasets
+// Deprecated: v0.6.1 - Use ListDatasets instead
 func (c *CatalogService) GetDatasets() ([]model.DatasetInfo, error) {
 	return c.ListDatasets(nil)
 }
