@@ -125,9 +125,6 @@ func (lt *sdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
 	return response, err
 }
 
-func (c *Client) SetLogger(logger Logger) {
-	c.logger=logger
-}
 
 // NewRequest creates a new HTTP Request and set proper header
 func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
