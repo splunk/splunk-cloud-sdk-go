@@ -18,8 +18,17 @@ const serviceVersion = "v1beta1"
 // Service talks to kvstore service
 type Service services.BaseService
 
-// NewService creates a new kvstore service with client
-func NewService(client *services.Client) *Service {
+// NewClient creates a new kvstore service client from the given Config
+func NewClient(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	return NewService(baseClient), nil
+}
+
+// NewService creates a new kvstore service from an existing client
+func NewService(client *services.BaseClient) *Service {
 	return &Service{Client: client}
 }
 

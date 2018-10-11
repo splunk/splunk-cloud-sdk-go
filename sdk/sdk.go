@@ -13,7 +13,7 @@ import (
 
 // Client to communicate with Splunk Cloud service endpoints
 type Client struct {
-	*services.Client
+	*services.BaseClient
 	// ActionService talks to Splunk Cloud action service
 	ActionService *action.Service
 	// CatalogService talks to the Splunk Cloud catalog service
@@ -37,7 +37,7 @@ func NewClient(config *services.Config) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		Client:          client,
+		BaseClient:      client,
 		ActionService:   action.NewService(client),
 		CatalogService:  catalog.NewService(client),
 		IdentityService: identity.NewService(client),

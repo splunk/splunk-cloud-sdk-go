@@ -29,8 +29,8 @@ const (
 	AuthorizationType = "Bearer"
 )
 
-// A Client is a base client for communicating with any service
-type Client struct {
+// A BaseClient for communicating with Splunk Cloud
+type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
 	defaultTenant string
 	// host is the Splunk Cloud host or host:port used to form requests, `"api.splunkbeta.com"` by default
@@ -109,7 +109,7 @@ type RequestParams struct {
 
 // BaseService provides the interface between client and services
 type BaseService struct {
-	Client *Client
+	Client *BaseClient
 }
 
 // sdkTransport is to define customized transport RoundTripper
@@ -130,7 +130,7 @@ func (c *Client) SetLogger(logger Logger) {
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
+func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -150,12 +150,12 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
-func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -177,7 +177,7 @@ func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPa
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *Request) (*http.Response, error) {
+func (c *BaseClient) Do(req *Request) (*http.Response, error) {
 	req.NumAttempts++
 	response, err := c.httpClient.Do(req.Request)
 	if err != nil {
@@ -204,19 +204,19 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Get(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodGet
 	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Post(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPost
 	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Put(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPut
 	return c.DoRequest(requestParams)
 }
@@ -224,19 +224,19 @@ func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
 // Delete implements HTTP DELETE call
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *Client) Delete(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Delete(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodDelete
 	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Patch(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPatch
 	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
@@ -259,17 +259,17 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 }
 
 // UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information
-func (c *Client) UpdateTokenContext(ctx *idp.Context) {
+func (c *BaseClient) UpdateTokenContext(ctx *idp.Context) {
 	c.tokenContext = ctx
 }
 
 // SetDefaultTenant updates the tenant used to form most request URIs
-func (c *Client) SetDefaultTenant(tenant string) {
+func (c *BaseClient) SetDefaultTenant(tenant string) {
 	c.defaultTenant = tenant
 }
 
 // GetURL returns the Splunk Cloud scheme/host formed as URL
-func (c *Client) GetURL() *url.URL {
+func (c *BaseClient) GetURL() *url.URL {
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   c.host,
@@ -277,7 +277,7 @@ func (c *Client) GetURL() *url.URL {
 }
 
 // NewClient creates a Client with config values passed in
-func NewClient(config *Config) (*Client, error) {
+func NewClient(config *Config) (*BaseClient, error) {
 	host := "api.splunkbeta.com"
 	if config.Host != "" {
 		host = config.Host
@@ -314,7 +314,7 @@ func NewClient(config *Config) (*Client, error) {
 	}
 
 	// Finally, initialize the Client
-	c := &Client{
+	c := &BaseClient{
 		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
