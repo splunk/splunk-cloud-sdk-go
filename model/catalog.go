@@ -5,335 +5,148 @@
 
 package model
 
-// DatasetInfoKind enumerates the kinds of datasets known to the system.
-type DatasetInfoKind string
-
-const (
-	// LOOKUP represents TODO: Description needed
-	LOOKUP DatasetInfoKind = "lookup"
-	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
-	KVCOLLECTION DatasetInfoKind = "kvcollection"
-	// INDEX represents a Splunk events or metrics index
-	INDEX DatasetInfoKind = "index"
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 )
 
-// DatasetInfo represents the sources of data that can be searched by Splunk
-type DatasetInfo struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities"`
-	Version      int             `json:"version,omitempty"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled"`
-}
-
-// DatasetCreationPayload represents the sources of data that can be searched by Splunk
-type DatasetCreationPayload struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Capabilities string          `json:"capabilities"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int   `json:"maxMatches,omitempty"`
-	MinMatches         *int   `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
-}
-
-// UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
-type UpdateDatasetInfoFields struct {
-	Name         string          `json:"name,omitempty"`
-	Kind         DatasetInfoKind `json:"kind,omitempty"`
-	Owner        string          `json:"owner,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
-}
-
-// Field represents the fields belonging to the specified Dataset
-type Field struct {
-	ID         string         `json:"id,omitempty"`
-	Name       string         `json:"name,omitempty"`
-	DatasetID  string         `json:"datasetid,omitempty"`
-	DataType   DataType       `json:"datatype,omitempty"`
-	FieldType  FieldType      `json:"fieldtype,omitempty"`
-	Prevalence PrevalenceType `json:"prevalence,omitempty"`
-	Created    string         `json:"created,omitempty"`
-	Modified   string         `json:"modified,omitempty"`
-}
-
-// PrevalenceType enumerates the types of prevalance used in fields.
-type PrevalenceType string
+// DatasetInfoKind is Deprecated: please use services/catalog.DatasetInfoKind
+type DatasetInfoKind = catalog.DatasetInfoKind
 
 const (
-	// ALL PrevalenceType
-	ALL PrevalenceType = "ALL"
-	// SOME PrevalenceType
-	SOME PrevalenceType = "SOME"
-	// PREVALANCEUNKNOWN PrevalenceType
-	PREVALANCEUNKNOWN PrevalenceType = "UNKNOWN"
+	// LOOKUP is Deprecated: please use services/catalog.Lookup
+	LOOKUP DatasetInfoKind = catalog.Lookup
+	// KVCOLLECTION is Deprecated: please use services/catalog.KvCollection
+	KVCOLLECTION DatasetInfoKind = catalog.KvCollection
+	// INDEX is Deprecated: please use services/catalog.Index
+	INDEX DatasetInfoKind = catalog.Index
 )
 
-// DataType enumerates the kinds of datatypes used in fields.
-type DataType string
+// DatasetInfo is Deprecated: please use services/catalog.DatasetInfo
+type DatasetInfo = catalog.DatasetInfo
+
+// DatasetCreationPayload is Deprecated: please use services/catalog.DatasetCreationPayload
+type DatasetCreationPayload = catalog.DatasetCreationPayload
+
+// UpdateDatasetInfoFields is Deprecated: please use services/catalog.UpdateDatasetInfoFields
+type UpdateDatasetInfoFields = catalog.UpdateDatasetInfoFields
+
+// Field is Deprecated: please use services/catalog.Field
+type Field = catalog.Field
+
+// PrevalenceType is Deprecated: please use services/catalog.PrevalenceType
+type PrevalenceType = catalog.PrevalenceType
 
 const (
-	// DATE DataType
-	DATE DataType = "DATE"
-	// NUMBER DataType
-	NUMBER DataType = "NUMBER"
-	// OBJECTID DataType
-	OBJECTID DataType = "OBJECT_ID"
-	// STRING DataType
-	STRING DataType = "STRING"
-	// DATATYPEUNKNOWN DataType
-	DATATYPEUNKNOWN DataType = "UNKNOWN"
+	// ALL is Deprecated: please use services/catalog.All
+	ALL PrevalenceType = catalog.All
+	// SOME is Deprecated: please use services/catalog.Some
+	SOME PrevalenceType = catalog.Some
+	// PREVALANCEUNKNOWN is Deprecated: please use services/catalog.PrevalenceUnknown
+	PREVALANCEUNKNOWN PrevalenceType = catalog.PrevalenceUnknown
 )
 
-// FieldType enumerates different kinds of fields.
-type FieldType string
+// DataType is Deprecated: please use services/catalog.DataType
+type DataType = catalog.DataType
 
 const (
-	// DIMENSION fieldType
-	DIMENSION FieldType = "DIMENSION"
-	// MEASURE fieldType
-	MEASURE FieldType = "MEASURE"
-	// FIELDTYPEUNKNOWN fieldType
-	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
+	// DATE is Deprecated: please use services/catalog.Date
+	DATE DataType = catalog.Date
+	// NUMBER is Deprecated: please use services/catalog.Number
+	NUMBER DataType = catalog.Number
+	// OBJECTID is Deprecated: please use services/catalog.ObjectID
+	OBJECTID DataType = catalog.ObjectID
+	// STRING is Deprecated: please use services/catalog.String
+	STRING DataType = catalog.String
+	// DATATYPEUNKNOWN is Deprecated: please use services/catalog.DataTypeUnknown
+	DATATYPEUNKNOWN DataType = catalog.DataTypeUnknown
 )
 
-// CatalogActionKind enumerates the kinds of search time transformation action known by the service.
-type CatalogActionKind string
+// FieldType is Deprecated: please use services/catalog.FieldType
+type FieldType = catalog.FieldType
 
 const (
-	// ALIAS action
-	ALIAS CatalogActionKind = "ALIAS"
-	// AUTOKV action
-	AUTOKV CatalogActionKind = "AUTOKV"
-	// REGEX action
-	REGEX CatalogActionKind = "REGEX"
-	// EVAL action
-	EVAL CatalogActionKind = "EVAL"
-	// LOOKUPACTION action
-	LOOKUPACTION CatalogActionKind = "LOOKUP"
+	// DIMENSION is Deprecated: please use services/catalog.Dimension
+	DIMENSION FieldType = catalog.Dimension
+	// MEASURE is Deprecated: please use services/catalog.Measure
+	MEASURE FieldType = catalog.Measure
+	// FIELDTYPEUNKNOWN is Deprecated: please use services/catalog.FieldTypeUnknown
+	FIELDTYPEUNKNOWN = catalog.FieldTypeUnknown
 )
 
-// Rule represents a rule for transforming results at search time.
-// A rule consists of a `match` clause and a collection of transformation actions
-type Rule struct {
-	ID         string          `json:"id,omitempty"`
-	Name       string          `json:"name"`
-	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match"`
-	Actions    []CatalogAction `json:"actions,omitempty"`
-	Owner      string          `json:"owner,omitempty"`
-	Created    string          `json:"created,omitempty"`
-	Modified   string          `json:"modified,omitempty"`
-	CreatedBy  string          `json:"createdBy,omitempty"`
-	ModifiedBy string          `json:"modifiedBy,omitempty"`
-	Version    int             `json:"version,omitempty"`
-}
+// CatalogActionKind is Deprecated: please use services/catalog.ActionKind
+type CatalogActionKind = catalog.ActionKind
 
-// RuleUpdateFields represents the set of rule properties that can be updated
-type RuleUpdateFields struct {
-	Name    string `json:"name,omitempty"`
-	Module  string `json:"module,omitempty"`
-	Match   string `json:"match,omitempty"`
-	Owner   string `json:"owner,omitempty"`
-	Version int    `json:"version,omitempty"`
-}
+const (
+	// ALIAS is Deprecated: please use services/catalog.Alias
+	ALIAS CatalogActionKind = catalog.Alias
+	// AUTOKV is Deprecated: please use services/catalog.AutoKV
+	AUTOKV CatalogActionKind = catalog.AutoKV
+	// REGEX is Deprecated: please use services/catalog.Regex
+	REGEX CatalogActionKind = catalog.Regex
+	// EVAL is Deprecated: please use services/catalog.Eval
+	EVAL CatalogActionKind = catalog.Eval
+	// LOOKUPACTION is Deprecated: please use services/catalog.LookupAction
+	LOOKUPACTION CatalogActionKind = catalog.LookupAction
+)
 
-// CatalogAction represents a specific search time transformation action.
-// This struct should NOT be directly used to construct object, use the NewXXXAction() instead
-type CatalogAction struct {
-	ID         string            `json:"id,omitempty"`
-	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind,omitempty"`
-	Owner      string            `json:"owner,omitempty"`
-	Created    string            `json:"created,omitempty"`
-	Modified   string            `json:"modified,omitempty"`
-	CreatedBy  string            `json:"createdBy,omitempty"`
-	ModifiedBy string            `json:"modifiedBy,omitempty"`
-	Version    int               `json:"version,omitempty"`
-	Field      string            `json:"field,omitempty"`
-	Alias      string            `json:"alias,omitempty"`
-	Mode       string            `json:"mode,omitempty"`
-	Expression string            `json:"expression,omitempty"`
-	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit,omitempty"`
-}
+// Rule is Deprecated: please use services/catalog.Rule
+type Rule = catalog.Rule
 
-// Module represents catalog module
-type Module struct {
-	Name    string `json:"name"`
-}
+// RuleUpdateFields is Deprecated: please use services/catalog.RuleUpdateFields
+type RuleUpdateFields = catalog.RuleUpdateFields
 
-// NewAliasAction creates a new alias kind action
+// CatalogAction is Deprecated: please use services/catalog.Action
+type CatalogAction = catalog.Action
+
+// Module is Deprecated: please use services/catalog.Module
+type Module = catalog.Module
+
+// NewAliasAction is Deprecated: please use services/catalog.NewAliasAction
 func NewAliasAction(field string, alias string, owner string) *CatalogAction {
-	return &CatalogAction{
-		Kind:  "ALIAS",
-		Owner: owner,
-		Alias: alias,
-		Field: field,
-	}
+	return catalog.NewAliasAction(field, alias, owner)
 }
 
-// NewAutoKVAction creates a new autokv kind action
+// NewAutoKVAction is Deprecated: please use services/catalog.NewAutoKVAction
 func NewAutoKVAction(mode string, owner string) *CatalogAction {
-	return &CatalogAction{
-		Kind:  "AUTOKV",
-		Owner: owner,
-		Mode:  mode,
-	}
+	return catalog.NewAutoKVAction(mode, owner)
 }
 
-// NewEvalAction creates a new eval kind action
+// NewEvalAction is Deprecated: please use services/catalog.NewEvalAction
 func NewEvalAction(field string, expression string, owner string) *CatalogAction {
-	return &CatalogAction{
-		Kind:       "EVAL",
-		Owner:      owner,
-		Field:      field,
-		Expression: expression,
-	}
+	return catalog.NewEvalAction(field, expression, owner)
 }
 
-// NewLookupAction creates a new lookup kind action
+// NewLookupAction is Deprecated: please use services/catalog.NewLookupAction
 func NewLookupAction(expression string, owner string) *CatalogAction {
-	return &CatalogAction{
-		Kind:       "LOOKUP",
-		Owner:      owner,
-		Expression: expression,
-	}
+	return catalog.NewLookupAction(expression, owner)
 }
 
-// NewRegexAction creates a new regex kind action
+// NewRegexAction is Deprecated: please use services/catalog.NewRegexAction
 func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction {
-	action := CatalogAction{
-		Kind:    "REGEX",
-		Owner:   owner,
-		Field:   field,
-		Pattern: pattern,
-		Limit:   limit,
-	}
-
-	return &action
+	return catalog.NewRegexAction(field, pattern, limit, owner)
 }
 
-// NewUpdateAliasAction updates an existing alias kind action
+// NewUpdateAliasAction is Deprecated: please use services/catalog.NewUpdateAliasAction
 func NewUpdateAliasAction(field *string, alias *string) *CatalogAction {
-	res := CatalogAction{}
-
-	if field != nil {
-		res.Field = *field
-	}
-
-	if alias != nil {
-		res.Alias = *alias
-	}
-
-	return &res
+	return catalog.NewUpdateAliasAction(field, alias)
 }
 
-// NewUpdateAutoKVAction updates an existing autokv kind action
+// NewUpdateAutoKVAction is Deprecated: please use services/catalog.NewUpdateAutoKVAction
 func NewUpdateAutoKVAction(mode *string) *CatalogAction {
-	res := CatalogAction{}
-
-	if mode != nil {
-		res.Mode = *mode
-	}
-
-	return &res
-
+	return catalog.NewUpdateAutoKVAction(mode)
 }
 
-// NewUpdateEvalAction updates an existing eval kind action
+// NewUpdateEvalAction is Deprecated: please use services/catalog.NewUpdateEvalAction
 func NewUpdateEvalAction(field *string, expression *string) *CatalogAction {
-	res := CatalogAction{}
-
-	if field != nil {
-		res.Field = *field
-	}
-
-	if expression != nil {
-		res.Alias = *expression
-	}
-
-	return &res
-
+	return catalog.NewUpdateEvalAction(field, expression)
 }
 
-// NewUpdateLookupAction updates an existing lookup kind action
+// NewUpdateLookupAction is Deprecated: please use services/catalog.NewUpdateLookupAction
 func NewUpdateLookupAction(expression *string) *CatalogAction {
-	res := CatalogAction{}
-
-	if expression != nil {
-		res.Expression = *expression
-	}
-
-	return &res
+	return catalog.NewUpdateLookupAction(expression)
 }
 
-// NewUpdateRegexAction updates an existing regex kind action
+// NewUpdateRegexAction is Deprecated: please use services/catalog.NewUpdateRegexAction
 func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction {
-	res := CatalogAction{}
-
-	if field != nil {
-		res.Field = *field
-	}
-
-	if pattern != nil {
-		res.Pattern = *pattern
-	}
-
-	if limit != nil {
-		res.Limit = limit
-	}
-
-	return &res
+	return catalog.NewUpdateRegexAction(field, pattern, limit)
 }

@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
-// IngestService is DEPRECATED, please use services/ingest.Service
+// IngestService is Deprecated: please use services/ingest.Service
 type IngestService = ingest.Service

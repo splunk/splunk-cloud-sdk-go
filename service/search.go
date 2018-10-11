@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
-// SearchService is DEPRECATED, please use services/search.Service
+// SearchService is Deprecated: please use services/search.Service
 type SearchService = search.Service

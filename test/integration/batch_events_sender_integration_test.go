@@ -5,7 +5,6 @@
 
 package integration
 
-/*
 import (
 	"fmt"
 	"math/rand"
@@ -211,4 +210,3 @@ func TestBatchEventsSenderRestart(t *testing.T) {
 	wg.Wait()
 	assert.True(t, len(collector.Errors) >= 4)
 }
-*/

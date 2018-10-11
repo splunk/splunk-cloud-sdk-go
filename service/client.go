@@ -14,19 +14,19 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
-// Client is DEPRECATED, please use sdk.Client
+// Client is Deprecated: please use sdk.Client
 type Client = sdk.Client
 
-// Request is DEPRECATED, please use services.Request
+// Request is Deprecated: please use services.Request
 type Request = services.Request
 
-// Config is DEPRECATED, please use services.Config
+// Config is Deprecated: please use services.Config
 type Config = services.Config
 
-// RequestParams is DEPRECATED, please use services.RequestParams
+// RequestParams is Deprecated: please use services.RequestParams
 type RequestParams = services.RequestParams
 
-// NewClient is DEPRECATED, please use sdk.NewClient
+// NewClient is Deprecated: please use sdk.NewClient
 func NewClient(config *Config) (*Client, error) {
 	return sdk.NewClient(config)
 }

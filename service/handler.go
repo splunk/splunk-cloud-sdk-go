@@ -9,8 +9,8 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
-// ResponseHandler is DEPRECATED, please use services.ResponseHandler
+// ResponseHandler is Deprecated: please use services.ResponseHandler
 type ResponseHandler = services.ResponseHandler
 
-// AuthnResponseHandler is DEPRECATED, please use services.AuthnResponseHandler
+// AuthnResponseHandler is Deprecated: please use services.AuthnResponseHandler
 type AuthnResponseHandler = services.AuthnResponseHandler

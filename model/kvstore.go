@@ -5,89 +5,47 @@
 
 package model
 
-// Error error reason
-type Error struct {
-
-	// The reason of the error
-	Code int64 `json:"code"`
-	// Error message
-	Message string `json:"message"`
-	// State Storage error code
-	SsCode int64 `json:"ssCode"`
-}
-
-// AuthError auth error reason
-type AuthError struct {
-
-	// The reason of the auth error
-	Reason string `json:"reason"`
-}
-
-// PingOKBody ping ok body
-type PingOKBody struct {
-
-	// If database is not healthy, detailed error message
-	ErrorMessage string `json:"errorMessage,omitempty"`
-
-	// Database status
-	// Enum: [healthy unhealthy unknown]
-	Status PingOKBodyStatus `json:"status"`
-}
-
-// PingOKBodyStatus used to force type expectation for KVStore Ping endpoint response
-type PingOKBodyStatus string
-
-const (
-	// PingOKBodyStatusHealthy captures enum value "healthy"
-	PingOKBodyStatusHealthy PingOKBodyStatus = "healthy"
-
-	// PingOKBodyStatusUnhealthy captures enum value "unhealthy"
-	PingOKBodyStatusUnhealthy PingOKBodyStatus = "unhealthy"
-
-	// PingOKBodyStatusUnknown captures enum value "unknown"
-	PingOKBodyStatusUnknown PingOKBodyStatus = "unknown"
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
 )
 
-// IndexFieldDefinition index field definition
-type IndexFieldDefinition struct {
+// Error is Deprecated: please use services/kvstore.Error
+type Error = kvstore.Error
 
-	// The sort direction for the indexed field
-	Direction int64 `json:"direction"`
+// AuthError is Deprecated: please use services/kvstore.AuthError
+type AuthError = kvstore.AuthError
 
-	// The name of the field to index
-	Field string `json:"field"`
-}
+// PingOKBody is Deprecated: please use services/kvstore.PingOKBody
+type PingOKBody = kvstore.PingOKBody
 
-// IndexDefinition index field definition
-type IndexDefinition struct {
+// PingOKBodyStatus is Deprecated: please use services/kvstore.PingOKBodyStatus
+type PingOKBodyStatus = kvstore.PingOKBodyStatus
 
-	// The name of the index
-	Name string `json:"name,omitempty"`
+const (
+	// PingOKBodyStatusHealthy is Deprecated: please use services/kvstore.PingOKBodyStatusHealthy
+	PingOKBodyStatusHealthy PingOKBodyStatus = kvstore.PingOKBodyStatusHealthy
 
-	// fields
-	Fields []IndexFieldDefinition `json:"fields"`
-}
+	// PingOKBodyStatusUnhealthy is Deprecated: please use services/kvstore.PingOKBodyStatusUnhealthy
+	PingOKBodyStatusUnhealthy PingOKBodyStatus = kvstore.PingOKBodyStatusUnhealthy
 
-// IndexDescription index description
-type IndexDescription struct {
+	// PingOKBodyStatusUnknown is Deprecated: please use services/kvstore.PingOKBodyStatusUnknown
+	PingOKBodyStatusUnknown PingOKBodyStatus = kvstore.PingOKBodyStatusUnknown
+)
 
-	// The collection name
-	Collection string `json:"collection,omitempty"`
+// IndexFieldDefinition is Deprecated: please use services/kvstore.IndexFieldDefinition
+type IndexFieldDefinition = kvstore.IndexFieldDefinition
 
-	// fields
-	Fields []IndexFieldDefinition `json:"fields"`
+// IndexDefinition is Deprecated: please use services/kvstore.IndexDefinition
+type IndexDefinition = kvstore.IndexDefinition
 
-	// The name of the index
-	Name string `json:"name,omitempty"`
-}
+// IndexDescription is Deprecated: please use services/kvstore.IndexDescription
+type IndexDescription = kvstore.IndexDescription
 
-// LookupValue Value tuple used for lookup
-type LookupValue []interface{}
+// LookupValue is Deprecated: please use services/kvstore.LookupValue
+type LookupValue = kvstore.LookupValue
 
-// Key to identify a record in a collection
-type Key struct {
-	Key string `json:"_key"`
-}
+// Key is Deprecated: please use services/kvstore.Key
+type Key = kvstore.Key
 
-// Record is a JSON document entity contained in collections
-type Record map[string]interface{}
+// Record is Deprecated: please use services/kvstore.Record
+type Record = kvstore.Record

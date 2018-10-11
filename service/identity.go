@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 )
 
-// IdentityService is DEPRECATED, please use services/identity.Service
+// IdentityService is Deprecated: please use services/identity.Service
 type IdentityService = identity.Service

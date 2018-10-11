@@ -6,200 +6,32 @@
 package model
 
 import (
-	"github.com/go-openapi/strfmt"
+	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 )
 
-// Tenant tenant
-type Tenant struct {
+// Tenant is Deprecated: please use services/identity.Tenant
+type Tenant = identity.Tenant
 
-	// created at
-	// Required: true
-	// Format: date-time
-	CreatedAt strfmt.DateTime `json:"createdAt"`
+// ValidateInfo is Deprecated: please use services/identity.ValidateInfo
+type ValidateInfo = identity.ValidateInfo
 
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
+// Member is Deprecated: please use services/identity.Member
+type Member = identity.Member
 
-	// name
-	// Required: true
-	Name string `json:"name"`
+// Principal is Deprecated: please use services/identity.Principal
+type Principal = identity.Principal
 
-	// status
-	// Required: true
-	Status string `json:"status"`
-}
+// Role is Deprecated: please use services/identity.Role
+type Role = identity.Role
 
-// ValidateInfo validate info
-type ValidateInfo struct {
+// Group is Deprecated: please use services/identity.Group
+type Group = identity.Group
 
-	// name
-	// Required: true
-	// Max Length: 36
-	// Min Length: 4
-	Name string `json:"name"`
+// GroupRole is Deprecated: please use services/identity.GroupRole
+type GroupRole = identity.GroupRole
 
-	// tenants
-	// Required: true
-	Tenants []string `json:"tenants"`
-}
+// GroupMember is Deprecated: please use services/identity.GroupMember
+type GroupMember = identity.GroupMember
 
-// Member Represents a member that belongs to a tenant.
-type Member struct {
-
-	// When the principal was added to the tenant.
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
-
-// Principal principal
-type Principal struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// kind
-	// Required: true
-	Kind string `json:"kind"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// profile
-	Profile interface{} `json:"profile,omitempty"`
-
-	// tenants
-	// Required: true
-	Tenants []string `json:"tenants"`
-}
-
-// Role role
-type Role struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
-
-// Group group
-type Group struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
-
-// GroupRole Represents a role that is assigned to a group
-type GroupRole struct {
-
-	// added at
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// group
-	// Required: true
-	Group string `json:"group"`
-
-	// role
-	// Required: true
-	Role string `json:"role"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
-
-// GroupMember Represents a member that belongs to a group
-type GroupMember struct {
-
-	// added at
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// group
-	// Required: true
-	Group string `json:"group"`
-
-	// principal
-	// Required: true
-	Principal string `json:"principal"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
-
-// RolePermission role permission
-type RolePermission struct {
-
-	// added at
-	// Required: true
-	// Format: date-time
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// permission
-	// Required: true
-	Permission string `json:"permission"`
-
-	// role
-	// Required: true
-	Role string `json:"role"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+// RolePermission is Deprecated: please use services/identity.RolePermission
+type RolePermission = identity.RolePermission

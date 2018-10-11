@@ -5,24 +5,32 @@
 
 package ingest
 
-/*
-var config = &Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"}
+import (
+	"testing"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/stretchr/testify/assert"
+)
+
+var config = &services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"}
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
-	var client, _ = NewClient(config)
-	_, err := client.NewBatchEventsSender(0, 0)
+	client, _ := services.NewClient(config)
+	service := NewService(client)
+	_, err := service.NewBatchEventsSender(0, 0)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
-	var client, _ = NewClient(config)
-	_, err := client.NewBatchEventsSender(0, 1000)
+	client, _ := services.NewClient(config)
+	service := NewService(client)
+	_, err := service.NewBatchEventsSender(0, 1000)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
-	var client, _ = NewClient(config)
-	_, err := client.NewBatchEventsSender(5, 0)
+	client, _ := services.NewClient(config)
+	service := NewService(client)
+	_, err := service.NewBatchEventsSender(5, 0)
 	assert.EqualError(t, err, "interval cannot be 0")
 }
-*/

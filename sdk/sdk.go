@@ -48,12 +48,12 @@ func NewClient(config *services.Config) (*Client, error) {
 	}, nil
 }
 
-// NewBatchEventsSenderWithMaxAllowedError is DEPRECATED, please use client.IngestService.NewBatchEventsSenderWithMaxAllowedError
+// NewBatchEventsSenderWithMaxAllowedError is Deprecated: please use client.IngestService.NewBatchEventsSenderWithMaxAllowedError
 func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, maxErrorsAllowed int) (*ingest.BatchEventsSender, error) {
 	return c.IngestService.NewBatchEventsSenderWithMaxAllowedError(batchSize, interval, maxErrorsAllowed)
 }
 
-// NewBatchEventsSender is DEPRECATED, please use client.IngestService.NewBatchEventsSender
+// NewBatchEventsSender is Deprecated: please use client.IngestService.NewBatchEventsSender
 func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*ingest.BatchEventsSender, error) {
 	return c.IngestService.NewBatchEventsSender(batchSize, interval)
 }

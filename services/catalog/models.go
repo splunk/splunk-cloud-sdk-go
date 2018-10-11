@@ -9,12 +9,12 @@ package catalog
 type DatasetInfoKind string
 
 const (
-	// LOOKUP represents TODO: Description needed
-	LOOKUP DatasetInfoKind = "lookup"
-	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
-	KVCOLLECTION DatasetInfoKind = "kvcollection"
-	// INDEX represents a Splunk events or metrics index
-	INDEX DatasetInfoKind = "index"
+	// Lookup represents TODO: Description needed
+	Lookup DatasetInfoKind = "lookup"
+	// KvCollection represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
+	KvCollection DatasetInfoKind = "kvcollection"
+	// Index represents a Splunk events or metrics index
+	Index DatasetInfoKind = "index"
 )
 
 // DatasetInfo represents the sources of data that can be searched by Splunk
@@ -112,56 +112,56 @@ type Field struct {
 type PrevalenceType string
 
 const (
-	// ALL PrevalenceType
-	ALL PrevalenceType = "ALL"
-	// SOME PrevalenceType
-	SOME PrevalenceType = "SOME"
-	// PREVALANCEUNKNOWN PrevalenceType
-	PREVALANCEUNKNOWN PrevalenceType = "UNKNOWN"
+	// All PrevalenceType
+	All PrevalenceType = "ALL"
+	// Some PrevalenceType
+	Some PrevalenceType = "SOME"
+	// PrevalenceUnknown PrevalenceType
+	PrevalenceUnknown PrevalenceType = "UNKNOWN"
 )
 
 // DataType enumerates the kinds of datatypes used in fields.
 type DataType string
 
 const (
-	// DATE DataType
-	DATE DataType = "DATE"
-	// NUMBER DataType
-	NUMBER DataType = "NUMBER"
-	// OBJECTID DataType
-	OBJECTID DataType = "OBJECT_ID"
-	// STRING DataType
-	STRING DataType = "STRING"
-	// DATATYPEUNKNOWN DataType
-	DATATYPEUNKNOWN DataType = "UNKNOWN"
+	// Date DataType
+	Date DataType = "DATE"
+	// Number DataType
+	Number DataType = "NUMBER"
+	// ObjectID DataType
+	ObjectID DataType = "OBJECT_ID"
+	// String DataType
+	String DataType = "STRING"
+	// DataTypeUnknown DataType
+	DataTypeUnknown DataType = "UNKNOWN"
 )
 
 // FieldType enumerates different kinds of fields.
 type FieldType string
 
 const (
-	// DIMENSION fieldType
-	DIMENSION FieldType = "DIMENSION"
-	// MEASURE fieldType
-	MEASURE FieldType = "MEASURE"
-	// FIELDTYPEUNKNOWN fieldType
-	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
+	// Dimension fieldType
+	Dimension FieldType = "DIMENSION"
+	// Measure fieldType
+	Measure FieldType = "MEASURE"
+	// FieldTypeUnknown fieldType
+	FieldTypeUnknown FieldType = "UNKNOWN"
 )
 
 // ActionKind enumerates the kinds of search time transformation action known by the service.
 type ActionKind string
 
 const (
-	// ALIAS action
-	ALIAS ActionKind = "ALIAS"
-	// AUTOKV action
-	AUTOKV ActionKind = "AUTOKV"
-	// REGEX action
-	REGEX ActionKind = "REGEX"
-	// EVAL action
-	EVAL ActionKind = "EVAL"
-	// LOOKUPACTION action
-	LOOKUPACTION ActionKind = "LOOKUP"
+	// Alias action
+	Alias ActionKind = "ALIAS"
+	// AutoKV action
+	AutoKV ActionKind = "AUTOKV"
+	// Regex action
+	Regex ActionKind = "REGEX"
+	// Eval action
+	Eval ActionKind = "EVAL"
+	// LookupAction action
+	LookupAction ActionKind = "LOOKUP"
 )
 
 // Rule represents a rule for transforming results at search time.
@@ -217,7 +217,7 @@ type Module struct {
 // NewAliasAction creates a new alias kind action
 func NewAliasAction(field string, alias string, owner string) *Action {
 	return &Action{
-		Kind:  "ALIAS",
+		Kind:  Alias,
 		Owner: owner,
 		Alias: alias,
 		Field: field,
@@ -227,7 +227,7 @@ func NewAliasAction(field string, alias string, owner string) *Action {
 // NewAutoKVAction creates a new autokv kind action
 func NewAutoKVAction(mode string, owner string) *Action {
 	return &Action{
-		Kind:  "AUTOKV",
+		Kind:  AutoKV,
 		Owner: owner,
 		Mode:  mode,
 	}
@@ -236,7 +236,7 @@ func NewAutoKVAction(mode string, owner string) *Action {
 // NewEvalAction creates a new eval kind action
 func NewEvalAction(field string, expression string, owner string) *Action {
 	return &Action{
-		Kind:       "EVAL",
+		Kind:       Eval,
 		Owner:      owner,
 		Field:      field,
 		Expression: expression,
@@ -246,7 +246,7 @@ func NewEvalAction(field string, expression string, owner string) *Action {
 // NewLookupAction creates a new lookup kind action
 func NewLookupAction(expression string, owner string) *Action {
 	return &Action{
-		Kind:       "LOOKUP",
+		Kind:       LookupAction,
 		Owner:      owner,
 		Expression: expression,
 	}
@@ -255,7 +255,7 @@ func NewLookupAction(expression string, owner string) *Action {
 // NewRegexAction creates a new regex kind action
 func NewRegexAction(field string, pattern string, limit *int, owner string) *Action {
 	action := Action{
-		Kind:    "REGEX",
+		Kind:    Regex,
 		Owner:   owner,
 		Field:   field,
 		Pattern: pattern,
@@ -289,7 +289,6 @@ func NewUpdateAutoKVAction(mode *string) *Action {
 	}
 
 	return &res
-
 }
 
 // NewUpdateEvalAction updates an existing eval kind action
@@ -305,7 +304,6 @@ func NewUpdateEvalAction(field *string, expression *string) *Action {
 	}
 
 	return &res
-
 }
 
 // NewUpdateLookupAction updates an existing lookup kind action

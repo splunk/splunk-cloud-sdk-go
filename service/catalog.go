@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 )
 
-// CatalogService is DEPRECATED, please use services/catalog.Service
+// CatalogService is Deprecated: please use services/catalog.Service
 type CatalogService = catalog.Service

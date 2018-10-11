@@ -8,14 +8,32 @@ package integration
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+// This is the latest/correct client initialization to use
+func getSdkClient(t *testing.T) *service.Client {
+	client, err := sdk.NewClient(&service.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	return client
+}
+
+// This is the legacy client initialization
+// Deprecated: please use sdk.NewClient()
 func getClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
@@ -28,6 +46,8 @@ func getClient(t *testing.T) *service.Client {
 	return client
 }
 
+// This is the legacy client initialization
+// Deprecated: please use sdk.NewClient()
 func getInvalidTenantClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
@@ -40,6 +60,8 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 	return client
 }
 
+// This is the legacy client initialization
+// Deprecated: please use sdk.NewClient()
 func getInvalidClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
@@ -72,7 +94,8 @@ func (rh *rHandlerErr) HandleResponse(client *services.Client, request *service.
 	return nil, fmt.Errorf(rHandlerErrMsg)
 }
 
-/*
+// This is the legacy client initialization
+// Deprecated: please use sdk.NewClient()
 func TestClientMultipleResponseHandlers(t *testing.T) {
 	var handler1 = &noOpHandler{}
 	var handler2 = &rHandlerErr{}
@@ -93,4 +116,3 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
 }
-*/

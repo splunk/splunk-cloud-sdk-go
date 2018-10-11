@@ -15,8 +15,8 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
-const ingestServicePrefix = "ingest"
-const ingestServiceVersion = "v1beta1"
+const servicePrefix = "ingest"
+const serviceVersion = "v1beta1"
 
 // Service talks to the Splunk Cloud ingest service
 type Service services.BaseService
@@ -28,7 +28,7 @@ func NewService(client *services.Client) *Service {
 
 // PostEvents post single or multiple events to ingest service
 func (s *Service) PostEvents(events []Event) error {
-	url, err := s.Client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "events")
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "events")
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (s *Service) PostEvents(events []Event) error {
 
 // PostMetrics posts single or multiple metric events to ingest service
 func (s *Service) PostMetrics(events []MetricEvent) error {
-	url, err := s.Client.BuildURL(nil, ingestServicePrefix, ingestServiceVersion, "metrics")
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "metrics")
 	if err != nil {
 		return err
 	}

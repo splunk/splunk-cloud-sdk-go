@@ -74,20 +74,20 @@ func (r *badTokenRetriever) GetTokenContext() (*idp.Context, error) {
 }
 
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
-// func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
-// 	tr := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)
-// 	client, err := service.NewClient(&service.Config{
-// 		TokenRetriever: tr,
-// 		Scheme:         testutils.TestURLProtocol,
-// 		Host:           testutils.TestSplunkCloudHost,
-// 		Tenant:         "system",
-// 		Timeout:        testutils.TestTimeOut,
-// 	})
-// 	require.Emptyf(t, err, "Error initializing client: %s", err)
+func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
+	tr := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: tr,
+		Scheme:         testutils.TestURLProtocol,
+		Host:           testutils.TestSplunkCloudHost,
+		Tenant:         "system",
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-// 	_, err = client.IdentityService.Validate()
-// 	assert.Emptyf(t, err, "Error validating using access token generated from refresh token: %s", err)
-// }
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from refresh token: %s", err)
+}
 
 // TestIntegrationRefreshTokenRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with refresh token
 func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
@@ -102,7 +102,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	// _, _ = getClient(t).IdentityService.AddMember(BackendClientID)
+	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
 
 	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
@@ -118,20 +118,20 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 }
 
 // TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
-// func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
-// 	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)
-// 	client, err := service.NewClient(&service.Config{
-// 		TokenRetriever: tr,
-// 		Scheme:         testutils.TestURLProtocol,
-// 		Host:           testutils.TestSplunkCloudHost,
-// 		Tenant:         "system",
-// 		Timeout:        testutils.TestTimeOut,
-// 	})
-// 	require.Emptyf(t, err, "Error initializing client: %s", err)
+func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
+	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: tr,
+		Scheme:         testutils.TestURLProtocol,
+		Host:           testutils.TestSplunkCloudHost,
+		Tenant:         "system",
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-// 	_, err = client.IdentityService.Validate()
-// 	assert.Emptyf(t, err, "Error validating using access token generated from client credentials: %s", err)
-// }
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from client credentials: %s", err)
+}
 
 // TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
@@ -146,7 +146,7 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
 	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	// _, _ = client.IdentityService.AddMember(BackendClientID)
+	_, _ = client.IdentityService.AddMember(BackendClientID)
 
 	timeValue := int64(1529945002)
 	testIngestEvent := model.Event{
@@ -162,20 +162,20 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 }
 
 // TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
-// func TestIntegrationPKCEInitWorkflow(t *testing.T) {
-// 	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpURL, IdpAuthz)
-// 	client, err := service.NewClient(&service.Config{
-// 		TokenRetriever: tr,
-// 		Scheme:         testutils.TestURLProtocol,
-// 		Host:           testutils.TestSplunkCloudHost,
-// 		Tenant:         "system",
-// 		Timeout:        testutils.TestTimeOut,
-// 	})
-// 	require.Emptyf(t, err, "Error initializing client: %s", err)
+func TestIntegrationPKCEInitWorkflow(t *testing.T) {
+	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpURL, IdpAuthz)
+	client, err := service.NewClient(&service.Config{
+		TokenRetriever: tr,
+		Scheme:         testutils.TestURLProtocol,
+		Host:           testutils.TestSplunkCloudHost,
+		Tenant:         "system",
+		Timeout:        testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-// 	_, err = client.IdentityService.Validate()
-// 	assert.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
-// }
+	_, err = client.IdentityService.Validate()
+	assert.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
+}
 
 // TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCERetryWorkflow(t *testing.T) {

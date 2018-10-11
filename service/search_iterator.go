@@ -9,10 +9,10 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
-// SearchIterator is DEPRECATED, please use services/search.SearchIterator
+// SearchIterator is Deprecated: please use services/search.SearchIterator
 type SearchIterator = search.SearchIterator
 
-// NewSearchIterator is DEPRECATED, please use services/search.NewSearchIterator
+// NewSearchIterator is Deprecated: please use services/search.NewSearchIterator
 func NewSearchIterator(batch, offset, max int, fn search.QueryFunc) *SearchIterator {
 	return search.NewSearchIterator(batch, offset, max, fn)
 }

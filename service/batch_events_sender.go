@@ -9,8 +9,8 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
-// UserErrHandler is DEPRECATED, please use services/ingest.UserErrHandler
+// UserErrHandler is Deprecated: please use services/ingest.UserErrHandler
 type UserErrHandler = ingest.UserErrHandler
 
-// BatchEventsSender is DEPRECATED, please use services/ingest.BatchEventsSender
+// BatchEventsSender is Deprecated: please use services/ingest.BatchEventsSender
 type BatchEventsSender = ingest.BatchEventsSender

@@ -7,6 +7,7 @@ package identity
 
 import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const identityServicePrefix = "identity"
@@ -20,15 +21,14 @@ func NewService(client *services.Client) *Service {
 	return &Service{Client: client}
 }
 
-/*
 // CreateTenant creates a tenant
-func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+func (s *Service) CreateTenant(name string) (*Tenant, error) {
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -36,23 +36,23 @@ func (c *IdentityService) CreateTenant(name string) (*model.Tenant, error) {
 		return nil, err
 	}
 
-	var result model.Tenant
+	var result Tenant
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // GetTenants returns the list of tenants in the system
-func (c *IdentityService) GetTenants() ([]string, error) {
+func (s *Service) GetTenants() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -66,17 +66,17 @@ func (c *IdentityService) GetTenants() ([]string, error) {
 }
 
 // GetTenant returns  the tenant details
-func (c *IdentityService) GetTenant(name string) (*model.Tenant, error) {
-	var result model.Tenant
+func (s *Service) GetTenant(name string) (*Tenant, error) {
+	var result Tenant
 
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -90,17 +90,17 @@ func (c *IdentityService) GetTenant(name string) (*model.Tenant, error) {
 }
 
 // Validate validates the access token obtained from authorization header and returns the principal name and tenant memberships
-func (c *IdentityService) Validate() (*model.ValidateInfo, error) {
-	var result model.ValidateInfo
+func (s *Service) Validate() (*ValidateInfo, error) {
+	var result ValidateInfo
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"validate")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -114,14 +114,14 @@ func (c *IdentityService) Validate() (*model.ValidateInfo, error) {
 }
 
 // DeleteTenant deletes a tenant by name
-func (c *IdentityService) DeleteTenant(name string) error {
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+func (s *Service) DeleteTenant(name string) error {
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 	if err != nil {
 		return err
 	}
 
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -129,17 +129,17 @@ func (c *IdentityService) DeleteTenant(name string) error {
 }
 
 // GetPrincipals returns the list of principals known to IAC
-func (c *IdentityService) GetPrincipals() ([]string, error) {
+func (s *Service) GetPrincipals() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"principals")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -153,17 +153,17 @@ func (c *IdentityService) GetPrincipals() ([]string, error) {
 }
 
 // GetPrincipal returns the principal details
-func (c *IdentityService) GetPrincipal(name string) (*model.Principal, error) {
-	var result model.Principal
+func (s *Service) GetPrincipal(name string) (*Principal, error) {
+	var result Principal
 
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"principals", name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -177,14 +177,14 @@ func (c *IdentityService) GetPrincipal(name string) (*model.Principal, error) {
 }
 
 // DeletePrincipal deletes a principal by name
-func (c *IdentityService) DeletePrincipal(name string) error {
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
+func (s *Service) DeletePrincipal(name string) error {
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion,
 		"tenants", name)
 	if err != nil {
 		return err
 	}
 
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -192,17 +192,17 @@ func (c *IdentityService) DeletePrincipal(name string) error {
 }
 
 // GetMembers returns the list of members in the given tenant
-func (c *IdentityService) GetMembers() ([]string, error) {
+func (s *Service) GetMembers() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"members")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -216,17 +216,17 @@ func (c *IdentityService) GetMembers() ([]string, error) {
 }
 
 // GetMember gets a member of the given tenant
-func (c *IdentityService) GetMember(name string) (*model.Member, error) {
-	var result model.Member
+func (s *Service) GetMember(name string) (*Member, error) {
+	var result Member
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"members", name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -240,17 +240,17 @@ func (c *IdentityService) GetMember(name string) (*model.Member, error) {
 }
 
 // GetMemberGroups returns the list of groups a member belongs to within a tenant
-func (c *IdentityService) GetMemberGroups(memberName string) ([]string, error) {
+func (s *Service) GetMemberGroups(memberName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"members", memberName, "groups")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -264,17 +264,17 @@ func (c *IdentityService) GetMemberGroups(memberName string) ([]string, error) {
 }
 
 // GetMemberRoles returns the set of roles thet member posesses within the tenant
-func (c *IdentityService) GetMemberRoles(memberName string) ([]string, error) {
+func (s *Service) GetMemberRoles(memberName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"members", memberName, "roles")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -288,17 +288,17 @@ func (c *IdentityService) GetMemberRoles(memberName string) ([]string, error) {
 }
 
 // GetMemberPermissions returns the set of permissions granted to the member within the tenant
-func (c *IdentityService) GetMemberPermissions(memberName string) ([]string, error) {
+func (s *Service) GetMemberPermissions(memberName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"members", memberName, "permissions")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -312,17 +312,17 @@ func (c *IdentityService) GetMemberPermissions(memberName string) ([]string, err
 }
 
 // GetRoles get all roles for the given tenant
-func (c *IdentityService) GetRoles() ([]string, error) {
+func (s *Service) GetRoles() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"roles")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -336,17 +336,17 @@ func (c *IdentityService) GetRoles() ([]string, error) {
 }
 
 // GetRole get a role for the given tenant
-func (c *IdentityService) GetRole(name string) (*model.Role, error) {
-	var result model.Role
+func (s *Service) GetRole(name string) (*Role, error) {
+	var result Role
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"roles", name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -360,17 +360,17 @@ func (c *IdentityService) GetRole(name string) (*model.Role, error) {
 }
 
 // GetRolePermissions gets permissions for a role in this tenant
-func (c *IdentityService) GetRolePermissions(roleName string) ([]string, error) {
+func (s *Service) GetRolePermissions(roleName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"roles", roleName, "permissions")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -384,17 +384,17 @@ func (c *IdentityService) GetRolePermissions(roleName string) ([]string, error) 
 }
 
 // GetRolePermission gets permissions for a role in this tenant
-func (c *IdentityService) GetRolePermission(roleName string, permissionName string) (*model.RolePermission, error) {
-	var result model.RolePermission
+func (s *Service) GetRolePermission(roleName string, permissionName string) (*RolePermission, error) {
+	var result RolePermission
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"roles", roleName, "permissions", permissionName)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -408,17 +408,17 @@ func (c *IdentityService) GetRolePermission(roleName string, permissionName stri
 }
 
 // GetGroups list groups that exist int he tenant
-func (c *IdentityService) GetGroups() ([]string, error) {
+func (s *Service) GetGroups() ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -432,17 +432,17 @@ func (c *IdentityService) GetGroups() ([]string, error) {
 }
 
 // GetGroup gets a group in the given tenant
-func (c *IdentityService) GetGroup(name string) (*model.Group, error) {
-	var result model.Group
+func (s *Service) GetGroup(name string) (*Group, error) {
+	var result Group
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", name)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -456,17 +456,17 @@ func (c *IdentityService) GetGroup(name string) (*model.Group, error) {
 }
 
 // GetGroupRoles lists the roles attached to the group
-func (c *IdentityService) GetGroupRoles(groupName string) ([]string, error) {
+func (s *Service) GetGroupRoles(groupName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", groupName, "roles")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -480,17 +480,17 @@ func (c *IdentityService) GetGroupRoles(groupName string) ([]string, error) {
 }
 
 // GetGroupRole returns group-role relationship details
-func (c *IdentityService) GetGroupRole(groupName string, roleName string) (*model.GroupRole, error) {
-	var result model.GroupRole
+func (s *Service) GetGroupRole(groupName string, roleName string) (*GroupRole, error) {
+	var result GroupRole
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", groupName, "roles", roleName)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -504,17 +504,17 @@ func (c *IdentityService) GetGroupRole(groupName string, roleName string) (*mode
 }
 
 // GetGroupMembers lists the members attached to the group
-func (c *IdentityService) GetGroupMembers(groupName string) ([]string, error) {
+func (s *Service) GetGroupMembers(groupName string) ([]string, error) {
 	var result []string
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", groupName, "members")
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -528,17 +528,17 @@ func (c *IdentityService) GetGroupMembers(groupName string) ([]string, error) {
 }
 
 // GetGroupMember returns group-member relationship details
-func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*model.GroupMember, error) {
-	var result model.GroupMember
+func (s *Service) GetGroupMember(groupName string, memberName string) (*GroupMember, error) {
+	var result GroupMember
 
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion,
 		"groups", groupName, "members", memberName)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -552,12 +552,12 @@ func (c *IdentityService) GetGroupMember(groupName string, memberName string) (*
 }
 
 // CreatePrincipal creates a new principal
-func (c *IdentityService) CreatePrincipal(name string, kind string) (*model.Principal, error) {
-	url, err := c.client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion, "principals")
+func (s *Service) CreatePrincipal(name string, kind string) (*Principal, error) {
+	url, err := s.Client.BuildURLWithTenant("system", nil, identityServicePrefix, identityServiceVersion, "principals")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name, "kind": kind}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": name, "kind": kind}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -565,18 +565,18 @@ func (c *IdentityService) CreatePrincipal(name string, kind string) (*model.Prin
 		return nil, err
 	}
 
-	var result model.Principal
+	var result Principal
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // AddMember adds a member to the given tenant
-func (c *IdentityService) AddMember(name string) (*model.Member, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members")
+func (s *Service) AddMember(name string) (*Member, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -584,18 +584,18 @@ func (c *IdentityService) AddMember(name string) (*model.Member, error) {
 		return nil, err
 	}
 
-	var result model.Member
+	var result Member
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // CreateRole creates a new authorization role in the given tenant
-func (c *IdentityService) CreateRole(name string) (*model.Role, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles")
+func (s *Service) CreateRole(name string) (*Role, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -603,18 +603,18 @@ func (c *IdentityService) CreateRole(name string) (*model.Role, error) {
 		return nil, err
 	}
 
-	var result model.Role
+	var result Role
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // AddPermissionToRole Adds permission to a role in this tenant
-func (c *IdentityService) AddPermissionToRole(roleName string, permissionName string) (*model.RolePermission, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions")
+func (s *Service) AddPermissionToRole(roleName string, permissionName string) (*RolePermission, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: permissionName})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: permissionName})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -622,19 +622,19 @@ func (c *IdentityService) AddPermissionToRole(roleName string, permissionName st
 		return nil, err
 	}
 
-	var result model.RolePermission
+	var result RolePermission
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // CreateGroup creates a new group in the given tenant
-func (c *IdentityService) CreateGroup(name string) (*model.Group, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups")
+func (s *Service) CreateGroup(name string) (*Group, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups")
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": name}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": name}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -642,18 +642,18 @@ func (c *IdentityService) CreateGroup(name string) (*model.Group, error) {
 		return nil, err
 	}
 
-	var result model.Group
+	var result Group
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // AddRoleToGroup adds a role to the group
-func (c *IdentityService) AddRoleToGroup(groupName string, roleName string) (*model.GroupRole, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "roles")
+func (s *Service) AddRoleToGroup(groupName string, roleName string) (*GroupRole, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "roles")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": roleName}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": roleName}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -661,18 +661,18 @@ func (c *IdentityService) AddRoleToGroup(groupName string, roleName string) (*mo
 		return nil, err
 	}
 
-	var result model.GroupRole
+	var result GroupRole
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // AddMemberToGroup adds a member to the group
-func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) (*model.GroupMember, error) {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "members")
+func (s *Service) AddMemberToGroup(groupName string, memberName string) (*GroupMember, error) {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "members")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: map[string]string{"name": memberName}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"name": memberName}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -680,18 +680,18 @@ func (c *IdentityService) AddMemberToGroup(groupName string, memberName string) 
 		return nil, err
 	}
 
-	var result model.GroupMember
+	var result GroupMember
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // RemoveMember removes a member from the given tenant
-func (c *IdentityService) RemoveMember(name string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members", name)
+func (s *Service) RemoveMember(name string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "members", name)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -703,12 +703,12 @@ func (c *IdentityService) RemoveMember(name string) error {
 }
 
 // DeleteRole deletes a defined role for the given tenant
-func (c *IdentityService) DeleteRole(name string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", name)
+func (s *Service) DeleteRole(name string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", name)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -720,12 +720,12 @@ func (c *IdentityService) DeleteRole(name string) error {
 }
 
 // RemoveRolePermission removes a permission from the role
-func (c *IdentityService) RemoveRolePermission(roleName string, permissionName string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions", permissionName)
+func (s *Service) RemoveRolePermission(roleName string, permissionName string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "roles", roleName, "permissions", permissionName)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -737,12 +737,12 @@ func (c *IdentityService) RemoveRolePermission(roleName string, permissionName s
 }
 
 // DeleteGroup deletes a group in the given tenant
-func (c *IdentityService) DeleteGroup(name string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", name)
+func (s *Service) DeleteGroup(name string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", name)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -754,12 +754,12 @@ func (c *IdentityService) DeleteGroup(name string) error {
 }
 
 // RemoveGroupRole removes the role from the group
-func (c *IdentityService) RemoveGroupRole(groupName string, roleName string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "roles", roleName)
+func (s *Service) RemoveGroupRole(groupName string, roleName string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "roles", roleName)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -771,12 +771,12 @@ func (c *IdentityService) RemoveGroupRole(groupName string, roleName string) err
 }
 
 // RemoveGroupMember removes the member from the group
-func (c *IdentityService) RemoveGroupMember(groupName string, memberName string) error {
-	url, err := c.client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "members", memberName)
+func (s *Service) RemoveGroupMember(groupName string, memberName string) error {
+	url, err := s.Client.BuildURL(nil, identityServicePrefix, identityServiceVersion, "groups", groupName, "members", memberName)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -786,4 +786,3 @@ func (c *IdentityService) RemoveGroupMember(groupName string, memberName string)
 
 	return nil
 }
-*/

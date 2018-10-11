@@ -5,7 +5,6 @@
 
 package integration
 
-/*
 import (
 	"testing"
 
@@ -14,17 +13,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var recordOne = model.Record {
+var recordOne = model.Record{
 	"TEST_KEY_01": "A",
 	"TEST_KEY_02": "B",
 	"TEST_KEY_03": "C",
 }
-var recordTwo = model.Record {
+var recordTwo = model.Record{
 	"TEST_KEY_01": "B",
 	"TEST_KEY_02": "C",
 	"TEST_KEY_03": "A",
 }
-var recordThree = model.Record {
+var recordThree = model.Record{
 	"TEST_KEY_01": "C",
 	"TEST_KEY_02": "A",
 	"TEST_KEY_03": "B",
@@ -611,7 +610,7 @@ func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
 
 // Inserts a record into the specified tenant's collection
 func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
-	record := model.Record {
+	record := model.Record{
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
@@ -651,4 +650,3 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		assert.IsType(t, "string", value)
 	}
 }
-*/

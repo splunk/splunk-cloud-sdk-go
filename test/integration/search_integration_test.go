@@ -5,7 +5,6 @@
 
 package integration
 
-/*
 import (
 	"testing"
 	"time"
@@ -22,7 +21,7 @@ var (
 	PostJobsRequest             = &model.CreateJobRequest{Query: DefaultSearchQuery}
 	PostJobsBadRequest          = &model.CreateJobRequest{Query: "hahdkfdksf=main | dfsdfdshead 5"}
 	PostJobsRequestModule       = &model.CreateJobRequest{Query: DefaultSearchQuery, Module: ""} // Empty string until catalog is updated
-	QueryParams = &model.QueryParameters{Earliest: "-12h@h"}
+	QueryParams                 = &model.QueryParameters{Earliest: "-12h@h"}
 	PostJobsRequestWithEarliest = &model.CreateJobRequest{Query: DefaultSearchQuery, QueryParameters: QueryParams}
 )
 
@@ -149,4 +148,3 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
 	assert.Nil(t, resp)
 }
-*/

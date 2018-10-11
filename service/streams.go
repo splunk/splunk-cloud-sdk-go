@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
 )
 
-// StreamsService is DEPRECATED, please use services/streams.Service
+// StreamsService is Deprecated: please use services/streams.Service
 type StreamsService = streams.Service

@@ -9,5 +9,5 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
 )
 
-// KVStoreService is DEPRECATED, please use services/kvstore.Service
+// KVStoreService is Deprecated: please use services/kvstore.Service
 type KVStoreService = kvstore.Service
