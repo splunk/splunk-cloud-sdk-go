@@ -6,7 +6,16 @@
 package search
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/url"
+	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const searchServicePrefix = "search"
@@ -20,11 +29,22 @@ func NewService(client *services.Client) *Service {
 	return &Service{Client: client}
 }
 
-/*
+// JobsQuery represents Query Parameters that can be provided for ListJobs endpoint
+type JobsQuery struct {
+	//The supported statuses are running, done and failed
+	Status string `key:"status"`
+}
+
 // ListJobs gets the matching list of search jobs
 func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
+	return service.ListJobsByQueryParameters(JobsQuery{})
+}
+
+// ListJobsByQueryParameters gets the matching list of search jobs filtered by query parameters specified
+func (service *SearchService) ListJobsByQueryParameters(query JobsQuery) ([]model.SearchJob, error) {
 	var searchJobs []model.SearchJob
-	jobsURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
+	values := util.ParseURLParams(query)
+	jobsURL, err := service.client.BuildURL(values, searchServicePrefix, searchServiceVersion, "jobs")
 	if err != nil {
 		return searchJobs, err
 	}
@@ -154,4 +174,3 @@ func (service *SearchService) WaitForJob(jobID string, pollInterval time.Duratio
 		}
 	}
 }
-*/

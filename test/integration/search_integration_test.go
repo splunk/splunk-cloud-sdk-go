@@ -13,6 +13,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/splunk/splunk-cloud-sdk-go/service"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -29,6 +30,22 @@ func TestListJobs(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobs()
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+}
+
+func TestListJobsByStatusRunning(t *testing.T) {
+	client := getClient(t)
+	require.NotNil(t, client)
+	response, err := client.SearchService.ListJobsByQueryParameters(service.JobsQuery{"running"})
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+}
+
+func TestListJobsByMultipleStatuses(t *testing.T) {
+	client := getClient(t)
+	require.NotNil(t, client)
+	response, err := client.SearchService.ListJobsByQueryParameters(service.JobsQuery{"running, done"})
 	require.Nil(t, err)
 	assert.NotNil(t, response)
 }
