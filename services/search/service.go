@@ -13,13 +13,12 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
-const searchServicePrefix = "search"
-const searchServiceVersion = "v1beta1"
+const servicePrefix = "search"
+const serviceVersion = "v1beta1"
 
 // Service talks to the Splunk Cloud search service
 type Service services.BaseService
@@ -36,19 +35,19 @@ type JobsQuery struct {
 }
 
 // ListJobs gets the matching list of search jobs
-func (service *SearchService) ListJobs() ([]model.SearchJob, error) {
-	return service.ListJobsByQueryParameters(JobsQuery{})
+func (s *Service) ListJobs() ([]Job, error) {
+	return s.ListJobsByQueryParameters(JobsQuery{})
 }
 
 // ListJobsByQueryParameters gets the matching list of search jobs filtered by query parameters specified
-func (service *SearchService) ListJobsByQueryParameters(query JobsQuery) ([]model.SearchJob, error) {
-	var searchJobs []model.SearchJob
+func (s *Service) ListJobsByQueryParameters(query JobsQuery) ([]Job, error) {
+	var searchJobs []Job
 	values := util.ParseURLParams(query)
-	jobsURL, err := service.client.BuildURL(values, searchServicePrefix, searchServiceVersion, "jobs")
+	jobsURL, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "jobs")
 	if err != nil {
 		return searchJobs, err
 	}
-	response, err := service.client.Get(RequestParams{URL: jobsURL})
+	response, err := s.Client.Get(services.RequestParams{URL: jobsURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -60,13 +59,13 @@ func (service *SearchService) ListJobsByQueryParameters(query JobsQuery) ([]mode
 }
 
 // CreateJob creates a new search job
-func (service *SearchService) CreateJob(job *model.CreateJobRequest) (*model.SearchJob, error) {
-	var postJobResponse model.SearchJob
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs")
+func (s *Service) CreateJob(job *CreateJobRequest) (*Job, error) {
+	var postJobResponse Job
+	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs")
 	if err != nil {
 		return &postJobResponse, err
 	}
-	response, err := service.client.Post(RequestParams{URL: jobURL, Body: job})
+	response, err := s.Client.Post(services.RequestParams{URL: jobURL, Body: job})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -78,10 +77,10 @@ func (service *SearchService) CreateJob(job *model.CreateJobRequest) (*model.Sea
 }
 
 // GetJob retrieves information about the specified search.
-func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error) {
-	var searchJob model.SearchJob
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
-	response, err := service.client.Get(RequestParams{URL: jobURL})
+func (s *Service) GetJob(jobID string) (*Job, error) {
+	var searchJob Job
+	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs", jobID)
+	response, err := s.Client.Get(services.RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -93,16 +92,16 @@ func (service *SearchService) GetJob(jobID string) (*model.SearchJob, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (service *SearchService) UpdateJob(jobID string, jobStatus model.JobStatus) (*model.PatchJobResponse, error) {
-	var patchResponse model.PatchJobResponse
-	jobURL, err := service.client.BuildURL(nil, searchServicePrefix, searchServiceVersion, "jobs", jobID)
+func (s *Service) UpdateJob(jobID string, jobStatus JobStatus) (*PatchJobResponse, error) {
+	var patchResponse PatchJobResponse
+	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
 	requestBody := struct {
-		Status model.JobStatus `json:"status"`
+		Status JobStatus `json:"status"`
 	}{jobStatus}
-	response, err := service.client.Patch(RequestParams{URL: jobURL, Body: requestBody})
+	response, err := s.Client.Patch(services.RequestParams{URL: jobURL, Body: requestBody})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -114,17 +113,17 @@ func (service *SearchService) UpdateJob(jobID string, jobStatus model.JobStatus)
 }
 
 // GetResults Returns the job results with the given `id`. count=0 returns default number of results from search
-func (service *SearchService) GetResults(jobID string, count, offset int) (interface{}, error) {
+func (s *Service) GetResults(jobID string, count, offset int) (interface{}, error) {
 	query := url.Values{}
 	if count > 0 {
 		query.Set("count", fmt.Sprintf("%d", count))
 	}
 	query.Set("offset", fmt.Sprintf("%d", offset))
-	jobURL, err := service.client.BuildURL(query, searchServicePrefix, searchServiceVersion, "jobs", jobID, "results")
+	jobURL, err := s.Client.BuildURL(query, servicePrefix, serviceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
 	}
-	response, err := service.client.Get(RequestParams{URL: jobURL})
+	response, err := s.Client.Get(services.RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -144,14 +143,14 @@ func (service *SearchService) GetResults(jobID string, count, offset int) (inter
 	}
 	// NextLink exists
 	if tempNextLinkModel.NextLink != nil {
-		var emptyResponse model.ResultsNotReadyResponse
+		var emptyResponse ResultsNotReadyResponse
 		// reset the response body to the original state
 		response.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 		err = util.ParseResponse(&emptyResponse, response)
 		return &emptyResponse, err
 	}
 	// NextLink does not exist
-	var results model.SearchResults
+	var results Results
 	// reset the response body to the original state
 	response.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
 	err = util.ParseResponse(&results, response)
@@ -159,15 +158,15 @@ func (service *SearchService) GetResults(jobID string, count, offset int) (inter
 }
 
 // WaitForJob polls the job until it's completed or errors out
-func (service *SearchService) WaitForJob(jobID string, pollInterval time.Duration) (interface{}, error) {
+func (s *Service) WaitForJob(jobID string, pollInterval time.Duration) (interface{}, error) {
 	for {
-		job, err := service.GetJob(jobID)
+		job, err := s.GetJob(jobID)
 		if err != nil {
 			return nil, err
 		}
 		// wait for terminal state
 		switch job.Status {
-		case model.Done, model.Failed:
+		case Done, Failed:
 			return job.Status, nil
 		default:
 			time.Sleep(pollInterval)

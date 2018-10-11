@@ -28,21 +28,21 @@ type QueryParameters struct {
 	Latest string `json:"latest,omitempty"`
 }
 
-// SearchJobStatus describes status of a search job
-type SearchJobStatus string
+// JobStatus describes status of a search job
+type JobStatus string
 
-// Supported SearchJobStatus constants
+// Supported JobStatus constants
 const (
-	Queued     SearchJobStatus = "queued"
-	Parsing    SearchJobStatus = "parsing"
-	Running    SearchJobStatus = "running"
-	Finalizing SearchJobStatus = "finalizing"
-	Failed     SearchJobStatus = "failed"
-	Done       SearchJobStatus = "done"
+	Queued     JobStatus = "queued"
+	Parsing    JobStatus = "parsing"
+	Running    JobStatus = "running"
+	Finalizing JobStatus = "finalizing"
+	Failed     JobStatus = "failed"
+	Done       JobStatus = "done"
 )
 
-// SearchJob represents a fully-constructed search job, including read-only fields.
-type SearchJob struct {
+// Job represents a fully-constructed search job, including read-only fields.
+type Job struct {
 	// The SPL query string.
 	Query string `json:"query"`
 	// Determine whether the Search service extracts all available fields in the data, including fields not mentioned in the SPL for the search job.
@@ -62,22 +62,22 @@ type SearchJob struct {
 	// The ID assigned to the search job.
 	ID string `json:"sid,omitempty"`
 	// The current status of the search job.
-	Status SearchJobStatus `json:"status,omitempty"`
+	Status JobStatus `json:"status,omitempty"`
 	// An estimate of how close the job is to completing.
 	PercentComplete float64 `json:"percentComplete,omitempty"`
 	// The number of results produced so far for the search job.
 	ResultsAvailable int64 `json:"resultsAvailable,omitempty"`
 	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages,omitempty"`
+	Messages JobMessages `json:"messages,omitempty"`
 }
 
-// JobStatus defines actions to be taken on an existing search job.
-type JobStatus string
+// JobAction defines actions to be taken on an existing search job.
+type JobAction string
 
 // Define supported job actions
 const (
-	JobCanceled  JobStatus = "canceled"
-	JobFinalized JobStatus = "finalized"
+	JobCanceled  JobAction = "canceled"
+	JobFinalized JobAction = "finalized"
 )
 
 // JobMessageType defines type of messages from Splunkd
@@ -91,8 +91,8 @@ const (
 	DebugType JobMessageType = "DEBUG"
 )
 
-// SearchJobMessages is used in search results or search job.
-type SearchJobMessages []struct {
+// JobMessages is used in search results or search job.
+type JobMessages []struct {
 	// Enum [INFO, FATAL, ERROR, DEBUG]
 	Type string `json:"type"`
 	// message text
@@ -102,7 +102,7 @@ type SearchJobMessages []struct {
 // PatchJobResponse defines the response from patch endpoint
 type PatchJobResponse struct {
 	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages"`
+	Messages JobMessages `json:"messages"`
 }
 
 // JobResultsParams specifies the query params when fetching job results
@@ -111,10 +111,10 @@ type JobResultsParams struct {
 	Offset int `key:"offset"`
 }
 
-// SearchResults represents results from a search job
-type SearchResults struct {
+// Results represents results from a search job
+type Results struct {
 	// Run time messages from Splunkd.
-	Messages SearchJobMessages        `json:"messages"`
+	Messages JobMessages              `json:"messages"`
 	Results  []map[string]interface{} `json:"results"`
 	Fields   []map[string]interface{} `json:"fields"`
 }

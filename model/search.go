@@ -1,128 +1,71 @@
 package model
 
-// CreateJobRequest defines properties allowed (and possibly required) in fully constructed Searchjobs in POST payloads and responses
-type CreateJobRequest struct {
-	// The SPL query string.
-	Query string `json:"query"`
-	// The module to run the search in.
-	Module string `json:"module"`
-	// Should SplunkD produce all fields (including those not explicitly mentioned in the SPL)
-	ExtractAllFields bool `json:"extractAllFields"`
-	// The number of seconds to run this search before finalizing.
-	MaxTime uint `json:"maxTime,omitempty"`
-	// Used to convert a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
-	TimeFormat string `json:"timeFormat,omitempty"`
-	// The System time at the time the search job was created. Specify a time string to set
-	// the absolute time used for any relative time specifier in the search.
-	// Defaults to the current system time when the Job is created.
-	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
-}
-
-// QueryParameters is the type representing parameters currently earliest & latest on search.
-type QueryParameters struct {
-	// The earliest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	Earliest string `json:"earliest,omitempty"`
-	// The latest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	Latest string `json:"latest,omitempty"`
-}
-
-// SearchJobStatus describes status of a search job
-type SearchJobStatus string
-
-// Supported SearchJobStatus constants
-const (
-	Queued     SearchJobStatus = "queued"
-	Parsing    SearchJobStatus = "parsing"
-	Running    SearchJobStatus = "running"
-	Finalizing SearchJobStatus = "finalizing"
-	Failed     SearchJobStatus = "failed"
-	Done       SearchJobStatus = "done"
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
-// SearchJob represents a fully-constructed search job, including read-only fields.
-type SearchJob struct {
-	// The SPL query string.
-	Query string `json:"query"`
-	// Determine whether the Search service extracts all available fields in the data, including fields not mentioned in the SPL for the search job.
-	// Set to 'false' for better search performance.
-	ExtractAllFields bool `json:"extractAllFields"`
-	// Converts a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
-	TimeFormat string `json:"timeFormat,omitempty"`
-	// The module to run the search in.
-	Module string `json:"module,omitempty"`
-	// The number of seconds to run this search before finalizing.
-	MaxTime uint `json:"maxTime,omitempty"`
-	// The System time at the time the search job was created. Specify a time string to set the absolute time used for any relative time specifier in the search.
-	// Defaults to the current system time when the search job is created.
-	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	QueryParameters QueryParameters `json:"queryParameters,omitempty"`
-	// The ID assigned to the search job.
-	ID string `json:"sid,omitempty"`
-	// The current status of the search job.
-	Status SearchJobStatus `json:"status,omitempty"`
-	// An estimate of how close the job is to completing.
-	PercentComplete float64 `json:"percentComplete,omitempty"`
-	// The number of results produced so far for the search job.
-	ResultsAvailable int64 `json:"resultsAvailable,omitempty"`
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages,omitempty"`
-}
+// CreateJobRequest is Deprecated: please use services/search.CreateJobRequest
+type CreateJobRequest = search.CreateJobRequest
 
-// JobStatus defines actions to be taken on an existing search job.
-type JobStatus string
+// QueryParameters is Deprecated: please use services/search.QueryParameters
+type QueryParameters = search.QueryParameters
 
-// Define supported job actions
+// SearchJobStatus is Deprecated: please use services/search.JobStatus
+type SearchJobStatus = search.JobStatus
+
 const (
-	JobCanceled  JobStatus = "canceled"
-	JobFinalized JobStatus = "finalized"
+	// Queued is Deprecated: please use services/search.Queued
+	Queued SearchJobStatus = search.Queued
+	// Parsing is Deprecated: please use services/search.Parsing
+	Parsing SearchJobStatus = search.Parsing
+	// Running is Deprecated: please use services/search.Running
+	Running SearchJobStatus = search.Running
+	// Finalizing is Deprecated: please use services/search.Finalizing
+	Finalizing SearchJobStatus = search.Finalizing
+	// Failed is Deprecated: please use services/search.Failed
+	Failed SearchJobStatus = search.Failed
+	// Done is Deprecated: please use services/search.Done
+	Done SearchJobStatus = search.Done
 )
 
-// JobMessageType defines type of messages from Splunkd
-type JobMessageType string
+// SearchJob is Deprecated: please use services/search.Job
+type SearchJob = search.Job
 
-// Define supported message type
+// JobStatus is Deprecated: please use services/search.JobAction
+type JobStatus = search.JobAction
+
 const (
-	InfoType  JobMessageType = "INFO"
-	FatalType JobMessageType = "FATAL"
-	ErrorType JobMessageType = "ERROR"
-	DebugType JobMessageType = "DEBUG"
+	// JobCanceled is Deprecated: please use services/search.JobCanceled
+	JobCanceled JobStatus = search.JobCanceled
+	// JobFinalized is Deprecated: please use services/search.JobFinalized
+	JobFinalized JobStatus = search.JobFinalized
 )
 
-// SearchJobMessages is used in search results or search job.
-type SearchJobMessages []struct {
-	// Enum [INFO, FATAL, ERROR, DEBUG]
-	Type string `json:"type"`
-	// message text
-	Text string `json:"text"`
-}
+// JobMessageType is Deprecated: please use services/search.JobMessageType
+type JobMessageType = search.JobMessageType
 
-// PatchJobResponse defines the response from patch endpoint
-type PatchJobResponse struct {
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages"`
-}
+const (
+	// InfoType is Deprecated: please use services/search.InfoType
+	InfoType JobMessageType = search.InfoType
+	// FatalType is Deprecated: please use services/search.FatalType
+	FatalType JobMessageType = search.FatalType
+	// ErrorType is Deprecated: please use services/search.ErrorType
+	ErrorType JobMessageType = search.ErrorType
+	// DebugType is Deprecated: please use services/search.DebugType
+	DebugType JobMessageType = search.DebugType
+)
 
-// JobResultsParams specifies the query params when fetching job results
-type JobResultsParams struct {
-	Count  int `key:"count"`
-	Offset int `key:"offset"`
-}
+// SearchJobMessages is Deprecated: please use services/search.JobMessages
+type SearchJobMessages = search.JobMessages
 
-// SearchResults represents results from a search job
-type SearchResults struct {
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages        `json:"messages"`
-	Results  []map[string]interface{} `json:"results"`
-	Fields   []map[string]interface{} `json:"fields"`
-}
+// PatchJobResponse is Deprecated: please use services/search.PatchJobResponse
+type PatchJobResponse = search.PatchJobResponse
 
-// ResultsNotReadyResponse represents the response when no search results is ready
-type ResultsNotReadyResponse struct {
-	// URL for job results
-	NextLink string `json:"nextLink,omitempty"`
-	// Number of milliseconds to wait before retrying
-	Wait string `json:"wait,omitempty"`
-}
+// JobResultsParams is Deprecated: please use services/search.JobResultsParams
+type JobResultsParams = search.JobResultsParams
+
+// SearchResults is Deprecated: please use services/search.Results
+type SearchResults = search.Results
+
+// ResultsNotReadyResponse is Deprecated: please use services/search.ResultsNotReadyResponse
+type ResultsNotReadyResponse = search.ResultsNotReadyResponse
