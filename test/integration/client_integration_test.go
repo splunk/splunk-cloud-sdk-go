@@ -144,3 +144,32 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
 }
+
+type MyLogger struct{
+
+}
+
+func (ml *MyLogger) Info(text string){
+	fmt.Println(text)
+}
+
+func TestRoundTripper(t *testing.T) {
+	var handler1= &noOpHandler{}
+	var handler2= &rHandlerErr{}
+	var handler3= &noOpHandler{}
+	var handlers= []service.ResponseHandler{handler1, handler2, handler3}
+	client, err := service.NewClient(&service.Config{
+		Token:            testutils.TestAuthenticationToken,
+		Scheme:           testutils.TestURLProtocol,
+		Host:             testutils.TestSplunkCloudHost,
+		Tenant:           testutils.TestInvalidTestTenant,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: handlers,
+		Logger:           &MyLogger{},
+	})
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+
+
+	client.CatalogService.GetModules(nil)
+	
+}

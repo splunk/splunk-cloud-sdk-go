@@ -43,6 +43,8 @@ type Client struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
+	//Logger
+	logger Logger
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -51,6 +53,10 @@ type Request struct {
 	*http.Request
 	NumAttempts     uint
 	NumErrorsByType map[string]uint
+}
+
+type Logger interface {
+	Info(string)
 }
 
 // GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
@@ -83,7 +89,11 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
+
+	//Logger
+	Logger Logger
 }
+
 
 // RequestParams contains all the optional request URL parameters
 type RequestParams struct {
@@ -100,6 +110,23 @@ type RequestParams struct {
 // BaseService provides the interface between client and services
 type BaseService struct {
 	Client *Client
+}
+
+// sdkTransport is to define customized transport RoundTripper
+type sdkTransport struct {
+	transport http.RoundTripper
+	logger Logger
+}
+
+// implement the RoundTripper interface
+func (lt *sdkTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	response, err := lt.transport.RoundTrip(request)
+	lt.logger.Info(fmt.Sprintf("%s %s [%d]", request.Method, request.URL, response.StatusCode))
+	return response, err
+}
+
+func (c *Client) SetLogger(logger Logger) {
+	c.logger=logger
 }
 
 // NewRequest creates a new HTTP Request and set proper header
@@ -291,7 +318,7 @@ func NewClient(config *Config) (*Client, error) {
 		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
-		httpClient:       &http.Client{Timeout: timeout},
+		httpClient:       &http.Client{Timeout: timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger:config.Logger}},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
 	}
