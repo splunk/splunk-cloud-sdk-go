@@ -16,8 +16,17 @@ const serviceVersion = "v1"
 // Service talks to the IAC service
 type Service services.BaseService
 
-// NewService creates a new identity service with client
-func NewService(client *services.Client) *Service {
+// NewClient creates a new identity service client from the given Config
+func NewClient(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	return NewService(baseClient), nil
+}
+
+// NewService creates a new identity service from an existing client
+func NewService(client *services.BaseClient) *Service {
 	return &Service{Client: client}
 }
 

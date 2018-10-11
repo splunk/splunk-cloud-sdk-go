@@ -48,13 +48,12 @@ func TestSDKClientInit(t *testing.T) {
 
 // TestIdentityClientInit tests initializing an identity service-specific Splunk Cloud client and validating the token provided
 func TestIdentityClientInit(t *testing.T) {
-	baseClient, err := services.NewClient(&services.Config{
+	identityClient, err := identity.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
 		Tenant: "system",
 	})
 	require.Emptyf(t, err, "error calling services.NewClient(): %s", err)
-	identityClient := identity.NewService(baseClient)
 	info, err := identityClient.Validate()
 	assert.Emptyf(t, err, "error calling identityClient.Validate(): %s", err)
 	assert.NotNil(t, info)
@@ -106,7 +105,7 @@ type noOpHandler struct {
 	N int
 }
 
-func (rh *noOpHandler) HandleResponse(client *services.Client, request *service.Request, response *http.Response) (*http.Response, error) {
+func (rh *noOpHandler) HandleResponse(client *services.BaseClient, request *service.Request, response *http.Response) (*http.Response, error) {
 	rh.N++
 	return response, nil
 }
@@ -117,7 +116,7 @@ type rHandlerErr struct {
 	N int
 }
 
-func (rh *rHandlerErr) HandleResponse(client *services.Client, request *service.Request, response *http.Response) (*http.Response, error) {
+func (rh *rHandlerErr) HandleResponse(client *services.BaseClient, request *service.Request, response *http.Response) (*http.Response, error) {
 	rh.N++
 	return nil, fmt.Errorf(rHandlerErrMsg)
 }

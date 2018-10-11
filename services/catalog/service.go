@@ -19,8 +19,17 @@ const serviceVersion = "v1beta1"
 // Service talks to the Splunk Cloud catalog service
 type Service services.BaseService
 
-// NewService creates a new catalog service with client
-func NewService(client *services.Client) *Service {
+// NewClient creates a new catalog service client from the given Config
+func NewClient(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	return NewService(baseClient), nil
+}
+
+// NewService creates a new catalog service from an existing client
+func NewService(client *services.BaseClient) *Service {
 	return &Service{Client: client}
 }
 
