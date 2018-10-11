@@ -21,8 +21,8 @@ import (
 )
 
 // This is the latest/correct client initialization to use
-func getSdkClient(t *testing.T) *service.Client {
-	client, err := sdk.NewClient(&service.Config{
+func getSdkClient(t *testing.T) *sdk.Client {
+	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
