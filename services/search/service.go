@@ -92,14 +92,14 @@ func (s *Service) GetJob(jobID string) (*Job, error) {
 }
 
 // UpdateJob updates an existing job with actions and TTL
-func (s *Service) UpdateJob(jobID string, jobStatus JobStatus) (*PatchJobResponse, error) {
+func (s *Service) UpdateJob(jobID string, jobStatus JobAction) (*PatchJobResponse, error) {
 	var patchResponse PatchJobResponse
 	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
 	requestBody := struct {
-		Status JobStatus `json:"status"`
+		Status JobAction `json:"status"`
 	}{jobStatus}
 	response, err := s.Client.Patch(services.RequestParams{URL: jobURL, Body: requestBody})
 	if response != nil {

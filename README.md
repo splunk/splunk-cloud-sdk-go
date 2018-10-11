@@ -41,14 +41,15 @@ Initialize your project using Go modules for dependency support. Your project ca
         "fmt"
         "os"
 
-        "github.com/splunk/splunk-cloud-sdk-go/service"
+        "github.com/splunk/splunk-cloud-sdk-go/sdk"
+        "github.com/splunk/splunk-cloud-sdk-go/services"
     )
 
     func main() {
         checkForTenantToken()
         // Initialize the client
-        client, err := service.NewClient(&service.Config{
-            Token: os.Getenv("BEARER_TOKEN"),
+        client, err := sdk.NewClient(&services.Config{
+            Token:  os.Getenv("BEARER_TOKEN"),
             Tenant: os.Getenv("TENANT"),
         })
         exitOnErr(err)
@@ -78,31 +79,23 @@ Initialize your project using Go modules for dependency support. Your project ca
 4. Clone the Splunk Cloud SDK for Go repository by navigating to your project directory and running the following command:
     
     ```bash
-    $ git clone https://github.com/splunkbeta/splunk-cloud-sdk-go
+    $ git clone https://github.com/splunk/splunk-cloud-sdk-go
     ```
-    
-5. Set up the cloned SDK repository to be a Go module named "splunk-cloud-sdk-go" by running the following commands:
-    
-    ```bash
-    $ cd splunk-cloud-sdk-go
-    $ go mod init github.com/splunk/splunk-cloud-sdk-go
-    $ cd ..
-    ```
-    
-6. Set up your project's Go module dependencies to point to the cloned SDK repository by running the following command:
+
+5. Set up your project's Go module dependencies to point to the cloned SDK repository by running the following command:
     
     ```bash
     $ go mod edit -replace=github.com/splunk/splunk-cloud-sdk-go=./splunk-cloud-sdk-go
     ```
 
-7. Set your tenant and token by running the following commands, but replace the values for `<mytoken>` and `<mytenant>`. You can retrieve these values from https://sdc.splunkbeta.com/settings. 
+6. Set your tenant and token by running the following commands, but replace the values for `<mytoken>` and `<mytenant>`. You can retrieve these values from https://sdc.splunkbeta.com/settings. 
 
     ```bash
     $ export BEARER_TOKEN=<mytoken>
     $ export TENANT=<mytenant>
     ```
 
-8. Build and run your project by running the following commands, where `<myproject>` is the name of your project, and `<me@example.com>` is your user name:
+7. Build and run your project by running the following commands, where `<myproject>` is the name of your project, and `<me@example.com>` is your user name:
     
     ```bash
     $ go build
