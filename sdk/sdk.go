@@ -26,7 +26,7 @@ type Client struct {
 	KVStoreService *kvstore.Service
 	// SearchService talks to the Splunk Cloud search service
 	SearchService *search.Service
-	// StreamsService talks to SSC streams service
+	// StreamsService talks to the Splunk Cloud streams service
 	StreamsService *streams.Service
 }
 
