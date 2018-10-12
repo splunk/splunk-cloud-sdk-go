@@ -21,6 +21,9 @@ const (
 	SNSKind Kind = "sns"
 )
 
+// ActionUpdateFields is Deprecated: use UpdateFields
+type ActionUpdateFields = UpdateFields
+
 // UpdateFields defines the fields that may be updated for an existing Action
 type UpdateFields struct {
 	// Email action fields:
@@ -49,7 +52,7 @@ type UpdateFields struct {
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
-	ActionUpdateFields UpdateFields
+	ActionUpdateFields
 	// Common action fields:
 	// Name of action, all actions have this field
 	Name string `json:"name" binding:"required"`
