@@ -9,10 +9,25 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// TestIdentityClientInit tests initializing an identity service-specific Splunk Cloud client and validating the token provided
+func TestIdentityClientInit(t *testing.T) {
+	identityClient, err := identity.NewService(&services.Config{
+		Token:  testutils.TestAuthenticationToken,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: "system",
+	})
+	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
+	info, err := identityClient.Validate()
+	assert.Emptyf(t, err, "error calling identityClient.Validate(): %s", err)
+	assert.NotNil(t, info)
+}
 
 func TestCRUDGroups(t *testing.T) {
 	client := getClient(t)

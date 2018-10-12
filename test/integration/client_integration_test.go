@@ -14,7 +14,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -43,19 +42,6 @@ func TestSDKClientInit(t *testing.T) {
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
 	info, err := client.IdentityService.Validate()
 	assert.Emptyf(t, err, "error calling client.IdentityService.Validate(): %s", err)
-	assert.NotNil(t, info)
-}
-
-// TestIdentityClientInit tests initializing an identity service-specific Splunk Cloud client and validating the token provided
-func TestIdentityClientInit(t *testing.T) {
-	identityClient, err := identity.NewClient(&services.Config{
-		Token:  testutils.TestAuthenticationToken,
-		Host:   testutils.TestSplunkCloudHost,
-		Tenant: "system",
-	})
-	require.Emptyf(t, err, "error calling services.NewClient(): %s", err)
-	info, err := identityClient.Validate()
-	assert.Emptyf(t, err, "error calling identityClient.Validate(): %s", err)
 	assert.NotNil(t, info)
 }
 
