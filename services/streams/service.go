@@ -3,37 +3,47 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package streams
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"net/url"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // streams service url prefix
-const streamsServicePrefix = "streams"
-const streamsServiceVersion = "v1"
+const servicePrefix = "streams"
+const serviceVersion = "v1"
 
-// StreamsService - A service that deals with pipelines
-type StreamsService service
+// Service - A service that deals with pipelines
+type Service services.BaseService
 
-// CompileDslToUpl creates a Upl Json from DSL
-func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*model.UplPipeline, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "compile-dsl")
+// NewService creates a new streams service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: dsl})
+	return &Service{Client: baseClient}, nil
+}
+
+// CompileDslToUpl creates a Upl Json from DSL
+func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "compile-dsl")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: dsl})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.UplPipeline
+	var result UplPipeline
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -42,21 +52,21 @@ func (c *StreamsService) CompileDslToUpl(dsl *model.DslCompilationRequest) (*mod
 }
 
 // GetPipelines gets all the pipelines
-func (c *StreamsService) GetPipelines(queryParams model.PipelineQueryParams) (*model.PaginatedPipelineResponse, error) {
+func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipelineResponse, error) {
 	queryValues, err := convertToURLQueryValues(queryParams)
 
-	url, err := c.client.BuildURL(queryValues, streamsServicePrefix, streamsServiceVersion, "pipelines")
+	url, err := s.Client.BuildURL(queryValues, servicePrefix, serviceVersion, "pipelines")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.PaginatedPipelineResponse
+	var result PaginatedPipelineResponse
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -65,19 +75,19 @@ func (c *StreamsService) GetPipelines(queryParams model.PipelineQueryParams) (*m
 }
 
 // CreatePipeline creates a new pipeline
-func (c *StreamsService) CreatePipeline(pipeline *model.PipelineRequest) (*model.Pipeline, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines")
+func (s *Service) CreatePipeline(pipeline *PipelineRequest) (*Pipeline, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: pipeline})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: pipeline})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Pipeline
+	var result Pipeline
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -86,19 +96,19 @@ func (c *StreamsService) CreatePipeline(pipeline *model.PipelineRequest) (*model
 }
 
 // ActivatePipeline activates an existing pipeline
-func (c *StreamsService) ActivatePipeline(ids []string) (model.AdditionalProperties, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "activate")
+func (s *Service) ActivatePipeline(ids []string) (AdditionalProperties, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "activate")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.AdditionalProperties
+	var result AdditionalProperties
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -107,19 +117,19 @@ func (c *StreamsService) ActivatePipeline(ids []string) (model.AdditionalPropert
 }
 
 // DeactivatePipeline deactivates an existing pipeline
-func (c *StreamsService) DeactivatePipeline(ids []string) (model.AdditionalProperties, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", "deactivate")
+func (s *Service) DeactivatePipeline(ids []string) (AdditionalProperties, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "deactivate")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: model.ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: ActivatePipelineRequest{IDs: ids, SkipSavePoint: true}})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.AdditionalProperties
+	var result AdditionalProperties
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -128,19 +138,19 @@ func (c *StreamsService) DeactivatePipeline(ids []string) (model.AdditionalPrope
 }
 
 // GetPipeline gets an individual pipeline
-func (c *StreamsService) GetPipeline(id string) (*model.Pipeline, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", id)
+func (s *Service) GetPipeline(id string) (*Pipeline, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Pipeline
+	var result Pipeline
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -149,19 +159,19 @@ func (c *StreamsService) GetPipeline(id string) (*model.Pipeline, error) {
 }
 
 // UpdatePipeline updates an existing pipeline
-func (c *StreamsService) UpdatePipeline(id string, pipeline *model.PipelineRequest) (*model.Pipeline, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", id)
+func (s *Service) UpdatePipeline(id string, pipeline *PipelineRequest) (*Pipeline, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Put(RequestParams{URL: url, Body: pipeline})
+	response, err := s.Client.Put(services.RequestParams{URL: url, Body: pipeline})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Pipeline
+	var result Pipeline
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -170,19 +180,19 @@ func (c *StreamsService) UpdatePipeline(id string, pipeline *model.PipelineReque
 }
 
 // DeletePipeline deletes a pipeline
-func (c *StreamsService) DeletePipeline(id string) (*model.PipelineDeleteResponse, error) {
-	url, err := c.client.BuildURL(nil, streamsServicePrefix, streamsServiceVersion, "pipelines", id)
+func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.PipelineDeleteResponse
+	var result PipelineDeleteResponse
 	err = util.ParseResponse(&result, response)
 	if err != nil {
 		return nil, err
@@ -192,7 +202,7 @@ func (c *StreamsService) DeletePipeline(id string) (*model.PipelineDeleteRespons
 
 // TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
-func convertToURLQueryValues(queryParams model.PipelineQueryParams) (url.Values, error) {
+func convertToURLQueryValues(queryParams PipelineQueryParams) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)
 	if err != nil {
 		return nil, err

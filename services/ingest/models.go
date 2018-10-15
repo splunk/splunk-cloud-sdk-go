@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package model
+package ingest
 
 // Event defines raw event send to event endpoint
 type Event struct {

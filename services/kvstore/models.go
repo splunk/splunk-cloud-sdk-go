@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package model
+package kvstore
 
 // Error error reason
 type Error struct {

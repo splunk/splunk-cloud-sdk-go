@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package model
+package identity
 
 import (
 	"github.com/go-openapi/strfmt"

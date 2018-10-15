@@ -4,10 +4,10 @@
 //
 
 /*
-Package service implements a service client which is used to communicate
-with Search Service endpoints
+Package services implements a service client which is used to communicate
+with Splunk Cloud endpoints, each service being split into its own package.
 */
-package service
+package services
 
 import (
 	"bytes"
@@ -18,11 +18,9 @@ import (
 	"net/http"
 	"net/url"
 	"path"
-	"sync"
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
@@ -31,8 +29,8 @@ const (
 	AuthorizationType = "Bearer"
 )
 
-// A Client is used to communicate with service endpoints
-type Client struct {
+// A BaseClient for communicating with Splunk Cloud
+type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
 	defaultTenant string
 	// host is the Splunk Cloud host or host:port used to form requests, `"api.splunkbeta.com"` by default
@@ -45,20 +43,6 @@ type Client struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	// SearchService talks to the Splunk Cloud search service
-	SearchService *SearchService
-	// CatalogService talks to the Splunk Cloud catalog service
-	CatalogService *CatalogService
-	// IngestService talks to the Splunk Cloud ingest service
-	IngestService *IngestService
-	// IdentityService talks to Splunk Cloud IAC service
-	IdentityService *IdentityService
-	// KVStoreService talks to Splunk Cloud kvstore service
-	KVStoreService *KVStoreService
-	// ActionService talks to Splunk Cloud action service
-	ActionService *ActionService
-	// StreamsService talks to SSC streams service
-	StreamsService *StreamsService
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -113,13 +97,13 @@ type RequestParams struct {
 	Headers map[string]string
 }
 
-// service provides the interface between client and services
-type service struct {
-	client *Client
+// BaseService provides the interface between client and services
+type BaseService struct {
+	Client *BaseClient
 }
 
 // NewRequest creates a new HTTP Request and set proper header
-func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
+func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
 	if err != nil {
 		return nil, err
@@ -139,12 +123,12 @@ func (c *Client) NewRequest(httpMethod, url string, body io.Reader, headers map[
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
-func (c *Client) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -166,7 +150,7 @@ func (c *Client) BuildURLWithTenant(tenant string, queryValues url.Values, urlPa
 }
 
 // Do sends out request and returns HTTP response
-func (c *Client) Do(req *Request) (*http.Response, error) {
+func (c *BaseClient) Do(req *Request) (*http.Response, error) {
 	req.NumAttempts++
 	response, err := c.httpClient.Do(req.Request)
 	if err != nil {
@@ -193,19 +177,19 @@ func (c *Client) Do(req *Request) (*http.Response, error) {
 }
 
 // Get implements HTTP Get call
-func (c *Client) Get(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Get(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodGet
 	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *Client) Post(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Post(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPost
 	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Put(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPut
 	return c.DoRequest(requestParams)
 }
@@ -213,19 +197,19 @@ func (c *Client) Put(requestParams RequestParams) (*http.Response, error) {
 // Delete implements HTTP DELETE call
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *Client) Delete(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Delete(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodDelete
 	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *Client) Patch(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Patch(requestParams RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPatch
 	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, error) {
 	var buffer *bytes.Buffer
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
@@ -248,17 +232,17 @@ func (c *Client) DoRequest(requestParams RequestParams) (*http.Response, error) 
 }
 
 // UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information
-func (c *Client) UpdateTokenContext(ctx *idp.Context) {
+func (c *BaseClient) UpdateTokenContext(ctx *idp.Context) {
 	c.tokenContext = ctx
 }
 
 // SetDefaultTenant updates the tenant used to form most request URIs
-func (c *Client) SetDefaultTenant(tenant string) {
+func (c *BaseClient) SetDefaultTenant(tenant string) {
 	c.defaultTenant = tenant
 }
 
 // GetURL returns the Splunk Cloud scheme/host formed as URL
-func (c *Client) GetURL() *url.URL {
+func (c *BaseClient) GetURL() *url.URL {
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   c.host,
@@ -266,7 +250,7 @@ func (c *Client) GetURL() *url.URL {
 }
 
 // NewClient creates a Client with config values passed in
-func NewClient(config *Config) (*Client, error) {
+func NewClient(config *Config) (*BaseClient, error) {
 	host := "api.splunkbeta.com"
 	if config.Host != "" {
 		host = config.Host
@@ -303,7 +287,7 @@ func NewClient(config *Config) (*Client, error) {
 	}
 
 	// Finally, initialize the Client
-	c := &Client{
+	c := &BaseClient{
 		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
@@ -311,55 +295,6 @@ func NewClient(config *Config) (*Client, error) {
 		tokenContext:     ctx,
 		responseHandlers: handlers,
 	}
-	c.SearchService = &SearchService{client: c}
-	c.CatalogService = &CatalogService{client: c}
-	c.IdentityService = &IdentityService{client: c}
-	c.IngestService = &IngestService{client: c}
-	c.KVStoreService = &KVStoreService{client: c}
-	c.ActionService = &ActionService{client: c}
-	c.StreamsService = &StreamsService{client: c}
+
 	return c, nil
-}
-
-// NewBatchEventsSenderWithMaxAllowedError used to initialize dependencies and set values, the maxErrorsAllowed is the max number of errors allowed before the eventsender quit
-func (c *Client) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, maxErrorsAllowed int) (*BatchEventsSender, error) {
-	// Rather than return a super general error for both it will block on batchSize first
-	if batchSize == 0 {
-		return nil, errors.New("batchSize cannot be 0")
-	}
-	if interval == 0 {
-		return nil, errors.New("interval cannot be 0")
-	}
-
-	if maxErrorsAllowed < 0 {
-		maxErrorsAllowed = 1
-	}
-
-	eventsChan := make(chan model.Event, batchSize)
-	eventsQueue := make([]model.Event, 0, batchSize)
-	quit := make(chan struct{}, 1)
-	ticker := model.NewTicker(time.Duration(interval) * time.Millisecond)
-	var wg sync.WaitGroup
-	errorChan := make(chan struct{}, maxErrorsAllowed)
-
-	batchEventsSender := &BatchEventsSender{
-		BatchSize:      batchSize,
-		EventsChan:     eventsChan,
-		EventsQueue:    eventsQueue,
-		EventService:   c.IngestService,
-		QuitChan:       quit,
-		IngestTicker:   ticker,
-		WaitGroup:      &wg,
-		ErrorChan:      errorChan,
-		IsRunning:      false,
-		chanWaitMillis: 300,
-		callbackFunc:   nil,
-	}
-
-	return batchEventsSender, nil
-}
-
-// NewBatchEventsSender used to initialize dependencies and set values
-func (c *Client) NewBatchEventsSender(batchSize int, interval int64) (*BatchEventsSender, error) {
-	return c.NewBatchEventsSenderWithMaxAllowedError(batchSize, interval, 1)
 }

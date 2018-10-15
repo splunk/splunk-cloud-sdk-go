@@ -3,22 +3,21 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package search
 
 import (
 	"encoding/json"
 	"errors"
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewSearchIterator(t *testing.T) {
-	iterator := NewSearchIterator(10, 0, 100,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{}, nil
+func TestNewIterator(t *testing.T) {
+	iterator := NewIterator(10, 0, 100,
+		func(count, offset int) (*Results, error) {
+			return &Results{}, nil
 		})
 	assert.Equal(t, iterator.batch, 10)
 	assert.Equal(t, iterator.offset, 0)
@@ -29,9 +28,9 @@ func TestNewSearchIterator(t *testing.T) {
 }
 
 func TestClose(t *testing.T) {
-	iterator := NewSearchIterator(10, 0, 100,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{}, nil
+	iterator := NewIterator(10, 0, 100,
+		func(count, offset int) (*Results, error) {
+			return &Results{}, nil
 		})
 	assert.Equal(t, iterator.isClosed, false)
 	iterator.Close()
@@ -41,9 +40,9 @@ func TestClose(t *testing.T) {
 }
 
 func TestErr(t *testing.T) {
-	iterator := NewSearchIterator(10, 0, 100,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{}, nil
+	iterator := NewIterator(10, 0, 100,
+		func(count, offset int) (*Results, error) {
+			return &Results{}, nil
 		})
 	iterator.err = errors.New("test error")
 	assert.Error(t, iterator.Err(), "test error")
@@ -61,18 +60,18 @@ func TestNextSuccess(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	var searchResults *model.SearchResults
+	var searchResults *Results
 
-	iterator := NewSearchIterator(batch, 0, max,
-		func(count, offset int) (*model.SearchResults, error) {
+	iterator := NewIterator(batch, 0, max,
+		func(count, offset int) (*Results, error) {
 			if offset < count {
-				return &model.SearchResults{Results: results[offset:count]}, nil
+				return &Results{Results: results[offset:count]}, nil
 			} else if offset+count < max {
-				return &model.SearchResults{Results: results[offset : offset+count]}, nil
+				return &Results{Results: results[offset : offset+count]}, nil
 				// } else if offset-count <= max {
-				// 	return &model.SearchResults{Results: results[offset-count : max]}, nil
+				// 	return &Results{Results: results[offset-count : max]}, nil
 			} else {
-				return &model.SearchResults{Results: results[offset:max]}, nil
+				return &Results{Results: results[offset:max]}, nil
 			}
 		})
 	defer iterator.Close()
@@ -80,38 +79,38 @@ func TestNextSuccess(t *testing.T) {
 	hasNext = iterator.Next()
 	assert.True(t, hasNext)
 	searchResults, _ = iterator.Value()
-	assert.Equal(t, &model.SearchResults{Results: results[0:2]}, searchResults)
+	assert.Equal(t, &Results{Results: results[0:2]}, searchResults)
 	// second next
 	hasNext = iterator.Next()
 	assert.True(t, hasNext)
 	searchResults, _ = iterator.Value()
-	assert.Equal(t, &model.SearchResults{Results: results[2:4]}, searchResults)
+	assert.Equal(t, &Results{Results: results[2:4]}, searchResults)
 	// third next
 	hasNext = iterator.Next()
 	assert.True(t, hasNext)
 	searchResults, _ = iterator.Value()
-	assert.Equal(t, &model.SearchResults{Results: results[4:5]}, searchResults)
+	assert.Equal(t, &Results{Results: results[4:5]}, searchResults)
 	// fourth next: break out
 	hasNext = iterator.Next()
 	assert.False(t, hasNext)
 	value4, _ := iterator.Value()
-	var emptyResults *model.SearchResults
+	var emptyResults *Results
 	assert.ObjectsAreEqualValues(value4, emptyResults)
 }
 
 func TestNextOnClose(t *testing.T) {
-	iterator := NewSearchIterator(10, 0, 100,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{}, nil
+	iterator := NewIterator(10, 0, 100,
+		func(count, offset int) (*Results, error) {
+			return &Results{}, nil
 		})
 	iterator.Close()
 	assert.False(t, iterator.Next())
 }
 
 func TestNextOnErr(t *testing.T) {
-	iterator := NewSearchIterator(10, 0, 100,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{}, nil
+	iterator := NewIterator(10, 0, 100,
+		func(count, offset int) (*Results, error) {
+			return &Results{}, nil
 		})
 	defer iterator.Close()
 	iterator.err = errors.New("test error")
@@ -127,26 +126,26 @@ func TestNextOnZeroBatch(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	var searchResults *model.SearchResults
+	var searchResults *Results
 
-	iterator := NewSearchIterator(batch, 0, max,
-		func(count, offset int) (*model.SearchResults, error) {
+	iterator := NewIterator(batch, 0, max,
+		func(count, offset int) (*Results, error) {
 			if count == 0 {
-				return &model.SearchResults{Results: results}, nil
+				return &Results{Results: results}, nil
 			}
 			return nil, nil
 		})
 	assert.False(t, iterator.Next())
 	searchResults, _ = iterator.Value()
-	assert.Equal(t, &model.SearchResults{Results: results}, searchResults)
+	assert.Equal(t, &Results{Results: results}, searchResults)
 }
 
 func TestNextOnFnErr(t *testing.T) {
 	batch := 0
 	max := 5
-	var searchResults *model.SearchResults
-	iterator := NewSearchIterator(batch, 0, max,
-		func(count, offset int) (*model.SearchResults, error) {
+	var searchResults *Results
+	iterator := NewIterator(batch, 0, max,
+		func(count, offset int) (*Results, error) {
 			return nil, errors.New("error")
 		})
 	assert.False(t, iterator.Next())
@@ -160,11 +159,11 @@ func TestNextNoMoreResults(t *testing.T) {
 	max := 5
 	var results []map[string]interface{}
 
-	var searchResults *model.SearchResults
+	var searchResults *Results
 
-	iterator := NewSearchIterator(batch, 0, max,
-		func(count, offset int) (*model.SearchResults, error) {
-			return &model.SearchResults{Results: results}, nil
+	iterator := NewIterator(batch, 0, max,
+		func(count, offset int) (*Results, error) {
+			return &Results{Results: results}, nil
 		})
 	assert.False(t, iterator.Next())
 	searchResultsActual, _ := iterator.Value()

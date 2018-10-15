@@ -3,83 +3,91 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package service
+package kvstore
 
 import (
 	"net/url"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
-const kvStoreServicePrefix = "kvstore"
-const kvStoreServiceVersion = "v1beta1"
-const kvStoreCollectionsResource = "collections"
+const servicePrefix = "kvstore"
+const serviceVersion = "v1beta1"
 
-// KVStoreService talks to kvstore service
-type KVStoreService service
+// Service talks to kvstore service
+type Service services.BaseService
 
-// GetServiceHealthStatus returns Service Health Status
-func (c *KVStoreService) GetServiceHealthStatus() (*model.PingOKBody, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "ping")
+// NewService creates a new kvstore service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	return &Service{Client: baseClient}, nil
+}
+
+// GetServiceHealthStatus returns Service Health Status
+func (s *Service) GetServiceHealthStatus() (*PingOKBody, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "ping")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.PingOKBody
+	var result PingOKBody
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // CreateIndex posts a new index to be added to the collection.
-func (c *KVStoreService) CreateIndex(collectionName string, index model.IndexDefinition) (*model.IndexDescription, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
+func (s *Service) CreateIndex(collectionName string, index IndexDefinition) (*IndexDescription, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: index})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: index})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.IndexDescription
+	var result IndexDescription
 	err = util.ParseResponse(&result, response)
 	return &result, err
 }
 
 // ListIndexes retrieves all the indexes in a given collection
-func (c *KVStoreService) ListIndexes(collectionName string) ([]model.IndexDefinition, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes")
+func (s *Service) ListIndexes(collectionName string) ([]IndexDefinition, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result []model.IndexDefinition
+	var result []IndexDefinition
 	err = util.ParseResponse(&result, response)
 	return result, err
 }
 
 // DeleteIndex deletes the specified index in a given collection
-func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "indexes", indexName)
+func (s *Service) DeleteIndex(collectionName string, indexName string) error {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes", indexName)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -90,12 +98,12 @@ func (c *KVStoreService) DeleteIndex(collectionName string, indexName string) er
 }
 
 // InsertRecords posts new records to the collection.
-func (c *KVStoreService) InsertRecords(collectionName string, records []model.Record) ([]string, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "batch")
+func (s *Service) InsertRecords(collectionName string, records []Record) ([]string, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "batch")
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Post(RequestParams{URL: url, Body: records})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: records})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -108,10 +116,10 @@ func (c *KVStoreService) InsertRecords(collectionName string, records []model.Re
 }
 
 // QueryRecords queries records present in a given collection.
-func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) ([]model.Record, error) {
-	url, err := c.client.BuildURL(values,
-		kvStoreServicePrefix,
-		kvStoreServiceVersion,
+func (s *Service) QueryRecords(collectionName string, values url.Values) ([]Record, error) {
+	url, err := s.Client.BuildURL(values,
+		servicePrefix,
+		serviceVersion,
 		"collections",
 		collectionName,
 		"query")
@@ -120,7 +128,7 @@ func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) 
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -128,37 +136,37 @@ func (c *KVStoreService) QueryRecords(collectionName string, values url.Values) 
 		return nil, err
 	}
 
-	var result []model.Record
+	var result []Record
 	err = util.ParseResponse(&result, response)
 
 	return result, err
 }
 
 // GetRecordByKey queries a particular record present in a given collection based on the key value provided by the user.
-func (c *KVStoreService) GetRecordByKey(collectionName string, keyValue string) (model.Record, error) {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "records", keyValue)
+func (s *Service) GetRecordByKey(collectionName string, keyValue string) (Record, error) {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return nil, err
 	}
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
 	if err != nil {
 		return nil, err
 	}
-	var result model.Record
+	var result Record
 	err = util.ParseResponse(&result, response)
 	return result, err
 }
 
 // DeleteRecords deletes records present in a given collection based on the provided query.
-func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values) error {
-	url, err := c.client.BuildURL(values, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "query")
+func (s *Service) DeleteRecords(collectionName string, values url.Values) error {
+	url, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "collections", collectionName, "query")
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -169,12 +177,12 @@ func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values)
 }
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
-func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
+func (s *Service) DeleteRecordByKey(collectionName string, keyValue string) error {
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, keyValue)
 	if err != nil {
 		return err
 	}
-	response, err := c.client.Delete(RequestParams{URL: url})
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -185,11 +193,11 @@ func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue strin
 }
 
 // ListRecords - List the records created for the tenant's specified collection TODO: include count, offset and orderBy
-func (c *KVStoreService) ListRecords(collectionName string, filters map[string][]string) ([]map[string]interface{}, error) {
-	url, err := c.client.BuildURL(
+func (s *Service) ListRecords(collectionName string, filters map[string][]string) ([]map[string]interface{}, error) {
+	url, err := s.Client.BuildURL(
 		filters,
-		kvStoreServicePrefix,
-		kvStoreServiceVersion,
+		servicePrefix,
+		serviceVersion,
 		"collections",
 		collectionName)
 
@@ -197,7 +205,7 @@ func (c *KVStoreService) ListRecords(collectionName string, filters map[string][
 		return nil, err
 	}
 
-	response, err := c.client.Get(RequestParams{URL: url})
+	response, err := s.Client.Get(services.RequestParams{URL: url})
 
 	if response != nil {
 		defer response.Body.Close()
@@ -214,11 +222,11 @@ func (c *KVStoreService) ListRecords(collectionName string, filters map[string][
 }
 
 // InsertRecord - Create a new record in the tenant's specified collection
-func (c *KVStoreService) InsertRecord(collectionName string, record model.Record) (map[string]string, error) {
-	url, err := c.client.BuildURL(
+func (s *Service) InsertRecord(collectionName string, record Record) (map[string]string, error) {
+	url, err := s.Client.BuildURL(
 		nil,
-		kvStoreServicePrefix,
-		kvStoreServiceVersion,
+		servicePrefix,
+		serviceVersion,
 		"collections",
 		collectionName)
 
@@ -226,7 +234,7 @@ func (c *KVStoreService) InsertRecord(collectionName string, record model.Record
 		return nil, err
 	}
 
-	response, err := c.client.Post(RequestParams{URL: url, Body: record})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: record})
 
 	if response != nil {
 		defer response.Body.Close()

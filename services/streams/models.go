@@ -1,4 +1,4 @@
-package model
+package streams
 
 // ActivatePipelineRequest contains the request to activate the pipeline
 type ActivatePipelineRequest struct {

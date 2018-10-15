@@ -3,26 +3,26 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package model
+package action
 
 import (
 	"net/url"
 )
 
-// ActionKind reflects the kinds of actions supported by the Action service
-type ActionKind string
+// Kind reflects the kinds of actions supported by the Action service
+type Kind string
 
 const (
 	// EmailKind for email actions
-	EmailKind ActionKind = "email"
+	EmailKind Kind = "email"
 	// WebhookKind for webhook actions
-	WebhookKind ActionKind = "webhook"
+	WebhookKind Kind = "webhook"
 	// SNSKind for SNS actions
-	SNSKind ActionKind = "sns"
+	SNSKind Kind = "sns"
 )
 
-// ActionUpdateFields defines the fields that may be updated for an existing Action
-type ActionUpdateFields struct {
+// UpdateFields defines the fields that may be updated for an existing Action
+type UpdateFields struct {
 	// Email action fields:
 	// HTMLPart to send via Email action
 	HTMLPart string `json:"htmlPart,omitempty"`
@@ -49,12 +49,12 @@ type ActionUpdateFields struct {
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
+	UpdateFields
 	// Common action fields:
 	// Name of action, all actions have this field
 	Name string `json:"name" binding:"required"`
 	// Kind of action (email, webhook, or sns), all actions have this field
-	Kind ActionKind `json:"kind" binding:"required"`
-	ActionUpdateFields
+	Kind Kind `json:"kind" binding:"required"`
 }
 
 // NewEmailAction creates a new email kind action
@@ -62,7 +62,7 @@ func NewEmailAction(name string, htmlPart string, subjectPart string, textPart s
 	return &Action{
 		Name: name,
 		Kind: EmailKind,
-		ActionUpdateFields: ActionUpdateFields{
+		UpdateFields: UpdateFields{
 			HTMLPart:     htmlPart,
 			SubjectPart:  subjectPart,
 			TextPart:     textPart,
@@ -77,7 +77,7 @@ func NewSNSAction(name string, topic string, message string) *Action {
 	return &Action{
 		Name: name,
 		Kind: SNSKind,
-		ActionUpdateFields: ActionUpdateFields{
+		UpdateFields: UpdateFields{
 			Topic:   topic,
 			Message: message,
 		},
@@ -89,69 +89,69 @@ func NewWebhookAction(name string, webhookURL string, message string) *Action {
 	return &Action{
 		Name: name,
 		Kind: WebhookKind,
-		ActionUpdateFields: ActionUpdateFields{
+		UpdateFields: UpdateFields{
 			WebhookURL: webhookURL,
 			Message:    message,
 		},
 	}
 }
 
-// ActionStatusState reflects the status of the action
-type ActionStatusState string
+// StatusState reflects the status of the action
+type StatusState string
 
 const (
 	// StatusQueued status
-	StatusQueued ActionStatusState = "QUEUED"
+	StatusQueued StatusState = "QUEUED"
 	// StatusRunning status
-	StatusRunning ActionStatusState = "RUNNING"
+	StatusRunning StatusState = "RUNNING"
 	// StatusDone status
-	StatusDone ActionStatusState = "DONE"
+	StatusDone StatusState = "DONE"
 	// StatusFailed status
-	StatusFailed ActionStatusState = "FAILED"
+	StatusFailed StatusState = "FAILED"
 )
 
-// ActionStatus defines the state information
-type ActionStatus struct {
-	State    ActionStatusState `json:"state"`
-	StatusID string            `json:"statusId"`
-	Message  string            `json:"message,omitempty"`
+// Status defines the state information
+type Status struct {
+	State    StatusState `json:"state"`
+	StatusID string      `json:"statusId"`
+	Message  string      `json:"message,omitempty"`
 }
 
-// ActionTriggerResponse for returning status url and parsed statusID (if possible)
-type ActionTriggerResponse struct {
+// TriggerResponse for returning status url and parsed statusID (if possible)
+type TriggerResponse struct {
 	StatusID  *string
 	StatusURL *url.URL
 }
 
-// ActionError defines format for returned errors
-type ActionError struct {
+// Error defines format for returned errors
+type Error struct {
 	Code     string      `json:"code"`
 	Message  string      `json:"message"`
 	Details  interface{} `json:"details,omitempty"`
 	MoreInfo string      `json:"moreInfo,omitempty"`
 }
 
-// ActionNotificationKind defines the types of notifications
-type ActionNotificationKind string
+// NotificationKind defines the types of notifications
+type NotificationKind string
 
 const (
 	//SplunkEventKind for splunk event payloads
-	SplunkEventKind ActionNotificationKind = "splunkEvent"
+	SplunkEventKind NotificationKind = "splunkEvent"
 	//RawJSONPayloadKind for raw json payloads
-	RawJSONPayloadKind ActionNotificationKind = "rawJSON"
+	RawJSONPayloadKind NotificationKind = "rawJSON"
 )
 
-// ActionNotification defines the action notification format
-type ActionNotification struct {
-	Kind    ActionNotificationKind `json:"kind" binding:"required"`
-	Tenant  string                 `json:"tenant" binding:"required"`
-	Payload ActionPayload          `json:"payload" binding:"required"`
+// Notification defines the action notification format
+type Notification struct {
+	Kind    NotificationKind `json:"kind" binding:"required"`
+	Tenant  string           `json:"tenant" binding:"required"`
+	Payload Payload          `json:"payload" binding:"required"`
 }
 
-// ActionPayload is what is sent when the action is triggered
-type ActionPayload interface{}
+// Payload is what is sent when the action is triggered
+type Payload interface{}
 
-// RawJSONPayload specifies the format for RawJSONPayloadKind ActionNotifications
+// RawJSONPayload specifies the format for RawJSONPayloadKind Notifications
 type RawJSONPayload map[string]interface{}
 
 // SplunkEventPayload is the payload for a notification coming from Splunk
