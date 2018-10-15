@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -144,31 +145,92 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
 }
 
-type MyLogger struct{
-
+type MyLogger struct {
 }
 
-func (ml *MyLogger) Info(text string){
-	fmt.Println(text)
+var LoggerOutput []string
+
+func (ml *MyLogger) Info(text string) {
+	LoggerOutput = append(LoggerOutput, text)
 }
 
-func TestRoundTripper(t *testing.T) {
-	var handler1= &noOpHandler{}
-	var handler2= &rHandlerErr{}
-	var handler3= &noOpHandler{}
-	var handlers= []service.ResponseHandler{handler1, handler2, handler3}
+func TestRoundTripperWithSdkClient(t *testing.T) {
 	client, err := service.NewClient(&service.Config{
-		Token:            testutils.TestAuthenticationToken,
-		Scheme:           testutils.TestURLProtocol,
-		Host:             testutils.TestSplunkCloudHost,
-		Tenant:           testutils.TestInvalidTestTenant,
-		Timeout:          testutils.TestTimeOut,
-		ResponseHandlers: handlers,
-		Logger:           &MyLogger{},
+		Token:   testutils.TestAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+		Logger:  &MyLogger{},
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
+	//turn on logger
+	client.TurnOnLog()
 
+	fmt.Println("logger on ")
+	webhookActionName := "testaction"
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	action, err := client.ActionService.CreateAction(*webhookAction)
+	require.Nil(t, err)
+	require.NotEmpty(t, action)
+	fmt.Println(LoggerOutput)
+	assert.Equal(t, 2, len(LoggerOutput))
+
+	// verify log the request method and url
+	assert.Contains(t, LoggerOutput[0], "POST")
+	assert.Contains(t, LoggerOutput[0], "Host:")
+	// verify log the request body
+	assert.Contains(t, LoggerOutput[0], "\"name\":\"testaction\"")
+	assert.Contains(t, LoggerOutput[0], "\"webhookUrl\":\"https://webhook.site/test\"")
+
+	// verify log the response
+	assert.Contains(t, LoggerOutput[1], "\"name\":\"testaction\"")
+	assert.Contains(t, LoggerOutput[1], "\"webhookUrl\":\"https://webhook.site/test\"")
+
+	//turn off logger
+	fmt.Println("logger off ")
+	LoggerOutput = LoggerOutput[:0]
+	client.TurnOffLog()
 	client.CatalogService.GetModules(nil)
-	
+	fmt.Println(LoggerOutput)
+	//assert.Equal(t, "", LoggerOutput )
+	assert.Equal(t, 0, len(LoggerOutput))
+
+	//turn on logger again
+	fmt.Println("logger on ")
+	client.TurnOnLog()
+	client.CatalogService.GetModules(nil)
+	fmt.Println("====================================")
+	fmt.Println(LoggerOutput)
+	//assert.Equal(t, "GET https://api.playground.splunkbeta.com/INVALID_TEST_TENANT_ID/catalog/v1beta1/modules [404]", LoggerOutput)
+	assert.Equal(t, 2, len(LoggerOutput))
+
+	client.TurnOffLog()
+	client.ActionService.DeleteAction(webhookAction.Name)
+}
+
+func TestRoundTripperWithIdentityClient(t *testing.T) {
+	identityClient, _ := identity.NewClient(&services.Config{
+		Token:  testutils.TestAuthenticationToken,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: "system",
+		Logger: &MyLogger{},
+	})
+
+	//turn on logger
+	identityClient.TurnOnLog()
+	identityClient.Validate()
+	assert.Contains(t, LoggerOutput[0], "GET /system/identity/v1/validate HTTP/1.1")
+
+	//turn off logger
+	LoggerOutput = LoggerOutput[:0]
+	identityClient.TurnOffLog()
+	identityClient.Validate()
+	assert.Equal(t, 0, len(LoggerOutput))
+
+	//turn on logger again
+	identityClient.TurnOnLog()
+	identityClient.Validate()
+	assert.Contains(t, LoggerOutput[0],"GET /system/identity/v1/validate HTTP/1.1")
 }

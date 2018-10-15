@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"path"
 	"time"
@@ -45,6 +46,10 @@ type BaseClient struct {
 	responseHandlers []ResponseHandler
 	//Logger
 	logger Logger
+	//isLogOn
+	isLogOn bool
+	//timeout
+	timeout time.Duration
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -89,7 +94,6 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
-
 	//Logger
 	Logger Logger
 }
@@ -116,12 +120,31 @@ type BaseService struct {
 type sdkTransport struct {
 	transport http.RoundTripper
 	logger Logger
+	isLogOn bool
 }
 
 // implement the RoundTripper interface
 func (lt *sdkTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	if lt.isLogOn {
+		requestDump, err := httputil.DumpRequest(request, true)
+		if err != nil {
+			return nil, err
+		}
+
+		lt.logger.Info(fmt.Sprintf("===Request:\n%s\n",string(requestDump)))
+	}
+
 	response, err := lt.transport.RoundTrip(request)
-	lt.logger.Info(fmt.Sprintf("%s %s [%d]", request.Method, request.URL, response.StatusCode))
+
+	if lt.isLogOn {
+		responseDump, err:=httputil.DumpResponse(response,true)
+		if err != nil {
+			return response, err
+		}
+
+		lt.logger.Info(fmt.Sprintf("===Response:\n%s\n",string(responseDump)))
+	}
+
 	return response, err
 }
 
@@ -273,6 +296,16 @@ func (c *BaseClient) GetURL() *url.URL {
 	}
 }
 
+func (c *BaseClient) TurnOnLog() {
+	c.isLogOn = true
+    c.httpClient=&http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn:true}}
+}
+
+func (c *BaseClient) TurnOffLog() {
+	c.isLogOn = true
+	c.httpClient=&http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn:false}}
+}
+
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
 	host := "api.splunkbeta.com"
@@ -315,10 +348,13 @@ func NewClient(config *Config) (*BaseClient, error) {
 		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
-		httpClient:       &http.Client{Timeout: timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger:config.Logger}},
+		httpClient:       &http.Client{Timeout: timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: config.Logger, isLogOn: false}},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
+		timeout:          timeout,
+		logger:           config.Logger,
 	}
+
 
 	return c, nil
 }
