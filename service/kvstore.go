@@ -170,7 +170,7 @@ func (c *KVStoreService) DeleteRecords(collectionName string, values url.Values)
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
 func (c *KVStoreService) DeleteRecordByKey(collectionName string, keyValue string) error {
-	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, keyValue)
+	url, err := c.client.BuildURL(nil, kvStoreServicePrefix, kvStoreServiceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return err
 	}
