@@ -199,6 +199,7 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 
 	//turn on logger again
 	fmt.Println("logger on ")
+	LoggerOutput = LoggerOutput[:0]
 	client.TurnOnLog()
 	client.CatalogService.GetModules(nil)
 	fmt.Println("====================================")
@@ -219,8 +220,10 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 	})
 
 	//turn on logger
+	LoggerOutput = LoggerOutput[:0]
 	identityClient.TurnOnLog()
 	identityClient.Validate()
+	assert.Equal(t, 2, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[0], "GET /system/identity/v1/validate HTTP/1.1")
 
 	//turn off logger
@@ -230,7 +233,9 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 	assert.Equal(t, 0, len(LoggerOutput))
 
 	//turn on logger again
+	LoggerOutput = LoggerOutput[:0]
 	identityClient.TurnOnLog()
 	identityClient.Validate()
+	assert.Equal(t, 2, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[0],"GET /system/identity/v1/validate HTTP/1.1")
 }

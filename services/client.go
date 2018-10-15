@@ -98,7 +98,6 @@ type Config struct {
 	Logger Logger
 }
 
-
 // RequestParams contains all the optional request URL parameters
 type RequestParams struct {
 	// Method is the HTTP method of the request
@@ -119,8 +118,8 @@ type BaseService struct {
 // sdkTransport is to define customized transport RoundTripper
 type sdkTransport struct {
 	transport http.RoundTripper
-	logger Logger
-	isLogOn bool
+	logger    Logger
+	isLogOn   bool
 }
 
 // implement the RoundTripper interface
@@ -131,23 +130,22 @@ func (lt *sdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
 			return nil, err
 		}
 
-		lt.logger.Info(fmt.Sprintf("===Request:\n%s\n",string(requestDump)))
+		lt.logger.Info(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
 	}
 
 	response, err := lt.transport.RoundTrip(request)
 
 	if lt.isLogOn {
-		responseDump, err:=httputil.DumpResponse(response,true)
+		responseDump, err := httputil.DumpResponse(response, true)
 		if err != nil {
 			return response, err
 		}
 
-		lt.logger.Info(fmt.Sprintf("===Response:\n%s\n",string(responseDump)))
+		lt.logger.Info(fmt.Sprintf("===Response:\n%s\n", string(responseDump)))
 	}
 
 	return response, err
 }
-
 
 // NewRequest creates a new HTTP Request and set proper header
 func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
@@ -298,12 +296,12 @@ func (c *BaseClient) GetURL() *url.URL {
 
 func (c *BaseClient) TurnOnLog() {
 	c.isLogOn = true
-    c.httpClient=&http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn:true}}
+	c.httpClient = &http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn: true}}
 }
 
 func (c *BaseClient) TurnOffLog() {
 	c.isLogOn = true
-	c.httpClient=&http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn:false}}
+	c.httpClient = &http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn: false}}
 }
 
 // NewClient creates a Client with config values passed in
@@ -354,7 +352,6 @@ func NewClient(config *Config) (*BaseClient, error) {
 		timeout:          timeout,
 		logger:           config.Logger,
 	}
-
 
 	return c, nil
 }
