@@ -27,7 +27,7 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 
 // Test GetServiceHealthStatus against nova playground
 func TestIntegrationGetServiceHealth(t *testing.T) {
-	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
+	response, err := getSdkClient(t).KVStoreService.GetServiceHealthStatus()
 	require.Empty(t, err)
 	assert.NotEmpty(t, response)
 	assert.Equal(t, model.PingOKBodyStatusHealthy, response.Status)
@@ -53,7 +53,7 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
-	indexDescription, err := getClient(t).KVStoreService.CreateIndex(kvCollection,
+	indexDescription, err := getSdkClient(t).KVStoreService.CreateIndex(kvCollection,
 		model.IndexDefinition{
 			Name:   testIndex,
 			Fields: fields[:]})
@@ -62,18 +62,18 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 	assert.Equal(t, indexDescription.Collection, kvCollection)
 
 	// Validate if the index was created
-	indexes, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
+	indexes, err := getSdkClient(t).KVStoreService.ListIndexes(kvCollection)
 	require.Nil(t, err)
 	require.NotNil(t, indexes)
 	assert.Equal(t, len(indexes), 1)
 	assert.Equal(t, indexes[0].Name, testIndex)
 
 	// Delete the test index
-	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	err = getSdkClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	assert.Nil(t, err)
 
 	// Validate if the index was deleted
-	result, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
+	result, err := getSdkClient(t).KVStoreService.ListIndexes(kvCollection)
 	assert.Nil(t, err)
 	require.NotNil(t, result)
 	assert.Equal(t, len(result), 0)
@@ -92,7 +92,7 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	// Create Index
-	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
+	_, err := getSdkClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
 	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
 	assert.Equal(t, "", err.(*util.HTTPError).Message)
@@ -113,7 +113,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
-	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
+	_, err := getSdkClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
 	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
@@ -133,7 +133,7 @@ func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	// DeleteIndex
-	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	err := getSdkClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
 	require.Nil(t, err)
 }
 
@@ -171,7 +171,7 @@ func TestGetRecordByKey(t *testing.T) {
 
 	keys := CreateTestRecord(t)
 
-	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
+	result, err := getSdkClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 
 	require.Nil(t, err)
 	require.NotNil(t, result)
@@ -196,14 +196,14 @@ func TestDeleteRecordByKey(t *testing.T) {
 	keys := CreateTestRecord(t)
 
 	// Delete record by key
-	err := getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
+	err := getSdkClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
 	require.Nil(t, err)
 
 	// Validate that the record has been deleted
-	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
+	retrievedRecordsByKey, err := getSdkClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 	assert.Nil(t, retrievedRecordsByKey)
 
-	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
+	retrievedRecords, err := getSdkClient(t).KVStoreService.QueryRecords(kvCollection, nil)
 	require.NotNil(t, retrievedRecords)
 	assert.Equal(t, len(retrievedRecords), 2)
 }
@@ -229,11 +229,11 @@ func TestDeleteRecord(t *testing.T) {
 	outerQuery.Add("query", integrationTestQuery)
 	outerQuery.Encode()
 
-	err := getClient(t).KVStoreService.DeleteRecords(kvCollection, outerQuery)
+	err := getSdkClient(t).KVStoreService.DeleteRecords(kvCollection, outerQuery)
 	require.Nil(t, err)
 
 	// Validate that the record has been deleted
-	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
+	retrievedRecords, err := getSdkClient(t).KVStoreService.QueryRecords(kvCollection, nil)
 	require.NotNil(t, retrievedRecords)
 	assert.Equal(t, len(retrievedRecords), 2)
 }
@@ -263,7 +263,7 @@ func CreateTestRecord(t *testing.T) []string {
 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
 	require.Nil(t, err)
 
-	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
+	keys, err := getSdkClient(t).KVStoreService.InsertRecords(kvCollection, res)
 	require.Nil(t, err)
 	require.NotNil(t, keys)
 	assert.Equal(t, len(keys), 3)

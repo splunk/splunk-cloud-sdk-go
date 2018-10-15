@@ -87,6 +87,18 @@ func getInvalidClient(t *testing.T) *service.Client {
 	return client
 }
 
+func getInvalidSDKClient(t *testing.T) *sdk.Client {
+	client, err := sdk.NewClient(&services.Config{
+		Token:   testutils.ExpiredAuthenticationToken,
+		Scheme:  testutils.TestURLProtocol,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
+	})
+	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	return client
+}
+
 type noOpHandler struct {
 	N int
 }

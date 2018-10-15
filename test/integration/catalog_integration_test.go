@@ -35,7 +35,7 @@ var externalKind = "kvcollection"
 var externalName = "test_externalName"
 
 func cleanupDatasets(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	result, err := client.CatalogService.GetDatasets()
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 
@@ -49,7 +49,7 @@ func cleanupDatasets(t *testing.T) {
 }
 
 func cleanupRules(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	result, err := client.CatalogService.GetRules()
 	assert.Emptyf(t, err, "Error retrieving the rules: %s", err)
 
@@ -71,7 +71,7 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 		ExternalName: externalName,
 	}
 
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createLookupDatasetInfo)
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createLookupDatasetInfo)
 	require.NotNil(t, datasetInfo)
 	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
@@ -100,7 +100,7 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 		Capabilities: capabilities,
 	}
 
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createKVCollectionDatasetInfo)
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createKVCollectionDatasetInfo)
 	require.NotNil(t, datasetInfo)
 	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
@@ -122,7 +122,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create dataset
 	createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -145,7 +145,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.CreateDataset(
 		&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
@@ -158,7 +158,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	_, err := client.CatalogService.CreateDataset(
 		&model.DatasetCreationPayload{Name: "integ_dataset_4000", Kind: model.LOOKUP})
@@ -171,7 +171,7 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
-	datasets, err := getClient(t).CatalogService.GetDatasets()
+	datasets, err := getSdkClient(t).CatalogService.GetDatasets()
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -180,7 +180,7 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.GetDatasets()
 	require.NotNil(t, err)
@@ -193,7 +193,7 @@ func TestListDatasetsNil(t *testing.T) {
 	defer cleanupDatasets(t)
 	createLookupDatasets(t)
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(nil)
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(nil)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -206,7 +206,7 @@ func TestListDatasetsFilter(t *testing.T) {
 	values := make(url.Values)
 	values.Set("filter", "kind==\"kvcollection\"")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -219,7 +219,7 @@ func TestListDatasetsCount(t *testing.T) {
 	values := make(url.Values)
 	values.Set("count", "1")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -232,7 +232,7 @@ func TestListDatasetsOrderBy(t *testing.T) {
 	values := make(url.Values)
 	values.Set("orderby", "id Descending")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -247,7 +247,7 @@ func TestListDatasetsAll(t *testing.T) {
 	values.Set("count", "1")
 	values.Set("orderby", "id Descending")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
 	assert.NotNil(t, len(datasets))
 }
@@ -256,7 +256,7 @@ func TestListDatasetsAll(t *testing.T) {
 func TestIntegrationGetDatasetByID(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -271,8 +271,8 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create dataset
 	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
@@ -288,7 +288,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	_, err := client.CatalogService.GetDataset("123")
 	require.NotNil(t, err)
@@ -299,7 +299,7 @@ func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
 func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create dataset
 	updateVersion := 6
@@ -323,7 +323,7 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	_, err := client.CatalogService.UpdateDataset(&model.UpdateDatasetInfoFields{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName, Version: 2}, "123")
 	require.NotNil(t, err)
@@ -334,7 +334,7 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 func TestIntegrationDeleteDataset(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -352,7 +352,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -368,7 +368,7 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	err := client.CatalogService.DeleteDataset("123")
 	assert.NotNil(t, err)
@@ -381,7 +381,7 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 func TestIntegrationCreateRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -400,7 +400,7 @@ func TestIntegrationCreateRules(t *testing.T) {
 func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -417,7 +417,7 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
@@ -430,7 +430,7 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetAllRules(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create rule
 	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -447,7 +447,7 @@ func TestIntegrationGetAllRules(t *testing.T) {
 func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.GetRules()
 	require.NotNil(t, err)
@@ -459,7 +459,7 @@ func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetRuleByID(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -475,8 +475,8 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -493,7 +493,7 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	_, err := client.CatalogService.GetRule("123")
 	require.NotNil(t, err)
@@ -504,7 +504,7 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 func TestIntegrationDeleteRule(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -519,8 +519,8 @@ func TestIntegrationDeleteRule(t *testing.T) {
 func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -537,7 +537,7 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 	defer cleanupRules(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	err := client.CatalogService.DeleteRule("123")
 	require.NotNil(t, err)
@@ -548,7 +548,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 func TestIntegrationGetDatasetFields(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -572,7 +572,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
@@ -600,7 +600,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 func TestIntegrationPostDatasetField(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -621,7 +621,7 @@ func TestIntegrationPostDatasetField(t *testing.T) {
 func TestIntegrationPatchDatasetField(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -651,7 +651,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 func TestIntegrationDeleteDatasetField(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -676,7 +676,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -694,7 +694,7 @@ func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -715,7 +715,7 @@ func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -733,8 +733,8 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -754,8 +754,8 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -781,7 +781,7 @@ func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Ceate dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -807,8 +807,8 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+	client := getSdkClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -827,7 +827,7 @@ func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -843,7 +843,7 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 func TestGetFields(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(
@@ -886,7 +886,7 @@ func TestGetFields(t *testing.T) {
 func TestRuleActions(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
 	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{
@@ -1018,7 +1018,7 @@ func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *tes
 
 // Test list modules
 func TestIntegrationGetModules(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// test using NO filter
 	modules, err := client.CatalogService.GetModules(nil)
@@ -1038,7 +1038,7 @@ func TestIntegrationGetModules(t *testing.T) {
 func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getSdkClient()
 
 	// testing CreateRule for 400 Invalid Rule error
 	ruleName := "goSdkTestrRule1"

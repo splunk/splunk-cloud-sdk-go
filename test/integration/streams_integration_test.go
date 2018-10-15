@@ -20,16 +20,16 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	pipelineName2 := fmt.Sprintf("testPipeline02%d", timeSec)
 
 	// Create two test pipelines
-	pipeline1, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
+	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline1.ID, pipeline1.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline1)
 	assert.Equal(t, model.Created, pipeline1.Status)
 	assert.Equal(t, pipelineName1, pipeline1.Name)
 	assert.Equal(t, testPipelineDescription, pipeline1.Description)
 
-	pipeline2, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName2, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
+	pipeline2, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName2, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline2.ID, pipeline2.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline2)
 	assert.Equal(t, model.Created, pipeline2.Status)
@@ -37,20 +37,20 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline2.Description)
 
 	// Get all the pipelines
-	result, err := getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
+	result, err := getSdkClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 
 	// Activate the second test pipeline
 	ids := []string{pipeline2.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline2.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	// Get and verify the pipelines based on filters
-	result, err = getClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{Name: &pipelineName2})
+	result, err = getSdkClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{Name: &pipelineName2})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 	assert.Equal(t, int64(1), result.Total)
@@ -63,8 +63,8 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
 	// Create a test pipeline and verify that the pipeline was created
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -112,8 +112,8 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -122,14 +122,14 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 	// Activate the test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	// Get the pipeline and verify that the pipeline status is 'activated'
-	pipeline, err = getClient(t).StreamsService.GetPipeline(pipeline.ID)
+	pipeline, err = getSdkClient(t).StreamsService.GetPipeline(pipeline.ID)
 	require.Empty(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Activated, pipeline.Status)
@@ -143,8 +143,8 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -153,20 +153,20 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	// Activate the newly created test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 
 	// Deactivate the active test pipeline
-	deactivatePipelineResponse, err := getClient(t).StreamsService.DeactivatePipeline(ids)
+	deactivatePipelineResponse, err := getSdkClient(t).StreamsService.DeactivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, deactivatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, deactivatePipelineResponse["deactivated"])
 	assert.Empty(t, deactivatePipelineResponse["notDeactivated"])
 
 	// Get the test pipeline and verify that the status is 'deactivated'
-	pipeline, err = getClient(t).StreamsService.GetPipeline(pipeline.ID)
+	pipeline, err = getSdkClient(t).StreamsService.GetPipeline(pipeline.ID)
 	require.Empty(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, "Deactivated", pipeline.StatusMessage)
@@ -179,8 +179,8 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipeline.Name)
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -188,7 +188,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 	// Update the newly created test pipeline
 	updatedPipelineName := fmt.Sprintf("updated%v", pipelineName)
-	updatedPipeline, err := getClient(t).StreamsService.UpdatePipeline(pipeline.ID, CreatePipelineRequest(t, updatedPipelineName, "Updated Integration Test Pipeline"))
+	updatedPipeline, err := getSdkClient(t).StreamsService.UpdatePipeline(pipeline.ID, CreatePipelineRequest(t, updatedPipelineName, "Updated Integration Test Pipeline"))
 	require.Nil(t, err)
 	require.NotEmpty(t, updatedPipeline)
 	assert.Equal(t, updatedPipelineName, updatedPipeline.Name)
@@ -201,7 +201,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -209,12 +209,12 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
 	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
+	deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(pipeline.ID)
 	require.Nil(t, err)
 	require.NotNil(t, deletePipelineResponse)
 
 	// Get the test pipeline and verify that its deleted
-	pipeline, err = getClient(t).StreamsService.GetPipeline(pipeline.ID)
+	pipeline, err = getSdkClient(t).StreamsService.GetPipeline(pipeline.ID)
 	require.NotEmpty(t, err)
 	require.Empty(t, pipeline)
 }
@@ -223,7 +223,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 func CreatePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	// Create a test UPL JSON from a test DSL
 	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(unauthenticated-read-kafka(kafka-brokers, input-topic, {}));unauthenticated-write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
-	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
+	result, err := getSdkClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 

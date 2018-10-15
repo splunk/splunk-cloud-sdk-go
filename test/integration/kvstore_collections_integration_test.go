@@ -31,7 +31,7 @@ var recordThree = model.Record{
 
 func createRecord(t *testing.T, collection string, record model.Record) (map[string]string, error) {
 	// Insert a new record into the kvstore
-	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
+	createRecordResponseMap, err := getSdkClient(t).KVStoreService.InsertRecord(
 		collection,
 		record)
 
@@ -68,7 +68,7 @@ func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -89,7 +89,7 @@ func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertReco
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -100,7 +100,7 @@ func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertReco
 	assert.Len(t, createRecordResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -130,7 +130,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -145,7 +145,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -176,7 +176,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -191,7 +191,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
 	// Make sure that records return match
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -224,7 +224,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -237,7 +237,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 }
@@ -260,7 +260,7 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -273,7 +273,7 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -294,7 +294,7 @@ func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -308,7 +308,7 @@ func TestKVStoreCollectionsListRecordsCountNegativeOutOfBoundsInput(t *testing.T
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 }
@@ -328,7 +328,7 @@ func TestKVStoreCollectionsListRecordsCountPositiveOutOfBoundsInput(t *testing.T
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -342,7 +342,7 @@ func TestKVStoreCollectionsListRecordsCountPositiveOutOfBoundsInput(t *testing.T
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
@@ -366,7 +366,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -379,7 +379,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -400,7 +400,7 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -413,7 +413,7 @@ func TestKVStoreCollectionsListRecordsOffsetNegativeOutOfBoundsInput(t *testing.
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.Nil(t, recordsAfterInsert)
 	assert.NotNil(t, err)
 }
@@ -433,7 +433,7 @@ func TestKVStoreCollectionsListRecordsOffsetPositiveOutOfBoundsInput(t *testing.
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -446,7 +446,7 @@ func TestKVStoreCollectionsListRecordsOffsetPositiveOutOfBoundsInput(t *testing.
 	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
 	assert.Len(t, createRecordTwoResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 0)
@@ -470,7 +470,7 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
@@ -488,7 +488,7 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	createRecordThreeResponseMap, err := createRecord(t, kvCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 3)
@@ -513,7 +513,7 @@ func TestKVStoreCollectionsListRecordsOrderByNonExisentInput(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -530,7 +530,7 @@ func TestKVStoreCollectionsListRecordsOrderByNonExisentInput(t *testing.T) {
 	createRecordThreeResponseMap, err := createRecord(t, kvCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 3)
@@ -562,7 +562,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
@@ -579,7 +579,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 	createRecordThreeResponseMap, err := createRecord(t, kvCollection, recordThree)
 	assert.Len(t, createRecordThreeResponseMap, 1)
 
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
+	recordsAfterInsert, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, filters)
 	assert.NotNil(t, recordsAfterInsert)
 	assert.Nil(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
@@ -600,7 +600,7 @@ func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
 	}
 
 	// Insert a new record into the kvstore
-	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
+	createRecordResponseMap, err := getSdkClient(t).KVStoreService.InsertRecord(
 		kvCollection,
 		record)
 
@@ -626,14 +626,14 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 	// Remove the dataset used for testing
 	defer cleanupDatasets(t)
 
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
+	records, err := getSdkClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
 	assert.Nil(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert a new record into the kvstore
-	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
+	createRecordResponseMap, err := getSdkClient(t).KVStoreService.InsertRecord(
 		kvCollection,
 		record)
 

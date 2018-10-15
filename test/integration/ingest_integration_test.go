@@ -15,7 +15,7 @@ import (
 )
 
 func TestIntegrationCreateEventsSuccess(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	attributes := make(map[string]interface{})
 	attributes["testKey"] = "testValue"
 	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
@@ -39,7 +39,7 @@ func TestIntegrationCreateEventsSuccess(t *testing.T) {
 }
 
 func TestIntegrationIngestEventFail(t *testing.T) {
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 	testIngestEvent := []model.Event{{Body: "failed test"}}
 	err := invalidClient.IngestService.PostEvents(testIngestEvent)
 
@@ -50,7 +50,7 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 
 
 func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	event1 := model.Event{Body: "some event"}
 	event2 := model.Event{}
 	err := client.IngestService.PostEvents([]model.Event{event1, event2})
@@ -74,7 +74,7 @@ func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 
 
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	err := client.IngestService.PostEvents(nil)
 
 	assert.NotEmpty(t, err)
@@ -85,7 +85,7 @@ func TestIntegrationIngestEventBadRequest(t *testing.T) {
 }
 
 func TestIntegrationCreateMetrics(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	metrics := []model.Metric{
 		{Name: "CPU", Value: 5.89,

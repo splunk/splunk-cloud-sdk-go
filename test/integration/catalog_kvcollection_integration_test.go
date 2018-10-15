@@ -32,7 +32,7 @@ func TestDatastoreKVStoreCreationWithMissingCollectionName(t *testing.T) {
 		Capabilities: datasetCapabilities,
 	}
 
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createDatasetInfo)
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createDatasetInfo)
 
 	assert.Nil(t, datasetInfo)
 	assert.NotNil(t, err)

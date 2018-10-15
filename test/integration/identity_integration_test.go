@@ -30,7 +30,7 @@ func TestIdentityClientInit(t *testing.T) {
 }
 
 func TestCRUDGroups(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	res, err := client.IdentityService.GetGroups()
 	require.Nil(t, err)
@@ -124,7 +124,7 @@ func TestCRUDGroups(t *testing.T) {
 }
 
 func TestCRUDRoles(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	res, err := client.IdentityService.GetRoles()
 	require.Nil(t, err)
@@ -185,7 +185,7 @@ func TestCRUDRoles(t *testing.T) {
 }
 
 func TestCRUDMembers(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	res, err := client.IdentityService.GetMembers()
 	require.Nil(t, err)
@@ -278,7 +278,7 @@ func TestCRUDMembers(t *testing.T) {
 }
 
 func TestValidate(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	res, err := client.IdentityService.Validate()
 	require.Nil(t, err)
