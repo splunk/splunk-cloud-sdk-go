@@ -19,18 +19,13 @@ const serviceVersion = "v1beta1"
 // Service talks to the Splunk Cloud catalog service
 type Service services.BaseService
 
-// NewClient creates a new catalog service client from the given Config
-func NewClient(config *services.Config) (*Service, error) {
+// NewService creates a new catalog service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
 	baseClient, err := services.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
-	return NewService(baseClient), nil
-}
-
-// NewService creates a new catalog service from an existing client
-func NewService(client *services.BaseClient) *Service {
-	return &Service{Client: client}
+	return &Service{Client: baseClient}, nil
 }
 
 // ListDatasets returns all Datasets with optional filter, count, or orderby params

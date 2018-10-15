@@ -10,27 +10,26 @@ import (
 
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-var config = &services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"}
-
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
-	client, _ := services.NewClient(config)
-	service := NewService(client)
-	_, err := service.NewBatchEventsSender(0, 0)
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+	_, err = client.NewBatchEventsSender(0, 0)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
-	client, _ := services.NewClient(config)
-	service := NewService(client)
-	_, err := service.NewBatchEventsSender(0, 1000)
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+	_, err = client.NewBatchEventsSender(0, 1000)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
-	client, _ := services.NewClient(config)
-	service := NewService(client)
-	_, err := service.NewBatchEventsSender(5, 0)
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+	_, err = client.NewBatchEventsSender(5, 0)
 	assert.EqualError(t, err, "interval cannot be 0")
 }

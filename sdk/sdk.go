@@ -38,13 +38,13 @@ func NewClient(config *services.Config) (*Client, error) {
 	}
 	return &Client{
 		BaseClient:      client,
-		ActionService:   action.NewService(client),
-		CatalogService:  catalog.NewService(client),
-		IdentityService: identity.NewService(client),
-		IngestService:   ingest.NewService(client),
-		KVStoreService:  kvstore.NewService(client),
-		SearchService:   search.NewService(client),
-		StreamsService:  streams.NewService(client),
+		ActionService:   &action.Service{Client: client},
+		CatalogService:  &catalog.Service{Client: client},
+		IdentityService: &identity.Service{Client: client},
+		IngestService:   &ingest.Service{Client: client},
+		KVStoreService:  &kvstore.Service{Client: client},
+		SearchService:   &search.Service{Client: client},
+		StreamsService:  &streams.Service{Client: client},
 	}, nil
 }
 

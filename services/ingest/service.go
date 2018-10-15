@@ -21,18 +21,13 @@ const serviceVersion = "v1beta1"
 // Service talks to the Splunk Cloud ingest service
 type Service services.BaseService
 
-// NewClient creates a new ingest service client from the given Config
-func NewClient(config *services.Config) (*Service, error) {
+// NewService creates a new ingest service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
 	baseClient, err := services.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
-	return NewService(baseClient), nil
-}
-
-// NewService creates a new ingest service from an existing client
-func NewService(client *services.BaseClient) *Service {
-	return &Service{Client: client}
+	return &Service{Client: baseClient}, nil
 }
 
 // PostEvents post single or multiple events to ingest service

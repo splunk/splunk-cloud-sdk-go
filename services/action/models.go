@@ -49,12 +49,12 @@ type UpdateFields struct {
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
+	UpdateFields
 	// Common action fields:
 	// Name of action, all actions have this field
 	Name string `json:"name" binding:"required"`
 	// Kind of action (email, webhook, or sns), all actions have this field
 	Kind Kind `json:"kind" binding:"required"`
-	UpdateFields
 }
 
 // NewEmailAction creates a new email kind action

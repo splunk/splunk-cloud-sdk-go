@@ -20,18 +20,13 @@ const serviceVersion = "v1beta1"
 // pre-defined templates to turn those notifications into meaningful actions
 type Service services.BaseService
 
-// NewClient creates a new action service client from the given Config
-func NewClient(config *services.Config) (*Service, error) {
+// NewService creates a new action service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
 	baseClient, err := services.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
-	return NewService(baseClient), nil
-}
-
-// NewService creates a new action service from an existing client
-func NewService(client *services.BaseClient) *Service {
-	return &Service{Client: client}
+	return &Service{Client: baseClient}, nil
 }
 
 // GetActions get all actions
