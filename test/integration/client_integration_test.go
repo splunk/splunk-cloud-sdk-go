@@ -20,16 +20,29 @@ import (
 )
 
 // This is the latest/correct client initialization to use
-func getSdkClient(t *testing.T) *service.Client {
-	client, err := sdk.NewClient(&service.Config{
+func getSdkClient(t *testing.T) *sdk.Client {
+	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
-	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
+	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
 	return client
+}
+
+// TestSDKClientTokenInit tests initializing a service-wide Splunk Cloud client and validating the token provided
+func TestSDKClientInit(t *testing.T) {
+	client, err := sdk.NewClient(&services.Config{
+		Token:  testutils.TestAuthenticationToken,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: "system",
+	})
+	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
+	info, err := client.IdentityService.Validate()
+	assert.Emptyf(t, err, "error calling client.IdentityService.Validate(): %s", err)
+	assert.NotNil(t, info)
 }
 
 // This is the legacy client initialization
@@ -78,7 +91,7 @@ type noOpHandler struct {
 	N int
 }
 
-func (rh *noOpHandler) HandleResponse(client *services.Client, request *service.Request, response *http.Response) (*http.Response, error) {
+func (rh *noOpHandler) HandleResponse(client *services.BaseClient, request *service.Request, response *http.Response) (*http.Response, error) {
 	rh.N++
 	return response, nil
 }
@@ -89,7 +102,7 @@ type rHandlerErr struct {
 	N int
 }
 
-func (rh *rHandlerErr) HandleResponse(client *services.Client, request *service.Request, response *http.Response) (*http.Response, error) {
+func (rh *rHandlerErr) HandleResponse(client *services.BaseClient, request *service.Request, response *http.Response) (*http.Response, error) {
 	rh.N++
 	return nil, fmt.Errorf(rHandlerErrMsg)
 }

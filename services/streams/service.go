@@ -21,9 +21,13 @@ const serviceVersion = "v1"
 // Service - A service that deals with pipelines
 type Service services.BaseService
 
-// NewService creates a new streams service with client
-func NewService(client *services.Client) *Service {
-	return &Service{Client: client}
+// NewService creates a new streams service client from the given Config
+func NewService(config *services.Config) (*Service, error) {
+	baseClient, err := services.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	return &Service{Client: baseClient}, nil
 }
 
 // CompileDslToUpl creates a Upl Json from DSL

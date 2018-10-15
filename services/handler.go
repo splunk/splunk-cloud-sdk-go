@@ -19,7 +19,7 @@ const (
 // ResponseHandler defines the interface for implementing custom response
 // handling logic
 type ResponseHandler interface {
-	HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error)
+	HandleResponse(client *BaseClient, request *Request, response *http.Response) (*http.Response, error)
 }
 
 // AuthnResponseHandler handles logic for updating the client access token in response to 401 errors
@@ -28,7 +28,7 @@ type AuthnResponseHandler struct {
 }
 
 // HandleResponse will retry a request once after re-authenticating if a 401 response code is encountered
-func (rh AuthnResponseHandler) HandleResponse(client *Client, request *Request, response *http.Response) (*http.Response, error) {
+func (rh AuthnResponseHandler) HandleResponse(client *BaseClient, request *Request, response *http.Response) (*http.Response, error) {
 	if response.StatusCode != 401 || rh.TokenRetriever == nil || request.GetNumErrorsByResponseCode(401) > DefaultMaxAuthnAttempts {
 		return response, nil
 	}

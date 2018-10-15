@@ -13,7 +13,7 @@ import (
 
 // Client to communicate with Splunk Cloud service endpoints
 type Client struct {
-	*services.Client
+	*services.BaseClient
 	// ActionService talks to Splunk Cloud action service
 	ActionService *action.Service
 	// CatalogService talks to the Splunk Cloud catalog service
@@ -26,7 +26,7 @@ type Client struct {
 	KVStoreService *kvstore.Service
 	// SearchService talks to the Splunk Cloud search service
 	SearchService *search.Service
-	// StreamsService talks to SSC streams service
+	// StreamsService talks to the Splunk Cloud streams service
 	StreamsService *streams.Service
 }
 
@@ -37,14 +37,14 @@ func NewClient(config *services.Config) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		Client:          client,
-		ActionService:   action.NewService(client),
-		CatalogService:  catalog.NewService(client),
-		IdentityService: identity.NewService(client),
-		IngestService:   ingest.NewService(client),
-		KVStoreService:  kvstore.NewService(client),
-		SearchService:   search.NewService(client),
-		StreamsService:  streams.NewService(client),
+		BaseClient:      client,
+		ActionService:   &action.Service{Client: client},
+		CatalogService:  &catalog.Service{Client: client},
+		IdentityService: &identity.Service{Client: client},
+		IngestService:   &ingest.Service{Client: client},
+		KVStoreService:  &kvstore.Service{Client: client},
+		SearchService:   &search.Service{Client: client},
+		StreamsService:  &streams.Service{Client: client},
 	}, nil
 }
 
