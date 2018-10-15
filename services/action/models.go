@@ -21,9 +21,6 @@ const (
 	SNSKind Kind = "sns"
 )
 
-// ActionUpdateFields is Deprecated: use UpdateFields
-type ActionUpdateFields = UpdateFields
-
 // UpdateFields defines the fields that may be updated for an existing Action
 type UpdateFields struct {
 	// Email action fields:
@@ -52,7 +49,7 @@ type UpdateFields struct {
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
-	ActionUpdateFields
+	UpdateFields
 	// Common action fields:
 	// Name of action, all actions have this field
 	Name string `json:"name" binding:"required"`
@@ -65,7 +62,7 @@ func NewEmailAction(name string, htmlPart string, subjectPart string, textPart s
 	return &Action{
 		Name: name,
 		Kind: EmailKind,
-		ActionUpdateFields: UpdateFields{
+		UpdateFields: UpdateFields{
 			HTMLPart:     htmlPart,
 			SubjectPart:  subjectPart,
 			TextPart:     textPart,
@@ -80,7 +77,7 @@ func NewSNSAction(name string, topic string, message string) *Action {
 	return &Action{
 		Name: name,
 		Kind: SNSKind,
-		ActionUpdateFields: UpdateFields{
+		UpdateFields: UpdateFields{
 			Topic:   topic,
 			Message: message,
 		},
@@ -92,7 +89,7 @@ func NewWebhookAction(name string, webhookURL string, message string) *Action {
 	return &Action{
 		Name: name,
 		Kind: WebhookKind,
-		ActionUpdateFields: UpdateFields{
+		UpdateFields: UpdateFields{
 			WebhookURL: webhookURL,
 			Message:    message,
 		},
