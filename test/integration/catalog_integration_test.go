@@ -145,7 +145,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.CreateDataset(
 		&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
@@ -180,7 +180,7 @@ func TestIntegrationGetAllDatasets(t *testing.T) {
 func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.GetDatasets()
 	require.NotNil(t, err)
@@ -352,7 +352,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 	defer cleanupDatasets(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -417,7 +417,7 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
@@ -447,7 +447,7 @@ func TestIntegrationGetAllRules(t *testing.T) {
 func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	_, err := invalidClient.CatalogService.GetRules()
 	require.NotNil(t, err)
@@ -476,7 +476,7 @@ func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
 	client := getSdkClient(t)
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -520,7 +520,7 @@ func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
 	defer cleanupRules(t)
 
 	client := getSdkClient(t)
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// create rule
 	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
@@ -734,7 +734,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	client := getSdkClient(t)
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
@@ -808,7 +808,7 @@ func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	client := getSdkClient(t)
-	invalidClient := getInvalidClient(t)
+	invalidClient := getInvalidSDKClient(t)
 
 	// Create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)

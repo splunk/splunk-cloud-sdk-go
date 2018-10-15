@@ -23,7 +23,7 @@ var wg sync.WaitGroup
 
 // Should flush when ticker ticked and queue is not full
 func TestBatchEventsSenderTickerFlush(t *testing.T) {
-	var client = getClient(t)
+	var client = getSdkClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test1"}
 	event2 := model.Event{Host: "host2", Body: "test2"}
@@ -48,7 +48,7 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 
 // Should flush when queue is full and ticker has not ticked
 func TestBatchEventsSenderQueueFlush(t *testing.T) {
-	var client = getClient(t)
+	var client = getSdkClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test1"}
 	event2 := model.Event{Host: "host2", Body: "test2"}
@@ -72,7 +72,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 
 // Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
-	var client = getClient(t)
+	var client = getSdkClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test1"}
 	done := make(chan bool, 1)
@@ -107,7 +107,7 @@ func addEventBatch(collector *service.BatchEventsSender, event1 model.Event) {
 
 // Should return error message when 5 errors are encountered during sending batches
 func TestBatchEventsSenderErrorHandle(t *testing.T) {
-	var client = getInvalidClient(t)
+	var client = getInvalidSDKClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test10"}
 
@@ -141,7 +141,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 }
 
 func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
-	var client = getInvalidClient(t)
+	var client = getInvalidSDKClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test10"}
 
@@ -176,7 +176,7 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 }
 
 func TestBatchEventsSenderRestart(t *testing.T) {
-	var client = getInvalidClient(t)
+	var client = getInvalidSDKClient(t)
 	event1 := model.Event{Host: "host1", Body: "test10"}
 
 	maxAllowedErr := 4

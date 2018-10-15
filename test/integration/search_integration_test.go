@@ -27,7 +27,7 @@ var (
 )
 
 func TestListJobs(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobs()
 	require.Nil(t, err)
@@ -35,7 +35,7 @@ func TestListJobs(t *testing.T) {
 }
 
 func TestListJobsByStatusRunning(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobsByQueryParameters(search.JobsQuery{Status: "running"})
 	require.Nil(t, err)
@@ -43,7 +43,7 @@ func TestListJobsByStatusRunning(t *testing.T) {
 }
 
 func TestListJobsByMultipleStatuses(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobsByQueryParameters(search.JobsQuery{Status: "running, done"})
 	require.Nil(t, err)
@@ -51,7 +51,7 @@ func TestListJobsByMultipleStatuses(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -65,7 +65,7 @@ func TestGetJob(t *testing.T) {
 }
 
 func TestCreateJobWithTimerange(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestWithEarliest)
 	assert.Nil(t, err)
@@ -76,7 +76,7 @@ func TestCreateJobWithTimerange(t *testing.T) {
 }
 
 func TestCreateJobWithModule(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequestModule)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -90,7 +90,7 @@ func TestCreateJobWithModule(t *testing.T) {
 }
 
 func TestUpdateJobToBeCanceled(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -107,7 +107,7 @@ func TestUpdateJobToBeCanceled(t *testing.T) {
 }
 
 func TestUpdateJobToBeFinalized(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -119,7 +119,7 @@ func TestUpdateJobToBeFinalized(t *testing.T) {
 }
 
 func TestGetJobResultsNextLink(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -130,7 +130,7 @@ func TestGetJobResultsNextLink(t *testing.T) {
 }
 
 func TestGetJobResults(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
@@ -145,7 +145,7 @@ func TestGetJobResults(t *testing.T) {
 
 // TestIntegrationNewSearchJobBadRequest asynchronously
 func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsBadRequest)
 	require.NotNil(t, err)
@@ -156,7 +156,7 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 
 // TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	require.NotNil(t, client)
 	resp, err := client.SearchService.GetResults("NON_EXISTING_SEARCH_ID", 0, 0)
 	require.NotNil(t, err)

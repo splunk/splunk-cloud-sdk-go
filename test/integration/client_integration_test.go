@@ -88,7 +88,7 @@ func getInvalidClient(t *testing.T) *service.Client {
 }
 
 func getInvalidSDKClient(t *testing.T) *sdk.Client {
-	client, err := sdk.NewClient(&service.Config{
+	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
 		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
