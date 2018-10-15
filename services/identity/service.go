@@ -25,14 +25,6 @@ func NewClient(config *services.Config) (*Service, error) {
 	return NewService(baseClient), nil
 }
 
-func (s *Service) TurnOnLog() {
-	s.Client.TurnOnLog()
-}
-
-func (s *Service) TurnOffLog() {
-	s.Client.TurnOffLog()
-}
-
 // NewService creates a new identity service from an existing client
 func NewService(client *services.BaseClient) *Service {
 	return &Service{Client: client}

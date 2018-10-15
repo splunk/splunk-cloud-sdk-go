@@ -44,12 +44,6 @@ type BaseClient struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	//Logger
-	logger Logger
-	//isLogOn
-	isLogOn bool
-	//timeout
-	timeout time.Duration
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -60,8 +54,9 @@ type Request struct {
 	NumErrorsByType map[string]uint
 }
 
+// Logger define logger interface for roundtripper
 type Logger interface {
-	Info(string)
+	Debug(string)
 }
 
 // GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
@@ -94,8 +89,8 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
-	//Logger
-	Logger Logger
+	// RoundTripper
+	RoundTripper http.RoundTripper
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -113,38 +108,6 @@ type RequestParams struct {
 // BaseService provides the interface between client and services
 type BaseService struct {
 	Client *BaseClient
-}
-
-// sdkTransport is to define customized transport RoundTripper
-type sdkTransport struct {
-	transport http.RoundTripper
-	logger    Logger
-	isLogOn   bool
-}
-
-// implement the RoundTripper interface
-func (lt *sdkTransport) RoundTrip(request *http.Request) (*http.Response, error) {
-	if lt.isLogOn {
-		requestDump, err := httputil.DumpRequest(request, true)
-		if err != nil {
-			return nil, err
-		}
-
-		lt.logger.Info(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
-	}
-
-	response, err := lt.transport.RoundTrip(request)
-
-	if lt.isLogOn {
-		responseDump, err := httputil.DumpResponse(response, true)
-		if err != nil {
-			return response, err
-		}
-
-		lt.logger.Info(fmt.Sprintf("===Response:\n%s\n", string(responseDump)))
-	}
-
-	return response, err
 }
 
 // NewRequest creates a new HTTP Request and set proper header
@@ -294,16 +257,6 @@ func (c *BaseClient) GetURL() *url.URL {
 	}
 }
 
-func (c *BaseClient) TurnOnLog() {
-	c.isLogOn = true
-	c.httpClient = &http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn: true}}
-}
-
-func (c *BaseClient) TurnOffLog() {
-	c.isLogOn = true
-	c.httpClient = &http.Client{Timeout: c.timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: c.logger, isLogOn: false}}
-}
-
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
 	host := "api.splunkbeta.com"
@@ -346,12 +299,47 @@ func NewClient(config *Config) (*BaseClient, error) {
 		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
-		httpClient:       &http.Client{Timeout: timeout, Transport: &sdkTransport{transport: &http.Transport{}, logger: config.Logger, isLogOn: false}},
+		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
-		timeout:          timeout,
-		logger:           config.Logger,
+	}
+
+	if config.RoundTripper != nil {
+		c.httpClient = &http.Client{Timeout: timeout, Transport: config.RoundTripper}
 	}
 
 	return c, nil
+}
+
+
+// SdkTransport is to define a transport RoundTripper with user-defined logger
+type SdkTransport struct {
+	transport http.RoundTripper
+	logger    Logger
+}
+
+// RoundTrip implements the RoundTripper interface
+func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	requestDump, err := httputil.DumpRequest(request, true)
+	if err != nil {
+		return nil, err
+	}
+
+	st.logger.Debug(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
+
+	response, err := st.transport.RoundTrip(request)
+
+	responseDump, err := httputil.DumpResponse(response, true)
+	if err != nil {
+		return response, err
+	}
+
+	st.logger.Debug(fmt.Sprintf("===Response:\n%s\n", string(responseDump)))
+
+	return response, err
+}
+
+// CreateRoundTripperWithLogger Creates a RoundTripper with user defined logger
+func CreateRoundTripperWithLogger(logger Logger) *SdkTransport {
+	return &SdkTransport{transport: &http.Transport{}, logger: logger}
 }

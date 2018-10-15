@@ -145,30 +145,26 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
 }
 
+
+// example to show how to create/pass RoundTripper
+var LoggerOutput []string
 type MyLogger struct {
 }
 
-var LoggerOutput []string
-
-func (ml *MyLogger) Info(text string) {
+func (ml *MyLogger) Debug(text string) {
 	LoggerOutput = append(LoggerOutput, text)
 }
 
 func TestRoundTripperWithSdkClient(t *testing.T) {
 	client, err := service.NewClient(&service.Config{
-		Token:   testutils.TestAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
-		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestTenant,
-		Timeout: testutils.TestTimeOut,
-		Logger:  &MyLogger{},
+		Token:        testutils.TestAuthenticationToken,
+		Scheme:       testutils.TestURLProtocol,
+		Host:         testutils.TestSplunkCloudHost,
+		Tenant:       testutils.TestTenant,
+		RoundTripper: services.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
-	//turn on logger
-	client.TurnOnLog()
-
-	fmt.Println("logger on ")
 	webhookActionName := "testaction"
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	action, err := client.ActionService.CreateAction(*webhookAction)
@@ -187,55 +183,20 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	// verify log the response
 	assert.Contains(t, LoggerOutput[1], "\"name\":\"testaction\"")
 	assert.Contains(t, LoggerOutput[1], "\"webhookUrl\":\"https://webhook.site/test\"")
-
-	//turn off logger
-	fmt.Println("logger off ")
-	LoggerOutput = LoggerOutput[:0]
-	client.TurnOffLog()
-	client.CatalogService.GetModules(nil)
-	fmt.Println(LoggerOutput)
-	//assert.Equal(t, "", LoggerOutput )
-	assert.Equal(t, 0, len(LoggerOutput))
-
-	//turn on logger again
-	fmt.Println("logger on ")
-	LoggerOutput = LoggerOutput[:0]
-	client.TurnOnLog()
-	client.CatalogService.GetModules(nil)
-	fmt.Println("====================================")
-	fmt.Println(LoggerOutput)
-	//assert.Equal(t, "GET https://api.playground.splunkbeta.com/INVALID_TEST_TENANT_ID/catalog/v1beta1/modules [404]", LoggerOutput)
-	assert.Equal(t, 2, len(LoggerOutput))
-
-	client.TurnOffLog()
-	client.ActionService.DeleteAction(webhookAction.Name)
 }
+
 
 func TestRoundTripperWithIdentityClient(t *testing.T) {
 	identityClient, _ := identity.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
 		Tenant: "system",
-		Logger: &MyLogger{},
+		RoundTripper:services.CreateRoundTripperWithLogger(&MyLogger{}),
+
 	})
 
-	//turn on logger
 	LoggerOutput = LoggerOutput[:0]
-	identityClient.TurnOnLog()
 	identityClient.Validate()
 	assert.Equal(t, 2, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[0], "GET /system/identity/v1/validate HTTP/1.1")
-
-	//turn off logger
-	LoggerOutput = LoggerOutput[:0]
-	identityClient.TurnOffLog()
-	identityClient.Validate()
-	assert.Equal(t, 0, len(LoggerOutput))
-
-	//turn on logger again
-	LoggerOutput = LoggerOutput[:0]
-	identityClient.TurnOnLog()
-	identityClient.Validate()
-	assert.Equal(t, 2, len(LoggerOutput))
-	assert.Contains(t, LoggerOutput[0],"GET /system/identity/v1/validate HTTP/1.1")
 }
