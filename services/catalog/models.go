@@ -15,8 +15,10 @@ const (
 	KvCollection DatasetInfoKind = "kvcollection"
 	// Index represents a Splunk events or metrics index
 	Index DatasetInfoKind = "index"
-	// Index represents a Splunk events or metrics index
+	// Metric represents TODO: Description needed
 	Metric DatasetInfoKind = "metric"
+	// View represents TODO: Description needed
+	View DatasetInfoKind = "view"
 )
 
 // DatasetInfo represents the sources of data that can be searched by Splunk
@@ -71,7 +73,8 @@ type DatasetCreationPayload struct {
 	Datatype string `json:"datatype,omitempty"`
 	Disabled *bool  `json:"disabled,omitempty"`
 
-	FrozenTimePeriodInSecs int `json:"frozenTimePeriodInSecs,omitempty"`
+	Search                 string `json:"search,omitempty"`
+	FrozenTimePeriodInSecs int    `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
 // UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
