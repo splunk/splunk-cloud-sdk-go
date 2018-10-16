@@ -4,8 +4,8 @@
 //
 
 /*
-Package services implements a service client which is used to communicate
-with Splunk Cloud endpoints, each service being split into its own package.
+Package service implements a service client which is used to communicate
+with Search Service endpoints
 */
 package services
 
@@ -307,6 +307,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 	if config.RoundTripper != nil {
 		c.httpClient = &http.Client{Timeout: timeout, Transport: config.RoundTripper}
 	}
+
 
 	return c, nil
 }

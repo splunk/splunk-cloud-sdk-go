@@ -15,6 +15,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -131,9 +132,9 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
 }
 
-
 // example to show how to create/pass RoundTripper
 var LoggerOutput []string
+
 type MyLogger struct {
 }
 
@@ -142,7 +143,7 @@ func (ml *MyLogger) Debug(text string) {
 }
 
 func TestRoundTripperWithSdkClient(t *testing.T) {
-	client, err := service.NewClient(&service.Config{
+	client, err := sdk.NewClient(&service.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Scheme:       testutils.TestURLProtocol,
 		Host:         testutils.TestSplunkCloudHost,
@@ -154,6 +155,7 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	webhookActionName := "testaction"
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	action, err := client.ActionService.CreateAction(*webhookAction)
+	defer client.ActionService.DeleteAction(webhookActionName)
 	require.Nil(t, err)
 	require.NotEmpty(t, action)
 	fmt.Println(LoggerOutput)
@@ -171,14 +173,12 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	assert.Contains(t, LoggerOutput[1], "\"webhookUrl\":\"https://webhook.site/test\"")
 }
 
-
 func TestRoundTripperWithIdentityClient(t *testing.T) {
-	identityClient, _ := identity.NewClient(&services.Config{
-		Token:  testutils.TestAuthenticationToken,
-		Host:   testutils.TestSplunkCloudHost,
-		Tenant: "system",
-		RoundTripper:services.CreateRoundTripperWithLogger(&MyLogger{}),
-
+	identityClient, _ := identity.NewService(&services.Config{
+		Token:        testutils.TestAuthenticationToken,
+		Host:         testutils.TestSplunkCloudHost,
+		Tenant:       "system",
+		RoundTripper: services.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
 
 	LoggerOutput = LoggerOutput[:0]
