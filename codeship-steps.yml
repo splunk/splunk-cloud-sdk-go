@@ -1,28 +1,28 @@
 - type: parallel
   steps:
 
-  - type: parallel
-    name: code quality checks
-    steps:
-      - name: lint
-        service: splunk-cloud-sdk-go
-        command: bash -c "make lint"
-      - name: vet
-        service: splunk-cloud-sdk-go
-        command: bash -c "make vet"
-      - name: build
-        service: splunk-cloud-sdk-go
-        command: bash -c "make build"
+#  - type: parallel
+#    name: code quality checks
+#    steps:
+#      - name: lint
+#        service: splunk-cloud-sdk-go
+#        command: bash -c "make lint"
+#      - name: vet
+#        service: splunk-cloud-sdk-go
+#        command: bash -c "make vet"
+#      - name: build
+#        service: splunk-cloud-sdk-go
+#        command: bash -c "make build"
 
 
-  - name: unit tests
-    service: splunk-cloud-sdk-go
-    command: bash -c "make run_unit_tests"
-
-  - name: functional tests
-    service: splunk-cloud-sdk-go-with-stubby
-    command: bash -c "make run_docker_stubby_tests"
-    encrypted_dockercfg_path: ci/dockercfg.encrypted
+#  - name: unit tests
+#    service: splunk-cloud-sdk-go
+#    command: bash -c "make run_unit_tests"
+#
+#  - name: functional tests
+#    service: splunk-cloud-sdk-go-with-stubby
+#    command: bash -c "make run_docker_stubby_tests"
+#    encrypted_dockercfg_path: ci/dockercfg.encrypted
 
   - type: serial
     name: integration steps
@@ -43,23 +43,23 @@
           service: splunk-cloud-sdk-go-against-playground
           tag: ^(master|develop)$
           command: bash -c "allow_failures=0 ./ci/integration/runtests.sh"
-        - name: run example - gated
-          service: splunk-cloud-sdk-go-against-playground
-          tag: ^(master)$
-          command: bash -c "allow_failures=0 ./ci/integration/runexamples.sh"
-          encrypted_dockercfg_path: ci/dockercfg.encrypted
-        - name: run example - not gated
-          service: splunk-cloud-sdk-go-against-playground
-          exclue: ^(master)$
-          command: bash -c "allow_failures=1 ./ci/integration/runexamples.sh"
-          encrypted_dockercfg_path: ci/dockercfg.encrypted
-        - name: WhiteSource Testing
-          service: splunk-cloud-sdk-go-whitesource
-          command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
-                                      -c /go/src/github.com/splunk/splunk-cloud-sdk-go/ci/whitesource/whitesource-fs-agent.config \
-                                      -d /go/src/github.com/splunk/splunk-cloud-sdk-go \
-                                      -apiKey $WHITESOURCE_API_KEY \
-                                      -productToken $WHITESOURCE_PRODUCT_TOKEN \
-                                      -userKey $WHITESOURCE_USER_KEY"
-          tag: ^(master|develop)$
-          encrypted_dockercfg_path: ci/dockercfg.encrypted
+#        - name: run example - gated
+#          service: splunk-cloud-sdk-go-against-playground
+#          tag: ^(master)$
+#          command: bash -c "allow_failures=0 ./ci/integration/runexamples.sh"
+#          encrypted_dockercfg_path: ci/dockercfg.encrypted
+#        - name: run example - not gated
+#          service: splunk-cloud-sdk-go-against-playground
+#          exclue: ^(master)$
+#          command: bash -c "allow_failures=1 ./ci/integration/runexamples.sh"
+#          encrypted_dockercfg_path: ci/dockercfg.encrypted
+#        - name: WhiteSource Testing
+#          service: splunk-cloud-sdk-go-whitesource
+#          command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \
+#                                      -c /go/src/github.com/splunk/splunk-cloud-sdk-go/ci/whitesource/whitesource-fs-agent.config \
+#                                      -d /go/src/github.com/splunk/splunk-cloud-sdk-go \
+#                                      -apiKey $WHITESOURCE_API_KEY \
+#                                      -productToken $WHITESOURCE_PRODUCT_TOKEN \
+#                                      -userKey $WHITESOURCE_USER_KEY"
+#          tag: ^(master|develop)$
+#          encrypted_dockercfg_path: ci/dockercfg.encrypted

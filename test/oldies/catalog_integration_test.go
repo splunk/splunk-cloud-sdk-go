@@ -111,21 +111,20 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 	return datasetInfo, err
 }
 
-func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
+func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
 	createMetricDatasetInfo := model.DatasetCreationPayload{
 		Name:         collectionName,
 		Kind:         catalog.Metric,
 		Owner:        datasetOwner,
 		Module:       namespaceName,
 		Capabilities: capabilities,
-		Disabled:     &isDisabled,
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	//require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
-	require.Equal(t, catalog.Metric, datasetInfo.Kind)
+	//require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
 
 	return datasetInfo, err
 }

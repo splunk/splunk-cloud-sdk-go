@@ -8,12 +8,14 @@ package integration
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,18 +32,18 @@ func getSdkClient(t *testing.T) *sdk.Client {
 	return client
 }
 
-//// TestSDKClientTokenInit tests initializing a service-wide Splunk Cloud client and validating the token provided
-//func TestSDKClientInit(t *testing.T) {
-//	client, err := sdk.NewClient(&services.Config{
-//		Token:  testutils.TestAuthenticationToken,
-//		Host:   testutils.TestSplunkCloudHost,
-//		Tenant: "system",
-//	})
-//	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
-//	info, err := client.IdentityService.Validate()
-//	assert.Emptyf(t, err, "error calling client.IdentityService.Validate(): %s", err)
-//	assert.NotNil(t, info)
-//}
+// TestSDKClientTokenInit tests initializing a service-wide Splunk Cloud client and validating the token provided
+func TestSDKClientInit(t *testing.T) {
+	client, err := sdk.NewClient(&services.Config{
+		Token:  testutils.TestAuthenticationToken,
+		Host:   testutils.TestSplunkCloudHost,
+		Tenant: "system",
+	})
+	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
+	info, err := client.IdentityService.Validate()
+	assert.Emptyf(t, err, "error calling client.IdentityService.Validate(): %s", err)
+	assert.NotNil(t, info)
+}
 
 // This is the legacy client initialization
 // Deprecated: please use sdk.NewClient()
@@ -105,25 +107,25 @@ func (rh *rHandlerErr) HandleResponse(client *services.BaseClient, request *serv
 	return nil, fmt.Errorf(rHandlerErrMsg)
 }
 
-//// This is the legacy client initialization
-//// Deprecated: please use sdk.NewClient()
-//func TestClientMultipleResponseHandlers(t *testing.T) {
-//	var handler1 = &noOpHandler{}
-//	var handler2 = &rHandlerErr{}
-//	var handler3 = &noOpHandler{}
-//	var handlers = []service.ResponseHandler{handler1, handler2, handler3}
-//	client, err := service.NewClient(&service.Config{
-//		Token:            testutils.TestAuthenticationToken,
-//		Scheme:           testutils.TestURLProtocol,
-//		Host:             testutils.TestSplunkCloudHost,
-//		Tenant:           testutils.TestInvalidTestTenant,
-//		Timeout:          testutils.TestTimeOut,
-//		ResponseHandlers: handlers,
-//	})
-//	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
-//	_, err = client.SearchService.ListJobs()
-//	assert.True(t, strings.Contains(err.Error(), rHandlerErrMsg), "error should match custom error from response handler")
-//	assert.Equal(t, handler1.N, 1, "first handler should have been called")
-//	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
-//	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
-//}
+// This is the legacy client initialization
+// Deprecated: please use sdk.NewClient()
+func TestClientMultipleResponseHandlers(t *testing.T) {
+	var handler1 = &noOpHandler{}
+	var handler2 = &rHandlerErr{}
+	var handler3 = &noOpHandler{}
+	var handlers = []service.ResponseHandler{handler1, handler2, handler3}
+	client, err := service.NewClient(&service.Config{
+		Token:            testutils.TestAuthenticationToken,
+		Scheme:           testutils.TestURLProtocol,
+		Host:             testutils.TestSplunkCloudHost,
+		Tenant:           testutils.TestInvalidTestTenant,
+		Timeout:          testutils.TestTimeOut,
+		ResponseHandlers: handlers,
+	})
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+	_, err = client.SearchService.ListJobs()
+	assert.True(t, strings.Contains(err.Error(), rHandlerErrMsg), "error should match custom error from response handler")
+	assert.Equal(t, handler1.N, 1, "first handler should have been called")
+	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
+	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
+}
