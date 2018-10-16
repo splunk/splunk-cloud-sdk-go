@@ -17,6 +17,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -148,7 +149,7 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 		Scheme:       testutils.TestURLProtocol,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
-		RoundTripper: services.CreateRoundTripperWithLogger(&MyLogger{}),
+		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
@@ -177,7 +178,7 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       "system",
-		RoundTripper: services.CreateRoundTripperWithLogger(&MyLogger{}),
+		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
 
 	LoggerOutput = LoggerOutput[:0]
