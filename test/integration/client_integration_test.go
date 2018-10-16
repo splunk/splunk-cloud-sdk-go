@@ -158,7 +158,6 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	defer client.ActionService.DeleteAction(webhookActionName)
 	require.Nil(t, err)
 	require.NotEmpty(t, action)
-	fmt.Println(LoggerOutput)
 	assert.Equal(t, 2, len(LoggerOutput))
 
 	// verify log the request method and url
