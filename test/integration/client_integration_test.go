@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -18,7 +19,6 @@ import (
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 )
 
 // This is the latest/correct client initialization to use

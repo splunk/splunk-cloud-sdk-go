@@ -308,7 +308,6 @@ func NewClient(config *Config) (*BaseClient, error) {
 		c.httpClient = &http.Client{Timeout: timeout, Transport: config.RoundTripper}
 	}
 
-
 	return c, nil
 }
 
