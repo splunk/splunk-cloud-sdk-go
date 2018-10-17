@@ -54,26 +54,27 @@ type Request struct {
 }
 
 //Retry requests upon receiving 409 from service endpoints
-//Retry Strategy to be used to retry requests
+//RetryStrategyName to be used to retry requests
 type RetryStrategyName string
 
+//Supported RetryStrategyNames
 const (
-	DefaultBackOff RetryStrategyName = "DefaultBackOff"
-	SimpleBackOff RetryStrategyName = "SimpleBackOff"
+	DefaultBackOff RetryStrategyName = "DefaultExponentialBackOff"
+	SimpleBackOff RetryStrategyName = "SimpleExponentialBackOff"
 )
 
-//Simple Exponential Back off strategy that will accept a user configurable RetryNumber and Interval between retries
+//SimpleBackOffRetryStrategy that will accept a user configurable RetryNumber and Interval between retries
 type SimpleBackOffRetryStrategy struct {
 	RetryNum uint
 	Interval int
 }
 
-//Default Exponential Back off strategy that will use default RetryNumber and Interval between retries specified
+//DefaultRetryStrategy that will use default RetryNumber and Interval between retries specified
 type DefaultRetryStrategy struct {
 
 }
 
-//RetryConfig to be specified while creating a NewClient
+//RetryStrategyConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
 	Name RetryStrategyName
 	DefaultConfig *DefaultRetryStrategy

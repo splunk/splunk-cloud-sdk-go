@@ -179,7 +179,7 @@ func TestCreateJobSimpleBackOffRetry(t *testing.T) {
 		RetryConfig:   services.RetryStrategyConfig{services.SimpleBackOff, nil, &services.SimpleBackOffRetryStrategy{5, 600}},
 	})
 
-	var cnt int = 0
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, _ := service.CreateJob(PostJobsRequest)
@@ -202,7 +202,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		RetryConfig: services.RetryStrategyConfig{services.DefaultBackOff, &services.DefaultRetryStrategy{}, nil},
 	})
 
-	var cnt int = 0
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, _ := service.CreateJob(PostJobsRequest)
