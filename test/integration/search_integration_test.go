@@ -169,14 +169,14 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Nil(t, resp)
 }
 
-//TestCreateJobSimpleBackOffRetry and validate that all the job requests are created successfully after retries
-func TestCreateJobSimpleBackOffRetry(t *testing.T) {
+//TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
+func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{services.SimpleBackOff, nil, &services.SimpleBackOffRetryStrategy{5, 600}},
+		RetryConfig:   services.RetryStrategyConfig{services.ConfigurableRetryExponentialBackOff, nil, &services.ConfigurableRetryConfig{5, 600}},
 	})
 
 	var cnt int
@@ -189,7 +189,6 @@ func TestCreateJobSimpleBackOffRetry(t *testing.T) {
 		}(searchService)
 	}
 	time.Sleep(time.Duration(50) * time.Second)
-	fmt.Println("count is ", cnt)
 	assert.Equal(t, 20, cnt)
 }
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
@@ -199,7 +198,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig: services.RetryStrategyConfig{services.DefaultBackOff, &services.DefaultRetryStrategy{}, nil},
+		RetryConfig: services.RetryStrategyConfig{services.DefaultExponentialBackOff, &services.DefaultRetryConfig{}, nil},
 	})
 
 	var cnt int
@@ -212,4 +211,30 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	}
 	time.Sleep(time.Duration(50) * time.Second)
 	assert.Equal(t, 20, cnt)
+}
+//TestRetryOff and validate that job response is a 429 after certain number of requests
+func TestRetryOff(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: false,
+	})
+
+	var errcnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err,"429")
+				errcnt++
+
+			}
+			fmt.Println(err)
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(20) * time.Second)
+	fmt.Println("Error ", errcnt)
+	assert.NotZero(t, errcnt)
 }

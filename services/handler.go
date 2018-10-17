@@ -33,14 +33,14 @@ type AuthnResponseHandler struct {
 	TokenRetriever idp.TokenRetriever
 }
 
-// SimpleBackOffRetryResponseHandler handles logic for retrying requests with user configurable settings for Retry number and interval
-type SimpleBackOffRetryResponseHandler struct {
-	SimpleBackOffRetry SimpleBackOffRetryStrategy
+// ConfigurableRetryResponseHandler handles logic for retrying requests with user configurable settings for Retry number and interval
+type ConfigurableRetryResponseHandler struct {
+	ConfigurableRetryConfig ConfigurableRetryConfig
 }
 
 // DefaultRetryResponseHandler handles logic for retrying requests with default settings for Retry number and interval
 type DefaultRetryResponseHandler struct {
-	DefaultRetry DefaultRetryStrategy
+	DefaultRetryConfig DefaultRetryConfig
 }
 
 // HandleResponse will retry a request once after re-authenticating if a 401 response code is encountered
@@ -63,17 +63,17 @@ func (rh AuthnResponseHandler) HandleResponse(client *BaseClient, request *Reque
 	return client.Do(request)
 }
 
-// HandleResponse will retry a request once a 429 is encountered using a Default BackOff Retry Strategy
+// HandleResponse will retry a request once a 429 is encountered using a Default exponential BackOff Retry Strategy
 func (defRh DefaultRetryResponseHandler) HandleResponse(client *BaseClient, request *Request, response *http.Response) (*http.Response, error) {
 	return handleRequestResponse(client, request, response, maxRetryCount, 500)
 }
 
-// HandleResponse will retry a request once a 429 is encountered using a Simple BackOff Retry Strategy
-func (simpleRh SimpleBackOffRetryResponseHandler) HandleResponse(client *BaseClient, request *Request, response *http.Response) (*http.Response, error) {
-	return handleRequestResponse(client, request, response, simpleRh.SimpleBackOffRetry.RetryNum, simpleRh.SimpleBackOffRetry.Interval)
+// HandleResponse will retry a request once a 429 is encountered using a Configurable exponential BackOff Retry Strategy
+func (configRh ConfigurableRetryResponseHandler) HandleResponse(client *BaseClient, request *Request, response *http.Response) (*http.Response, error) {
+	return handleRequestResponse(client, request, response, configRh.ConfigurableRetryConfig.RetryNum, configRh.ConfigurableRetryConfig.Interval)
 }
 
-//handleRequestResponse - helper function to handle the retry to a 409 response
+//handleRequestResponse - helper function to handle the retry to a 429 response
 func handleRequestResponse(client *BaseClient, request *Request, response *http.Response, retryCount uint, interval int) (*http.Response, error){
 	if response.StatusCode != 429 {
 		return response, nil

@@ -59,26 +59,26 @@ type RetryStrategyName string
 
 //Supported RetryStrategyNames
 const (
-	DefaultBackOff RetryStrategyName = "DefaultExponentialBackOff"
-	SimpleBackOff RetryStrategyName = "SimpleExponentialBackOff"
+	DefaultExponentialBackOff RetryStrategyName = "DefaultExponentialBackOff"
+	ConfigurableRetryExponentialBackOff RetryStrategyName = "ConfigurableExponentialBackOff"
 )
 
-//SimpleBackOffRetryStrategy that will accept a user configurable RetryNumber and Interval between retries
-type SimpleBackOffRetryStrategy struct {
+//ConfigurableRetryConfig that will accept a user configurable RetryNumber and Interval between retries
+type ConfigurableRetryConfig struct {
 	RetryNum uint
 	Interval int
 }
 
-//DefaultRetryStrategy that will use default RetryNumber and Interval between retries specified
-type DefaultRetryStrategy struct {
+//DefaultRetryConfig that will use a default RetryNumber and a default Interval between retries
+type DefaultRetryConfig struct {
 
 }
 
 //RetryStrategyConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
 	Name RetryStrategyName
-	DefaultConfig *DefaultRetryStrategy
-	SimpleConfig *SimpleBackOffRetryStrategy
+	DefaultRetryConfig *DefaultRetryConfig
+	ConfigurableRetryConfig *ConfigurableRetryConfig
 }
 
 // GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
@@ -312,17 +312,14 @@ func NewClient(config *Config) (*BaseClient, error) {
 		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
 	}
 	//ToDo: add error handling
-	if config.RetryRequests == true {
-		if config.RetryConfig.Name == "" {
-			return nil, errors.New("retry strategy name cannot be empty")
-		}
+	if config.RetryRequests {
 		//if knob to RetryRequests is on, Retry Response Handler is created to handle the 409 response and retry the incoming requests that are being throttled based on the retry strategy specified in the config
-		if config.RetryConfig.Name == DefaultBackOff {
-			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryStrategy{}}
+		if config.RetryConfig.Name == DefaultExponentialBackOff || config.RetryConfig.Name == "" || config.RetryConfig.ConfigurableRetryConfig == nil {
+			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
 			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
-		} else if config.RetryConfig.Name == SimpleBackOff {
-			simpleStrategyHandler := SimpleBackOffRetryResponseHandler{SimpleBackOffRetryStrategy{config.RetryConfig.SimpleConfig.RetryNum, config.RetryConfig.SimpleConfig.Interval}}
-			handlers = append([]ResponseHandler{ResponseHandler(simpleStrategyHandler)}, config.ResponseHandlers...)
+		} else if config.RetryConfig.Name == ConfigurableRetryExponentialBackOff {
+			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
+			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
 		}
 	}
 	// Start by retrieving the access token
