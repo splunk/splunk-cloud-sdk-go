@@ -53,6 +53,34 @@ type Request struct {
 	NumErrorsByType map[string]uint
 }
 
+//Retry requests upon receiving 409 from service endpoints
+//Retry Strategy to be used to retry requests
+type RetryStrategyName string
+
+const (
+	DefaultBackOff RetryStrategyName = "DefaultBackOff"
+	SimpleBackOff RetryStrategyName = "SimpleBackOff"
+)
+
+//Simple Exponential Back off strategy that will accept a user configurable RetryNumber and Interval between retries
+type SimpleBackOffRetryStrategy struct {
+	RetryNum uint
+	Interval int
+}
+
+//Default Exponential Back off strategy that will use default RetryNumber and Interval between retries specified
+type DefaultRetryStrategy struct {
+
+}
+
+//RetryConfig to be specified while creating a NewClient
+type RetryStrategyConfig struct {
+
+	Name RetryStrategyName
+	DefaultConfig *DefaultRetryStrategy
+	SimpleConfig *SimpleBackOffRetryStrategy
+}
+
 // GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
 func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	code := fmt.Sprintf("%d", respCode)
@@ -83,6 +111,10 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
+	//RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 409 TooManyRequests Error
+	RetryRequests bool
+	//RetryStrategyConfig
+	RetryConfig RetryStrategyConfig
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -279,7 +311,20 @@ func NewClient(config *Config) (*BaseClient, error) {
 		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
 		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
 	}
-
+	//ToDo: add error handling
+	if config.RetryRequests == true {
+		if config.RetryConfig.Name == "" {
+			return nil, errors.New("retry strategy name cannot be empty")
+		}
+		//if knob to RetryRequests is on, Retry Response Handler is created to handle the 409 response and retry the incoming requests that are being throttled based on the retry strategy specified in the config
+		if config.RetryConfig.Name == DefaultBackOff {
+			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryStrategy{}}
+			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
+		} else if config.RetryConfig.Name == SimpleBackOff {
+			simpleStrategyHandler := SimpleBackOffRetryResponseHandler{SimpleBackOffRetryStrategy{config.RetryConfig.SimpleConfig.RetryNum, config.RetryConfig.SimpleConfig.Interval}}
+			handlers = append([]ResponseHandler{ResponseHandler(simpleStrategyHandler)}, config.ResponseHandlers...)
+		}
+	}
 	// Start by retrieving the access token
 	ctx, err := config.TokenRetriever.GetTokenContext()
 	if err != nil {

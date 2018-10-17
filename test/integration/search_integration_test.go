@@ -14,6 +14,9 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"fmt"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -164,4 +167,48 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
 	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
 	assert.Nil(t, resp)
+}
+
+func TestCreateJobSimpleBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig:   services.RetryStrategyConfig{services.SimpleBackOff, nil, &services.SimpleBackOffRetryStrategy{5, 600}},
+	})
+
+	var cnt int = 0
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, _ := service.CreateJob(PostJobsRequest)
+			cnt++
+			fmt.Println(cnt)
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(50) * time.Second)
+	fmt.Println("count is ", cnt)
+	assert.Equal(t, 20, cnt)
+}
+
+func TestCreateJobDefaultBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig: services.RetryStrategyConfig{services.DefaultBackOff, &services.DefaultRetryStrategy{}, nil},
+	})
+
+	var cnt int = 0
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, _ := service.CreateJob(PostJobsRequest)
+			cnt++
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(50) * time.Second)
+	assert.Equal(t, 20, cnt)
 }
