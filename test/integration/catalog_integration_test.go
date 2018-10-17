@@ -555,8 +555,8 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	require.Nil(t, err)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
-	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
+	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := model.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
 	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
 	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField2)
 
@@ -580,8 +580,8 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
-	testField2 := model.Field{Name: "integ_test_field2", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
+	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := model.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
 	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
 	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField2)
 
@@ -1002,7 +1002,7 @@ func TestRuleActions(t *testing.T) {
 }
 
 func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
-	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField := model.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
 
 	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField)
 	require.Nil(t, err)
