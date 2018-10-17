@@ -139,7 +139,7 @@ var LoggerOutput []string
 type MyLogger struct {
 }
 
-func (ml *MyLogger) Debug(text string) {
+func (ml *MyLogger) Info(text string) {
 	LoggerOutput = append(LoggerOutput, text)
 }
 
