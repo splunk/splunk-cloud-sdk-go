@@ -1,0 +1,70 @@
+// Copyright © 2018 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
+// This example demonstrates how to setup logging with the sdk and the standard "log" library.
+//
+// By default, this example logs to stout (for INFO level logs) and stderr (for ERROR level logs):
+//    ```$ go run -v ./examples/logging/logging.go```
+//
+// To log INFO and ERROR to a single log file use:
+//    ```$ go run -v ./examples/logging/logging.go -logfile=<path to logfile>```
+package main
+
+import (
+	"flag"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+)
+
+var logInfo *log.Logger
+var logErr *log.Logger
+
+func main() {
+	// Setup logging to stdout and stderr by default
+	logInfo = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	logErr = log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	// If log file is specified, log there instead
+	logFileArg := flag.String("logfile", "", "If non-empty, write log files in this file")
+	flag.Parse()
+
+	if logFileArg != nil && *logFileArg != "" {
+		logFile, err := os.OpenFile(*logFileArg, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		exitOnError(err)
+		logInfo = log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+		logErr = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	}
+
+	// Get client
+	logInfo.Print("Creating identity service client")
+
+	client, err := identity.NewService(&services.Config{
+		Token:        testutils.TestAuthenticationToken,
+		Scheme:       testutils.TestURLProtocol,
+		Host:         testutils.TestSplunkCloudHost,
+		Tenant:       testutils.TestTenant,
+		RoundTripper: util.CreateRoundTripperWithLogger(logInfo),
+	})
+	exitOnError(err)
+	logInfo.Print("Validating token")
+	info, err := client.Validate()
+	exitOnError(err)
+	logInfo.Print(fmt.Sprintf("Success! Info: %+v", info))
+}
+
+func exitOnError(err error) {
+	if err != nil {
+		if logErr != nil {
+			logErr.Print(err)
+		}
+		os.Exit(1)
+	}
+}

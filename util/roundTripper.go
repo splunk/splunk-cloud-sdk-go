@@ -11,9 +11,9 @@ import (
 	"net/http/httputil"
 )
 
-// Logger define logger interface for roundtripper
+// Logger compatible with standard "log" library
 type Logger interface {
-	Info(string)
+	Print(v ...interface{})
 }
 
 // SdkTransport is to define a transport RoundTripper with user-defined logger
@@ -29,7 +29,7 @@ func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
 		return nil, err
 	}
 
-	st.logger.Info(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
+	st.logger.Print(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
 
 	response, err := st.transport.RoundTrip(request)
 
@@ -38,7 +38,7 @@ func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
 		return response, err
 	}
 
-	st.logger.Info(fmt.Sprintf("===Response:\n%s\n", string(responseDump)))
+	st.logger.Print(fmt.Sprintf("===Response:\n%s\n", string(responseDump)))
 
 	return response, err
 }
