@@ -683,7 +683,7 @@ func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	require.Nil(t, err)
 
 	// Create a new dataset field
-	testField := model.Field{Name: "integ_test_field", DatasetID: dataset.ID, DataType: "N", FieldType: "U", Prevalence: "S"}
+	testField := model.Field{Name: "integ_test_field", DataType: "N", FieldType: "U", Prevalence: "S"}
 	resultField, err := invalidClient.CatalogService.CreateDatasetField(dataset.ID, &testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
@@ -722,7 +722,7 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	require.Nil(t, err)
 
 	// Create a new dataset field
-	testField := model.Field{Name: "integ_test_field"}
+	testField := model.Field{}
 	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
@@ -858,7 +858,7 @@ func TestGetFields(t *testing.T) {
 	defer client.CatalogService.DeleteDataset(datasetName1)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
 	field, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
@@ -900,7 +900,7 @@ func TestRuleActions(t *testing.T) {
 	defer client.CatalogService.DeleteDataset(datasetName1)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DatasetID: dataset.ID, DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
 	field, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
