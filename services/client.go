@@ -75,7 +75,6 @@ type DefaultRetryStrategy struct {
 
 //RetryConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
-
 	Name RetryStrategyName
 	DefaultConfig *DefaultRetryStrategy
 	SimpleConfig *SimpleBackOffRetryStrategy

@@ -169,6 +169,7 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Nil(t, resp)
 }
 
+//TestCreateJobSimpleBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobSimpleBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
@@ -191,7 +192,7 @@ func TestCreateJobSimpleBackOffRetry(t *testing.T) {
 	fmt.Println("count is ", cnt)
 	assert.Equal(t, 20, cnt)
 }
-
+//TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
