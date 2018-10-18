@@ -139,7 +139,11 @@ var LoggerOutput []string
 type MyLogger struct {
 }
 
-func (ml *MyLogger) Info(text string) {
+func (ml *MyLogger) Print(v ...interface{}) {
+	text, ok := v[0].(string)
+	if !ok {
+		return
+	}
 	LoggerOutput = append(LoggerOutput, text)
 }
 
