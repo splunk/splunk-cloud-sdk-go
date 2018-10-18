@@ -8,11 +8,15 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/service"
-	"github.com/splunk/splunk-cloud-sdk-go/testutils"
 	"os"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 )
 
 func main() {
@@ -41,13 +45,13 @@ func main() {
 	fmt.Println("Search event data")
 	query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
 	fmt.Println(query)
-	search(client, query, 3)
+	performSearch(client, query, 3)
 
 	//Search metrics data and verify
 	fmt.Println("Search metric data")
 	query = fmt.Sprintf("| from metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metricHost)
 	fmt.Println(query)
-	search(client, query, 1)
+	performSearch(client, query, 1)
 }
 
 func exitOnError(err error) {
@@ -57,8 +61,8 @@ func exitOnError(err error) {
 	}
 }
 
-func getClient() *service.Client {
-	client, err := service.NewClient(&service.Config{
+func getClient() *sdk.Client {
+	client, err := sdk.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Scheme: testutils.TestURLProtocol,
 		Host:   testutils.TestSplunkCloudHost,
@@ -70,11 +74,11 @@ func getClient() *service.Client {
 	return client
 }
 
-func createIndex(client *service.Client) (string, string) {
+func createIndex(client *sdk.Client) (string, string) {
 	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
 	index := "main"
 	disabled := false
-	indexinfo := model.DatasetCreationPayload{
+	indexinfo := catalog.DatasetCreationPayload{
 		Owner:    "splunk",
 		Name:     index,
 		Kind:     "index",
@@ -94,10 +98,10 @@ func createIndex(client *service.Client) (string, string) {
 	return index, result.ID
 }
 
-func ingestMetric(client *service.Client, index string) string {
+func ingestMetric(client *sdk.Client, index string) string {
 	host := fmt.Sprintf("gohost%v", time.Now().Unix())
 
-	metrics := []model.Metric{
+	metrics := []ingest.Metric{
 		{Name: "CPU", Value: 100,
 			Dimensions: map[string]string{"Server": "redhat"}, Unit: "percentage"},
 
@@ -108,7 +112,7 @@ func ingestMetric(client *service.Client, index string) string {
 			Unit: "GB"},
 	}
 
-	metricEvent1 := model.MetricEvent{
+	metricEvent1 := ingest.MetricEvent{
 		Body:       metrics,
 		Timestamp:  time.Now().Unix() * 1000,
 		Nanos:      1,
@@ -116,7 +120,7 @@ func ingestMetric(client *service.Client, index string) string {
 		Sourcetype: "newsourcetype",
 		Host:       host,
 		ID:         "metric0001",
-		Attributes: model.MetricAttribute{
+		Attributes: ingest.MetricAttribute{
 			DefaultDimensions: map[string]string{"defaultDimensions": ""},
 			DefaultType:       "g",
 			DefaultUnit:       "MB",
@@ -124,30 +128,30 @@ func ingestMetric(client *service.Client, index string) string {
 	}
 
 	// Use the Ingest Service send metrics
-	err := client.IngestService.PostMetrics([]model.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
+	err := client.IngestService.PostMetrics([]ingest.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
 	exitOnError(err)
 
 	return host
 }
 
-func ingestEvent(client *service.Client, index string) (string, string) {
-	source := fmt.Sprintf("mysource-%v",time.Now().Unix())
+func ingestEvent(client *sdk.Client, index string) (string, string) {
+	source := fmt.Sprintf("mysource-%v", time.Now().Unix())
 	host := fmt.Sprintf("myhost-%v", time.Now().Unix())
 
-	event1 := model.Event{
+	event1 := ingest.Event{
 		Host:   host,
 		Source: source,
 		Body:   fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source),
 	}
 
-	event2 := model.Event{
+	event2 := ingest.Event{
 		Host:       host,
 		Source:     source,
 		Body:       fmt.Sprintf("04-24-2018 12:32:23.252 -0700 INFO  device_id=[www]401:sdfsf haha1 %v,%v", host, source),
 		Attributes: map[string]interface{}{"index": index},
 	}
 
-	event3 := model.Event{
+	event3 := ingest.Event{
 		Host:       host,
 		Source:     source,
 		Sourcetype: "splunkd",
@@ -156,13 +160,13 @@ func ingestEvent(client *service.Client, index string) (string, string) {
 	}
 
 	// Use the Ingest endpoint to send multiple events
-	err := client.IngestService.PostEvents([]model.Event{event1, event2, event3})
+	err := client.IngestService.PostEvents([]ingest.Event{event1, event2, event3})
 	exitOnError(err)
 
 	return host, source
 }
 
-func search(client *service.Client, query string, expected int) {
+func performSearch(client *sdk.Client, query string, expected int) {
 	start := time.Now()
 	timeout := 60 * time.Second
 	for {
@@ -170,14 +174,14 @@ func search(client *service.Client, query string, expected int) {
 			exitOnError(errors.New("Search failed due to timeout "))
 		}
 
-		job, err := client.SearchService.CreateJob(&model.CreateJobRequest{Query: query})
+		job, err := client.SearchService.CreateJob(&search.CreateJobRequest{Query: query})
 		exitOnError(err)
 
 		_, err = client.SearchService.WaitForJob(job.ID, 1000*time.Millisecond)
 		exitOnError(err)
 
 		resp, err := client.SearchService.GetResults(job.ID, 100, 0)
-		results := resp.(*model.SearchResults).Results
+		results := resp.(*search.Results).Results
 		fmt.Println(results)
 		exitOnError(err)
 

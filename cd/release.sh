@@ -11,27 +11,40 @@ echo "Checking out a release/v$NEW_VERSION branch ..."
 BRANCH_NAME=release/v$NEW_VERSION
 git checkout -b $BRANCH_NAME
 echo "Updating Version in service/client_info.go ..."
-sed -i '' -e "s/[0-9]+.[0-9]+.[0-9]+/$NEW_VERSION/g" service/client_info.go
+if [ "$(uname)" == "Darwin" ]; then
+    # MacOS
+    sed -E -i '' -e "s/[0-9]+\.[0-9]+\.[0-9]+/$NEW_VERSION/g" service/client_info.go
+else
+    # Linux
+    sed -r -i '' -e "s/[0-9]+\.[0-9]+\.[0-9]+/$NEW_VERSION/g" service/client_info.go
+fi
 git add service/client_info.go
 echo "Updating docs and generating cicd-publish artifact ..."
 make docs_publish
 git add docs/
 echo "Showing changes with `git status` ..."
 git status
-echo "Review the git status above and if your changes look good press y followed by [ENTER] to commit and push your release branch and release tag:"
+echo "Review the git status above and if your changes look good press y followed by [ENTER] to commit and push your release branch:"
 read PUSH_TO_GIT
 if [ "$PUSH_TO_GIT" = "y" ]
 then
     echo "Creating commit for client_info.go and docs/ changes ..."
     git commit -m "Release v$NEW_VERSION"
-    echo "Creating tag: v$NEW_VERSION ..."
-    git tag -a v$NEW_VERSION -m "Release v$NEW_VERSION"
     echo "Pushing branch $BRANCH_NAME ..."
     git push origin $BRANCH_NAME
-    echo "Pushing tag v$NEW_VERSION ..."
-    git push origin v$NEW_VERSION
-    echo "TODO: PRs should be created for $BRANCH_NAME -> master AND $BRANCH_NAME -> develop ..."
-    echo "Finally, the docs package in ci/docs/build/ should be delivered to the portals team (NOTE: the version in the tgz is likely one version behind and needs renaming) ..."
+    echo
+    echo " Remaining steps: "
+    echo "   1. Create a PR for $BRANCH_NAME -> master"
+    echo ""
+    echo "   2. Merge the PR - ! USE A MERGE COMMIT NOT A MERGE-SQUASH !"
+    echo ""
+    echo "   3. Create the release in Github with the option of creating a new tag = v$NEW_VERSION"
+    echo ""
+    echo "   4. Pull the master branch and run \`make docs_publish\` ... then deliver the contents of ci/docs/build/*v$NEW_VERSION.tgz to the portals team"
+    echo ""
+    echo "   5. Create/merge a PR from master -> develop"
+    echo ""
+    echo ""
 else
     echo "No changes pushed, branch $BRANCH_NAME only created locally ..."
 fi
