@@ -39,6 +39,7 @@ func main() {
 	if logFileArg != nil && *logFileArg != "" {
 		logFile, err := os.OpenFile(*logFileArg, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		exitOnError(err)
+		defer logFile.Close()
 		logInfo = log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 		logErr = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 	}
