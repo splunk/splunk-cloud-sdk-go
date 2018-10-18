@@ -53,7 +53,24 @@ type Request struct {
 	NumErrorsByType map[string]uint
 }
 
-// GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
+//ConfigurableRetryConfig that will accept a user configurable RetryNumber and Interval between retries
+type ConfigurableRetryConfig struct {
+	RetryNum uint
+	Interval int
+}
+
+//DefaultRetryConfig that will use a default RetryNumber and a default Interval between retries
+type DefaultRetryConfig struct {
+
+}
+
+//RetryStrategyConfig to be specified while creating a NewClient
+type RetryStrategyConfig struct {
+	DefaultRetryConfig *DefaultRetryConfig
+	ConfigurableRetryConfig *ConfigurableRetryConfig
+}
+
+// GetNumErrorsByResponseCode returns number of attempts for a given response code >= 400
 func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	code := fmt.Sprintf("%d", respCode)
 	if val, ok := r.NumErrorsByType[code]; ok {
@@ -83,6 +100,10 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
+	//RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 429 TooManyRequests Error
+	RetryRequests bool
+	//RetryStrategyConfig
+	RetryConfig RetryStrategyConfig
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -279,7 +300,16 @@ func NewClient(config *Config) (*BaseClient, error) {
 		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
 		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
 	}
-
+	if config.RetryRequests {
+		//if knob to RetryRequests is on, Retry Response Handler is created to handle the 429 response and retry the incoming requests that are being throttled based on the retry strategy specified in the config
+		if config.RetryConfig.ConfigurableRetryConfig == nil {
+			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
+			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
+		} else  {
+			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
+			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
+		}
+	}
 	// Start by retrieving the access token
 	ctx, err := config.TokenRetriever.GetTokenContext()
 	if err != nil {

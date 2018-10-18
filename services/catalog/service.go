@@ -47,6 +47,7 @@ func (s *Service) ListDatasets(values url.Values) ([]DatasetInfo, error) {
 }
 
 // GetDatasets returns all Datasets
+// Deprecated: v0.6.1 - Use ListDatasets instead
 func (s *Service) GetDatasets() ([]DatasetInfo, error) {
 	return s.ListDatasets(nil)
 }
