@@ -19,6 +19,8 @@ const (
 	Metric DatasetInfoKind = "metric"
 	// View represents TODO: Description needed
 	View DatasetInfoKind = "view"
+	// Import represents TODO: Description needed
+	Import DatasetInfoKind = "import"
 )
 
 // DatasetInfo represents the sources of data that can be searched by Splunk
@@ -75,6 +77,10 @@ type DatasetCreationPayload struct {
 
 	Search                 string `json:"search,omitempty"`
 	FrozenTimePeriodInSecs int    `json:"frozenTimePeriodInSecs,omitempty"`
+
+	SourceName   string `json:"sourceName,omitempty"`
+	SourceModule string `json:"sourceModule,omitempty"`
+	SourceID     string `json:"sourceId,omitempty"`
 }
 
 // UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo

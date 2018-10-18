@@ -146,6 +146,27 @@ func createViewDataset(t *testing.T, collectionName string, search string) (*mod
 	return datasetInfo, err
 }
 
+//func createImportDataset(t *testing.T, sourceId string, targetNamespaceName string, targetCollectionName string) (*model.DatasetInfo, error) {
+func createImportDataset(t *testing.T, sourceNamespace string, sourceCollection string, targetNamespaceName string, targetCollectionName string) (*model.DatasetInfo, error) {
+
+	createImportDatasetInfo := model.DatasetCreationPayload{
+		Kind:         catalog.Import,
+		Name:         sourceNamespace,
+		Module:       targetCollectionName,
+		SourceName:   sourceNamespace,
+		SourceModule: sourceCollection,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createImportDatasetInfo)
+	require.Nil(t, err)
+	require.NotNil(t, datasetInfo)
+	assert.Equal(t, datasetInfo.Name, sourceNamespace)
+	assert.Equal(t, datasetInfo.Module, targetCollectionName)
+	assert.NotEqual(t, datasetInfo.Module, sourceCollection)
+
+	return datasetInfo, err
+}
+
 //// Test CreateDataset
 //func TestIntegrationCreateDataset(t *testing.T) {
 //	defer cleanupDatasets(t)
