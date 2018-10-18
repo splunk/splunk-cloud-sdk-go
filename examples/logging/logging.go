@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-// This example demonstrates how to setup logging with the sdk and the standard "log" library.
+// This example demonstrates how to setup logging of requests/responses with the sdk using the standard Go "log" library.
 //
 // By default, this example logs to stout (for INFO level logs) and stderr (for ERROR level logs):
 //    ```$ go run -v ./examples/logging/logging.go```
@@ -29,8 +29,7 @@ var logErr *log.Logger
 
 func main() {
 	// Setup logging to stdout and stderr by default
-	logInfo = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	logErr = log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	logInfo, logErr = createStdLoggers()
 
 	// If log file is specified, log there instead
 	logFileArg := flag.String("logfile", "", "If non-empty, write log files in this file")
@@ -40,8 +39,7 @@ func main() {
 		logFile, err := os.OpenFile(*logFileArg, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		exitOnError(err)
 		defer logFile.Close()
-		logInfo = log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-		logErr = log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+		logInfo, logErr = createFileLoggers(logFile)
 	}
 
 	// Get client
@@ -68,4 +66,14 @@ func exitOnError(err error) {
 		}
 		os.Exit(1)
 	}
+}
+
+func createStdLoggers() (infoLogger *log.Logger, errLogger *log.Logger) {
+	return log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile),
+		log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
+
+func createFileLoggers(logFile *os.File) (infoLogger *log.Logger, errLogger *log.Logger) {
+	return log.New(logFile, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile),
+		log.New(logFile, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
