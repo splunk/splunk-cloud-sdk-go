@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"fmt"
 	"time"
 )
 
@@ -81,7 +80,7 @@ func handleRequestResponse(client *BaseClient, request *Request, response *http.
 	if request.NumAttempts > retryCount {
 		return response, nil
 	}
-	fmt.Print("Retrying request ", request.NumAttempts)
+	//implement exponential back off by increasing the waiting time between retries after each retry failure.
 	backoffMillis := time.Duration((1<<request.NumAttempts)*interval) * time.Millisecond
 	time.Sleep(backoffMillis)
 

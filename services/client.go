@@ -53,16 +53,6 @@ type Request struct {
 	NumErrorsByType map[string]uint
 }
 
-//Retry requests upon receiving 409 from service endpoints
-//RetryStrategyName to be used to retry requests
-type RetryStrategyName string
-
-//Supported RetryStrategyNames
-const (
-	DefaultExponentialBackOff RetryStrategyName = "DefaultExponentialBackOff"
-	ConfigurableRetryExponentialBackOff RetryStrategyName = "ConfigurableExponentialBackOff"
-)
-
 //ConfigurableRetryConfig that will accept a user configurable RetryNumber and Interval between retries
 type ConfigurableRetryConfig struct {
 	RetryNum uint
@@ -76,12 +66,11 @@ type DefaultRetryConfig struct {
 
 //RetryStrategyConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
-	Name RetryStrategyName
 	DefaultRetryConfig *DefaultRetryConfig
 	ConfigurableRetryConfig *ConfigurableRetryConfig
 }
 
-// GetNumErrorsByResponseCode returns number of attemps for a given response code >= 400
+// GetNumErrorsByResponseCode returns number of attempts for a given response code >= 400
 func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	code := fmt.Sprintf("%d", respCode)
 	if val, ok := r.NumErrorsByType[code]; ok {
@@ -111,7 +100,7 @@ type Config struct {
 	Timeout time.Duration
 	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
 	ResponseHandlers []ResponseHandler
-	//RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 409 TooManyRequests Error
+	//RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 429 TooManyRequests Error
 	RetryRequests bool
 	//RetryStrategyConfig
 	RetryConfig RetryStrategyConfig
@@ -311,13 +300,12 @@ func NewClient(config *Config) (*BaseClient, error) {
 		authnHandler := AuthnResponseHandler{TokenRetriever: config.TokenRetriever}
 		handlers = append([]ResponseHandler{ResponseHandler(authnHandler)}, config.ResponseHandlers...)
 	}
-	//ToDo: add error handling
 	if config.RetryRequests {
-		//if knob to RetryRequests is on, Retry Response Handler is created to handle the 409 response and retry the incoming requests that are being throttled based on the retry strategy specified in the config
-		if config.RetryConfig.Name == DefaultExponentialBackOff || config.RetryConfig.Name == "" || config.RetryConfig.ConfigurableRetryConfig == nil {
+		//if knob to RetryRequests is on, Retry Response Handler is created to handle the 429 response and retry the incoming requests that are being throttled based on the retry strategy specified in the config
+		if config.RetryConfig.ConfigurableRetryConfig == nil {
 			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
 			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
-		} else if config.RetryConfig.Name == ConfigurableRetryExponentialBackOff {
+		} else  {
 			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
 			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
 		}

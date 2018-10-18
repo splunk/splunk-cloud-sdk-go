@@ -176,20 +176,24 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{services.ConfigurableRetryExponentialBackOff, nil, &services.ConfigurableRetryConfig{5, 600}},
+		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
 	})
 
-	var cnt int
+	var cnt,errcnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, _ := service.CreateJob(PostJobsRequest)
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err,"429")
+				errcnt++
+			}
 			cnt++
-			fmt.Println(cnt)
 			fmt.Println(job.ID)
 		}(searchService)
 	}
 	time.Sleep(time.Duration(50) * time.Second)
 	assert.Equal(t, 20, cnt)
+	assert.NotZero(t, errcnt)
 }
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
@@ -198,19 +202,24 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig: services.RetryStrategyConfig{services.DefaultExponentialBackOff, &services.DefaultRetryConfig{}, nil},
+		RetryConfig: services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
 	})
 
-	var cnt int
+	var cnt,errcnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, _ := service.CreateJob(PostJobsRequest)
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err,"429")
+				errcnt++
+			}
 			cnt++
 			fmt.Println(job.ID)
 		}(searchService)
 	}
 	time.Sleep(time.Duration(50) * time.Second)
 	assert.Equal(t, 20, cnt)
+	assert.NotZero(t, errcnt)
 }
 //TestRetryOff and validate that job response is a 429 after certain number of requests
 func TestRetryOff(t *testing.T) {
