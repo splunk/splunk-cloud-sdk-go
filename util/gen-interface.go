@@ -39,7 +39,7 @@ func main() {
 	var err error
 	file := filepath.Join(options.service, "service.go")
 	outFile := filepath.Join(options.service, "interface.go")
-	args := []string{"-f", file, "-s", options.structName, "-i", options.iface, "-p", options.pkgName, "-c", "DO NOT EDIT", "-o", outFile}
+	args := []string{"-f", file, "-s", options.structName, "-i", options.iface, "-p", options.pkgName, "-c", "AUTO GENERATED. DO NOT EDIT!", "-o", outFile}
 	cmd := exec.Command("ifacemaker", args...)
 	_, err = cmd.Output()
 	if err != nil {

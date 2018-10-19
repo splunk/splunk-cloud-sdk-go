@@ -1,4 +1,4 @@
-// DO NOT EDIT
+// AUTO GENERATED. DO NOT EDIT!
 package catalog
 
 import (
@@ -9,6 +9,7 @@ type CatalogIface interface {
 	// ListDatasets returns all Datasets with optional filter, count, or orderby params
 	ListDatasets(values url.Values) ([]DatasetInfo, error)
 	// GetDatasets returns all Datasets
+	// Deprecated: v0.6.1 - Use ListDatasets instead
 	GetDatasets() ([]DatasetInfo, error)
 	// GetDataset returns the Dataset by resourceName or ID
 	GetDataset(resourceNameOrID string) (*DatasetInfo, error)

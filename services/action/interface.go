@@ -1,4 +1,4 @@
-// DO NOT EDIT
+// AUTO GENERATED. DO NOT EDIT!
 package action
 
 type ActionIface interface {
