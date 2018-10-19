@@ -11,10 +11,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -128,4 +131,62 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	assert.Equal(t, handler1.N, 1, "first handler should have been called")
 	assert.Equal(t, handler2.N, 1, "second (error) handler should have been called")
 	assert.Equal(t, handler3.N, 0, "third handler should not have been called")
+}
+
+// example to show how to create/pass RoundTripper
+var LoggerOutput []string
+
+type MyLogger struct {
+}
+
+func (ml *MyLogger) Print(v ...interface{}) {
+	text, ok := v[0].(string)
+	if !ok {
+		return
+	}
+	LoggerOutput = append(LoggerOutput, text)
+}
+
+func TestRoundTripperWithSdkClient(t *testing.T) {
+	client, err := sdk.NewClient(&service.Config{
+		Token:        testutils.TestAuthenticationToken,
+		Scheme:       testutils.TestURLProtocol,
+		Host:         testutils.TestSplunkCloudHost,
+		Tenant:       testutils.TestTenant,
+		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
+	})
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+
+	webhookActionName := "testaction"
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	action, err := client.ActionService.CreateAction(*webhookAction)
+	defer client.ActionService.DeleteAction(webhookActionName)
+	require.Nil(t, err)
+	require.NotEmpty(t, action)
+	assert.Equal(t, 2, len(LoggerOutput))
+
+	// verify log the request method and url
+	assert.Contains(t, LoggerOutput[0], "POST")
+	assert.Contains(t, LoggerOutput[0], "Host:")
+	// verify log the request body
+	assert.Contains(t, LoggerOutput[0], "\"name\":\"testaction\"")
+	assert.Contains(t, LoggerOutput[0], "\"webhookUrl\":\"https://webhook.site/test\"")
+
+	// verify log the response
+	assert.Contains(t, LoggerOutput[1], "\"name\":\"testaction\"")
+	assert.Contains(t, LoggerOutput[1], "\"webhookUrl\":\"https://webhook.site/test\"")
+}
+
+func TestRoundTripperWithIdentityClient(t *testing.T) {
+	identityClient, _ := identity.NewService(&services.Config{
+		Token:        testutils.TestAuthenticationToken,
+		Host:         testutils.TestSplunkCloudHost,
+		Tenant:       "system",
+		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
+	})
+
+	LoggerOutput = LoggerOutput[:0]
+	identityClient.Validate()
+	assert.Equal(t, 2, len(LoggerOutput))
+	assert.Contains(t, LoggerOutput[0], "GET /system/identity/v1/validate HTTP/1.1")
 }

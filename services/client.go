@@ -104,6 +104,8 @@ type Config struct {
 	RetryRequests bool
 	//RetryStrategyConfig
 	RetryConfig RetryStrategyConfig
+	// RoundTripper
+	RoundTripper http.RoundTripper
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -324,6 +326,10 @@ func NewClient(config *Config) (*BaseClient, error) {
 		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
+	}
+
+	if config.RoundTripper != nil {
+		c.httpClient = &http.Client{Timeout: timeout, Transport: config.RoundTripper}
 	}
 
 	return c, nil

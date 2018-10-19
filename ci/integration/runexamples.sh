@@ -23,10 +23,21 @@ COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v
 
 if [ "$allow_failures" -eq "1" ]; then
     echo "Running examples but not gating on failures..."
-    go run -v  ./examples/ingestSearch.go ||exit 0
+    echo ""
+    echo "Running ingestSearch ..."
+    go run -v  ./examples/ingestSearch/ingestSearch.go || exit 0
+    echo "Running logging ..."
+    go run -v  ./examples/logging/logging.go -logfile example.log || exit 0
+    echo "example.log output:"
+    (ls example.log && cat example.log| sed -e "s/Authorization: Bearer .*/Authorization: Bearer <REDACTED>/g") || exit 0
 else
     echo "Running examples and gating on failures..."
     set +e
-    go run -v ./examples/ingestSearch.go \
-        || exit 1
+    echo ""
+    echo "Running ingestSearch ..."
+    go run -v  ./examples/ingestSearch/ingestSearch.go || exit 1
+    echo "Running logging ..."
+    go run -v  ./examples/logging/logging.go -logfile example.log || exit 1
+    echo "example.log output:"
+    (ls example.log && cat example.log| sed -e "s/Authorization: Bearer .*/Authorization: Bearer <REDACTED>/g") || exit 1
 fi
