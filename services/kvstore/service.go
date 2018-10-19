@@ -178,7 +178,7 @@ func (s *Service) DeleteRecords(collectionName string, values url.Values) error 
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
 func (s *Service) DeleteRecordByKey(collectionName string, keyValue string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, keyValue)
+	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return err
 	}

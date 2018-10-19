@@ -9,8 +9,11 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -164,4 +167,85 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
 	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
 	assert.Nil(t, resp)
+}
+
+//TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
+func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
+	})
+
+	var cnt, errcnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err, "429")
+				errcnt++
+			}
+			cnt++
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(50) * time.Second)
+	assert.Equal(t, 20, cnt)
+	assert.NotZero(t, errcnt)
+}
+
+//TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
+func TestCreateJobDefaultBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig:   services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
+	})
+
+	var cnt, errcnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err, "429")
+				errcnt++
+			}
+			cnt++
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(50) * time.Second)
+	assert.Equal(t, 20, cnt)
+	assert.NotZero(t, errcnt)
+}
+
+//TestRetryOff and validate that job response is a 429 after certain number of requests
+func TestRetryOff(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: false,
+	})
+
+	var errcnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, err := service.CreateJob(PostJobsRequest)
+			if err != nil {
+				assert.Contains(t, err, "429")
+				errcnt++
+
+			}
+			fmt.Println(err)
+			fmt.Println(job.ID)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(20) * time.Second)
+	fmt.Println("Error ", errcnt)
+	assert.NotZero(t, errcnt)
 }
