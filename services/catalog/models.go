@@ -17,6 +17,8 @@ const (
 	Index DatasetInfoKind = "index"
 	// Metric represents TODO: Description needed
 	Metric DatasetInfoKind = "metric"
+	// Metric represents TODO: Description needed
+	View DatasetInfoKind = "view"
 )
 
 // DatasetInfo represents the sources of data that can be searched by Splunk
