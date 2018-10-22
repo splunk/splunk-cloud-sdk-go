@@ -8,10 +8,11 @@ package integration
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCatalogMetricCreationSuccess(t *testing.T) {
