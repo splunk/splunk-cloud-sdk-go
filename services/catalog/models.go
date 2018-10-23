@@ -74,7 +74,7 @@ type DatasetCreationPayload struct {
 	Disabled *bool  `json:"disabled,omitempty"`
 
 	Search                 string `json:"search,omitempty"`
-	FrozenTimePeriodInSecs int    `json:"frozenTimePeriodInSecs,omitempty"`
+	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
 // UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
