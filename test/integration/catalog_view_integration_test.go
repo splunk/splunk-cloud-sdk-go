@@ -27,7 +27,7 @@ func TestCatalogViewCreationSuccess(t *testing.T) {
 func TestCatalogViewCreationWithMissingCollectionName(t *testing.T) {
 	createMetricDatasetInfo := model.DatasetCreationPayload{
 		Kind:   catalog.View,
-		Search: "search index='main' | head limit=10 | stats count()",
+		Search: "from index:main | head limit=10 | stats count()",
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
