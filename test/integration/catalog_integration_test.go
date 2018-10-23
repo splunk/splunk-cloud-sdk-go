@@ -14,6 +14,7 @@ import (
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
@@ -106,6 +107,41 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
 	require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
+	createMetricDatasetInfo := model.DatasetCreationPayload{
+		Name:         collectionName,
+		Kind:         catalog.Metric,
+		Owner:        datasetOwner,
+		Module:       namespaceName,
+		Capabilities: capabilities,
+		Disabled:     &isDisabled,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.Metric, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createViewDataset(t *testing.T, collectionName string, search string) (*model.DatasetInfo, error) {
+	createViewDatasetInfo := model.DatasetCreationPayload{
+		Name:   collectionName,
+		Kind:   catalog.View,
+		Search: search,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.View, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
