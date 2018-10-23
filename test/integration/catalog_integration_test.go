@@ -138,8 +138,8 @@ func createViewDataset(t *testing.T, collectionName string, search string) (*mod
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
-	//require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
 	require.Equal(t, catalog.View, datasetInfo.Kind)
 
