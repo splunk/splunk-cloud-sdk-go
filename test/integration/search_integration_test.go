@@ -179,21 +179,16 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
 	})
 
-	var cnt,errcnt int
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, err := service.CreateJob(PostJobsRequest)
-			if err != nil {
-				assert.Contains(t, err,"429")
-				errcnt++
-			}
+			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
 			fmt.Println(job.ID)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(50) * time.Second)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.Equal(t, 20, cnt)
-	assert.NotZero(t, errcnt)
 }
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
@@ -205,21 +200,16 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		RetryConfig: services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
 	})
 
-	var cnt,errcnt int
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, err := service.CreateJob(PostJobsRequest)
-			if err != nil {
-				assert.Contains(t, err,"429")
-				errcnt++
-			}
+			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
 			fmt.Println(job.ID)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(50) * time.Second)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.Equal(t, 20, cnt)
-	assert.NotZero(t, errcnt)
 }
 //TestRetryOff and validate that job response is a 429 after certain number of requests
 func TestRetryOff(t *testing.T) {
@@ -233,17 +223,14 @@ func TestRetryOff(t *testing.T) {
 	var errcnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, err := service.CreateJob(PostJobsRequest)
+			_, err := service.CreateJob(PostJobsRequest)
 			if err != nil {
-				assert.Contains(t, err,"429")
+				assert.Contains(t, err.(*util.HTTPError).HTTPStatus, "429")
 				errcnt++
 
 			}
-			fmt.Println(err)
-			fmt.Println(job.ID)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(20) * time.Second)
-	fmt.Println("Error ", errcnt)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.NotZero(t, errcnt)
 }
