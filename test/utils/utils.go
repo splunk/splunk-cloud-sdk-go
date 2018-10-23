@@ -14,9 +14,6 @@ import (
 // timeSec denotes the current timestamp
 var timeSec = time.Now().Unix()
 
-// TestURLProtocol - the url protocol for the test api to be used
-var TestURLProtocol = os.Getenv("URL_PROTOCOL")
-
 // TestSplunkCloudHost - the url for the test api to be used
 var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
 

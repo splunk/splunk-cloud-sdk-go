@@ -47,7 +47,6 @@ func main() {
 
 	client, err := identity.NewService(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
-		Scheme:       testutils.TestURLProtocol,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
 		RoundTripper: util.CreateRoundTripperWithLogger(logInfo),

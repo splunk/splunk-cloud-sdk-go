@@ -11,12 +11,10 @@ GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | gr
 GIT_COMMIT_TAG := $(shell git rev-parse --verify HEAD)
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
-LOCAL_URL_PROTOCOL := http
 LOCAL_SPLUNK_CLOUD_HOST := localhost:8882
 LOCAL_BEARER_TOKEN := AUTH_TOKEN
 LOCAL_TENANT_ID := TENANT
 
-DOCKER_STUBBY_URL_PROTOCOL := http
 DOCKER_STUBBY_SPLUNK_CLOUD_HOST := splunk-cloud-sdk-shared-stubby:8882
 DOCKER_STUBBY_BEARER_TOKEN := AUTH_TOKEN
 DOCKER_STUBBY_TENANT_ID := TENANT
@@ -88,7 +86,6 @@ dependencies_update:
 
 debug_local_environment_variables:
 	@echo "Local Testing Environment Variables"
-	@echo "LOCAL_TEST_URL_PROTOCOL: $(LOCAL_TEST_URL_PROTOCOL)"
 	@echo "LOCAL_TEST_SPLUNK_CLOUD_HOST: $(LOCAL_TEST_SPLUNK_CLOUD_HOST)"
 	@echo "LOCAL_TEST_BEARER_TOKEN: $(LOCAL_TEST_BEARER_TOKEN)"
 	@echo "LOCAL_TEST_TENANT_ID: $(LOCAL_TEST_TENANT_ID)"
@@ -96,7 +93,6 @@ debug_local_environment_variables:
 
 debug_docker_environment_variables:
 	@echo "Docker Testing Environment Variables"
-	@echo "DOCKER_STUBBY_URL_PROTOCOL: $(DOCKER_STUBBY_URL_PROTOCOL)"
 	@echo "DOCKER_STUBBY_SPLUNK_CLOUD_HOST: $(DOCKER_STUBBY_SPLUNK_CLOUD_HOST)"
 	@echo "DOCKER_STUBBY_BEARER_TOKEN: $(DOCKER_STUBBY_BEARER_TOKEN)"
 	@echo "DOCKER_STUBBY_TENANT_ID: $(DOCKER_STUBBY_TENANT_ID)"
@@ -106,14 +102,12 @@ run_unit_tests:
 	sh ./ci/unit_tests/run_unit_tests.sh
 
 run_local_stubby_tests: debug_local_environment_variables
-	URL_PROTOCOL=$(LOCAL_URL_PROTOCOL) \
 	SPLUNK_CLOUD_HOST=$(LOCAL_SPLUNK_CLOUD_HOST) \
 	BEARER_TOKEN=$(LOCAL_BEARER_TOKEN) \
 	TENANT_ID=$(LOCAL_TENANT_ID) \
 	sh ./ci/functional/runtests.sh
 
 run_docker_stubby_tests: debug_docker_environment_variables
-	URL_PROTOCOL=$(DOCKER_STUBBY_URL_PROTOCOL) \
 	SPLUNK_CLOUD_HOST=$(DOCKER_STUBBY_SPLUNK_CLOUD_HOST) \
 	BEARER_TOKEN=$(DOCKER_STUBBY_BEARER_TOKEN) \
 	TENANT_ID=$(DOCKER_STUBBY_TENANT_ID) \

@@ -24,7 +24,6 @@ import (
 func getClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -36,7 +35,6 @@ func getClient(t *testing.T) *service.Client {
 func getInvalidTokenClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -108,7 +106,7 @@ func TestNewRequestError(t *testing.T) {
 
 func TestNewStubbyRequest(t *testing.T) {
 	client := getClient(t)
-	resp, err := client.DoRequest(service.RequestParams{Method: http.MethodGet, URL: url.URL{Scheme: testutils.TestURLProtocol, Host: testutils.TestSplunkCloudHost, Path: "/error"}})
+	resp, err := client.DoRequest(service.RequestParams{Method: http.MethodGet, URL: url.URL{Host: testutils.TestSplunkCloudHost, Path: "/error"}})
 	defer resp.Body.Close()
 
 	assert.NotNil(t, err)
