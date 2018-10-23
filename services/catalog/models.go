@@ -17,7 +17,7 @@ const (
 	Index DatasetInfoKind = "index"
 	// Metric represents TODO: Description needed
 	Metric DatasetInfoKind = "metric"
-	// Metric represents TODO: Description needed
+	// View represents TODO: Description needed
 	View DatasetInfoKind = "view"
 )
 
