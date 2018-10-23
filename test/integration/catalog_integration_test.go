@@ -130,6 +130,22 @@ func createMetricDataset(t *testing.T, namespaceName string, collectionName stri
 	return datasetInfo, err
 }
 
+func createViewDataset(t *testing.T, collectionName string, search string) (*model.DatasetInfo, error) {
+	createViewDatasetInfo := model.DatasetCreationPayload{
+		Name:   collectionName,
+		Kind:   catalog.View,
+		Search: search,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.View, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
 // Test CreateDataset
 func TestIntegrationCreateDataset(t *testing.T) {
 	defer cleanupDatasets(t)
