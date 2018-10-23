@@ -9,14 +9,15 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -179,12 +180,12 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
 	})
 
-	var cnt,errcnt int
+	var cnt, errcnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, err := service.CreateJob(PostJobsRequest)
 			if err != nil {
-				assert.Contains(t, err,"429")
+				assert.Contains(t, err, "429")
 				errcnt++
 			}
 			cnt++
@@ -195,6 +196,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	assert.Equal(t, 20, cnt)
 	assert.NotZero(t, errcnt)
 }
+
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
@@ -202,15 +204,15 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig: services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
+		RetryConfig:   services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
 	})
 
-	var cnt,errcnt int
+	var cnt, errcnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, err := service.CreateJob(PostJobsRequest)
 			if err != nil {
-				assert.Contains(t, err,"429")
+				assert.Contains(t, err, "429")
 				errcnt++
 			}
 			cnt++
@@ -221,6 +223,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	assert.Equal(t, 20, cnt)
 	assert.NotZero(t, errcnt)
 }
+
 //TestRetryOff and validate that job response is a 429 after certain number of requests
 func TestRetryOff(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
@@ -235,7 +238,7 @@ func TestRetryOff(t *testing.T) {
 		go func(service *search.Service) {
 			job, err := service.CreateJob(PostJobsRequest)
 			if err != nil {
-				assert.Contains(t, err,"429")
+				assert.Contains(t, err, "429")
 				errcnt++
 
 			}
