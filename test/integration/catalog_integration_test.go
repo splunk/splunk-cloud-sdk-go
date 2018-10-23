@@ -10,13 +10,15 @@ import (
 	"net/url"
 	"testing"
 
+	"strings"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"strings"
 )
 
 // Test Rule variables
@@ -105,6 +107,25 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
 	require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
+	createMetricDatasetInfo := model.DatasetCreationPayload{
+		Name:         collectionName,
+		Kind:         catalog.Metric,
+		Owner:        datasetOwner,
+		Module:       namespaceName,
+		Capabilities: capabilities,
+		Disabled:     &isDisabled,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.Metric, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
