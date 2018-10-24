@@ -87,7 +87,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	//group-members
-	memberName := "sbijam@splunk.com"
+	memberName := "Srv-ssc-mt32intg@splunkcorp.com"
 	res3, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	memberNum := len(res3)
@@ -198,7 +198,7 @@ func TestCRUDMembers(t *testing.T) {
 	require.Nil(t, err)
 	memNum := len(res)
 
-	memberName := "sbijam@splunk.com"
+	memberName := "Srv-ssc-mt32intg@splunkcorp.com"
 
 	// create/get/delete member and members
 	result, err := client.IdentityService.AddMember(memberName)
