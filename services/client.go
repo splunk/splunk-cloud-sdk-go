@@ -61,12 +61,11 @@ type ConfigurableRetryConfig struct {
 
 //DefaultRetryConfig that will use a default RetryNumber and a default Interval between retries
 type DefaultRetryConfig struct {
-
 }
 
 //RetryStrategyConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
-	DefaultRetryConfig *DefaultRetryConfig
+	DefaultRetryConfig      *DefaultRetryConfig
 	ConfigurableRetryConfig *ConfigurableRetryConfig
 }
 
@@ -307,7 +306,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 		if config.RetryConfig.ConfigurableRetryConfig == nil {
 			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
 			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
-		} else  {
+		} else {
 			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
 			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
 		}

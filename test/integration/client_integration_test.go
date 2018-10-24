@@ -26,7 +26,6 @@ import (
 func getSdkClient(t *testing.T) *sdk.Client {
 	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -53,7 +52,6 @@ func TestSDKClientInit(t *testing.T) {
 func getClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -67,7 +65,6 @@ func getClient(t *testing.T) *service.Client {
 func getInvalidTenantClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestInvalidTestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -81,7 +78,6 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 func getInvalidClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
-		Scheme:  testutils.TestURLProtocol,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
@@ -119,7 +115,6 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	var handlers = []service.ResponseHandler{handler1, handler2, handler3}
 	client, err := service.NewClient(&service.Config{
 		Token:            testutils.TestAuthenticationToken,
-		Scheme:           testutils.TestURLProtocol,
 		Host:             testutils.TestSplunkCloudHost,
 		Tenant:           testutils.TestInvalidTestTenant,
 		Timeout:          testutils.TestTimeOut,
@@ -150,7 +145,6 @@ func (ml *MyLogger) Print(v ...interface{}) {
 func TestRoundTripperWithSdkClient(t *testing.T) {
 	client, err := sdk.NewClient(&service.Config{
 		Token:        testutils.TestAuthenticationToken,
-		Scheme:       testutils.TestURLProtocol,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),

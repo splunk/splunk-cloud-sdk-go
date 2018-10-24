@@ -8,8 +8,9 @@ package services
 import (
 	"net/http"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
 )
 
 const (
@@ -73,7 +74,7 @@ func (configRh ConfigurableRetryResponseHandler) HandleResponse(client *BaseClie
 }
 
 //handleRequestResponse - helper function to handle the retry to a 429 response
-func handleRequestResponse(client *BaseClient, request *Request, response *http.Response, retryCount uint, interval int) (*http.Response, error){
+func handleRequestResponse(client *BaseClient, request *Request, response *http.Response, retryCount uint, interval int) (*http.Response, error) {
 	if response.StatusCode != 429 {
 		return response, nil
 	}
