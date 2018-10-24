@@ -4,7 +4,6 @@ echo "==============================================="
 echo "Beginning functional tests"
 echo "==============================================="
 echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
-echo "URL_PROTOCOL=$URL_PROTOCOL"
 echo "TENANT_ID=$TENANT_ID"
 echo "==============================================="
 

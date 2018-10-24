@@ -4,7 +4,6 @@ echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
 env | grep SPLUNK_CLOUD_HOST
-env | grep URL_PROTOCOL
 env | grep TENANT_ID
 
 echo "==============================================="
