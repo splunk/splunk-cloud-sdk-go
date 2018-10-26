@@ -162,9 +162,15 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
+	//get the service
+	servicePrefix := urlPathParts[0]
+	//retrieve the cluster the service belongs to
+	serviceCluster := servicesClusterMapping()(servicePrefix)
+	host := fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+
 	u = url.URL{
 		Scheme:   c.scheme,
-		Host:     c.host,
+		Host:     host,
 		Path:     path.Join(tenant, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
@@ -332,4 +338,23 @@ func NewClient(config *Config) (*BaseClient, error) {
 	}
 
 	return c, nil
+}
+
+func servicesClusterMapping() func(string) string {
+	clusterMap := map[string]string{
+		"search":       "api",
+		"catalog":      "api",
+		"kvstore":      "api",
+		"action":       "api",
+		"identity":     "api",
+		"ingest":       "api",
+		"stream":       "api",
+		"forwarders":   "apps",
+		"app registry": "apps",
+		"ml":           "apps",
+	}
+
+	return func(key string) string {
+		return clusterMap[key]
+	}
 }
