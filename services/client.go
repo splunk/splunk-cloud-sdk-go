@@ -166,7 +166,12 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, u
 	servicePrefix := urlPathParts[0]
 	//retrieve the cluster the service belongs to
 	serviceCluster := servicesClusterMapping()(servicePrefix)
-	host := fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	var host string
+	if serviceCluster != "" {
+		host = fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	} else {
+		host = fmt.Sprintf("%s%s%s", "api", ".", c.host)
+	}
 
 	u = url.URL{
 		Scheme:   c.scheme,
@@ -279,7 +284,7 @@ func (c *BaseClient) GetURL() *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	host := "api.splunkbeta.com"
+	host := "prod.splunkbeta.com"
 	if config.Host != "" {
 		host = config.Host
 	}
