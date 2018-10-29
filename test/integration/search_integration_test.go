@@ -8,9 +8,6 @@ package integration
 import (
 	"testing"
 	"time"
-
-	"fmt"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
@@ -185,7 +182,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		go func(service *search.Service) {
 			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
-			fmt.Println(job.ID)
+			assert.NotNil(t, job)
 		}(searchService)
 	}
 	time.Sleep(time.Duration(5) * time.Second)
@@ -207,7 +204,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		go func(service *search.Service) {
 			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
-			fmt.Println(job.ID)
+			assert.NotNil(t, job)
 		}(searchService)
 	}
 	time.Sleep(time.Duration(5) * time.Second)
@@ -227,16 +224,13 @@ func TestRetryOff(t *testing.T) {
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, err := service.CreateJob(PostJobsRequest)
+			assert.NotNil(t, job)
 			if err != nil {
 				assert.Contains(t, err.(*util.HTTPError).HTTPStatus, "429")
 				errcnt++
-
 			}
-			fmt.Println(err)
-			fmt.Println(job.ID)
 		}(searchService)
 	}
 	time.Sleep(time.Duration(5) * time.Second)
-	fmt.Println("Error ", errcnt)
 	assert.NotZero(t, errcnt)
 }
