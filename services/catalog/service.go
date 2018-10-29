@@ -15,6 +15,7 @@ import (
 // catalog service url prefix
 const servicePrefix = "catalog"
 const serviceVersion = "v1beta1"
+const serviceCluster = "api"
 
 // Service talks to the Splunk Cloud catalog service
 type Service services.BaseService
@@ -30,7 +31,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 // ListDatasets returns all Datasets with optional filter, count, or orderby params
 func (s *Service) ListDatasets(values url.Values) ([]DatasetInfo, error) {
-	url, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "datasets")
+	url, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +55,7 @@ func (s *Service) GetDatasets() ([]DatasetInfo, error) {
 
 // GetDataset returns the Dataset by resourceName or ID
 func (s *Service) GetDataset(resourceNameOrID string) (*DatasetInfo, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +75,7 @@ func (s *Service) GetDataset(resourceNameOrID string) (*DatasetInfo, error) {
 func (s *Service) CreateDataset(dataset *DatasetCreationPayload) (*DatasetInfo, error) {
 	// TODO: remove this from DatasetCreationPayload
 	dataset.Owner = ""
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +99,7 @@ func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOr
 	dataset.Kind = ""
 	dataset.Modified = ""
 	dataset.ModifiedBy = ""
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +117,7 @@ func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOr
 
 // DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
 func (s *Service) DeleteDataset(resourceNameOrID string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return err
 	}
@@ -129,7 +130,7 @@ func (s *Service) DeleteDataset(resourceNameOrID string) error {
 
 // DeleteRule deletes the rule and its dependencies with the specified rule id or resourceName
 func (s *Service) DeleteRule(resourceNameOrID string) error {
-	getDeleteURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", resourceNameOrID)
+	getDeleteURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return err
 	}
@@ -142,7 +143,7 @@ func (s *Service) DeleteRule(resourceNameOrID string) error {
 
 // GetRules returns all the rules.
 func (s *Service) GetRules() ([]Rule, error) {
-	getRuleURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules")
+	getRuleURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (s *Service) GetRules() ([]Rule, error) {
 
 // GetRule returns rule by the specified resourceName or ID.
 func (s *Service) GetRule(resourceNameOrID string) (*Rule, error) {
-	getRuleURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", resourceNameOrID)
+	getRuleURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (s *Service) CreateRule(rule Rule) (*Rule, error) {
 	rule.Modified = ""
 	rule.ModifiedBy = ""
 	rule.Owner = ""
-	postRuleURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules")
+	postRuleURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules")
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +203,7 @@ func (s *Service) CreateRule(rule Rule) (*Rule, error) {
 
 // UpdateRule updates the rule with the specified resourceName or ID
 func (s *Service) UpdateRule(resourceNameOrID string, rule *RuleUpdateFields) (*Rule, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", resourceNameOrID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", resourceNameOrID)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +221,7 @@ func (s *Service) UpdateRule(resourceNameOrID string, rule *RuleUpdateFields) (*
 
 // GetDatasetFields returns all the fields belonging to the specified dataset
 func (s *Service) GetDatasetFields(datasetID string, values url.Values) ([]Field, error) {
-	url, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "datasets", datasetID, "fields")
+	url, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +239,7 @@ func (s *Service) GetDatasetFields(datasetID string, values url.Values) ([]Field
 
 // GetDatasetField returns the field belonging to the specified dataset with the id datasetFieldID
 func (s *Service) GetDatasetField(datasetID string, datasetFieldID string) (*Field, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -256,7 +257,7 @@ func (s *Service) GetDatasetField(datasetID string, datasetFieldID string) (*Fie
 
 // CreateDatasetField creates a new field in the specified dataset
 func (s *Service) CreateDatasetField(datasetID string, datasetField *Field) (*Field, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", datasetID, "fields")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", datasetID, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +275,7 @@ func (s *Service) CreateDatasetField(datasetID string, datasetField *Field) (*Fi
 
 // UpdateDatasetField updates an already existing field in the specified dataset
 func (s *Service) UpdateDatasetField(datasetID string, datasetFieldID string, datasetField *Field) (*Field, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -292,7 +293,7 @@ func (s *Service) UpdateDatasetField(datasetID string, datasetFieldID string, da
 
 // DeleteDatasetField deletes the field belonging to the specified dataset with the id datasetFieldID
 func (s *Service) DeleteDatasetField(datasetID string, datasetFieldID string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", datasetID, "fields", datasetFieldID)
 	if err != nil {
 		return err
 	}
@@ -305,7 +306,7 @@ func (s *Service) DeleteDatasetField(datasetID string, datasetFieldID string) er
 
 // GetFields returns a list of all Fields on Catalog
 func (s *Service) GetFields() ([]Field, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "fields")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "fields")
 	if err != nil {
 		return nil, err
 	}
@@ -323,7 +324,7 @@ func (s *Service) GetFields() ([]Field, error) {
 
 // GetField returns the Field corresponding to fieldid
 func (s *Service) GetField(fieldID string) (*Field, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "fields", fieldID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "fields", fieldID)
 	if err != nil {
 		return nil, err
 	}
@@ -347,7 +348,7 @@ func (s *Service) CreateRuleAction(ruleID string, action *Action) (*Action, erro
 	action.Modified = ""
 	action.ModifiedBy = ""
 	action.Owner = ""
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", ruleID, "actions")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -366,7 +367,7 @@ func (s *Service) CreateRuleAction(ruleID string, action *Action) (*Action, erro
 
 // GetRuleActions returns a list of all actions belonging to the specified rule
 func (s *Service) GetRuleActions(ruleID string) ([]Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", ruleID, "actions")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", ruleID, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +385,7 @@ func (s *Service) GetRuleActions(ruleID string) ([]Action, error) {
 
 // GetRuleAction returns the action of specified belonging to the specified rule
 func (s *Service) GetRuleAction(ruleID string, actionID string) (*Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
@@ -403,7 +404,7 @@ func (s *Service) GetRuleAction(ruleID string, actionID string) (*Action, error)
 
 // DeleteRuleAction deletes the action of specified belonging to the specified rule
 func (s *Service) DeleteRuleAction(ruleID string, actionID string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return err
 	}
@@ -422,7 +423,7 @@ func (s *Service) UpdateRuleAction(ruleID string, actionID string, action *Actio
 	action.Kind = ""
 	action.Modified = ""
 	action.ModifiedBy = ""
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "rules", ruleID, "actions", actionID)
 	if err != nil {
 		return nil, err
 	}
@@ -441,7 +442,7 @@ func (s *Service) UpdateRuleAction(ruleID string, actionID string, action *Actio
 
 // GetModules returns a list of a list of modules that match a filter query if it is given, otherwise return all modules
 func (s *Service) GetModules(filter url.Values) ([]Module, error) {
-	url, err := s.Client.BuildURL(filter, servicePrefix, serviceVersion, "modules")
+	url, err := s.Client.BuildURL(filter, serviceCluster, servicePrefix, serviceVersion, "modules")
 	if err != nil {
 		return nil, err
 	}

@@ -19,6 +19,7 @@ import (
 
 const servicePrefix = "search"
 const serviceVersion = "v1beta1"
+const serviceCluster = "api"
 
 // Service talks to the Splunk Cloud search service
 type Service services.BaseService
@@ -47,7 +48,7 @@ func (s *Service) ListJobs() ([]Job, error) {
 func (s *Service) ListJobsByQueryParameters(query JobsQuery) ([]Job, error) {
 	var searchJobs []Job
 	values := util.ParseURLParams(query)
-	jobsURL, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "jobs")
+	jobsURL, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "jobs")
 	if err != nil {
 		return searchJobs, err
 	}
@@ -65,7 +66,7 @@ func (s *Service) ListJobsByQueryParameters(query JobsQuery) ([]Job, error) {
 // CreateJob creates a new search job
 func (s *Service) CreateJob(job *CreateJobRequest) (*Job, error) {
 	var postJobResponse Job
-	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs")
+	jobURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "jobs")
 	if err != nil {
 		return &postJobResponse, err
 	}
@@ -83,7 +84,7 @@ func (s *Service) CreateJob(job *CreateJobRequest) (*Job, error) {
 // GetJob retrieves information about the specified search.
 func (s *Service) GetJob(jobID string) (*Job, error) {
 	var searchJob Job
-	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs", jobID)
+	jobURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "jobs", jobID)
 	response, err := s.Client.Get(services.RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()
@@ -98,7 +99,7 @@ func (s *Service) GetJob(jobID string) (*Job, error) {
 // UpdateJob updates an existing job with actions and TTL
 func (s *Service) UpdateJob(jobID string, jobStatus JobAction) (*PatchJobResponse, error) {
 	var patchResponse PatchJobResponse
-	jobURL, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "jobs", jobID)
+	jobURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "jobs", jobID)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +124,7 @@ func (s *Service) GetResults(jobID string, count, offset int) (interface{}, erro
 		query.Set("count", fmt.Sprintf("%d", count))
 	}
 	query.Set("offset", fmt.Sprintf("%d", offset))
-	jobURL, err := s.Client.BuildURL(query, servicePrefix, serviceVersion, "jobs", jobID, "results")
+	jobURL, err := s.Client.BuildURL(query, serviceCluster, servicePrefix, serviceVersion, "jobs", jobID, "results")
 	if err != nil {
 		return nil, err
 	}

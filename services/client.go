@@ -145,12 +145,12 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
-func (c *BaseClient) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
-	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
+func (c *BaseClient) BuildURL(queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
+	return c.BuildURLWithTenant(c.defaultTenant, queryValues, serviceCluster, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -162,10 +162,6 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	//get the service
-	servicePrefix := urlPathParts[0]
-	//retrieve the cluster the service belongs to
-	serviceCluster := servicesClusterMapping()(servicePrefix)
 	var host string
 	if serviceCluster != "" {
 		host = fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
@@ -343,23 +339,4 @@ func NewClient(config *Config) (*BaseClient, error) {
 	}
 
 	return c, nil
-}
-
-func servicesClusterMapping() func(string) string {
-	clusterMap := map[string]string{
-		"search":       "api",
-		"catalog":      "api",
-		"kvstore":      "api",
-		"action":       "api",
-		"identity":     "api",
-		"ingest":       "api",
-		"stream":       "api",
-		"forwarders":   "apps",
-		"app registry": "apps",
-		"ml":           "apps",
-	}
-
-	return func(key string) string {
-		return clusterMap[key]
-	}
 }

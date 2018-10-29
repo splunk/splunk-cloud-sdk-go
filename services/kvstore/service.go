@@ -14,6 +14,7 @@ import (
 
 const servicePrefix = "kvstore"
 const serviceVersion = "v1beta1"
+const serviceCluster = "api"
 
 // Service talks to kvstore service
 type Service services.BaseService
@@ -29,7 +30,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 // GetServiceHealthStatus returns Service Health Status
 func (s *Service) GetServiceHealthStatus() (*PingOKBody, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "ping")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "ping")
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +48,7 @@ func (s *Service) GetServiceHealthStatus() (*PingOKBody, error) {
 
 // CreateIndex posts a new index to be added to the collection.
 func (s *Service) CreateIndex(collectionName string, index IndexDefinition) (*IndexDescription, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,7 @@ func (s *Service) CreateIndex(collectionName string, index IndexDefinition) (*In
 
 // ListIndexes retrieves all the indexes in a given collection
 func (s *Service) ListIndexes(collectionName string) ([]IndexDefinition, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "indexes")
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (s *Service) ListIndexes(collectionName string) ([]IndexDefinition, error) 
 
 // DeleteIndex deletes the specified index in a given collection
 func (s *Service) DeleteIndex(collectionName string, indexName string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "indexes", indexName)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "indexes", indexName)
 	if err != nil {
 		return err
 	}
@@ -99,7 +100,7 @@ func (s *Service) DeleteIndex(collectionName string, indexName string) error {
 
 // InsertRecords posts new records to the collection.
 func (s *Service) InsertRecords(collectionName string, records []Record) ([]string, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "batch")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "batch")
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +118,7 @@ func (s *Service) InsertRecords(collectionName string, records []Record) ([]stri
 
 // QueryRecords queries records present in a given collection.
 func (s *Service) QueryRecords(collectionName string, values url.Values) ([]Record, error) {
-	url, err := s.Client.BuildURL(values,
+	url, err := s.Client.BuildURL(values, serviceCluster,
 		servicePrefix,
 		serviceVersion,
 		"collections",
@@ -144,7 +145,7 @@ func (s *Service) QueryRecords(collectionName string, values url.Values) ([]Reco
 
 // GetRecordByKey queries a particular record present in a given collection based on the key value provided by the user.
 func (s *Service) GetRecordByKey(collectionName string, keyValue string) (Record, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +163,7 @@ func (s *Service) GetRecordByKey(collectionName string, keyValue string) (Record
 
 // DeleteRecords deletes records present in a given collection based on the provided query.
 func (s *Service) DeleteRecords(collectionName string, values url.Values) error {
-	url, err := s.Client.BuildURL(values, servicePrefix, serviceVersion, "collections", collectionName, "query")
+	url, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "query")
 	if err != nil {
 		return err
 	}
@@ -178,7 +179,7 @@ func (s *Service) DeleteRecords(collectionName string, values url.Values) error 
 
 // DeleteRecordByKey deletes a particular record present in a given collection based on the key value provided by the user.
 func (s *Service) DeleteRecordByKey(collectionName string, keyValue string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "collections", collectionName, "records", keyValue)
 	if err != nil {
 		return err
 	}
@@ -195,7 +196,7 @@ func (s *Service) DeleteRecordByKey(collectionName string, keyValue string) erro
 // ListRecords - List the records created for the tenant's specified collection TODO: include count, offset and orderBy
 func (s *Service) ListRecords(collectionName string, filters map[string][]string) ([]map[string]interface{}, error) {
 	url, err := s.Client.BuildURL(
-		filters,
+		filters, serviceCluster,
 		servicePrefix,
 		serviceVersion,
 		"collections",
@@ -224,7 +225,7 @@ func (s *Service) ListRecords(collectionName string, filters map[string][]string
 // InsertRecord - Create a new record in the tenant's specified collection
 func (s *Service) InsertRecord(collectionName string, record Record) (map[string]string, error) {
 	url, err := s.Client.BuildURL(
-		nil,
+		nil, serviceCluster,
 		servicePrefix,
 		serviceVersion,
 		"collections",
