@@ -15,6 +15,7 @@ import (
 // action service url prefix
 const servicePrefix = "action"
 const serviceVersion = "v1beta1"
+const serviceCluster = "api"
 
 // Service - A service the receives incoming notifications and uses
 // pre-defined templates to turn those notifications into meaningful actions
@@ -31,7 +32,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 // GetActions get all actions
 func (s *Service) GetActions() ([]Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +53,7 @@ func (s *Service) GetActions() ([]Action, error) {
 
 // CreateAction creates an action
 func (s *Service) CreateAction(action Action) (*Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions")
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +74,7 @@ func (s *Service) CreateAction(action Action) (*Action, error) {
 
 // GetAction get an action by name
 func (s *Service) GetAction(name string) (*Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions", name)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +95,7 @@ func (s *Service) GetAction(name string) (*Action, error) {
 
 // TriggerAction triggers an action from a notification
 func (s *Service) TriggerAction(name string, notification Notification) (*TriggerResponse, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions", name)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +121,7 @@ func (s *Service) TriggerAction(name string, notification Notification) (*Trigge
 
 // UpdateAction updates and action by name
 func (s *Service) UpdateAction(name string, action UpdateFields) (*Action, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions", name)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions", name)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +144,7 @@ func (s *Service) UpdateAction(name string, action UpdateFields) (*Action, error
 
 // DeleteAction deletes an action by name
 func (s *Service) DeleteAction(name string) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions", name)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions", name)
 	if err != nil {
 		return err
 	}
@@ -159,7 +160,7 @@ func (s *Service) DeleteAction(name string) error {
 
 // GetActionStatus returns an action's status by name
 func (s *Service) GetActionStatus(name string, statusID string) (*Status, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "actions", name, "status", statusID)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "actions", name, "status", statusID)
 	if err != nil {
 		return nil, err
 	}
