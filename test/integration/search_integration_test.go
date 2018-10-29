@@ -177,7 +177,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
+		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
 	})
 
 	var cnt int
@@ -199,7 +199,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
+		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
 	})
 
 	var cnt int
