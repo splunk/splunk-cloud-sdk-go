@@ -280,7 +280,7 @@ func (c *BaseClient) GetURL() *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	host := "prod.splunkbeta.com"
+	host := "api.splunkbeta.com"
 	if config.Host != "" {
 		host = config.Host
 	}
