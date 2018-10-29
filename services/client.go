@@ -145,12 +145,12 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
-func (c *BaseClient) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
-	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
+func (c *BaseClient) BuildURL(queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
+	return c.BuildURLWithTenant(c.defaultTenant, queryValues, serviceCluster, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -162,9 +162,16 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
+	var host string
+	if serviceCluster != "" {
+		host = fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	} else {
+		host = fmt.Sprintf("%s%s%s", "api", ".", c.host)
+	}
+
 	u = url.URL{
 		Scheme:   c.scheme,
-		Host:     c.host,
+		Host:     host,
 		Path:     path.Join(tenant, buildPath),
 		RawQuery: queryValues.Encode(),
 	}

@@ -18,25 +18,27 @@ import (
 func TestBuildURLDefaultTenant(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
-	var apiHostname = "example.com"
-	var apiHost = apiHostname + ":" + apiPort
+	var host = "example.com"
+	var hostWithPort = host + ":" + apiPort
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	client, err := NewClient(&Config{
 		Token:  token,
 		Scheme: apiURLProtocol,
-		Host:   apiHost,
+		Host:   hostWithPort,
 		Tenant: tenant,
 	})
 	require.Nil(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
-	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
+	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
 
 	require.Nil(t, err)
-	assert.Equal(t, apiHostname, testURL.Hostname())
+	apiHostName := fmt.Sprintf("%s%s%s", "api", ".", host)
+	apiHostWithPort := fmt.Sprintf("%s%s%s", apiHostName, ":", apiPort)
+	assert.Equal(t, apiHostName, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, apiHost, testURL.Host)
+	assert.Equal(t, apiHostWithPort, testURL.Host)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 }
@@ -49,14 +51,14 @@ func TestBuildURLSetDefaultTenant(t *testing.T) {
 		Tenant: tenant,
 	})
 	require.Nil(t, err)
-	testURL, err := client.BuildURL(nil, "services", "search", "jobs")
+	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
 	require.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 	// Set to new tenant
 	tenant = "NEW_TENANT"
 	client.SetDefaultTenant(tenant)
-	testURL, err = client.BuildURL(nil, "services", "search", "jobs")
+	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
 	require.Nil(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
