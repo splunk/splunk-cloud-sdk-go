@@ -28,6 +28,7 @@ lint:
 	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)
 
 vet:
+	make install_test_dep # Needed here to avoid compile errors
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
