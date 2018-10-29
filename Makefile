@@ -119,4 +119,11 @@ run_docker_stubby_tests: debug_docker_environment_variables
 	TENANT_ID=$(DOCKER_STUBBY_TENANT_ID) \
 	sh ./ci/functional/runtests.sh
 
+run_integration_tests:
+	make install_test_dep
+	sh ./ci/integration/runtests.sh
+
+run_integration_examples:
+	./ci/integration/runexamples.sh
+
 .FORCE:
