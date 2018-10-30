@@ -8,8 +8,10 @@ package integration
 import (
 	"testing"
 	"time"
-
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +23,7 @@ var (
 	PostJobsRequest             = &model.CreateJobRequest{Query: DefaultSearchQuery}
 	PostJobsBadRequest          = &model.CreateJobRequest{Query: "hahdkfdksf=main | dfsdfdshead 5"}
 	PostJobsRequestModule       = &model.CreateJobRequest{Query: DefaultSearchQuery, Module: ""} // Empty string until catalog is updated
-	QueryParams = &model.QueryParameters{Earliest: "-12h@h"}
+	QueryParams                 = &model.QueryParameters{Earliest: "-12h@h"}
 	PostJobsRequestWithEarliest = &model.CreateJobRequest{Query: DefaultSearchQuery, QueryParameters: QueryParams}
 )
 
@@ -29,6 +31,22 @@ func TestListJobs(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.ListJobs()
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+}
+
+func TestListJobsByStatusRunning(t *testing.T) {
+	client := getClient(t)
+	require.NotNil(t, client)
+	response, err := client.SearchService.ListJobsByQueryParameters(search.JobsQuery{Status: "running"})
+	require.Nil(t, err)
+	assert.NotNil(t, response)
+}
+
+func TestListJobsByMultipleStatuses(t *testing.T) {
+	client := getClient(t)
+	require.NotNil(t, client)
+	response, err := client.SearchService.ListJobsByQueryParameters(search.JobsQuery{Status: "running, done"})
 	require.Nil(t, err)
 	assert.NotNil(t, response)
 }
@@ -147,4 +165,72 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
 	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
 	assert.Nil(t, resp)
+}
+
+//TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
+func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
+	})
+
+	var cnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, _ := service.CreateJob(PostJobsRequest)
+			cnt++
+			assert.NotNil(t, job)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(5) * time.Second)
+	assert.Equal(t, 20, cnt)
+}
+
+//TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
+func TestCreateJobDefaultBackOffRetry(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: true,
+		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
+	})
+
+	var cnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, _ := service.CreateJob(PostJobsRequest)
+			cnt++
+			assert.NotNil(t, job)
+		}(searchService)
+	}
+	time.Sleep(time.Duration(5) * time.Second)
+	assert.Equal(t, 20, cnt)
+}
+
+//TestRetryOff and validate that job response is a 429 after certain number of requests
+func TestRetryOff(t *testing.T) {
+	searchService, _ := search.NewService(&services.Config{
+		Token:         testutils.TestAuthenticationToken,
+		Host:          testutils.TestSplunkCloudHost,
+		Tenant:        testutils.TestTenant,
+		RetryRequests: false,
+	})
+
+	var errcnt int
+	for i := 0; i < 20; i++ {
+		go func(service *search.Service) {
+			job, err := service.CreateJob(PostJobsRequest)
+			assert.NotNil(t, job)
+			if err != nil {
+				assert.Contains(t, err.(*util.HTTPError).HTTPStatus, "429")
+				errcnt++
+			}
+		}(searchService)
+	}
+	time.Sleep(time.Duration(5) * time.Second)
+	assert.NotZero(t, errcnt)
 }

@@ -65,7 +65,7 @@ func validateNotFoundActionError(t *testing.T, err error) {
 
 // Test GetActions which returns the list of all actions for the tenant
 func TestIntegrationGetActions(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Get Actions
 	actions, err := client.ActionService.GetActions()
@@ -75,7 +75,7 @@ func TestIntegrationGetActions(t *testing.T) {
 
 // Test CreateAction / GetAction for EmailAction
 func TestGetCreateActionEmail(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_cr_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
@@ -87,7 +87,7 @@ func TestGetCreateActionEmail(t *testing.T) {
 
 // Test CreateAction / GetAction for SNSAction
 func TestGetCreateActionSNS(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	snsActionName := fmt.Sprintf("s_cr_%d", timeSec)
 	snsAction := model.NewSNSAction(snsActionName, snsTopic, snsMsg)
 	defer cleanupAction(client, snsAction.Name)
@@ -99,7 +99,7 @@ func TestGetCreateActionSNS(t *testing.T) {
 
 // Test CreateAction / GetAction for WebhookAction
 func TestGetCreateActionWebhook(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_cr_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
@@ -111,7 +111,7 @@ func TestGetCreateActionWebhook(t *testing.T) {
 
 // Get Non-Existent Action should result in 404 Not Found
 func TestCreateActionFailInvalidAction(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	// Get Invalid Action
 	_, err := client.ActionService.GetAction("Dontexist")
 
@@ -124,7 +124,7 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 
 // Create Existing action should result in 409 Conflict
 func TestCreateActionFailExistingAction(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_confl_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
@@ -143,7 +143,7 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 
 // Access action endpoints using an Unauthenticated client results in a 401 Unauthenticated error
 func TestActionFailUnauthenticatedClient(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_unauth_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
@@ -185,7 +185,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 
 // Trigger action with invalid fields results in a 422 Unprocessable Entity error
 func TestTriggerActionFailInvalidFields(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_unproc_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
@@ -207,7 +207,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 
 // Test UpdateAction updates with the new fields in the action
 func TestUpdateAction(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_up_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	defer cleanupAction(client, emailAction.Name)
@@ -221,7 +221,7 @@ func TestUpdateAction(t *testing.T) {
 
 // Test DeleteAction deletes the action specified
 func TestDeleteAction(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_del_%d", timeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
@@ -232,7 +232,7 @@ func TestDeleteAction(t *testing.T) {
 
 // Access action endpoints with a non-existent Action results in a 404 NotFound
 func TestActionFailNotFoundAction(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	// Get Invalid Action
 	_, err := client.ActionService.GetAction("Action123")
 	validateNotFoundActionError(t, err)
@@ -249,7 +249,7 @@ func TestActionFailNotFoundAction(t *testing.T) {
 
 // TestGetActionStatus gets the status of the action after it is triggered
 func TestGetActionStatus(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_stat_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)
@@ -272,7 +272,7 @@ func TestGetActionStatus(t *testing.T) {
 
 // TestTriggerActionTenantMismatch triggers an action with tenant not matching the URL
 func TestTriggerActionTenantMismatch(t *testing.T) {
-	client := getClient(t)
+	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_badten_%d", timeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	defer cleanupAction(client, webhookAction.Name)

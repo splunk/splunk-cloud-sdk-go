@@ -48,7 +48,6 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
 }
 
-
 func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 	client := getClient(t)
 	event1 := model.Event{Body: "some event"}
@@ -71,7 +70,6 @@ func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 	assert.Equal(t, float64(1), failedEvent["index"])
 	assert.Equal(t, "Event body cannot be empty", failedEvent["message"])
 }
-
 
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
 	client := getClient(t)

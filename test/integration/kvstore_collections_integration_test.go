@@ -11,20 +11,19 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-var recordOne = model.Record {
+var recordOne = model.Record{
 	"TEST_KEY_01": "A",
 	"TEST_KEY_02": "B",
 	"TEST_KEY_03": "C",
 }
-var recordTwo = model.Record {
+var recordTwo = model.Record{
 	"TEST_KEY_01": "B",
 	"TEST_KEY_02": "C",
 	"TEST_KEY_03": "A",
 }
-var recordThree = model.Record {
+var recordThree = model.Record{
 	"TEST_KEY_01": "C",
 	"TEST_KEY_02": "A",
 	"TEST_KEY_03": "B",
@@ -611,7 +610,7 @@ func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
 
 // Inserts a record into the specified tenant's collection
 func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
-	record := model.Record {
+	record := model.Record{
 		"TEST_KEY_01": "TEST_VALUE_01",
 		"TEST_KEY_02": "TEST_VALUE_02",
 		"TEST_KEY_03": "TEST_VALUE_03",
@@ -650,23 +649,4 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		assert.NotNil(t, value)
 		assert.IsType(t, "string", value)
 	}
-}
-
-// Test GetCollections to retrieve all the collections belonging to the tenant
-func TestIntegrationGetCollections(t *testing.T) {
-	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	// Retrieve all the collections present in the tenant
-	collections, err := getClient(t).KVStoreService.GetCollections()
-	require.Nil(t, err)
-	require.NotNil(t, collections)
-	assert.Contains(t, collections, model.CollectionDefinition{Collection: kvCollection})
 }

@@ -25,23 +25,6 @@ var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
 // Admin Endpoints
 // --------------------------------------------------------------------------------
 
-// Test GetCollectionStatus against nova playground
-func TestIntegrationGetCollectionStatus(t *testing.T) {
-	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	response, err := getClient(t).KVStoreService.GetCollectionStats(kvCollection)
-	require.Empty(t, err)
-	assert.NotEmpty(t, response)
-}
-
 // Test GetServiceHealthStatus against nova playground
 func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
@@ -112,7 +95,7 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
 	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "", err.(*util.HTTPError).Message)
+	assert.Equal(t, "fields in body is required", err.(*util.HTTPError).Message)
 }
 
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
