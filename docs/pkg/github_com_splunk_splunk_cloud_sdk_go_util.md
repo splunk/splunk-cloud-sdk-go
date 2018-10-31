@@ -82,3 +82,88 @@ HTTPError is raised when status code is not 2xx
 func (he *HTTPError) Error() string
 ```
 This allows HTTPError to satisfy the error interface
+
+#### type Logger
+
+```go
+type Logger interface {
+	Print(v ...interface{})
+}
+```
+
+Logger compatible with standard "log" library
+
+#### type SdkTransport
+
+```go
+type SdkTransport struct {
+}
+```
+
+SdkTransport is to define a transport RoundTripper with user-defined logger
+
+#### func  CreateRoundTripperWithLogger
+
+```go
+func CreateRoundTripperWithLogger(logger Logger) *SdkTransport
+```
+CreateRoundTripperWithLogger Creates a RoundTripper with user defined logger
+
+#### func (*SdkTransport) RoundTrip
+
+```go
+func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
+```
+RoundTrip implements the RoundTripper interface
+
+#### type Ticker
+
+```go
+type Ticker struct {
+}
+```
+
+Ticker is a wrapper of time.Ticker with additional functionality
+
+#### func  NewTicker
+
+```go
+func NewTicker(duration time.Duration) *Ticker
+```
+NewTicker spits out a pointer to Ticker model. It sets ticker to stop state by
+default
+
+#### func (*Ticker) GetChan
+
+```go
+func (t *Ticker) GetChan() <-chan time.Time
+```
+GetChan returns the channel from ticker
+
+#### func (*Ticker) IsRunning
+
+```go
+func (t *Ticker) IsRunning() bool
+```
+IsRunning returns bool indicating whether or not ticker is running
+
+#### func (*Ticker) Reset
+
+```go
+func (t *Ticker) Reset()
+```
+Reset resets ticker
+
+#### func (*Ticker) Start
+
+```go
+func (t *Ticker) Start()
+```
+Start starts a new ticker and set property running to true
+
+#### func (*Ticker) Stop
+
+```go
+func (t *Ticker) Stop()
+```
+Stop stops ticker and set property running to false

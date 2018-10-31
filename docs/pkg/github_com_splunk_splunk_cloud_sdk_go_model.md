@@ -2,1483 +2,841 @@
 --
     import "github.com/splunk/splunk-cloud-sdk-go/model"
 
+Package model contains Splunk Cloud models for each service.
+
+Deprecated: v0.6.1 - these models have been moved to their respective
+services/<service>/models.go files, see below for details for each model.
 
 ## Usage
+
+```go
+const (
+	// EmailKind is Deprecated: please use services/action.EmailKind
+	EmailKind = action.EmailKind
+	// WebhookKind is Deprecated: please use services/action.WebhookKind
+	WebhookKind = action.WebhookKind
+	// SNSKind is Deprecated: please use services/action.SNSKind
+	SNSKind = action.SNSKind
+)
+```
+
+```go
+const (
+	// StatusQueued is Deprecated: please use services/action.StatusQueued
+	StatusQueued = action.StatusQueued
+	// StatusRunning is Deprecated: please use services/action.StatusRunning
+	StatusRunning = action.StatusRunning
+	// StatusDone is Deprecated: please use services/action.StatusDone
+	StatusDone = action.StatusDone
+	// StatusFailed is Deprecated: please use services/action.StatusFailed
+	StatusFailed = action.StatusFailed
+)
+```
+
+```go
+const (
+	//SplunkEventKind is Deprecated: please use services/action.SplunkEventKind
+	SplunkEventKind = action.SplunkEventKind
+	//RawJSONPayloadKind is Deprecated: please use services/action.RawJSONPayloadKind
+	RawJSONPayloadKind = action.RawJSONPayloadKind
+)
+```
 
 #### type Action
 
 ```go
-type Action struct {
-	// Common action fields:
-	// Name of action, all actions have this field
-	Name string `json:"name" binding:"required"`
-	// Kind of action (email, webhook, or sns), all actions have this field
-	Kind ActionKind `json:"kind" binding:"required"`
-	ActionUpdateFields
-}
+type Action = action.Action
 ```
 
-Action defines the fields for email, sns, and webhooks as one aggregated model
+Action is Deprecated: please use services/action.Action
 
 #### func  NewEmailAction
 
 ```go
 func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action
 ```
-NewEmailAction creates a new email kind action
+NewEmailAction is Deprecated: please use services/action.NewEmailAction
 
 #### func  NewSNSAction
 
 ```go
 func NewSNSAction(name string, topic string, message string) *Action
 ```
-NewSNSAction creates a new sns kind action
+NewSNSAction is Deprecated: please use services/action.NewSNSAction
 
 #### func  NewWebhookAction
 
 ```go
 func NewWebhookAction(name string, webhookURL string, message string) *Action
 ```
-NewWebhookAction creates a new webhook kind action
+NewWebhookAction is Deprecated: please use services/action.NewWebhookAction
 
 #### type ActionError
 
 ```go
-type ActionError struct {
-	Code     string      `json:"code"`
-	Message  string      `json:"message"`
-	Details  interface{} `json:"details,omitempty"`
-	MoreInfo string      `json:"moreInfo,omitempty"`
-}
+type ActionError = action.Error
 ```
 
-ActionError defines format for returned errors
+ActionError is Deprecated: please use services/action.Error
 
 #### type ActionKind
 
 ```go
-type ActionKind string
+type ActionKind = action.Kind
 ```
 
-ActionKind reflects the kinds of actions supported by the Action service
-
-```go
-const (
-	// EmailKind for email actions
-	EmailKind ActionKind = "email"
-	// WebhookKind for webhook actions
-	WebhookKind ActionKind = "webhook"
-	// SNSKind for SNS actions
-	SNSKind ActionKind = "sns"
-)
-```
+ActionKind is Deprecated: please use services/action.Kind
 
 #### type ActionNotification
 
 ```go
-type ActionNotification struct {
-	Kind    ActionNotificationKind `json:"kind" binding:"required"`
-	Tenant  string                 `json:"tenant" binding:"required"`
-	Payload ActionPayload          `json:"payload" binding:"required"`
-}
+type ActionNotification = action.Notification
 ```
 
-ActionNotification defines the action notification format
+ActionNotification is Deprecated: please use services/action.Notification
 
 #### type ActionNotificationKind
 
 ```go
-type ActionNotificationKind string
+type ActionNotificationKind = action.NotificationKind
 ```
 
-ActionNotificationKind defines the types of notifications
-
-```go
-const (
-	//SplunkEventKind for splunk event payloads
-	SplunkEventKind ActionNotificationKind = "splunkEvent"
-	//RawJSONPayloadKind for raw json payloads
-	RawJSONPayloadKind ActionNotificationKind = "rawJSON"
-)
-```
+ActionNotificationKind is Deprecated: please use
+services/action.NotificationKind
 
 #### type ActionPayload
 
 ```go
-type ActionPayload interface{}
+type ActionPayload = action.Payload
 ```
 
-ActionPayload is what is sent when the action is triggered
+ActionPayload is Deprecated: please use services/action.Payload
 
 #### type ActionStatus
 
 ```go
-type ActionStatus struct {
-	State    ActionStatusState `json:"state"`
-	StatusID string            `json:"statusId"`
-	Message  string            `json:"message,omitempty"`
-}
+type ActionStatus = action.Status
 ```
 
-ActionStatus defines the state information
+ActionStatus is Deprecated: please use services/action.Status
 
 #### type ActionStatusState
 
 ```go
-type ActionStatusState string
+type ActionStatusState = action.StatusState
 ```
 
-ActionStatusState reflects the status of the action
-
-```go
-const (
-	// StatusQueued status
-	StatusQueued ActionStatusState = "QUEUED"
-	// StatusRunning status
-	StatusRunning ActionStatusState = "RUNNING"
-	// StatusDone status
-	StatusDone ActionStatusState = "DONE"
-	// StatusFailed status
-	StatusFailed ActionStatusState = "FAILED"
-)
-```
+ActionStatusState is Deprecated: please use services/action.StatusState
 
 #### type ActionTriggerResponse
 
 ```go
-type ActionTriggerResponse struct {
-	StatusID  *string
-	StatusURL *url.URL
-}
+type ActionTriggerResponse = action.TriggerResponse
 ```
 
-ActionTriggerResponse for returning status url and parsed statusID (if possible)
+ActionTriggerResponse is Deprecated: please use services/action.TriggerResponse
 
 #### type ActionUpdateFields
 
 ```go
-type ActionUpdateFields struct {
-	// Email action fields:
-	// HTMLPart to send via Email action
-	HTMLPart string `json:"htmlPart,omitempty"`
-	// SubjectPart to send via Email action
-	SubjectPart string `json:"subjectPart,omitempty"`
-	// TextPart to send via Email action
-	TextPart string `json:"textPart,omitempty"`
-	// TemplateName to send via Email action
-	TemplateName string `json:"templateName,omitempty"`
-	// Addresses to send to when Email action triggered
-	Addresses []string `json:"addresses,omitempty"`
-
-	// SNS action fields:
-	// Topic to trigger SNS action
-	Topic string `json:"topic,omitempty"`
-	// Message to send via SNS or Webhook action
-	Message string `json:"message,omitempty"`
-
-	// Webhook action fields:
-	// WebhookURL to trigger Webhook action
-	WebhookURL string `json:"webhookUrl,omitempty"`
-}
+type ActionUpdateFields = action.UpdateFields
 ```
 
-ActionUpdateFields defines the fields that may be updated for an existing Action
+ActionUpdateFields is Deprecated: please use services/action.UpdateFields
 
 #### type ActivatePipelineRequest
 
 ```go
-type ActivatePipelineRequest struct {
-	IDs           []string `json:"ids"`
-	SkipSavePoint bool     `json:"skipSavepoint"`
-}
+type ActivatePipelineRequest = streams.ActivatePipelineRequest
 ```
 
-ActivatePipelineRequest contains the request to activate the pipeline
+ActivatePipelineRequest is Deprecated: please use
+services/streams.ActivatePipelineRequest
 
 #### type AdditionalProperties
 
 ```go
-type AdditionalProperties map[string][]string
+type AdditionalProperties = streams.AdditionalProperties
 ```
 
-AdditionalProperties contain the properties in an activate/deactivate response
+AdditionalProperties is Deprecated: please use
+services/streams.AdditionalProperties
 
 #### type AuthError
 
 ```go
-type AuthError struct {
-
-	// The reason of the auth error
-	Reason string `json:"reason"`
-}
+type AuthError = kvstore.AuthError
 ```
 
-AuthError auth error reason
+AuthError is Deprecated: please use services/kvstore.AuthError
 
 #### type CatalogAction
 
 ```go
-type CatalogAction struct {
-	ID         string            `json:"id,omitempty"`
-	RuleID     string            `json:"ruleid,omitempty"`
-	Kind       CatalogActionKind `json:"kind,omitempty"`
-	Owner      string            `json:"owner,omitempty"`
-	Created    string            `json:"created,omitempty"`
-	Modified   string            `json:"modified,omitempty"`
-	CreatedBy  string            `json:"createdBy,omitempty"`
-	ModifiedBy string            `json:"modifiedBy,omitempty"`
-	Version    int               `json:"version,omitempty"`
-	Field      string            `json:"field,omitempty"`
-	Alias      string            `json:"alias,omitempty"`
-	Mode       string            `json:"mode,omitempty"`
-	Expression string            `json:"expression,omitempty"`
-	Pattern    string            `json:"pattern,omitempty"`
-	Limit      *int              `json:"limit,omitempty"`
-}
+type CatalogAction = catalog.Action
 ```
 
-CatalogAction represents a specific search time transformation action. This
-struct should NOT be directly used to construct object, use the NewXXXAction()
-instead
+CatalogAction is Deprecated: please use services/catalog.Action
 
 #### func  NewAliasAction
 
 ```go
 func NewAliasAction(field string, alias string, owner string) *CatalogAction
 ```
-NewAliasAction creates a new alias kind action
+NewAliasAction is Deprecated: please use services/catalog.NewAliasAction
 
 #### func  NewAutoKVAction
 
 ```go
 func NewAutoKVAction(mode string, owner string) *CatalogAction
 ```
-NewAutoKVAction creates a new autokv kind action
+NewAutoKVAction is Deprecated: please use services/catalog.NewAutoKVAction
 
 #### func  NewEvalAction
 
 ```go
 func NewEvalAction(field string, expression string, owner string) *CatalogAction
 ```
-NewEvalAction creates a new eval kind action
+NewEvalAction is Deprecated: please use services/catalog.NewEvalAction
 
 #### func  NewLookupAction
 
 ```go
 func NewLookupAction(expression string, owner string) *CatalogAction
 ```
-NewLookupAction creates a new lookup kind action
+NewLookupAction is Deprecated: please use services/catalog.NewLookupAction
 
 #### func  NewRegexAction
 
 ```go
 func NewRegexAction(field string, pattern string, limit *int, owner string) *CatalogAction
 ```
-NewRegexAction creates a new regex kind action
+NewRegexAction is Deprecated: please use services/catalog.NewRegexAction
 
 #### func  NewUpdateAliasAction
 
 ```go
 func NewUpdateAliasAction(field *string, alias *string) *CatalogAction
 ```
-NewUpdateAliasAction updates an existing alias kind action
+NewUpdateAliasAction is Deprecated: please use
+services/catalog.NewUpdateAliasAction
 
 #### func  NewUpdateAutoKVAction
 
 ```go
 func NewUpdateAutoKVAction(mode *string) *CatalogAction
 ```
-NewUpdateAutoKVAction updates an existing autokv kind action
+NewUpdateAutoKVAction is Deprecated: please use
+services/catalog.NewUpdateAutoKVAction
 
 #### func  NewUpdateEvalAction
 
 ```go
 func NewUpdateEvalAction(field *string, expression *string) *CatalogAction
 ```
-NewUpdateEvalAction updates an existing eval kind action
+NewUpdateEvalAction is Deprecated: please use
+services/catalog.NewUpdateEvalAction
 
 #### func  NewUpdateLookupAction
 
 ```go
 func NewUpdateLookupAction(expression *string) *CatalogAction
 ```
-NewUpdateLookupAction updates an existing lookup kind action
+NewUpdateLookupAction is Deprecated: please use
+services/catalog.NewUpdateLookupAction
 
 #### func  NewUpdateRegexAction
 
 ```go
 func NewUpdateRegexAction(field *string, pattern *string, limit *int) *CatalogAction
 ```
-NewUpdateRegexAction updates an existing regex kind action
+NewUpdateRegexAction is Deprecated: please use
+services/catalog.NewUpdateRegexAction
 
 #### type CatalogActionKind
 
 ```go
-type CatalogActionKind string
+type CatalogActionKind = catalog.ActionKind
 ```
 
-CatalogActionKind enumerates the kinds of search time transformation action
-known by the service.
+CatalogActionKind is Deprecated: please use services/catalog.ActionKind
 
 ```go
 const (
-	// ALIAS action
-	ALIAS CatalogActionKind = "ALIAS"
-	// AUTOKV action
-	AUTOKV CatalogActionKind = "AUTOKV"
-	// REGEX action
-	REGEX CatalogActionKind = "REGEX"
-	// EVAL action
-	EVAL CatalogActionKind = "EVAL"
-	// LOOKUPACTION action
-	LOOKUPACTION CatalogActionKind = "LOOKUP"
+	// ALIAS is Deprecated: please use services/catalog.Alias
+	ALIAS CatalogActionKind = catalog.Alias
+	// AUTOKV is Deprecated: please use services/catalog.AutoKV
+	AUTOKV CatalogActionKind = catalog.AutoKV
+	// REGEX is Deprecated: please use services/catalog.Regex
+	REGEX CatalogActionKind = catalog.Regex
+	// EVAL is Deprecated: please use services/catalog.Eval
+	EVAL CatalogActionKind = catalog.Eval
+	// LOOKUPACTION is Deprecated: please use services/catalog.LookupAction
+	LOOKUPACTION CatalogActionKind = catalog.LookupAction
 )
 ```
-
-#### type CollectionDefinition
-
-```go
-type CollectionDefinition struct {
-
-	// The collection name
-	// Max Length: 45
-	// Min Length: 1
-	Collection string `json:"collection"`
-}
-```
-
-CollectionDefinition collection definition
-
-#### type CollectionStats
-
-```go
-type CollectionStats struct {
-
-	// Number of records in collection
-	Count int64 `json:"count"`
-
-	// Map of index name to index size in bytes
-	IndexSizes interface{} `json:"indexSizes"`
-
-	// Number of indexes on collection
-	Nindexes int64 `json:"nindexes"`
-
-	// Collection name
-	Ns string `json:"ns"`
-
-	// Size in bytes of collection, not including indexes
-	Size int64 `json:"size"`
-
-	// Total size of indexes
-	TotalIndexSize int64 `json:"totalIndexSize"`
-}
-```
-
-CollectionStats collection stats
 
 #### type CreateJobRequest
 
 ```go
-type CreateJobRequest struct {
-	// The SPL query string.
-	Query string `json:"query"`
-	// The module to run the search in.
-	Module string `json:"module"`
-	// Should SplunkD produce all fields (including those not explicitly mentioned in the SPL)
-	ExtractAllFields bool `json:"extractAllFields"`
-	// The number of seconds to run this search before finalizing.
-	MaxTime uint `json:"maxTime,omitempty"`
-	// Used to convert a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
-	TimeFormat string `json:"timeFormat,omitempty"`
-	// The System time at the time the search job was created. Specify a time string to set
-	// the absolute time used for any relative time specifier in the search.
-	// Defaults to the current system time when the Job is created.
-	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
-}
+type CreateJobRequest = search.CreateJobRequest
 ```
 
-CreateJobRequest defines properties allowed (and possibly required) in fully
-constructed Searchjobs in POST payloads and responses
+CreateJobRequest is Deprecated: please use services/search.CreateJobRequest
 
 #### type DataType
 
 ```go
-type DataType string
+type DataType = catalog.DataType
 ```
 
-DataType enumerates the kinds of datatypes used in fields.
+DataType is Deprecated: please use services/catalog.DataType
 
 ```go
 const (
-	// DATE DataType
-	DATE DataType = "DATE"
-	// NUMBER DataType
-	NUMBER DataType = "NUMBER"
-	// OBJECTID DataType
-	OBJECTID DataType = "OBJECT_ID"
-	// STRING DataType
-	STRING DataType = "STRING"
-	// DATATYPEUNKNOWN DataType
-	DATATYPEUNKNOWN DataType = "UNKNOWN"
+	// DATE is Deprecated: please use services/catalog.Date
+	DATE DataType = catalog.Date
+	// NUMBER is Deprecated: please use services/catalog.Number
+	NUMBER DataType = catalog.Number
+	// OBJECTID is Deprecated: please use services/catalog.ObjectID
+	OBJECTID DataType = catalog.ObjectID
+	// STRING is Deprecated: please use services/catalog.String
+	STRING DataType = catalog.String
+	// DATATYPEUNKNOWN is Deprecated: please use services/catalog.DataTypeUnknown
+	DATATYPEUNKNOWN DataType = catalog.DataTypeUnknown
 )
 ```
 
 #### type DatasetCreationPayload
 
 ```go
-type DatasetCreationPayload struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Capabilities string          `json:"capabilities"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int   `json:"maxMatches,omitempty"`
-	MinMatches         *int   `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
-}
+type DatasetCreationPayload = catalog.DatasetCreationPayload
 ```
 
-DatasetCreationPayload represents the sources of data that can be searched by
-Splunk
+DatasetCreationPayload is Deprecated: please use
+services/catalog.DatasetCreationPayload
 
 #### type DatasetInfo
 
 ```go
-type DatasetInfo struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities"`
-	Version      int             `json:"version,omitempty"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled"`
-}
+type DatasetInfo = catalog.DatasetInfo
 ```
 
-DatasetInfo represents the sources of data that can be searched by Splunk
+DatasetInfo is Deprecated: please use services/catalog.DatasetInfo
 
 #### type DatasetInfoKind
 
 ```go
-type DatasetInfoKind string
+type DatasetInfoKind = catalog.DatasetInfoKind
 ```
 
-DatasetInfoKind enumerates the kinds of datasets known to the system.
+DatasetInfoKind is Deprecated: please use services/catalog.DatasetInfoKind
 
 ```go
 const (
-	// LOOKUP represents TODO: Description needed
-	LOOKUP DatasetInfoKind = "lookup"
-	// KVCOLLECTION represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
-	KVCOLLECTION DatasetInfoKind = "kvcollection"
-	// INDEX represents a Splunk events or metrics index
-	INDEX DatasetInfoKind = "index"
+	// LOOKUP is Deprecated: please use services/catalog.Lookup
+	LOOKUP DatasetInfoKind = catalog.Lookup
+	// KVCOLLECTION is Deprecated: please use services/catalog.KvCollection
+	KVCOLLECTION DatasetInfoKind = catalog.KvCollection
+	// INDEX is Deprecated: please use services/catalog.Index
+	INDEX DatasetInfoKind = catalog.Index
 )
 ```
 
 #### type DslCompilationRequest
 
 ```go
-type DslCompilationRequest struct {
-	Dsl string `json:"dsl"`
-}
+type DslCompilationRequest = streams.DslCompilationRequest
 ```
 
-DslCompilationRequest contains the DSL that needs to be compiled into a valid
-UPL JSON
+DslCompilationRequest is Deprecated: please use
+services/streams.DslCompilationRequest
 
 #### type Error
 
 ```go
-type Error struct {
-
-	// The reason of the error
-	Code int64 `json:"code"`
-	// Error message
-	Message string `json:"message"`
-	// State Storage error code
-	SsCode int64 `json:"ssCode"`
-}
+type Error = kvstore.Error
 ```
 
-Error error reason
+Error is Deprecated: please use services/kvstore.Error
 
 #### type Event
 
 ```go
-type Event struct {
-	// Specifies a JSON object that contains explicit custom fields to be defined at index time.
-	Attributes map[string]interface{} `json:"attributes"`
-	// JSON object for the event.
-	Body interface{} `json:"body"`
-	// Epoch time in milliseconds.
-	Timestamp int64 `json:"timestamp"`
-	// Optional nanoseconds part of the timestamp.
-	Nanos int32 `json:"nanos"`
-	// The source value to assign to the event data. For example, if you are sending data from an app that you are developing,
-	// set this key to the name of the app.
-	Source string `json:"source"`
-	// The sourcetype value assigned to the event data.
-	Sourcetype string `json:"sourcetype"`
-	// The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.
-	Host string `json:"host"`
-	// An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.
-	// If ID is not specified, it will be assigned by the system.
-	ID string `json:"id"`
-}
+type Event = ingest.Event
 ```
 
-Event defines raw event send to event endpoint
+Event is Deprecated: please use services/ingest.Event
 
 #### type Field
 
 ```go
-type Field struct {
-	ID         string         `json:"id,omitempty"`
-	Name       string         `json:"name,omitempty"`
-	DatasetID  string         `json:"datasetid,omitempty"`
-	DataType   DataType       `json:"datatype,omitempty"`
-	FieldType  FieldType      `json:"fieldtype,omitempty"`
-	Prevalence PrevalenceType `json:"prevalence,omitempty"`
-	Created    string         `json:"created,omitempty"`
-	Modified   string         `json:"modified,omitempty"`
-}
+type Field = catalog.Field
 ```
 
-Field represents the fields belonging to the specified Dataset
+Field is Deprecated: please use services/catalog.Field
 
 #### type FieldType
 
 ```go
-type FieldType string
+type FieldType = catalog.FieldType
 ```
 
-FieldType enumerates different kinds of fields.
+FieldType is Deprecated: please use services/catalog.FieldType
 
 ```go
 const (
-	// DIMENSION fieldType
-	DIMENSION FieldType = "DIMENSION"
-	// MEASURE fieldType
-	MEASURE FieldType = "MEASURE"
-	// FIELDTYPEUNKNOWN fieldType
-	FIELDTYPEUNKNOWN FieldType = "UNKNOWN"
+	// DIMENSION is Deprecated: please use services/catalog.Dimension
+	DIMENSION FieldType = catalog.Dimension
+	// MEASURE is Deprecated: please use services/catalog.Measure
+	MEASURE FieldType = catalog.Measure
+	// FIELDTYPEUNKNOWN is Deprecated: please use services/catalog.FieldTypeUnknown
+	FIELDTYPEUNKNOWN = catalog.FieldTypeUnknown
 )
 ```
 
 #### type Group
 
 ```go
-type Group struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type Group = identity.Group
 ```
 
-Group group
+Group is Deprecated: please use services/identity.Group
 
 #### type GroupMember
 
 ```go
-type GroupMember struct {
-
-	// added at
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// group
-	// Required: true
-	Group string `json:"group"`
-
-	// principal
-	// Required: true
-	Principal string `json:"principal"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type GroupMember = identity.GroupMember
 ```
 
-GroupMember Represents a member that belongs to a group
+GroupMember is Deprecated: please use services/identity.GroupMember
 
 #### type GroupRole
 
 ```go
-type GroupRole struct {
-
-	// added at
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// group
-	// Required: true
-	Group string `json:"group"`
-
-	// role
-	// Required: true
-	Role string `json:"role"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type GroupRole = identity.GroupRole
 ```
 
-GroupRole Represents a role that is assigned to a group
+GroupRole is Deprecated: please use services/identity.GroupRole
 
 #### type IndexDefinition
 
 ```go
-type IndexDefinition struct {
-
-	// The name of the index
-	Name string `json:"name,omitempty"`
-
-	// fields
-	Fields []IndexFieldDefinition `json:"fields"`
-}
+type IndexDefinition = kvstore.IndexDefinition
 ```
 
-IndexDefinition index field definition
+IndexDefinition is Deprecated: please use services/kvstore.IndexDefinition
 
 #### type IndexDescription
 
 ```go
-type IndexDescription struct {
-
-	// The collection name
-	Collection string `json:"collection,omitempty"`
-
-	// fields
-	Fields []IndexFieldDefinition `json:"fields"`
-
-	// The name of the index
-	Name string `json:"name,omitempty"`
-}
+type IndexDescription = kvstore.IndexDescription
 ```
 
-IndexDescription index description
+IndexDescription is Deprecated: please use services/kvstore.IndexDescription
 
 #### type IndexFieldDefinition
 
 ```go
-type IndexFieldDefinition struct {
-
-	// The sort direction for the indexed field
-	Direction int64 `json:"direction"`
-
-	// The name of the field to index
-	Field string `json:"field"`
-}
+type IndexFieldDefinition = kvstore.IndexFieldDefinition
 ```
 
-IndexFieldDefinition index field definition
+IndexFieldDefinition is Deprecated: please use
+services/kvstore.IndexFieldDefinition
 
 #### type JobMessageType
 
 ```go
-type JobMessageType string
+type JobMessageType = search.JobMessageType
 ```
 
-JobMessageType defines type of messages from Splunkd
+JobMessageType is Deprecated: please use services/search.JobMessageType
 
 ```go
 const (
-	InfoType  JobMessageType = "INFO"
-	FatalType JobMessageType = "FATAL"
-	ErrorType JobMessageType = "ERROR"
-	DebugType JobMessageType = "DEBUG"
+	// InfoType is Deprecated: please use services/search.InfoType
+	InfoType JobMessageType = search.InfoType
+	// FatalType is Deprecated: please use services/search.FatalType
+	FatalType JobMessageType = search.FatalType
+	// ErrorType is Deprecated: please use services/search.ErrorType
+	ErrorType JobMessageType = search.ErrorType
+	// DebugType is Deprecated: please use services/search.DebugType
+	DebugType JobMessageType = search.DebugType
 )
 ```
-Define supported message type
 
 #### type JobResultsParams
 
 ```go
-type JobResultsParams struct {
-	Count  int `key:"count"`
-	Offset int `key:"offset"`
-}
+type JobResultsParams = search.JobResultsParams
 ```
 
-JobResultsParams specifies the query params when fetching job results
+JobResultsParams is Deprecated: please use services/search.JobResultsParams
 
 #### type JobStatus
 
 ```go
-type JobStatus string
+type JobStatus = search.JobAction
 ```
 
-JobStatus defines actions to be taken on an existing search job.
+JobStatus is Deprecated: please use services/search.JobAction
 
 ```go
 const (
-	JobCanceled  JobStatus = "canceled"
-	JobFinalized JobStatus = "finalized"
+	// JobCanceled is Deprecated: please use services/search.JobCanceled
+	JobCanceled JobStatus = search.JobCanceled
+	// JobFinalized is Deprecated: please use services/search.JobFinalized
+	JobFinalized JobStatus = search.JobFinalized
 )
 ```
-Define supported job actions
 
 #### type Key
 
 ```go
-type Key struct {
-	Key string `json:"_key"`
-}
+type Key = kvstore.Key
 ```
 
-Key to identify a record in a collection
+Key is Deprecated: please use services/kvstore.Key
 
 #### type LookupValue
 
 ```go
-type LookupValue []interface{}
+type LookupValue = kvstore.LookupValue
 ```
 
-LookupValue Value tuple used for lookup
+LookupValue is Deprecated: please use services/kvstore.LookupValue
 
 #### type Member
 
 ```go
-type Member struct {
-
-	// When the principal was added to the tenant.
-	// Required: true
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type Member = identity.Member
 ```
 
-Member Represents a member that belongs to a tenant.
+Member is Deprecated: please use services/identity.Member
 
 #### type Metric
 
 ```go
-type Metric struct {
-	// Name of the metric e.g. CPU, Memory etc.
-	Name string `json:"name"`
-	// Value of the metric.
-	Value float64 `json:"value"`
-	// Dimensions allow metrics to be classified e.g. {"Server":"nginx", "Region":"us-west-1", ...}
-	Dimensions map[string]string `json:"dimensions"`
-	// Type of metric. Default is g for gauge.
-	Type string `json:"type"`
-	// Unit of the metric e.g. percent, megabytes, seconds etc.
-	Unit string `json:"unit"`
-}
+type Metric = ingest.Metric
 ```
 
-Metric defines individual metric data.
+Metric is Deprecated: please use services/ingest.Metric
 
 #### type MetricAttribute
 
 ```go
-type MetricAttribute struct {
-	// Optional. If set, individual Metrics will inherit these dimensions and can override any/all of them.
-	DefaultDimensions map[string]string `json:"defaultDimensions"`
-	// Optional. If set, individual Metrics will inherit this type and can optionally override.
-	DefaultType string `json:"defaultType"`
-	// Optional. If set, individual Metrics will inherit this unit and can optionally override.
-	DefaultUnit string `json:"defaultUnit"`
-}
+type MetricAttribute = ingest.MetricAttribute
 ```
 
-MetricAttribute defines default attributes for the metric.
+MetricAttribute is Deprecated: please use services/ingest.MetricAttribute
 
 #### type MetricEvent
 
 ```go
-type MetricEvent struct {
-	// Specify multiple related metrics e.g. Memory, CPU etc.
-	Body []Metric `json:"body"`
-	// Epoch time in milliseconds.
-	Timestamp int64 `json:"timestamp"`
-	// Optional nanoseconds part of the timestamp.
-	Nanos int32 `json:"nanos"`
-	// The source value to assign to the event data. For example, if you're sending data from an app you're developing,
-	// you could set this key to the name of the app.
-	Source string `json:"source"`
-	// The sourcetype value to assign to the event data.
-	Sourcetype string `json:"sourcetype"`
-	// The host value to assign to the event data. This is typically the hostname of the client from which you're sending data.
-	Host string `json:"host"`
-	// Optional ID uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.
-	// If ID is not specified, it will be assigned by the system.
-	ID string `json:"id"`
-	// Default attributes for the metric data.
-	Attributes MetricAttribute `json:"attributes"`
-}
+type MetricEvent = ingest.MetricEvent
 ```
 
-MetricEvent define event send to metric endpoint
+MetricEvent is Deprecated: please use services/ingest.MetricEvent
 
 #### type Module
 
 ```go
-type Module struct {
-	Name string `json:"name"`
-}
+type Module = catalog.Module
 ```
 
-Module represents catalog module
+Module is Deprecated: please use services/catalog.Module
 
 #### type PaginatedPipelineResponse
 
 ```go
-type PaginatedPipelineResponse struct {
-	Items []Pipeline `json:"items"`
-	Total int64      `json:"total"`
-}
+type PaginatedPipelineResponse = streams.PaginatedPipelineResponse
 ```
 
-PaginatedPipelineResponse contains the pipeline response
+PaginatedPipelineResponse is Deprecated: please use
+services/streams.PaginatedPipelineResponse
 
 #### type PatchJobResponse
 
 ```go
-type PatchJobResponse struct {
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages"`
-}
+type PatchJobResponse = search.PatchJobResponse
 ```
 
-PatchJobResponse defines the response from patch endpoint
+PatchJobResponse is Deprecated: please use services/search.PatchJobResponse
 
 #### type PingOKBody
 
 ```go
-type PingOKBody struct {
-
-	// If database is not healthy, detailed error message
-	ErrorMessage string `json:"errorMessage,omitempty"`
-
-	// Database status
-	// Enum: [healthy unhealthy unknown]
-	Status PingOKBodyStatus `json:"status"`
-}
+type PingOKBody = kvstore.PingOKBody
 ```
 
-PingOKBody ping ok body
+PingOKBody is Deprecated: please use services/kvstore.PingOKBody
 
 #### type PingOKBodyStatus
 
 ```go
-type PingOKBodyStatus string
+type PingOKBodyStatus = kvstore.PingOKBodyStatus
 ```
 
-PingOKBodyStatus used to force type expectation for KVStore Ping endpoint
-response
+PingOKBodyStatus is Deprecated: please use services/kvstore.PingOKBodyStatus
 
 ```go
 const (
-	// PingOKBodyStatusHealthy captures enum value "healthy"
-	PingOKBodyStatusHealthy PingOKBodyStatus = "healthy"
+	// PingOKBodyStatusHealthy is Deprecated: please use services/kvstore.PingOKBodyStatusHealthy
+	PingOKBodyStatusHealthy PingOKBodyStatus = kvstore.PingOKBodyStatusHealthy
 
-	// PingOKBodyStatusUnhealthy captures enum value "unhealthy"
-	PingOKBodyStatusUnhealthy PingOKBodyStatus = "unhealthy"
+	// PingOKBodyStatusUnhealthy is Deprecated: please use services/kvstore.PingOKBodyStatusUnhealthy
+	PingOKBodyStatusUnhealthy PingOKBodyStatus = kvstore.PingOKBodyStatusUnhealthy
 
-	// PingOKBodyStatusUnknown captures enum value "unknown"
-	PingOKBodyStatusUnknown PingOKBodyStatus = "unknown"
+	// PingOKBodyStatusUnknown is Deprecated: please use services/kvstore.PingOKBodyStatusUnknown
+	PingOKBodyStatusUnknown PingOKBodyStatus = kvstore.PingOKBodyStatusUnknown
 )
 ```
 
 #### type Pipeline
 
 ```go
-type Pipeline struct {
-	ActivatedDate            int64          `json:"activatedDate"`
-	ActivatedUserID          string         `json:"activatedUserId"`
-	ActivatedVersion         int64          `json:"activatedVersion"`
-	CreateDate               int64          `json:"createDate"`
-	CreateUserID             string         `json:"createUserId"`
-	CurrentVersion           int64          `json:"currentVersion"`
-	Data                     UplPipeline    `json:"data"`
-	Description              string         `json:"description"`
-	ID                       string         `json:"id"`
-	JobID                    string         `json:"jobId"`
-	LastUpdateDate           int64          `json:"lastUpdateDate"`
-	LastUpdateUserID         string         `json:"lastUpdateUserId"`
-	Name                     string         `json:"name"`
-	Status                   PipelineStatus `json:"status"`
-	StatusMessage            string         `json:"statusMessage"`
-	StreamingConfigurationID int64          `json:"streamingConfigurationId"`
-	TenantID                 string         `json:"tenantId"`
-	ValidationMessages       []string       `json:"validationMessages"`
-	Version                  int64          `json:"version"`
-}
+type Pipeline = streams.Pipeline
 ```
 
-Pipeline defines a pipeline object
+Pipeline is Deprecated: please use services/streams.Pipeline
 
 #### type PipelineDeleteResponse
 
 ```go
-type PipelineDeleteResponse struct {
-	CouldDeactivate bool `json:"couldDeactivate"`
-	Running         bool `json:"running"`
-}
+type PipelineDeleteResponse = streams.PipelineDeleteResponse
 ```
 
-PipelineDeleteResponse contains the response returned as a result of a delete
-pipeline call
+PipelineDeleteResponse is Deprecated: please use
+services/streams.PipelineDeleteResponse
 
 #### type PipelineQueryParams
 
 ```go
-type PipelineQueryParams struct {
-	Offset       *int32  `json:"offset,omitempty"`
-	PageSize     *int32  `json:"pageSize,omitempty"`
-	SortField    *string `json:"sortField,omitempty"`
-	SortDir      *string `json:"sortDir,omitempty"`
-	Activated    *bool   `json:"activated,omitempty"`
-	CreateUserID *string `json:"createUserId,omitempty"`
-	Name         *string `json:"name,omitempty"`
-	IncludeData  *bool   `json:"includeData,omitempty"`
-}
+type PipelineQueryParams = streams.PipelineQueryParams
 ```
 
-PipelineQueryParams contains the query parameters that can be provided by the
-user to fetch specific pipelines
+PipelineQueryParams is Deprecated: please use
+services/streams.PipelineQueryParams
 
 #### type PipelineRequest
 
 ```go
-type PipelineRequest struct {
-	BypassValidation         bool         `json:"bypassValidation"`
-	CreateUserID             string       `json:"createUserId"`
-	Data                     *UplPipeline `json:"data"`
-	Description              string       `json:"description"`
-	Name                     string       `json:"name"`
-	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
-}
+type PipelineRequest = streams.PipelineRequest
 ```
 
-PipelineRequest contains the pipeline data
+PipelineRequest is Deprecated: please use services/streams.PipelineRequest
 
 #### type PipelineStatus
 
 ```go
-type PipelineStatus string
+type PipelineStatus = streams.PipelineStatus
 ```
 
-PipelineStatus reflects the status of a pipeline
+PipelineStatus is Deprecated: please use services/streams.PipelineStatus
 
 ```go
 const (
-	// Created status
-	Created PipelineStatus = "CREATED"
-	// Activated status
-	Activated PipelineStatus = "ACTIVATED"
+	// Created is Deprecated: please use services/streams.Created
+	Created PipelineStatus = streams.Created
+	// Activated is Deprecated: please use services/streams.Activated
+	Activated PipelineStatus = streams.Activated
 )
 ```
 
 #### type PrevalenceType
 
 ```go
-type PrevalenceType string
+type PrevalenceType = catalog.PrevalenceType
 ```
 
-PrevalenceType enumerates the types of prevalance used in fields.
+PrevalenceType is Deprecated: please use services/catalog.PrevalenceType
 
 ```go
 const (
-	// ALL PrevalenceType
-	ALL PrevalenceType = "ALL"
-	// SOME PrevalenceType
-	SOME PrevalenceType = "SOME"
-	// PREVALANCEUNKNOWN PrevalenceType
-	PREVALANCEUNKNOWN PrevalenceType = "UNKNOWN"
+	// ALL is Deprecated: please use services/catalog.All
+	ALL PrevalenceType = catalog.All
+	// SOME is Deprecated: please use services/catalog.Some
+	SOME PrevalenceType = catalog.Some
+	// PREVALANCEUNKNOWN is Deprecated: please use services/catalog.PrevalenceUnknown
+	PREVALANCEUNKNOWN PrevalenceType = catalog.PrevalenceUnknown
 )
 ```
 
 #### type Principal
 
 ```go
-type Principal struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// kind
-	// Required: true
-	Kind string `json:"kind"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// profile
-	Profile interface{} `json:"profile,omitempty"`
-
-	// tenants
-	// Required: true
-	Tenants []string `json:"tenants"`
-}
+type Principal = identity.Principal
 ```
 
-Principal principal
+Principal is Deprecated: please use services/identity.Principal
 
 #### type QueryParameters
 
 ```go
-type QueryParameters struct {
-	// The earliest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	Earliest string `json:"earliest,omitempty"`
-	// The latest time in absolute or relative format to retrieve events (only supported if the query supports time-ranges)
-	Latest string `json:"latest,omitempty"`
-}
+type QueryParameters = search.QueryParameters
 ```
 
-QueryParameters is the type representing parameters currently earliest & latest
-on search.
+QueryParameters is Deprecated: please use services/search.QueryParameters
 
 #### type RawJSONPayload
 
 ```go
-type RawJSONPayload map[string]interface{}
+type RawJSONPayload = action.RawJSONPayload
 ```
 
-RawJSONPayload specifies the format for RawJSONPayloadKind ActionNotifications
+RawJSONPayload is Deprecated: please use services/action.RawJSONPayload
 
 #### type Record
 
 ```go
-type Record map[string]interface{}
+type Record = kvstore.Record
 ```
 
-Record is a JSON document entity contained in collections
+Record is Deprecated: please use services/kvstore.Record
 
 #### type ResultsNotReadyResponse
 
 ```go
-type ResultsNotReadyResponse struct {
-	// URL for job results
-	NextLink string `json:"nextLink,omitempty"`
-	// Number of milliseconds to wait before retrying
-	Wait string `json:"wait,omitempty"`
-}
+type ResultsNotReadyResponse = search.ResultsNotReadyResponse
 ```
 
-ResultsNotReadyResponse represents the response when no search results is ready
+ResultsNotReadyResponse is Deprecated: please use
+services/search.ResultsNotReadyResponse
 
 #### type Role
 
 ```go
-type Role struct {
-
-	// created at
-	// Required: true
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type Role = identity.Role
 ```
 
-Role role
+Role is Deprecated: please use services/identity.Role
 
 #### type RolePermission
 
 ```go
-type RolePermission struct {
-
-	// added at
-	// Required: true
-	// Format: date-time
-	AddedAt strfmt.DateTime `json:"addedAt"`
-
-	// added by
-	// Required: true
-	AddedBy string `json:"addedBy"`
-
-	// permission
-	// Required: true
-	Permission string `json:"permission"`
-
-	// role
-	// Required: true
-	Role string `json:"role"`
-
-	// tenant
-	// Required: true
-	Tenant string `json:"tenant"`
-}
+type RolePermission = identity.RolePermission
 ```
 
-RolePermission role permission
+RolePermission is Deprecated: please use services/identity.RolePermission
 
 #### type Rule
 
 ```go
-type Rule struct {
-	ID         string          `json:"id,omitempty"`
-	Name       string          `json:"name"`
-	Module     string          `json:"module,omitempty"`
-	Match      string          `json:"match"`
-	Actions    []CatalogAction `json:"actions,omitempty"`
-	Owner      string          `json:"owner,omitempty"`
-	Created    string          `json:"created,omitempty"`
-	Modified   string          `json:"modified,omitempty"`
-	CreatedBy  string          `json:"createdBy,omitempty"`
-	ModifiedBy string          `json:"modifiedBy,omitempty"`
-	Version    int             `json:"version,omitempty"`
-}
+type Rule = catalog.Rule
 ```
 
-Rule represents a rule for transforming results at search time. A rule consists
-of a `match` clause and a collection of transformation actions
+Rule is Deprecated: please use services/catalog.Rule
 
 #### type RuleUpdateFields
 
 ```go
-type RuleUpdateFields struct {
-	Name    string `json:"name,omitempty"`
-	Module  string `json:"module,omitempty"`
-	Match   string `json:"match,omitempty"`
-	Owner   string `json:"owner,omitempty"`
-	Version int    `json:"version,omitempty"`
-}
+type RuleUpdateFields = catalog.RuleUpdateFields
 ```
 
-RuleUpdateFields represents the set of rule properties that can be updated
+RuleUpdateFields is Deprecated: please use services/catalog.RuleUpdateFields
 
 #### type SearchJob
 
 ```go
-type SearchJob struct {
-	// The SPL query string.
-	Query string `json:"query"`
-	// Determine whether the Search service extracts all available fields in the data, including fields not mentioned in the SPL for the search job.
-	// Set to 'false' for better search performance.
-	ExtractAllFields bool `json:"extractAllFields"`
-	// Converts a formatted time string from {start,end}_time into UTC seconds. The default value is the ISO-8601 format.
-	TimeFormat string `json:"timeFormat,omitempty"`
-	// The module to run the search in.
-	Module string `json:"module,omitempty"`
-	// The number of seconds to run this search before finalizing.
-	MaxTime uint `json:"maxTime,omitempty"`
-	// The System time at the time the search job was created. Specify a time string to set the absolute time used for any relative time specifier in the search.
-	// Defaults to the current system time when the search job is created.
-	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-	// Represents parameters on the search job such as 'earliest' and 'latest'.
-	QueryParameters QueryParameters `json:"queryParameters,omitempty"`
-	// The ID assigned to the search job.
-	ID string `json:"sid,omitempty"`
-	// The current status of the search job.
-	Status SearchJobStatus `json:"status,omitempty"`
-	// An estimate of how close the job is to completing.
-	PercentComplete float64 `json:"percentComplete,omitempty"`
-	// The number of results produced so far for the search job.
-	ResultsAvailable int64 `json:"resultsAvailable,omitempty"`
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages `json:"messages,omitempty"`
-}
+type SearchJob = search.Job
 ```
 
-SearchJob represents a fully-constructed search job, including read-only fields.
+SearchJob is Deprecated: please use services/search.Job
 
 #### type SearchJobMessages
 
 ```go
-type SearchJobMessages []struct {
-	// Enum [INFO, FATAL, ERROR, DEBUG]
-	Type string `json:"type"`
-	// message text
-	Text string `json:"text"`
-}
+type SearchJobMessages = search.JobMessages
 ```
 
-SearchJobMessages is used in search results or search job.
+SearchJobMessages is Deprecated: please use services/search.JobMessages
 
 #### type SearchJobStatus
 
 ```go
-type SearchJobStatus string
+type SearchJobStatus = search.JobStatus
 ```
 
-SearchJobStatus describes status of a search job
+SearchJobStatus is Deprecated: please use services/search.JobStatus
 
 ```go
 const (
-	Queued     SearchJobStatus = "queued"
-	Parsing    SearchJobStatus = "parsing"
-	Running    SearchJobStatus = "running"
-	Finalizing SearchJobStatus = "finalizing"
-	Failed     SearchJobStatus = "failed"
-	Done       SearchJobStatus = "done"
+	// Queued is Deprecated: please use services/search.Queued
+	Queued SearchJobStatus = search.Queued
+	// Parsing is Deprecated: please use services/search.Parsing
+	Parsing SearchJobStatus = search.Parsing
+	// Running is Deprecated: please use services/search.Running
+	Running SearchJobStatus = search.Running
+	// Finalizing is Deprecated: please use services/search.Finalizing
+	Finalizing SearchJobStatus = search.Finalizing
+	// Failed is Deprecated: please use services/search.Failed
+	Failed SearchJobStatus = search.Failed
+	// Done is Deprecated: please use services/search.Done
+	Done SearchJobStatus = search.Done
 )
 ```
-Supported SearchJobStatus constants
 
 #### type SearchResults
 
 ```go
-type SearchResults struct {
-	// Run time messages from Splunkd.
-	Messages SearchJobMessages        `json:"messages"`
-	Results  []map[string]interface{} `json:"results"`
-	Fields   []map[string]interface{} `json:"fields"`
-}
+type SearchResults = search.Results
 ```
 
-SearchResults represents results from a search job
+SearchResults is Deprecated: please use services/search.Results
 
 #### type SplunkEventPayload
 
 ```go
-type SplunkEventPayload struct {
-	Event      map[string]interface{} `json:"event" binding:"required"`
-	Fields     map[string]string      `json:"fields" binding:"required"`
-	Host       string                 `json:"host" binding:"required"`
-	Index      string                 `json:"index" binding:"required"`
-	Source     string                 `json:"source" binding:"required"`
-	Sourcetype string                 `json:"sourcetype" binding:"required"`
-	Time       float64                `json:"time" binding:"required"`
-}
+type SplunkEventPayload = action.SplunkEventPayload
 ```
 
-SplunkEventPayload is the payload for a notification coming from Splunk
+SplunkEventPayload is Deprecated: please use services/action.SplunkEventPayload
 
 #### type Tenant
 
 ```go
-type Tenant struct {
-
-	// created at
-	// Required: true
-	// Format: date-time
-	CreatedAt strfmt.DateTime `json:"createdAt"`
-
-	// created by
-	// Required: true
-	CreatedBy string `json:"createdBy"`
-
-	// name
-	// Required: true
-	Name string `json:"name"`
-
-	// status
-	// Required: true
-	Status string `json:"status"`
-}
+type Tenant = identity.Tenant
 ```
 
-Tenant tenant
-
-#### type Ticker
-
-```go
-type Ticker struct {
-}
-```
-
-Ticker is a wrapper of time.Ticker with additional functionality
-
-#### func  NewTicker
-
-```go
-func NewTicker(duration time.Duration) *Ticker
-```
-NewTicker spits out a pointer to Ticker model. It sets ticker to stop state by
-default
-
-#### func (*Ticker) GetChan
-
-```go
-func (t *Ticker) GetChan() <-chan time.Time
-```
-GetChan returns the channel from ticker
-
-#### func (*Ticker) IsRunning
-
-```go
-func (t *Ticker) IsRunning() bool
-```
-IsRunning returns bool indicating whether or not ticker is running
-
-#### func (*Ticker) Reset
-
-```go
-func (t *Ticker) Reset()
-```
-Reset resets ticker
-
-#### func (*Ticker) Start
-
-```go
-func (t *Ticker) Start()
-```
-Start starts a new ticker and set property running to true
-
-#### func (*Ticker) Stop
-
-```go
-func (t *Ticker) Stop()
-```
-Stop stops ticker and set property running to false
+Tenant is Deprecated: please use services/identity.Tenant
 
 #### type UpdateDatasetInfoFields
 
 ```go
-type UpdateDatasetInfoFields struct {
-	Name         string          `json:"name,omitempty"`
-	Kind         DatasetInfoKind `json:"kind,omitempty"`
-	Owner        string          `json:"owner,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
-}
+type UpdateDatasetInfoFields = catalog.UpdateDatasetInfoFields
 ```
 
-UpdateDatasetInfoFields represents the sources of data that can be updated by
-Splunk, same structure as DatasetInfo
+UpdateDatasetInfoFields is Deprecated: please use
+services/catalog.UpdateDatasetInfoFields
 
 #### type UplEdge
 
 ```go
-type UplEdge struct {
-	Attributes interface{} `json:"attributes"`
-	SourceNode string      `json:"sourceNode"`
-	SourcePort string      `json:"sourcePort"`
-	TargetNode string      `json:"targetNode"`
-	TargetPort string      `json:"targetPort"`
-}
+type UplEdge = streams.UplEdge
 ```
 
-UplEdge contains information on the edges between two pipeline nodes
+UplEdge is Deprecated: please use services/streams.UplEdge
 
 #### type UplNode
 
 ```go
-type UplNode interface{}
+type UplNode = streams.UplNode
 ```
 
-UplNode defines the nodes forming a pipeline
+UplNode is Deprecated: please use services/streams.UplNode
 
 #### type UplPipeline
 
 ```go
-type UplPipeline struct {
-	Edges    []UplEdge `json:"edges"`
-	Nodes    []UplNode `json:"nodes"`
-	RootNode []string  `json:"root-node"`
-	Version  int32     `json:"version"`
-}
+type UplPipeline = streams.UplPipeline
 ```
 
-UplPipeline contains the pipeline data
+UplPipeline is Deprecated: please use services/streams.UplPipeline
 
 #### type ValidateInfo
 
 ```go
-type ValidateInfo struct {
-
-	// name
-	// Required: true
-	// Max Length: 36
-	// Min Length: 4
-	Name string `json:"name"`
-
-	// tenants
-	// Required: true
-	Tenants []string `json:"tenants"`
-}
+type ValidateInfo = identity.ValidateInfo
 ```
 
-ValidateInfo validate info
+ValidateInfo is Deprecated: please use services/identity.ValidateInfo
