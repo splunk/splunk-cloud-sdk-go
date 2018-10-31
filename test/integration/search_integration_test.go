@@ -101,9 +101,11 @@ func TestUpdateJobToBeCanceled(t *testing.T) {
 	assert.Equal(t, "INFO", patchResponse.Messages[0].Type)
 	assert.Equal(t, "Search job cancelled.", patchResponse.Messages[0].Text)
 	_, err = client.SearchService.GetJob(job.ID)
-	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
-	assert.Equal(t, "Failed to get search job status by sid", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
+	assert.Equal(t, "Failed to get search job status by sid", httpErr.Message)
 	assert.NotNil(t, err)
 }
 
@@ -127,7 +129,9 @@ func TestGetJobResultsNextLink(t *testing.T) {
 	response, err := client.SearchService.GetResults(job.ID, 0, 0)
 	require.Nil(t, err)
 	assert.NotEmpty(t, response)
-	assert.NotEmpty(t, response.(*model.ResultsNotReadyResponse).NextLink)
+	notReadyResp, ok := response.(*model.ResultsNotReadyResponse)
+	require.True(t, ok)
+	assert.NotEmpty(t, notReadyResp.NextLink)
 }
 
 func TestGetJobResults(t *testing.T) {
@@ -141,7 +145,9 @@ func TestGetJobResults(t *testing.T) {
 	response, err := client.SearchService.GetResults(job.ID, 5, 0)
 	assert.Nil(t, err)
 	require.NotEmpty(t, response)
-	assert.Equal(t, 5, len(response.(*model.SearchResults).Results))
+	results, ok := response.(*model.SearchResults)
+	require.True(t, ok)
+	assert.Equal(t, 5, len(results.Results))
 }
 
 // TestIntegrationNewSearchJobBadRequest asynchronously
@@ -151,8 +157,10 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 	response, err := client.SearchService.CreateJob(PostJobsBadRequest)
 	require.NotNil(t, err)
 	assert.Empty(t, response)
-	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "400 Bad Request", err.(*util.HTTPError).HTTPStatus)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 400, httpErr.HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", httpErr.HTTPStatus)
 }
 
 // TestIntegrationGetJobResultsBadSearchID
@@ -161,9 +169,11 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 	require.NotNil(t, client)
 	resp, err := client.SearchService.GetResults("NON_EXISTING_SEARCH_ID", 0, 0)
 	require.NotNil(t, err)
-	assert.Equal(t, 404, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", err.(*util.HTTPError).HTTPStatus)
-	assert.Equal(t, "Failed to list search results.", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
+	assert.Equal(t, "Failed to list search results.", httpErr.Message)
 	assert.Nil(t, resp)
 }
 

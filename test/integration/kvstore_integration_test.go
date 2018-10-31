@@ -94,8 +94,10 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
-	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "fields in body is required", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 422, httpErr.HTTPStatusCode)
+	assert.Equal(t, "fields in body is required", httpErr.Message)
 }
 
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
@@ -115,9 +117,11 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
-	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.EqualValues(t, 404, httpErr.HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-	assert.EqualValues(t, "collection not found: ", err.(*util.HTTPError).Message)
+	assert.EqualValues(t, "collection not found: ", httpErr.Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
