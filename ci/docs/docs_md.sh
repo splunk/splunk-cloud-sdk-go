@@ -1,6 +1,6 @@
 #!/bin/bash
 
-go get github.com/robertkrimen/godocdown
+go get github.com/robertkrimen/godocdown/godocdown
 GO_NON_TEST_NON_EXAMPLE_PACKAGES=$(go list ./... | grep -v test | grep -v examples)
 
 rm -rf docs/
