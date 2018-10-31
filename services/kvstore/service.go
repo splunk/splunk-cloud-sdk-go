@@ -6,6 +6,7 @@
 package kvstore
 
 import (
+	"net/http"
 	"net/url"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -250,4 +251,35 @@ func (s *Service) InsertRecord(collectionName string, record Record) (map[string
 	err = util.ParseResponse(&responseMap, response)
 
 	return responseMap, err
+}
+
+// PutRecord - Inserts or replaces a record in the tenant's specified collection with the specified key
+func (s *Service) PutRecord(collectionName, keyValue string, record Record) (map[string]string, bool, error) {
+	url, err := s.Client.BuildURL(
+		nil, serviceCluster,
+		servicePrefix,
+		serviceVersion,
+		"collections", collectionName,
+		"records", keyValue,
+	)
+	if err != nil {
+		return nil, false, err
+	}
+
+	response, err := s.Client.Put(services.RequestParams{URL: url, Body: record})
+
+	if response != nil {
+		defer response.Body.Close()
+	}
+
+	if err != nil {
+		return nil, false, err
+	}
+
+	// Should always be a map with one key called "_key"
+	var responseMap map[string]string
+	err = util.ParseResponse(&responseMap, response)
+
+	// returns whether or not the PutRecord was an insert or a replace
+	return responseMap, response.StatusCode == http.StatusCreated, nil
 }
