@@ -193,5 +193,11 @@ func TestRoundTripperWithInvalidClient(t *testing.T) {
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
-	identityClient.Validate()
+	LoggerOutput = LoggerOutput[:0]
+	_, err = identityClient.Validate()
+	assert.NotNil(t, err)
+	assert.Equal(t, 2, len(LoggerOutput))
+	assert.Contains(t, LoggerOutput[1], "===request error")
+	assert.Contains(t, LoggerOutput[1], "dial tcp: lookup api.invalid.host: no such host")
+
 }

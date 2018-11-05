@@ -33,11 +33,13 @@ func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error)
 
 	response, err := st.transport.RoundTrip(request)
 	if err != nil {
+		st.logger.Print(fmt.Sprintf("===request error:\n%s\n", err.Error()))
 		return response, err
 	}
 
 	responseDump, err := httputil.DumpResponse(response, true)
 	if err != nil {
+		st.logger.Print(fmt.Sprintf("===response error:\n%s\n", err.Error()))
 		return response, err
 	}
 
