@@ -172,15 +172,32 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 }
 
 func TestRoundTripperWithIdentityClient(t *testing.T) {
-	identityClient, _ := identity.NewService(&services.Config{
+	identityClient, err := identity.NewService(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       "system",
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
-
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 	LoggerOutput = LoggerOutput[:0]
 	identityClient.Validate()
 	assert.Equal(t, 2, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[0], "GET /system/identity/v1/validate HTTP/1.1")
+}
+
+func TestRoundTripperWithInvalidClient(t *testing.T) {
+	identityClient, err := identity.NewService(&services.Config{
+		Token:        testutils.TestAuthenticationToken,
+		Host:         "invalid.host",
+		Tenant:       "system",
+		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
+	})
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+	LoggerOutput = LoggerOutput[:0]
+	_, err = identityClient.Validate()
+	assert.NotNil(t, err)
+	assert.Equal(t, 2, len(LoggerOutput))
+	assert.Contains(t, LoggerOutput[1], "===request error")
+	assert.Contains(t, LoggerOutput[1], "dial tcp: lookup api.invalid.host: no such host")
+
 }

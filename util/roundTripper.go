@@ -26,15 +26,21 @@ type SdkTransport struct {
 func (st *SdkTransport) RoundTrip(request *http.Request) (*http.Response, error) {
 	requestDump, err := httputil.DumpRequest(request, true)
 	if err != nil {
+		st.logger.Print(fmt.Sprintf("===request error:\n%s\n", err.Error()))
 		return nil, err
 	}
 
 	st.logger.Print(fmt.Sprintf("===Request:\n%s\n", string(requestDump)))
 
 	response, err := st.transport.RoundTrip(request)
+	if err != nil {
+		st.logger.Print(fmt.Sprintf("===request error:\n%s\n", err.Error()))
+		return response, err
+	}
 
 	responseDump, err := httputil.DumpResponse(response, true)
 	if err != nil {
+		st.logger.Print(fmt.Sprintf("===response error:\n%s\n", err.Error()))
 		return response, err
 	}
 
