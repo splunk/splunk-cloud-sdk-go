@@ -26,6 +26,7 @@ func fatal(msg string, args ...interface{}) {
 	os.Exit(1)
 }
 
+// Set up flags
 func init() {
 	flag.StringVar(&options.service, "svc", "", "service name")
 	flag.StringVar(&options.structName, "s", "", "struct to generate interface from")
