@@ -31,7 +31,7 @@ vet:
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
-	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES) && make generate_interface
+	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
 # package:
 # 	build generate_interface
