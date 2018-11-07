@@ -16,5 +16,4 @@ func TestIntegrationEnvironment(t *testing.T) {
 	assert.NotEmpty(t, testutils.TestAuthenticationToken)
 	assert.NotEmpty(t, testutils.TestSplunkCloudHost)
 	assert.NotEmpty(t, testutils.TestTenant)
-	assert.NotEmpty(t, testutils.TestURLProtocol)
 }

@@ -3,9 +3,8 @@
 echo "==============================================="
 echo "Beginning functional tests"
 echo "==============================================="
-echo "TEST_SPLUNK_CLOUD_HOST=$TEST_SPLUNK_CLOUD_HOST"
-echo "TEST_URL_PROTOCOL=$TEST_URL_PROTOCOL"
-echo "TEST_TENANT_ID=$TEST_TENANT_ID"
+echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
+echo "TENANT_ID=$TENANT_ID"
 echo "==============================================="
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
@@ -15,7 +14,7 @@ FULL_FUNCTIONAL_TEST_CODECOV_FILE_NAME=functional_test_codecov.out
 FULL_FUNCTIONAL_TEST_CODECOV_PATH=$PACKAGE_COVERAGE_PREFIX$FULL_FUNCTIONAL_TEST_CODECOV_FILE_NAME
 
 # Required to run just the service tests
-if [ "$allow_failures" -eq "1" ]; then
+if [ "$allow_failures" = "1" ]; then
     echo "Running functional tests but not gating on failures..."
     set +e
     go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \

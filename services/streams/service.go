@@ -17,6 +17,7 @@ import (
 // streams service url prefix
 const servicePrefix = "streams"
 const serviceVersion = "v1"
+const serviceCluster = "api"
 
 // Service - A service that deals with pipelines
 type Service services.BaseService
@@ -32,7 +33,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 // CompileDslToUpl creates a Upl Json from DSL
 func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "compile-dsl")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "compile-dsl")
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +56,7 @@ func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, err
 func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipelineResponse, error) {
 	queryValues, err := convertToURLQueryValues(queryParams)
 
-	url, err := s.Client.BuildURL(queryValues, servicePrefix, serviceVersion, "pipelines")
+	url, err := s.Client.BuildURL(queryValues, serviceCluster, servicePrefix, serviceVersion, "pipelines")
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +77,7 @@ func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipel
 
 // CreatePipeline creates a new pipeline
 func (s *Service) CreatePipeline(pipeline *PipelineRequest) (*Pipeline, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines")
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +98,7 @@ func (s *Service) CreatePipeline(pipeline *PipelineRequest) (*Pipeline, error) {
 
 // ActivatePipeline activates an existing pipeline
 func (s *Service) ActivatePipeline(ids []string) (AdditionalProperties, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "activate")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "activate")
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +119,7 @@ func (s *Service) ActivatePipeline(ids []string) (AdditionalProperties, error) {
 
 // DeactivatePipeline deactivates an existing pipeline
 func (s *Service) DeactivatePipeline(ids []string) (AdditionalProperties, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", "deactivate")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "deactivate")
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +140,7 @@ func (s *Service) DeactivatePipeline(ids []string) (AdditionalProperties, error)
 
 // GetPipeline gets an individual pipeline
 func (s *Service) GetPipeline(id string) (*Pipeline, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (s *Service) GetPipeline(id string) (*Pipeline, error) {
 
 // UpdatePipeline updates an existing pipeline
 func (s *Service) UpdatePipeline(id string, pipeline *PipelineRequest) (*Pipeline, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (s *Service) UpdatePipeline(id string, pipeline *PipelineRequest) (*Pipelin
 
 // DeletePipeline deletes a pipeline
 func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "pipelines", id)
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id)
 	if err != nil {
 		return nil, err
 	}

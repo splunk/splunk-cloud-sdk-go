@@ -6,10 +6,6 @@
 package integration
 
 import (
-	"testing"
-	"time"
-
-	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
@@ -17,6 +13,8 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"testing"
+	"time"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -176,24 +174,19 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{nil, &services.ConfigurableRetryConfig{5, 600}},
+		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
 	})
 
-	var cnt, errcnt int
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, err := service.CreateJob(PostJobsRequest)
-			if err != nil {
-				assert.Contains(t, err, "429")
-				errcnt++
-			}
+			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
-			fmt.Println(job.ID)
+			assert.NotNil(t, job)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(50) * time.Second)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.Equal(t, 20, cnt)
-	assert.NotZero(t, errcnt)
 }
 
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
@@ -203,24 +196,19 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{&services.DefaultRetryConfig{}, nil},
+		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
 	})
 
-	var cnt, errcnt int
+	var cnt int
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
-			job, err := service.CreateJob(PostJobsRequest)
-			if err != nil {
-				assert.Contains(t, err, "429")
-				errcnt++
-			}
+			job, _ := service.CreateJob(PostJobsRequest)
 			cnt++
-			fmt.Println(job.ID)
+			assert.NotNil(t, job)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(50) * time.Second)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.Equal(t, 20, cnt)
-	assert.NotZero(t, errcnt)
 }
 
 //TestRetryOff and validate that job response is a 429 after certain number of requests
@@ -236,16 +224,13 @@ func TestRetryOff(t *testing.T) {
 	for i := 0; i < 20; i++ {
 		go func(service *search.Service) {
 			job, err := service.CreateJob(PostJobsRequest)
+			assert.NotNil(t, job)
 			if err != nil {
-				assert.Contains(t, err, "429")
+				assert.Contains(t, err.(*util.HTTPError).HTTPStatus, "429")
 				errcnt++
-
 			}
-			fmt.Println(err)
-			fmt.Println(job.ID)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(20) * time.Second)
-	fmt.Println("Error ", errcnt)
+	time.Sleep(time.Duration(5) * time.Second)
 	assert.NotZero(t, errcnt)
 }

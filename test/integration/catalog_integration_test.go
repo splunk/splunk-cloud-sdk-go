@@ -10,13 +10,15 @@ import (
 	"net/url"
 	"testing"
 
+	"strings"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"strings"
 )
 
 // Test Rule variables
@@ -105,6 +107,41 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
 	require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
+	createMetricDatasetInfo := model.DatasetCreationPayload{
+		Name:         collectionName,
+		Kind:         catalog.Metric,
+		Owner:        datasetOwner,
+		Module:       namespaceName,
+		Capabilities: capabilities,
+		Disabled:     &isDisabled,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.Metric, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createViewDataset(t *testing.T, collectionName string, search string) (*model.DatasetInfo, error) {
+	createViewDatasetInfo := model.DatasetCreationPayload{
+		Name:   collectionName,
+		Kind:   catalog.View,
+		Search: search,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, catalog.View, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
@@ -921,12 +958,12 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Alias)
 
-	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("mymode", "owner1"))
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("auto", "owner1"))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
 
 	//update rule action
-	tmpstr = "mymode1"
+	tmpstr = "auto"
 	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.NewUpdateAutoKVAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)

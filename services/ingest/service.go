@@ -17,6 +17,7 @@ import (
 
 const servicePrefix = "ingest"
 const serviceVersion = "v1beta1"
+const serviceCluster = "api"
 
 // Service talks to the Splunk Cloud ingest service
 type Service services.BaseService
@@ -32,7 +33,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 // PostEvents post single or multiple events to ingest service
 func (s *Service) PostEvents(events []Event) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "events")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "events")
 	if err != nil {
 		return err
 	}
@@ -49,7 +50,7 @@ func (s *Service) PostEvents(events []Event) error {
 
 // PostMetrics posts single or multiple metric events to ingest service
 func (s *Service) PostMetrics(events []MetricEvent) error {
-	url, err := s.Client.BuildURL(nil, servicePrefix, serviceVersion, "metrics")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "metrics")
 	if err != nil {
 		return err
 	}

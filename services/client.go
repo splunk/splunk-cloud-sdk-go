@@ -69,12 +69,11 @@ type ConfigurableRetryConfig struct {
 
 //DefaultRetryConfig that will use a default RetryNumber and a default Interval between retries
 type DefaultRetryConfig struct {
-
 }
 
 //RetryStrategyConfig to be specified while creating a NewClient
 type RetryStrategyConfig struct {
-	DefaultRetryConfig *DefaultRetryConfig
+	DefaultRetryConfig      *DefaultRetryConfig
 	ConfigurableRetryConfig *ConfigurableRetryConfig
 }
 
@@ -112,6 +111,8 @@ type Config struct {
 	RetryRequests bool
 	//RetryStrategyConfig
 	RetryConfig RetryStrategyConfig
+	// RoundTripper
+	RoundTripper http.RoundTripper
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -152,12 +153,12 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
-func (c *BaseClient) BuildURL(queryValues url.Values, urlPathParts ...string) (url.URL, error) {
-	return c.BuildURLWithTenant(c.defaultTenant, queryValues, urlPathParts...)
+func (c *BaseClient) BuildURL(queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
+	return c.BuildURLWithTenant(c.defaultTenant, queryValues, serviceCluster, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -169,9 +170,16 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, u
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
+	var host string
+	if serviceCluster != "" {
+		host = fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	} else {
+		host = fmt.Sprintf("%s%s%s", "api", ".", c.host)
+	}
+
 	u = url.URL{
 		Scheme:   c.scheme,
-		Host:     c.host,
+		Host:     host,
 		Path:     path.Join(tenant, buildPath),
 		RawQuery: queryValues.Encode(),
 	}
@@ -313,7 +321,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 		if config.RetryConfig.ConfigurableRetryConfig == nil {
 			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
 			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
-		} else  {
+		} else {
 			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
 			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
 		}
@@ -332,6 +340,10 @@ func NewClient(config *Config) (*BaseClient, error) {
 		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
+	}
+
+	if config.RoundTripper != nil {
+		c.httpClient = &http.Client{Timeout: timeout, Transport: config.RoundTripper}
 	}
 
 	return c, nil
