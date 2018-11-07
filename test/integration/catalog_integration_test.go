@@ -958,12 +958,12 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Alias)
 
-	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("mymode", "owner1"))
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("auto", "owner1"))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
 
 	//update rule action
-	tmpstr = "mymode1"
+	tmpstr = "auto"
 	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.NewUpdateAutoKVAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
