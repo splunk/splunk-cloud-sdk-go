@@ -763,7 +763,7 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField)
 	require.NotNil(t, err)
 	assert.Empty(t, resultField)
-	assert.Equal(t, 500, err.(*util.HTTPError).HTTPStatusCode, "Expected error code 500")
+	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode, "Expected error code 400")
 }
 
 // Test GetDatasetFields for 401 Unauthorized operation error
