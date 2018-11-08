@@ -76,7 +76,7 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 		Capabilities: capabilities,
 	}
 	createLookupDataset := catalog.LookupDataset{
-		Dataset: createDatasetInfo,
+		Dataset:      createDatasetInfo,
 		ExternalKind: externalKind,
 		ExternalName: externalName,
 	}
@@ -128,8 +128,8 @@ func createMetricDataset(t *testing.T, namespaceName string, collectionName stri
 		Capabilities: capabilities,
 	}
 	createMetricDatasetInfo := catalog.MetricDataset{
-		Dataset: createDatasetInfo,
-		Disabled:     &isDisabled,
+		Dataset:  createDatasetInfo,
+		Disabled: &isDisabled,
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateMetricDataset(&createMetricDatasetInfo)
@@ -151,7 +151,7 @@ func createViewDataset(t *testing.T, namespaceName string, collectionName string
 	}
 	createViewDatasetInfo := catalog.ViewDataset{
 		Dataset: createDatasetInfo,
-		Search: search,
+		Search:  search,
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateViewDataset(&createViewDatasetInfo)
@@ -172,9 +172,9 @@ func createIndexDataset(t *testing.T, namespaceName string, collectionName strin
 		Capabilities: capabilities,
 	}
 	createIndexDatasetInfo := catalog.IndexDataset{
-		Dataset: createDatasetInfo,
+		Dataset:                createDatasetInfo,
 		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
-		Disabled:     &isDisabled,
+		Disabled:               &isDisabled,
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateIndexDataset(&createIndexDatasetInfo)
@@ -195,8 +195,8 @@ func createImportDataset(t *testing.T, namespaceName string, collectionName stri
 		Capabilities: capabilities,
 	}
 	createImportDatasetInfo := catalog.ImportDataset{
-		Dataset: createDatasetInfo,
-		SourceName: sourceName,
+		Dataset:      createDatasetInfo,
+		SourceName:   sourceName,
 		SourceModule: sourceModule,
 	}
 
@@ -441,13 +441,13 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 		Kind:         catalog.Lookup,
 		Owner:        datasetOwner,
 		Capabilities: datasetCapabilities,
-		Version: 2,
+		Version:      2,
 	}
 
 	updateLookupDataset := catalog.UpdateLookupDataset{
 		UpdateDataset: updateDatasetInfo,
-		ExternalKind: externalKind,
-		ExternalName: externalName,
+		ExternalKind:  externalKind,
+		ExternalName:  externalName,
 	}
 
 	_, err := client.CatalogService.UpdateLookupDataset(&updateLookupDataset, "123")

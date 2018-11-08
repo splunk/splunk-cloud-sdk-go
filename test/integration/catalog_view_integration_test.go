@@ -15,7 +15,7 @@ import (
 )
 
 func TestCatalogViewCreationSuccess(t *testing.T) {
-	createViewDataset(t,"",
+	createViewDataset(t, "",
 		testutils.TestCollection, "", "",
 		"search index='main' | head limit=10 | stats count()",
 	)
