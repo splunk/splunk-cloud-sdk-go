@@ -80,6 +80,7 @@ install_dep:
 dependencies:
 	dep ensure -vendor-only
 	go get -u golang.org/x/tools/cmd/goimports
+	go get github.com/vburenin/ifacemaker
 
 dependencies_update:
 	dep ensure -update
@@ -112,5 +113,8 @@ run_docker_stubby_tests: debug_docker_environment_variables
 	BEARER_TOKEN=$(DOCKER_STUBBY_BEARER_TOKEN) \
 	TENANT_ID=$(DOCKER_STUBBY_TENANT_ID) \
 	sh ./ci/functional/runtests.sh
+
+generate_interface:
+	cd services && go generate
 
 .FORCE:
