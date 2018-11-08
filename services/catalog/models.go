@@ -9,7 +9,7 @@ package catalog
 type DatasetInfoKind string
 
 const (
-	// Lookup represents TODO: Description needed
+	// Lookup represents lookup dataset kind used for referencing other datasets
 	Lookup DatasetInfoKind = "lookup"
 	// KvCollection represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
 	KvCollection DatasetInfoKind = "kvcollection"
@@ -19,6 +19,8 @@ const (
 	Metric DatasetInfoKind = "metric"
 	// View represents TODO: Description needed
 	View DatasetInfoKind = "view"
+	// Import represents TODO: Description needed
+	Import DatasetInfoKind = "import"
 )
 
 // DatasetInfo represents the sources of data that can be searched by Splunk
@@ -42,12 +44,19 @@ type DatasetInfo struct {
 	ExternalName       string `json:"externalName,omitempty"`
 	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
+	/*MaxMatches         int    `json:"maxMatches,omitempty"`
 	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`*/
 
 	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled"`
+	Disabled bool   `json:"disabled,omitempty"`
+
+	Search                 string `json:"search,omitempty"`
+	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
+
+	SourceName   string `json:"sourceName,omitempty"`
+	SourceModule string `json:"sourceModule,omitempty"`
+	//SourceId     string `json:"sourceId,omitempty"`
 }
 
 // DatasetCreationPayload represents the sources of data that can be searched by Splunk
@@ -66,15 +75,68 @@ type DatasetCreationPayload struct {
 	ExternalName       string `json:"externalName,omitempty"`
 	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         *int   `json:"maxMatches,omitempty"`
+	/*MaxMatches         *int   `json:"maxMatches,omitempty"`
 	MinMatches         *int   `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`*/
 
 	Datatype string `json:"datatype,omitempty"`
 	Disabled *bool  `json:"disabled,omitempty"`
 
 	Search                 string `json:"search,omitempty"`
 	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
+
+	SourceName   string `json:"sourceName,omitempty"`
+	SourceModule string `json:"sourceModule,omitempty"`
+	//SourceId     string `json:"sourceId,omitempty"`
+}
+
+// Dataset contains fields common to all dataset kinds (lookup, index, metric, view, import)
+type Dataset struct {
+	ID           string          `json:"id,omitempty"`
+	Name         string          `json:"name"`
+	Kind         DatasetInfoKind `json:"kind"`
+	Owner        string          `json:"owner,omitempty"`
+	Module       string          `json:"module,omitempty"`
+	Capabilities string          `json:"capabilities"`
+	Fields       []Field         `json:"fields,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+}
+
+// LookupDataset represents a fully-constructed lookup dataset
+type LookupDataset struct {
+	Dataset
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch"`
+	Filter             string `json:"filter"`
+}
+
+// IndexDataset represents a fully-constructed index dataset
+type IndexDataset struct {
+	Dataset
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+	Disabled               *bool `json:"disabled"`
+}
+
+// ViewDataset represents a fully-constructed view dataset
+type ViewDataset struct {
+	Dataset
+	Search string `json:"search"`
+}
+
+// ImportDataset represents a fully-constructed import dataset
+type ImportDataset struct {
+	Dataset
+	SourceName   string `json:"sourceName"`
+	SourceModule string `json:"sourceModule"`
+	//SourceId     string `json:"sourceId,omitempty"`
+}
+
+// MetricDataset represents a fully-constructed metric dataset
+type MetricDataset struct {
+	Dataset
+	Disabled               *bool `json:"disabled"`
 }
 
 // UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
@@ -93,14 +155,72 @@ type UpdateDatasetInfoFields struct {
 
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
+	/*MaxMatches         *int   `json:"maxMatches,omitempty"`
+	MinMatches         *int   `json:"minMatches,omitempty"`
+	DefaultMatch       string `json:"defaultMatch,omitempty"`*/
 
 	Datatype string `json:"datatype,omitempty"`
 	Disabled *bool  `json:"disabled,omitempty"`
+
+	Search                 string `json:"search,omitempty"`
+	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
+
+	SourceName   string `json:"sourceName,omitempty"`
+	SourceModule string `json:"sourceModule,omitempty"`
+	//SourceId     string `json:"sourceId,omitempty"`
+}
+
+// UpdateDataset contains fields that can be updated and that are common to all dataset kinds (lookup, index, metric, view, import)
+type UpdateDataset struct {
+	Name         string          `json:"name,omitempty"`
+	Kind         DatasetInfoKind `json:"kind,omitempty"`
+	Owner        string          `json:"owner,omitempty"`
+	Created      string          `json:"created,omitempty"`
+	Modified     string          `json:"modified,omitempty"`
+	CreatedBy    string          `json:"createdBy,omitempty"`
+	ModifiedBy   string          `json:"modifiedBy,omitempty"`
+	Capabilities string          `json:"capabilities,omitempty"`
+	Version      int             `json:"version,omitempty"`
+	Readroles    []string        `json:"readroles,omitempty"`
+	Writeroles   []string        `json:"writeroles,omitempty"`
+}
+
+// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
+type UpdateLookupDataset struct {
+	UpdateDataset
+	ExternalKind       string `json:"externalKind,omitempty"`
+	ExternalName       string `json:"externalName,omitempty"`
+	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
+	Filter             string `json:"filter,omitempty"`
+}
+
+// UpdateIndexDataset represents updates to be applied to an existing index dataset
+type UpdateIndexDataset struct {
+	UpdateDataset
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+	Disabled               *bool `json:"disabled,omitempty"`
+}
+
+// UpdateViewDataset represents updates to be applied to an existing view dataset
+type UpdateViewDataset struct {
+	UpdateDataset
+	Search string `json:"search,omitempty"`
+}
+
+// UpdateImportDataset represents updates to be applied to an existing import dataset
+type UpdateImportDataset struct {
+	UpdateDataset
+	SourceName   string `json:"sourceName,omitempty"`
+	SourceModule string `json:"sourceModule,omitempty"`
+	//SourceId     string `json:"sourceId,omitempty"`
+}
+
+// UpdateMetricDataset represents updates to be applied to an existing metric dataset
+type UpdateMetricDataset struct {
+	UpdateDataset
+	Disabled               *bool `json:"disabled,omitempty"`
 }
 
 // Field represents the fields belonging to the specified Dataset

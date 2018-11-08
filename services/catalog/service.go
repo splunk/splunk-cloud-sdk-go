@@ -91,6 +91,42 @@ func (s *Service) CreateDataset(dataset *DatasetCreationPayload) (*DatasetInfo, 
 	return &result, err
 }
 
+// CreateIndexDataset creates a new index dataset
+func (s *Service) CreateIndexDataset(indexDataset *IndexDataset) (*DatasetInfo, error) {
+	return s.CreateDataset(&DatasetCreationPayload{Name: indexDataset.Dataset.Name, Kind: indexDataset.Dataset.Kind,
+	    Owner: indexDataset.Dataset.Owner, Module: indexDataset.Dataset.Module, Capabilities: indexDataset.Dataset.Capabilities,
+	    FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs, Disabled: indexDataset.Disabled})
+}
+
+// CreateLookupDataset creates a new lookup dataset
+func (s *Service) CreateLookupDataset(lookupDataset *LookupDataset) (*DatasetInfo, error) {
+	return s.CreateDataset(&DatasetCreationPayload{Name: lookupDataset.Dataset.Name, Kind: lookupDataset.Dataset.Kind,
+	    Owner: lookupDataset.Dataset.Owner, Module: lookupDataset.Dataset.Module, Capabilities: lookupDataset.Dataset.Capabilities,
+	    ExternalKind: lookupDataset.ExternalKind, ExternalName: lookupDataset.ExternalName,
+	    CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch, Filter: lookupDataset.Filter})
+}
+
+// CreateViewDataset creates a new view dataset
+func (s *Service) CreateViewDataset(viewDataset *ViewDataset) (*DatasetInfo, error) {
+	return s.CreateDataset(&DatasetCreationPayload{Name: viewDataset.Dataset.Name, Kind: viewDataset.Dataset.Kind,
+	    Owner: viewDataset.Dataset.Owner, Module: viewDataset.Dataset.Module, Capabilities: viewDataset.Dataset.Capabilities,
+	    Search: viewDataset.Search})
+}
+
+// CreateImportDataset creates a new import dataset
+func (s *Service) CreateImportDataset(importDataset *ImportDataset) (*DatasetInfo, error) {
+	return s.CreateDataset(&DatasetCreationPayload{Name: importDataset.Dataset.Name, Kind: importDataset.Dataset.Kind,
+	    Owner: importDataset.Dataset.Owner, Module: importDataset.Dataset.Module, Capabilities: importDataset.Dataset.Capabilities,
+	    SourceName: importDataset.SourceName, SourceModule: importDataset.SourceModule})
+}
+
+// CreateMetricDataset creates a new metric dataset
+func (s *Service) CreateMetricDataset(metricDataset *MetricDataset) (*DatasetInfo, error) {
+	return s.CreateDataset(&DatasetCreationPayload{Name: metricDataset.Dataset.Name, Kind: metricDataset.Dataset.Kind,
+	    Owner: metricDataset.Dataset.Owner, Module: metricDataset.Dataset.Module, Capabilities: metricDataset.Dataset.Capabilities,
+	    Disabled: metricDataset.Disabled})
+}
+
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
 func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOrID string) (*DatasetInfo, error) {
 	// TODO: remove these from UpdateDatasetInfoFields
@@ -113,6 +149,46 @@ func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOr
 	var result DatasetInfo
 	err = util.ParseResponse(&result, response)
 	return &result, err
+}
+
+// TODO: No module in Update?
+// UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID
+func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: indexDataset.UpdateDataset.Name, Kind: indexDataset.UpdateDataset.Kind,
+	    Owner: indexDataset.UpdateDataset.Owner, Capabilities: indexDataset.UpdateDataset.Capabilities,
+	    Version: indexDataset.UpdateDataset.Version, FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs,
+	    Disabled: indexDataset.Disabled}, id)
+}
+
+// UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
+func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: lookupDataset.UpdateDataset.Name, Kind: lookupDataset.UpdateDataset.Kind,
+	    Owner: lookupDataset.UpdateDataset.Owner, Capabilities: lookupDataset.UpdateDataset.Capabilities,
+	    Version: lookupDataset.UpdateDataset.Version, ExternalKind: lookupDataset.ExternalKind,
+	    ExternalName: lookupDataset.ExternalName, CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch,
+	    Filter: lookupDataset.Filter}, id)
+}
+
+// UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
+func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: viewDataset.UpdateDataset.Name, Kind: viewDataset.UpdateDataset.Kind,
+	    Owner: viewDataset.UpdateDataset.Owner, Capabilities: viewDataset.UpdateDataset.Capabilities,
+	    Version: viewDataset.UpdateDataset.Version, Search: viewDataset.Search}, id)
+}
+
+// UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
+func (s *Service) UpdateImportDataset(importDataset *UpdateImportDataset, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: importDataset.UpdateDataset.Name, Kind: importDataset.UpdateDataset.Kind,
+	    Owner: importDataset.UpdateDataset.Owner, Capabilities: importDataset.UpdateDataset.Capabilities,
+	    Version: importDataset.UpdateDataset.Version, SourceName: importDataset.SourceName,
+	    SourceModule: importDataset.SourceModule}, id)
+}
+
+// UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
+func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetricDataset, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: metricDataset.UpdateDataset.Name, Kind: metricDataset.UpdateDataset.Kind,
+	    Owner: metricDataset.UpdateDataset.Owner, Capabilities: metricDataset.UpdateDataset.Capabilities,
+	    Version: metricDataset.UpdateDataset.Version, Disabled: metricDataset.Disabled}, id)
 }
 
 // DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
