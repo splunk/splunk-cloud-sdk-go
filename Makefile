@@ -33,9 +33,6 @@ vet:
 build:
 	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
 
-# package:
-# 	build generate_interface
-
 encrypt:
 	@if [ -f ci/secret.env ]; then \
 		jet encrypt ci/secret.env ci/env.encrypted && \
