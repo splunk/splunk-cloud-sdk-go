@@ -278,7 +278,7 @@ func TestCRUDMembers(t *testing.T) {
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
-	assert.Equal(t, 3, len(result7))
+	assert.Equal(t, 6, len(result7))
 	assert.Contains(t, result7, permissionName)
 	assert.Contains(t, result7, permissionName1)
 	assert.Contains(t, result7, permissionName2)

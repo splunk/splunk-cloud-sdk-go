@@ -25,6 +25,12 @@
 #   unused-packages = true
 
 
+ignored = [
+  "github.com/stretchr/testify",
+  "github.com/stretchr/testify/assert",
+  "github.com/stretchr/testify/require",
+]
+
 [prune]
   go-tests = true
   unused-packages = true

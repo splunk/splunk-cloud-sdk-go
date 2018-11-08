@@ -121,7 +121,7 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	require.True(t, ok)
 	assert.EqualValues(t, 404, httpErr.HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-	assert.EqualValues(t, "collection not found: ", httpErr.Message)
+	assert.EqualValues(t, "collection not found", httpErr.Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
