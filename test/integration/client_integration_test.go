@@ -198,6 +198,6 @@ func TestRoundTripperWithInvalidClient(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, 2, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[1], "===request error")
-	assert.Contains(t, LoggerOutput[1], "dial tcp: lookup api.invalid.host: no such host")
+	assert.Contains(t, LoggerOutput[1], "no such host")
 
 }

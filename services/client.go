@@ -24,6 +24,14 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
+//go:generate go run ../util/gen-interface.go -svc=action -s=Service -i=Servicer -p=action
+//go:generate go run ../util/gen-interface.go -svc=catalog -s=Service -i=Servicer -p=catalog
+//go:generate go run ../util/gen-interface.go -svc=identity -s=Service -i=Servicer -p=identity
+//go:generate go run ../util/gen-interface.go -svc=ingest -s=Service -i=Servicer -p=ingest
+//go:generate go run ../util/gen-interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
+//go:generate go run ../util/gen-interface.go -svc=search -s=Service -i=Servicer -p=search
+//go:generate go run ../util/gen-interface.go -svc=streams -s=Service -i=Servicer -p=streams
+
 // Declare constants for service package
 const (
 	AuthorizationType = "Bearer"

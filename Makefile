@@ -84,6 +84,7 @@ install_test_dep:
 dependencies:
 	dep ensure -vendor-only
 	go get -u golang.org/x/tools/cmd/goimports
+	go get github.com/vburenin/ifacemaker
 
 dependencies_update:
 	dep ensure -update
@@ -126,5 +127,8 @@ run_integration_tests:
 
 run_integration_examples:
 	./ci/integration/runexamples.sh
+
+generate_interface:
+	cd services && go generate
 
 .FORCE:
