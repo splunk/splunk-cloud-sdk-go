@@ -103,6 +103,13 @@ type Dataset struct {
 	Writeroles   []string        `json:"writeroles,omitempty"`
 }
 
+// IndexDataset represents a fully-constructed index dataset
+type IndexDataset struct {
+	Dataset
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+	Disabled               *bool `json:"disabled"`
+}
+
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {
 	Dataset
@@ -110,13 +117,6 @@ type LookupDataset struct {
 	ExternalName       string `json:"externalName,omitempty"`
 	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch"`
 	Filter             string `json:"filter"`
-}
-
-// IndexDataset represents a fully-constructed index dataset
-type IndexDataset struct {
-	Dataset
-	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
-	Disabled               *bool `json:"disabled"`
 }
 
 // ViewDataset represents a fully-constructed view dataset
@@ -187,6 +187,13 @@ type UpdateDataset struct {
 	Writeroles   []string        `json:"writeroles,omitempty"`
 }
 
+// UpdateIndexDataset represents updates to be applied to an existing index dataset
+type UpdateIndexDataset struct {
+	UpdateDataset
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+	Disabled               *bool `json:"disabled,omitempty"`
+}
+
 // UpdateLookupDataset represents updates to be applied to an existing lookup dataset
 type UpdateLookupDataset struct {
 	UpdateDataset
@@ -194,13 +201,6 @@ type UpdateLookupDataset struct {
 	ExternalName       string `json:"externalName,omitempty"`
 	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
 	Filter             string `json:"filter,omitempty"`
-}
-
-// UpdateIndexDataset represents updates to be applied to an existing index dataset
-type UpdateIndexDataset struct {
-	UpdateDataset
-	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
-	Disabled               *bool `json:"disabled,omitempty"`
 }
 
 // UpdateViewDataset represents updates to be applied to an existing view dataset
