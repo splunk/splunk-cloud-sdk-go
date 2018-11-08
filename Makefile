@@ -28,6 +28,7 @@ lint:
 	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)
 
 vet:
+	make install_test_dep # Needed here to avoid compile errors
 	go vet $(GO_NON_VENDOR_PACKAGES)
 
 build:
@@ -77,6 +78,9 @@ docker_stubby:
 install_dep:
 	go get -u github.com/golang/dep/cmd/dep
 
+install_test_dep:
+	go get -u github.com/stretchr/testify
+
 dependencies:
 	dep ensure -vendor-only
 	go get -u golang.org/x/tools/cmd/goimports
@@ -100,19 +104,29 @@ debug_docker_environment_variables:
 	@echo
 
 run_unit_tests:
+	make install_test_dep
 	sh ./ci/unit_tests/run_unit_tests.sh
 
 run_local_stubby_tests: debug_local_environment_variables
+	make install_test_dep
 	SPLUNK_CLOUD_HOST=$(LOCAL_SPLUNK_CLOUD_HOST) \
 	BEARER_TOKEN=$(LOCAL_BEARER_TOKEN) \
 	TENANT_ID=$(LOCAL_TENANT_ID) \
 	sh ./ci/functional/runtests.sh
 
 run_docker_stubby_tests: debug_docker_environment_variables
+	make install_test_dep
 	SPLUNK_CLOUD_HOST=$(DOCKER_STUBBY_SPLUNK_CLOUD_HOST) \
 	BEARER_TOKEN=$(DOCKER_STUBBY_BEARER_TOKEN) \
 	TENANT_ID=$(DOCKER_STUBBY_TENANT_ID) \
 	sh ./ci/functional/runtests.sh
+
+run_integration_tests:
+	make install_test_dep
+	sh ./ci/integration/runtests.sh
+
+run_integration_examples:
+	./ci/integration/runexamples.sh
 
 generate_interface:
 	cd services && go generate
