@@ -104,7 +104,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 
 	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
-		Host:       client.GetURL().RequestURI(),
+		Host:       client.GetURL("").RequestURI(),
 		Body:       "refreshtokentest",
 		Sourcetype: "sourcetype:refreshtokentest",
 		Source:     "manual-events",
@@ -146,7 +146,7 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 
 	timeValue := int64(1529945002)
 	testIngestEvent := model.Event{
-		Host:       client.GetURL().RequestURI(),
+		Host:       client.GetURL("").RequestURI(),
 		Body:       "clientcredentialstest",
 		Sourcetype: "sourcetype:clientcredentialstest",
 		Source:     "manual-events",
@@ -186,7 +186,7 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 
 	timeValue := int64(1529945003)
 	testIngestEvent := model.Event{
-		Host:       client.GetURL().RequestURI(),
+		Host:       client.GetURL("").RequestURI(),
 		Body:       "pkcetest",
 		Sourcetype: "sourcetype:pkcetest",
 		Source:     "manual-events",
@@ -211,7 +211,7 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 
 	timeValue := int64(1529945004)
 	testIngestEvent := model.Event{
-		Host:       client.GetURL().RequestURI(),
+		Host:       client.GetURL("").RequestURI(),
 		Body:       "badtokentest",
 		Sourcetype: "sourcetype:badtokentest",
 		Source:     "manual-events",
