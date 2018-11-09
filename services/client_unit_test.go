@@ -15,6 +15,47 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const defaultCloudURL = "https://api.splunkbeta.com"
+
+func TestNewClientDefaultProductionClient(t *testing.T) {
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token: token,
+	})
+	require.Nil(t, err)
+	baseURL := client.GetURL("")
+	require.Equal(t, baseURL.String(), defaultCloudURL)
+	apiURL := client.GetURL("api")
+	require.Equal(t, apiURL.String(), defaultCloudURL)
+}
+
+func TestNewClientAppClusterClient(t *testing.T) {
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token: token,
+	})
+	require.Nil(t, err)
+	appURL := client.GetURL("app")
+	require.Equal(t, appURL.String(), "https://app.splunkbeta.com")
+}
+
+func TestBuildURLDefaultProductionClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	tenant := "system"
+	client, err := NewClient(&Config{
+		Token:  token,
+		Tenant: tenant,
+	})
+	require.Nil(t, err)
+	testService := "myservice"
+	testVersion := "v1beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURL(nil, "", testService, testVersion, testEndpoint)
+	require.Nil(t, err)
+	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultCloudURL, tenant, testService, testVersion, testEndpoint)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
 func TestBuildURLDefaultTenant(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
@@ -68,7 +109,9 @@ func TestNewTokenClient(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
 	var apiHostname = "example.com"
+	var clusterAPIHostname = "api." + apiHostname
 	var apiHost = apiHostname + ":" + apiPort
+	var clusterAPIHost = "api." + apiHost
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 8
@@ -82,11 +125,11 @@ func TestNewTokenClient(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
-	testURL := client.GetURL()
-	assert.Equal(t, apiHostname, testURL.Hostname())
+	testURL := client.GetURL("")
+	assert.Equal(t, clusterAPIHostname, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, apiHost, testURL.Host)
+	assert.Equal(t, clusterAPIHost, testURL.Host)
 }
 
 type tRet struct{}
