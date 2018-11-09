@@ -23,8 +23,20 @@ func TestNewClientDefaultProductionClient(t *testing.T) {
 		Token: token,
 	})
 	require.Nil(t, err)
-	baseURL := client.GetURL()
+	baseURL := client.GetURL("")
 	require.Equal(t, baseURL.String(), defaultCloudURL)
+	apiURL := client.GetURL("api")
+	require.Equal(t, apiURL.String(), defaultCloudURL)
+}
+
+func TestNewClientAppClusterClient(t *testing.T) {
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token: token,
+	})
+	require.Nil(t, err)
+	appURL := client.GetURL("app")
+	require.Equal(t, appURL.String(), "https://app.splunkbeta.com")
 }
 
 func TestBuildURLDefaultProductionClient(t *testing.T) {
@@ -97,7 +109,9 @@ func TestNewTokenClient(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
 	var apiHostname = "example.com"
+	var clusterApiHostname = "api." + apiHostname
 	var apiHost = apiHostname + ":" + apiPort
+	var clusterApiHost = "api." + apiHost
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 8
@@ -111,11 +125,11 @@ func TestNewTokenClient(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
-	testURL := client.GetURL()
-	assert.Equal(t, apiHostname, testURL.Hostname())
+	testURL := client.GetURL("")
+	assert.Equal(t, clusterApiHostname, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, apiHost, testURL.Host)
+	assert.Equal(t, clusterApiHost, testURL.Host)
 }
 
 type tRet struct{}
