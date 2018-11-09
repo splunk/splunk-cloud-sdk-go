@@ -15,6 +15,35 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const defaultCloudURL = "https://api.splunkbeta.com"
+
+func TestNewClientDefaultProductionClient(t *testing.T) {
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token: token,
+	})
+	require.Nil(t, err)
+	baseURL := client.GetURL()
+	require.Equal(t, baseURL.String(), defaultCloudURL)
+}
+
+func TestBuildURLDefaultProductionClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	tenant := "system"
+	client, err := NewClient(&Config{
+		Token:  token,
+		Tenant: tenant,
+	})
+	require.Nil(t, err)
+	testService := "myservice"
+	testVersion := "v1beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURL(nil, "", testService, testVersion, testEndpoint)
+	require.Nil(t, err)
+	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultCloudURL, tenant, testService, testVersion, testEndpoint)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
 func TestBuildURLDefaultTenant(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
