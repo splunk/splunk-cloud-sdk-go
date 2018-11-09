@@ -109,9 +109,9 @@ func TestNewTokenClient(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
 	var apiHostname = "example.com"
-	var clusterApiHostname = "api." + apiHostname
+	var clusterAPIHostname = "api." + apiHostname
 	var apiHost = apiHostname + ":" + apiPort
-	var clusterApiHost = "api." + apiHost
+	var clusterAPIHost = "api." + apiHost
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	var timeout = time.Second * 8
@@ -126,10 +126,10 @@ func TestNewTokenClient(t *testing.T) {
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
 	testURL := client.GetURL("")
-	assert.Equal(t, clusterApiHostname, testURL.Hostname())
+	assert.Equal(t, clusterAPIHostname, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, clusterApiHost, testURL.Host)
+	assert.Equal(t, clusterAPIHost, testURL.Host)
 }
 
 type tRet struct{}
