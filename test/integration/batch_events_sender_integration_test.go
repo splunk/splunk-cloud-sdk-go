@@ -131,7 +131,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	assert.True(t, len(collector.Errors) >= maxAllowedErr)
 
 	httpError, ok := collector.Errors[0].Error.(*util.HTTPError)
-	assert.True(t, ok)
+	require.True(t, ok)
 	assert.Equal(t, httpError.HTTPStatusCode, 401)
 	assert.Equal(t, httpError.HTTPStatus, "401 Unauthorized")
 	assert.Equal(t, httpError.Message, "Error validating request")

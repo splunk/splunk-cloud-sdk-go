@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// timeSec denotes the current timestamp
-var timeSec = time.Now().Unix()
+// TimeSec denotes the current timestamp
+var TimeSec = time.Now().Unix()
 
 // TestSplunkCloudHost - the url for the test api to be used
 var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
@@ -30,10 +30,10 @@ var TestInvalidTestTenant = "INVALID_TENANT_ID"
 var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
 // TestNamespace - A namespace for integration testing
-var TestNamespace = fmt.Sprintf("gonamespace%d", timeSec)
+var TestNamespace = fmt.Sprintf("gonamespace%d", TimeSec)
 
 // TestCollection - A collection for integration testing
-var TestCollection = fmt.Sprintf("gocollection%d", timeSec)
+var TestCollection = fmt.Sprintf("gocollection%d", TimeSec)
 
 // StubbyTestCollection - A collection for stubby testing
 var StubbyTestCollection = "testcollection0"
