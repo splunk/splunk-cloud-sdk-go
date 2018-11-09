@@ -20,7 +20,7 @@ func TestIntegrationCreateEventsSuccess(t *testing.T) {
 	attributes := make(map[string]interface{})
 	attributes["testKey"] = "testValue"
 	timeValue := int64(testutils.TimeSec * 1000) // Unix millis
-	clientURL := client.GetURL()
+	clientURL := client.GetURL("")
 	event1 := model.Event{
 		Host:       clientURL.RequestURI(),
 		Body:       "event1",
