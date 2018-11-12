@@ -35,21 +35,21 @@
       name: integration tests
       steps:
         - name: integration tests - not gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           exclude: ^(master|develop)$
           command: bash -c "allow_failures=1 make run_integration_tests"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: integration tests - gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           tag: ^(master|develop)$
           command: bash -c "allow_failures=0 make run_integration_tests"
         - name: run example - gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           tag: ^(master)$
           command: bash -c "allow_failures=0 make run_integration_examples"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: run example - not gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           exclue: ^(master)$
           command: bash -c "allow_failures=1 make run_integration_examples"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
@@ -63,3 +63,4 @@
                                       -userKey $WHITESOURCE_USER_KEY"
           tag: ^(master|develop)$
           encrypted_dockercfg_path: ci/dockercfg.encrypted
+
