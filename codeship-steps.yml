@@ -63,3 +63,4 @@
                                       -userKey $WHITESOURCE_USER_KEY"
           tag: ^(master|develop)$
           encrypted_dockercfg_path: ci/dockercfg.encrypted
+
