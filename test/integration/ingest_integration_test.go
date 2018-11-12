@@ -7,19 +7,20 @@ package integration
 
 import (
 	"testing"
-	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestIntegrationCreateEventsSuccess(t *testing.T) {
 	client := getClient(t)
 	attributes := make(map[string]interface{})
 	attributes["testKey"] = "testValue"
-	timeValue := int64(time.Now().Unix() * 1000) // Unix millis
-	clientURL := client.GetURL()
+	timeValue := int64(testutils.TimeSec * 1000) // Unix millis
+	clientURL := client.GetURL("")
 	event1 := model.Event{
 		Host:       clientURL.RequestURI(),
 		Body:       "event1",
@@ -44,8 +45,10 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	err := invalidClient.IngestService.PostEvents(testIngestEvent)
 
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 401, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "Error validating request", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 401, httpErr.HTTPStatusCode)
+	assert.Equal(t, "Error validating request", httpErr.Message)
 }
 
 func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
@@ -56,17 +59,21 @@ func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 
 	assert.NotEmpty(t, err)
 
-	httperror := err.(*util.HTTPError)
+	httperror, ok := err.(*util.HTTPError)
+	require.True(t, ok)
 	assert.Equal(t, 400, httperror.HTTPStatusCode)
 	assert.Equal(t, "Invalid data format", httperror.Message)
 
-	details := httperror.Details.(map[string]interface{})
+	details, ok := httperror.Details.(map[string]interface{})
+	require.True(t, ok)
 	assert.NotEmpty(t, details["failedEvents"])
 
-	failedEvents := details["failedEvents"].([]interface{})
+	failedEvents, ok := details["failedEvents"].([]interface{})
+	require.True(t, ok)
 	assert.Equal(t, 1, len(failedEvents))
 
-	failedEvent := failedEvents[0].(map[string]interface{})
+	failedEvent, ok := failedEvents[0].(map[string]interface{})
+	require.True(t, ok)
 	assert.Equal(t, float64(1), failedEvent["index"])
 	assert.Equal(t, "Event body cannot be empty", failedEvent["message"])
 }
@@ -74,12 +81,13 @@ func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 func TestIntegrationIngestEventBadRequest(t *testing.T) {
 	client := getClient(t)
 	err := client.IngestService.PostEvents(nil)
-
 	assert.NotEmpty(t, err)
-	assert.Equal(t, 400, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "Invalid data format", err.(*util.HTTPError).Message)
-	assert.Equal(t, "INVALID_DATA", err.(*util.HTTPError).Code)
-	assert.Equal(t, "", err.(*util.HTTPError).MoreInfo)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 400, httpErr.HTTPStatusCode)
+	assert.Equal(t, "Invalid data format", httpErr.Message)
+	assert.Equal(t, "INVALID_DATA", httpErr.Code)
+	assert.Equal(t, "", httpErr.MoreInfo)
 }
 
 func TestIntegrationCreateMetrics(t *testing.T) {
@@ -98,7 +106,7 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 
 	metricEvent1 := model.MetricEvent{
 		Body:       metrics,
-		Timestamp:  time.Now().Unix() * 1000,
+		Timestamp:  testutils.TimeSec * 1000,
 		Nanos:      1,
 		Source:     "mysource",
 		Sourcetype: "mysourcetype",

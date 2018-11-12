@@ -16,8 +16,8 @@ var testPipelineDescription = "integration test pipeline"
 
 // Test GetPipelines streams endpoint
 func TestIntegrationGetAllPipelines(t *testing.T) {
-	pipelineName1 := fmt.Sprintf("testPipeline01%d", timeSec)
-	pipelineName2 := fmt.Sprintf("testPipeline02%d", timeSec)
+	pipelineName1 := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
+	pipelineName2 := fmt.Sprintf("testPipeline02%d", testutils.TimeSec)
 
 	// Create two test pipelines
 	pipeline1, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
@@ -60,7 +60,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 // Test CreatePipeline streams endpoint
 func TestIntegrationCreatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline and verify that the pipeline was created
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -84,23 +84,27 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	require.NotEmpty(t, pipeline.Data.Nodes)
 	require.Equal(t, 4, len(pipeline.Data.Nodes))
 
-	dataNode1 := pipeline.Data.Nodes[0].(map[string]interface{})
+	dataNode1, ok := pipeline.Data.Nodes[0].(map[string]interface{})
+	require.True(t, ok)
 	assert.NotEmpty(t, dataNode1["id"])
 	assert.Equal(t, "unauthenticated-read-kafka", dataNode1["op"])
 	assert.Equal(t, "localhost:9092", dataNode1["brokers"])
 	assert.Equal(t, "intopic", dataNode1["topic"])
 
-	dataNode2 := pipeline.Data.Nodes[1].(map[string]interface{})
+	dataNode2, ok := pipeline.Data.Nodes[1].(map[string]interface{})
+	require.True(t, ok)
 	assert.NotEmpty(t, dataNode2["id"])
 	assert.Equal(t, "deserialize-events", dataNode2["op"])
 	assert.Empty(t, dataNode2["attributes"])
 
-	dataNode3 := pipeline.Data.Nodes[2].(map[string]interface{})
+	dataNode3, ok := pipeline.Data.Nodes[2].(map[string]interface{})
+	require.True(t, ok)
 	assert.NotEmpty(t, dataNode3["id"])
 	assert.Equal(t, "serialize-events", dataNode3["op"])
 	assert.Equal(t, "output-topic-1", dataNode3["topic"])
 
-	dataNode4 := pipeline.Data.Nodes[3].(map[string]interface{})
+	dataNode4, ok := pipeline.Data.Nodes[3].(map[string]interface{})
+	require.True(t, ok)
 	assert.NotEmpty(t, dataNode4["id"])
 	assert.Equal(t, "unauthenticated-write-kafka", dataNode4["op"])
 	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
@@ -109,7 +113,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 // Test ActivatePipeline streams endpoint
 func TestIntegrationActivatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -140,7 +144,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 // TODO (Parul): Known bug - BLAM-4340, until the fix is ready, setting a workaround field - skipSavePoint (=true)
 // Test DeactivatePipeline streams endpoint
 func TestIntegrationDeactivatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -176,7 +180,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 // Test UpdatePipeline streams endpoint
 func TestIntegrationUpdatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -198,7 +202,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 // Test DeletePipeline streams endpoint
 func TestIntegrationDeletePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", timeSec)
+	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))

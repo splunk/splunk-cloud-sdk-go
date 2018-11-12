@@ -94,8 +94,10 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
 	require.NotNil(t, err)
-	assert.Equal(t, 422, err.(*util.HTTPError).HTTPStatusCode)
-	assert.Equal(t, "fields in body is required", err.(*util.HTTPError).Message)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 422, httpErr.HTTPStatusCode)
+	assert.Equal(t, "fields in body is required", httpErr.Message)
 }
 
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
@@ -115,9 +117,11 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
 	require.NotNil(t, err)
-	assert.EqualValues(t, 404, err.(*util.HTTPError).HTTPStatusCode)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.EqualValues(t, 404, httpErr.HTTPStatusCode)
 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-	assert.EqualValues(t, "Collection not found: ", err.(*util.HTTPError).Message)
+	assert.EqualValues(t, "collection not found", httpErr.Message)
 }
 
 // Test DeleteIndex for 404 Index not found error
@@ -155,6 +159,48 @@ func TestCreateRecords(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	CreateTestRecord(t)
+}
+
+// Test InsertRecords() kvstore service endpoint against nova playground
+func TestPutRecords(t *testing.T) {
+	// Create the test collection
+	createKVCollectionDataset(t,
+		testutils.TestNamespace,
+		testutils.TestCollection,
+		datasetOwner,
+		datasetCapabilities)
+
+	// Remove the dataset used for testing
+	defer cleanupDatasets(t)
+
+	keys := CreateTestRecord(t)
+
+	record := `
+	{
+		"capacity_gb": 8,
+		"size": "notbig",
+		"description": "this is a notbig amount of GB",
+		"_raw": ""
+	}`
+
+	var res model.Record
+	err := json.Unmarshal([]byte(record), &res)
+	require.Nil(t, err)
+
+	// test replace record
+	key, created, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], res)
+	require.Nil(t, err)
+	require.NotNil(t, key)
+	assert.Equal(t, key["_key"], keys[0])
+	assert.False(t, created)
+
+	// test insert record
+	recordID := "recordID"
+	key, created, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, res)
+	require.Nil(t, err)
+	require.NotNil(t, key)
+	assert.Equal(t, key["_key"], recordID)
+	assert.True(t, created)
 }
 
 // Test getRecordByKey() kvstore service endpoint against the nova playground

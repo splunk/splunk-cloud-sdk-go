@@ -38,7 +38,7 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	groupNum := len(res)
 
-	groupName := fmt.Sprintf("grouptest%d", timeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
 
 	// create/get/delete group and groups
 	resultgroup, err := client.IdentityService.CreateGroup(groupName)
@@ -61,7 +61,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
-	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
 	res2, err := client.IdentityService.GetGroupRoles(groupName)
 	require.Nil(t, err)
 	roleNum := len(res2)
@@ -135,7 +135,7 @@ func TestCRUDRoles(t *testing.T) {
 	require.Nil(t, err)
 	roleNum := len(res)
 
-	roleName := fmt.Sprintf("roletest%d", timeSec)
+	roleName := fmt.Sprintf("roletest%d", testutils.TimeSec)
 
 	// create/get/delete role and roles
 	resultrole, err := client.IdentityService.CreateRole(roleName)
@@ -158,7 +158,7 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions
-	permissionName := fmt.Sprintf("perm1-%d", timeSec)
+	permissionName := fmt.Sprintf("perm1-%d", testutils.TimeSec)
 	result1, err := client.IdentityService.GetRolePermissions(roleName)
 	require.Nil(t, err)
 	permNum := len(result1)
@@ -218,7 +218,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memberName, result2.Name)
 	assert.Equal(t, testutils.TestTenant, result2.Tenant)
 
-	groupName := fmt.Sprintf("grouptest%d", timeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
 
 	// create a group
 	resultgroup, err := client.IdentityService.CreateGroup(groupName)
@@ -241,7 +241,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result4, groupName)
 
 	// group-role
-	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
 
 	// create a test role
 	resultrole, err := client.IdentityService.CreateRole(roleName)
@@ -278,7 +278,7 @@ func TestCRUDMembers(t *testing.T) {
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
-	assert.Equal(t, 3, len(result7))
+	assert.Equal(t, 6, len(result7))
 	assert.Contains(t, result7, permissionName)
 	assert.Contains(t, result7, permissionName1)
 	assert.Contains(t, result7, permissionName2)
