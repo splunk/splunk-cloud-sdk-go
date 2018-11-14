@@ -16,7 +16,7 @@ import (
 )
 
 const servicePrefix = "ingest"
-const serviceVersion = "v1beta1"
+const serviceVersion = "v1beta2"
 const serviceCluster = "api"
 
 // Service talks to the Splunk Cloud ingest service
