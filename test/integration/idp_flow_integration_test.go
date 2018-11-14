@@ -99,9 +99,6 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
-
 	timeValue := int64(1529945001)
 	testIngestEvent := model.Event{
 		Host:       client.GetURL("").RequestURI(),
@@ -141,8 +138,9 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	// Make sure the backend client id has been added to the tenant, err is ignored - if this fails (e.g. for 405 duplicate) we are probably still OK
-	_, _ = client.IdentityService.AddMember(BackendClientID)
+	// Make sure the backend client id has been added to the tenant as an admin (authz is needed for ingest), errs are ignored - if either fails (e.g. for 405 duplicate) we are probably still OK
+	_, _ = getClient(t).IdentityService.AddMember(BackendClientID)
+	_, _ = getClient(t).IdentityService.AddMemberToGroup("tenant.admins", BackendClientID)
 
 	timeValue := int64(1529945002)
 	testIngestEvent := model.Event{
