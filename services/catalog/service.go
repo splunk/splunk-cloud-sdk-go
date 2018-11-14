@@ -8,8 +8,10 @@ package catalog
 import (
 	"net/url"
 
+	"encoding/json"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"net/http"
 )
 
 // catalog service url prefix
@@ -54,7 +56,7 @@ func (s *Service) GetDatasets() ([]DatasetInfo, error) {
 }
 
 // GetDataset returns the Dataset by resourceName or ID
-func (s *Service) GetDataset(resourceNameOrID string) (*DatasetInfo, error) {
+func (s *Service) GetDataset(resourceNameOrID string) (Dataset, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -66,15 +68,13 @@ func (s *Service) GetDataset(resourceNameOrID string) (*DatasetInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	var result DatasetInfo
-	err = util.ParseResponse(&result, response)
-	return &result, err
+
+	result, err := parseDatasetResponse(response)
+	return result, err
 }
 
 // CreateDataset creates a new Dataset
-func (s *Service) CreateDataset(dataset *DatasetCreationPayload) (*DatasetInfo, error) {
-	// TODO: remove this from DatasetCreationPayload
-	dataset.Owner = ""
+func (s *Service) CreateDataset(dataset Dataset) (Dataset, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -86,45 +86,9 @@ func (s *Service) CreateDataset(dataset *DatasetCreationPayload) (*DatasetInfo, 
 	if err != nil {
 		return nil, err
 	}
-	var result DatasetInfo
-	err = util.ParseResponse(&result, response)
-	return &result, err
-}
 
-// CreateIndexDataset creates a new index dataset
-func (s *Service) CreateIndexDataset(indexDataset *IndexDataset) (*DatasetInfo, error) {
-	return s.CreateDataset(&DatasetCreationPayload{Name: indexDataset.Dataset.Name, Kind: indexDataset.Dataset.Kind,
-		Owner: indexDataset.Dataset.Owner, Module: indexDataset.Dataset.Module, Capabilities: indexDataset.Dataset.Capabilities,
-		FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs, Disabled: indexDataset.Disabled})
-}
-
-// CreateLookupDataset creates a new lookup dataset
-func (s *Service) CreateLookupDataset(lookupDataset *LookupDataset) (*DatasetInfo, error) {
-	return s.CreateDataset(&DatasetCreationPayload{Name: lookupDataset.Dataset.Name, Kind: lookupDataset.Dataset.Kind,
-		Owner: lookupDataset.Dataset.Owner, Module: lookupDataset.Dataset.Module, Capabilities: lookupDataset.Dataset.Capabilities,
-		ExternalKind: lookupDataset.ExternalKind, ExternalName: lookupDataset.ExternalName,
-		CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch, Filter: lookupDataset.Filter})
-}
-
-// CreateViewDataset creates a new view dataset
-func (s *Service) CreateViewDataset(viewDataset *ViewDataset) (*DatasetInfo, error) {
-	return s.CreateDataset(&DatasetCreationPayload{Name: viewDataset.Dataset.Name, Kind: viewDataset.Dataset.Kind,
-		Owner: viewDataset.Dataset.Owner, Module: viewDataset.Dataset.Module, Capabilities: viewDataset.Dataset.Capabilities,
-		Search: viewDataset.Search})
-}
-
-// CreateImportDataset creates a new import dataset
-func (s *Service) CreateImportDataset(importDataset *ImportDataset) (*DatasetInfo, error) {
-	return s.CreateDataset(&DatasetCreationPayload{Name: importDataset.Dataset.Name, Kind: importDataset.Dataset.Kind,
-		Owner: importDataset.Dataset.Owner, Module: importDataset.Dataset.Module, Capabilities: importDataset.Dataset.Capabilities,
-		SourceName: importDataset.SourceName, SourceModule: importDataset.SourceModule})
-}
-
-// CreateMetricDataset creates a new metric dataset
-func (s *Service) CreateMetricDataset(metricDataset *MetricDataset) (*DatasetInfo, error) {
-	return s.CreateDataset(&DatasetCreationPayload{Name: metricDataset.Dataset.Name, Kind: metricDataset.Dataset.Kind,
-		Owner: metricDataset.Dataset.Owner, Module: metricDataset.Dataset.Module, Capabilities: metricDataset.Dataset.Capabilities,
-		Disabled: metricDataset.Disabled})
+	result, err := parseDatasetResponse(response)
+	return result, err
 }
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
@@ -531,4 +495,43 @@ func (s *Service) GetModules(filter url.Values) ([]Module, error) {
 	var result []Module
 	err = util.ParseResponse(&result, response)
 	return result, err
+}
+
+// parseDatasetResponse parses incoming http response into specific Dataset subytpe based on 'Kind'
+func parseDatasetResponse(response *http.Response) (Dataset, error) {
+	var datasetInterface interface{}
+	err := util.ParseResponse(&datasetInterface, response)
+	datasetByte, err := json.Marshal(datasetInterface)
+
+	datasetMap, _ := datasetInterface.(map[string]interface{})
+	switch datasetMap["kind"] {
+	case "index":
+		var datasetResult IndexDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	case "view":
+		var datasetResult ViewDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	case "lookup":
+		var datasetResult LookupDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	case "import":
+		var datasetResult ImportDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	case "metric":
+		var datasetResult MetricDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	case "kvcollection":
+		var datasetResult KVCollectionDataset
+		_ = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
+	default:
+		panic("Unknown dataset type")
+	}
+
+	return nil, err
 }

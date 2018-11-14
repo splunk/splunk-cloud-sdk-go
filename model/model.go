@@ -119,9 +119,6 @@ const (
 // DatasetInfo is Deprecated: please use services/catalog.DatasetInfo
 type DatasetInfo = catalog.DatasetInfo
 
-// DatasetCreationPayload is Deprecated: please use services/catalog.DatasetCreationPayload
-type DatasetCreationPayload = catalog.DatasetCreationPayload
-
 // UpdateDatasetInfoFields is Deprecated: please use services/catalog.UpdateDatasetInfoFields
 type UpdateDatasetInfoFields = catalog.UpdateDatasetInfoFields
 

@@ -10,7 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 )
@@ -28,14 +27,13 @@ func TestCatalogMetricCreationSuccess(t *testing.T) {
 }
 
 func TestCatalogMetricCreationWithMissingCollectionName(t *testing.T) {
-	createMetricDatasetInfo := model.DatasetCreationPayload{
-		Kind:         catalog.Metric,
-		Owner:        datasetOwner,
+	createMetricDatasetInfo := catalog.MetricDataset{
+		Kind:         "metric",
 		Module:       testutils.TestNamespace,
 		Capabilities: datasetCapabilities,
 	}
 
-	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(createMetricDatasetInfo)
 
 	assert.Nil(t, datasetInfo)
 	assert.NotNil(t, err)

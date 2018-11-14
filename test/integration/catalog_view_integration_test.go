@@ -8,7 +8,6 @@ package integration
 import (
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/stretchr/testify/assert"
@@ -25,12 +24,13 @@ func TestCatalogViewCreationSuccess(t *testing.T) {
 }
 
 func TestCatalogViewCreationWithMissingCollectionName(t *testing.T) {
-	createMetricDatasetInfo := model.DatasetCreationPayload{
-		Kind:   catalog.View,
-		Search: "from index:main | head limit=10 | stats count()",
+	var searchQuery = "from index:main | head limit=10 | stats count()"
+	createMetricDatasetInfo := catalog.ViewDataset{
+		Kind:   "view",
+		Search: &searchQuery,
 	}
 
-	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(createMetricDatasetInfo)
 
 	assert.Nil(t, datasetInfo)
 	assert.NotNil(t, err)
