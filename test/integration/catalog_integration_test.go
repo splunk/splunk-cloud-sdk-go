@@ -30,12 +30,12 @@ var owner = "splunk"
 // Test Dataset variables
 var datasetOwner = "Splunk"
 var datasetCapabilities = "1101-00000:11010"
-var datasetName1 = "go_integ_dataset_1000"
-var datasetName2 = "go_integ_dataset_2000"
-var datasetName3 = "go_integ_dataset_3000"
-var datasetName4 = "go_integ_dataset_index"
-var datasetName5 = "go_integ_dataset_view"
-var datasetName6 = "go_integ_dataset_metric"
+var datasetName1 = fmt.Sprintf("go_integ_dataset_1000_%d", timeSec)
+var datasetName2 = fmt.Sprintf("go_integ_dataset_2000_%d", timeSec)
+var datasetName3 = fmt.Sprintf("go_integ_dataset_3000_%d", timeSec)
+var datasetName4 = fmt.Sprintf("go_integ_dataset_index_%d", timeSec)
+var datasetName5 = fmt.Sprintf("go_integ_dataset_view_%d", timeSec)
+var datasetName6 = fmt.Sprintf("go_integ_dataset_metric_%d", timeSec)
 var externalKind = "kvcollection"
 var externalName = "test_externalName"
 var frozenTimePeriodInSecs = 8
@@ -80,9 +80,10 @@ func createLookupDataset(t *testing.T, namespaceName string, collectionName stri
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(createLookupDataset)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.LookupDataset{}, datasetInfo)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
 	require.Equal(t, "lookup", datasetMap["kind"].(string))
 
 	return datasetInfo, err
@@ -109,9 +110,10 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(createKVCollectionDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.KVCollectionDataset{}, datasetInfo)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
 	require.Equal(t, "kvcollection", datasetMap["kind"].(string))
 
 	return datasetInfo, err
@@ -128,9 +130,10 @@ func createMetricDataset(t *testing.T, namespaceName string, collectionName stri
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.MetricDataset{}, datasetInfo)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
 	require.Equal(t, "metric", datasetMap["kind"].(string))
 
 	return datasetInfo, err
@@ -147,9 +150,10 @@ func createViewDataset(t *testing.T, namespaceName string, collectionName string
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.ViewDataset{}, datasetInfo)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
 	require.Equal(t, "view", datasetMap["kind"].(string))
 
 	return datasetInfo, err
@@ -167,9 +171,11 @@ func createIndexDataset(t *testing.T, namespaceName string, collectionName strin
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createIndexDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.IndexDataset{}, datasetInfo)
 	require.Nil(t, err)
-	//require.Equal(t, catalog.Index, datasetInfo.Kind)
+	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, "index", datasetMap["kind"].(string))
 
 	return datasetInfo, err
 }
@@ -186,9 +192,11 @@ func createImportDataset(t *testing.T, namespaceName string, collectionName stri
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createImportDatasetInfo)
 	require.NotNil(t, datasetInfo)
-	//require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.IsType(t, catalog.ImportDataset{}, datasetInfo)
 	require.Nil(t, err)
-	//require.Equal(t, catalog.Import, datasetInfo.Kind)
+	datasetMap, err := convertDatasetInterfaceToMap(datasetInfo)
+	require.Nil(t, err)
+	require.Equal(t, "import", datasetMap["kind"].(string))
 
 	return datasetInfo, err
 }
@@ -349,6 +357,7 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	datasetByID, err := client.CatalogService.GetDataset(datasetMap["id"].(string))
 
@@ -368,6 +377,7 @@ func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	_, err = invalidClient.CatalogService.GetDataset(datasetMap["id"].(string))
 	require.NotNil(t, err)
@@ -396,11 +406,12 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	updateVersion := 6
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	updateDatasetInfo := catalog.UpdateDataset{
-		Version: updateVersion,
+		Version: &updateVersion,
 	}
-	updateLookupDataset := catalog.UpdateLookupDataset{
+	updateLookupDataset := catalog.UpdateLookup{
 		UpdateDataset: updateDatasetInfo,
 	}
 	updatedDataset, err := client.CatalogService.UpdateLookupDataset(&updateLookupDataset, datasetMap["id"].(string))
@@ -423,16 +434,17 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 	defer cleanupDatasets(t)
 
 	client := getSdkClient(t)
+	version := 2
 
 	updateDatasetInfo := catalog.UpdateDataset{
 		Name:         "goSdkDataset6",
 		Kind:         catalog.Lookup,
 		Owner:        datasetOwner,
 		Capabilities: datasetCapabilities,
-		Version:      2,
+		Version:      &version,
 	}
 
-	updateLookupDataset := catalog.UpdateLookupDataset{
+	updateLookupDataset := catalog.UpdateLookup{
 		UpdateDataset: updateDatasetInfo,
 		ExternalKind:  externalKind,
 		ExternalName:  externalName,
@@ -453,6 +465,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	err = client.CatalogService.DeleteDataset(datasetMap["id"].(string))
 	require.Nil(t, err)
@@ -472,6 +485,7 @@ func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
 	// create dataset
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 	assert.NotNil(t, datasetMap["id"].(string))
 
 	err = invalidClient.CatalogService.DeleteDataset(datasetMap["id"].(string))
@@ -670,6 +684,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// create new fields in the dataset
 	testField1 := catalog.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
@@ -696,6 +711,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	require.Nil(t, err)
 	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// create new fields in the dataset
 	testField1 := catalog.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
@@ -725,6 +741,7 @@ func TestIntegrationPostDatasetField(t *testing.T) {
 	require.Nil(t, err)
 	assert.Emptyf(t, err, "Error creating dataset: %s", err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -746,6 +763,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -777,6 +795,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -803,6 +822,7 @@ func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	testField := catalog.Field{Name: "integ_test_field", DataType: "N", FieldType: "U", Prevalence: "S"}
@@ -822,6 +842,7 @@ func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	PostDatasetField(dataset, client, t)
@@ -844,6 +865,7 @@ func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	testField := catalog.Field{}
@@ -864,6 +886,7 @@ func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create new fields in the dataset
 	PostDatasetField(dataset, client, t)
@@ -886,6 +909,7 @@ func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -913,6 +937,7 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -941,6 +966,7 @@ func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Create a new dataset field
 	resultField := PostDatasetField(dataset, client, t)
@@ -961,6 +987,7 @@ func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
 	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
 	require.Nil(t, err)
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	// Delete dataset field
 	err = client.CatalogService.DeleteDatasetField(datasetMap["id"].(string), "123")
@@ -1133,6 +1160,7 @@ func TestRuleActions(t *testing.T) {
 func PostDatasetField(dataset catalog.Dataset, client *sdk.Client, t *testing.T) *catalog.Field {
 	testField := catalog.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
 	datasetMap, err := convertDatasetInterfaceToMap(dataset)
+	require.Nil(t, err)
 
 	resultField, err := client.CatalogService.CreateDatasetField(datasetMap["id"].(string), &testField)
 	require.Nil(t, err)
@@ -1182,9 +1210,12 @@ func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 
 // Helper function to convert custom interface type to map
 func convertDatasetInterfaceToMap(dataset catalog.Dataset) (map[string]interface{}, error) {
-	datasetByte, _ := json.Marshal(dataset) // TODO: Check and handle nulls
+	datasetByte, _ := json.Marshal(dataset)
 	datasetMap := make(map[string]interface{})
 	err := json.Unmarshal(datasetByte, &datasetMap)
+	if err != nil {
+		return nil, err
+	}
 
 	return datasetMap, err
 }

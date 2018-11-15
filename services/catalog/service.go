@@ -9,6 +9,7 @@ import (
 	"net/url"
 
 	"encoding/json"
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"net/http"
@@ -116,42 +117,63 @@ func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOr
 }
 
 // UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID  TODO: No module in Update?
-func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: indexDataset.UpdateDataset.Name, Kind: indexDataset.UpdateDataset.Kind,
-		Owner: indexDataset.UpdateDataset.Owner, Capabilities: indexDataset.UpdateDataset.Capabilities,
-		Version: indexDataset.UpdateDataset.Version, FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs,
-		Disabled: indexDataset.Disabled}, id)
+func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndex, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{
+		Name:                   indexDataset.UpdateDataset.Name,
+		Kind:                   indexDataset.UpdateDataset.Kind,
+		Owner:                  indexDataset.UpdateDataset.Owner,
+		Capabilities:           indexDataset.UpdateDataset.Capabilities,
+		Version:                indexDataset.UpdateDataset.Version,
+		FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs,
+		Disabled:               indexDataset.Disabled}, id)
 }
 
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
-func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: lookupDataset.UpdateDataset.Name, Kind: lookupDataset.UpdateDataset.Kind,
-		Owner: lookupDataset.UpdateDataset.Owner, Capabilities: lookupDataset.UpdateDataset.Capabilities,
-		Version: lookupDataset.UpdateDataset.Version, ExternalKind: lookupDataset.ExternalKind,
-		ExternalName: lookupDataset.ExternalName, CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch,
-		Filter: lookupDataset.Filter}, id)
+func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookup, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{
+		Name:               lookupDataset.UpdateDataset.Name,
+		Kind:               lookupDataset.UpdateDataset.Kind,
+		Owner:              lookupDataset.UpdateDataset.Owner,
+		Capabilities:       lookupDataset.UpdateDataset.Capabilities,
+		Version:            lookupDataset.UpdateDataset.Version,
+		ExternalKind:       lookupDataset.ExternalKind,
+		ExternalName:       lookupDataset.ExternalName,
+		CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch,
+		Filter:             lookupDataset.Filter}, id)
 }
 
 // UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
-func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: viewDataset.UpdateDataset.Name, Kind: viewDataset.UpdateDataset.Kind,
-		Owner: viewDataset.UpdateDataset.Owner, Capabilities: viewDataset.UpdateDataset.Capabilities,
-		Version: viewDataset.UpdateDataset.Version, Search: viewDataset.Search}, id)
+func (s *Service) UpdateViewDataset(viewDataset *UpdateView, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{
+		Name:         viewDataset.UpdateDataset.Name,
+		Kind:         viewDataset.UpdateDataset.Kind,
+		Owner:        viewDataset.UpdateDataset.Owner,
+		Capabilities: viewDataset.UpdateDataset.Capabilities,
+		Version:      viewDataset.UpdateDataset.Version,
+		Search:       viewDataset.Search}, id)
 }
 
 // UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
-func (s *Service) UpdateImportDataset(importDataset *UpdateImportDataset, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: importDataset.UpdateDataset.Name, Kind: importDataset.UpdateDataset.Kind,
-		Owner: importDataset.UpdateDataset.Owner, Capabilities: importDataset.UpdateDataset.Capabilities,
-		Version: importDataset.UpdateDataset.Version, SourceName: importDataset.SourceName,
+func (s *Service) UpdateImportDataset(importDataset *UpdateImport, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{
+		Name:         importDataset.UpdateDataset.Name,
+		Kind:         importDataset.UpdateDataset.Kind,
+		Owner:        importDataset.UpdateDataset.Owner,
+		Capabilities: importDataset.UpdateDataset.Capabilities,
+		Version:      importDataset.UpdateDataset.Version,
+		SourceName:   importDataset.SourceName,
 		SourceModule: importDataset.SourceModule}, id)
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
-func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetricDataset, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{Name: metricDataset.UpdateDataset.Name, Kind: metricDataset.UpdateDataset.Kind,
-		Owner: metricDataset.UpdateDataset.Owner, Capabilities: metricDataset.UpdateDataset.Capabilities,
-		Version: metricDataset.UpdateDataset.Version, Disabled: metricDataset.Disabled}, id)
+func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetric, id string) (*DatasetInfo, error) {
+	return s.UpdateDataset(&UpdateDatasetInfoFields{
+		Name:         metricDataset.UpdateDataset.Name,
+		Kind:         metricDataset.UpdateDataset.Kind,
+		Owner:        metricDataset.UpdateDataset.Owner,
+		Capabilities: metricDataset.UpdateDataset.Capabilities,
+		Version:      metricDataset.UpdateDataset.Version,
+		Disabled:     metricDataset.Disabled}, id)
 }
 
 // DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
@@ -501,36 +523,42 @@ func (s *Service) GetModules(filter url.Values) ([]Module, error) {
 func parseDatasetResponse(response *http.Response) (Dataset, error) {
 	var datasetInterface interface{}
 	err := util.ParseResponse(&datasetInterface, response)
+	if err != nil {
+		return nil, err
+	}
 	datasetByte, err := json.Marshal(datasetInterface)
+	if err != nil {
+		return nil, err
+	}
 
 	datasetMap, _ := datasetInterface.(map[string]interface{})
 	switch datasetMap["kind"] {
 	case "index":
 		var datasetResult IndexDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	case "view":
 		var datasetResult ViewDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	case "lookup":
 		var datasetResult LookupDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	case "import":
 		var datasetResult ImportDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	case "metric":
 		var datasetResult MetricDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	case "kvcollection":
 		var datasetResult KVCollectionDataset
-		_ = json.Unmarshal(datasetByte, &datasetResult)
+		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	default:
-		panic("Unknown dataset type")
+		fmt.Printf("ERROR: Unknown Dataset Type")
 	}
 
 	return nil, err

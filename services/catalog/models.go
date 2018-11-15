@@ -9,17 +9,17 @@ package catalog
 type DatasetInfoKind string
 
 const (
-	// Lookup represents lookup dataset kind used for referencing other datasets
+	// Lookup allows a dataset to be joined with search results.
 	Lookup DatasetInfoKind = "lookup"
 	// KvCollection represents a key value store, it is used with the kvstore service, but its implementation is separate of kvstore
 	KvCollection DatasetInfoKind = "kvcollection"
 	// Index represents a Splunk events or metrics index
 	Index DatasetInfoKind = "index"
-	// Metric represents TODO: Description needed
+	// Metric represents metrics dataset
 	Metric DatasetInfoKind = "metric"
-	// View represents TODO: Description needed
+	// View represents a dataset defined by a search, similar to a 'saved search' in Splunk Enterprise
 	View DatasetInfoKind = "view"
-	// Import represents TODO: Description needed
+	// Import represents a dataset that points to an existing dataset in order to support usage in a different module.
 	Import DatasetInfoKind = "import"
 )
 
@@ -34,7 +34,7 @@ type DatasetInfo struct {
 	Modified     string          `json:"modified,omitempty"`
 	CreatedBy    string          `json:"createdBy,omitempty"`
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities"`
+	Capabilities string          `json:"capabilities,omitempty"`
 	Version      int             `json:"version,omitempty"`
 	Fields       []Field         `json:"fields,omitempty"`
 	Readroles    []string        `json:"readroles,omitempty"`
@@ -67,9 +67,9 @@ type LookupDataset struct {
 	Name               string  `json:"name"`
 	Kind               string  `json:"kind"`
 	Module             string  `json:"module,omitempty"`
-	Capabilities       string  `json:"capabilities"`
+	Capabilities       string  `json:"capabilities,omitempty"`
 	Fields             []Field `json:"fields,omitempty"`
-	Version            int     `json:"version,omitempty"`
+	Version            *int    `json:"version,omitempty"`
 	ExternalKind       *string `json:"externalKind"`
 	ExternalName       *string `json:"externalName"`
 	CaseSensitiveMatch *bool   `json:"caseSensitiveMatch,omitempty"`
@@ -86,11 +86,11 @@ type ImportDataset struct {
 	Name         string  `json:"name"`
 	Kind         string  `json:"kind"`
 	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities"`
+	Capabilities string  `json:"capabilities,omitempty"`
 	Fields       []Field `json:"fields,omitempty"`
-	Version      int     `json:"version,omitempty"`
-	SourceName   *string  `json:"sourceName"`
-	SourceModule *string  `json:"sourceModule"`
+	Version      *int    `json:"version,omitempty"`
+	SourceName   *string `json:"sourceName"`
+	SourceModule *string `json:"sourceModule"`
 	//SourceId     string `json:"sourceId,omitempty"`
 }
 
@@ -104,9 +104,9 @@ type MetricDataset struct {
 	Name         string  `json:"name"`
 	Kind         string  `json:"kind"`
 	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities"`
+	Capabilities string  `json:"capabilities,omitempty"`
 	Fields       []Field `json:"fields,omitempty"`
-	Version      int     `json:"version,omitempty"`
+	Version      *int    `json:"version,omitempty"`
 	Disabled     *bool   `json:"disabled"`
 }
 
@@ -120,9 +120,9 @@ type IndexDataset struct {
 	Name                   string  `json:"name"`
 	Kind                   string  `json:"kind"`
 	Module                 string  `json:"module,omitempty"`
-	Capabilities           string  `json:"capabilities"`
+	Capabilities           string  `json:"capabilities,omitempty"`
 	Fields                 []Field `json:"fields,omitempty"`
-	Version                int     `json:"version,omitempty"`
+	Version                *int    `json:"version,omitempty"`
 	FrozenTimePeriodInSecs *int    `json:"frozenTimePeriodInSecs,omitempty"`
 	Disabled               *bool   `json:"disabled"`
 }
@@ -137,10 +137,10 @@ type ViewDataset struct {
 	Name         string  `json:"name"`
 	Kind         string  `json:"kind"`
 	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities"`
+	Capabilities string  `json:"capabilities,omitempty"`
 	Fields       []Field `json:"fields,omitempty"`
-	Version      int     `json:"version,omitempty"`
-	Search       *string  `json:"search"`
+	Version      *int    `json:"version,omitempty"`
+	Search       *string `json:"search"`
 }
 
 func (idx ViewDataset) kindmarker() string {
@@ -153,9 +153,9 @@ type KVCollectionDataset struct {
 	Name         string  `json:"name"`
 	Kind         string  `json:"kind"`
 	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities"`
+	Capabilities string  `json:"capabilities,omitempty"`
 	Fields       []Field `json:"fields,omitempty"`
-	Version      int     `json:"version,omitempty"`
+	Version      *int    `json:"version,omitempty"`
 }
 
 func (idx KVCollectionDataset) kindmarker() string {
@@ -172,7 +172,7 @@ type UpdateDatasetInfoFields struct {
 	CreatedBy    string          `json:"createdBy,omitempty"`
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
 	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
+	Version      *int            `json:"version,omitempty"`
 	Readroles    []string        `json:"readroles,omitempty"`
 	Writeroles   []string        `json:"writeroles,omitempty"`
 
@@ -200,25 +200,23 @@ type UpdateDataset struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
 	Owner        string          `json:"owner,omitempty"`
-	Created      string          `json:"created,omitempty"`
 	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
 	ModifiedBy   string          `json:"modifiedBy,omitempty"`
 	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
+	Version      *int            `json:"version,omitempty"`
 	Readroles    []string        `json:"readroles,omitempty"`
 	Writeroles   []string        `json:"writeroles,omitempty"`
 }
 
-// UpdateIndexDataset represents updates to be applied to an existing index dataset
-type UpdateIndexDataset struct {
+// UpdateIndex represents updates to be applied to an existing index dataset
+type UpdateIndex struct {
 	UpdateDataset
 	FrozenTimePeriodInSecs *int  `json:"frozenTimePeriodInSecs,omitempty"`
 	Disabled               *bool `json:"disabled,omitempty"`
 }
 
-// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
-type UpdateLookupDataset struct {
+// UpdateLookup represents updates to be applied to an existing lookup dataset
+type UpdateLookup struct {
 	UpdateDataset
 	ExternalKind       string `json:"externalKind,omitempty"`
 	ExternalName       string `json:"externalName,omitempty"`
@@ -226,22 +224,22 @@ type UpdateLookupDataset struct {
 	Filter             string `json:"filter,omitempty"`
 }
 
-// UpdateViewDataset represents updates to be applied to an existing view dataset
-type UpdateViewDataset struct {
+// UpdateView represents updates to be applied to an existing view dataset
+type UpdateView struct {
 	UpdateDataset
 	Search string `json:"search,omitempty"`
 }
 
-// UpdateImportDataset represents updates to be applied to an existing import dataset
-type UpdateImportDataset struct {
+// UpdateImport represents updates to be applied to an existing import dataset
+type UpdateImport struct {
 	UpdateDataset
 	SourceName   string `json:"sourceName,omitempty"`
 	SourceModule string `json:"sourceModule,omitempty"`
 	//SourceId     string `json:"sourceId,omitempty"`
 }
 
-// UpdateMetricDataset represents updates to be applied to an existing metric dataset
-type UpdateMetricDataset struct {
+// UpdateMetric represents updates to be applied to an existing metric dataset
+type UpdateMetric struct {
 	UpdateDataset
 	Disabled *bool `json:"disabled,omitempty"`
 }
