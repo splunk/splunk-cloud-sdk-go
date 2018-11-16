@@ -61,5 +61,5 @@
                                       -apiKey $WHITESOURCE_API_KEY \
                                       -productToken $WHITESOURCE_PRODUCT_TOKEN \
                                       -userKey $WHITESOURCE_USER_KEY"
-          tag: ^(master|develop)$
+          tag: (?i)^(master$|release.*)
           encrypted_dockercfg_path: ci/dockercfg.encrypted
