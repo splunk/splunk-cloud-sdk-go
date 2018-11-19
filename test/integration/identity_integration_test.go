@@ -38,21 +38,21 @@ func TestCRUDGroups(t *testing.T) {
 	require.Nil(t, err)
 	groupNum := len(res)
 
-	groupName := fmt.Sprintf("grouptest%d", timeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
 
 	// create/get/delete group and groups
 	resultgroup, err := client.IdentityService.CreateGroup(groupName)
 	defer client.IdentityService.DeleteGroup(groupName)
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, "test1@splunk.com", resultgroup.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultgroup.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
 
 	time.Sleep(2 * time.Second)
 	resultgroup1, err := client.IdentityService.GetGroup(groupName)
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup1.Name)
-	assert.Equal(t, "test1@splunk.com", resultgroup1.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultgroup1.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultgroup1.Tenant)
 
 	resultgroup2, err := client.IdentityService.GetGroups()
@@ -61,7 +61,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
-	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
 	res2, err := client.IdentityService.GetGroupRoles(groupName)
 	require.Nil(t, err)
 	roleNum := len(res2)
@@ -70,7 +70,7 @@ func TestCRUDGroups(t *testing.T) {
 	defer client.IdentityService.DeleteRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
 	resultrole1, err := client.IdentityService.AddRoleToGroup(groupName, roleName)
@@ -87,7 +87,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	//group-members
-	memberName := "Srv-ssc-mt32intg@splunkcorp.com"
+	memberName := "test1@splunk.com"
 	res3, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	memberNum := len(res3)
@@ -135,21 +135,21 @@ func TestCRUDRoles(t *testing.T) {
 	require.Nil(t, err)
 	roleNum := len(res)
 
-	roleName := fmt.Sprintf("roletest%d", timeSec)
+	roleName := fmt.Sprintf("roletest%d", testutils.TimeSec)
 
 	// create/get/delete role and roles
 	resultrole, err := client.IdentityService.CreateRole(roleName)
 	defer client.IdentityService.DeleteRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
 	time.Sleep(2 * time.Second)
 	resultrole1, err := client.IdentityService.GetRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole1.Name)
-	assert.Equal(t, "test1@splunk.com", resultrole1.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultrole1.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
 	resultrole2, err := client.IdentityService.GetRoles()
@@ -158,7 +158,7 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions
-	permissionName := fmt.Sprintf("perm1-%d", timeSec)
+	permissionName := fmt.Sprintf("perm1-%d", testutils.TimeSec)
 	result1, err := client.IdentityService.GetRolePermissions(roleName)
 	require.Nil(t, err)
 	permNum := len(result1)
@@ -168,7 +168,7 @@ func TestCRUDRoles(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm.Role)
 	assert.Equal(t, permissionName, resultroleperm.Permission)
-	assert.Equal(t, "test1@splunk.com", resultroleperm.AddedBy)
+	assert.Equal(t, testutils.TestUsername, resultroleperm.AddedBy)
 	assert.Equal(t, testutils.TestTenant, resultroleperm.Tenant)
 
 	time.Sleep(2 * time.Second)
@@ -176,7 +176,7 @@ func TestCRUDRoles(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm1.Role)
 	assert.Equal(t, permissionName, resultroleperm1.Permission)
-	assert.Equal(t, "test1@splunk.com", resultroleperm1.AddedBy)
+	assert.Equal(t, testutils.TestUsername, resultroleperm1.AddedBy)
 	assert.Equal(t, testutils.TestTenant, resultroleperm1.Tenant)
 
 	resultroleperm2, err := client.IdentityService.GetRolePermissions(roleName)
@@ -198,7 +198,7 @@ func TestCRUDMembers(t *testing.T) {
 	require.Nil(t, err)
 	memNum := len(res)
 
-	memberName := "Srv-ssc-mt32intg@splunkcorp.com"
+	memberName := "test1@splunk.com"
 
 	// create/get/delete member and members
 	result, err := client.IdentityService.AddMember(memberName)
@@ -218,14 +218,14 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memberName, result2.Name)
 	assert.Equal(t, testutils.TestTenant, result2.Tenant)
 
-	groupName := fmt.Sprintf("grouptest%d", timeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
 
 	// create a group
 	resultgroup, err := client.IdentityService.CreateGroup(groupName)
 	defer client.IdentityService.DeleteGroup(groupName)
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, "test1@splunk.com", resultgroup.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultgroup.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
 
 	// add member to group
@@ -241,14 +241,14 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result4, groupName)
 
 	// group-role
-	roleName := fmt.Sprintf("grouptestrole%d", timeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
 
 	// create a test role
 	resultrole, err := client.IdentityService.CreateRole(roleName)
 	defer client.IdentityService.DeleteRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, "test1@splunk.com", resultrole.CreatedBy)
+	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
 	// add role to group
@@ -278,7 +278,7 @@ func TestCRUDMembers(t *testing.T) {
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
 	require.Nil(t, err)
-	assert.Equal(t, 3, len(result7))
+	assert.Equal(t, 6, len(result7))
 	assert.Contains(t, result7, permissionName)
 	assert.Contains(t, result7, permissionName1)
 	assert.Contains(t, result7, permissionName2)
@@ -293,5 +293,5 @@ func TestValidate(t *testing.T) {
 
 	res, err := client.IdentityService.Validate()
 	require.Nil(t, err)
-	assert.Equal(t, "test1@splunk.com", res.Name)
+	assert.Equal(t, testutils.TestUsername, res.Name)
 }

@@ -27,7 +27,7 @@ const UserAgent = "client-go"
 UserAgent SDK Client Identifier
 
 ```go
-const Version = "0.7.1"
+const Version = "0.7.2"
 ```
 Version the released version of the SDK
 
@@ -65,6 +65,13 @@ A BaseClient for communicating with Splunk Cloud
 func NewClient(config *Config) (*BaseClient, error)
 ```
 NewClient creates a Client with config values passed in
+
+#### func (*BaseClient) BuildHost
+
+```go
+func (c *BaseClient) BuildHost(serviceCluster string) string
+```
+BuildHost returns host including serviceCluster
 
 #### func (*BaseClient) BuildURL
 
@@ -113,7 +120,7 @@ Get implements HTTP Get call
 #### func (*BaseClient) GetURL
 
 ```go
-func (c *BaseClient) GetURL() *url.URL
+func (c *BaseClient) GetURL(serviceCluster string) *url.URL
 ```
 GetURL returns the Splunk Cloud scheme/host formed as URL
 
@@ -180,7 +187,7 @@ type Config struct {
 	Token string
 	// Tenant is the default Tenant used to form requests
 	Tenant string
-	// Host is the (optional) default host or host:port used to form requests, `"api.splunkbeta.com"` by default
+	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
 	Host string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
