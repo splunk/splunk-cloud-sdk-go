@@ -113,12 +113,12 @@ func createKVCollectionDataset(t *testing.T, namespaceName string, collectionNam
 
 func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
 	createMetricDatasetInfo := model.DatasetCreationPayload{
-		Name:         collectionName,
-		Kind:         catalog.Metric,
-		Owner:        datasetOwner,
-		Module:       namespaceName,
-		Capabilities: capabilities,
-		Disabled:     &isDisabled,
+		Name: collectionName,
+		Kind: catalog.Metric,
+		//Owner:        datasetOwner,
+		Module: namespaceName,
+		//Capabilities: capabilities,
+		Disabled: &isDisabled,
 	}
 
 	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
@@ -142,6 +142,26 @@ func createViewDataset(t *testing.T, collectionName string, search string) (*mod
 	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
 	require.Nil(t, err)
 	require.Equal(t, catalog.View, datasetInfo.Kind)
+
+	return datasetInfo, err
+}
+
+func createImportDataset(t *testing.T, sourceNamespace string, sourceCollection string, targetNamespace string, targetCollection string, datasetCapabilities string) (*model.DatasetInfo, error) {
+	createImportDatasetInfo := catalog.DatasetCreationPayload{
+		Name:         targetNamespace,
+		Capabilities: datasetCapabilities,
+		Kind:         catalog.Import,
+		Module:       targetCollection,
+		SourceName:   sourceNamespace,
+		SourceModule: sourceCollection,
+	}
+
+	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createImportDatasetInfo)
+
+	require.Nil(t, err)
+	require.NotNil(t, datasetInfo)
+	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
+	require.Equal(t, catalog.Import, datasetInfo.Kind)
 
 	return datasetInfo, err
 }
@@ -1135,7 +1155,7 @@ func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
 	assert.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-  assert.True(t, httpErr.Status == 400, "Expected error code 400")
+ assert.True(t, httpErr.Status == 400, "Expected error code 400")
 }*/
 
 // todo (Parul): 405 Rule cannot be deleted because of dependencies error case
