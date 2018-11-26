@@ -23,225 +23,217 @@ const (
 	Import DatasetInfoKind = "import"
 )
 
-// DatasetInfo represents the sources of data that can be searched by Splunk
-type DatasetInfo struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      int             `json:"version,omitempty"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled,omitempty"`
-
-	Search                 string `json:"search,omitempty"`
-	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
-
-	SourceName   string `json:"sourceName,omitempty"`
-	SourceModule string `json:"sourceModule,omitempty"`
-	//SourceId     string `json:"sourceId,omitempty"`
-}
-
 // Dataset represents the sources of data that can be searched by Splunk
 type Dataset interface {
-	kindmarker() string
+	GetKind() DatasetInfoKind
+}
+
+// DatasetBase represents the common fields shared among datasets
+type DatasetBase struct {
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The dataset kind.
+	Kind DatasetInfoKind `json:"kind"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module string `json:"module,omitempty"`
+	// The catalog version.
+	Version *int `json:"version,omitempty"`
+
+	// The following fields are returned in GET responses:
+	// The date and time object was created.
+	Created string `json:"created,omitempty"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty"`
+}
+
+func (ds DatasetBase) GetKind() DatasetInfoKind {
+	return ds.Kind
 }
 
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {
-	ID                 string  `json:"id,omitempty"`
-	Name               string  `json:"name"`
-	Kind               string  `json:"kind"`
-	Module             string  `json:"module,omitempty"`
-	Capabilities       string  `json:"capabilities,omitempty"`
-	Fields             []Field `json:"fields,omitempty"`
-	Version            *int    `json:"version,omitempty"`
-	ExternalKind       *string `json:"externalKind"`
-	ExternalName       *string `json:"externalName"`
-	CaseSensitiveMatch *bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string  `json:"filter,omitempty"`
-}
-
-func (idx LookupDataset) kindmarker() string {
-	return idx.Kind
+	*DatasetBase
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
+	// The type of the external lookup.
+	ExternalKind *string `json:"externalKind,omitempty"`
+	// The name of the external lookup.
+	ExternalName *string `json:"externalName,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string `json:"filter,omitempty"`
 }
 
 // ImportDataset represents a fully-constructed import dataset
 type ImportDataset struct {
-	ID           string  `json:"id,omitempty"`
-	Name         string  `json:"name"`
-	Kind         string  `json:"kind"`
-	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Version      *int    `json:"version,omitempty"`
-	SourceName   *string `json:"sourceName"`
-	SourceModule *string `json:"sourceModule"`
-	//SourceId     string `json:"sourceId,omitempty"`
-}
-
-func (idx ImportDataset) kindmarker() string {
-	return idx.Kind
+	*DatasetBase
+	// The dataset module being imported.
+	SourceModule *string `json:"sourceModule,omitempty"`
+	// The dataset name being imported.
+	SourceName *string `json:"sourceName,omitempty"`
+	// The dataset ID being imported.
+	SourceId *string `json:"sourceId,omitempty"`
 }
 
 // MetricDataset represents a fully-constructed metric dataset
 type MetricDataset struct {
-	ID           string  `json:"id,omitempty"`
-	Name         string  `json:"name"`
-	Kind         string  `json:"kind"`
-	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Version      *int    `json:"version,omitempty"`
-	Disabled     *bool   `json:"disabled"`
-}
-
-func (idx MetricDataset) kindmarker() string {
-	return idx.Kind
+	*DatasetBase
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
 // IndexDataset represents a fully-constructed index dataset
 type IndexDataset struct {
-	ID                     string  `json:"id,omitempty"`
-	Name                   string  `json:"name"`
-	Kind                   string  `json:"kind"`
-	Module                 string  `json:"module,omitempty"`
-	Capabilities           string  `json:"capabilities,omitempty"`
-	Fields                 []Field `json:"fields,omitempty"`
-	Version                *int    `json:"version,omitempty"`
-	FrozenTimePeriodInSecs *int    `json:"frozenTimePeriodInSecs,omitempty"`
-	Disabled               *bool   `json:"disabled"`
+	*DatasetBase
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-func (idx IndexDataset) kindmarker() string {
-	return idx.Kind
+// Job represents a fully-constructed job dataset
+type JobDataset struct {
+	*DatasetBase
+	// The time the dataset will be available.
+	DeleteTime string `json:"deleteTime,omitempty"`
+	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
+	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// The number of seconds to run this search before finishing.
+	MaxTime *int `json:"maxTime,omitempty"`
+	// Parameters for the search job, mainly earliest and latest.
+	Parameters interface{} `json:"parameters,omitempty"`
+	// An estimate of how complete the search job is.
+	PercentComplete *int `json:"percentComplete,omitempty"`
+	// The SPL query string for the search job.
+	Query string `json:"query,omitempty"`
+	// The instantaneous number of results produced by the search job.
+	ResultsAvailable *int `json:"resultsAvailable,omitempty"`
+	// The ID assigned to the search job.
+	SID string `json:"sid,omitempty"`
+	// The SPLv2 version of the search job query string.
+	SPL string `json:"spl,omitempty"`
+	// The current status of the search job.
+	Status string `json:"status,omitempty"`
+	// Converts a formatted time string from into UTC seconds.
+	TimeFormat string `json:"timeFormat,omitempty"`
+	// The system time at the time the search job was created
+	TimeOfSearch string `json:"timeOfSearch,omitempty"`
 }
 
 // ViewDataset represents a fully-constructed view dataset
 type ViewDataset struct {
-	ID           string  `json:"id,omitempty"`
-	Name         string  `json:"name"`
-	Kind         string  `json:"kind"`
-	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Version      *int    `json:"version,omitempty"`
-	Search       *string `json:"search"`
-}
-
-func (idx ViewDataset) kindmarker() string {
-	return idx.Kind
+	*DatasetBase
+	// A valid SPL-defined search.
+	Search *string `json:"search,omitempty"`
 }
 
 // KVCollectionDataset represents a fully-constructed kvcollection dataset
 type KVCollectionDataset struct {
-	ID           string  `json:"id,omitempty"`
-	Name         string  `json:"name"`
-	Kind         string  `json:"kind"`
-	Module       string  `json:"module,omitempty"`
-	Capabilities string  `json:"capabilities,omitempty"`
-	Fields       []Field `json:"fields,omitempty"`
-	Version      *int    `json:"version,omitempty"`
+	*DatasetBase
 }
 
-func (idx KVCollectionDataset) kindmarker() string {
-	return idx.Kind
-}
-
-// UpdateDatasetInfoFields represents the sources of data that can be updated by Splunk, same structure as DatasetInfo
-type UpdateDatasetInfoFields struct {
-	Name         string          `json:"name,omitempty"`
-	Kind         DatasetInfoKind `json:"kind,omitempty"`
-	Owner        string          `json:"owner,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      *int            `json:"version,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	/*MaxMatches         *int   `json:"maxMatches,omitempty"`
-	MinMatches         *int   `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`*/
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled *bool  `json:"disabled,omitempty"`
-
-	Search                 string `json:"search,omitempty"`
-	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
-
-	SourceName   string `json:"sourceName,omitempty"`
-	SourceModule string `json:"sourceModule,omitempty"`
-	//SourceId     string `json:"sourceId,omitempty"`
-}
-
-// UpdateDataset contains fields that can be updated and that are common to all dataset kinds (lookup, index, metric, view, import)
+// UpdateDataset contains fields that can be updated and that are common to all dataset kinds
 type UpdateDataset struct {
-	Name         string          `json:"name,omitempty"`
-	Kind         DatasetInfoKind `json:"kind,omitempty"`
-	Owner        string          `json:"owner,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities,omitempty"`
-	Version      *int            `json:"version,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-}
-
-// UpdateIndex represents updates to be applied to an existing index dataset
-type UpdateIndex struct {
-	UpdateDataset
-	FrozenTimePeriodInSecs *int  `json:"frozenTimePeriodInSecs,omitempty"`
-	Disabled               *bool `json:"disabled,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module string `json:"module,omitempty"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty"`
 }
 
 // UpdateLookup represents updates to be applied to an existing lookup dataset
 type UpdateLookup struct {
-	UpdateDataset
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch *bool  `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
+	*UpdateDataset
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
+	// The type of the external lookup.
+	ExternalKind *string `json:"externalKind,omitempty"`
+	// The name of the external lookup.
+	ExternalName *string `json:"externalName,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string `json:"filter,omitempty"`
 }
 
-// UpdateView represents updates to be applied to an existing view dataset
-type UpdateView struct {
-	UpdateDataset
-	Search string `json:"search,omitempty"`
-}
-
-// UpdateImport represents updates to be applied to an existing import dataset
+// UpdateImport represents updates to be applied to an existing lookup dataset
 type UpdateImport struct {
-	UpdateDataset
-	SourceName   string `json:"sourceName,omitempty"`
-	SourceModule string `json:"sourceModule,omitempty"`
-	//SourceId     string `json:"sourceId,omitempty"`
+	*UpdateDataset
+	// The dataset module being imported.
+	SourceModule *string `json:"sourceModule,omitempty"`
+	// The dataset name being imported.
+	SourceName *string `json:"sourceName,omitempty"`
+	// The dataset ID being imported.
+	SourceId *string `json:"sourceId,omitempty"`
 }
 
 // UpdateMetric represents updates to be applied to an existing metric dataset
 type UpdateMetric struct {
-	UpdateDataset
+	*UpdateDataset
+	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+}
+
+// UpdateIndex represents updates to be applied to an existing index dataset
+type UpdateIndex struct {
+	*UpdateDataset
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+}
+
+// UpdateJob represents updates to be applied to an existing job dataset
+type UpdateJob struct {
+	*UpdateDataset
+	// The time the dataset will be available.
+	DeleteTime *string `json:"deleteTime,omitempty"`
+	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
+	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// The number of seconds to run this search before finishing.
+	MaxTime *int `json:"maxTime,omitempty"`
+	// Parameters for the search job, mainly earliest and latest.
+	Parameters interface{} `json:"parameters,omitempty"`
+	// An estimate of how complete the search job is.
+	PercentComplete *int `json:"percentComplete,omitempty"`
+	// The SPL query string for the search job.
+	Query *string `json:"query,omitempty"`
+	// The instantaneous number of results produced by the search job.
+	ResultsAvailable *int `json:"resultsAvailable,omitempty"`
+	// The ID assigned to the search job.
+	SID *string `json:"sid,omitempty"`
+	// The SPLv2 version of the search job query string.
+	SPL *string `json:"spl,omitempty"`
+	// The current status of the search job.
+	Status *string `json:"status,omitempty"`
+	// Converts a formatted time string from into UTC seconds.
+	TimeFormat *string `json:"timeFormat,omitempty"`
+	// The system time at the time the search job was created
+	TimeOfSearch *string `json:"timeOfSearch,omitempty"`
+}
+
+// UpdateView represents updates to be applied to an existing view dataset
+type UpdateView struct {
+	*UpdateDataset
+	// A valid SPL-defined search.
+	Search *string `json:"search,omitempty"`
+}
+
+// UpdateKVCollection represents updates to be applied to an existing kvcollection dataset
+type UpdateKVCollection struct {
+	*UpdateDataset
 }
 
 // Field represents the fields belonging to the specified Dataset

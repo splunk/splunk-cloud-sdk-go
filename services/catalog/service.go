@@ -10,9 +10,10 @@ import (
 
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"net/http"
 )
 
 // catalog service url prefix
@@ -33,7 +34,7 @@ func NewService(config *services.Config) (*Service, error) {
 }
 
 // ListDatasets returns all Datasets with optional filter, count, or orderby params
-func (s *Service) ListDatasets(values url.Values) ([]DatasetInfo, error) {
+func (s *Service) ListDatasets(values url.Values) ([]interface{}, error) {
 	url, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -45,14 +46,14 @@ func (s *Service) ListDatasets(values url.Values) ([]DatasetInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	var result []DatasetInfo
+	var result []interface{}
 	err = util.ParseResponse(&result, response)
 	return result, err
 }
 
 // GetDatasets returns all Datasets
 // Deprecated: v0.6.1 - Use ListDatasets instead
-func (s *Service) GetDatasets() ([]DatasetInfo, error) {
+func (s *Service) GetDatasets() ([]interface{}, error) {
 	return s.ListDatasets(nil)
 }
 
@@ -75,7 +76,7 @@ func (s *Service) GetDataset(resourceNameOrID string) (Dataset, error) {
 }
 
 // CreateDataset creates a new Dataset
-func (s *Service) CreateDataset(dataset Dataset) (Dataset, error) {
+func (s *Service) CreateDataset(dataset interface{}) (Dataset, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -93,13 +94,7 @@ func (s *Service) CreateDataset(dataset Dataset) (Dataset, error) {
 }
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
-func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOrID string) (*DatasetInfo, error) {
-	// TODO: remove these from UpdateDatasetInfoFields
-	dataset.Created = ""
-	dataset.CreatedBy = ""
-	dataset.Kind = ""
-	dataset.Modified = ""
-	dataset.ModifiedBy = ""
+func (s *Service) UpdateDataset(dataset interface{}, resourceNameOrID string) (Dataset, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
 	if err != nil {
 		return nil, err
@@ -111,69 +106,74 @@ func (s *Service) UpdateDataset(dataset *UpdateDatasetInfoFields, resourceNameOr
 	if err != nil {
 		return nil, err
 	}
-	var result DatasetInfo
-	err = util.ParseResponse(&result, response)
-	return &result, err
+
+	result, err := parseDatasetResponse(response)
+	return result, err
 }
 
-// UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID  TODO: No module in Update?
-func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndex, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{
-		Name:                   indexDataset.UpdateDataset.Name,
-		Kind:                   indexDataset.UpdateDataset.Kind,
-		Owner:                  indexDataset.UpdateDataset.Owner,
-		Capabilities:           indexDataset.UpdateDataset.Capabilities,
-		Version:                indexDataset.UpdateDataset.Version,
-		FrozenTimePeriodInSecs: indexDataset.FrozenTimePeriodInSecs,
-		Disabled:               indexDataset.Disabled}, id)
+// UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID
+func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndex, id string) (*IndexDataset, error) {
+	ds, err := s.UpdateDataset(indexDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	ids, ok := ds.(*IndexDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Index)
+	}
+	return ids, nil
 }
 
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
-func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookup, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{
-		Name:               lookupDataset.UpdateDataset.Name,
-		Kind:               lookupDataset.UpdateDataset.Kind,
-		Owner:              lookupDataset.UpdateDataset.Owner,
-		Capabilities:       lookupDataset.UpdateDataset.Capabilities,
-		Version:            lookupDataset.UpdateDataset.Version,
-		ExternalKind:       lookupDataset.ExternalKind,
-		ExternalName:       lookupDataset.ExternalName,
-		CaseSensitiveMatch: lookupDataset.CaseSensitiveMatch,
-		Filter:             lookupDataset.Filter}, id)
+func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookup, id string) (*LookupDataset, error) {
+	ds, err := s.UpdateDataset(lookupDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	lds, ok := ds.(*LookupDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Lookup)
+	}
+	return lds, nil
 }
 
 // UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
-func (s *Service) UpdateViewDataset(viewDataset *UpdateView, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{
-		Name:         viewDataset.UpdateDataset.Name,
-		Kind:         viewDataset.UpdateDataset.Kind,
-		Owner:        viewDataset.UpdateDataset.Owner,
-		Capabilities: viewDataset.UpdateDataset.Capabilities,
-		Version:      viewDataset.UpdateDataset.Version,
-		Search:       viewDataset.Search}, id)
+func (s *Service) UpdateViewDataset(viewDataset *UpdateView, id string) (*ViewDataset, error) {
+	ds, err := s.UpdateDataset(viewDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	vds, ok := ds.(*ViewDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", View)
+	}
+	return vds, nil
 }
 
 // UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
-func (s *Service) UpdateImportDataset(importDataset *UpdateImport, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{
-		Name:         importDataset.UpdateDataset.Name,
-		Kind:         importDataset.UpdateDataset.Kind,
-		Owner:        importDataset.UpdateDataset.Owner,
-		Capabilities: importDataset.UpdateDataset.Capabilities,
-		Version:      importDataset.UpdateDataset.Version,
-		SourceName:   importDataset.SourceName,
-		SourceModule: importDataset.SourceModule}, id)
+func (s *Service) UpdateImportDataset(importDataset *UpdateImport, id string) (*ImportDataset, error) {
+	ds, err := s.UpdateDataset(importDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	ids, ok := ds.(*ImportDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Import)
+	}
+	return ids, nil
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
-func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetric, id string) (*DatasetInfo, error) {
-	return s.UpdateDataset(&UpdateDatasetInfoFields{
-		Name:         metricDataset.UpdateDataset.Name,
-		Kind:         metricDataset.UpdateDataset.Kind,
-		Owner:        metricDataset.UpdateDataset.Owner,
-		Capabilities: metricDataset.UpdateDataset.Capabilities,
-		Version:      metricDataset.UpdateDataset.Version,
-		Disabled:     metricDataset.Disabled}, id)
+func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetric, id string) (*MetricDataset, error) {
+	ds, err := s.UpdateDataset(metricDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	mds, ok := ds.(*MetricDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Metric)
+	}
+	return mds, nil
 }
 
 // DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
@@ -519,47 +519,50 @@ func (s *Service) GetModules(filter url.Values) ([]Module, error) {
 	return result, err
 }
 
-// parseDatasetResponse parses incoming http response into specific Dataset subytpe based on 'Kind'
+// parseDatasetResponse parses incoming http response into specific Dataset subytpe based on 'kind'
 func parseDatasetResponse(response *http.Response) (Dataset, error) {
 	var datasetInterface interface{}
 	err := util.ParseResponse(&datasetInterface, response)
 	if err != nil {
 		return nil, err
 	}
+
 	datasetByte, err := json.Marshal(datasetInterface)
 	if err != nil {
 		return nil, err
 	}
 
-	datasetMap, _ := datasetInterface.(map[string]interface{})
-	switch datasetMap["kind"] {
-	case "index":
+	datasetBase, ok := datasetInterface.(DatasetBase)
+	if !ok {
+		return nil, fmt.Errorf("catalog: response was not of type DatasetBase")
+	}
+
+	switch datasetBase.GetKind() {
+	case Index:
 		var datasetResult IndexDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
-	case "view":
+	case View:
 		var datasetResult ViewDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
-	case "lookup":
+	case Lookup:
 		var datasetResult LookupDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
-	case "import":
+	case Import:
 		var datasetResult ImportDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
-	case "metric":
+	case Metric:
 		var datasetResult MetricDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
-	case "kvcollection":
+	case KvCollection:
 		var datasetResult KVCollectionDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	default:
-		fmt.Printf("ERROR: Unknown Dataset Type")
+		return nil, fmt.Errorf("catalog: unknown dataset kind: %s", datasetBase.GetKind())
 	}
-
-	return nil, err
 }
