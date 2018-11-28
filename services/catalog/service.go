@@ -93,6 +93,71 @@ func (s *Service) CreateDataset(dataset interface{}) (Dataset, error) {
 	return result, err
 }
 
+// CreateIndexDataset creates an index Dataset
+func (s *Service) CreateIndexDataset(indexDataset *CreateIndexDataset) (*IndexDataset, error) {
+	ds, err := s.CreateDataset(indexDataset)
+	if err != nil {
+		return nil, err
+	}
+	ids, ok := ds.(*IndexDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Index)
+	}
+	return ids, nil
+}
+
+// CreateLookupDataset creates a lookup Dataset
+func (s *Service) CreateLookupDataset(lookupDataset *CreateLookupDataset) (*LookupDataset, error) {
+	ds, err := s.CreateDataset(lookupDataset)
+	if err != nil {
+		return nil, err
+	}
+	lds, ok := ds.(*LookupDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Lookup)
+	}
+	return lds, nil
+}
+
+// CreateViewDataset creates a view Dataset
+func (s *Service) CreateViewDataset(viewDataset *CreateViewDataset, id string) (*ViewDataset, error) {
+	ds, err := s.CreateDataset(viewDataset)
+	if err != nil {
+		return nil, err
+	}
+	vds, ok := ds.(*ViewDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", View)
+	}
+	return vds, nil
+}
+
+// CreateImportDataset creates an import Dataset
+func (s *Service) CreateImportDataset(importDataset *CreateImportDataset) (*ImportDataset, error) {
+	ds, err := s.CreateDataset(importDataset)
+	if err != nil {
+		return nil, err
+	}
+	ids, ok := ds.(*ImportDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Import)
+	}
+	return ids, nil
+}
+
+// CreateIndexDataset creates an index Dataset
+func (s *Service) CreateMetricDataset(metricDataset *CreateMetricDataset, id string) (*MetricDataset, error) {
+	ds, err := s.CreateDataset(metricDataset)
+	if err != nil {
+		return nil, err
+	}
+	mds, ok := ds.(*MetricDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Metric)
+	}
+	return mds, nil
+}
+
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
 func (s *Service) UpdateDataset(dataset interface{}, resourceNameOrID string) (Dataset, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "datasets", resourceNameOrID)
@@ -112,7 +177,7 @@ func (s *Service) UpdateDataset(dataset interface{}, resourceNameOrID string) (D
 }
 
 // UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID
-func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndex, id string) (*IndexDataset, error) {
+func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string) (*IndexDataset, error) {
 	ds, err := s.UpdateDataset(indexDataset, id)
 	if err != nil {
 		return nil, err
@@ -125,7 +190,7 @@ func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndex, id string) (*Ind
 }
 
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
-func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookup, id string) (*LookupDataset, error) {
+func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*LookupDataset, error) {
 	ds, err := s.UpdateDataset(lookupDataset, id)
 	if err != nil {
 		return nil, err
@@ -138,7 +203,7 @@ func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookup, id string) (*
 }
 
 // UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
-func (s *Service) UpdateViewDataset(viewDataset *UpdateView, id string) (*ViewDataset, error) {
+func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (*ViewDataset, error) {
 	ds, err := s.UpdateDataset(viewDataset, id)
 	if err != nil {
 		return nil, err
@@ -151,7 +216,7 @@ func (s *Service) UpdateViewDataset(viewDataset *UpdateView, id string) (*ViewDa
 }
 
 // UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
-func (s *Service) UpdateImportDataset(importDataset *UpdateImport, id string) (*ImportDataset, error) {
+func (s *Service) UpdateImportDataset(importDataset *UpdateImportDataset, id string) (*ImportDataset, error) {
 	ds, err := s.UpdateDataset(importDataset, id)
 	if err != nil {
 		return nil, err
@@ -164,7 +229,7 @@ func (s *Service) UpdateImportDataset(importDataset *UpdateImport, id string) (*
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
-func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetric, id string) (*MetricDataset, error) {
+func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetricDataset, id string) (*MetricDataset, error) {
 	ds, err := s.UpdateDataset(metricDataset, id)
 	if err != nil {
 		return nil, err

@@ -39,9 +39,7 @@ type DatasetBase struct {
 	// The name of the module to create the new dataset in.
 	Module string `json:"module,omitempty"`
 	// The catalog version.
-	Version *int `json:"version,omitempty"`
-
-	// The following fields are returned in GET responses:
+	Version int `json:"version,omitempty"`
 	// The date and time object was created.
 	Created string `json:"created,omitempty"`
 	// The date and time object was modified.
@@ -60,102 +58,32 @@ func (ds DatasetBase) GetKind() DatasetInfoKind {
 	return ds.Kind
 }
 
-// LookupDataset represents a fully-constructed lookup dataset
-type LookupDataset struct {
-	*DatasetBase
-	// Match case-sensitively against the lookup.
-	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
-	// The type of the external lookup.
-	ExternalKind *string `json:"externalKind,omitempty"`
-	// The name of the external lookup.
-	ExternalName *string `json:"externalName,omitempty"`
-	// A query that filters results out of the lookup before those results are returned.
-	Filter *string `json:"filter,omitempty"`
-}
-
-// ImportDataset represents a fully-constructed import dataset
-type ImportDataset struct {
-	*DatasetBase
-	// The dataset module being imported.
-	SourceModule *string `json:"sourceModule,omitempty"`
-	// The dataset name being imported.
-	SourceName *string `json:"sourceName,omitempty"`
-	// The dataset ID being imported.
-	SourceId *string `json:"sourceId,omitempty"`
-}
-
-// MetricDataset represents a fully-constructed metric dataset
-type MetricDataset struct {
-	*DatasetBase
-	// Specifies whether or not the Splunk index is disabled.
-	Disabled *bool `json:"disabled,omitempty"`
-	// The frozenTimePeriodInSecs to use for the index
-	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
-}
-
-// IndexDataset represents a fully-constructed index dataset
-type IndexDataset struct {
-	*DatasetBase
-	// Specifies whether or not the Splunk index is disabled.
-	Disabled *bool `json:"disabled,omitempty"`
-	// The frozenTimePeriodInSecs to use for the index
-	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
-}
-
-// Job represents a fully-constructed job dataset
-type JobDataset struct {
-	*DatasetBase
-	// The time the dataset will be available.
-	DeleteTime string `json:"deleteTime,omitempty"`
-	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
-	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
-	// The number of seconds to run this search before finishing.
-	MaxTime *int `json:"maxTime,omitempty"`
-	// Parameters for the search job, mainly earliest and latest.
-	Parameters interface{} `json:"parameters,omitempty"`
-	// An estimate of how complete the search job is.
-	PercentComplete *int `json:"percentComplete,omitempty"`
-	// The SPL query string for the search job.
-	Query string `json:"query,omitempty"`
-	// The instantaneous number of results produced by the search job.
-	ResultsAvailable *int `json:"resultsAvailable,omitempty"`
-	// The ID assigned to the search job.
-	SID string `json:"sid,omitempty"`
-	// The SPLv2 version of the search job query string.
-	SPL string `json:"spl,omitempty"`
-	// The current status of the search job.
-	Status string `json:"status,omitempty"`
-	// Converts a formatted time string from into UTC seconds.
-	TimeFormat string `json:"timeFormat,omitempty"`
-	// The system time at the time the search job was created
-	TimeOfSearch string `json:"timeOfSearch,omitempty"`
-}
-
-// ViewDataset represents a fully-constructed view dataset
-type ViewDataset struct {
-	*DatasetBase
-	// A valid SPL-defined search.
-	Search *string `json:"search,omitempty"`
-}
-
-// KVCollectionDataset represents a fully-constructed kvcollection dataset
-type KVCollectionDataset struct {
-	*DatasetBase
-}
-
-// UpdateDataset contains fields that can be updated and that are common to all dataset kinds
-type UpdateDataset struct {
+// UpdateDatasetBase contains fields that can be updated and that are common to all dataset kinds
+type UpdateDatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The name of the module to create the new dataset in.
-	Module string `json:"module,omitempty"`
+	Module *string `json:"module,omitempty"`
 	// The name of the object's owner.
 	Owner string `json:"owner,omitempty"`
 }
 
-// UpdateLookup represents updates to be applied to an existing lookup dataset
-type UpdateLookup struct {
-	*UpdateDataset
+// CreateDatasetBase contains fields that can be included on creation and that are common to all dataset kinds
+type CreateDatasetBase struct {
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The dataset kind.
+	Kind DatasetInfoKind `json:"kind"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module string `json:"module,omitempty"`
+	// The catalog version.
+	Version int `json:"version,omitempty"`
+}
+
+// LookupProperties represent the fields specific to lookup datasets
+type LookupProperties struct {
 	// Match case-sensitively against the lookup.
 	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
 	// The type of the external lookup.
@@ -166,9 +94,8 @@ type UpdateLookup struct {
 	Filter *string `json:"filter,omitempty"`
 }
 
-// UpdateImport represents updates to be applied to an existing lookup dataset
-type UpdateImport struct {
-	*UpdateDataset
+// ImportProperties represent the fields specific to import datasets
+type ImportProperties struct {
 	// The dataset module being imported.
 	SourceModule *string `json:"sourceModule,omitempty"`
 	// The dataset name being imported.
@@ -177,27 +104,25 @@ type UpdateImport struct {
 	SourceId *string `json:"sourceId,omitempty"`
 }
 
-// UpdateMetric represents updates to be applied to an existing metric dataset
-type UpdateMetric struct {
-	*UpdateDataset
+// MetricProperties represent the fields specific to metric datasets
+type MetricProperties struct {
 	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// UpdateIndex represents updates to be applied to an existing index dataset
-type UpdateIndex struct {
-	*UpdateDataset
+// IndexProperties represent the fields specific to index datasets
+type IndexProperties struct {
 	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// UpdateJob represents updates to be applied to an existing job dataset
-type UpdateJob struct {
-	*UpdateDataset
+// JobProperties represent the fields specific to job datasets
+// NOTE: Only GET and DELETE are supported for Job datasets
+type JobProperties struct {
 	// The time the dataset will be available.
 	DeleteTime *string `json:"deleteTime,omitempty"`
 	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
@@ -224,16 +149,131 @@ type UpdateJob struct {
 	TimeOfSearch *string `json:"timeOfSearch,omitempty"`
 }
 
-// UpdateView represents updates to be applied to an existing view dataset
-type UpdateView struct {
-	*UpdateDataset
+// ViewProperties represent the fields specific to view datasets
+type ViewProperties struct {
 	// A valid SPL-defined search.
 	Search *string `json:"search,omitempty"`
 }
 
-// UpdateKVCollection represents updates to be applied to an existing kvcollection dataset
-type UpdateKVCollection struct {
-	*UpdateDataset
+// Models for retrieving datasets are below:
+
+// LookupDataset represents a fully-constructed lookup dataset
+type LookupDataset struct {
+	*DatasetBase
+	*LookupProperties
+}
+
+// ImportDataset represents a fully-constructed import dataset
+type ImportDataset struct {
+	*DatasetBase
+	*ImportProperties
+}
+
+// MetricDataset represents a fully-constructed metric dataset
+type MetricDataset struct {
+	*DatasetBase
+	*MetricProperties
+}
+
+// IndexDataset represents a fully-constructed index dataset
+type IndexDataset struct {
+	*DatasetBase
+	*IndexProperties
+}
+
+// Job represents a fully-constructed job dataset
+// NOTE: Only GET and DELETE are supported for Job datasets
+type JobDataset struct {
+	*DatasetBase
+	*JobProperties
+}
+
+// ViewDataset represents a fully-constructed view dataset
+type ViewDataset struct {
+	*DatasetBase
+	*ViewProperties
+}
+
+// KVCollectionDataset represents a fully-constructed kvcollection dataset
+type KVCollectionDataset struct {
+	*DatasetBase
+	// Note: there are no fields specific to kvstorecollection datasets
+}
+
+// Models for creating datasets are below:
+
+// CreateLookupDataset represents creation of a lookup dataset
+type CreateLookupDataset struct {
+	*CreateDatasetBase
+	*LookupProperties
+}
+
+// CreateImportDataset represents creation of a import dataset
+type CreateImportDataset struct {
+	*CreateDatasetBase
+	*ImportProperties
+}
+
+// CreateMetricDataset represents creation of a metric dataset
+type CreateMetricDataset struct {
+	*CreateDatasetBase
+	*MetricProperties
+}
+
+// CreateIndexDataset represents creation of a index dataset
+type CreateIndexDataset struct {
+	*CreateDatasetBase
+	*IndexProperties
+}
+
+// CreateViewDataset represents creation of a view dataset
+type CreateViewDataset struct {
+	*CreateDatasetBase
+	*ViewProperties
+}
+
+// CreateKVCollectionDataset represents creation of a kvcollection dataset
+type CreateKVCollectionDataset struct {
+	*CreateDatasetBase
+	// Note: there are no fields specific to kvstorecollection datasets
+}
+
+// Models for updating datasets are below:
+
+// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
+type UpdateLookupDataset struct {
+	*UpdateDatasetBase
+	*LookupProperties
+}
+
+// UpdateImportDataset represents updates to be applied to an existing import dataset
+type UpdateImportDataset struct {
+	*UpdateDatasetBase
+	*ImportProperties
+}
+
+// UpdateMetricDataset represents updates to be applied to an existing metric dataset
+type UpdateMetricDataset struct {
+	*UpdateDatasetBase
+	*MetricProperties
+}
+
+// UpdateIndexDataset represents updates to be applied to an existing index dataset
+type UpdateIndexDataset struct {
+	*UpdateDatasetBase
+	*IndexProperties
+}
+
+// UpdateViewDataset represents updates to be applied to an existing view dataset
+type UpdateViewDataset struct {
+	*UpdateDatasetBase
+	*ViewProperties
+}
+
+// UpdateKVCollectionDataset represents updates to be applied to an existing kvcollection dataset
+type UpdateKVCollectionDataset struct {
+	*UpdateDatasetBase
+	// Note: there are no fields specific to kvstorecollection datasets
 }
 
 // Field represents the fields belonging to the specified Dataset
@@ -478,7 +518,7 @@ func NewUpdateRegexAction(field *string, pattern *string, limit *int) *Action {
 
 // DEPRECATED: The following fields have been deprecated, see comments for more details
 
-// DatasetInfo is Deprecated: 0.7.2 please use services/catalog.DatasetBase and *Dataset for each kind
+// DatasetInfo is Deprecated: 0.7.2 please use DatasetBase and *Dataset for each kind
 type DatasetInfo struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
@@ -507,7 +547,7 @@ type DatasetInfo struct {
 	Disabled bool   `json:"disabled"`
 }
 
-// DatasetCreationPayload is Deprecated: 0.7.2 please use DatasetBase and *Dataset for each kind
+// DatasetCreationPayload is Deprecated: 0.7.2 please use CreateDatasetBase and Create*Dataset for each kind
 type DatasetCreationPayload struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
@@ -534,7 +574,7 @@ type DatasetCreationPayload struct {
 	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// UpdateDatasetInfoFields is Deprecated: 0.7.2 please use UpdateDataset and Update* for each kind
+// UpdateDatasetInfoFields is Deprecated: 0.7.2 please use UpdateDatasetBase and Update*Dataset for each kind
 type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
