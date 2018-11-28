@@ -32,8 +32,8 @@ var TestInvalidTestTenant = "INVALID_TENANT_ID"
 // ExpiredAuthenticationToken - to test authentication retries
 var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
-// TestNamespace - A namespace for integration testing
-var TestNamespace = fmt.Sprintf("gonamespace%d", TimeSec)
+// TestModule - A namespace for integration testing
+var TestModule = fmt.Sprintf("gomod%d", TimeSec)
 
 // TestCollection - A collection for integration testing
 var TestCollection = fmt.Sprintf("gocollection%d", TimeSec)
