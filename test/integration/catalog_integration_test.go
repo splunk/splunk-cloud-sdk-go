@@ -22,7 +22,7 @@ import (
 // Test Dataset variables
 var (
 	// Base:
-	dsNameTemplate = "gointegds%s_" + string(testutils.TimeSec)
+	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.TimeSec)
 	// Lookup:
 	caseMatch    = true
 	externalKind = "kvcollection"
@@ -37,7 +37,7 @@ var (
 
 // Test Rule variables
 var (
-	ruleNameTemplate = "gointegrule%s_" + string(testutils.TimeSec)
+	ruleNameTemplate = fmt.Sprintf("gointegrule%s_%d", "%s", testutils.TimeSec)
 	ruleModule       = "gointeg"
 	ruleMatch        = "sourcetype::integration_test_match"
 )
@@ -71,7 +71,7 @@ func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
 // createLookupDataset - Helper function for creating a valid Lookup in Catalog
 func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, error) {
 	createLookup := &catalog.CreateLookupDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.Lookup, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Lookup, testutils.TestModule),
 		LookupProperties:  catalog.NewLookupProperties(caseMatch, externalKind, externalName, filter),
 	}
 	return getSdkClient(t).CatalogService.CreateLookupDataset(createLookup)
@@ -80,7 +80,7 @@ func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, err
 // createKVCollectionDataset - Helper function for creating a valid KVCollection in Catalog
 func createKVCollectionDataset(t *testing.T, name string) (*catalog.KVCollectionDataset, error) {
 	createKVCollection := &catalog.CreateKVCollectionDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.KvCollection, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.KvCollection, testutils.TestModule),
 	}
 	return getSdkClient(t).CatalogService.CreateKVCollectionDataset(createKVCollection)
 }
@@ -88,7 +88,7 @@ func createKVCollectionDataset(t *testing.T, name string) (*catalog.KVCollection
 // createMetricDataset - Helper function for creating a valid Metric in Catalog
 func createMetricDataset(t *testing.T, name string) (*catalog.MetricDataset, error) {
 	createMetric := &catalog.CreateMetricDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.Metric, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Metric, testutils.TestModule),
 		MetricProperties:  catalog.NewMetricProperties(disabled, frozenTimePeriodInSecs),
 	}
 	return getSdkClient(t).CatalogService.CreateMetricDataset(createMetric)
@@ -97,7 +97,7 @@ func createMetricDataset(t *testing.T, name string) (*catalog.MetricDataset, err
 // createIndexDataset - Helper function for creating a valid Index in Catalog
 func createIndexDataset(t *testing.T, name string) (*catalog.IndexDataset, error) {
 	createIndex := &catalog.CreateIndexDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.Index, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Index, testutils.TestModule),
 		IndexProperties:   catalog.NewIndexProperties(disabled, frozenTimePeriodInSecs),
 	}
 	return getSdkClient(t).CatalogService.CreateIndexDataset(createIndex)
@@ -106,7 +106,7 @@ func createIndexDataset(t *testing.T, name string) (*catalog.IndexDataset, error
 // createImportDataset - Helper function for creating a valid Import in Catalog
 func createImportDataset(t *testing.T, name, importID string) (*catalog.ImportDataset, error) {
 	createImport := &catalog.CreateImportDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.Import, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Import, testutils.TestModule),
 		ImportProperties:  catalog.NewImportPropertiesByID(importID),
 	}
 	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
@@ -115,7 +115,7 @@ func createImportDataset(t *testing.T, name, importID string) (*catalog.ImportDa
 // createViewDataset - Helper function for creating a valid View in Catalog
 func createViewDataset(t *testing.T, name string) (*catalog.ViewDataset, error) {
 	createView := &catalog.CreateViewDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.View, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
 		ViewProperties:    catalog.NewViewProperties(searchString),
 	}
 	return getSdkClient(t).CatalogService.CreateViewDataset(createView)
@@ -186,7 +186,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	name := makeDSName("401")
 	createView := &catalog.CreateViewDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBase(name, catalog.View, name, testutils.TestModule),
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
 		ViewProperties:    catalog.NewViewProperties(searchString),
 	}
 	ds, err := getSdkClient(t).CatalogService.CreateViewDataset(createView)

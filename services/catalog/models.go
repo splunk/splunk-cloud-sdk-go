@@ -56,6 +56,7 @@ type DatasetBase struct {
 	ResourceName string `json:"resourcename,omitempty"`
 }
 
+// GetKind returns the kind of the underlying dataset
 func (ds DatasetBase) GetKind() DatasetInfoKind {
 	return ds.Kind
 }
@@ -78,6 +79,15 @@ func NewCreateDatasetBase(name string, kind DatasetInfoKind, id, module string) 
 		Name:   name,
 		Kind:   kind,
 		ID:     id,
+		Module: module,
+	}
+}
+
+// NewCreateDatasetBaseByName is a helper for constructing CreateDatasetBase without an id
+func NewCreateDatasetBaseByName(name string, kind DatasetInfoKind, module string) *CreateDatasetBase {
+	return &CreateDatasetBase{
+		Name:   name,
+		Kind:   kind,
 		Module: module,
 	}
 }
@@ -248,7 +258,7 @@ type IndexDataset struct {
 	*IndexProperties
 }
 
-// Job represents a fully-constructed job dataset
+// JobDataset represents a fully-constructed job dataset
 // NOTE: Only GET and DELETE are supported for Job datasets
 type JobDataset struct {
 	*DatasetBase
