@@ -21,6 +21,8 @@ const (
 	View DatasetInfoKind = "view"
 	// Import represents a dataset that points to an existing dataset in order to support usage in a different module.
 	Import DatasetInfoKind = "import"
+	// Job represents a dataset relating to a search job
+	Job DatasetInfoKind = "job"
 )
 
 // Dataset represents the sources of data that can be searched by Splunk
@@ -58,16 +60,6 @@ func (ds DatasetBase) GetKind() DatasetInfoKind {
 	return ds.Kind
 }
 
-// UpdateDatasetBase contains fields that can be updated and that are common to all dataset kinds
-type UpdateDatasetBase struct {
-	// The dataset name. Dataset names must be unique within each module.
-	Name string `json:"name,omitempty"`
-	// The name of the module to create the new dataset in.
-	Module *string `json:"module,omitempty"`
-	// The name of the object's owner.
-	Owner string `json:"owner,omitempty"`
-}
-
 // CreateDatasetBase contains fields that can be included on creation and that are common to all dataset kinds
 type CreateDatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
@@ -78,8 +70,35 @@ type CreateDatasetBase struct {
 	ID string `json:"id,omitempty"`
 	// The name of the module to create the new dataset in.
 	Module string `json:"module,omitempty"`
-	// The catalog version.
-	Version int `json:"version,omitempty"`
+}
+
+// NewCreateDatasetBase is a helper for constructing CreateDatasetBase
+func NewCreateDatasetBase(name string, kind DatasetInfoKind, id, module string) *CreateDatasetBase {
+	return &CreateDatasetBase{
+		Name:   name,
+		Kind:   kind,
+		ID:     id,
+		Module: module,
+	}
+}
+
+// UpdateDatasetBase contains fields that can be updated and that are common to all dataset kinds
+type UpdateDatasetBase struct {
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module *string `json:"module,omitempty"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty"`
+}
+
+// NewUpdateDatasetBase is a helper for constructing UpdateDatasetBase
+func NewUpdateDatasetBase(name, module, owner string) *UpdateDatasetBase {
+	return &UpdateDatasetBase{
+		Name:   name,
+		Module: &module,
+		Owner:  owner,
+	}
 }
 
 // LookupProperties represent the fields specific to lookup datasets
@@ -94,6 +113,16 @@ type LookupProperties struct {
 	Filter *string `json:"filter,omitempty"`
 }
 
+// NewLookupProperties is a helper for constructing LookupProperties
+func NewLookupProperties(caseSensitiveMatch bool, xKind, xName, filter string) *LookupProperties {
+	return &LookupProperties{
+		CaseSensitiveMatch: &caseSensitiveMatch,
+		ExternalKind:       &xKind,
+		ExternalName:       &xName,
+		Filter:             &filter,
+	}
+}
+
 // ImportProperties represent the fields specific to import datasets
 type ImportProperties struct {
 	// The dataset module being imported.
@@ -101,7 +130,22 @@ type ImportProperties struct {
 	// The dataset name being imported.
 	SourceName *string `json:"sourceName,omitempty"`
 	// The dataset ID being imported.
-	SourceId *string `json:"sourceId,omitempty"`
+	SourceID *string `json:"sourceId,omitempty"`
+}
+
+// NewImportPropertiesByName is a helper for constructing ImportProperties by module and name
+func NewImportPropertiesByName(module, name string) *ImportProperties {
+	return &ImportProperties{
+		SourceModule: &module,
+		SourceName:   &name,
+	}
+}
+
+// NewImportPropertiesByID is a helper for constructing ImportProperties by id
+func NewImportPropertiesByID(id string) *ImportProperties {
+	return &ImportProperties{
+		SourceID: &id,
+	}
 }
 
 // MetricProperties represent the fields specific to metric datasets
@@ -112,12 +156,28 @@ type MetricProperties struct {
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
+// NewMetricProperties is a helper for constructing MetricProperties
+func NewMetricProperties(disabled bool, ftime int) *MetricProperties {
+	return &MetricProperties{
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &ftime,
+	}
+}
+
 // IndexProperties represent the fields specific to index datasets
 type IndexProperties struct {
 	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
+}
+
+// NewIndexProperties is a helper for constructing IndexProperties
+func NewIndexProperties(disabled bool, ftime int) *IndexProperties {
+	return &IndexProperties{
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &ftime,
+	}
 }
 
 // JobProperties represent the fields specific to job datasets
@@ -153,6 +213,13 @@ type JobProperties struct {
 type ViewProperties struct {
 	// A valid SPL-defined search.
 	Search *string `json:"search,omitempty"`
+}
+
+// NewViewProperties is a helper for constructing ViewProperties
+func NewViewProperties(search string) *ViewProperties {
+	return &ViewProperties{
+		Search: &search,
+	}
 }
 
 // Models for retrieving datasets are below:
