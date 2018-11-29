@@ -115,7 +115,7 @@ func NewUpdateDatasetBase(name, module, owner string) *UpdateDatasetBase {
 type LookupProperties struct {
 	// Match case-sensitively against the lookup.
 	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
-	// The type of the external lookup.
+	// The type of the external lookup, this should always be `kvcollection`
 	ExternalKind *string `json:"externalKind,omitempty"`
 	// The name of the external lookup.
 	ExternalName *string `json:"externalName,omitempty"`
@@ -124,11 +124,12 @@ type LookupProperties struct {
 }
 
 // NewLookupProperties is a helper for constructing LookupProperties
-func NewLookupProperties(caseSensitiveMatch bool, xKind, xName, filter string) *LookupProperties {
+func NewLookupProperties(caseSensitiveMatch bool, externalName, filter string) *LookupProperties {
+	externalKind := string(KvCollection)
 	return &LookupProperties{
 		CaseSensitiveMatch: &caseSensitiveMatch,
-		ExternalKind:       &xKind,
-		ExternalName:       &xName,
+		ExternalName:       &externalName,
+		ExternalKind:       &externalKind,
 		Filter:             &filter,
 	}
 }
@@ -140,6 +141,10 @@ type ImportProperties struct {
 	// The dataset name being imported.
 	SourceName *string `json:"sourceName,omitempty"`
 	// The dataset ID being imported.
+	OriginalDatasetID *string `json:"originalDatasetId,omitempty"`
+	// The dataset ID being imported.
+	// TODO: sourceId is only used for POST operations, all others use originalDatasetId.
+	// This should be fixed by the Catalog service in the future.
 	SourceID *string `json:"sourceId,omitempty"`
 }
 
@@ -154,6 +159,7 @@ func NewImportPropertiesByName(module, name string) *ImportProperties {
 // NewImportPropertiesByID is a helper for constructing ImportProperties by id
 func NewImportPropertiesByID(id string) *ImportProperties {
 	return &ImportProperties{
+		// TODO: This may get changed to OriginalDatasetId in the future
 		SourceID: &id,
 	}
 }
@@ -272,6 +278,7 @@ type ViewDataset struct {
 }
 
 // KVCollectionDataset represents a fully-constructed kvcollection dataset
+// NOTE: Only GET, POST, and DELETE are supported for KVCollection datasets
 type KVCollectionDataset struct {
 	*DatasetBase
 	// Note: there are no fields specific to kvstorecollection datasets
@@ -317,18 +324,6 @@ type CreateKVCollectionDataset struct {
 
 // Models for updating datasets are below:
 
-// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
-type UpdateLookupDataset struct {
-	*UpdateDatasetBase
-	*LookupProperties
-}
-
-// UpdateImportDataset represents updates to be applied to an existing import dataset
-type UpdateImportDataset struct {
-	*UpdateDatasetBase
-	*ImportProperties
-}
-
 // UpdateMetricDataset represents updates to be applied to an existing metric dataset
 type UpdateMetricDataset struct {
 	*UpdateDatasetBase
@@ -341,16 +336,23 @@ type UpdateIndexDataset struct {
 	*IndexProperties
 }
 
+// NOTE: UpdateImportDataset is not supported at this time
+// UpdateImportDataset represents updates to be applied to an existing import dataset
+// type UpdateImportDataset struct {
+// 	*UpdateDatasetBase
+// 	*ImportProperties
+// }
+
+// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
+type UpdateLookupDataset struct {
+	*UpdateDatasetBase
+	*LookupProperties
+}
+
 // UpdateViewDataset represents updates to be applied to an existing view dataset
 type UpdateViewDataset struct {
 	*UpdateDatasetBase
 	*ViewProperties
-}
-
-// UpdateKVCollectionDataset represents updates to be applied to an existing kvcollection dataset
-type UpdateKVCollectionDataset struct {
-	*UpdateDatasetBase
-	// Note: there are no fields specific to kvstorecollection datasets
 }
 
 // Field represents the fields belonging to the specified Dataset

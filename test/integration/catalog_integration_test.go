@@ -25,7 +25,6 @@ var (
 	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.TimeSec)
 	// Lookup:
 	caseMatch    = true
-	externalKind = "kvcollection"
 	externalName = "test_externalName"
 	filter       = `kind=="lookup"`
 	// Metric/Index:
@@ -72,7 +71,7 @@ func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
 func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, error) {
 	createLookup := &catalog.CreateLookupDataset{
 		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Lookup, testutils.TestModule),
-		LookupProperties:  catalog.NewLookupProperties(caseMatch, externalKind, externalName, filter),
+		LookupProperties:  catalog.NewLookupProperties(caseMatch, externalName, filter),
 	}
 	return getSdkClient(t).CatalogService.CreateLookupDataset(createLookup)
 }
@@ -103,11 +102,20 @@ func createIndexDataset(t *testing.T, name string) (*catalog.IndexDataset, error
 	return getSdkClient(t).CatalogService.CreateIndexDataset(createIndex)
 }
 
-// createImportDataset - Helper function for creating a valid Import in Catalog
-func createImportDataset(t *testing.T, name, importID string) (*catalog.ImportDataset, error) {
+// createImportDatasetByID - Helper function for creating a valid Import in Catalog
+func createImportDatasetByID(t *testing.T, name, importID string) (*catalog.ImportDataset, error) {
 	createImport := &catalog.CreateImportDataset{
 		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Import, testutils.TestModule),
 		ImportProperties:  catalog.NewImportPropertiesByID(importID),
+	}
+	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
+}
+
+// createImportDatasetByName - Helper function for creating a valid Import in Catalog
+func createImportDatasetByName(t *testing.T, name, importName, importModule string) (*catalog.ImportDataset, error) {
+	createImport := &catalog.CreateImportDataset{
+		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Import, testutils.TestModule),
+		ImportProperties:  catalog.NewImportPropertiesByName(importModule, importName),
 	}
 	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
 }
@@ -138,7 +146,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 	require.NotNil(t, indexds)
 	require.Equal(t, catalog.Index, indexds.Kind)
 
-	importds, err := createImportDataset(t, makeDSName("crim"), indexds.ID)
+	importds, err := createImportDatasetByID(t, makeDSName("crim"), indexds.ID)
 	require.Nil(t, err)
 	defer cleanupDataset(t, importds.ID)
 	require.NotNil(t, importds)
@@ -325,55 +333,50 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
+	// Update the metrics dataset, including name and module
+	newname := fmt.Sprintf("newmx%d", testutils.TimeSec)
+	newmod := fmt.Sprintf("newmod%d", testutils.TimeSec)
+	newowner := "test1@splunk.com"
 	umx := &catalog.UpdateMetricDataset{
-		MetricProperties: catalog.NewMetricProperties(!disabled, newftime),
+		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
+		MetricProperties:  catalog.NewMetricProperties(!disabled, newftime),
 	}
 	newmetricsds, err := client.CatalogService.UpdateMetricDataset(umx, metricds.ID)
 	require.Nil(t, err)
+	assert.Equal(t, newname, newmetricsds.Name)
+	assert.Equal(t, newmod, newmetricsds.Module)
+	assert.Equal(t, newowner, newmetricsds.Owner)
 	assert.Equal(t, !disabled, *newmetricsds.Disabled)
 	assert.Equal(t, newftime, *newmetricsds.FrozenTimePeriodInSecs)
 
-	kvds, err := createKVCollectionDataset(t, makeDSName("ukv"))
-	require.Nil(t, err)
-	defer cleanupDataset(t, kvds.ID)
-	require.NotNil(t, kvds)
-	newname := fmt.Sprintf("newname%d", testutils.TimeSec)
-	newmod := fmt.Sprintf("newmod%d", testutils.TimeSec)
-	newowner := "splunk"
-	ukv := &catalog.UpdateKVCollectionDataset{
-		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
-	}
-	newkvds, err := client.CatalogService.UpdateKVCollectionDataset(ukv, kvds.ID)
-	require.Nil(t, err)
-	assert.Equal(t, newname, newkvds.Name)
-	assert.Equal(t, newmod, newkvds.Module)
-	assert.Equal(t, newowner, newkvds.Owner)
-
-	importds, err := createImportDataset(t, makeDSName("uim"), indexds.ID)
-	require.Nil(t, err)
-	defer cleanupDataset(t, importds.ID)
-	require.NotNil(t, importds)
-	uim := &catalog.UpdateImportDataset{
-		ImportProperties: catalog.NewImportPropertiesByID(kvds.ID),
-	}
-	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
-	require.Nil(t, err)
-	assert.Equal(t, kvds.ID, *newimportds.SourceID)
+	// NOTE: UpdateImportDataset is not supported at this time
+	// importds, err := createImportDatasetByName(t, makeDSName("uim"), newmetricsds.Name, newmetricsds.Module)
+	// require.Nil(t, err)
+	// defer cleanupDataset(t, importds.ID)
+	// require.NotNil(t, importds)
+	// uim := &catalog.UpdateImportDataset{
+	// 	ImportProperties: &catalog.ImportProperties{
+	// 		SourceName:   &newindexds.Name,
+	// 		SourceModule: &newindexds.Module,
+	// 	},
+	// }
+	// newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
+	// require.Nil(t, err)
+	// assert.Equal(t, newindexds.Name, *newimportds.SourceName)
+	// assert.Equal(t, newindexds.Module, *newimportds.SourceModule)
 
 	lookupds, err := createLookupDataset(t, makeDSName("ulk"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
-	newxkind := "newxkind"
 	newxname := "newxname"
 	newfilter := `kind=="lookup"`
 	ulk := &catalog.UpdateLookupDataset{
-		LookupProperties: catalog.NewLookupProperties(!caseMatch, newxkind, newxname, newfilter),
+		LookupProperties: catalog.NewLookupProperties(!caseMatch, newxname, newfilter),
 	}
-	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, importds.ID)
+	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
 	require.Nil(t, err)
 	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
-	assert.Equal(t, newxkind, *newlookupds.ExternalKind)
 	assert.Equal(t, newxname, *newlookupds.ExternalName)
 	assert.Equal(t, newfilter, *newlookupds.Filter)
 
@@ -381,18 +384,20 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, viewds.ID)
 	require.NotNil(t, viewds)
-	newsearch := "search index=main"
+	newname = fmt.Sprintf("newvw%d", testutils.TimeSec)
 	uvw := &catalog.UpdateViewDataset{
-		ViewProperties: catalog.NewViewProperties(newsearch),
+		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
 	}
-	newviewds, err := client.CatalogService.UpdateViewDataset(uvw, importds.ID)
+	newviewds, err := client.CatalogService.UpdateViewDataset(uvw, viewds.ID)
 	require.Nil(t, err)
-	assert.Equal(t, newsearch, *newviewds.Search)
+	assert.Equal(t, newname, newviewds.Name)
+	assert.Equal(t, newmod, newviewds.Module)
+	assert.Equal(t, newowner, newviewds.Owner)
 }
 
 // Test UpdateDataset for 404 Datasetnot found error
 func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
-	_, err := getSdkClient(t).CatalogService.UpdateLookupDataset(&catalog.UpdateLookupDataset{}, "idonotexist")
+	_, err := getSdkClient(t).CatalogService.UpdateViewDataset(&catalog.UpdateViewDataset{}, "idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)

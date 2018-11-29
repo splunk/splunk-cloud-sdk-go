@@ -202,6 +202,20 @@ func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string
 	return &ids, nil
 }
 
+// NOTE: UpdateImportDataset is not supported at this time
+// UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
+// func (s *Service) UpdateImportDataset(importDataset *UpdateImportDataset, id string) (*ImportDataset, error) {
+// 	ds, err := s.UpdateDataset(importDataset, id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	ids, ok := ds.(ImportDataset)
+// 	if !ok {
+// 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Import)
+// 	}
+// 	return &ids, nil
+// }
+
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
 func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*LookupDataset, error) {
 	ds, err := s.UpdateDataset(lookupDataset, id)
@@ -226,32 +240,6 @@ func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", View)
 	}
 	return &vds, nil
-}
-
-// UpdateKVCollectionDataset updates an existing KVCollection Dataset with the specified resourceName or ID
-func (s *Service) UpdateKVCollectionDataset(kvDataset *UpdateKVCollectionDataset, id string) (*KVCollectionDataset, error) {
-	ds, err := s.UpdateDataset(kvDataset, id)
-	if err != nil {
-		return nil, err
-	}
-	kvds, ok := ds.(KVCollectionDataset)
-	if !ok {
-		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", KvCollection)
-	}
-	return &kvds, nil
-}
-
-// UpdateImportDataset updates an existing import Dataset with the specified resourceName or ID
-func (s *Service) UpdateImportDataset(importDataset *UpdateImportDataset, id string) (*ImportDataset, error) {
-	ds, err := s.UpdateDataset(importDataset, id)
-	if err != nil {
-		return nil, err
-	}
-	ids, ok := ds.(ImportDataset)
-	if !ok {
-		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Import)
-	}
-	return &ids, nil
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
