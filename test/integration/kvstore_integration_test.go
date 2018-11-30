@@ -5,312 +5,269 @@
 
 package integration
 
-// import (
-// 	"encoding/json"
-// 	"net/url"
-// 	"testing"
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"testing"
 
-// 	"github.com/splunk/splunk-cloud-sdk-go/model"
-// 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
-// 	"github.com/splunk/splunk-cloud-sdk-go/util"
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/stretchr/testify/require"
-// )
+	"github.com/splunk/splunk-cloud-sdk-go/model"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
 
-// // Test variables
-// var (
-// 	testIndex    = "integtestindex"
-// 	kvCollection = testutils.TestModule + "." + testutils.TestCollection
-// )
+// Test variables
+var (
+	testIndex = "integtestindex"
+)
 
-// // --------------------------------------------------------------------------------
-// // Admin Endpoints
-// // --------------------------------------------------------------------------------
+func makeCollectionName(t *testing.T, ctx string) (id, kvCollection string) {
+	dsname := makeDSName(ctx)
+	kvds, err := createKVCollectionDataset(t, dsname)
+	require.Nil(t, err)
+	return kvds.ID, fmt.Sprintf("%s.%s", kvds.Module, kvds.Name)
+}
 
-// // Test GetServiceHealthStatus against nova playground
-// func TestIntegrationGetServiceHealth(t *testing.T) {
-// 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
-// 	require.Empty(t, err)
-// 	assert.NotEmpty(t, response)
-// 	assert.Equal(t, model.PingOKBodyStatusHealthy, response.Status)
-// }
+// --------------------------------------------------------------------------------
+// Admin Endpoints
+// --------------------------------------------------------------------------------
 
-// // --------------------------------------------------------------------------------
-// // Index Endpoints
-// // --------------------------------------------------------------------------------
-// // /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME/indexes
+// Test GetServiceHealthStatus against nova playground
+func TestIntegrationGetServiceHealth(t *testing.T) {
+	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
+	require.Empty(t, err)
+	assert.NotEmpty(t, response)
+	assert.Equal(t, model.PingOKBodyStatusHealthy, response.Status)
+}
 
-// // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
-// func TestIntegrationIndexEndpoints(t *testing.T) {
-// 	// Create the test collection
-// 	dsName := makeDSName("kvidx")
-// 	ds, err := createKVCollectionDataset(t, dsName)
-// 	require.Nil(t, err)
-// 	defer cleanupDataset(t, ds.ID)
+// --------------------------------------------------------------------------------
+// Index Endpoints
+// --------------------------------------------------------------------------------
+// /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME/indexes
 
-// 	// Create Index
-// 	var fields [1]model.IndexFieldDefinition
-// 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
-// 	indexDescription, err := getClient(t).KVStoreService.CreateIndex(kvCollection,
-// 		model.IndexDefinition{
-// 			Name:   testIndex,
-// 			Fields: fields[:]})
-// 	require.Nil(t, err)
-// 	require.NotEmpty(t, indexDescription)
-// 	assert.Equal(t, indexDescription.Collection, kvCollection)
+// Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
+func TestIntegrationIndexEndpoints(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvidx")
+	defer cleanupDataset(t, kvid)
 
-// 	// Validate if the index was created
-// 	indexes, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
-// 	require.Nil(t, err)
-// 	require.NotNil(t, indexes)
-// 	assert.Equal(t, len(indexes), 1)
-// 	assert.Equal(t, indexes[0].Name, testIndex)
+	// Create Index
+	var fields [1]model.IndexFieldDefinition
+	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
+	indexDescription, err := getClient(t).KVStoreService.CreateIndex(kvCollection,
+		model.IndexDefinition{
+			Name:   testIndex,
+			Fields: fields[:]})
+	require.Nil(t, err)
+	require.NotEmpty(t, indexDescription)
+	assert.Equal(t, indexDescription.Collection, kvCollection)
 
-// 	// Delete the test index
-// 	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-// 	assert.Nil(t, err)
+	// Validate if the index was created
+	indexes, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
+	require.Nil(t, err)
+	require.NotNil(t, indexes)
+	assert.Equal(t, len(indexes), 1)
+	assert.Equal(t, indexes[0].Name, testIndex)
 
-// 	// Validate if the index was deleted
-// 	result, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
-// 	assert.Nil(t, err)
-// 	require.NotNil(t, result)
-// 	assert.Equal(t, len(result), 0)
-// }
+	// Delete the test index
+	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	assert.Nil(t, err)
 
-// // Test CreateIndex for 422 Unprocessable Entity error
-// func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+	// Validate if the index was deleted
+	result, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
+	assert.Nil(t, err)
+	require.NotNil(t, result)
+	assert.Equal(t, len(result), 0)
+}
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+// Test CreateIndex for 422 Unprocessable Entity error
+func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvidx422")
+	defer cleanupDataset(t, kvid)
 
-// 	// Create Index
-// 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
-// 	require.NotNil(t, err)
-// 	httpErr, ok := err.(*util.HTTPError)
-// 	require.True(t, ok)
-// 	assert.Equal(t, 422, httpErr.HTTPStatusCode)
-// 	assert.Equal(t, "fields in body is required", httpErr.Message)
-// }
+	// Create Index
+	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 422, httpErr.HTTPStatusCode)
+	assert.Equal(t, "fields in body is required", httpErr.Message)
+}
 
-// // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
-// func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+// Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
+func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
+	// Create the test collection
+	kvid, _ := makeCollectionName(t, "kvidx404")
+	defer cleanupDataset(t, kvid)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+	// Create Index
+	var fields [1]model.IndexFieldDefinition
+	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
+	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.EqualValues(t, 404, httpErr.HTTPStatusCode)
+	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
+	assert.EqualValues(t, "collection not found", httpErr.Message)
+}
 
-// 	// Create Index
-// 	var fields [1]model.IndexFieldDefinition
-// 	fields[0] = model.IndexFieldDefinition{Direction: -1, Field: "integ_testField1"}
-// 	_, err := getClient(t).KVStoreService.CreateIndex(testutils.TestCollection, model.IndexDefinition{Name: testIndex, Fields: fields[:]})
-// 	require.NotNil(t, err)
-// 	httpErr, ok := err.(*util.HTTPError)
-// 	require.True(t, ok)
-// 	assert.EqualValues(t, 404, httpErr.HTTPStatusCode)
-// 	// Known bug: should actually provide collection name - see https://jira.splunk.com/browse/SSC-5084
-// 	assert.EqualValues(t, "collection not found", httpErr.Message)
-// }
+// Test DeleteIndex for 404 Index not found error
+func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvidx404")
+	defer cleanupDataset(t, kvid)
 
-// // Test DeleteIndex for 404 Index not found error
-// func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+	// DeleteIndex
+	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
+	require.Nil(t, err)
+}
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+// --------------------------------------------------------------------------------
+// Record Endpoints
+// --------------------------------------------------------------------------------
+// /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME
 
-// 	// DeleteIndex
-// 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-// 	require.Nil(t, err)
-// }
+// Test InsertRecords() kvstore service endpoint against nova playground
+func TestCreateRecords(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvcrr")
+	defer cleanupDataset(t, kvid)
 
-// // --------------------------------------------------------------------------------
-// // Record Endpoints
-// // --------------------------------------------------------------------------------
-// // /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME
+	createTestRecord(t, kvCollection)
+}
 
-// // Test InsertRecords() kvstore service endpoint against nova playground
-// func TestCreateRecords(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+// Test InsertRecords() kvstore service endpoint against nova playground
+func TestPutRecords(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvpr")
+	defer cleanupDataset(t, kvid)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+	keys := createTestRecord(t, kvCollection)
 
-// 	CreateTestRecord(t)
-// }
+	record := `
+	{
+		"capacity_gb": 8,
+		"size": "notbig",
+		"description": "this is a notbig amount of GB",
+		"_raw": ""
+	}`
 
-// // Test InsertRecords() kvstore service endpoint against nova playground
-// func TestPutRecords(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+	var res model.Record
+	err := json.Unmarshal([]byte(record), &res)
+	require.Nil(t, err)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+	// test replace record
+	key, created, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], res)
+	require.Nil(t, err)
+	require.NotNil(t, key)
+	assert.Equal(t, key["_key"], keys[0])
+	assert.False(t, created)
 
-// 	keys := CreateTestRecord(t)
+	// test insert record
+	recordID := "recordID"
+	key, created, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, res)
+	require.Nil(t, err)
+	require.NotNil(t, key)
+	assert.Equal(t, key["_key"], recordID)
+	assert.True(t, created)
+}
 
-// 	record := `
-// 	{
-// 		"capacity_gb": 8,
-// 		"size": "notbig",
-// 		"description": "this is a notbig amount of GB",
-// 		"_raw": ""
-// 	}`
+// Test getRecordByKey() kvstore service endpoint against the nova playground
+func TestGetRecordByKey(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvgbk")
+	defer cleanupDataset(t, kvid)
 
-// 	var res model.Record
-// 	err := json.Unmarshal([]byte(record), &res)
-// 	require.Nil(t, err)
+	keys := createTestRecord(t, kvCollection)
 
-// 	// test replace record
-// 	key, created, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], res)
-// 	require.Nil(t, err)
-// 	require.NotNil(t, key)
-// 	assert.Equal(t, key["_key"], keys[0])
-// 	assert.False(t, created)
+	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 
-// 	// test insert record
-// 	recordID := "recordID"
-// 	key, created, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, res)
-// 	require.Nil(t, err)
-// 	require.NotNil(t, key)
-// 	assert.Equal(t, key["_key"], recordID)
-// 	assert.True(t, created)
-// }
+	require.Nil(t, err)
+	require.NotNil(t, result)
+	assert.NotNil(t, result["_key"])
+	assert.Equal(t, result["capacity_gb"], float64(8))
+	assert.Equal(t, result["description"], "This is a tiny amount of GB")
+	assert.Equal(t, result["size"], "tiny")
+}
 
-// // Test getRecordByKey() kvstore service endpoint against the nova playground
-// func TestGetRecordByKey(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+// Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
+func TestDeleteRecordByKey(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvdrbk")
+	defer cleanupDataset(t, kvid)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+	keys := createTestRecord(t, kvCollection)
 
-// 	keys := CreateTestRecord(t)
+	// Delete record by key
+	err := getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
+	require.Nil(t, err)
 
-// 	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
+	// Validate that the record has been deleted
+	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
+	assert.Nil(t, retrievedRecordsByKey)
 
-// 	require.Nil(t, err)
-// 	require.NotNil(t, result)
-// 	assert.NotNil(t, result["_key"])
-// 	assert.Equal(t, result["capacity_gb"], float64(8))
-// 	assert.Equal(t, result["description"], "This is a tiny amount of GB")
-// 	assert.Equal(t, result["size"], "tiny")
-// }
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
+	require.NotNil(t, retrievedRecords)
+	assert.Equal(t, len(retrievedRecords), 2)
+}
 
-// // Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
-// func TestDeleteRecordByKey(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+// Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
+func TestDeleteRecord(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvdrec")
+	defer cleanupDataset(t, kvid)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
+	// Create records
+	createTestRecord(t, kvCollection)
 
-// 	keys := CreateTestRecord(t)
+	// Create query to test delete operation
+	var integrationTestQuery = `{"capacity_gb": 16}`
+	outerQuery := make(url.Values)
+	outerQuery.Add("query", integrationTestQuery)
+	outerQuery.Encode()
 
-// 	// Delete record by key
-// 	err := getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
-// 	require.Nil(t, err)
+	err := getClient(t).KVStoreService.DeleteRecords(kvCollection, outerQuery)
+	require.Nil(t, err)
 
-// 	// Validate that the record has been deleted
-// 	retrievedRecordsByKey, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
-// 	assert.Nil(t, retrievedRecordsByKey)
+	// Validate that the record has been deleted
+	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
+	require.NotNil(t, retrievedRecords)
+	assert.Equal(t, len(retrievedRecords), 2)
+}
 
-// 	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-// 	require.NotNil(t, retrievedRecords)
-// 	assert.Equal(t, len(retrievedRecords), 2)
-// }
+// Create test record
+func createTestRecord(t *testing.T, kvCollection string) []string {
+	var integrationTestRecord = `[
+         {
+          "capacity_gb": 8,
+          "size": "tiny",
+          "description": "This is a tiny amount of GB",
+          "_raw": ""
+         },
+         {
+          "capacity_gb": 16,
+          "size": "small",
+          "description": "This is a small amount of GB",
+          "_raw": ""
+         },
+         {
+          "type": "A",
+          "name": "test_record",
+          "count_of_fields": 3
+         }
+        ]`
+	var res []model.Record
+	err := json.Unmarshal([]byte(integrationTestRecord), &res)
+	require.Nil(t, err)
 
-// // Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
-// func TestDeleteRecord(t *testing.T) {
-// 	// Create the test collection
-// 	createKVCollectionDataset(t,
-// 		testutils.TestNamespace,
-// 		testutils.TestCollection,
-// 		datasetOwner,
-// 		datasetCapabilities)
+	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
+	require.Nil(t, err)
+	require.NotNil(t, keys)
+	assert.Equal(t, len(keys), 3)
 
-// 	// Remove the dataset used for testing
-// 	defer cleanupDatasets(t)
-
-// 	// Create records
-// 	CreateTestRecord(t)
-
-// 	// Create query to test delete operation
-// 	var integrationTestQuery = `{"capacity_gb": 16}`
-// 	outerQuery := make(url.Values)
-// 	outerQuery.Add("query", integrationTestQuery)
-// 	outerQuery.Encode()
-
-// 	err := getClient(t).KVStoreService.DeleteRecords(kvCollection, outerQuery)
-// 	require.Nil(t, err)
-
-// 	// Validate that the record has been deleted
-// 	retrievedRecords, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)
-// 	require.NotNil(t, retrievedRecords)
-// 	assert.Equal(t, len(retrievedRecords), 2)
-// }
-
-// // Create test record
-// func CreateTestRecord(t *testing.T) []string {
-// 	var integrationTestRecord = `[
-//          {
-//           "capacity_gb": 8,
-//           "size": "tiny",
-//           "description": "This is a tiny amount of GB",
-//           "_raw": ""
-//          },
-//          {
-//           "capacity_gb": 16,
-//           "size": "small",
-//           "description": "This is a small amount of GB",
-//           "_raw": ""
-//          },
-//          {
-//           "type": "A",
-//           "name": "test_record",
-//           "count_of_fields": 3
-//          }
-//         ]`
-// 	var res []model.Record
-// 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
-// 	require.Nil(t, err)
-
-// 	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
-// 	require.Nil(t, err)
-// 	require.NotNil(t, keys)
-// 	assert.Equal(t, len(keys), 3)
-
-// 	return keys
-// }
+	return keys
+}
