@@ -197,7 +197,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
 		ViewProperties:    catalog.NewViewProperties(searchString),
 	}
-	ds, err := getSdkClient(t).CatalogService.CreateViewDataset(createView)
+	ds, err := getInvalidClient(t).CatalogService.CreateViewDataset(createView)
 	if ds != nil {
 		defer cleanupDataset(t, ds.ID)
 	}
@@ -397,7 +397,12 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 
 // Test UpdateDataset for 404 Datasetnot found error
 func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
-	_, err := getSdkClient(t).CatalogService.UpdateViewDataset(&catalog.UpdateViewDataset{}, "idonotexist")
+	uvw := &catalog.UpdateViewDataset{
+		ViewProperties: &catalog.ViewProperties{
+			Search: &searchString,
+		},
+	}
+	_, err := getSdkClient(t).CatalogService.UpdateViewDataset(uvw, "idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -560,7 +565,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 	// Validate the creation of new dataset fields
 	results, err := client.CatalogService.GetDatasetFields(ds.ID, nil)
 	require.Nil(t, err)
-	assert.True(t, len(results) > 2)
+	assert.True(t, len(results) >= 2)
 	res1, err := client.CatalogService.GetDatasetField(ds.ID, f1.ID)
 	require.Nil(t, err)
 	assert.NotNil(t, res1)
@@ -808,7 +813,7 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewEvalAction(field.Name, "some expression", ""))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewEvalAction(field.Name, "now()", ""))
 	require.Nil(t, err)
 	defer cleanupRuleAction(t, rule.ID, action3.ID)
 
@@ -829,18 +834,18 @@ func TestRuleActions(t *testing.T) {
 	assert.Equal(t, tmpstr, updateact.Expression)
 
 	limit := 5
-	action5, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, "some pattern", &limit, ""))
+	action5, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, &limit, ""))
 	require.Nil(t, err)
 	assert.Equal(t, 5, *action5.Limit)
 	defer cleanupRuleAction(t, rule.ID, action5.ID)
 
-	action6, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, "some pattern", nil, ""))
+	action6, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, nil, ""))
 	require.Nil(t, err)
 	assert.Equal(t, (*int)(nil), action6.Limit)
 	defer cleanupRuleAction(t, rule.ID, action6.ID)
 
 	//update rule action
-	tmpstr = "newpattern"
+	tmpstr = `field=myotherfield "To: (?<to>.*) From: (?<from>.*)"`
 	limit = 9
 	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, catalog.NewUpdateRegexAction(nil, &tmpstr, &limit))
 	require.NotNil(t, updateact)
@@ -856,7 +861,7 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, action7)
 
 	// Delete action
-	action8, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, "some pattern", &limit, ""))
+	action8, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, &limit, ""))
 	require.Nil(t, err)
 	err = client.CatalogService.DeleteRuleAction(rule.ID, action8.ID)
 	require.Nil(t, err)
