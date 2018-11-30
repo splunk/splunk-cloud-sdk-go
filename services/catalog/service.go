@@ -623,18 +623,19 @@ func parseDatasetResponse(response *http.Response) (Dataset, error) {
 
 // ParseRawDataset parses a raw interface{} type into specific Dataset subtype based on 'kind'
 func ParseRawDataset(dataset interface{}) (Dataset, error) {
-	datasetByte, err := json.Marshal(dataset)
-	if err != nil {
-		return nil, err
-	}
-
 	datasetMap, ok := dataset.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("catalog: response was not of type DatasetBase")
+		return nil, fmt.Errorf("catalog: response was not of type map[string]interface{}")
 	}
+
 	kind, ok := datasetMap["kind"].(string)
 	if !ok {
 		return nil, fmt.Errorf("catalog: dataset response did not contain key 'kind' with string value in contents")
+	}
+
+	datasetByte, err := json.Marshal(dataset)
+	if err != nil {
+		return nil, err
 	}
 
 	switch kind {

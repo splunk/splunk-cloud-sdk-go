@@ -27,7 +27,7 @@ const (
 
 // Dataset represents the sources of data that can be searched by Splunk
 type Dataset interface {
-	GetKind() DatasetInfoKind
+	GetKind() string
 }
 
 // DatasetBase represents the common fields shared among datasets
@@ -35,7 +35,7 @@ type DatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name"`
 	// The dataset kind.
-	Kind DatasetInfoKind `json:"kind"`
+	Kind string `json:"kind"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty"`
 	// The name of the module to create the new dataset in.
@@ -57,7 +57,7 @@ type DatasetBase struct {
 }
 
 // GetKind returns the kind of the underlying dataset
-func (ds DatasetBase) GetKind() DatasetInfoKind {
+func (ds DatasetBase) GetKind() string {
 	return ds.Kind
 }
 

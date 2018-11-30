@@ -686,7 +686,7 @@ func TestGetDatasetFieldsOnFilter(t *testing.T) {
 }
 
 // Test CreateDatasetField
-func TestcreateDatasetField(t *testing.T) {
+func TestCreateDatasetField(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
