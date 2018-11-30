@@ -143,38 +143,56 @@ func createDatasetField(datasetID string, client *sdk.Client, t *testing.T) *cat
 	return resultField
 }
 
-// Test CreateDataset
-func TestCreateDataset(t *testing.T) {
+// Test CreateIndexDataset
+func CreateIndexDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
 	require.NotNil(t, indexds)
 	require.Equal(t, catalog.Index, indexds.Kind)
+}
 
+// Test CreateImportDataset
+func TestCreateImportDataset(t *testing.T) {
+	indexds, err := createIndexDataset(t, makeDSName("crix"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, indexds.ID)
 	importds, err := createImportDatasetByID(t, makeDSName("crim"), indexds.ID)
 	require.Nil(t, err)
 	defer cleanupDataset(t, importds.ID)
 	require.NotNil(t, importds)
 	require.Equal(t, catalog.Import, importds.Kind)
+}
 
+// Test CreateKVCollectionDataset
+func TestKVCollectionDataset(t *testing.T) {
 	kvds, err := createKVCollectionDataset(t, makeDSName("crkv"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, kvds.ID)
 	require.NotNil(t, kvds)
 	require.Equal(t, catalog.KvCollection, kvds.Kind)
+}
 
+// Test CreateLookupDataset
+func TestLookupDataset(t *testing.T) {
 	lookupds, err := createLookupDataset(t, makeDSName("crlk"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
 	require.Equal(t, catalog.Lookup, lookupds.Kind)
+}
 
+// Test CreateMetricDataset
+func TestMetricDataset(t *testing.T) {
 	metricds, err := createMetricDataset(t, makeDSName("crmx"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
 	require.Equal(t, catalog.Metric, metricds.Kind)
+}
 
+// Test CreateViewDataset
+func TestViewDataset(t *testing.T) {
 	viewds, err := createViewDataset(t, makeDSName("crvw"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, viewds.ID)
@@ -254,16 +272,31 @@ func TestListDatasetsFilter(t *testing.T) {
 
 // Test TestListDatasetsCount
 func TestListDatasetsCount(t *testing.T) {
-	ds, err := createLookupDataset(t, makeDSName("cnt"))
+	// Create three datasets
+	ds1, err := createLookupDataset(t, makeDSName("cnt1"))
 	require.Nil(t, err)
-	defer cleanupDataset(t, ds.ID)
+	defer cleanupDataset(t, ds1.ID)
+	ds2, err := createLookupDataset(t, makeDSName("cnt2"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds2.ID)
+	ds3, err := createLookupDataset(t, makeDSName("cnt3"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds3.ID)
 
 	values := make(url.Values)
-	values.Set("count", "1")
+	values.Set("count", "3")
 
+	// There should be at least three
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
-	assert.Nil(t, err)
-	assert.NotZero(t, len(datasets))
+	require.Nil(t, err)
+	require.Equal(t, 3, len(datasets))
+
+	// We should be able to parse these into their kinds
+	for i := 0; i < len(datasets); i++ {
+		dsparsed, err := catalog.ParseRawDataset(datasets[i])
+		require.Nil(t, err)
+		assert.NotEmpty(t, dsparsed.GetKind())
+	}
 }
 
 // Test TestListDatasetsOrderBy
