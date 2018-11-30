@@ -40,7 +40,7 @@ func TestKVStoreQueryReturnsEmptyDatasetOnCreation(t *testing.T) {
 // --------
 func TestKVStoreQueryReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvqrcdasir")
+	kvid, kvCollection := makeCollectionName(t, "kvqasir")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.QueryRecords(kvCollection, nil)

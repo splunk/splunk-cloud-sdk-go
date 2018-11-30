@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -74,7 +75,7 @@ func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T
 // --------
 func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertRecord(t *testing.T) {
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlrrcds")
+	kvid, kvCollection := makeCollectionName(t, "kvlrrds")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -109,7 +110,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 	}
 
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlrfvi")
+	kvid, kvCollection := makeCollectionName(t, "kvrfvi")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -149,7 +150,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 	}
 
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlrfve")
+	kvid, kvCollection := makeCollectionName(t, "kvrfve")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -191,7 +192,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 	}
 
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlrfviex")
+	kvid, kvCollection := makeCollectionName(t, "kvrfvx")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -252,7 +253,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	}
 
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlroffvi")
+	kvid, kvCollection := makeCollectionName(t, "kvlrfvi")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -314,42 +315,6 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	assert.EqualValues(t, "C", recordsAfterInsert[2]["TEST_KEY_02"])
 }
 
-func TestKVStoreCollectionsListRecordsOrderByNonExisentInput(t *testing.T) {
-	filters := map[string][]string{
-		"orderby": {"thisdoesntexistasakey"},
-	}
-
-	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlroonex")
-	defer cleanupDataset(t, kvid)
-
-	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
-	assert.NotNil(t, records)
-	assert.Nil(t, err)
-	assert.Len(t, records, 0)
-
-	// Insert the first record into the kvstore
-	createRecordOneResponseMap, err := createRecord(t, kvCollection, recordOne)
-	assert.Len(t, createRecordOneResponseMap, 1)
-
-	// Insert the second record into the kvstore
-	createRecordTwoResponseMap, err := createRecord(t, kvCollection, recordTwo)
-	assert.Len(t, createRecordTwoResponseMap, 1)
-
-	// Insert the third record into the kvstore
-	createRecordThreeResponseMap, err := createRecord(t, kvCollection, recordThree)
-	assert.Len(t, createRecordThreeResponseMap, 1)
-
-	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, filters)
-	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
-	assert.Len(t, recordsAfterInsert, 3)
-
-	assert.EqualValues(t, "A", recordsAfterInsert[0]["TEST_KEY_01"])
-	assert.EqualValues(t, "B", recordsAfterInsert[1]["TEST_KEY_01"])
-	assert.EqualValues(t, "C", recordsAfterInsert[2]["TEST_KEY_01"])
-}
-
 // --------
 // GET ?fields=count=offset=orderby= parameters
 // --------
@@ -363,7 +328,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 	}
 
 	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvlrparams")
+	kvid, kvCollection := makeCollectionName(t, "kvlrpms")
 	defer cleanupDataset(t, kvid)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
@@ -403,17 +368,15 @@ func TestKVStoreCollectionsInsertRecordIntoMissingCollection(t *testing.T) {
 		"TEST_KEY_03": "TEST_VALUE_03",
 	}
 
-	// Create the test collection
-	kvid, kvCollection := makeCollectionName(t, "kvirmc")
-	defer cleanupDataset(t, kvid)
-
 	// Insert a new record into the kvstore
-	createRecordResponseMap, err := getClient(t).KVStoreService.InsertRecord(
-		kvCollection,
+	_, err := getClient(t).KVStoreService.InsertRecord(
+		"idonotexist",
 		record)
 
-	assert.Nil(t, createRecordResponseMap)
-	assert.NotNil(t, err)
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Inserts a record into the specified tenant's collection
