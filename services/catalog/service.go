@@ -216,6 +216,19 @@ func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string
 // 	return &ids, nil
 // }
 
+// UpdateJobDataset updates an existing job Dataset with the specified resourceName or ID
+func (s *Service) UpdateJobDataset(jobDataset *UpdateJobDataset, id string) (*JobDataset, error) {
+	ds, err := s.UpdateDataset(jobDataset, id)
+	if err != nil {
+		return nil, err
+	}
+	ids, ok := ds.(JobDataset)
+	if !ok {
+		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Job)
+	}
+	return &ids, nil
+}
+
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
 func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*LookupDataset, error) {
 	ds, err := s.UpdateDataset(lookupDataset, id)
@@ -598,20 +611,24 @@ func (s *Service) GetModules(filter url.Values) ([]Module, error) {
 	return result, err
 }
 
-// parseDatasetResponse parses incoming http response into specific Dataset subytpe based on 'kind'
+// parseDatasetResponse parses incoming http response into specific Dataset subtype based on 'kind'
 func parseDatasetResponse(response *http.Response) (Dataset, error) {
 	var datasetInterface interface{}
 	err := util.ParseResponse(&datasetInterface, response)
 	if err != nil {
 		return nil, err
 	}
+	return ParseRawDataset(datasetInterface)
+}
 
-	datasetByte, err := json.Marshal(datasetInterface)
+// ParseRawDataset parses a raw interface{} type into specific Dataset subtype based on 'kind'
+func ParseRawDataset(dataset interface{}) (Dataset, error) {
+	datasetByte, err := json.Marshal(dataset)
 	if err != nil {
 		return nil, err
 	}
 
-	datasetMap, ok := datasetInterface.(map[string]interface{})
+	datasetMap, ok := dataset.(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("catalog: response was not of type DatasetBase")
 	}
@@ -637,6 +654,10 @@ func parseDatasetResponse(response *http.Response) (Dataset, error) {
 		var datasetResult ImportDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
+	case string(Job):
+		var datasetResult JobDataset
+		err = json.Unmarshal(datasetByte, &datasetResult)
+		return datasetResult, err
 	case string(Metric):
 		var datasetResult MetricDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
@@ -646,6 +667,12 @@ func parseDatasetResponse(response *http.Response) (Dataset, error) {
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		return datasetResult, err
 	default:
-		return nil, fmt.Errorf("catalog: unknown dataset kind: %s", kind)
+		// For unknown dataset kinds attempt to unmarshal to a generic DatasetBase - fail otherwise
+		var datasetResult DatasetBase
+		err = json.Unmarshal(datasetByte, &datasetResult)
+		if err != nil {
+			return nil, fmt.Errorf("catalog: invalid dataset format and unknown kind: %s", kind)
+		}
+		return datasetResult, err
 	}
 }

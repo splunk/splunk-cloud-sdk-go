@@ -197,7 +197,8 @@ func NewIndexProperties(disabled bool, ftime int) *IndexProperties {
 }
 
 // JobProperties represent the fields specific to job datasets
-// NOTE: Only GET and DELETE are supported for Job datasets
+// NOTE: POST is not supported for Job datasets, please use the search service to create jobs
+// NOTE: only Status is supported for PATCH
 type JobProperties struct {
 	// The time the dataset will be available.
 	DeleteTime *string `json:"deleteTime,omitempty"`
@@ -342,6 +343,13 @@ type UpdateIndexDataset struct {
 // 	*UpdateDatasetBase
 // 	*ImportProperties
 // }
+
+// UpdateJobDataset represents updates to be applied to an existing job dataset
+type UpdateJobDataset struct {
+	*UpdateDatasetBase
+	// The current status of the search job. This is the only job property valid for updating.
+	Status *string `json:"status,omitempty"`
+}
 
 // UpdateLookupDataset represents updates to be applied to an existing lookup dataset
 type UpdateLookupDataset struct {

@@ -13,6 +13,7 @@ import (
 
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
@@ -23,6 +24,9 @@ import (
 var (
 	// Base:
 	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.TimeSec)
+	newname        = fmt.Sprintf("newmx%d", testutils.TimeSec)
+	newmod         = fmt.Sprintf("newmod%d", testutils.TimeSec)
+	newowner       = "test1@splunk.com"
 	// Lookup:
 	caseMatch    = true
 	externalName = "test_externalName"
@@ -30,6 +34,7 @@ var (
 	// Metric/Index:
 	disabled               = false
 	frozenTimePeriodInSecs = 60
+	newftime               = 999
 	// View:
 	searchString = "search index=main|stats count()"
 )
@@ -139,7 +144,7 @@ func createDatasetField(datasetID string, client *sdk.Client, t *testing.T) *cat
 }
 
 // Test CreateDataset
-func TestIntegrationCreateDataset(t *testing.T) {
+func TestCreateDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
@@ -178,7 +183,7 @@ func TestIntegrationCreateDataset(t *testing.T) {
 }
 
 // Test CreateDataset for 409 DatasetInfo already present error
-func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
+func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	// create dataset
 	ds, err := createLookupDataset(t, makeDSName("409"))
 	require.Nil(t, err)
@@ -191,7 +196,7 @@ func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
 }
 
 // Test CreateDataset for 401 Unauthorized operation error
-func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
+func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	name := makeDSName("401")
 	createView := &catalog.CreateViewDataset{
 		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
@@ -209,7 +214,7 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 }
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
-func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
+func TestCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	ds, err := getSdkClient(t).CatalogService.CreateDataset(&catalog.DatasetBase{Name: makeDSName("400"), Kind: "lookup", CreatedBy: "thisisnotvalid"})
 	if ds != nil {
 		dsb, ok := ds.(catalog.DatasetBase)
@@ -222,8 +227,8 @@ func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	assert.Equal(t, 400, httpErr.HTTPStatusCode)
 }
 
-// Test GetDatasets
-func TestIntegrationGetAllDatasets(t *testing.T) {
+// Test ListDatasets
+func TestListAllDatasets(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("getall"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, ds.ID)
@@ -282,7 +287,7 @@ func TestListDatasetsAll(t *testing.T) {
 	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
-	values.Set("filter", "kind==\"kvcollection\"")
+	values.Set("filter", `kind=="kvcollection"`)
 	values.Set("count", "1")
 	values.Set("orderby", "id Descending")
 
@@ -292,7 +297,7 @@ func TestListDatasetsAll(t *testing.T) {
 }
 
 // Test GetDataset by ID
-func TestIntegrationGetDatasetByID(t *testing.T) {
+func TestGetDatasetByID(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("cnt"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, ds.ID)
@@ -304,23 +309,22 @@ func TestIntegrationGetDatasetByID(t *testing.T) {
 }
 
 // Test GetDataset for 404 DatasetInfo not found error
-func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
-	_, err := getSdkClient(t).CatalogService.GetDataset("123")
+func TestGetDatasetByIDDatasetNotFoundError(t *testing.T) {
+	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
-// Test UpdateDataset
-func TestIntegrationUpdateExistingDataset(t *testing.T) {
+// Test UpdateIndexDataset
+func TestUpdateIndexDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	indexds, err := createIndexDataset(t, makeDSName("uix"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
 	require.NotNil(t, indexds)
-	newftime := 999
 	uidx := &catalog.UpdateIndexDataset{
 		IndexProperties: catalog.NewIndexProperties(!disabled, newftime),
 	}
@@ -328,15 +332,17 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, !disabled, *newindexds.Disabled)
 	assert.Equal(t, newftime, *newindexds.FrozenTimePeriodInSecs)
+}
+
+// Test UpdateMetricDataset
+func TestUpdateMetricDataset(t *testing.T) {
+	client := getSdkClient(t)
 
 	metricds, err := createMetricDataset(t, makeDSName("umx"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
 	// Update the metrics dataset, including name and module
-	newname := fmt.Sprintf("newmx%d", testutils.TimeSec)
-	newmod := fmt.Sprintf("newmod%d", testutils.TimeSec)
-	newowner := "test1@splunk.com"
 	umx := &catalog.UpdateMetricDataset{
 		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
 		MetricProperties:  catalog.NewMetricProperties(!disabled, newftime),
@@ -348,22 +354,62 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	assert.Equal(t, newowner, newmetricsds.Owner)
 	assert.Equal(t, !disabled, *newmetricsds.Disabled)
 	assert.Equal(t, newftime, *newmetricsds.FrozenTimePeriodInSecs)
+}
 
-	// NOTE: UpdateImportDataset is not supported at this time
-	// importds, err := createImportDatasetByName(t, makeDSName("uim"), newmetricsds.Name, newmetricsds.Module)
-	// require.Nil(t, err)
-	// defer cleanupDataset(t, importds.ID)
-	// require.NotNil(t, importds)
-	// uim := &catalog.UpdateImportDataset{
-	// 	ImportProperties: &catalog.ImportProperties{
-	// 		SourceName:   &newindexds.Name,
-	// 		SourceModule: &newindexds.Module,
-	// 	},
-	// }
-	// newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
-	// require.Nil(t, err)
-	// assert.Equal(t, newindexds.Name, *newimportds.SourceName)
-	// assert.Equal(t, newindexds.Module, *newimportds.SourceModule)
+// NOTE: UpdateImportDataset is not supported at this time
+// Test UpdateImportDataset
+// func TestUpdateImportDataset(t *testing.T) {
+// 	// TODO: create newmetricsds and newimportds
+// 	client := getSdkClient(t)
+// 	importds, err := createImportDatasetByName(t, makeDSName("uim"), newmetricsds.Name, newmetricsds.Module)
+// 	require.Nil(t, err)
+// 	defer cleanupDataset(t, importds.ID)
+// 	require.NotNil(t, importds)
+// 	uim := &catalog.UpdateImportDataset{
+// 		ImportProperties: &catalog.ImportProperties{
+// 			SourceName:   &newindexds.Name,
+// 			SourceModule: &newindexds.Module,
+// 		},
+// 	}
+// 	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
+// 	require.Nil(t, err)
+// 	assert.Equal(t, newindexds.Name, *newimportds.SourceName)
+// 	assert.Equal(t, newindexds.Module, *newimportds.SourceModule)
+// }
+
+// Test UpdateJobDataset
+func TestUpdateJobDataset(t *testing.T) {
+	client := getSdkClient(t)
+
+	// Create a search job to ensure at least one job exists
+	searchjobReq := &search.CreateJobRequest{Query: "| from index:main | head 1"}
+	searchjob, err := client.SearchService.CreateJob(searchjobReq)
+	require.Nil(t, err)
+	values := make(url.Values)
+	values.Set("filter", fmt.Sprintf(`sid=="%s"`, searchjob.ID))
+	values.Set("count", "1")
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	require.Nil(t, err)
+	require.NotZero(t, len(datasets))
+	fmt.Printf("%+v", datasets)
+	parsedds, err := catalog.ParseRawDataset(datasets[0])
+	require.Nil(t, err)
+	jobds, ok := parsedds.(catalog.JobDataset)
+	require.True(t, ok)
+	newstatus := string(search.JobCanceled)
+	// This job should not be canceled since it was just created
+	require.NotEqual(t, newstatus, *jobds.Status)
+	ujb := &catalog.UpdateJobDataset{
+		Status: &newstatus,
+	}
+	newjobds, err := client.CatalogService.UpdateJobDataset(ujb, jobds.ID)
+	require.Nil(t, err)
+	assert.Equal(t, newstatus, *newjobds.Status)
+}
+
+// Test UpdateLookupDataset
+func TestUpdateLookupDataset(t *testing.T) {
+	client := getSdkClient(t)
 
 	lookupds, err := createLookupDataset(t, makeDSName("ulk"))
 	require.Nil(t, err)
@@ -379,6 +425,11 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
 	assert.Equal(t, newxname, *newlookupds.ExternalName)
 	assert.Equal(t, newfilter, *newlookupds.Filter)
+}
+
+// Test UpdateViewDataset
+func TestUpdateViewDataset(t *testing.T) {
+	client := getSdkClient(t)
 
 	viewds, err := createViewDataset(t, makeDSName("uvw"))
 	require.Nil(t, err)
@@ -396,7 +447,7 @@ func TestIntegrationUpdateExistingDataset(t *testing.T) {
 }
 
 // Test UpdateDataset for 404 Datasetnot found error
-func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
+func TestUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 	uvw := &catalog.UpdateViewDataset{
 		ViewProperties: &catalog.ViewProperties{
 			Search: &searchString,
@@ -410,7 +461,7 @@ func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
 }
 
 // Test DeleteDataset
-func TestIntegrationDeleteDataset(t *testing.T) {
+func TestDeleteDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	ds, err := createViewDataset(t, makeDSName("delv"))
@@ -427,7 +478,7 @@ func TestIntegrationDeleteDataset(t *testing.T) {
 }
 
 // Test DeleteDataset for 404 DatasetInfo not found error
-func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
+func TestDeleteDatasetDataNotFoundError(t *testing.T) {
 	err := getSdkClient(t).CatalogService.DeleteDataset("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -438,7 +489,7 @@ func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
 // todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
 
 // Test CreateRules
-func TestIntegrationCreateRules(t *testing.T) {
+func TestCreateRules(t *testing.T) {
 	client := getSdkClient(t)
 
 	// create rule
@@ -451,7 +502,7 @@ func TestIntegrationCreateRules(t *testing.T) {
 }
 
 // Test CreateRule for 409 Rule already present error
-func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
+func TestCreateRuleDataAlreadyPresent(t *testing.T) {
 	client := getSdkClient(t)
 
 	// create rule
@@ -470,7 +521,7 @@ func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
 }
 
 // Test CreateRule for 401 Unauthorized operation error
-func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
+func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("401")
 	rule, err := getInvalidClient(t).CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
@@ -485,7 +536,7 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 }
 
 // Test GetRules
-func TestIntegrationGetAllRules(t *testing.T) {
+func TestGetAllRules(t *testing.T) {
 	client := getSdkClient(t)
 
 	// create rule
@@ -500,7 +551,7 @@ func TestIntegrationGetAllRules(t *testing.T) {
 }
 
 // Test GetRule By ID
-func TestIntegrationGetRuleByID(t *testing.T) {
+func TestGetRuleByID(t *testing.T) {
 	client := getSdkClient(t)
 
 	// create rule
@@ -515,7 +566,7 @@ func TestIntegrationGetRuleByID(t *testing.T) {
 }
 
 // Test GetRules for 404 Rule not found error
-func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
+func TestGetRuleByIDRuleNotFoundError(t *testing.T) {
 	_, err := getSdkClient(t).CatalogService.GetRule("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -524,7 +575,7 @@ func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
 }
 
 // Test DeleteRule by ID
-func TestIntegrationDeleteRule(t *testing.T) {
+func TestDeleteRule(t *testing.T) {
 	client := getSdkClient(t)
 
 	// create rule
@@ -538,7 +589,7 @@ func TestIntegrationDeleteRule(t *testing.T) {
 }
 
 // Test DeleteRule for 404 Rule not found error
-func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
+func TestDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 	err := getSdkClient(t).CatalogService.DeleteRule("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -547,7 +598,7 @@ func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
 }
 
 // Test GetDatasetField
-func TestIntegrationGetDatasetFields(t *testing.T) {
+func TestGetDatasetFields(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -575,7 +626,7 @@ func TestIntegrationGetDatasetFields(t *testing.T) {
 }
 
 // Test GetDatasetFields based on filter
-func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
+func TestGetDatasetFieldsOnFilter(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -602,7 +653,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 }
 
 // Test CreateDatasetField
-func TestIntegrationcreateDatasetField(t *testing.T) {
+func TestcreateDatasetField(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -630,7 +681,7 @@ func TestIntegrationcreateDatasetField(t *testing.T) {
 }
 
 // Test PatchDatasetField
-func TestIntegrationPatchDatasetField(t *testing.T) {
+func TestPatchDatasetField(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -653,7 +704,7 @@ func TestIntegrationPatchDatasetField(t *testing.T) {
 }
 
 // Test DeleteDatasetField
-func TestIntegrationDeleteDatasetField(t *testing.T) {
+func TestDeleteDatasetField(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -678,7 +729,7 @@ func TestIntegrationDeleteDatasetField(t *testing.T) {
 }
 
 // Test CreateDatasetField for 401 error
-func TestIntegrationCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
+func TestCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// Create dataset
@@ -697,7 +748,7 @@ func TestIntegrationCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
 }
 
 // Test CreateDatasetField for 409 error
-func TestIntegrationCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
+func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -719,7 +770,7 @@ func TestIntegrationCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 }
 
 // Test CreateDatasetField for 400 error
-func TestIntegrationCreateDatasetFieldInvalidDataFormat(t *testing.T) {
+func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -738,7 +789,7 @@ func TestIntegrationCreateDatasetFieldInvalidDataFormat(t *testing.T) {
 }
 
 // Test PatchDatasetField for 404 error
-func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
+func TestPatchDatasetFieldDataNotFound(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -756,7 +807,7 @@ func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
 }
 
 // Test DeleteDatasetField for 404 error
-func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
+func TestDeleteDatasetFieldDataNotFound(t *testing.T) {
 	client := getSdkClient(t)
 
 	// Create dataset
@@ -868,7 +919,7 @@ func TestRuleActions(t *testing.T) {
 }
 
 // Test list modules
-func TestIntegrationGetModules(t *testing.T) {
+func TestGetModules(t *testing.T) {
 	client := getSdkClient(t)
 
 	// test using NO filter
@@ -887,7 +938,7 @@ func TestIntegrationGetModules(t *testing.T) {
 
 /*
 / Currently unable to generate a bad rule
-func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
+func TestCreateRuleInvalidRuleError(t *testing.T)  {
 	defer cleanupRules(t)
 
 	client := getSdkClient()
