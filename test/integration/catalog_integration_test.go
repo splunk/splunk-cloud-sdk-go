@@ -149,7 +149,7 @@ func CreateIndexDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
 	require.NotNil(t, indexds)
-	require.Equal(t, catalog.Index, indexds.Kind)
+	require.Equal(t, catalog.Index, indexds.GetKind())
 }
 
 // Test CreateImportDataset
@@ -161,7 +161,7 @@ func TestCreateImportDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, importds.ID)
 	require.NotNil(t, importds)
-	require.Equal(t, catalog.Import, importds.Kind)
+	require.Equal(t, string(catalog.Import), importds.Kind)
 }
 
 // Test CreateKVCollectionDataset
@@ -170,7 +170,7 @@ func TestKVCollectionDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, kvds.ID)
 	require.NotNil(t, kvds)
-	require.Equal(t, catalog.KvCollection, kvds.Kind)
+	require.Equal(t, string(catalog.KvCollection), kvds.Kind)
 }
 
 // Test CreateLookupDataset
@@ -179,7 +179,7 @@ func TestLookupDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
-	require.Equal(t, catalog.Lookup, lookupds.Kind)
+	require.Equal(t, string(catalog.Lookup), lookupds.Kind)
 }
 
 // Test CreateMetricDataset
@@ -188,7 +188,7 @@ func TestMetricDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
-	require.Equal(t, catalog.Metric, metricds.Kind)
+	require.Equal(t, string(catalog.Metric), metricds.Kind)
 }
 
 // Test CreateViewDataset
@@ -197,7 +197,7 @@ func TestViewDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, viewds.ID)
 	require.NotNil(t, viewds)
-	require.Equal(t, catalog.View, viewds.Kind)
+	require.Equal(t, string(catalog.View), viewds.Kind)
 }
 
 // Test CreateDataset for 409 DatasetInfo already present error
