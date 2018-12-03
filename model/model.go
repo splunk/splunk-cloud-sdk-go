@@ -116,13 +116,13 @@ const (
 	INDEX DatasetInfoKind = catalog.Index
 )
 
-// DatasetInfo is Deprecated: please use services/catalog.DatasetInfo
+// DatasetInfo is Deprecated: please use services/catalog.DatasetBase and *Dataset for each kind
 type DatasetInfo = catalog.DatasetInfo
 
-/*// DatasetCreationPayload is Deprecated: please use services/catalog.DatasetCreationPayload
-type DatasetCreationPayload = catalog.DatasetCreationPayload*/
+// DatasetCreationPayload is Deprecated: please use services/catalog.CreateDatasetBase and Create*Dataset for each kind
+type DatasetCreationPayload = catalog.DatasetCreationPayload
 
-// UpdateDatasetInfoFields is Deprecated: please use services/catalog.UpdateDatasetInfoFields
+// UpdateDatasetInfoFields is Deprecated: please use services/catalog.UpdateDatasetBase and Update*Dataset for each kind
 type UpdateDatasetInfoFields = catalog.UpdateDatasetInfoFields
 
 // Field is Deprecated: please use services/catalog.Field

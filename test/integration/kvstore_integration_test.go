@@ -7,6 +7,7 @@ package integration
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 	"testing"
 
@@ -18,8 +19,16 @@ import (
 )
 
 // Test variables
-var testIndex = "integtestindex"
-var kvCollection = testutils.TestNamespace + "." + testutils.TestCollection
+var (
+	testIndex = "integtestindex"
+)
+
+func makeCollectionName(t *testing.T, ctx string) (id, kvCollection string) {
+	dsname := makeDSName(ctx)
+	kvds, err := createKVCollectionDataset(t, dsname)
+	require.Nil(t, err)
+	return kvds.ID, fmt.Sprintf("%s.%s", kvds.Module, kvds.Name)
+}
 
 // --------------------------------------------------------------------------------
 // Admin Endpoints
@@ -41,14 +50,8 @@ func TestIntegrationGetServiceHealth(t *testing.T) {
 // Test CreateIndex, ListIndexes and DeleteIndex kvstore endpoints
 func TestIntegrationIndexEndpoints(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	kvid, kvCollection := makeCollectionName(t, "kvidx")
+	defer cleanupDataset(t, kvid)
 
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
@@ -82,14 +85,8 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 // Test CreateIndex for 422 Unprocessable Entity error
 func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	kvid, kvCollection := makeCollectionName(t, "kvidx422")
+	defer cleanupDataset(t, kvid)
 
 	// Create Index
 	_, err := getClient(t).KVStoreService.CreateIndex(kvCollection, model.IndexDefinition{Name: testIndex, Fields: nil})
@@ -103,14 +100,8 @@ func TestIntegrationCreateIndexUnprocessableEntityError(t *testing.T) {
 // Test CreateIndex for 404 Not Found error TODO: Change name of non existing collection
 func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	kvid, _ := makeCollectionName(t, "kvidx404")
+	defer cleanupDataset(t, kvid)
 
 	// Create Index
 	var fields [1]model.IndexFieldDefinition
@@ -127,14 +118,8 @@ func TestIntegrationCreateIndexNonExistingCollection(t *testing.T) {
 // Test DeleteIndex for 404 Index not found error
 func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	kvid, kvCollection := makeCollectionName(t, "kvidx404")
+	defer cleanupDataset(t, kvid)
 
 	// DeleteIndex
 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
@@ -149,31 +134,19 @@ func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 // Test InsertRecords() kvstore service endpoint against nova playground
 func TestCreateRecords(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	kvid, kvCollection := makeCollectionName(t, "kvcrr")
+	defer cleanupDataset(t, kvid)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	CreateTestRecord(t)
+	createTestRecord(t, kvCollection)
 }
 
 // Test InsertRecords() kvstore service endpoint against nova playground
 func TestPutRecords(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	kvid, kvCollection := makeCollectionName(t, "kvpr")
+	defer cleanupDataset(t, kvid)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	keys := CreateTestRecord(t)
+	keys := createTestRecord(t, kvCollection)
 
 	record := `
 	{
@@ -206,16 +179,10 @@ func TestPutRecords(t *testing.T) {
 // Test getRecordByKey() kvstore service endpoint against the nova playground
 func TestGetRecordByKey(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	kvid, kvCollection := makeCollectionName(t, "kvgbk")
+	defer cleanupDataset(t, kvid)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	keys := CreateTestRecord(t)
+	keys := createTestRecord(t, kvCollection)
 
 	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 
@@ -230,16 +197,10 @@ func TestGetRecordByKey(t *testing.T) {
 // Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
 func TestDeleteRecordByKey(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
+	kvid, kvCollection := makeCollectionName(t, "kvdrbk")
+	defer cleanupDataset(t, kvid)
 
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
-
-	keys := CreateTestRecord(t)
+	keys := createTestRecord(t, kvCollection)
 
 	// Delete record by key
 	err := getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
@@ -257,17 +218,11 @@ func TestDeleteRecordByKey(t *testing.T) {
 // Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
 func TestDeleteRecord(t *testing.T) {
 	// Create the test collection
-	createKVCollectionDataset(t,
-		testutils.TestNamespace,
-		testutils.TestCollection,
-		datasetOwner,
-		datasetCapabilities)
-
-	// Remove the dataset used for testing
-	defer cleanupDatasets(t)
+	kvid, kvCollection := makeCollectionName(t, "kvdrec")
+	defer cleanupDataset(t, kvid)
 
 	// Create records
-	CreateTestRecord(t)
+	createTestRecord(t, kvCollection)
 
 	// Create query to test delete operation
 	var integrationTestQuery = `{"capacity_gb": 16}`
@@ -285,7 +240,7 @@ func TestDeleteRecord(t *testing.T) {
 }
 
 // Create test record
-func CreateTestRecord(t *testing.T) []string {
+func createTestRecord(t *testing.T, kvCollection string) []string {
 	var integrationTestRecord = `[
          {
           "capacity_gb": 8,

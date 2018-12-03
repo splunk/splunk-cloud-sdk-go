@@ -57,7 +57,7 @@ func TestCRUDGroups(t *testing.T) {
 
 	resultgroup2, err := client.IdentityService.GetGroups()
 	require.Nil(t, err)
-	assert.Equal(t, groupNum+2, len(resultgroup2))
+	assert.Equal(t, groupNum+1, len(resultgroup2))
 	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
@@ -154,7 +154,7 @@ func TestCRUDRoles(t *testing.T) {
 
 	resultrole2, err := client.IdentityService.GetRoles()
 	require.Nil(t, err)
-	assert.Equal(t, roleNum+2, len(resultrole2))
+	assert.Equal(t, roleNum+1, len(resultrole2))
 	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions

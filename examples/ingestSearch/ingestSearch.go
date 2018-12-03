@@ -77,24 +77,27 @@ func createIndex(client *sdk.Client) (string, string) {
 	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
 	index := "main"
 	disabled := false
-	indexinfo := catalog.DatasetCreationPayload{
-		Owner:    "splunk",
-		Name:     index,
-		Kind:     "index",
-		Disabled: &disabled,
+	indexmodel := &catalog.CreateIndexDataset{
+		CreateDatasetBase: &catalog.CreateDatasetBase{
+			Name: index,
+			Kind: catalog.Index,
+		},
+		IndexProperties: &catalog.IndexProperties{
+			Disabled: &disabled,
+		},
 	}
 
 	if index == "main" {
 		return index, ""
 	}
 
-	result, err := client.CatalogService.CreateDataset(&indexinfo)
+	result, err := client.CatalogService.CreateIndexDataset(indexmodel)
 	exitOnError(err)
 
 	// it will take some time for the new index to finish the provisioning
 	// todo: user dataset endpoint to check the readyness
 	time.Sleep(30 * time.Second)
-	return index, result.ID
+	return index, string(result.ID)
 }
 
 func ingestMetric(client *sdk.Client, index string) string {
