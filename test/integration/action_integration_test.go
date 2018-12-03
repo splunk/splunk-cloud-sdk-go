@@ -27,15 +27,12 @@ const (
 	snsMsg       = "SNS Message"
 	webhookURL   = "https://webhook.site/test"
 	webhookMsg   = "{{ .name }} is a {{ .species }}"
-	actionUserID = "sdk_tester"
 )
 
 // Test vars
 var (
-	snsActionName     = fmt.Sprintf("sact_%d", testutils.TimeSec)
-	webhookActionName = fmt.Sprintf("wact_%d", testutils.TimeSec)
-	addresses         = []string{"test1@splunk.com", "test2@splunk.com"}
-	webhookPayload    = &map[string]interface{}{"name": "bean bag", "species": "cat"}
+	addresses      = []string{"test1@splunk.com", "test2@splunk.com"}
+	webhookPayload = &map[string]interface{}{"name": "bean bag", "species": "cat"}
 )
 
 func cleanupAction(client *service.Client, name string) {
@@ -76,9 +73,9 @@ func TestGetCreateActionEmail(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_cr_%d", testutils.TimeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
-	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, emailAction.Name)
 	action, err := client.ActionService.GetAction(emailAction.Name)
 	assert.EqualValues(t, action, emailAction)
 }
@@ -88,9 +85,9 @@ func TestGetCreateActionSNS(t *testing.T) {
 	client := getSdkClient(t)
 	snsActionName := fmt.Sprintf("s_cr_%d", testutils.TimeSec)
 	snsAction := model.NewSNSAction(snsActionName, snsTopic, snsMsg)
-	defer cleanupAction(client, snsAction.Name)
 	_, err := client.ActionService.CreateAction(*snsAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, snsAction.Name)
 	action, err := client.ActionService.GetAction(snsAction.Name)
 	assert.EqualValues(t, action, snsAction)
 }
@@ -100,9 +97,9 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_cr_%d", testutils.TimeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
-	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.GetAction(webhookAction.Name)
 	assert.EqualValues(t, action, webhookAction)
 }
@@ -125,9 +122,9 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_confl_%d", testutils.TimeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
-	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, emailAction.Name)
 	action, err := client.ActionService.GetAction(emailAction.Name)
 	assert.EqualValues(t, action, emailAction)
 
@@ -144,9 +141,9 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_unauth_%d", testutils.TimeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
-	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, webhookAction.Name)
 
 	emailActionName := fmt.Sprintf("e_unauth_%d", testutils.TimeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
@@ -155,6 +152,10 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	_, err = invalidClient.ActionService.CreateAction(*emailAction)
+	if err == nil {
+		// We aren't expecting this to succeed, but if it does then clean up the created action
+		defer cleanupAction(client, emailAction.Name)
+	}
 	validateUnauthenticatedActionError(t, err)
 
 	_, err = invalidClient.ActionService.GetAction(webhookAction.Name)
@@ -186,9 +187,9 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_unproc_%d", testutils.TimeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
-	defer cleanupAction(client, webhookAction.Name)
 	_, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, webhookAction.Name)
 	_, err = client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
 			Kind:    model.RawJSONPayloadKind,
@@ -208,9 +209,9 @@ func TestUpdateAction(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_up_%d", testutils.TimeSec)
 	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
-	defer cleanupAction(client, emailAction.Name)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, emailAction.Name)
 	const newText = "updated email text"
 	result, err := client.ActionService.UpdateAction(emailActionName, model.ActionUpdateFields{TextPart: newText})
 	assert.Equal(t, result.TextPart, newText)
@@ -250,9 +251,9 @@ func TestGetActionStatus(t *testing.T) {
 	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_stat_%d", testutils.TimeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
-	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, webhookAction.Name) // TODO: Tim
 	require.NotNil(t, action)
 	resp, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
