@@ -143,6 +143,52 @@ func createDatasetField(datasetID string, client *sdk.Client, t *testing.T) *cat
 	return resultField
 }
 
+// assertDatasetKind - Helper to assert that the kind for the Dataset matches model associated with that kind
+func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
+	switch dataset.GetKind() {
+	case string(catalog.Index):
+		ds, ok := dataset.(catalog.IndexDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.View):
+		ds, ok := dataset.(catalog.ViewDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Lookup):
+		ds, ok := dataset.(catalog.LookupDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Import):
+		ds, ok := dataset.(catalog.ImportDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Job):
+		ds, ok := dataset.(catalog.JobDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Metric):
+		ds, ok := dataset.(catalog.MetricDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.KvCollection):
+		ds, ok := dataset.(catalog.KVCollectionDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	// These are known kinds but are not supported in the spec:
+	case "catalog":
+	case "splv1sink":
+		ds, ok := dataset.(catalog.DatasetBase)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	// Anything here is not a known kind and should potentially be on our radar:
+	default:
+		ds, ok := dataset.(catalog.DatasetBase)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.Kind)
+	}
+}
+
 // Test CreateIndexDataset
 func CreateIndexDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
@@ -255,43 +301,9 @@ func TestListAllDatasets(t *testing.T) {
 	require.Nil(t, err)
 	assert.NotZero(t, len(datasets))
 
-	// We should be able assert that the kinds are known
+	// We should be able assert that the kinds are known and relate to their associated model
 	for i := 0; i < len(datasets); i++ {
-		switch datasets[i].GetKind() {
-		case string(catalog.Index):
-			ds, ok := datasets[i].(catalog.IndexDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.View):
-			ds, ok := datasets[i].(catalog.ViewDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.Lookup):
-			ds, ok := datasets[i].(catalog.LookupDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.Import):
-			ds, ok := datasets[i].(catalog.ImportDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.Job):
-			ds, ok := datasets[i].(catalog.JobDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.Metric):
-			ds, ok := datasets[i].(catalog.MetricDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		case string(catalog.KvCollection):
-			ds, ok := datasets[i].(catalog.KVCollectionDataset)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-		default:
-			ds, ok := datasets[i].(catalog.DatasetBase)
-			assert.True(t, ok)
-			assert.NotEmpty(t, ds.ID)
-			fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.Kind)
-		}
+		assertDatasetKind(t, datasets[i])
 	}
 }
 
@@ -338,11 +350,16 @@ func TestListDatasetsOrderBy(t *testing.T) {
 	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
-	values.Set("orderby", "id Descending")
+	values.Set("orderby", "id Ascending")
 
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	assert.Nil(t, err)
 	assert.NotZero(t, len(datasets))
+
+	// We should be able assert that the kinds are known and relate to their associated model
+	for i := 0; i < len(datasets); i++ {
+		assertDatasetKind(t, datasets[i])
+	}
 }
 
 // Test TestListDatasetsAll with filter, count, and orderby
