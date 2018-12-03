@@ -34,7 +34,7 @@ func NewService(config *services.Config) (*Service, error) {
 }
 
 // ListDatasets returns all Datasets with optional filter, count, or orderby params
-func (s *Service) ListDatasets(values url.Values) ([]interface{}, error) {
+func (s *Service) ListDatasets(values url.Values) ([]Dataset, error) {
 	url, err := s.Client.BuildURL(values, serviceCluster, servicePrefix, serviceVersion, "datasets")
 	if err != nil {
 		return nil, err
@@ -46,14 +46,26 @@ func (s *Service) ListDatasets(values url.Values) ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var result []interface{}
-	err = util.ParseResponse(&result, response)
-	return result, err
+	var rawresults []interface{}
+	err = util.ParseResponse(&rawresults, response)
+	if err != nil {
+		return nil, err
+	}
+	var results []Dataset
+	for i := 0; i < len(rawresults); i++ {
+		rawds := rawresults[i]
+		ds, err := ParseRawDataset(rawds)
+		if err != nil {
+			return nil, fmt.Errorf("catalog: dataset of index: %d could not be parsed details: %s", i, err.Error())
+		}
+		results = append(results, ds)
+	}
+	return results, err
 }
 
 // GetDatasets returns all Datasets
 // Deprecated: v0.6.1 - Use ListDatasets instead
-func (s *Service) GetDatasets() ([]interface{}, error) {
+func (s *Service) GetDatasets() ([]Dataset, error) {
 	return s.ListDatasets(nil)
 }
 

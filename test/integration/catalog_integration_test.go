@@ -254,6 +254,45 @@ func TestListAllDatasets(t *testing.T) {
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(nil)
 	require.Nil(t, err)
 	assert.NotZero(t, len(datasets))
+
+	// We should be able assert that the kinds are known
+	for i := 0; i < len(datasets); i++ {
+		switch datasets[i].GetKind() {
+		case string(catalog.Index):
+			ds, ok := datasets[i].(catalog.IndexDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.View):
+			ds, ok := datasets[i].(catalog.ViewDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.Lookup):
+			ds, ok := datasets[i].(catalog.LookupDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.Import):
+			ds, ok := datasets[i].(catalog.ImportDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.Job):
+			ds, ok := datasets[i].(catalog.JobDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.Metric):
+			ds, ok := datasets[i].(catalog.MetricDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		case string(catalog.KvCollection):
+			ds, ok := datasets[i].(catalog.KVCollectionDataset)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+		default:
+			ds, ok := datasets[i].(catalog.DatasetBase)
+			assert.True(t, ok)
+			assert.NotEmpty(t, ds.ID)
+			fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.Kind)
+		}
+	}
 }
 
 // Test TestListDatasetsFilter
@@ -290,13 +329,6 @@ func TestListDatasetsCount(t *testing.T) {
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	require.Nil(t, err)
 	require.Equal(t, 3, len(datasets))
-
-	// We should be able to parse these into their kinds
-	for i := 0; i < len(datasets); i++ {
-		dsparsed, err := catalog.ParseRawDataset(datasets[i])
-		require.Nil(t, err)
-		assert.NotEmpty(t, dsparsed.GetKind())
-	}
 }
 
 // Test TestListDatasetsOrderBy
