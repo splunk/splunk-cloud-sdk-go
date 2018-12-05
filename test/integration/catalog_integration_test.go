@@ -74,9 +74,17 @@ func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
 
 // createLookupDataset - Helper function for creating a valid Lookup in Catalog
 func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, error) {
-	createLookup := &catalog.CreateLookupDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Lookup, testutils.TestModule),
-		LookupProperties:  catalog.NewLookupProperties(caseMatch, externalName, filter),
+	externalKind := string(catalog.KvCollection)
+	createLookup := &catalog.LookupDataset{
+		DatasetBase: &catalog.DatasetBase{
+			Name:   name,
+			Kind:   string(catalog.Lookup),
+			Module: testutils.TestModule,
+		},
+		CaseSensitiveMatch: &caseMatch,
+		ExternalKind:       &externalKind,
+		ExternalName:       &externalName,
+		Filter:             &filter,
 	}
 	return getSdkClient(t).CatalogService.CreateLookupDataset(createLookup)
 }
@@ -497,10 +505,19 @@ func TestUpdateLookupDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
+	origxkind := string(catalog.KvCollection)
+	notcasematch := !caseMatch
 	newxname := "newxname"
 	newfilter := `kind=="lookup"`
-	ulk := &catalog.UpdateLookupDataset{
-		LookupProperties: catalog.NewLookupProperties(!caseMatch, newxname, newfilter),
+	ulk := &catalog.LookupDataset{
+		DatasetBase: &catalog.DatasetBase{
+			ID:   "cantchangethis",
+			Kind: "cantchangethat",
+		},
+		CaseSensitiveMatch: &notcasematch,
+		ExternalKind:       &origxkind,
+		ExternalName:       &newxname,
+		Filter:             &newfilter,
 	}
 	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
 	require.Nil(t, err)

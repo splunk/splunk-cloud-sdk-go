@@ -5,6 +5,10 @@
 
 package catalog
 
+import (
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+)
+
 // DatasetInfoKind enumerates the kinds of datasets known to the system.
 type DatasetInfoKind string
 
@@ -33,27 +37,27 @@ type Dataset interface {
 // DatasetBase represents the common fields shared among datasets
 type DatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind"`
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
-	ID string `json:"id,omitempty"`
+	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in.
 	Module string `json:"module,omitempty"`
 	// The catalog version.
-	Version int `json:"version,omitempty"`
+	Version int `json:"version,omitempty" methods:"GET"`
 	// The date and time object was created.
-	Created string `json:"created,omitempty"`
+	Created string `json:"created,omitempty" methods:"GET"`
 	// The date and time object was modified.
-	Modified string `json:"modified,omitempty"`
+	Modified string `json:"modified,omitempty" methods:"GET"`
 	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
-	CreatedBy string `json:"createdby,omitempty"`
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
 	// The name of the user who most recently modified the object.
-	ModifiedBy string `json:"modifiedby,omitempty"`
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
 	// The name of the object's owner.
-	Owner string `json:"owner,omitempty"`
+	Owner string `json:"owner,omitempty" methods:"GET,PUT"`
 	// The dataset name qualified by the module name.
-	ResourceName string `json:"resourcename,omitempty"`
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
 }
 
 // GetKind returns the kind of the underlying dataset
@@ -108,29 +112,6 @@ func NewUpdateDatasetBase(name, module, owner string) *UpdateDatasetBase {
 		Name:   name,
 		Module: &module,
 		Owner:  owner,
-	}
-}
-
-// LookupProperties represent the fields specific to lookup datasets
-type LookupProperties struct {
-	// Match case-sensitively against the lookup.
-	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
-	// The type of the external lookup, this should always be `kvcollection`
-	ExternalKind *string `json:"externalKind,omitempty"`
-	// The name of the external lookup.
-	ExternalName *string `json:"externalName,omitempty"`
-	// A query that filters results out of the lookup before those results are returned.
-	Filter *string `json:"filter,omitempty"`
-}
-
-// NewLookupProperties is a helper for constructing LookupProperties
-func NewLookupProperties(caseSensitiveMatch bool, externalName, filter string) *LookupProperties {
-	externalKind := string(KvCollection)
-	return &LookupProperties{
-		CaseSensitiveMatch: &caseSensitiveMatch,
-		ExternalName:       &externalName,
-		ExternalKind:       &externalKind,
-		Filter:             &filter,
 	}
 }
 
@@ -244,7 +225,19 @@ func NewViewProperties(search string) *ViewProperties {
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {
 	*DatasetBase
-	*LookupProperties
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
+	// The type of the external lookup, this should always be `kvcollection`
+	ExternalKind *string `json:"externalKind,omitempty"`
+	// The name of the external lookup.
+	ExternalName *string `json:"externalName,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string `json:"filter,omitempty"`
+}
+
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *LookupDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
 }
 
 // ImportDataset represents a fully-constructed import dataset
@@ -286,12 +279,6 @@ type KVCollectionDataset struct {
 }
 
 // Models for creating datasets are below:
-
-// CreateLookupDataset represents creation of a lookup dataset
-type CreateLookupDataset struct {
-	*CreateDatasetBase
-	*LookupProperties
-}
 
 // CreateImportDataset represents creation of a import dataset
 type CreateImportDataset struct {
@@ -349,12 +336,6 @@ type UpdateJobDataset struct {
 	*UpdateDatasetBase
 	// The current status of the search job. This is the only job property valid for updating.
 	Status *string `json:"status,omitempty"`
-}
-
-// UpdateLookupDataset represents updates to be applied to an existing lookup dataset
-type UpdateLookupDataset struct {
-	*UpdateDatasetBase
-	*LookupProperties
 }
 
 // UpdateViewDataset represents updates to be applied to an existing view dataset

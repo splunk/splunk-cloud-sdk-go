@@ -119,7 +119,7 @@ func (s *Service) CreateIndexDataset(indexDataset *CreateIndexDataset) (*IndexDa
 }
 
 // CreateLookupDataset creates a lookup Dataset
-func (s *Service) CreateLookupDataset(lookupDataset *CreateLookupDataset) (*LookupDataset, error) {
+func (s *Service) CreateLookupDataset(lookupDataset *LookupDataset) (*LookupDataset, error) {
 	ds, err := s.CreateDataset(lookupDataset)
 	if err != nil {
 		return nil, err
@@ -242,7 +242,7 @@ func (s *Service) UpdateJobDataset(jobDataset *UpdateJobDataset, id string) (*Jo
 }
 
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
-func (s *Service) UpdateLookupDataset(lookupDataset *UpdateLookupDataset, id string) (*LookupDataset, error) {
+func (s *Service) UpdateLookupDataset(lookupDataset *LookupDataset, id string) (*LookupDataset, error) {
 	ds, err := s.UpdateDataset(lookupDataset, id)
 	if err != nil {
 		return nil, err
