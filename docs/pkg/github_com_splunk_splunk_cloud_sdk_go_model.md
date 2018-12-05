@@ -162,14 +162,6 @@ type AdditionalProperties = streams.AdditionalProperties
 AdditionalProperties is Deprecated: please use
 services/streams.AdditionalProperties
 
-#### type AuthError
-
-```go
-type AuthError = kvstore.AuthError
-```
-
-AuthError is Deprecated: please use services/kvstore.AuthError
-
 #### type CatalogAction
 
 ```go
@@ -351,14 +343,6 @@ type DslCompilationRequest = streams.DslCompilationRequest
 
 DslCompilationRequest is Deprecated: please use
 services/streams.DslCompilationRequest
-
-#### type Error
-
-```go
-type Error = kvstore.Error
-```
-
-Error is Deprecated: please use services/kvstore.Error
 
 #### type Event
 

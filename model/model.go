@@ -297,12 +297,6 @@ type MetricAttribute = ingest.MetricAttribute
 // Deprecated: KVStore models
 //
 
-// Error is Deprecated: please use services/kvstore.Error
-type Error = kvstore.Error
-
-// AuthError is Deprecated: please use services/kvstore.AuthError
-type AuthError = kvstore.AuthError
-
 // PingOKBody is Deprecated: please use services/kvstore.PingOKBody
 type PingOKBody = kvstore.PingOKBody
 
