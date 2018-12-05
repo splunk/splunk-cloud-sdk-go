@@ -253,7 +253,7 @@ func TestGetActionStatus(t *testing.T) {
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
 	action, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
-	defer cleanupAction(client, webhookAction.Name) // TODO: Tim
+	defer cleanupAction(client, webhookAction.Name)
 	require.NotNil(t, action)
 	resp, err := client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
@@ -274,9 +274,9 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 	client := getSdkClient(t)
 	webhookActionName := fmt.Sprintf("w_badten_%d", testutils.TimeSec)
 	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
-	defer cleanupAction(client, webhookAction.Name)
 	action, err := client.ActionService.CreateAction(*webhookAction)
 	require.Nil(t, err)
+	defer cleanupAction(client, webhookAction.Name)
 	require.NotNil(t, action)
 	_, err = client.ActionService.TriggerAction(webhookAction.Name,
 		model.ActionNotification{
