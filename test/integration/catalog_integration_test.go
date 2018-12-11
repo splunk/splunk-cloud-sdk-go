@@ -76,11 +76,9 @@ func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
 func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, error) {
 	externalKind := string(catalog.KvCollection)
 	createLookup := &catalog.LookupDataset{
-		DatasetBase: &catalog.DatasetBase{
-			Name:   name,
-			Kind:   string(catalog.Lookup),
-			Module: testutils.TestModule,
-		},
+		Name:               name,
+		Kind:               string(catalog.Lookup),
+		Module:             testutils.TestModule,
 		CaseSensitiveMatch: &caseMatch,
 		ExternalKind:       &externalKind,
 		ExternalName:       &externalName,
@@ -505,22 +503,22 @@ func TestUpdateLookupDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
-	origxkind := string(catalog.KvCollection)
 	notcasematch := !caseMatch
 	newxname := "newxname"
-	newfilter := `kind=="lookup"`
 	ulk := &catalog.LookupDataset{
-		DatasetBase: &catalog.DatasetBase{
-			ID:   "cantchangethis",
-			Kind: "cantchangethat",
-		},
+		ID:                 "cantchangethis",
+		Kind:               "cantchangethat",
+		Owner:              "test1@splunk.com",
 		CaseSensitiveMatch: &notcasematch,
-		ExternalKind:       &origxkind,
+		ExternalKind:       string(catalog.KvCollection),
 		ExternalName:       &newxname,
-		Filter:             &newfilter,
+		Filter:             `kind=="lookup"`,
 	}
 	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
 	require.Nil(t, err)
+	assert.NotEqual(t, "cantchangethis", *newlookupds.ID)
+	assert.NotEqual(t, "cantchangethat", *newlookupds.Kind)
+	assert.Equal(t, "test1@splunk.com", *newlookupds.Owner)
 	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
 	assert.Equal(t, newxname, *newlookupds.ExternalName)
 	assert.Equal(t, newfilter, *newlookupds.Filter)

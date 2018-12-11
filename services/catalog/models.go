@@ -31,36 +31,60 @@ const (
 
 // Dataset represents the sources of data that can be searched by Splunk
 type Dataset interface {
+	// GetName the dataset name. Dataset names must be unique within each module.
+	GetName() string
+	// GetID returns a unique dataset ID.
+	GetID() string
+	// GetModule returns the name of the module associated with the dataset.
+	GetModule() string
+	// GetKind returns the dataset kind.
 	GetKind() string
 }
+
+// TODO: remove Create* and Update* fields and allow illegal fields in
 
 // DatasetBase represents the common fields shared among datasets
 type DatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
-	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
-	ID string `json:"id,omitempty" methods:"GET,POST"`
-	// The name of the module to create the new dataset in.
+	Kind string `json:"kind,omitempty"`
+	// A unique dataset ID. Not valid for PATCH method.
+	ID string `json:"id,omitempty"`
+	// The name of the module associated with the dataset.
 	Module string `json:"module,omitempty"`
 	// The catalog version.
-	Version int `json:"version,omitempty" methods:"GET"`
+	Version int `json:"version,omitempty"`
 	// The date and time object was created.
-	Created string `json:"created,omitempty" methods:"GET"`
+	Created string `json:"created,omitempty"`
 	// The date and time object was modified.
-	Modified string `json:"modified,omitempty" methods:"GET"`
+	Modified string `json:"modified,omitempty"`
 	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
-	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	CreatedBy string `json:"createdby,omitempty"`
 	// The name of the user who most recently modified the object.
-	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	ModifiedBy string `json:"modifiedby,omitempty"`
 	// The name of the object's owner.
-	Owner string `json:"owner,omitempty" methods:"GET,PUT"`
+	Owner string `json:"owner,omitempty"`
 	// The dataset name qualified by the module name.
-	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+	ResourceName string `json:"resourcename,omitempty"`
 }
 
-// GetKind returns the kind of the underlying dataset
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds DatasetBase) GetName() string {
+	return ds.Name
+}
+
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds DatasetBase) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds DatasetBase) GetModule() string {
+	return ds.Module
+}
+
+// GetKind returns the dataset kind.
 func (ds DatasetBase) GetKind() string {
 	return ds.Kind
 }
@@ -221,18 +245,63 @@ func NewViewProperties(search string) *ViewProperties {
 }
 
 // Models for retrieving datasets are below:
+// TODO name struct with name and module to capture intent of user
 
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {
-	*DatasetBase
+	// Common dataset propterties:
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty"`
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// Lookup-specific properties:
 	// Match case-sensitively against the lookup.
 	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
 	// The type of the external lookup, this should always be `kvcollection`
-	ExternalKind *string `json:"externalKind,omitempty"`
+	ExternalKind string `json:"externalKind,omitempty"`
 	// The name of the external lookup.
 	ExternalName *string `json:"externalName,omitempty"`
 	// A query that filters results out of the lookup before those results are returned.
-	Filter *string `json:"filter,omitempty"`
+	Filter string `json:"filter,omitempty"`
+}
+
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds LookupDataset) GetName() string {
+	return ds.Name
+}
+
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds LookupDataset) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds LookupDataset) GetModule() string {
+	return *ds.Module
+}
+
+// GetKind returns the dataset kind.
+func (ds LookupDataset) GetKind() string {
+	return ds.Kind
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface

@@ -19,6 +19,16 @@ type MethodMarshaler interface {
 	MarshalJSONByMethod(method string) ([]byte, error)
 }
 
+// MarshalByMethod marshals any json tagged struct fields matching the method being specified.
+//
+// If the `methods:` tag is specified for the field, then the field is marshaled if
+// the input method is present in the comma-separated list within the tag.
+//
+// If no `methods:` tag is present then it is presumed that the field is valid for all
+// methods, so the field is marshaled.
+//
+// Examples:
+//
 func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 	fields := getFieldsByTag(v, "json")
 	method = strings.ToUpper(method)
