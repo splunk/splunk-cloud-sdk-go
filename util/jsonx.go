@@ -50,7 +50,6 @@ type MethodMarshaler interface {
 //	// D is not marshaled because even though the POST method matches the tag, the value is empty
 //	bytes, err := MarshalByMethod(model, "POST") // string(bytes) == `{"a":"valueA","c":""}`
 //	```
-
 func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 	fields := getFieldsByTag(v, "json")
 	method = strings.ToUpper(method)
