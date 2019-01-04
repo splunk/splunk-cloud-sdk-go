@@ -78,11 +78,11 @@ func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, err
 	createLookup := &catalog.LookupDataset{
 		Name:               name,
 		Kind:               string(catalog.Lookup),
-		Module:             testutils.TestModule,
+		Module:             &testutils.TestModule,
 		CaseSensitiveMatch: &caseMatch,
-		ExternalKind:       &externalKind,
+		ExternalKind:       externalKind,
 		ExternalName:       &externalName,
-		Filter:             &filter,
+		Filter:             filter,
 	}
 	return getSdkClient(t).CatalogService.CreateLookupDataset(createLookup)
 }
@@ -516,12 +516,12 @@ func TestUpdateLookupDataset(t *testing.T) {
 	}
 	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
 	require.Nil(t, err)
-	assert.NotEqual(t, "cantchangethis", *newlookupds.ID)
-	assert.NotEqual(t, "cantchangethat", *newlookupds.Kind)
-	assert.Equal(t, "test1@splunk.com", *newlookupds.Owner)
+	assert.NotEqual(t, "cantchangethis", newlookupds.ID)
+	assert.NotEqual(t, "cantchangethat", newlookupds.Kind)
+	assert.Equal(t, "test1@splunk.com", newlookupds.Owner)
 	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
 	assert.Equal(t, newxname, *newlookupds.ExternalName)
-	assert.Equal(t, newfilter, *newlookupds.Filter)
+	assert.Equal(t, `kind=="lookup"`, newlookupds.Filter)
 }
 
 // Test UpdateViewDataset
