@@ -8,12 +8,7 @@ import (
 )
 
 type ManyTypes struct {
-	StringArray             [4]string   `json:"stringArray"` // no methods tag
-	IntPointerArray         [3]*int     `json:"intPointerArray" methods:"POST"`
-	StringSlice             []string    `json:"stringSlice" methods:"POST"`
-	IntPointerSlice         []*int      `json:"intPointerSlice" methods:"POST,PUT"`
-	IntSliceEmpty           []int       `json:"intSliceEmpty,omitempty" methods:"POST,PUT,PATCH"`
-	StringPointerSliceEmpty []*string   `json:"stringPointerSliceEmpty,omitempty"` // no methods tag
+	// Various types and methods tags
 	Bool                    bool        `json:"bool" methods:"POST,PUT,PATCH"`
 	BoolEmpty               bool        `json:"boolEmpty,omitempty" methods:"PUT,PATCH"`
 	BoolPointerEmpty        *bool       `json:"boolPointerEmpty,omitempty" methods:"PATCH"`
@@ -22,19 +17,26 @@ type ManyTypes struct {
 	FloatPointerEmpty       *float32    `json:"floatPointerEmpty,omitempty" methods:"POST"`
 	Int                     int         `json:"int" methods:"POST"`
 	IntEmpty                int         `json:"intEmpty,omitempty" methods:"POST"`
+	IntPointerArray         [3]*int     `json:"intPointerArray" methods:"POST"`
 	IntPointerEmpty         *int        `json:"intPointerEmpty,omitempty" methods:"POST"`
-	String                  string      `json:"string" methods:"POST"`
-	StringEmpty             string      `json:"stringEmpty,omitempty" methods:"POST"`
-	StringPointerEmpty      *string     `json:"stringPointerEmpty,omitempty" methods:"POST"`
+	IntPointerSlice         []*int      `json:"intPointerSlice" methods:"POST,PUT"`
+	IntSliceEmpty           []int       `json:"intSliceEmpty,omitempty" methods:"POST,PUT,PATCH"`
 	Interface               interface{} `json:"interface" methods:"POST"`
 	InterfaceEmpty          interface{} `json:"interfaceEmpty,omitempty" methods:"POST"`
-	EmptyJSONTag            string      `json:"" methods:"POST"`
-	EmptyMethodsTag         string      `json:"emptyMethodsTag" methods:""`
-	HyphenJSONTag           string      `json:"-,"`
-	OmitJSONTag             string      `json:"-"`
-	MethodTagOnly           string      `methods:"GET,POST"`
-	OtherTags               string      `foo:"foo" bar:"bar"`
-	NoTags                  string
+	String                  string      `json:"string" methods:"POST"`
+	StringArray             [4]string   `json:"stringArray"` // no methods tag
+	StringEmpty             string      `json:"stringEmpty,omitempty" methods:"POST"`
+	StringPointerEmpty      *string     `json:"stringPointerEmpty,omitempty" methods:"POST"`
+	StringPointerSliceEmpty []*string   `json:"stringPointerSliceEmpty,omitempty"` // no methods tag
+	StringSlice             []string    `json:"stringSlice" methods:"POST"`
+	// Special cases: tags
+	EmptyJSONTag    string `json:"" methods:"POST"`
+	EmptyMethodsTag string `json:"emptyMethodsTag" methods:""`
+	HyphenJSONTag   string `json:"-,"`
+	OmitJSONTag     string `json:"-"`
+	MethodTagOnly   string `methods:"GET,POST"`
+	OtherTags       string `foo:"foo" bar:"bar"`
+	NoTags          string
 }
 
 type SimpleA struct {
@@ -62,6 +64,10 @@ type EmbeddedMulti struct {
 	*Embedded
 	EmbeddedPointer
 	SimpleCD
+}
+
+type NoMethodsTags struct {
+	A string `json:"a"`
 }
 
 var a = "a"
@@ -200,6 +206,26 @@ func TestMarshalByMethodPUT(t *testing.T) {
 	assert.Equal(t, `{"-":"HyphenJSONTagValue","bool":false,"boolEmpty":true,"intPointerSlice":[2,3],"intSliceEmpty":[1,3],"stringArray":["a","b","c","d"],"stringPointerSliceEmpty":["b","c","d"]}`, string(bytes))
 }
 
+func TestMarshalByMethodOmitEmpty(t *testing.T) {
+	// This should marshal only the fields without `omitempty` and without any methods tags or with a POST method tag
+	manyTypesEmpty := ManyTypes{}
+	bytes, err := MarshalByMethod(manyTypesEmpty, "POST")
+	require.Nil(t, err)
+	require.NotEmpty(t, bytes)
+	assert.Equal(t, `{"-":"","EmptyJSONTag":"","bool":false,"float":0,"int":0,"intPointerArray":[null,null,null],"intPointerSlice":null,"interface":null,"string":"","stringArray":["","","",""],"stringSlice":null}`, string(bytes))
+}
+
+func TestMarshalByMethodCaseInsensitive(t *testing.T) {
+	// Verify that the case of the method does not matter w.r.t. marshaling behavior
+	bytesUpper, err := MarshalByMethod(manyTypesAll, "POST")
+	require.Nil(t, err)
+	require.NotEmpty(t, bytesUpper)
+	bytesLower, err := MarshalByMethod(manyTypesAll, "post")
+	require.Nil(t, err)
+	require.NotEmpty(t, bytesLower)
+	assert.Equal(t, bytesLower, bytesUpper)
+}
+
 func TestMarshalByMethodEmbedded(t *testing.T) {
 	a := SimpleA{A: "valueA"}
 	bytes, err := MarshalByMethod(a, "POST")
@@ -236,4 +262,10 @@ func TestMarshalByMethodEmbedded(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"a":"valueA","b":"valueB","c":"valueC","d":"valueD"}`, string(bytes))
+}
+
+func TestMarshalByMethodNoMethodsTags(t *testing.T) {
+	a := NoMethodsTags{A: "valueA"}
+	_, err := MarshalByMethod(a, "POST")
+	assert.Contains(t, err.Error(), "should only be used on structs with fields containing at least one `methods:` tag")
 }
