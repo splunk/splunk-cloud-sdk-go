@@ -41,8 +41,6 @@ type Dataset interface {
 	GetKind() string
 }
 
-// TODO: remove Create* and Update* fields and allow illegal fields in
-
 // DatasetBase represents the common fields shared among datasets
 type DatasetBase struct {
 	// The dataset name. Dataset names must be unique within each module.
@@ -245,7 +243,6 @@ func NewViewProperties(search string) *ViewProperties {
 }
 
 // Models for retrieving datasets are below:
-// TODO name struct with name and module to capture intent of user
 
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {

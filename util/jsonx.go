@@ -22,13 +22,13 @@ type MethodMarshaler interface {
 // MarshalByMethod marshals any json tagged struct fields matching the method being specified.
 //
 // If the `methods:` tag is specified for the field, then the field is marshaled if
-// the input method is present in the comma-separated list within the tag.
+// the input method is present in the comma-separated list within the tag (case insensitive).
 //
 // If no `methods:` tag is present then it is presumed that the field is valid for all
 // methods, so the field is marshaled.
 //
 // Examples:
-//
+//   TODO
 func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 	fields := getFieldsByTag(v, "json")
 	method = strings.ToUpper(method)
@@ -62,18 +62,19 @@ func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 		}
 		// Get key for toMarshal map from tag of the form `json:"<mykey>"` or `json:"<mykey>,..."`
 		name, opts := parseTag(jsonTag)
-		if name == "" {
-			return nil, fmt.Errorf("util: jsonx.MarshalByMethod() blank json names are currently unsupported, blank name found for field: %+v", field.StructField)
-		}
 		if opts.Contains("omitempty") && isEmptyValue(*field.Value) {
 			// Omit empty values as json.Marshal does
 			continue
+		}
+		if name == "" {
+			// For `json:""` use the name of the struct field, see: https://golang.org/pkg/encoding/json/#Marshal
+			name = field.Name
 		}
 		// Add field to our map to be marshaled
 		toMarshal[name] = field.Interface()
 	}
 	if !methodsFieldFound {
-		return nil, fmt.Errorf("util: jsonx.MarshalByMethod() should only be used on structs with fields containing at least one `methods:` tag - use json.Marshal() if no such fields exist")
+		return nil, fmt.Errorf("util: jsonx.MarshalByMethod() should only be used on structs with fields containing at least one `methods:` tag and `json:` tag - use json.Marshal() if no such fields exist")
 	}
 	return json.Marshal(toMarshal)
 }
@@ -84,6 +85,9 @@ func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 func getFieldsByTag(v interface{}, tag string) []*taggedField {
 	fields := make([]*taggedField, 0)
 	vvalue := reflect.ValueOf(v)
+	if v == nil {
+		return fields
+	}
 	if vvalue.Type().Kind() == reflect.Ptr {
 		// If v is a pointer, follow the pointer
 		vvalue = reflect.ValueOf(vvalue.Elem().Interface())

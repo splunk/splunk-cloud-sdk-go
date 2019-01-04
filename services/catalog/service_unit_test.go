@@ -196,7 +196,7 @@ func TestParseRawDatasetLookup(t *testing.T) {
 	lookup, ok := ds.(LookupDataset)
 	require.True(t, ok)
 	assert.Equal(t, "mylookup", lookup.Name)
-	assert.Equal(t, "kind==\"lookup\"", *lookup.Filter)
+	assert.Equal(t, "kind==\"lookup\"", lookup.Filter)
 }
 func TestParseRawDatasetKvCollection(t *testing.T) {
 	var dsMap interface{}
