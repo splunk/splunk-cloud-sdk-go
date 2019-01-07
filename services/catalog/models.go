@@ -41,212 +41,325 @@ type Dataset interface {
 	GetKind() string
 }
 
-// DatasetBase represents the common fields shared among datasets
-type DatasetBase struct {
+// ImportDataset represents a fully-constructed import dataset
+type ImportDataset struct {
+	// Common dataset properties:
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty"`
-	// A unique dataset ID. Not valid for PATCH method.
-	ID string `json:"id,omitempty"`
-	// The name of the module associated with the dataset.
-	Module string `json:"module,omitempty"`
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty"`
 	// The catalog version.
-	Version int `json:"version,omitempty"`
+	Version int `json:"version,omitempty" methods:"GET"`
 	// The date and time object was created.
-	Created string `json:"created,omitempty"`
+	Created string `json:"created,omitempty" methods:"GET"`
 	// The date and time object was modified.
-	Modified string `json:"modified,omitempty"`
+	Modified string `json:"modified,omitempty" methods:"GET"`
 	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
-	CreatedBy string `json:"createdby,omitempty"`
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
 	// The name of the user who most recently modified the object.
-	ModifiedBy string `json:"modifiedby,omitempty"`
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
 	// The name of the object's owner.
-	Owner string `json:"owner,omitempty"`
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
 	// The dataset name qualified by the module name.
-	ResourceName string `json:"resourcename,omitempty"`
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// Import-specific properties:
+	// The dataset module being imported.
+	SourceModule *string `json:"sourceModule,omitempty" methods:"GET,PATCH"`
+	// The dataset name being imported.
+	SourceName *string `json:"sourceName,omitempty" methods:"GET,PATCH"`
+	// The dataset ID being imported.
+	OriginalDatasetID *string `json:"originalDatasetId,omitempty" methods:"GET"`
+	// The dataset ID being imported.
+	// TODO: sourceId is only used for POST operations, and is returned as originalDatasetId.
+	// This should be fixed by the Catalog service in the future.
+	SourceID *string `json:"sourceId,omitempty" methods:"POST"`
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds DatasetBase) GetName() string {
+func (ds ImportDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds DatasetBase) GetID() string {
+func (ds ImportDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds DatasetBase) GetModule() string {
-	return ds.Module
+func (ds ImportDataset) GetModule() string {
+	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds DatasetBase) GetKind() string {
+func (ds ImportDataset) GetKind() string {
 	return ds.Kind
 }
 
-// CreateDatasetBase contains fields that can be included on creation and that are common to all dataset kinds
-type CreateDatasetBase struct {
-	// The dataset name. Dataset names must be unique within each module.
-	Name string `json:"name"`
-	// The dataset kind.
-	Kind DatasetInfoKind `json:"kind"`
-	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
-	ID string `json:"id,omitempty"`
-	// The name of the module to create the new dataset in.
-	Module string `json:"module,omitempty"`
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *ImportDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
 }
 
-// NewCreateDatasetBase is a helper for constructing CreateDatasetBase
-func NewCreateDatasetBase(name string, kind DatasetInfoKind, id, module string) *CreateDatasetBase {
-	return &CreateDatasetBase{
-		Name:   name,
-		Kind:   kind,
-		ID:     id,
-		Module: module,
-	}
-}
-
-// NewCreateDatasetBaseByName is a helper for constructing CreateDatasetBase without an id
-func NewCreateDatasetBaseByName(name string, kind DatasetInfoKind, module string) *CreateDatasetBase {
-	return &CreateDatasetBase{
-		Name:   name,
-		Kind:   kind,
-		Module: module,
-	}
-}
-
-// UpdateDatasetBase contains fields that can be updated and that are common to all dataset kinds
-type UpdateDatasetBase struct {
+// MetricDataset represents a fully-constructed index dataset
+type MetricDataset struct {
+	// Common dataset properties:
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
-	// The name of the module to create the new dataset in.
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
 	Module *string `json:"module,omitempty"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
 	// The name of the object's owner.
-	Owner string `json:"owner,omitempty"`
-}
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
 
-// NewUpdateDatasetBase is a helper for constructing UpdateDatasetBase
-func NewUpdateDatasetBase(name, module, owner string) *UpdateDatasetBase {
-	return &UpdateDatasetBase{
-		Name:   name,
-		Module: &module,
-		Owner:  owner,
-	}
-}
-
-// ImportProperties represent the fields specific to import datasets
-type ImportProperties struct {
-	// The dataset module being imported.
-	SourceModule *string `json:"sourceModule,omitempty"`
-	// The dataset name being imported.
-	SourceName *string `json:"sourceName,omitempty"`
-	// The dataset ID being imported.
-	OriginalDatasetID *string `json:"originalDatasetId,omitempty"`
-	// The dataset ID being imported.
-	// TODO: sourceId is only used for POST operations, all others use originalDatasetId.
-	// This should be fixed by the Catalog service in the future.
-	SourceID *string `json:"sourceId,omitempty"`
-}
-
-// NewImportPropertiesByName is a helper for constructing ImportProperties by module and name
-func NewImportPropertiesByName(module, name string) *ImportProperties {
-	return &ImportProperties{
-		SourceModule: &module,
-		SourceName:   &name,
-	}
-}
-
-// NewImportPropertiesByID is a helper for constructing ImportProperties by id
-func NewImportPropertiesByID(id string) *ImportProperties {
-	return &ImportProperties{
-		// TODO: This may get changed to OriginalDatasetId in the future
-		SourceID: &id,
-	}
-}
-
-// MetricProperties represent the fields specific to metric datasets
-type MetricProperties struct {
+	// Metric-specific properties:
 	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// NewMetricProperties is a helper for constructing MetricProperties
-func NewMetricProperties(disabled bool, ftime int) *MetricProperties {
-	return &MetricProperties{
-		Disabled:               &disabled,
-		FrozenTimePeriodInSecs: &ftime,
-	}
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds MetricDataset) GetName() string {
+	return ds.Name
 }
 
-// IndexProperties represent the fields specific to index datasets
-type IndexProperties struct {
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds MetricDataset) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds MetricDataset) GetModule() string {
+	return *ds.Module
+}
+
+// GetKind returns the dataset kind.
+func (ds MetricDataset) GetKind() string {
+	return ds.Kind
+}
+
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *MetricDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
+}
+
+// IndexDataset represents a fully-constructed index dataset
+type IndexDataset struct {
+	// Common dataset properties:
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty"`
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// Index-specific properties:
 	// Specifies whether or not the Splunk index is disabled.
 	Disabled *bool `json:"disabled,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// NewIndexProperties is a helper for constructing IndexProperties
-func NewIndexProperties(disabled bool, ftime int) *IndexProperties {
-	return &IndexProperties{
-		Disabled:               &disabled,
-		FrozenTimePeriodInSecs: &ftime,
-	}
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds IndexDataset) GetName() string {
+	return ds.Name
 }
 
-// JobProperties represent the fields specific to job datasets
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds IndexDataset) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds IndexDataset) GetModule() string {
+	return *ds.Module
+}
+
+// GetKind returns the dataset kind.
+func (ds IndexDataset) GetKind() string {
+	return ds.Kind
+}
+
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *IndexDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
+}
+
+// JobDataset represents a fully-constructed job dataset
 // NOTE: POST is not supported for Job datasets, please use the search service to create jobs
-// NOTE: only Status is supported for PATCH
-type JobProperties struct {
+// NOTE: only Name, Module, Owner, and Status are supported for PATCH
+type JobDataset struct {
+	// Common dataset properties:
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty" methods:"GET,PATCH"`
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty" methods:"GET,PATCH"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// Job-specific properties:
 	// The time the dataset will be available.
-	DeleteTime *string `json:"deleteTime,omitempty"`
+	DeleteTime *string `json:"deleteTime,omitempty" methods:"GET"`
 	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
-	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	ExtractAllFields *bool `json:"extractAllFields,omitempty" methods:"GET"`
 	// The number of seconds to run this search before finishing.
-	MaxTime *int `json:"maxTime,omitempty"`
+	MaxTime *int `json:"maxTime,omitempty" methods:"GET"`
 	// Parameters for the search job, mainly earliest and latest.
-	Parameters interface{} `json:"parameters,omitempty"`
+	Parameters interface{} `json:"parameters,omitempty" methods:"GET"`
 	// An estimate of how complete the search job is.
-	PercentComplete *int `json:"percentComplete,omitempty"`
+	PercentComplete *int `json:"percentComplete,omitempty" methods:"GET"`
 	// The SPL query string for the search job.
-	Query *string `json:"query,omitempty"`
+	Query *string `json:"query,omitempty" methods:"GET"`
 	// The instantaneous number of results produced by the search job.
-	ResultsAvailable *int `json:"resultsAvailable,omitempty"`
+	ResultsAvailable *int `json:"resultsAvailable,omitempty" methods:"GET"`
 	// The ID assigned to the search job.
-	SID *string `json:"sid,omitempty"`
+	SID *string `json:"sid,omitempty" methods:"GET"`
 	// The SPLv2 version of the search job query string.
-	SPL *string `json:"spl,omitempty"`
+	SPL *string `json:"spl,omitempty" methods:"GET"`
 	// The current status of the search job.
-	Status *string `json:"status,omitempty"`
+	Status *string `json:"status,omitempty" methods:"GET,PATCH"`
 	// Converts a formatted time string from into UTC seconds.
-	TimeFormat *string `json:"timeFormat,omitempty"`
+	TimeFormat *string `json:"timeFormat,omitempty" methods:"GET"`
 	// The system time at the time the search job was created
-	TimeOfSearch *string `json:"timeOfSearch,omitempty"`
+	TimeOfSearch *string `json:"timeOfSearch,omitempty" methods:"GET"`
 }
 
-// ViewProperties represent the fields specific to view datasets
-type ViewProperties struct {
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds JobDataset) GetName() string {
+	return ds.Name
+}
+
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds JobDataset) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds JobDataset) GetModule() string {
+	return *ds.Module
+}
+
+// GetKind returns the dataset kind.
+func (ds JobDataset) GetKind() string {
+	return ds.Kind
+}
+
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *JobDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
+}
+
+// ViewDataset represents a fully-constructed view dataset
+type ViewDataset struct {
+	// Common dataset properties:
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty"`
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty" methods:"GET,PATCH"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// View-specific properties:
 	// A valid SPL-defined search.
 	Search *string `json:"search,omitempty"`
 }
 
-// NewViewProperties is a helper for constructing ViewProperties
-func NewViewProperties(search string) *ViewProperties {
-	return &ViewProperties{
-		Search: &search,
-	}
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds ViewDataset) GetName() string {
+	return ds.Name
 }
 
-// Models for retrieving datasets are below:
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds ViewDataset) GetID() string {
+	return ds.ID
+}
+
+// GetModule returns the name of the module associated with the dataset.
+func (ds ViewDataset) GetModule() string {
+	return *ds.Module
+}
+
+// GetKind returns the dataset kind.
+func (ds ViewDataset) GetKind() string {
+	return ds.Kind
+}
+
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *ViewDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
+}
 
 // LookupDataset represents a fully-constructed lookup dataset
 type LookupDataset struct {
-	// Common dataset propterties:
+	// Common dataset properties:
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
@@ -306,108 +419,82 @@ func (ds *LookupDataset) MarshalJSONByMethod(method string) ([]byte, error) {
 	return util.MarshalByMethod(*ds, method)
 }
 
-// ImportDataset represents a fully-constructed import dataset
-type ImportDataset struct {
-	*DatasetBase
-	*ImportProperties
-}
-
-// MetricDataset represents a fully-constructed metric dataset
-type MetricDataset struct {
-	*DatasetBase
-	*MetricProperties
-}
-
-// IndexDataset represents a fully-constructed index dataset
-type IndexDataset struct {
-	*DatasetBase
-	*IndexProperties
-}
-
-// JobDataset represents a fully-constructed job dataset
-// NOTE: Only GET and DELETE are supported for Job datasets
-type JobDataset struct {
-	*DatasetBase
-	*JobProperties
-}
-
-// ViewDataset represents a fully-constructed view dataset
-type ViewDataset struct {
-	*DatasetBase
-	*ViewProperties
-}
-
 // KVCollectionDataset represents a fully-constructed kvcollection dataset
 // NOTE: Only GET, POST, and DELETE are supported for KVCollection datasets
 type KVCollectionDataset struct {
-	*DatasetBase
-	// Note: there are no fields specific to kvstorecollection datasets
+	// Common dataset properties:
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name,omitempty" methods:"GET,POST"`
+	// The dataset kind.
+	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
+	ID string `json:"id,omitempty" methods:"GET,POST"`
+	// The name of the module to create the new dataset in. The default module is "".
+	Module *string `json:"module,omitempty" methods:"GET,POST"`
+	// The catalog version.
+	Version int `json:"version,omitempty" methods:"GET"`
+	// The date and time object was created.
+	Created string `json:"created,omitempty" methods:"GET"`
+	// The date and time object was modified.
+	Modified string `json:"modified,omitempty" methods:"GET"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	CreatedBy string `json:"createdby,omitempty" methods:"GET"`
+	// The name of the user who most recently modified the object.
+	ModifiedBy string `json:"modifiedby,omitempty" methods:"GET"`
+	// The name of the object's owner.
+	Owner string `json:"owner,omitempty" methods:"GET"`
+	// The dataset name qualified by the module name.
+	ResourceName string `json:"resourcename,omitempty" methods:"GET"`
+
+	// Note: there are no KVCollection-specific properties.
 }
 
-// Models for creating datasets are below:
-
-// CreateImportDataset represents creation of a import dataset
-type CreateImportDataset struct {
-	*CreateDatasetBase
-	*ImportProperties
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds KVCollectionDataset) GetName() string {
+	return ds.Name
 }
 
-// CreateMetricDataset represents creation of a metric dataset
-type CreateMetricDataset struct {
-	*CreateDatasetBase
-	*MetricProperties
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds KVCollectionDataset) GetID() string {
+	return ds.ID
 }
 
-// CreateIndexDataset represents creation of a index dataset
-type CreateIndexDataset struct {
-	*CreateDatasetBase
-	*IndexProperties
+// GetModule returns the name of the module associated with the dataset.
+func (ds KVCollectionDataset) GetModule() string {
+	return *ds.Module
 }
 
-// CreateViewDataset represents creation of a view dataset
-type CreateViewDataset struct {
-	*CreateDatasetBase
-	*ViewProperties
+// GetKind returns the dataset kind.
+func (ds KVCollectionDataset) GetKind() string {
+	return ds.Kind
 }
 
-// CreateKVCollectionDataset represents creation of a kvcollection dataset
-type CreateKVCollectionDataset struct {
-	*CreateDatasetBase
-	// Note: there are no fields specific to kvstorecollection datasets
+// MarshalJSONByMethod implements the util.MethodMarshaler interface
+func (ds *KVCollectionDataset) MarshalJSONByMethod(method string) ([]byte, error) {
+	return util.MarshalByMethod(*ds, method)
 }
 
-// Models for updating datasets are below:
+// GenericDataset represents a dataset of unknown kind
+type GenericDataset map[string]interface{}
 
-// UpdateMetricDataset represents updates to be applied to an existing metric dataset
-type UpdateMetricDataset struct {
-	*UpdateDatasetBase
-	*MetricProperties
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds GenericDataset) GetName() string {
+	return ds["name"].(string)
 }
 
-// UpdateIndexDataset represents updates to be applied to an existing index dataset
-type UpdateIndexDataset struct {
-	*UpdateDatasetBase
-	*IndexProperties
+// GetID returns a unique dataset ID. Random ID used if not provided
+func (ds GenericDataset) GetID() string {
+	return ds["id"].(string)
 }
 
-// NOTE: UpdateImportDataset is not supported at this time
-// UpdateImportDataset represents updates to be applied to an existing import dataset
-// type UpdateImportDataset struct {
-// 	*UpdateDatasetBase
-// 	*ImportProperties
-// }
-
-// UpdateJobDataset represents updates to be applied to an existing job dataset
-type UpdateJobDataset struct {
-	*UpdateDatasetBase
-	// The current status of the search job. This is the only job property valid for updating.
-	Status *string `json:"status,omitempty"`
+// GetModule returns the name of the module associated with the dataset.
+func (ds GenericDataset) GetModule() string {
+	return ds["module"].(string)
 }
 
-// UpdateViewDataset represents updates to be applied to an existing view dataset
-type UpdateViewDataset struct {
-	*UpdateDatasetBase
-	*ViewProperties
+// GetKind returns the dataset kind.
+func (ds GenericDataset) GetKind() string {
+	return ds["kind"].(string)
 }
 
 // Field represents the fields belonging to the specified Dataset

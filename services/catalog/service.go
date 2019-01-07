@@ -106,7 +106,7 @@ func (s *Service) CreateDataset(dataset interface{}) (Dataset, error) {
 }
 
 // CreateIndexDataset creates an index Dataset
-func (s *Service) CreateIndexDataset(indexDataset *CreateIndexDataset) (*IndexDataset, error) {
+func (s *Service) CreateIndexDataset(indexDataset *IndexDataset) (*IndexDataset, error) {
 	ds, err := s.CreateDataset(indexDataset)
 	if err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (s *Service) CreateLookupDataset(lookupDataset *LookupDataset) (*LookupData
 }
 
 // CreateViewDataset creates a view Dataset
-func (s *Service) CreateViewDataset(viewDataset *CreateViewDataset) (*ViewDataset, error) {
+func (s *Service) CreateViewDataset(viewDataset *ViewDataset) (*ViewDataset, error) {
 	ds, err := s.CreateDataset(viewDataset)
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (s *Service) CreateViewDataset(viewDataset *CreateViewDataset) (*ViewDatase
 }
 
 // CreateKVCollectionDataset creates a KVCollection Dataset
-func (s *Service) CreateKVCollectionDataset(kvDataset *CreateKVCollectionDataset) (*KVCollectionDataset, error) {
+func (s *Service) CreateKVCollectionDataset(kvDataset *KVCollectionDataset) (*KVCollectionDataset, error) {
 	ds, err := s.CreateDataset(kvDataset)
 	if err != nil {
 		return nil, err
@@ -158,7 +158,7 @@ func (s *Service) CreateKVCollectionDataset(kvDataset *CreateKVCollectionDataset
 }
 
 // CreateImportDataset creates an import Dataset
-func (s *Service) CreateImportDataset(importDataset *CreateImportDataset) (*ImportDataset, error) {
+func (s *Service) CreateImportDataset(importDataset *ImportDataset) (*ImportDataset, error) {
 	ds, err := s.CreateDataset(importDataset)
 	if err != nil {
 		return nil, err
@@ -171,7 +171,7 @@ func (s *Service) CreateImportDataset(importDataset *CreateImportDataset) (*Impo
 }
 
 // CreateMetricDataset creates a metric Dataset
-func (s *Service) CreateMetricDataset(metricDataset *CreateMetricDataset) (*MetricDataset, error) {
+func (s *Service) CreateMetricDataset(metricDataset *MetricDataset) (*MetricDataset, error) {
 	ds, err := s.CreateDataset(metricDataset)
 	if err != nil {
 		return nil, err
@@ -202,7 +202,7 @@ func (s *Service) UpdateDataset(dataset interface{}, resourceNameOrID string) (D
 }
 
 // UpdateIndexDataset updates an existing index Dataset with the specified resourceName or ID
-func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string) (*IndexDataset, error) {
+func (s *Service) UpdateIndexDataset(indexDataset *IndexDataset, id string) (*IndexDataset, error) {
 	ds, err := s.UpdateDataset(indexDataset, id)
 	if err != nil {
 		return nil, err
@@ -229,7 +229,7 @@ func (s *Service) UpdateIndexDataset(indexDataset *UpdateIndexDataset, id string
 // }
 
 // UpdateJobDataset updates an existing job Dataset with the specified resourceName or ID
-func (s *Service) UpdateJobDataset(jobDataset *UpdateJobDataset, id string) (*JobDataset, error) {
+func (s *Service) UpdateJobDataset(jobDataset *JobDataset, id string) (*JobDataset, error) {
 	ds, err := s.UpdateDataset(jobDataset, id)
 	if err != nil {
 		return nil, err
@@ -255,7 +255,7 @@ func (s *Service) UpdateLookupDataset(lookupDataset *LookupDataset, id string) (
 }
 
 // UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
-func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (*ViewDataset, error) {
+func (s *Service) UpdateViewDataset(viewDataset *ViewDataset, id string) (*ViewDataset, error) {
 	ds, err := s.UpdateDataset(viewDataset, id)
 	if err != nil {
 		return nil, err
@@ -268,7 +268,7 @@ func (s *Service) UpdateViewDataset(viewDataset *UpdateViewDataset, id string) (
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
-func (s *Service) UpdateMetricDataset(metricDataset *UpdateMetricDataset, id string) (*MetricDataset, error) {
+func (s *Service) UpdateMetricDataset(metricDataset *MetricDataset, id string) (*MetricDataset, error) {
 	ds, err := s.UpdateDataset(metricDataset, id)
 	if err != nil {
 		return nil, err
@@ -681,7 +681,7 @@ func ParseRawDataset(dataset interface{}) (Dataset, error) {
 		return datasetResult, err
 	default:
 		// For unknown dataset kinds attempt to unmarshal to a generic DatasetBase - fail otherwise
-		var datasetResult DatasetBase
+		var datasetResult GenericDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		if err != nil {
 			return nil, fmt.Errorf("catalog: invalid dataset format and unknown kind: %s", kind)
