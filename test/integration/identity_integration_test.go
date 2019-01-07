@@ -9,8 +9,6 @@ import (
 	"fmt"
 	"testing"
 
-	"time"
-
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
@@ -47,7 +45,6 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, testutils.TestUsername, resultgroup.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
 
-	time.Sleep(2 * time.Second)
 	resultgroup1, err := client.IdentityService.GetGroup(groupName)
 	require.Nil(t, err)
 	assert.Equal(t, groupName, resultgroup1.Name)
@@ -77,7 +74,6 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, groupName, resultrole1.Group)
 	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
-	time.Sleep(2 * time.Second)
 	resultrole2, err := client.IdentityService.GetGroupRoles(groupName)
 	require.Nil(t, err)
 	assert.Contains(t, resultrole2, roleName)
@@ -99,7 +95,6 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, groupName, resultmember1.Group)
 	assert.Equal(t, testutils.TestTenant, resultmember1.Tenant)
 
-	time.Sleep(2 * time.Second)
 	resultmember2, err := client.IdentityService.GetGroupMembers(groupName)
 	require.Nil(t, err)
 	assert.Contains(t, resultmember2, memberName)
@@ -138,7 +133,6 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
 
-	time.Sleep(2 * time.Second)
 	resultrole1, err := client.IdentityService.GetRole(roleName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultrole1.Name)
@@ -150,10 +144,10 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Contains(t, resultrole2, roleName)
 
 	// role-permissions
-	permissionName := fmt.Sprintf("perm1-%d", testutils.TimeSec)
 	_, err = client.IdentityService.GetRolePermissions(roleName)
 	require.Nil(t, err)
 
+	permissionName := fmt.Sprintf("%v:all:perm1-%d", testutils.TestTenant, testutils.TimeSec)
 	resultroleperm, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
 	require.Nil(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
@@ -162,7 +156,6 @@ func TestCRUDRoles(t *testing.T) {
 	assert.Equal(t, testutils.TestUsername, resultroleperm.AddedBy)
 	assert.Equal(t, testutils.TestTenant, resultroleperm.Tenant)
 
-	time.Sleep(2 * time.Second)
 	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName, permissionName)
 	require.Nil(t, err)
 	assert.Equal(t, roleName, resultroleperm1.Role)
@@ -196,7 +189,6 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memberName, result.Name)
 	assert.Equal(t, testutils.TestTenant, result.Tenant)
 
-	time.Sleep(2 * time.Second)
 	result1, err := client.IdentityService.GetMembers()
 	require.Nil(t, err)
 	assert.Contains(t, result1, memberName)
@@ -222,7 +214,6 @@ func TestCRUDMembers(t *testing.T) {
 	defer client.IdentityService.RemoveGroupMember(groupName, memberName)
 	assert.Equal(t, groupName, result3.Group)
 
-	time.Sleep(2 * time.Second)
 	result4, err := client.IdentityService.GetMemberGroups(memberName)
 	require.Nil(t, err)
 	assert.Contains(t, result4, groupName)
@@ -246,20 +237,18 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, groupName, resultrole1.Group)
 	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
-	time.Sleep(2 * time.Second)
 	result5, err := client.IdentityService.GetMemberRoles(memberName)
 	require.Nil(t, err)
 	assert.Contains(t, result5, roleName)
 
 	// add permission to role
-	permissionName := "myperm"
+	permissionName := fmt.Sprintf("%v:%v:myperm", testutils.TestTenant, groupName)
 	result6, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
 	require.Nil(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
 	assert.Equal(t, roleName, result6.Role)
 	assert.Equal(t, permissionName, result6.Permission)
 
-	time.Sleep(2 * time.Second)
 	permissionName1 := fmt.Sprintf("%v:%v:identity.groups.read", testutils.TestTenant, groupName)
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
 	result7, err := client.IdentityService.GetMemberPermissions(memberName)
