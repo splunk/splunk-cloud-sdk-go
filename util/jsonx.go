@@ -12,9 +12,8 @@ type taggedField struct {
 	*reflect.StructField
 }
 
-// MethodMarshaler is the interface implemented by types that
-// can marshal themselves into valid JSON according to the
-// input http method
+// MethodMarshaler is the interface implemented by types that can marshal themselves into valid
+// JSON according to the input http method
 type MethodMarshaler interface {
 	MarshalJSONByMethod(method string) ([]byte, error)
 }
@@ -45,9 +44,10 @@ type MethodMarshaler interface {
 //		D: "",
 //	}
 //	// A is marshaled because it matches the POST method
-//	// B is not marshaled because the `methods:""` prevents marshaling for all methods
+//	// B is not marshaled because the `methods:""` tag prevents marshaling for all methods
 //	// C is marshaled because omitting the `methods:` tag always marshals the field
 //	// D is not marshaled because even though the POST method matches the tag, the value is empty
+//	//   and omitempty is specified
 //	bytes, err := MarshalByMethod(model, "POST") // string(bytes) == `{"a":"valueA","c":""}`
 //	```
 func MarshalByMethod(v interface{}, method string) ([]byte, error) {
@@ -83,6 +83,9 @@ func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 		}
 		// Get key for toMarshal map from tag of the form `json:"<mykey>"` or `json:"<mykey>,..."`
 		name, opts := parseTag(jsonTag)
+		if opts.Contains("string") {
+			return nil, fmt.Errorf("util: jsonx.MarshalByMethod() the \"string\" tag (`json:\",string\"`) is not supported")
+		}
 		if opts.Contains("omitempty") && isEmptyValue(*field.Value) {
 			// Omit empty values as json.Marshal does
 			continue

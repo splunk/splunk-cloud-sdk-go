@@ -70,6 +70,10 @@ type NoMethodsTags struct {
 	A string `json:"a"`
 }
 
+type StringTag struct {
+	A string `json:"a,omitempty,string" methods:"POST"`
+}
+
 var a = "a"
 var b = "b"
 var c = "c"
@@ -267,5 +271,13 @@ func TestMarshalByMethodEmbedded(t *testing.T) {
 func TestMarshalByMethodNoMethodsTags(t *testing.T) {
 	a := NoMethodsTags{A: "valueA"}
 	_, err := MarshalByMethod(a, "POST")
+	require.NotNil(t, err)
 	assert.Contains(t, err.Error(), "should only be used on structs with fields containing at least one `methods:` tag")
+}
+
+func TestMarshalByMethodUnsupportedStringTag(t *testing.T) {
+	a := StringTag{A: "valueA"}
+	_, err := MarshalByMethod(a, "POST")
+	require.NotNil(t, err)
+	assert.Contains(t, err.Error(), "the \"string\" tag (`json:\",string\"`) is not supported")
 }
