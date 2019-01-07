@@ -3,6 +3,7 @@ FROM golang:1.11-alpine
 
 # INSTALL any further tools you need here so they are cached in the docker build
 ENV DEP_VERSION=0.4.1
+ENV LINT_VERSION=1.12.5
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache bash \
@@ -20,6 +21,7 @@ RUN curl --fail \
          --location \
          --output /usr/local/bin/dep \
          --url https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 \
+         -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v${LINT_VERSION} \
     && chmod +x /usr/local/bin/dep
 
 # Set the WORKDIR to the project path in your GOPATH

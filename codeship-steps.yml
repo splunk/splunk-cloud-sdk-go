@@ -6,10 +6,7 @@
     steps:
       - name: lint
         service: splunk-cloud-sdk-go
-        command: bash -c "make lint"
-      - name: vet
-        service: splunk-cloud-sdk-go
-        command: bash -c "make vet"
+        command: bash -c "golangci-lint run ./..."
       - name: build
         service: splunk-cloud-sdk-go
         command: bash -c "make build"

@@ -1,0 +1,12 @@
+[run]
+concurrency = 4
+deadline = "90s"
+[linters]
+enable = [
+  "golint",
+  "goimports",
+  "gofmt"
+]
+disable = [
+    "megacheck"
+]
