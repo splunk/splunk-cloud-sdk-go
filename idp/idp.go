@@ -363,6 +363,10 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 
 	cv, cc, err := createCodeChallenge(50)
 
+	if err != nil {
+		return nil, err
+	}
+
 	// request authorization code
 	params := url.Values{
 		"client_id":             {clientID},

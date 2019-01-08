@@ -56,6 +56,9 @@ func (rh AuthnResponseHandler) HandleResponse(client *BaseClient, request *Reque
 	request.UpdateToken(ctx.AccessToken)
 	// Re-initialize body (otherwise body is empty)
 	body, err := request.GetBody()
+	if err != nil {
+		return nil, err
+	}
 	request.Body = body
 	// Update the client such that future requests will use the new access token and retain context information
 	client.UpdateTokenContext(ctx)
