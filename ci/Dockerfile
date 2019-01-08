@@ -15,6 +15,8 @@ RUN apk update && \
                        make \
                        openssh
 
+RUN go get github.com/stretchr/testify/assert
+
 RUN curl --fail \
          --silent \
          --show-error \
