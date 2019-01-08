@@ -279,6 +279,9 @@ func (s *Service) PutRecord(collectionName, keyValue string, record Record) (map
 	// Should always be a map with one key called "_key"
 	var responseMap map[string]string
 	err = util.ParseResponse(&responseMap, response)
+	if err != nil {
+		return nil, false, err
+	}
 
 	// returns whether or not the PutRecord was an insert or a replace
 	return responseMap, response.StatusCode == http.StatusCreated, nil

@@ -413,44 +413,6 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 	return decode(response)
 }
 
-// Decode the given implicit flow location url fragment, and return values
-// as an authentication Context.
-func decodeFragment(fragment string) (*Context, error) {
-	context := &Context{}
-	pairs := strings.Split(fragment, "&")
-	for _, pair := range pairs {
-		kv := strings.Split(pair, "=")
-		if len(kv) != 2 {
-			return nil, fmt.Errorf("invalid fragment property: '%s", kv)
-		}
-		k := kv[0]
-		v := kv[1]
-		switch k {
-		case "access_token":
-			context.AccessToken = v
-		case "expires_in":
-			expiresIn, err := strconv.Atoi(v)
-			if err != nil {
-				return nil, err
-			}
-			context.ExpiresIn = expiresIn
-		case "id_token":
-			context.IDToken = v
-		case "refresh_token":
-			context.RefreshToken = v
-		case "scope":
-			context.Scope = v
-		case "state":
-			break // ignore
-		case "token_type":
-			context.TokenType = v
-		default:
-			return nil, fmt.Errorf("invalid fragment key: '%s'", k)
-		}
-	}
-	return context, nil
-}
-
 // Refresh will authenticate using a refresh token.
 func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error) {
 	form := url.Values{
