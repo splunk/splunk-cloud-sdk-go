@@ -7,6 +7,7 @@ package services
 
 import (
 	"fmt"
+	"net/url"
 	"testing"
 	"time"
 
@@ -82,6 +83,22 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	assert.Equal(t, apiHostWithPort, testURL.Host)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
+}
+
+func TestBuildURLEscapedCharacters(t *testing.T) {
+	client, err := NewClient(&Config{
+		Token:  "TEST_TOKEN",
+		Tenant: "mytenant",
+	})
+	require.Nil(t, err)
+
+	query := url.Values{}
+	query.Set("filter", `kind=="import"`)
+	query.Set("email", "user@example.com")
+
+	testURL, err := client.BuildURL(query, "api", "permissions", "mytenant:*:*write")
+	require.Nil(t, err)
+	assert.Equal(t, "https://api.splunkbeta.com/mytenant/permissions/mytenant:%2A:%2Awrite?email=user%40example.com&filter=kind%3D%3D%22import%22", testURL.String())
 }
 
 func TestBuildURLSetDefaultTenant(t *testing.T) {
