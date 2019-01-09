@@ -6,10 +6,10 @@
     steps:
       - name: lint
         service: splunk-cloud-sdk-go
-        command: bash -c "golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck"
+        command: bash -c "make lint"
       - name: linttest
         service: splunk-cloud-sdk-go
-        command: bash -c "golangci-lint run test/... --disable-all"
+        command: bash -c "make linttest"
       - name: build
         service: splunk-cloud-sdk-go
         command: bash -c "make build"
