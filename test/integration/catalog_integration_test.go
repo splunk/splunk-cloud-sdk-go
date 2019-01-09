@@ -228,7 +228,7 @@ func TestCreateImportDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, importds.ID)
 	require.NotNil(t, importds)
-	require.Equal(t, string(catalog.Import), importds.Kind)
+	require.Equal(t, catalog.Import, importds.Kind)
 }
 
 // Test CreateKVCollectionDataset
@@ -237,7 +237,7 @@ func TestKVCollectionDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, kvds.ID)
 	require.NotNil(t, kvds)
-	require.Equal(t, string(catalog.KvCollection), kvds.Kind)
+	require.Equal(t, catalog.KvCollection, kvds.Kind)
 }
 
 // Test CreateLookupDataset
@@ -246,7 +246,7 @@ func TestLookupDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, lookupds.ID)
 	require.NotNil(t, lookupds)
-	require.Equal(t, string(catalog.Lookup), lookupds.Kind)
+	require.Equal(t, catalog.Lookup, lookupds.Kind)
 }
 
 // Test CreateMetricDataset
@@ -255,7 +255,7 @@ func TestMetricDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
-	require.Equal(t, string(catalog.Metric), metricds.Kind)
+	require.Equal(t, catalog.Metric, metricds.Kind)
 }
 
 // Test CreateViewDataset
@@ -264,7 +264,7 @@ func TestViewDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, viewds.ID)
 	require.NotNil(t, viewds)
-	require.Equal(t, string(catalog.View), viewds.Kind)
+	require.Equal(t, catalog.View, viewds.Kind)
 }
 
 // Test CreateDataset for 409 DatasetInfo already present error
@@ -466,7 +466,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 	newmetricsds, err := client.CatalogService.UpdateMetricDataset(umx, metricds.ID)
 	require.Nil(t, err)
 	assert.Equal(t, newname, newmetricsds.Name)
-	assert.Equal(t, newmod, newmetricsds.Module)
+	assert.Equal(t, newmod, *newmetricsds.Module)
 	assert.Equal(t, newowner, newmetricsds.Owner)
 	assert.Equal(t, !disabled, *newmetricsds.Disabled)
 	assert.Equal(t, newftime, *newmetricsds.FrozenTimePeriodInSecs)
@@ -488,7 +488,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 // 	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
 // 	require.Nil(t, err)
 // 	assert.Equal(t, newindexds.Name, *newimportds.SourceName)
-// 	assert.Equal(t, newindexds.Module, *newimportds.SourceModule)
+// 	assert.Equal(t, *newindexds.Module, *newimportds.SourceModule)
 // }
 
 // Test UpdateJobDataset
@@ -543,7 +543,7 @@ func TestUpdateLookupDataset(t *testing.T) {
 	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
 	require.Nil(t, err)
 	assert.NotEqual(t, "cantchangethis", newlookupds.ID)
-	assert.NotEqual(t, "cantchangethat", newlookupds.Kind)
+	assert.NotEqual(t, "cantchangethat", string(newlookupds.Kind))
 	assert.Equal(t, "test1@splunk.com", newlookupds.Owner)
 	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
 	assert.Equal(t, newxname, *newlookupds.ExternalName)
@@ -567,7 +567,7 @@ func TestUpdateViewDataset(t *testing.T) {
 	newviewds, err := client.CatalogService.UpdateViewDataset(uvw, viewds.ID)
 	require.Nil(t, err)
 	assert.Equal(t, newname, newviewds.Name)
-	assert.Equal(t, newmod, newviewds.Module)
+	assert.Equal(t, newmod, *newviewds.Module)
 	assert.Equal(t, newowner, newviewds.Owner)
 }
 
