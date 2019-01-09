@@ -505,10 +505,7 @@ func TestUpdateJobDataset(t *testing.T) {
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	require.Nil(t, err)
 	require.NotZero(t, len(datasets))
-	fmt.Printf("%+v", datasets)
-	parsedds, err := catalog.ParseRawDataset(datasets[0])
-	require.Nil(t, err)
-	jobds, ok := parsedds.(catalog.JobDataset)
+	jobds, ok := datasets[0].(catalog.JobDataset)
 	require.True(t, ok)
 	newstatus := string(search.JobCanceled)
 	// This job should not be canceled since it was just created
