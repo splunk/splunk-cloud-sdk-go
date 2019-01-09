@@ -151,10 +151,10 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	webhookActionName := "testaction"
-	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	webhookAction := model.NewWebhookAction(webhookActionName, "https://webhook.site/test", "{{ .name }} is a {{ .species }}")
 	action, err := client.ActionService.CreateAction(*webhookAction)
-	defer client.ActionService.DeleteAction(webhookActionName)
 	require.Nil(t, err)
+	defer client.ActionService.DeleteAction(webhookActionName)
 	require.NotEmpty(t, action)
 	assert.Equal(t, 2, len(LoggerOutput))
 
