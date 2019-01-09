@@ -171,19 +171,16 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
 	}
-	var buildPath = ""
-	for _, pathPart := range urlPathParts {
-		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
-	}
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
 	host := c.BuildHost(serviceCluster)
+	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
 
 	u = url.URL{
 		Scheme:   c.scheme,
 		Host:     host,
-		Path:     path.Join(tenant, buildPath),
+		Path:     pathWithTenant,
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
