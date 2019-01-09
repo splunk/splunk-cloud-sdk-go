@@ -77,14 +77,10 @@ func createIndex(client *sdk.Client) (string, string) {
 	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
 	index := "main"
 	disabled := false
-	indexmodel := &catalog.CreateIndexDataset{
-		CreateDatasetBase: &catalog.CreateDatasetBase{
-			Name: index,
-			Kind: catalog.Index,
-		},
-		IndexProperties: &catalog.IndexProperties{
-			Disabled: &disabled,
-		},
+	indexmodel := &catalog.IndexDataset{
+		Name:     index,
+		Kind:     catalog.Index,
+		Disabled: &disabled,
 	}
 
 	if index == "main" {

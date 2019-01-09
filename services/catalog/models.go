@@ -47,7 +47,7 @@ type ImportDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -97,7 +97,7 @@ func (ds ImportDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds ImportDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -111,7 +111,7 @@ type MetricDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -155,7 +155,7 @@ func (ds MetricDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds MetricDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -169,7 +169,7 @@ type IndexDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -213,7 +213,7 @@ func (ds IndexDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds IndexDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -229,7 +229,7 @@ type JobDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty" methods:"GET,PATCH"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -293,7 +293,7 @@ func (ds JobDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds JobDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -307,7 +307,7 @@ type ViewDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -349,7 +349,7 @@ func (ds ViewDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds ViewDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -363,7 +363,7 @@ type LookupDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -411,7 +411,7 @@ func (ds LookupDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds LookupDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -426,7 +426,7 @@ type KVCollectionDataset struct {
 	// The dataset name. Dataset names must be unique within each module.
 	Name string `json:"name,omitempty" methods:"GET,POST"`
 	// The dataset kind.
-	Kind string `json:"kind,omitempty" methods:"GET,POST"`
+	Kind DatasetInfoKind `json:"kind,omitempty" methods:"GET,POST"`
 	// A unique dataset ID. Random ID used if not provided. Not valid for PATCH method.
 	ID string `json:"id,omitempty" methods:"GET,POST"`
 	// The name of the module to create the new dataset in. The default module is "".
@@ -466,7 +466,7 @@ func (ds KVCollectionDataset) GetModule() string {
 
 // GetKind returns the dataset kind.
 func (ds KVCollectionDataset) GetKind() string {
-	return ds.Kind
+	return string(ds.Kind)
 }
 
 // MarshalJSONByMethod implements the util.MethodMarshaler interface
@@ -479,22 +479,42 @@ type GenericDataset map[string]interface{}
 
 // GetName the dataset name. Dataset names must be unique within each module.
 func (ds GenericDataset) GetName() string {
-	return ds["name"].(string)
+	val, ok := ds["name"]
+	if !ok {
+		return ""
+	}
+	strval, _ := val.(string)
+	return strval
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
 func (ds GenericDataset) GetID() string {
-	return ds["id"].(string)
+	val, ok := ds["id"]
+	if !ok {
+		return ""
+	}
+	strval, _ := val.(string)
+	return strval
 }
 
 // GetModule returns the name of the module associated with the dataset.
 func (ds GenericDataset) GetModule() string {
-	return ds["module"].(string)
+	val, ok := ds["module"]
+	if !ok {
+		return ""
+	}
+	strval, _ := val.(string)
+	return strval
 }
 
 // GetKind returns the dataset kind.
 func (ds GenericDataset) GetKind() string {
-	return ds["kind"].(string)
+	val, ok := ds["kind"]
+	if !ok {
+		return ""
+	}
+	strval, _ := val.(string)
+	return strval
 }
 
 // Field represents the fields belonging to the specified Dataset

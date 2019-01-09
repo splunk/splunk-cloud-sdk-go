@@ -27,7 +27,7 @@ func makeCollectionName(t *testing.T, ctx string) (id, kvCollection string) {
 	dsname := makeDSName(ctx)
 	kvds, err := createKVCollectionDataset(t, dsname)
 	require.Nil(t, err)
-	return kvds.ID, fmt.Sprintf("%s.%s", kvds.Module, kvds.Name)
+	return kvds.ID, fmt.Sprintf("%s.%s", *kvds.Module, kvds.Name)
 }
 
 // --------------------------------------------------------------------------------

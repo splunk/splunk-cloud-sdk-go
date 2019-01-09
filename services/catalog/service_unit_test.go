@@ -178,10 +178,13 @@ func TestParseRawDatasetOther(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, "narwhal", ds.GetKind())
-	rando, ok := ds.(DatasetBase)
+	assert.Equal(t, "", ds.GetName()) // this is not in the payload, so set to zero value
+	randoMap, ok := ds.(GenericDataset)
 	require.True(t, ok)
-	assert.Equal(t, "", rando.Name) // this is not in the payload, so set to zero value
-	assert.Equal(t, "me@example.com", rando.CreatedBy)
+	createdBy, _ := randoMap["createdby"].(string)
+	assert.Equal(t, "me@example.com", createdBy)
+	tusks, _ := randoMap["tusks"].(float64)
+	assert.Equal(t, float64(1), tusks)
 }
 
 // Test known dataset kinds:

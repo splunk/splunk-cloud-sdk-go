@@ -77,7 +77,7 @@ func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, err
 	externalKind := string(catalog.KvCollection)
 	createLookup := &catalog.LookupDataset{
 		Name:               name,
-		Kind:               string(catalog.Lookup),
+		Kind:               catalog.Lookup,
 		Module:             &testutils.TestModule,
 		CaseSensitiveMatch: &caseMatch,
 		ExternalKind:       externalKind,
@@ -89,53 +89,68 @@ func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, err
 
 // createKVCollectionDataset - Helper function for creating a valid KVCollection in Catalog
 func createKVCollectionDataset(t *testing.T, name string) (*catalog.KVCollectionDataset, error) {
-	createKVCollection := &catalog.CreateKVCollectionDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.KvCollection, testutils.TestModule),
+	createKVCollection := &catalog.KVCollectionDataset{
+		Name:   name,
+		Kind:   catalog.KvCollection,
+		Module: &testutils.TestModule,
 	}
 	return getSdkClient(t).CatalogService.CreateKVCollectionDataset(createKVCollection)
 }
 
 // createMetricDataset - Helper function for creating a valid Metric in Catalog
 func createMetricDataset(t *testing.T, name string) (*catalog.MetricDataset, error) {
-	createMetric := &catalog.CreateMetricDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Metric, testutils.TestModule),
-		MetricProperties:  catalog.NewMetricProperties(disabled, frozenTimePeriodInSecs),
+	createMetric := &catalog.MetricDataset{
+		Name:                   name,
+		Kind:                   catalog.Metric,
+		Module:                 &testutils.TestModule,
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
 	}
 	return getSdkClient(t).CatalogService.CreateMetricDataset(createMetric)
 }
 
 // createIndexDataset - Helper function for creating a valid Index in Catalog
 func createIndexDataset(t *testing.T, name string) (*catalog.IndexDataset, error) {
-	createIndex := &catalog.CreateIndexDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Index, testutils.TestModule),
-		IndexProperties:   catalog.NewIndexProperties(disabled, frozenTimePeriodInSecs),
+	createIndex := &catalog.IndexDataset{
+		Name:                   name,
+		Kind:                   catalog.Index,
+		Module:                 &testutils.TestModule,
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
 	}
 	return getSdkClient(t).CatalogService.CreateIndexDataset(createIndex)
 }
 
 // createImportDatasetByID - Helper function for creating a valid Import in Catalog
 func createImportDatasetByID(t *testing.T, name, importID string) (*catalog.ImportDataset, error) {
-	createImport := &catalog.CreateImportDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Import, testutils.TestModule),
-		ImportProperties:  catalog.NewImportPropertiesByID(importID),
+	createImport := &catalog.ImportDataset{
+		Name:     name,
+		Kind:     catalog.Import,
+		Module:   &testutils.TestModule,
+		SourceID: &importID,
 	}
 	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
 }
 
 // createImportDatasetByName - Helper function for creating a valid Import in Catalog
 func createImportDatasetByName(t *testing.T, name, importName, importModule string) (*catalog.ImportDataset, error) {
-	createImport := &catalog.CreateImportDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.Import, testutils.TestModule),
-		ImportProperties:  catalog.NewImportPropertiesByName(importModule, importName),
+	createImport := &catalog.ImportDataset{
+		Name:         name,
+		Kind:         catalog.Import,
+		Module:       &testutils.TestModule,
+		SourceName:   &importName,
+		SourceModule: &importModule,
 	}
 	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
 }
 
 // createViewDataset - Helper function for creating a valid View in Catalog
 func createViewDataset(t *testing.T, name string) (*catalog.ViewDataset, error) {
-	createView := &catalog.CreateViewDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
-		ViewProperties:    catalog.NewViewProperties(searchString),
+	createView := &catalog.ViewDataset{
+		Name:   name,
+		Kind:   catalog.View,
+		Module: &testutils.TestModule,
+		Search: &searchString,
 	}
 	return getSdkClient(t).CatalogService.CreateViewDataset(createView)
 }
@@ -183,15 +198,15 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 	// These are known kinds but are not supported in the spec:
 	case "catalog":
 	case "splv1sink":
-		ds, ok := dataset.(catalog.DatasetBase)
+		ds, ok := dataset.(catalog.GenericDataset)
 		assert.True(t, ok)
-		assert.NotEmpty(t, ds.ID)
+		assert.NotEmpty(t, ds.GetID())
 	// Anything here is not a known kind and should potentially be on our radar:
 	default:
-		ds, ok := dataset.(catalog.DatasetBase)
+		ds, ok := dataset.(catalog.GenericDataset)
 		assert.True(t, ok)
-		assert.NotEmpty(t, ds.ID)
-		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.Kind)
+		assert.NotEmpty(t, ds.GetID())
+		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.GetKind())
 	}
 }
 
@@ -268,9 +283,11 @@ func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 // Test CreateDataset for 401 Unauthorized operation error
 func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	name := makeDSName("401")
-	createView := &catalog.CreateViewDataset{
-		CreateDatasetBase: catalog.NewCreateDatasetBaseByName(name, catalog.View, testutils.TestModule),
-		ViewProperties:    catalog.NewViewProperties(searchString),
+	createView := &catalog.ViewDataset{
+		Name:   name,
+		Kind:   catalog.View,
+		Module: &testutils.TestModule,
+		Search: &searchString,
 	}
 	ds, err := getInvalidClient(t).CatalogService.CreateViewDataset(createView)
 	if ds != nil {
@@ -285,11 +302,16 @@ func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
 func TestCreateDatasetInvalidDatasetInfoError(t *testing.T) {
-	ds, err := getSdkClient(t).CatalogService.CreateDataset(&catalog.DatasetBase{Name: makeDSName("400"), Kind: "lookup", CreatedBy: "thisisnotvalid"})
+	badDS := make(map[string]interface{})
+	badDS["name"] = "ds400"
+	badDS["kind"] = "lookup"
+	badDS["createdby"] = "thisisnotvalid"
+	ds, err := getSdkClient(t).CatalogService.CreateDataset(badDS)
 	if ds != nil {
-		dsb, ok := ds.(catalog.DatasetBase)
+		// the ds should not have been created, but in case it was clean it up
+		dsb, ok := ds.(catalog.Dataset)
 		require.True(t, ok)
-		defer cleanupDataset(t, dsb.ID)
+		defer cleanupDataset(t, dsb.GetID())
 	}
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -413,8 +435,10 @@ func TestUpdateIndexDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
 	require.NotNil(t, indexds)
-	uidx := &catalog.UpdateIndexDataset{
-		IndexProperties: catalog.NewIndexProperties(!disabled, newftime),
+	notdisabled := !disabled
+	uidx := &catalog.IndexDataset{
+		Disabled:               &notdisabled,
+		FrozenTimePeriodInSecs: &newftime,
 	}
 	newindexds, err := client.CatalogService.UpdateIndexDataset(uidx, indexds.ID)
 	require.Nil(t, err)
@@ -430,10 +454,14 @@ func TestUpdateMetricDataset(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, metricds.ID)
 	require.NotNil(t, metricds)
+	notdisabled := !disabled
 	// Update the metrics dataset, including name and module
-	umx := &catalog.UpdateMetricDataset{
-		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
-		MetricProperties:  catalog.NewMetricProperties(!disabled, newftime),
+	umx := &catalog.MetricDataset{
+		Name:                   newname,
+		Module:                 &newmod,
+		Owner:                  newowner,
+		Disabled:               &notdisabled,
+		FrozenTimePeriodInSecs: &newftime,
 	}
 	newmetricsds, err := client.CatalogService.UpdateMetricDataset(umx, metricds.ID)
 	require.Nil(t, err)
@@ -445,7 +473,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 }
 
 // NOTE: UpdateImportDataset is not supported at this time
-// Test UpdateImportDataset
+// // Test UpdateImportDataset
 // func TestUpdateImportDataset(t *testing.T) {
 // 	// TODO: create newmetricsds and newimportds
 // 	client := getSdkClient(t)
@@ -453,11 +481,9 @@ func TestUpdateMetricDataset(t *testing.T) {
 // 	require.Nil(t, err)
 // 	defer cleanupDataset(t, importds.ID)
 // 	require.NotNil(t, importds)
-// 	uim := &catalog.UpdateImportDataset{
-// 		ImportProperties: &catalog.ImportProperties{
-// 			SourceName:   &newindexds.Name,
-// 			SourceModule: &newindexds.Module,
-// 		},
+// 	uim := &catalog.ImportDataset{
+// 		SourceName:   &newindexds.Name,
+// 		SourceModule: &newindexds.Module,
 // 	}
 // 	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
 // 	require.Nil(t, err)
@@ -487,7 +513,7 @@ func TestUpdateJobDataset(t *testing.T) {
 	newstatus := string(search.JobCanceled)
 	// This job should not be canceled since it was just created
 	require.NotEqual(t, newstatus, *jobds.Status)
-	ujb := &catalog.UpdateJobDataset{
+	ujb := &catalog.JobDataset{
 		Status: &newstatus,
 	}
 	newjobds, err := client.CatalogService.UpdateJobDataset(ujb, jobds.ID)
@@ -533,8 +559,10 @@ func TestUpdateViewDataset(t *testing.T) {
 	defer cleanupDataset(t, viewds.ID)
 	require.NotNil(t, viewds)
 	newname = fmt.Sprintf("newvw%d", testutils.TimeSec)
-	uvw := &catalog.UpdateViewDataset{
-		UpdateDatasetBase: catalog.NewUpdateDatasetBase(newname, newmod, newowner),
+	uvw := &catalog.ViewDataset{
+		Name:   newname,
+		Module: &newmod,
+		Owner:  newowner,
 	}
 	newviewds, err := client.CatalogService.UpdateViewDataset(uvw, viewds.ID)
 	require.Nil(t, err)
@@ -545,10 +573,8 @@ func TestUpdateViewDataset(t *testing.T) {
 
 // Test UpdateDataset for 404 Datasetnot found error
 func TestUpdateExistingDatasetDataNotFoundError(t *testing.T) {
-	uvw := &catalog.UpdateViewDataset{
-		ViewProperties: &catalog.ViewProperties{
-			Search: &searchString,
-		},
+	uvw := &catalog.ViewDataset{
+		Search: &searchString,
 	}
 	_, err := getSdkClient(t).CatalogService.UpdateViewDataset(uvw, "idonotexist")
 	require.NotNil(t, err)
