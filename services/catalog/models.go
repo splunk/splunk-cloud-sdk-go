@@ -474,11 +474,11 @@ func (ds *KVCollectionDataset) MarshalJSONByMethod(method string) ([]byte, error
 	return util.MarshalByMethod(*ds, method)
 }
 
-// GenericDataset represents a dataset of unknown kind
-type GenericDataset map[string]interface{}
+// OtherDataset represents a dataset of unknown kind
+type OtherDataset map[string]interface{}
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds GenericDataset) GetName() string {
+func (ds OtherDataset) GetName() string {
 	val, ok := ds["name"]
 	if !ok {
 		return ""
@@ -488,7 +488,7 @@ func (ds GenericDataset) GetName() string {
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds GenericDataset) GetID() string {
+func (ds OtherDataset) GetID() string {
 	val, ok := ds["id"]
 	if !ok {
 		return ""
@@ -498,7 +498,7 @@ func (ds GenericDataset) GetID() string {
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds GenericDataset) GetModule() string {
+func (ds OtherDataset) GetModule() string {
 	val, ok := ds["module"]
 	if !ok {
 		return ""
@@ -508,7 +508,7 @@ func (ds GenericDataset) GetModule() string {
 }
 
 // GetKind returns the dataset kind.
-func (ds GenericDataset) GetKind() string {
+func (ds OtherDataset) GetKind() string {
 	val, ok := ds["kind"]
 	if !ok {
 		return ""

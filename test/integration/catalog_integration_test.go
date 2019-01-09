@@ -198,12 +198,12 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 	// These are known kinds but are not supported in the spec:
 	case "catalog":
 	case "splv1sink":
-		ds, ok := dataset.(catalog.GenericDataset)
+		ds, ok := dataset.(catalog.OtherDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.GetID())
 	// Anything here is not a known kind and should potentially be on our radar:
 	default:
-		ds, ok := dataset.(catalog.GenericDataset)
+		ds, ok := dataset.(catalog.OtherDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.GetID())
 		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.GetKind())

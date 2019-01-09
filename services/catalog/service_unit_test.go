@@ -179,7 +179,7 @@ func TestParseRawDatasetOther(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, "narwhal", ds.GetKind())
 	assert.Equal(t, "", ds.GetName()) // this is not in the payload, so set to zero value
-	randoMap, ok := ds.(GenericDataset)
+	randoMap, ok := ds.(OtherDataset)
 	require.True(t, ok)
 	createdBy, _ := randoMap["createdby"].(string)
 	assert.Equal(t, "me@example.com", createdBy)

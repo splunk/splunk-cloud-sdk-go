@@ -681,7 +681,7 @@ func ParseRawDataset(dataset interface{}) (Dataset, error) {
 		return datasetResult, err
 	default:
 		// For unknown dataset kinds attempt to unmarshal to a generic DatasetBase - fail otherwise
-		var datasetResult GenericDataset
+		var datasetResult OtherDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
 		if err != nil {
 			return nil, fmt.Errorf("catalog: invalid dataset format and unknown kind: %s", kind)
