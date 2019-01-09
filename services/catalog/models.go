@@ -759,36 +759,7 @@ func NewUpdateRegexAction(field *string, pattern *string, limit *int) *Action {
 
 // DEPRECATED: The following fields have been deprecated, see comments for more details
 
-// DatasetInfo is Deprecated: 0.7.2 please use DatasetBase and *Dataset for each kind
-type DatasetInfo struct {
-	ID           string          `json:"id,omitempty"`
-	Name         string          `json:"name"`
-	Kind         DatasetInfoKind `json:"kind"`
-	Owner        string          `json:"owner,omitempty"`
-	Module       string          `json:"module,omitempty"`
-	Created      string          `json:"created,omitempty"`
-	Modified     string          `json:"modified,omitempty"`
-	CreatedBy    string          `json:"createdBy,omitempty"`
-	ModifiedBy   string          `json:"modifiedBy,omitempty"`
-	Capabilities string          `json:"capabilities"`
-	Version      int             `json:"version,omitempty"`
-	Fields       []Field         `json:"fields,omitempty"`
-	Readroles    []string        `json:"readroles,omitempty"`
-	Writeroles   []string        `json:"writeroles,omitempty"`
-
-	ExternalKind       string `json:"externalKind,omitempty"`
-	ExternalName       string `json:"externalName,omitempty"`
-	CaseSensitiveMatch bool   `json:"caseSensitiveMatch,omitempty"`
-	Filter             string `json:"filter,omitempty"`
-	MaxMatches         int    `json:"maxMatches,omitempty"`
-	MinMatches         int    `json:"minMatches,omitempty"`
-	DefaultMatch       string `json:"defaultMatch,omitempty"`
-
-	Datatype string `json:"datatype,omitempty"`
-	Disabled bool   `json:"disabled"`
-}
-
-// DatasetCreationPayload is Deprecated: 0.7.2 please use CreateDatasetBase and Create*Dataset for each kind
+// DatasetCreationPayload is Deprecated: 0.7.2 please use *Dataset for each kind
 type DatasetCreationPayload struct {
 	ID           string          `json:"id,omitempty"`
 	Name         string          `json:"name"`
@@ -815,7 +786,7 @@ type DatasetCreationPayload struct {
 	FrozenTimePeriodInSecs *int   `json:"frozenTimePeriodInSecs,omitempty"`
 }
 
-// UpdateDatasetInfoFields is Deprecated: 0.7.2 please use UpdateDatasetBase and Update*Dataset for each kind
+// UpdateDatasetInfoFields is Deprecated: 0.7.2 please use *Dataset for each kind
 type UpdateDatasetInfoFields struct {
 	Name         string          `json:"name,omitempty"`
 	Kind         DatasetInfoKind `json:"kind,omitempty"`
