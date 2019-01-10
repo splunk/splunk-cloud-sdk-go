@@ -1020,7 +1020,7 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewEvalAction(field.Name, "some expression", ""))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewEvalAction(field.Name, "\"some expression\"", ""))
 	require.Nil(t, err)
 	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
 
