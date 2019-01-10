@@ -73,42 +73,23 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	require.NotEmpty(t, pipeline.Data)
 	require.NotEmpty(t, pipeline.Data.Edges)
-	require.Equal(t, 3, len(pipeline.Data.Edges))
+	require.Equal(t, 1, len(pipeline.Data.Edges))
 	assert.NotEmpty(t, pipeline.Data.Edges[0].SourceNode)
 	assert.NotEmpty(t, pipeline.Data.Edges[0].TargetNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[1].SourceNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[1].TargetNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[2].SourceNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[2].TargetNode)
 
 	require.NotEmpty(t, pipeline.Data.Nodes)
-	require.Equal(t, 4, len(pipeline.Data.Nodes))
+	require.Equal(t, 2, len(pipeline.Data.Nodes))
 
 	dataNode1, ok := pipeline.Data.Nodes[0].(map[string]interface{})
 	require.True(t, ok)
 	assert.NotEmpty(t, dataNode1["id"])
-	assert.Equal(t, "unauthenticated-read-kafka", dataNode1["op"])
-	assert.Equal(t, "localhost:9092", dataNode1["brokers"])
-	assert.Equal(t, "intopic", dataNode1["topic"])
+	assert.Equal(t, "read-splunk-firehose", dataNode1["op"])
 
 	dataNode2, ok := pipeline.Data.Nodes[1].(map[string]interface{})
 	require.True(t, ok)
 	assert.NotEmpty(t, dataNode2["id"])
-	assert.Equal(t, "deserialize-events", dataNode2["op"])
+	assert.Equal(t, "write-splunk-index", dataNode2["op"])
 	assert.Empty(t, dataNode2["attributes"])
-
-	dataNode3, ok := pipeline.Data.Nodes[2].(map[string]interface{})
-	require.True(t, ok)
-	assert.NotEmpty(t, dataNode3["id"])
-	assert.Equal(t, "serialize-events", dataNode3["op"])
-	assert.Equal(t, "output-topic-1", dataNode3["topic"])
-
-	dataNode4, ok := pipeline.Data.Nodes[3].(map[string]interface{})
-	require.True(t, ok)
-	assert.NotEmpty(t, dataNode4["id"])
-	assert.Equal(t, "unauthenticated-write-kafka", dataNode4["op"])
-	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
-	assert.Empty(t, dataNode4["producer-properties"])
 }
 
 // Test ActivatePipeline streams endpoint
@@ -226,7 +207,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 // makePipelineRequest is a helper function to make a PipelineRequest model
 func makePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	// Create a test UPL JSON from a test DSL
-	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(unauthenticated-read-kafka(kafka-brokers, input-topic, {}));unauthenticated-write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
+	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
 	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
