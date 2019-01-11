@@ -81,22 +81,22 @@ type ImportDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds ImportDataset) GetName() string {
+func (ds *ImportDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds ImportDataset) GetID() string {
+func (ds *ImportDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds ImportDataset) GetModule() string {
+func (ds *ImportDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds ImportDataset) GetKind() string {
+func (ds *ImportDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -139,22 +139,22 @@ type MetricDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds MetricDataset) GetName() string {
+func (ds *MetricDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds MetricDataset) GetID() string {
+func (ds *MetricDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds MetricDataset) GetModule() string {
+func (ds *MetricDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds MetricDataset) GetKind() string {
+func (ds *MetricDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -197,22 +197,22 @@ type IndexDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds IndexDataset) GetName() string {
+func (ds *IndexDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds IndexDataset) GetID() string {
+func (ds *IndexDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds IndexDataset) GetModule() string {
+func (ds *IndexDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds IndexDataset) GetKind() string {
+func (ds *IndexDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -277,22 +277,22 @@ type JobDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds JobDataset) GetName() string {
+func (ds *JobDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds JobDataset) GetID() string {
+func (ds *JobDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds JobDataset) GetModule() string {
+func (ds *JobDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds JobDataset) GetKind() string {
+func (ds *JobDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -333,22 +333,22 @@ type ViewDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds ViewDataset) GetName() string {
+func (ds *ViewDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds ViewDataset) GetID() string {
+func (ds *ViewDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds ViewDataset) GetModule() string {
+func (ds *ViewDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds ViewDataset) GetKind() string {
+func (ds *ViewDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -395,22 +395,22 @@ type LookupDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds LookupDataset) GetName() string {
+func (ds *LookupDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds LookupDataset) GetID() string {
+func (ds *LookupDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds LookupDataset) GetModule() string {
+func (ds *LookupDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds LookupDataset) GetKind() string {
+func (ds *LookupDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -450,22 +450,22 @@ type KVCollectionDataset struct {
 }
 
 // GetName the dataset name. Dataset names must be unique within each module.
-func (ds KVCollectionDataset) GetName() string {
+func (ds *KVCollectionDataset) GetName() string {
 	return ds.Name
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds KVCollectionDataset) GetID() string {
+func (ds *KVCollectionDataset) GetID() string {
 	return ds.ID
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds KVCollectionDataset) GetModule() string {
+func (ds *KVCollectionDataset) GetModule() string {
 	return *ds.Module
 }
 
 // GetKind returns the dataset kind.
-func (ds KVCollectionDataset) GetKind() string {
+func (ds *KVCollectionDataset) GetKind() string {
 	return string(ds.Kind)
 }
 
@@ -477,44 +477,33 @@ func (ds *KVCollectionDataset) MarshalJSONByMethod(method string) ([]byte, error
 // OtherDataset represents a dataset of unknown kind
 type OtherDataset map[string]interface{}
 
-// GetName the dataset name. Dataset names must be unique within each module.
-func (ds OtherDataset) GetName() string {
-	val, ok := ds["name"]
+func (ds *OtherDataset) getStringKey(key string) string {
+	val, ok := (*ds)[key]
 	if !ok {
 		return ""
 	}
 	strval, _ := val.(string)
 	return strval
+}
+
+// GetName the dataset name. Dataset names must be unique within each module.
+func (ds *OtherDataset) GetName() string {
+	return ds.getStringKey("name")
 }
 
 // GetID returns a unique dataset ID. Random ID used if not provided
-func (ds OtherDataset) GetID() string {
-	val, ok := ds["id"]
-	if !ok {
-		return ""
-	}
-	strval, _ := val.(string)
-	return strval
+func (ds *OtherDataset) GetID() string {
+	return ds.getStringKey("id")
 }
 
 // GetModule returns the name of the module associated with the dataset.
-func (ds OtherDataset) GetModule() string {
-	val, ok := ds["module"]
-	if !ok {
-		return ""
-	}
-	strval, _ := val.(string)
-	return strval
+func (ds *OtherDataset) GetModule() string {
+	return ds.getStringKey("module")
 }
 
 // GetKind returns the dataset kind.
-func (ds OtherDataset) GetKind() string {
-	val, ok := ds["kind"]
-	if !ok {
-		return ""
-	}
-	strval, _ := val.(string)
-	return strval
+func (ds *OtherDataset) GetKind() string {
+	return ds.getStringKey("kind")
 }
 
 // Field represents the fields belonging to the specified Dataset

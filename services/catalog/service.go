@@ -111,11 +111,11 @@ func (s *Service) CreateIndexDataset(indexDataset *IndexDataset) (*IndexDataset,
 	if err != nil {
 		return nil, err
 	}
-	ids, ok := ds.(IndexDataset)
+	ids, ok := ds.(*IndexDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Index)
 	}
-	return &ids, nil
+	return ids, nil
 }
 
 // CreateLookupDataset creates a lookup Dataset
@@ -124,11 +124,11 @@ func (s *Service) CreateLookupDataset(lookupDataset *LookupDataset) (*LookupData
 	if err != nil {
 		return nil, err
 	}
-	lds, ok := ds.(LookupDataset)
+	lds, ok := ds.(*LookupDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Lookup)
 	}
-	return &lds, nil
+	return lds, nil
 }
 
 // CreateViewDataset creates a view Dataset
@@ -137,11 +137,11 @@ func (s *Service) CreateViewDataset(viewDataset *ViewDataset) (*ViewDataset, err
 	if err != nil {
 		return nil, err
 	}
-	vds, ok := ds.(ViewDataset)
+	vds, ok := ds.(*ViewDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", View)
 	}
-	return &vds, nil
+	return vds, nil
 }
 
 // CreateKVCollectionDataset creates a KVCollection Dataset
@@ -150,11 +150,11 @@ func (s *Service) CreateKVCollectionDataset(kvDataset *KVCollectionDataset) (*KV
 	if err != nil {
 		return nil, err
 	}
-	kvds, ok := ds.(KVCollectionDataset)
+	kvds, ok := ds.(*KVCollectionDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", KvCollection)
 	}
-	return &kvds, nil
+	return kvds, nil
 }
 
 // CreateImportDataset creates an import Dataset
@@ -163,11 +163,11 @@ func (s *Service) CreateImportDataset(importDataset *ImportDataset) (*ImportData
 	if err != nil {
 		return nil, err
 	}
-	ids, ok := ds.(ImportDataset)
+	ids, ok := ds.(*ImportDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Import)
 	}
-	return &ids, nil
+	return ids, nil
 }
 
 // CreateMetricDataset creates a metric Dataset
@@ -176,11 +176,11 @@ func (s *Service) CreateMetricDataset(metricDataset *MetricDataset) (*MetricData
 	if err != nil {
 		return nil, err
 	}
-	mds, ok := ds.(MetricDataset)
+	mds, ok := ds.(*MetricDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: CreateDataset response did not match expected kind: %s", Metric)
 	}
-	return &mds, nil
+	return mds, nil
 }
 
 // UpdateDataset updates an existing Dataset with the specified resourceName or ID
@@ -207,11 +207,11 @@ func (s *Service) UpdateIndexDataset(indexDataset *IndexDataset, id string) (*In
 	if err != nil {
 		return nil, err
 	}
-	ids, ok := ds.(IndexDataset)
+	ids, ok := ds.(*IndexDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Index)
 	}
-	return &ids, nil
+	return ids, nil
 }
 
 // NOTE: UpdateImportDataset is not supported at this time
@@ -221,11 +221,11 @@ func (s *Service) UpdateIndexDataset(indexDataset *IndexDataset, id string) (*In
 // 	if err != nil {
 // 		return nil, err
 // 	}
-// 	ids, ok := ds.(ImportDataset)
+// 	ids, ok := ds.(*ImportDataset)
 // 	if !ok {
 // 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Import)
 // 	}
-// 	return &ids, nil
+// 	return ids, nil
 // }
 
 // UpdateJobDataset updates an existing job Dataset with the specified resourceName or ID
@@ -234,11 +234,11 @@ func (s *Service) UpdateJobDataset(jobDataset *JobDataset, id string) (*JobDatas
 	if err != nil {
 		return nil, err
 	}
-	ids, ok := ds.(JobDataset)
+	ids, ok := ds.(*JobDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Job)
 	}
-	return &ids, nil
+	return ids, nil
 }
 
 // UpdateLookupDataset updates an existing lookup Dataset with the specified resourceName or ID
@@ -247,11 +247,11 @@ func (s *Service) UpdateLookupDataset(lookupDataset *LookupDataset, id string) (
 	if err != nil {
 		return nil, err
 	}
-	lds, ok := ds.(LookupDataset)
+	lds, ok := ds.(*LookupDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Lookup)
 	}
-	return &lds, nil
+	return lds, nil
 }
 
 // UpdateViewDataset updates an existing view Dataset with the specified resourceName or ID
@@ -260,11 +260,11 @@ func (s *Service) UpdateViewDataset(viewDataset *ViewDataset, id string) (*ViewD
 	if err != nil {
 		return nil, err
 	}
-	vds, ok := ds.(ViewDataset)
+	vds, ok := ds.(*ViewDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", View)
 	}
-	return &vds, nil
+	return vds, nil
 }
 
 // UpdateMetricDataset updates an existing metric Dataset with the specified resourceName or ID
@@ -273,11 +273,11 @@ func (s *Service) UpdateMetricDataset(metricDataset *MetricDataset, id string) (
 	if err != nil {
 		return nil, err
 	}
-	mds, ok := ds.(MetricDataset)
+	mds, ok := ds.(*MetricDataset)
 	if !ok {
 		return nil, fmt.Errorf("catalog: UpdateDataset response did not match expected kind: %s", Metric)
 	}
-	return &mds, nil
+	return mds, nil
 }
 
 // DeleteDataset implements delete Dataset endpoint with the specified resourceName or ID
@@ -654,31 +654,31 @@ func ParseRawDataset(dataset interface{}) (Dataset, error) {
 	case string(Index):
 		var datasetResult IndexDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(View):
 		var datasetResult ViewDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(Lookup):
 		var datasetResult LookupDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(Import):
 		var datasetResult ImportDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(Job):
 		var datasetResult JobDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(Metric):
 		var datasetResult MetricDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	case string(KvCollection):
 		var datasetResult KVCollectionDataset
 		err = json.Unmarshal(datasetByte, &datasetResult)
-		return datasetResult, err
+		return &datasetResult, err
 	default:
 		// For unknown dataset kinds attempt to unmarshal to a generic DatasetBase - fail otherwise
 		var datasetResult OtherDataset
@@ -686,6 +686,6 @@ func ParseRawDataset(dataset interface{}) (Dataset, error) {
 		if err != nil {
 			return nil, fmt.Errorf("catalog: invalid dataset format and unknown kind: %s", kind)
 		}
-		return datasetResult, err
+		return &datasetResult, err
 	}
 }

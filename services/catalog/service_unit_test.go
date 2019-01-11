@@ -142,6 +142,9 @@ const (
 	  }`
 	randoDS = `{
 		"kind": "narwhal",
+		"name": "nah wall",
+		"id": "1234",
+		"module": "modwhal",
 		"createdby": "me@example.com",
 		"modifiedby": "me@example.com",
 		"tusks": 1
@@ -178,12 +181,14 @@ func TestParseRawDatasetOther(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, "narwhal", ds.GetKind())
-	assert.Equal(t, "", ds.GetName()) // this is not in the payload, so set to zero value
-	randoMap, ok := ds.(OtherDataset)
+	assert.Equal(t, "1234", ds.GetID())
+	assert.Equal(t, "nah wall", ds.GetName())
+	assert.Equal(t, "modwhal", ds.GetModule())
+	randoMap, ok := ds.(*OtherDataset)
 	require.True(t, ok)
-	createdBy, _ := randoMap["createdby"].(string)
+	createdBy, _ := (*randoMap)["createdby"].(string)
 	assert.Equal(t, "me@example.com", createdBy)
-	tusks, _ := randoMap["tusks"].(float64)
+	tusks, _ := (*randoMap)["tusks"].(float64)
 	assert.Equal(t, float64(1), tusks)
 }
 
@@ -196,7 +201,7 @@ func TestParseRawDatasetLookup(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(Lookup), ds.GetKind())
-	lookup, ok := ds.(LookupDataset)
+	lookup, ok := ds.(*LookupDataset)
 	require.True(t, ok)
 	assert.Equal(t, "mylookup", lookup.Name)
 	assert.Equal(t, "kind==\"lookup\"", lookup.Filter)
@@ -208,7 +213,7 @@ func TestParseRawDatasetKvCollection(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(KvCollection), ds.GetKind())
-	kvCollection, ok := ds.(KVCollectionDataset)
+	kvCollection, ok := ds.(*KVCollectionDataset)
 	require.True(t, ok)
 	assert.Equal(t, "mycollection", kvCollection.Name)
 }
@@ -219,7 +224,7 @@ func TestParseRawDatasetIndex(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(Index), ds.GetKind())
-	index, ok := ds.(IndexDataset)
+	index, ok := ds.(*IndexDataset)
 	require.True(t, ok)
 	assert.Equal(t, "myindex", index.Name)
 	assert.Equal(t, 999, *index.FrozenTimePeriodInSecs)
@@ -232,7 +237,7 @@ func TestParseRawDatasetMetric(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(Metric), ds.GetKind())
-	metric, ok := ds.(MetricDataset)
+	metric, ok := ds.(*MetricDataset)
 	require.True(t, ok)
 	assert.Equal(t, "mymetric", metric.Name)
 	assert.Equal(t, 7, *metric.FrozenTimePeriodInSecs)
@@ -245,7 +250,7 @@ func TestParseRawDatasetImport(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(Import), ds.GetKind())
-	imp, ok := ds.(ImportDataset)
+	imp, ok := ds.(*ImportDataset)
 	require.True(t, ok)
 	assert.Equal(t, "myimport", imp.Name)
 	assert.Equal(t, "1234aaabbbccc", *imp.OriginalDatasetID)
@@ -258,7 +263,7 @@ func TestParseRawDatasetJob(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(Job), ds.GetKind())
-	job, ok := ds.(JobDataset)
+	job, ok := ds.(*JobDataset)
 	require.True(t, ok)
 	assert.Equal(t, "sid_1234567890_123", job.Name)
 	assert.Equal(t, "done", *job.Status)
@@ -271,7 +276,7 @@ func TestParseRawDatasetView(t *testing.T) {
 	ds, err := ParseRawDataset(dsMap)
 	require.Nil(t, err)
 	assert.Equal(t, string(View), ds.GetKind())
-	view, ok := ds.(ViewDataset)
+	view, ok := ds.(*ViewDataset)
 	require.True(t, ok)
 	assert.Equal(t, "myview", view.Name)
 	assert.Equal(t, "search index=main | head limit=10 | stats count()", *view.Search)

@@ -168,42 +168,42 @@ func createDatasetField(datasetID string, client *sdk.Client, t *testing.T) *cat
 func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 	switch dataset.GetKind() {
 	case string(catalog.Index):
-		ds, ok := dataset.(catalog.IndexDataset)
+		ds, ok := dataset.(*catalog.IndexDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.View):
-		ds, ok := dataset.(catalog.ViewDataset)
+		ds, ok := dataset.(*catalog.ViewDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.Lookup):
-		ds, ok := dataset.(catalog.LookupDataset)
+		ds, ok := dataset.(*catalog.LookupDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.Import):
-		ds, ok := dataset.(catalog.ImportDataset)
+		ds, ok := dataset.(*catalog.ImportDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.Job):
-		ds, ok := dataset.(catalog.JobDataset)
+		ds, ok := dataset.(*catalog.JobDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.Metric):
-		ds, ok := dataset.(catalog.MetricDataset)
+		ds, ok := dataset.(*catalog.MetricDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	case string(catalog.KvCollection):
-		ds, ok := dataset.(catalog.KVCollectionDataset)
+		ds, ok := dataset.(*catalog.KVCollectionDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.ID)
 	// These are known kinds but are not supported in the spec:
 	case "catalog":
 	case "splv1sink":
-		ds, ok := dataset.(catalog.OtherDataset)
+		ds, ok := dataset.(*catalog.OtherDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.GetID())
 	// Anything here is not a known kind and should potentially be on our radar:
 	default:
-		ds, ok := dataset.(catalog.OtherDataset)
+		ds, ok := dataset.(*catalog.OtherDataset)
 		assert.True(t, ok)
 		assert.NotEmpty(t, ds.GetID())
 		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.GetKind())
@@ -309,9 +309,7 @@ func TestCreateDatasetInvalidDatasetInfoError(t *testing.T) {
 	ds, err := getSdkClient(t).CatalogService.CreateDataset(badDS)
 	if ds != nil {
 		// the ds should not have been created, but in case it was clean it up
-		dsb, ok := ds.(catalog.Dataset)
-		require.True(t, ok)
-		defer cleanupDataset(t, dsb.GetID())
+		defer cleanupDataset(t, ds.GetID())
 	}
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -505,7 +503,7 @@ func TestUpdateJobDataset(t *testing.T) {
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
 	require.Nil(t, err)
 	require.NotZero(t, len(datasets))
-	jobds, ok := datasets[0].(catalog.JobDataset)
+	jobds, ok := datasets[0].(*catalog.JobDataset)
 	require.True(t, ok)
 	newstatus := string(search.JobCanceled)
 	// This job should not be canceled since it was just created
