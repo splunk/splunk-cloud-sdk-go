@@ -670,7 +670,7 @@ func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
 	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField2)
 
 	filter := make(url.Values)
-	filter.Add("filter", "name==\"integ_test_field2\"");
+	filter.Add("filter", "name==\"integ_test_field2\"")
 
 	// Validate the creation of new dataset fields
 	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
