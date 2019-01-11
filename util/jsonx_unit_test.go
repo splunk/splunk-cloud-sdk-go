@@ -1,3 +1,8 @@
+// Copyright © 2019 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package util
 
 import (
@@ -68,6 +73,10 @@ type EmbeddedMulti struct {
 
 type NoMethodsTags struct {
 	A string `json:"a"`
+}
+
+type InvalidMethodsTag struct {
+	A string `json:"a" methods:"GET,POTS"`
 }
 
 type StringTag struct {
@@ -275,9 +284,22 @@ func TestMarshalByMethodNoMethodsTags(t *testing.T) {
 	assert.Contains(t, err.Error(), "should only be used on structs with fields containing at least one `methods:` tag")
 }
 
+func TestMarshalByMethodInvalidMethodsTag(t *testing.T) {
+	a := InvalidMethodsTag{A: "valueA"}
+	_, err := MarshalByMethod(a, "GET")
+	// there is no err because GET is found before POTS is encountered
+	require.Nil(t, err)
+	_, err = MarshalByMethod(a, "POST")
+	require.NotNil(t, err)
+	assert.Contains(t, err.Error(), "`methods:` field tag found with invalid method: \"POTS\"")
+}
+
 func TestMarshalByMethodUnsupportedStringTag(t *testing.T) {
 	a := StringTag{A: "valueA"}
-	_, err := MarshalByMethod(a, "POST")
+	_, err := MarshalByMethod(a, "PATCH")
+	// there is no err because json field is not read since no PATCH field to marshal
+	require.Nil(t, err)
+	_, err = MarshalByMethod(a, "POST")
 	require.NotNil(t, err)
 	assert.Contains(t, err.Error(), "the \"string\" tag (`json:\",string\"`) is not supported")
 }

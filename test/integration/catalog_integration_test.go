@@ -211,12 +211,12 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 }
 
 // Test CreateIndexDataset
-func CreateIndexDataset(t *testing.T) {
+func TestCreateIndexDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
 	require.Nil(t, err)
 	defer cleanupDataset(t, indexds.ID)
 	require.NotNil(t, indexds)
-	require.Equal(t, catalog.Index, indexds.GetKind())
+	require.Equal(t, catalog.Index, indexds.Kind)
 }
 
 // Test CreateImportDataset

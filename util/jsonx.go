@@ -1,8 +1,14 @@
+// Copyright © 2019 Splunk Inc.
+// SPLUNK CONFIDENTIAL – Use or disclosure of this material in whole or in part
+// without a valid written license from Splunk Inc. is PROHIBITED.
+//
+
 package util
 
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -70,10 +76,17 @@ func MarshalByMethod(v interface{}, method string) ([]byte, error) {
 			parts := strings.Split(strings.ToUpper(methods), ",")
 			found := false
 			// Since m ~ 1-4 linear search will do just fine
+		MethodsTagLoop:
 			for m := 0; m < len(parts); m++ {
-				if parts[m] == method {
-					found = true
-					break
+				switch parts[m] {
+				case http.MethodConnect, http.MethodDelete, http.MethodGet, http.MethodHead,
+					http.MethodOptions, http.MethodPatch, http.MethodPost, http.MethodPut, "":
+					if parts[m] == method {
+						found = true
+						break MethodsTagLoop
+					}
+				default:
+					return nil, fmt.Errorf("util: jsonx.MarshalByMethod() `methods:` field tag found with invalid method: \"%s\"", parts[m])
 				}
 			}
 			if !found {
