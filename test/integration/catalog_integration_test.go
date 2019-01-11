@@ -256,6 +256,19 @@ func TestListDatasetsFilter(t *testing.T) {
 	assert.NotNil(t, len(datasets))
 }
 
+// Test TestListDatasetsComplexFilter
+func TestListDatasetsComplexFilter(t *testing.T) {
+	defer cleanupDatasets(t)
+	createLookupDatasets(t)
+
+	values := make(url.Values)
+	values.Set("filter", "kind==\"kvcollection\" AND name==\"test_externalName\"")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
 // Test TestListDatasetsCount
 func TestListDatasetsCount(t *testing.T) {
 	defer cleanupDatasets(t)
