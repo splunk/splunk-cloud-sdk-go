@@ -251,11 +251,18 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
 	} else {
-		if content, err := json.Marshal(requestParams.Body); err == nil {
-			buffer = bytes.NewBuffer(content)
+		bodyMarshaler, ok := requestParams.Body.(util.MethodMarshaler)
+		var marshalErr error
+		var content []byte
+		if ok {
+			content, marshalErr = bodyMarshaler.MarshalJSONByMethod(requestParams.Method)
 		} else {
-			return nil, err
+			content, marshalErr = json.Marshal(requestParams.Body)
 		}
+		if marshalErr != nil {
+			return nil, marshalErr
+		}
+		buffer = bytes.NewBuffer(content)
 	}
 	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {

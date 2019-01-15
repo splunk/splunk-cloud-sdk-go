@@ -73,10 +73,9 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 	return client
 }
 
-// This is the legacy client initialization
-// Deprecated: please use sdk.NewClient()
+// Get a client with an invalid (expired) token
 func getInvalidClient(t *testing.T) *service.Client {
-	client, err := service.NewClient(&service.Config{
+	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,

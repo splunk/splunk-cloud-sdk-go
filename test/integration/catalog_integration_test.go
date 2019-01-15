@@ -6,188 +6,293 @@
 package integration
 
 import (
-	"fmt"
 	"net/url"
 	"testing"
 
-	"strings"
+	"fmt"
 
-	"github.com/splunk/splunk-cloud-sdk-go/model"
-	"github.com/splunk/splunk-cloud-sdk-go/service"
+	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-// Test Rule variables
-var ruleName = "goSdkTestrRule1"
-var ruleModule = "catalog"
-var ruleMatch = "sourcetype::integration_test_match"
-var owner = "splunk"
-
 // Test Dataset variables
-var datasetOwner = "Splunk"
-var datasetCapabilities = "1101-00000:11010"
-var datasetName1 = "go_integ_dataset_1000"
-var datasetName2 = "go_integ_dataset_2000"
-var datasetName3 = "go_integ_dataset_3000"
-var externalKind = "kvcollection"
-var externalName = "test_externalName"
+var (
+	// Base:
+	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.TimeSec)
+	newname        = fmt.Sprintf("newmx%d", testutils.TimeSec)
+	newmod         = fmt.Sprintf("newmod%d", testutils.TimeSec)
+	newowner       = "test1@splunk.com"
+	// Lookup:
+	caseMatch    = true
+	externalName = "test_externalName"
+	filter       = `kind=="lookup"`
+	// Metric/Index:
+	disabled               = false
+	frozenTimePeriodInSecs = 60
+	newftime               = 999
+	// View:
+	searchString = "search index=main|stats count()"
+)
 
-func cleanupDatasets(t *testing.T) {
-	client := getClient(t)
-	result, err := client.CatalogService.GetDatasets()
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+// Test Rule variables
+var (
+	ruleNameTemplate = fmt.Sprintf("gointegrule%s_%d", "%s", testutils.TimeSec)
+	ruleModule       = "gointeg"
+	ruleMatch        = "sourcetype::integration_test_match"
+)
 
-	// deletes all the datasets with name containing a 'go' prefix
-	for _, item := range result {
-		if strings.HasPrefix(item.Name, "go") {
-			err = client.CatalogService.DeleteDataset(item.ID)
-			assert.Emptyf(t, err, "Error deleting dataset: %s", err)
-		}
+func makeDSName(ctx string) string {
+	return fmt.Sprintf(dsNameTemplate, ctx)
+}
+
+func makeRuleName(ctx string) string {
+	return fmt.Sprintf(ruleNameTemplate, ctx)
+}
+
+func cleanupDataset(t *testing.T, id string) {
+	client := getSdkClient(t)
+	err := client.CatalogService.DeleteDataset(id)
+	assert.Emptyf(t, err, "Error deleting dataset: %s", err)
+}
+
+func cleanupRule(t *testing.T, id string) {
+	client := getSdkClient(t)
+	err := client.CatalogService.DeleteRule(id)
+	assert.Emptyf(t, err, "Error deleting rule: %s", err)
+}
+
+func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
+	client := getSdkClient(t)
+	err := client.CatalogService.DeleteRuleAction(ruleID, actionID)
+	assert.Emptyf(t, err, "Error deleting rule action: %s", err)
+}
+
+// createLookupDataset - Helper function for creating a valid Lookup in Catalog
+func createLookupDataset(t *testing.T, name string) (*catalog.LookupDataset, error) {
+	externalKind := string(catalog.KvCollection)
+	createLookup := &catalog.LookupDataset{
+		Name:               name,
+		Kind:               catalog.Lookup,
+		Module:             &testutils.TestModule,
+		CaseSensitiveMatch: &caseMatch,
+		ExternalKind:       externalKind,
+		ExternalName:       &externalName,
+		Filter:             filter,
 	}
+	return getSdkClient(t).CatalogService.CreateLookupDataset(createLookup)
 }
 
-func cleanupRules(t *testing.T) {
-	client := getClient(t)
-	result, err := client.CatalogService.GetRules()
-	assert.Emptyf(t, err, "Error retrieving the rules: %s", err)
-
-	for _, item := range result {
-		err := client.CatalogService.DeleteRule(item.ID)
-		assert.Emptyf(t, err, "Error deleting dataset: %s", err)
+// createKVCollectionDataset - Helper function for creating a valid KVCollection in Catalog
+func createKVCollectionDataset(t *testing.T, name string) (*catalog.KVCollectionDataset, error) {
+	createKVCollection := &catalog.KVCollectionDataset{
+		Name:   name,
+		Kind:   catalog.KvCollection,
+		Module: &testutils.TestModule,
 	}
+	return getSdkClient(t).CatalogService.CreateKVCollectionDataset(createKVCollection)
 }
 
-// createDatastoreKVCollection - Helper function for creating a valid KV Collection in Catalog
-func createLookupDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, externalKind string, externalName string) (*model.DatasetInfo, error) {
-	createLookupDatasetInfo := model.DatasetCreationPayload{
-		Name:         collectionName,
-		Kind:         model.LOOKUP,
-		Owner:        datasetOwner,
-		Module:       namespaceName,
-		Capabilities: capabilities,
-		ExternalKind: externalKind,
-		ExternalName: externalName,
+// createMetricDataset - Helper function for creating a valid Metric in Catalog
+func createMetricDataset(t *testing.T, name string) (*catalog.MetricDataset, error) {
+	createMetric := &catalog.MetricDataset{
+		Name:                   name,
+		Kind:                   catalog.Metric,
+		Module:                 &testutils.TestModule,
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
 	}
-
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createLookupDatasetInfo)
-	require.NotNil(t, datasetInfo)
-	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
-	require.Nil(t, err)
-	require.Equal(t, model.LOOKUP, datasetInfo.Kind)
-
-	return datasetInfo, err
+	return getSdkClient(t).CatalogService.CreateMetricDataset(createMetric)
 }
 
-func createLookupDatasets(t *testing.T) {
-	_, errOne := createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errOne, "Error creating dataset: %s", errOne)
-
-	_, errTwo := createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errTwo, "Error creating dataset: %s", errTwo)
-
-	_, errThree := createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, errThree, "Error creating dataset: %s", errThree)
-}
-
-func createKVCollectionDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string) (*model.DatasetInfo, error) {
-	createKVCollectionDatasetInfo := model.DatasetCreationPayload{
-		Name:         collectionName,
-		Kind:         model.KVCOLLECTION,
-		Owner:        datasetOwner,
-		Module:       namespaceName,
-		Capabilities: capabilities,
+// createIndexDataset - Helper function for creating a valid Index in Catalog
+func createIndexDataset(t *testing.T, name string) (*catalog.IndexDataset, error) {
+	createIndex := &catalog.IndexDataset{
+		Name:                   name,
+		Kind:                   catalog.Index,
+		Module:                 &testutils.TestModule,
+		Disabled:               &disabled,
+		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
 	}
-
-	datasetInfo, err := getClient(t).CatalogService.CreateDataset(&createKVCollectionDatasetInfo)
-	require.NotNil(t, datasetInfo)
-	require.IsType(t, model.DatasetInfo{}, *datasetInfo)
-	require.Nil(t, err)
-	require.Equal(t, model.KVCOLLECTION, datasetInfo.Kind)
-
-	return datasetInfo, err
+	return getSdkClient(t).CatalogService.CreateIndexDataset(createIndex)
 }
 
-func createMetricDataset(t *testing.T, namespaceName string, collectionName string, datasetOwner string, capabilities string, isDisabled bool) (*model.DatasetInfo, error) {
-	createMetricDatasetInfo := model.DatasetCreationPayload{
-		Name:         collectionName,
-		Kind:         catalog.Metric,
-		Owner:        datasetOwner,
-		Module:       namespaceName,
-		Capabilities: capabilities,
-		Disabled:     &isDisabled,
+// createImportDatasetByID - Helper function for creating a valid Import in Catalog
+func createImportDatasetByID(t *testing.T, name, importID string) (*catalog.ImportDataset, error) {
+	createImport := &catalog.ImportDataset{
+		Name:     name,
+		Kind:     catalog.Import,
+		Module:   &testutils.TestModule,
+		SourceID: &importID,
 	}
-
-	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createMetricDatasetInfo)
-	require.NotNil(t, datasetInfo)
-	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
-	require.Nil(t, err)
-	require.Equal(t, catalog.Metric, datasetInfo.Kind)
-
-	return datasetInfo, err
+	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
 }
 
-func createViewDataset(t *testing.T, collectionName string, search string) (*model.DatasetInfo, error) {
-	createViewDatasetInfo := model.DatasetCreationPayload{
-		Name:   collectionName,
+// createImportDatasetByName - Helper function for creating a valid Import in Catalog
+func createImportDatasetByName(t *testing.T, name, importName, importModule string) (*catalog.ImportDataset, error) {
+	createImport := &catalog.ImportDataset{
+		Name:         name,
+		Kind:         catalog.Import,
+		Module:       &testutils.TestModule,
+		SourceName:   &importName,
+		SourceModule: &importModule,
+	}
+	return getSdkClient(t).CatalogService.CreateImportDataset(createImport)
+}
+
+// createViewDataset - Helper function for creating a valid View in Catalog
+func createViewDataset(t *testing.T, name string) (*catalog.ViewDataset, error) {
+	createView := &catalog.ViewDataset{
+		Name:   name,
 		Kind:   catalog.View,
-		Search: search,
+		Module: &testutils.TestModule,
+		Search: &searchString,
 	}
-
-	datasetInfo, err := getSdkClient(t).CatalogService.CreateDataset(&createViewDatasetInfo)
-	require.NotNil(t, datasetInfo)
-	require.IsType(t, catalog.DatasetInfo{}, *datasetInfo)
-	require.Nil(t, err)
-	require.Equal(t, catalog.View, datasetInfo.Kind)
-
-	return datasetInfo, err
+	return getSdkClient(t).CatalogService.CreateViewDataset(createView)
 }
 
-// Test CreateDataset
-func TestIntegrationCreateDataset(t *testing.T) {
-	defer cleanupDatasets(t)
+// createViewDataset - Helper function for creating Fields
+func createDatasetField(datasetID string, client *sdk.Client, t *testing.T) *catalog.Field {
+	testField := catalog.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
+	resultField, err := client.CatalogService.CreateDatasetField(datasetID, &testField)
+	require.Nil(t, err)
+	require.NotEmpty(t, resultField)
+	return resultField
+}
 
-	createLookupDataset(t, testutils.TestNamespace, datasetName1, datasetOwner, datasetCapabilities, externalKind, externalName)
-	createLookupDataset(t, testutils.TestNamespace, datasetName2, datasetOwner, datasetCapabilities, externalKind, externalName)
-	createLookupDataset(t, testutils.TestNamespace, datasetName3, datasetOwner, datasetCapabilities, externalKind, externalName)
+// assertDatasetKind - Helper to assert that the kind for the Dataset matches model associated with that kind
+func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
+	switch dataset.GetKind() {
+	case string(catalog.Index):
+		ds, ok := dataset.(*catalog.IndexDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.View):
+		ds, ok := dataset.(*catalog.ViewDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Lookup):
+		ds, ok := dataset.(*catalog.LookupDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Import):
+		ds, ok := dataset.(*catalog.ImportDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Job):
+		ds, ok := dataset.(*catalog.JobDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.Metric):
+		ds, ok := dataset.(*catalog.MetricDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	case string(catalog.KvCollection):
+		ds, ok := dataset.(*catalog.KVCollectionDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.ID)
+	// These are known kinds but are not supported in the spec:
+	case "catalog":
+	case "splv1sink":
+		ds, ok := dataset.(*catalog.OtherDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.GetID())
+	// Anything here is not a known kind and should potentially be on our radar:
+	default:
+		ds, ok := dataset.(*catalog.OtherDataset)
+		assert.True(t, ok)
+		assert.NotEmpty(t, ds.GetID())
+		fmt.Printf("WARNING: catalog dataset found with unknown kind, support may be missing for this kind: %s\n", ds.GetKind())
+	}
+}
+
+// Test CreateIndexDataset
+func TestCreateIndexDataset(t *testing.T) {
+	indexds, err := createIndexDataset(t, makeDSName("crix"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, indexds.ID)
+	require.NotNil(t, indexds)
+	require.Equal(t, catalog.Index, indexds.Kind)
+}
+
+// Test CreateImportDataset
+func TestCreateImportDataset(t *testing.T) {
+	indexds, err := createIndexDataset(t, makeDSName("crix"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, indexds.ID)
+	importds, err := createImportDatasetByID(t, makeDSName("crim"), indexds.ID)
+	require.Nil(t, err)
+	defer cleanupDataset(t, importds.ID)
+	require.NotNil(t, importds)
+	require.Equal(t, catalog.Import, importds.Kind)
+}
+
+// Test CreateKVCollectionDataset
+func TestKVCollectionDataset(t *testing.T) {
+	kvds, err := createKVCollectionDataset(t, makeDSName("crkv"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, kvds.ID)
+	require.NotNil(t, kvds)
+	require.Equal(t, catalog.KvCollection, kvds.Kind)
+}
+
+// Test CreateLookupDataset
+func TestLookupDataset(t *testing.T) {
+	lookupds, err := createLookupDataset(t, makeDSName("crlk"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, lookupds.ID)
+	require.NotNil(t, lookupds)
+	require.Equal(t, catalog.Lookup, lookupds.Kind)
+}
+
+// Test CreateMetricDataset
+func TestMetricDataset(t *testing.T) {
+	metricds, err := createMetricDataset(t, makeDSName("crmx"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, metricds.ID)
+	require.NotNil(t, metricds)
+	require.Equal(t, catalog.Metric, metricds.Kind)
+}
+
+// Test CreateViewDataset
+func TestViewDataset(t *testing.T) {
+	viewds, err := createViewDataset(t, makeDSName("crvw"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, viewds.ID)
+	require.NotNil(t, viewds)
+	require.Equal(t, catalog.View, viewds.Kind)
 }
 
 // Test CreateDataset for 409 DatasetInfo already present error
-func TestIntegrationCreateDatasetDataAlreadyPresentError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
+func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	// create dataset
-	createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-
-	_, err := client.CatalogService.CreateDataset(
-		&model.DatasetCreationPayload{
-			Name:         testutils.TestCollection,
-			Kind:         model.LOOKUP,
-			Owner:        datasetOwner,
-			Module:       testutils.TestNamespace,
-			Capabilities: datasetCapabilities,
-			ExternalKind: externalKind,
-			ExternalName: externalName,
-		})
+	ds, err := createLookupDataset(t, makeDSName("409"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
+	_, err = createLookupDataset(t, makeDSName("409"))
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 409, "Expected error code 409")
+	assert.Equal(t, 409, httpErr.HTTPStatusCode)
 }
 
 // Test CreateDataset for 401 Unauthorized operation error
-func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	invalidClient := getInvalidClient(t)
-
-	_, err := invalidClient.CatalogService.CreateDataset(
-		&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
+func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
+	name := makeDSName("401")
+	createView := &catalog.ViewDataset{
+		Name:   name,
+		Kind:   catalog.View,
+		Module: &testutils.TestModule,
+		Search: &searchString,
+	}
+	ds, err := getInvalidClient(t).CatalogService.CreateViewDataset(createView)
+	if ds != nil {
+		defer cleanupDataset(t, ds.ID)
+	}
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -196,70 +301,57 @@ func TestIntegrationCreateDatasetUnauthorizedOperationError(t *testing.T) {
 }
 
 // Test CreateDataset for 400 Invalid DatasetInfo error
-func TestIntegrationCreateDatasetInvalidDatasetInfoError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	_, err := client.CatalogService.CreateDataset(
-		&model.DatasetCreationPayload{Name: "integ_dataset_4000", Kind: model.LOOKUP})
+func TestCreateDatasetInvalidDatasetInfoError(t *testing.T) {
+	badDS := make(map[string]interface{})
+	badDS["name"] = "ds400"
+	badDS["kind"] = "lookup"
+	badDS["createdby"] = "thisisnotvalid"
+	ds, err := getSdkClient(t).CatalogService.CreateDataset(badDS)
+	if ds != nil {
+		// the ds should not have been created, but in case it was clean it up
+		defer cleanupDataset(t, ds.GetID())
+	}
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 400, "Expected error code 400")
+	assert.Equal(t, 400, httpErr.HTTPStatusCode)
 }
 
-// Test GetDatasets
-func TestIntegrationGetAllDatasets(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+// Test ListDatasets
+func TestListAllDatasets(t *testing.T) {
+	ds, err := createLookupDataset(t, makeDSName("getall"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
-	datasets, err := getClient(t).CatalogService.GetDatasets()
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
-}
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(nil)
+	require.Nil(t, err)
+	assert.NotZero(t, len(datasets))
 
-// Test GetDatasets for 401 Unauthorized operation error
-func TestIntegrationGetAllDatasetsUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	invalidClient := getInvalidClient(t)
-
-	_, err := invalidClient.CatalogService.GetDatasets()
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
-}
-
-// Test ListDatasetsNil
-func TestListDatasetsNil(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
-
-	datasets, err := getClient(t).CatalogService.ListDatasets(nil)
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
+	// We should be able assert that the kinds are known and relate to their associated model
+	for i := 0; i < len(datasets); i++ {
+		assertDatasetKind(t, datasets[i])
+	}
 }
 
 // Test TestListDatasetsFilter
 func TestListDatasetsFilter(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+	ds, err := createLookupDataset(t, makeDSName("fil"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
-	values.Set("filter", "kind==\"kvcollection\"")
+	values.Set("filter", filter) // kind=="lookup"
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	require.Nil(t, err)
+	assert.NotZero(t, len(datasets))
 }
 
 // Test TestListDatasetsComplexFilter
 func TestListDatasetsComplexFilter(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+	ds, err := createLookupDataset(t, makeDSName("cxfil"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
 	values.Set("filter", "kind==\"kvcollection\" AND name==\"test_externalName\"")
@@ -271,228 +363,303 @@ func TestListDatasetsComplexFilter(t *testing.T) {
 
 // Test TestListDatasetsCount
 func TestListDatasetsCount(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+	// Create three datasets
+	ds1, err := createLookupDataset(t, makeDSName("cnt1"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds1.ID)
+	ds2, err := createLookupDataset(t, makeDSName("cnt2"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds2.ID)
+	ds3, err := createLookupDataset(t, makeDSName("cnt3"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds3.ID)
 
 	values := make(url.Values)
-	values.Set("count", "1")
+	values.Set("count", "3")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
+	// There should be at least three
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	require.Nil(t, err)
+	require.Equal(t, 3, len(datasets))
 }
 
 // Test TestListDatasetsOrderBy
 func TestListDatasetsOrderBy(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+	ds, err := createViewDataset(t, makeDSName("orby"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
-	values.Set("orderby", "id Descending")
+	values.Set("orderby", "id Ascending")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	assert.Nil(t, err)
+	assert.NotZero(t, len(datasets))
+
+	// We should be able assert that the kinds are known and relate to their associated model
+	for i := 0; i < len(datasets); i++ {
+		assertDatasetKind(t, datasets[i])
+	}
 }
 
 // Test TestListDatasetsAll with filter, count, and orderby
 func TestListDatasetsAll(t *testing.T) {
-	defer cleanupDatasets(t)
-	createLookupDatasets(t)
+	ds, err := createViewDataset(t, makeDSName("fco"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	values := make(url.Values)
-	values.Set("filter", "kind==\"kvcollection\"")
+	values.Set("filter", `kind=="kvcollection"`)
 	values.Set("count", "1")
 	values.Set("orderby", "id Descending")
 
-	datasets, err := getClient(t).CatalogService.ListDatasets(values)
-	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
-	assert.NotNil(t, len(datasets))
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	assert.Nil(t, err)
+	assert.NotZero(t, len(datasets))
 }
 
 // Test GetDataset by ID
-func TestIntegrationGetDatasetByID(t *testing.T) {
-	defer cleanupDatasets(t)
+func TestGetDatasetByID(t *testing.T) {
+	ds, err := createLookupDataset(t, makeDSName("cnt"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
-	client := getClient(t)
+	datasetByID, err := getSdkClient(t).CatalogService.GetDataset(ds.ID)
 
-	// create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.Emptyf(t, err, "Error creating dataset: %s", err)
-
-	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
-	assert.Emptyf(t, err, "Error getting dataset: %s", err)
+	require.Nil(t, err)
 	assert.NotNil(t, datasetByID)
 }
 
-// Test GetDataset for 401 Unauthorized operation error
-func TestIntegrationGetDatasetByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// create dataset
-	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName})
-	require.Emptyf(t, err, "Error creating dataset: %s", err)
-
-	_, err = invalidClient.CatalogService.GetDataset(dataset.ID)
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
-}
-
 // Test GetDataset for 404 DatasetInfo not found error
-func TestIntegrationGetDatasetByIDDatasetNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	_, err := client.CatalogService.GetDataset("123")
+func TestGetDatasetByIDDatasetNotFoundError(t *testing.T) {
+	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
-// Test UpdateDataset
-func TestIntegrationUpdateExistingDataset(t *testing.T) {
-	defer cleanupDatasets(t)
+// Test UpdateIndexDataset
+func TestUpdateIndexDataset(t *testing.T) {
+	client := getSdkClient(t)
 
-	client := getClient(t)
-
-	// create dataset
-	updateVersion := 6
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-
-	updatedDataset, err := client.CatalogService.UpdateDataset(&model.UpdateDatasetInfoFields{Version: updateVersion}, dataset.ID)
-	assert.Emptyf(t, err, "Error updating dataset: %s", err)
-	assert.NotNil(t, updatedDataset)
-	assert.IsType(t, &(model.DatasetInfo{}), updatedDataset)
-
-	// validate the update operation
-	datasetByID, err := client.CatalogService.GetDataset(dataset.ID)
+	indexds, err := createIndexDataset(t, makeDSName("uix"))
 	require.Nil(t, err)
-	assert.Emptyf(t, err, "Error retrieving dataset: %s", err)
-	assert.Equal(t, updateVersion, datasetByID.Version)
-	assert.NotNil(t, datasetByID.ID)
-	assert.IsType(t, &(model.DatasetInfo{}), datasetByID)
+	defer cleanupDataset(t, indexds.ID)
+	require.NotNil(t, indexds)
+	notdisabled := !disabled
+	uidx := &catalog.IndexDataset{
+		Disabled:               &notdisabled,
+		FrozenTimePeriodInSecs: &newftime,
+	}
+	newindexds, err := client.CatalogService.UpdateIndexDataset(uidx, indexds.ID)
+	require.Nil(t, err)
+	assert.Equal(t, !disabled, *newindexds.Disabled)
+	assert.Equal(t, newftime, *newindexds.FrozenTimePeriodInSecs)
 }
 
-// Test UpdateDataset for 404 DatasetInfo not found error
-func TestIntegrationUpdateExistingDatasetDataNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
+// Test UpdateMetricDataset
+func TestUpdateMetricDataset(t *testing.T) {
+	client := getSdkClient(t)
 
-	client := getClient(t)
+	metricds, err := createMetricDataset(t, makeDSName("umx"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, metricds.ID)
+	require.NotNil(t, metricds)
+	notdisabled := !disabled
+	// Update the metrics dataset, including name and module
+	umx := &catalog.MetricDataset{
+		Name:                   newname,
+		Module:                 &newmod,
+		Owner:                  newowner,
+		Disabled:               &notdisabled,
+		FrozenTimePeriodInSecs: &newftime,
+	}
+	newmetricsds, err := client.CatalogService.UpdateMetricDataset(umx, metricds.ID)
+	require.Nil(t, err)
+	assert.Equal(t, newname, newmetricsds.Name)
+	assert.Equal(t, newmod, *newmetricsds.Module)
+	assert.Equal(t, newowner, newmetricsds.Owner)
+	assert.Equal(t, !disabled, *newmetricsds.Disabled)
+	assert.Equal(t, newftime, *newmetricsds.FrozenTimePeriodInSecs)
+}
 
-	_, err := client.CatalogService.UpdateDataset(&model.UpdateDatasetInfoFields{Name: "goSdkDataset6", Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: externalKind, ExternalName: externalName, Version: 2}, "123")
+// NOTE: UpdateImportDataset is not supported at this time
+// // Test UpdateImportDataset
+// func TestUpdateImportDataset(t *testing.T) {
+// 	// TODO: create newmetricsds and newimportds
+// 	client := getSdkClient(t)
+// 	importds, err := createImportDatasetByName(t, makeDSName("uim"), newmetricsds.Name, newmetricsds.Module)
+// 	require.Nil(t, err)
+// 	defer cleanupDataset(t, importds.ID)
+// 	require.NotNil(t, importds)
+// 	uim := &catalog.ImportDataset{
+// 		SourceName:   &newindexds.Name,
+// 		SourceModule: &newindexds.Module,
+// 	}
+// 	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.ID)
+// 	require.Nil(t, err)
+// 	assert.Equal(t, newindexds.Name, *newimportds.SourceName)
+// 	assert.Equal(t, *newindexds.Module, *newimportds.SourceModule)
+// }
+
+// Test UpdateJobDataset
+func TestUpdateJobDataset(t *testing.T) {
+	client := getSdkClient(t)
+
+	// Create a search job to ensure at least one job exists
+	searchjobReq := &search.CreateJobRequest{Query: "| from index:main | head 1"}
+	searchjob, err := client.SearchService.CreateJob(searchjobReq)
+	require.Nil(t, err)
+	values := make(url.Values)
+	values.Set("filter", fmt.Sprintf(`sid=="%s"`, searchjob.ID))
+	values.Set("count", "1")
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(values)
+	require.Nil(t, err)
+	require.NotZero(t, len(datasets))
+	jobds, ok := datasets[0].(*catalog.JobDataset)
+	require.True(t, ok)
+	newstatus := string(search.JobCanceled)
+	// This job should not be canceled since it was just created
+	require.NotEqual(t, newstatus, *jobds.Status)
+	ujb := &catalog.JobDataset{
+		Status: &newstatus,
+	}
+	newjobds, err := client.CatalogService.UpdateJobDataset(ujb, jobds.ID)
+	require.Nil(t, err)
+	assert.Equal(t, newstatus, *newjobds.Status)
+}
+
+// Test UpdateLookupDataset
+func TestUpdateLookupDataset(t *testing.T) {
+	client := getSdkClient(t)
+
+	lookupds, err := createLookupDataset(t, makeDSName("ulk"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, lookupds.ID)
+	require.NotNil(t, lookupds)
+	notcasematch := !caseMatch
+	newxname := "newxname"
+	ulk := &catalog.LookupDataset{
+		ID:                 "cantchangethis",
+		Kind:               "cantchangethat",
+		Owner:              "test1@splunk.com",
+		CaseSensitiveMatch: &notcasematch,
+		ExternalKind:       string(catalog.KvCollection),
+		ExternalName:       &newxname,
+		Filter:             `kind=="lookup"`,
+	}
+	newlookupds, err := client.CatalogService.UpdateLookupDataset(ulk, lookupds.ID)
+	require.Nil(t, err)
+	assert.NotEqual(t, "cantchangethis", newlookupds.ID)
+	assert.NotEqual(t, "cantchangethat", string(newlookupds.Kind))
+	assert.Equal(t, "test1@splunk.com", newlookupds.Owner)
+	assert.Equal(t, !caseMatch, *newlookupds.CaseSensitiveMatch)
+	assert.Equal(t, newxname, *newlookupds.ExternalName)
+	assert.Equal(t, `kind=="lookup"`, newlookupds.Filter)
+}
+
+// Test UpdateViewDataset
+func TestUpdateViewDataset(t *testing.T) {
+	client := getSdkClient(t)
+
+	viewds, err := createViewDataset(t, makeDSName("uvw"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, viewds.ID)
+	require.NotNil(t, viewds)
+	newname = fmt.Sprintf("newvw%d", testutils.TimeSec)
+	uvw := &catalog.ViewDataset{
+		Name:   newname,
+		Module: &newmod,
+		Owner:  newowner,
+	}
+	newviewds, err := client.CatalogService.UpdateViewDataset(uvw, viewds.ID)
+	require.Nil(t, err)
+	assert.Equal(t, newname, newviewds.Name)
+	assert.Equal(t, newmod, *newviewds.Module)
+	assert.Equal(t, newowner, newviewds.Owner)
+}
+
+// Test UpdateDataset for 404 Datasetnot found error
+func TestUpdateExistingDatasetDataNotFoundError(t *testing.T) {
+	uvw := &catalog.ViewDataset{
+		Search: &searchString,
+	}
+	_, err := getSdkClient(t).CatalogService.UpdateViewDataset(uvw, "idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Test DeleteDataset
-func TestIntegrationDeleteDataset(t *testing.T) {
-	defer cleanupDatasets(t)
+func TestDeleteDataset(t *testing.T) {
+	client := getSdkClient(t)
 
-	client := getClient(t)
-
-	// create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-
-	err = client.CatalogService.DeleteDataset(dataset.ID)
+	ds, err := createViewDataset(t, makeDSName("delv"))
 	require.Nil(t, err)
-	assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 
-	_, err = client.CatalogService.GetDataset(dataset.ID)
+	err = client.CatalogService.DeleteDataset(ds.ID)
+	require.Nil(t, err)
+
+	_, err = client.CatalogService.GetDataset(ds.ID)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
-}
-
-// Test DeleteDataset for 401 Unauthorized operation error
-func TestIntegrationDeleteDatasetUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	invalidClient := getInvalidClient(t)
-
-	// create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-	assert.NotNil(t, dataset.ID)
-
-	err = invalidClient.CatalogService.DeleteDataset(dataset.ID)
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Test DeleteDataset for 404 DatasetInfo not found error
-func TestIntegrationDeleteDatasetDataNotFoundError(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	err := client.CatalogService.DeleteDataset("123")
-	assert.NotNil(t, err)
+func TestDeleteDatasetDataNotFoundError(t *testing.T) {
+	err := getSdkClient(t).CatalogService.DeleteDataset("idonotexist")
+	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // todo (Parul): 405 DatasetInfo cannot be deleted because of dependencies error case
 
 // Test CreateRules
-func TestIntegrationCreateRules(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
+func TestCreateRules(t *testing.T) {
+	client := getSdkClient(t)
 
 	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
+	ruleName := makeRuleName("crmat")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
 	require.Nil(t, err)
+	defer cleanupRule(t, rule.ID)
 	assert.Equal(t, ruleName, rule.Name)
 	assert.Equal(t, ruleMatch, rule.Match)
-
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "anotherone", Module: ruleModule, Match: ruleMatch, Owner: owner})
-	assert.Nil(t, err)
-
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Match: ruleMatch, Owner: owner})
-	assert.Nil(t, err)
 }
 
 // Test CreateRule for 409 Rule already present error
-func TestIntegrationCreateRuleDataAlreadyPresent(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
+func TestCreateRuleDataAlreadyPresent(t *testing.T) {
+	client := getSdkClient(t)
 
 	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
+	ruleName := makeRuleName("409")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
 	require.Nil(t, err)
+	defer cleanupRule(t, rule.ID)
 	assert.Equal(t, ruleName, rule.Name)
 	assert.Equal(t, ruleMatch, rule.Match)
 
-	_, err = client.CatalogService.CreateRule(model.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
+	_, err = client.CatalogService.CreateRule(catalog.Rule{ID: rule.ID, Name: ruleName, Module: ruleModule, Match: ruleMatch})
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 409, "Expected error code 409")
+	assert.Equal(t, 409, httpErr.HTTPStatusCode)
 }
 
 // Test CreateRule for 401 Unauthorized operation error
-func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
-	invalidClient := getInvalidClient(t)
-
+func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
 	// create rule
-	_, err := invalidClient.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Owner: owner, Match: ruleMatch})
+	ruleName := makeRuleName("401")
+	rule, err := getInvalidClient(t).CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
+	if rule != nil {
+		defer cleanupRule(t, rule.ID)
+	}
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -501,573 +668,369 @@ func TestIntegrationCreateRuleUnauthorizedOperationError(t *testing.T) {
 }
 
 // Test GetRules
-func TestIntegrationGetAllRules(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
+func TestGetAllRules(t *testing.T) {
+	client := getSdkClient(t)
 
 	// create rule
-	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "anotherone", Module: ruleModule, Match: ruleMatch, Owner: owner})
-	_, err = client.CatalogService.CreateRule(model.Rule{Name: "thirdone", Module: ruleModule, Match: ruleMatch, Owner: owner})
+	ruleName := makeRuleName("getall")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
+	require.Nil(t, err)
+	defer cleanupRule(t, rule.ID)
 
 	rules, err := client.CatalogService.GetRules()
 	require.Nil(t, err)
-	assert.Emptyf(t, err, "Error retrieving rules: %s", err)
-	assert.NotNil(t, len(rules))
-}
-
-// Test GetRules for 401 Unauthorized operation error
-func TestIntegrationGetAllRulesUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
-	invalidClient := getInvalidClient(t)
-
-	_, err := invalidClient.CatalogService.GetRules()
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.NotZero(t, len(rules))
 }
 
 // Test GetRule By ID
-func TestIntegrationGetRuleByID(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
+func TestGetRuleByID(t *testing.T) {
+	client := getSdkClient(t)
 
 	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
+	ruleName := makeRuleName("getid")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
 	require.Nil(t, err)
-	assert.NotNil(t, rule.ID)
+	require.NotEmpty(t, rule.ID)
 
 	ruleByID, err := client.CatalogService.GetRule(rule.ID)
-	assert.Emptyf(t, err, "Error retrieving rule by ID: %s", err)
+	assert.Nil(t, err)
 	assert.NotNil(t, ruleByID)
 }
 
-// Test GetRules for 401 Unauthorized operation error
-func TestIntegrationGetRuleByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	require.Nil(t, err)
-	assert.NotNil(t, rule.ID)
-
-	_, err = invalidClient.CatalogService.GetRule(rule.ID)
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
-}
-
 // Test GetRules for 404 Rule not found error
-func TestIntegrationGetRuleByIDRuleNotFoundError(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
-
-	_, err := client.CatalogService.GetRule("123")
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
-}
-
-// Test DeleteRule by ID
-func TestIntegrationDeleteRule(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
-
-	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	require.Nil(t, err)
-	assert.NotNil(t, rule.ID)
-
-	err = client.CatalogService.DeleteRule(rule.ID)
-	assert.Emptyf(t, err, "Error deleting a rule by ID: %s", err)
-}
-
-// Test DeleteRule for 401 Unauthorized operation error
-func TestIntegrationDeleteRuleByIDUnauthorizedOperationError(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// create rule
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	require.Nil(t, err)
-	assert.NotNil(t, rule.ID)
-
-	err = invalidClient.CatalogService.DeleteRule(rule.ID)
-	require.NotNil(t, err)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
-}
-
-// Test DeleteRule for 404 Rule not found error
-func TestIntegrationDeleteRulebyIDRuleNotFoundError(t *testing.T) {
-	defer cleanupRules(t)
-
-	client := getClient(t)
-
-	err := client.CatalogService.DeleteRule("123")
+func TestGetRuleByIDRuleNotFoundError(t *testing.T) {
+	_, err := getSdkClient(t).CatalogService.GetRule("idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
-// Test GetDatasetFields
-func TestIntegrationGetDatasetFields(t *testing.T) {
-	defer cleanupDatasets(t)
+// Test DeleteRule by ID
+func TestDeleteRule(t *testing.T) {
+	client := getSdkClient(t)
 
-	client := getClient(t)
+	// create rule
+	ruleName := makeRuleName("delid")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
+	require.Nil(t, err)
+	require.NotEmpty(t, rule.ID)
+
+	err = client.CatalogService.DeleteRule(rule.ID)
+	assert.Nil(t, err)
+}
+
+// Test DeleteRule for 404 Rule not found error
+func TestDeleteRulebyIDRuleNotFoundError(t *testing.T) {
+	err := getSdkClient(t).CatalogService.DeleteRule("idonotexist")
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+}
+
+// Test GetDatasetField
+func TestGetDatasetFields(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("getfs")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
-	testField2 := model.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
-	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
-	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField2)
+	testField1 := catalog.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := catalog.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
+	f1, err := client.CatalogService.CreateDatasetField(ds.ID, &testField1)
+	f2, err := client.CatalogService.CreateDatasetField(ds.ID, &testField2)
 
 	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
+	results, err := client.CatalogService.GetDatasetFields(ds.ID, nil)
 	require.Nil(t, err)
-	assert.NotEmpty(t, result)
-	assert.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
-	assert.Equal(t, 2, len(result))
+	assert.True(t, len(results) >= 2)
+	res1, err := client.CatalogService.GetDatasetField(ds.ID, f1.ID)
+	require.Nil(t, err)
+	assert.NotNil(t, res1)
+	res2, err := client.CatalogService.GetDatasetField(ds.ID, f2.ID)
+	require.Nil(t, err)
+	assert.NotNil(t, res2)
 }
 
 // Test GetDatasetFields based on filter
-func TestIntegrationGetDatasetFieldsOnFilter(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+func TestGetDatasetFieldsOnFilter(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{Name: datasetName1, Kind: model.LOOKUP, Owner: datasetOwner, Capabilities: datasetCapabilities, ExternalKind: "kvcollection", ExternalName: "test_externalName"})
+	dsname := makeDSName("getffil")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
-	require.Emptyf(t, err, "Error creating test Dataset: %s", err)
+	defer cleanupDataset(t, ds.ID)
 
 	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
-	testField2 := model.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
-	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
-	_, err = client.CatalogService.CreateDatasetField(dataset.ID, &testField2)
+	testField1 := catalog.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
+	testField2 := catalog.Field{Name: "integ_test_field2", DataType: "N", FieldType: "U", Prevalence: "S"}
+	_, err = client.CatalogService.CreateDatasetField(ds.ID, &testField1)
+	_, err = client.CatalogService.CreateDatasetField(ds.ID, &testField2)
 
 	filter := make(url.Values)
-	filter.Add("filter", "name==\"integ_test_field2\"")
+	filter.Add("filter", `name=="integ_test_field1"`)
 
-	// Validate the creation of new dataset fields
-	result, err := client.CatalogService.GetDatasetFields(dataset.ID, nil)
+	// Validate the filter returned one result (testField1, not testField2)
+	result, err := client.CatalogService.GetDatasetFields(ds.ID, filter)
 	require.Nil(t, err)
 	assert.NotEmpty(t, result)
 	assert.Emptyf(t, err, "Error retrieving dataset fields: %s", err)
-	assert.Equal(t, 2, len(result))
+	assert.Equal(t, 1, len(result))
 }
 
-// Test PostDatasetField
-func TestIntegrationPostDatasetField(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+// Test CreateDatasetField
+func TestCreateDatasetField(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("crf")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
-	assert.Emptyf(t, err, "Error creating dataset: %s", err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
+	testField := catalog.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
+	resultField, err := client.CatalogService.CreateDatasetField(ds.ID, &testField)
+	require.Nil(t, err)
+	require.NotEmpty(t, resultField)
+	assert.Equal(t, "integ_test_field", resultField.Name)
+	// TODO: catalog.String, Dimension, and All do not match "S", "D", "A" - why is this?
+	assert.Equal(t, catalog.String, resultField.DataType)
+	assert.Equal(t, catalog.Dimension, resultField.FieldType)
+	assert.Equal(t, catalog.All, resultField.Prevalence)
+	assert.Emptyf(t, err, "Error creating dataset field: %s", err)
 
 	// Validate the creation of a new dataset field
-	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
+	resultField, err = client.CatalogService.GetDatasetField(ds.ID, resultField.ID)
 	require.Nil(t, err)
 	assert.NotEmpty(t, resultField)
-	assert.Emptyf(t, err, "Error retrieving dataset field : %s", err)
 }
 
 // Test PatchDatasetField
-func TestIntegrationPatchDatasetField(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+func TestPatchDatasetField(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("patf")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
-
-	// Validate the creation of a new dataset field
-	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
-	require.Nil(t, err)
-	assert.NotEmpty(t, resultField)
-	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
+	resultField := createDatasetField(ds.ID, client, t)
 
 	// Update the existing dataset field
-	resultField, err = client.CatalogService.UpdateDatasetField(dataset.ID, resultField.ID, &model.Field{DataType: "O"})
+	resultField, err = client.CatalogService.UpdateDatasetField(ds.ID, resultField.ID, &catalog.Field{DataType: "O"})
 	require.Nil(t, err)
-	assert.NotEmpty(t, resultField)
+	require.NotNil(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
-	assert.Equal(t, model.OBJECTID, resultField.DataType)
-	assert.Equal(t, model.DIMENSION, resultField.FieldType)
-	assert.Equal(t, model.ALL, resultField.Prevalence)
-	assert.Emptyf(t, err, "Error updating dataset field: %s", err)
+	assert.Equal(t, catalog.ObjectID, resultField.DataType)
+	assert.Equal(t, catalog.Dimension, resultField.FieldType)
+	assert.Equal(t, catalog.All, resultField.Prevalence)
 }
 
 // Test DeleteDatasetField
-func TestIntegrationDeleteDatasetField(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+func TestDeleteDatasetField(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("delf")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
+	resultField := createDatasetField(ds.ID, client, t)
 
 	// Delete dataset field
-	err = client.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
+	err = client.CatalogService.DeleteDatasetField(ds.ID, resultField.ID)
 	require.Nil(t, err)
-	assert.Emptyf(t, err, "Error deleting dataset field: %s", err)
 
 	// Validate the deletion of the dataset field
-	result, err := client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
+	_, err = client.CatalogService.GetDatasetField(ds.ID, resultField.ID)
 	require.NotNil(t, err)
-	assert.Empty(t, result)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
-// Test PostDatasetField for 401 error
-func TestIntegrationPostDatasetFieldUnauthorizedOperationError(t *testing.T) {
-	defer cleanupDatasets(t)
-
+// Test CreateDatasetField for 401 error
+func TestCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	invalidClient := getInvalidClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("f401")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Create a new dataset field
-	testField := model.Field{Name: "integ_test_field", DataType: "N", FieldType: "U", Prevalence: "S"}
-	resultField, err := invalidClient.CatalogService.CreateDatasetField(dataset.ID, &testField)
+	testField := catalog.Field{Name: "integ_test_field", DataType: "N", FieldType: "U", Prevalence: "S"}
+	_, err = invalidClient.CatalogService.CreateDatasetField(ds.ID, &testField)
 	require.NotNil(t, err)
-	assert.Empty(t, resultField)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401")
+	assert.Equal(t, 401, httpErr.HTTPStatusCode)
 }
 
-// Test PostDatasetField for 409 error
-func TestIntegrationPostDatasetFieldDataAlreadyPresent(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+// Test CreateDatasetField for 409 error
+func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("f409")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Create a new dataset field
-	PostDatasetField(dataset, client, t)
+	createDatasetField(ds.ID, client, t)
 
 	// Post an already created dataset field
-	duplicateTestField := model.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
-	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &duplicateTestField)
+	duplicateTestField := catalog.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
+	_, err = client.CatalogService.CreateDatasetField(ds.ID, &duplicateTestField)
 	require.NotNil(t, err)
-	assert.Empty(t, resultField)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 409, "Expected error code 409")
+	assert.Equal(t, 409, httpErr.HTTPStatusCode)
 }
 
-// Test PostDatasetField for 500 error
-func TestIntegrationPostDatasetFieldInvalidDataFormat(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+// Test CreateDatasetField for 400 error
+func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("f400")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
-	// Create a new dataset field
-	testField := model.Field{}
-	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField)
+	// Create a new dataset field but with no data
+	testField := catalog.Field{}
+	_, err = client.CatalogService.CreateDatasetField(ds.ID, &testField)
 	require.NotNil(t, err)
-	assert.Empty(t, resultField)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.Equal(t, 400, httpErr.HTTPStatusCode, "Expected error code 400")
-}
-
-// Test GetDatasetFields for 401 Unauthorized operation error
-func TestIntegrationGetDatasetFieldsUnauthorizedOperation(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-	require.Nil(t, err)
-
-	// Create new fields in the dataset
-	PostDatasetField(dataset, client, t)
-
-	// Validate the creation of new dataset fields
-	result, err := invalidClient.CatalogService.GetDatasetFields(dataset.ID, nil)
-	require.NotNil(t, err)
-	assert.Empty(t, result)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401")
-}
-
-// Test PatchDatasetField for 401 error
-func TestIntegrationPatchDatasetFieldUnauthorizedOperation(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
-
-	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-	require.Nil(t, err)
-
-	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
-
-	// Validate the creation of a new dataset field
-	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
-	require.Nil(t, err)
-	assert.NotEmpty(t, resultField)
-	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
-
-	// Update the existing dataset field
-	resultField, err = invalidClient.CatalogService.UpdateDatasetField(dataset.ID, resultField.ID, &model.Field{DataType: "O"})
-	require.NotNil(t, err)
-	assert.Empty(t, resultField)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401")
+	assert.Equal(t, 400, httpErr.HTTPStatusCode)
 }
 
 // Test PatchDatasetField for 404 error
-func TestIntegrationPatchDatasetFieldDataNotFound(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	// Ceate dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
-	require.Nil(t, err)
-
-	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
-
-	// Validate the creation of a new dataset field
-	resultField, err = client.CatalogService.GetDatasetField(dataset.ID, resultField.ID)
-	require.Nil(t, err)
-	assert.NotEmpty(t, resultField)
-	assert.Emptyf(t, err, "Error retrieving dataset field: %s", err)
-
-	// Update the existing dataset field
-	resultField, err = client.CatalogService.UpdateDatasetField(dataset.ID, "123", &model.Field{DataType: "O"})
-	require.NotNil(t, err)
-	assert.Empty(t, resultField)
-	httpErr, ok := err.(*util.HTTPError)
-	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
-}
-
-// Test DeleteDatasetField for 401 error
-func TestIntegrationDeleteDatasetFieldUnauthorizedOperation(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-	invalidClient := getInvalidClient(t)
+func TestPatchDatasetFieldDataNotFound(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("fp404")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
-	// Create a new dataset field
-	resultField := PostDatasetField(dataset, client, t)
-
-	// Delete dataset field
-	err = invalidClient.CatalogService.DeleteDatasetField(dataset.ID, resultField.ID)
+	// Update non-existent dataset field
+	_, err = client.CatalogService.UpdateDatasetField(ds.ID, "idonotexist", &catalog.Field{DataType: "O"})
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401")
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Test DeleteDatasetField for 404 error
-func TestIntegrationDeleteDatasetFieldDataNotFound(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+func TestDeleteDatasetFieldDataNotFound(t *testing.T) {
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := createLookupDataset(t, testutils.TestNamespace, testutils.TestCollection, datasetOwner, datasetCapabilities, externalKind, externalName)
+	dsname := makeDSName("fd404")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
 
 	// Delete dataset field
-	err = client.CatalogService.DeleteDatasetField(dataset.ID, "123")
+	err = client.CatalogService.DeleteDatasetField(ds.ID, "idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	assert.True(t, httpErr.HTTPStatusCode == 404, "Expected error code 404")
-}
-
-// Test getfield(s) endpoints
-func TestGetFields(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
-
-	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(
-		&model.DatasetCreationPayload{
-			Name:         testutils.TestCollection,
-			Kind:         model.KVCOLLECTION,
-			Owner:        datasetOwner,
-			Module:       testutils.TestNamespace,
-			Capabilities: datasetCapabilities,
-		})
-	require.Nil(t, err)
-	defer client.CatalogService.DeleteDataset(datasetName1)
-
-	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
-	field, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
-	require.Nil(t, err)
-	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
-
-	// get fields
-	fields, err := client.CatalogService.GetFields()
-	require.Nil(t, err)
-	assert.True(t, len(fields) > 0)
-
-	field1, err := client.CatalogService.GetField(field.ID)
-	require.Nil(t, err)
-	assert.Equal(t, field.Name, field1.Name)
-	assert.Equal(t, field.ID, field1.ID)
-
-	// Delete dataset field
-	err = client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
-	require.Nil(t, err)
-
-	// Delete dataset
-	err = client.CatalogService.DeleteDataset(dataset.ID)
-	require.Nil(t, err)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Test rule actions endpoints
 func TestRuleActions(t *testing.T) {
-	defer cleanupDatasets(t)
-
-	client := getClient(t)
+	client := getSdkClient(t)
 
 	// Create dataset
-	dataset, err := client.CatalogService.CreateDataset(&model.DatasetCreationPayload{
-		Name:         testutils.TestCollection,
-		Kind:         model.KVCOLLECTION,
-		Owner:        datasetOwner,
-		Module:       testutils.TestNamespace,
-		Capabilities: datasetCapabilities,
-	})
+	dsname := makeDSName("acts")
+	ds, err := createLookupDataset(t, dsname)
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteDataset(datasetName1)
+	defer cleanupDataset(t, ds.ID)
 
-	// create new fields in the dataset
-	testField1 := model.Field{Name: "integ_test_field1", DataType: "S", FieldType: "D", Prevalence: "A"}
-	field, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField1)
-	require.Nil(t, err)
-	defer client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
+	// create new field in the dataset
+	field := createDatasetField(ds.ID, client, t)
 
 	// Create rule and rule action
-	rule, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch, Owner: owner})
-	defer client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v", ruleModule, ruleName))
+	ruleName := makeRuleName("acts")
+	rule, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName, Module: ruleModule, Match: ruleMatch})
 	require.Nil(t, err)
+	defer cleanupRule(t, rule.ID)
 
 	// Create rule action
-	action1, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAliasAction(field.Name, "myfieldalias", ""))
+	action1, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewAliasAction(field.Name, "myfieldalias", ""))
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
+	defer cleanupRuleAction(t, rule.ID, action1.ID)
 
 	//update rule action
 	tmpstr := "newaliasi"
-	updateact, err := client.CatalogService.UpdateRuleAction(rule.ID, action1.ID, model.NewUpdateAliasAction(nil, &tmpstr))
+	updateact, err := client.CatalogService.UpdateRuleAction(rule.ID, action1.ID, catalog.NewUpdateAliasAction(nil, &tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Alias)
 
-	action2, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewAutoKVAction("auto", "owner1"))
+	action2, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewAutoKVAction("auto", "owner1"))
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
+	defer cleanupRuleAction(t, rule.ID, action2.ID)
 
 	//update rule action
 	tmpstr = "auto"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, model.NewUpdateAutoKVAction(&tmpstr))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action2.ID, catalog.NewUpdateAutoKVAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewEvalAction(field.Name, "\"some expression\"", ""))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewEvalAction(field.Name, "\"some expression\"", ""))
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
+	defer cleanupRuleAction(t, rule.ID, action3.ID)
 
 	//update rule action
 	tmpstr = "newField"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action3.ID, model.NewUpdateEvalAction(&tmpstr, nil))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action3.ID, catalog.NewUpdateEvalAction(&tmpstr, nil))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Field)
 
-	action4, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewLookupAction("myexpression2", ""))
+	action4, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewLookupAction("myexpression2", ""))
 	require.Nil(t, err)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
+	defer cleanupRuleAction(t, rule.ID, action4.ID)
 
 	//update rule action
 	tmpstr = "newexpr"
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action4.ID, model.NewUpdateLookupAction(&tmpstr))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action4.ID, catalog.NewUpdateLookupAction(&tmpstr))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Expression)
 
 	limit := 5
-	action5, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", &limit, ""))
+	action5, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, &limit, ""))
 	require.Nil(t, err)
 	assert.Equal(t, 5, *action5.Limit)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action5.ID)
+	defer cleanupRuleAction(t, rule.ID, action5.ID)
 
-	action6, err := client.CatalogService.CreateRuleAction(rule.ID, model.NewRegexAction(field.Name, "some pattern", nil, ""))
+	action6, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, nil, ""))
 	require.Nil(t, err)
 	assert.Equal(t, (*int)(nil), action6.Limit)
-	defer client.CatalogService.DeleteRuleAction(rule.ID, action6.ID)
+	defer cleanupRuleAction(t, rule.ID, action6.ID)
 
 	//update rule action
-	tmpstr = "newpattern"
+	tmpstr = `field=myotherfield "To: (?<to>.*) From: (?<from>.*)"`
 	limit = 9
-	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, model.NewUpdateRegexAction(nil, &tmpstr, &limit))
+	updateact, err = client.CatalogService.UpdateRuleAction(rule.ID, action6.ID, catalog.NewUpdateRegexAction(nil, &tmpstr, &limit))
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Pattern)
 	assert.Equal(t, limit, *updateact.Limit)
@@ -1081,46 +1044,15 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, action7)
 
 	// Delete action
-	err = client.CatalogService.DeleteRuleAction(rule.ID, action1.ID)
+	action8, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewRegexAction(field.Name, `field=myfield "From: (?<from>.*) To: (?<to>.*)"`, &limit, ""))
 	require.Nil(t, err)
-	err = client.CatalogService.DeleteRuleAction(rule.ID, action2.ID)
+	err = client.CatalogService.DeleteRuleAction(rule.ID, action8.ID)
 	require.Nil(t, err)
-	err = client.CatalogService.DeleteRuleAction(rule.ID, action3.ID)
-	require.Nil(t, err)
-	err = client.CatalogService.DeleteRuleAction(rule.ID, action4.ID)
-	require.Nil(t, err)
-
-	// Delete rule with resource name
-	err = client.CatalogService.DeleteRule(fmt.Sprintf("%v.%v", ruleModule, ruleName))
-	require.Nil(t, err)
-
-	// Delete dataset field
-	err = client.CatalogService.DeleteDatasetField(dataset.ID, field.ID)
-	require.Nil(t, err)
-
-	// Delete dataset
-	err = client.CatalogService.DeleteDataset(dataset.ID)
-	require.Nil(t, err)
-}
-
-func PostDatasetField(dataset *model.DatasetInfo, client *service.Client, t *testing.T) *model.Field {
-	testField := model.Field{Name: "integ_test_field", DataType: "S", FieldType: "D", Prevalence: "A"}
-
-	resultField, err := client.CatalogService.CreateDatasetField(dataset.ID, &testField)
-	require.Nil(t, err)
-	assert.NotEmpty(t, resultField)
-	assert.Equal(t, "integ_test_field", resultField.Name)
-	assert.Equal(t, model.STRING, resultField.DataType)
-	assert.Equal(t, model.DIMENSION, resultField.FieldType)
-	assert.Equal(t, model.ALL, resultField.Prevalence)
-	assert.Emptyf(t, err, "Error creating dataset field: %s", err)
-
-	return resultField
 }
 
 // Test list modules
-func TestIntegrationGetModules(t *testing.T) {
-	client := getClient(t)
+func TestGetModules(t *testing.T) {
+	client := getSdkClient(t)
 
 	// test using NO filter
 	modules, err := client.CatalogService.GetModules(nil)
@@ -1129,22 +1061,23 @@ func TestIntegrationGetModules(t *testing.T) {
 
 	// test using filter
 	filter := make(url.Values)
-	filter.Add("filter", "module==\"\"")
+	filter.Add("filter", `module==""`)
 	modules, err = client.CatalogService.GetModules(filter)
 	require.Nil(t, err)
 	assert.Equal(t, 1, len(modules))
 	assert.Equal(t, "", modules[0].Name)
 }
 
-/*// Currently unable to generate a bad rule
-func TestIntegrationCreateRuleInvalidRuleError(t *testing.T)  {
+/*
+/ Currently unable to generate a bad rule
+func TestCreateRuleInvalidRuleError(t *testing.T)  {
 	defer cleanupRules(t)
 
-	client := getClient()
+	client := getSdkClient()
 
 	// testing CreateRule for 400 Invalid Rule error
 	ruleName := "goSdkTestrRule1"
-	_, err := client.CatalogService.CreateRule(model.Rule{Name: ruleName})
+	_, err := client.CatalogService.CreateRule(catalog.Rule{Name: ruleName})
 	assert.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
