@@ -85,6 +85,9 @@ func (s *Service) CreateJob(job *CreateJobRequest) (*Job, error) {
 func (s *Service) GetJob(jobID string) (*Job, error) {
 	var searchJob Job
 	jobURL, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "jobs", jobID)
+	if err != nil {
+		return nil, err
+	}
 	response, err := s.Client.Get(services.RequestParams{URL: jobURL})
 	if response != nil {
 		defer response.Body.Close()

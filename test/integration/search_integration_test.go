@@ -6,6 +6,9 @@
 package integration
 
 import (
+	"testing"
+	"time"
+
 	"github.com/splunk/splunk-cloud-sdk-go/model"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
@@ -13,8 +16,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 const DefaultSearchQuery = "| from index:main | head 5"
@@ -195,7 +196,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 			assert.NotNil(t, job)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(5) * time.Second)
+	time.Sleep(time.Duration(25) * time.Second)
 	assert.Equal(t, 20, cnt)
 }
 
@@ -217,7 +218,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 			assert.NotNil(t, job)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(5) * time.Second)
+	time.Sleep(time.Duration(25) * time.Second)
 	assert.Equal(t, 20, cnt)
 }
 

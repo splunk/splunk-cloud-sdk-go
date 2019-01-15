@@ -7,9 +7,9 @@
       - name: lint
         service: splunk-cloud-sdk-go
         command: bash -c "make lint"
-      - name: vet
+      - name: linttest
         service: splunk-cloud-sdk-go
-        command: bash -c "make vet"
+        command: bash -c "make linttest"
       - name: build
         service: splunk-cloud-sdk-go
         command: bash -c "make build"

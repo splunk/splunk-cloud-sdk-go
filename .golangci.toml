@@ -1,0 +1,11 @@
+[run]
+concurrency = 4
+deadline = "90s"
+issues-exit-code = 1
+
+[linters]
+enable = [
+  "govet",
+  "goimports",
+  "gofmt"
+]

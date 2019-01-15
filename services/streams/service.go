@@ -55,6 +55,9 @@ func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, err
 // GetPipelines gets all the pipelines
 func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipelineResponse, error) {
 	queryValues, err := convertToURLQueryValues(queryParams)
+	if err != nil {
+		return nil, err
+	}
 
 	url, err := s.Client.BuildURL(queryValues, serviceCluster, servicePrefix, serviceVersion, "pipelines")
 	if err != nil {

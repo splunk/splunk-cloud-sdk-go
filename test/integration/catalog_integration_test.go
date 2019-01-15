@@ -347,6 +347,20 @@ func TestListDatasetsFilter(t *testing.T) {
 	assert.NotZero(t, len(datasets))
 }
 
+// Test TestListDatasetsComplexFilter
+func TestListDatasetsComplexFilter(t *testing.T) {
+	ds, err := createLookupDataset(t, makeDSName("cxfil"))
+	require.Nil(t, err)
+	defer cleanupDataset(t, ds.ID)
+
+	values := make(url.Values)
+	values.Set("filter", "kind==\"kvcollection\" AND name==\"test_externalName\"")
+
+	datasets, err := getClient(t).CatalogService.ListDatasets(values)
+	assert.Emptyf(t, err, "Error retrieving the datasets: %s", err)
+	assert.NotNil(t, len(datasets))
+}
+
 // Test TestListDatasetsCount
 func TestListDatasetsCount(t *testing.T) {
 	// Create three datasets
@@ -982,7 +996,7 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, updateact)
 	assert.Equal(t, tmpstr, updateact.Mode)
 
-	action3, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewEvalAction(field.Name, "now()", ""))
+	action3, err := client.CatalogService.CreateRuleAction(rule.ID, catalog.NewEvalAction(field.Name, "\"some expression\"", ""))
 	require.Nil(t, err)
 	defer cleanupRuleAction(t, rule.ID, action3.ID)
 

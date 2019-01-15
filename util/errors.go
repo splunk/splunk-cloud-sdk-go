@@ -42,9 +42,12 @@ func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, err
 		if response.Body != nil {
 			body, err := ioutil.ReadAll(response.Body)
 			if err != nil {
-				return response, err
+				return response, httpErr
 			}
-			json.Unmarshal(body, &httpErr)
+			err = json.Unmarshal(body, &httpErr)
+			if err != nil {
+				return nil, httpErr
+			}
 		}
 		return response, httpErr
 	}

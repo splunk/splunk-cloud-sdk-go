@@ -72,10 +72,10 @@ func TestParseEmptyResponse(t *testing.T) {
 
 func TestParseUrlParams(t *testing.T) {
 	type Event struct {
-		Host       string            `key:"host"`
-		Event      interface{}       `json:"event"`
-		Source     string            `key:"source"`
-		Sourcetype string            `key:"sourcetype"`
+		Host       string      `key:"host"`
+		Event      interface{} `json:"event"`
+		Source     string      `key:"source"`
+		Sourcetype string      `key:"sourcetype"`
 	}
 	params := Event{Host: "http://splunk-cloud-sdk-shared-stubby:8882", Event: "test", Source: "manual-events", Sourcetype: "sourcetype:eventgen"}
 	values := ParseURLParams(params)
