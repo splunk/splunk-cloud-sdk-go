@@ -201,8 +201,14 @@ func TestUpdateAction(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupAction(client, emailAction.Name)
 	const newText = "updated email text"
-	result, err := client.ActionService.UpdateAction(emailActionName, action.UpdateFields{Subject: newText})
-	assert.Equal(t, result.Subject, newText)
+	var newTitle = "I am a new title"
+	result, err := client.ActionService.UpdateAction(emailActionName,
+		action.UpdateFields{
+			Title:   &newTitle,
+			Subject: newText,
+		})
+	assert.Equal(t, newText, result.Subject)
+	assert.Equal(t, newTitle, *result.Title)
 	assert.Nil(t, err)
 }
 

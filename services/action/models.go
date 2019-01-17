@@ -21,6 +21,10 @@ const (
 
 // UpdateFields defines the fields that may be updated for an existing Action
 type UpdateFields struct {
+	// Common action fields:
+	// Title is the human readable name title for the action. Optional.
+	Title *string `json:"title,omitempty"`
+
 	// Email action fields:
 	// Body to send via Email action
 	Body string `json:"body,omitempty"`
@@ -46,17 +50,15 @@ type Action struct {
 	Name string `json:"name"`
 	// Kind of action (email or webhook)
 	Kind Kind `json:"kind"`
-	// Title is the human readable name title for the action. Optional.
-	Title *string `json:"title,omitempty"`
 }
 
 // NewEmailAction creates a new email kind action
 func NewEmailAction(name string, title string, body string, subject string, addresses []string) *Action {
 	return &Action{
-		Name:  name,
-		Kind:  EmailKind,
-		Title: &title,
+		Name: name,
+		Kind: EmailKind,
 		UpdateFields: UpdateFields{
+			Title:     &title,
 			Body:      body,
 			Subject:   subject,
 			Addresses: addresses,
@@ -67,10 +69,10 @@ func NewEmailAction(name string, title string, body string, subject string, addr
 // NewWebhookAction creates a new webhook kind action
 func NewWebhookAction(name string, title string, webhookURL string, payload string) *Action {
 	return &Action{
-		Name:  name,
-		Kind:  WebhookKind,
-		Title: &title,
+		Name: name,
+		Kind: WebhookKind,
 		UpdateFields: UpdateFields{
+			Title:          &title,
 			WebhookURL:     webhookURL,
 			WebhookPayload: payload,
 		},
