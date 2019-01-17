@@ -34,7 +34,7 @@ func makeCollectionName(t *testing.T, ctx string) (id, kvCollection string) {
 // Admin Endpoints
 // --------------------------------------------------------------------------------
 
-// Test GetServiceHealthStatus against nova playground
+// Test GetServiceHealthStatus
 func TestIntegrationGetServiceHealth(t *testing.T) {
 	response, err := getClient(t).KVStoreService.GetServiceHealthStatus()
 	require.Empty(t, err)
@@ -131,7 +131,7 @@ func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 // --------------------------------------------------------------------------------
 // /TENANT_NAME/kvstore/v2/collections/COLLECTION_NAME
 
-// Test InsertRecords() kvstore service endpoint against nova playground
+// Test InsertRecords() kvstore service endpoint
 func TestCreateRecords(t *testing.T) {
 	// Create the test collection
 	kvid, kvCollection := makeCollectionName(t, "kvcrr")
@@ -140,7 +140,7 @@ func TestCreateRecords(t *testing.T) {
 	createTestRecord(t, kvCollection)
 }
 
-// Test InsertRecords() kvstore service endpoint against nova playground
+// Test InsertRecords() kvstore service endpoint
 func TestPutRecords(t *testing.T) {
 	// Create the test collection
 	kvid, kvCollection := makeCollectionName(t, "kvpr")
@@ -176,7 +176,7 @@ func TestPutRecords(t *testing.T) {
 	assert.True(t, created)
 }
 
-// Test getRecordByKey() kvstore service endpoint against the nova playground
+// Test getRecordByKey() kvstore service endpoint
 func TestGetRecordByKey(t *testing.T) {
 	// Create the test collection
 	kvid, kvCollection := makeCollectionName(t, "kvgbk")
@@ -194,7 +194,7 @@ func TestGetRecordByKey(t *testing.T) {
 	assert.Equal(t, result["size"], "tiny")
 }
 
-// Test DeleteRecords() kvstore service endpoint based on a key against the nova playground
+// Test DeleteRecords() kvstore service endpoint based on a key
 func TestDeleteRecordByKey(t *testing.T) {
 	// Create the test collection
 	kvid, kvCollection := makeCollectionName(t, "kvdrbk")
@@ -215,7 +215,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 	assert.Equal(t, len(retrievedRecords), 2)
 }
 
-// Test DeleteRecords() kvstore service endpoint based on a query against the nova playground
+// Test DeleteRecords() kvstore service endpoint based on a query
 func TestDeleteRecord(t *testing.T) {
 	// Create the test collection
 	kvid, kvCollection := makeCollectionName(t, "kvdrec")
