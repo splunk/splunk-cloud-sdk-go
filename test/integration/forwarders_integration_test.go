@@ -31,7 +31,7 @@ func TestListCertificates(t *testing.T) {
 	fmt.Println(certificates)
 }
 
-/*// Test DeleteCertificates
+// Test DeleteCertificates
 func TestDeleteCertificates(t *testing.T) {
 	// Create a certificate
 	certificateInfo1, err := getSdkClient(t).ForwardersService.CreateCertificate("forwarder_certificate_01.pem")
@@ -55,7 +55,7 @@ func TestDeleteCertificates(t *testing.T) {
 	certificates, err := getSdkClient(t).ForwardersService.ListCertificates()
 	require.Nil(t, err)
 	assert.Zero(t, len(certificates))
-}*/
+}
 
 // Cleans up the created certificate after the test has run
 func cleanupCertificate(t *testing.T, slot int) {
