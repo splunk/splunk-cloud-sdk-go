@@ -196,7 +196,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 			assert.NotNil(t, job)
 		}(searchService)
 	}
-	time.Sleep(time.Duration(25) * time.Second)
+	time.Sleep(time.Duration(35) * time.Second)
 	assert.Equal(t, 20, cnt)
 }
 
