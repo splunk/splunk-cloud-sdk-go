@@ -6,10 +6,11 @@
 package forwarders
 
 import (
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"io/ioutil"
 	"strconv"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 // catalog service url prefix
