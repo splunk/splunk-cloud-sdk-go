@@ -12,14 +12,15 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"fmt"
-	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"math/big"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Test ListCertificates
