@@ -16,20 +16,34 @@ import (
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
 	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
 	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(0, 0)
+	_, err = client.NewBatchEventsSender(0, 0, 10)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
 	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
 	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(0, 1000)
+	_, err = client.NewBatchEventsSender(0, 1000, 10)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
 	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
 	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(5, 0)
+	_, err = client.NewBatchEventsSender(5, 0, 10)
 	assert.EqualError(t, err, "interval cannot be 0")
+}
+
+func TestBatchEventsSenderInitializationWithZeroPayloadSize(t *testing.T) {
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+	collector, _ := client.NewBatchEventsSender(5, 10000, 0)
+	assert.Equal(t, collector.PayLoadSize, 1000000)
+}
+
+func TestBatchEventsSenderInitializationWithNonZeroPayloadSize(t *testing.T) {
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+	collector, _ := client.NewBatchEventsSender(5, 1000, 1000)
+	assert.Equal(t, collector.PayLoadSize, 1000)
 }

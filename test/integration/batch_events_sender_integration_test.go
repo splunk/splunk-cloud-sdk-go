@@ -30,7 +30,7 @@ func TestBatchEventsSenderTickerFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Body: "test3"}
 	done := make(chan bool, 1)
 
-	collector, err := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.IngestService.NewBatchEventsSender(5, 1000, 0)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
@@ -55,7 +55,7 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	event3 := model.Event{Host: "host3", Body: "test3"}
 	done := make(chan bool, 1)
 
-	collector, err := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.IngestService.NewBatchEventsSender(5, 1000, 0)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 2)
@@ -70,13 +70,110 @@ func TestBatchEventsSenderQueueFlush(t *testing.T) {
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
 
+// Should flush when queue is full , payLoadSize limitation hit before batch size
+func TestBatchEventsSenderPayloadSizeQueueFlush(t *testing.T) {
+	var client = getClient(t)
+
+	event1 := model.Event{Host: "host1", Body: "first host"}
+	event2 := model.Event{Host: "host2", Body: "this is the second host"}
+	event3 := model.Event{Host: "host3", Body: "third host"}
+	event4 := model.Event{Host: "host4", Body: "fourth host"}
+	event5 := model.Event{Host: "host5", Body: "fifth host"}
+	event6 := model.Event{Host: "host6", Body: "this is the sixth host but not a very long one"}
+
+	done := make(chan bool, 1)
+
+	collector, err := client.IngestService.NewBatchEventsSender(5, 1000, 30)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	collector.Run()
+	go blocking(done, 3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
+	err = collector.AddEvent(event4)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event4): %s", err)
+	err = collector.AddEvent(event5)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event5): %s", err)
+	err = collector.AddEvent(event6)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event6): %s", err)
+
+	collector.Stop()
+	<-done
+	assert.Equal(t, 0, len(collector.EventsQueue))
+}
+
+// Should flush when queue is full, batchSize is hit before payLoadSize
+func TestBatchEventsSenderPayloadSizeNoImpact(t *testing.T) {
+	var client = getClient(t)
+
+	event1 := model.Event{Host: "host1", Body: "host1host1"}
+	event2 := model.Event{Host: "host2", Body: "host2host1"}
+	event3 := model.Event{Host: "host3", Body: "host3host1"}
+	event4 := model.Event{Host: "host4", Body: "host4host1"}
+	event5 := model.Event{Host: "host5", Body: "host5host1"}
+	done := make(chan bool, 1)
+
+	collector, err := client.IngestService.NewBatchEventsSender(3, 1000, 1000)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	collector.Run()
+	go blocking(done, 3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
+	err = collector.AddEvent(event4)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event4): %s", err)
+	err = collector.AddEvent(event5)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event5): %s", err)
+
+	collector.Stop()
+	<-done
+	assert.Equal(t, 0, len(collector.EventsQueue))
+}
+
+// Should flush when Queue is full, both batchSize and payLoadSize are hit while processing the Events Queue
+func TestBatchEventsSenderFlushBothBatchSizePayloadSize(t *testing.T) {
+	var client = getClient(t)
+
+	event1 := model.Event{Body: "test1", Host: "host1"}
+	event2 := model.Event{Body: "test2", Host: "host2"}
+	event3 := model.Event{Body: "this is a long host body so it can hit payload Size", Host: "host3"}
+	event4 := model.Event{Body: "test3test4", Host: "host4"}
+	event5 := model.Event{Body: "test5test6", Host: "test5"}
+	done := make(chan bool, 1)
+
+	collector, err := client.IngestService.NewBatchEventsSender(2, 1000, 20)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	collector.Run()
+	go blocking(done, 3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
+	err = collector.AddEvent(event4)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event4): %s", err)
+	err = collector.AddEvent(event5)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event5): %s", err)
+
+	collector.Stop()
+	<-done
+	assert.Equal(t, 0, len(collector.EventsQueue))
+}
+
 // Should flush when quit signal is sent
 func TestBatchEventsSenderQuitFlush(t *testing.T) {
 	var client = getClient(t)
 
 	event1 := model.Event{Host: "host1", Body: "test1"}
 	done := make(chan bool, 1)
-	collector, err := client.NewBatchEventsSender(5, 1000)
+	collector, err := client.IngestService.NewBatchEventsSender(5, 1000, 0)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
@@ -113,7 +210,7 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 
 	maxAllowedErr := 4
 
-	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	collector, err := client.IngestService.NewBatchEventsSenderWithMaxAllowedError(2, 2000, 0, maxAllowedErr)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	collector.Run()
@@ -147,7 +244,7 @@ func TestBatchEventsSenderErrorHandleWithCallBack(t *testing.T) {
 
 	maxAllowedErr := 5
 
-	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	collector, err := client.IngestService.NewBatchEventsSenderWithMaxAllowedError(2, 2000, 0, maxAllowedErr)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	callbackPrint := ""
@@ -181,7 +278,7 @@ func TestBatchEventsSenderRestart(t *testing.T) {
 
 	maxAllowedErr := 4
 
-	collector, err := client.NewBatchEventsSenderWithMaxAllowedError(2, 2000, maxAllowedErr)
+	collector, err := client.IngestService.NewBatchEventsSenderWithMaxAllowedError(2, 2000, 0, maxAllowedErr)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 
 	// Initial run of the batchSender

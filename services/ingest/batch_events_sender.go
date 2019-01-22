@@ -22,8 +22,13 @@ type ingestError struct {
 	Events []Event
 }
 
+const (
+	payLoadSize = 1000000 // ~1MiB 1048576 bytes
+)
+
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
+	PayLoadSize    int
 	BatchSize      int
 	EventsChan     chan Event
 	EventsQueue    []Event
@@ -81,11 +86,19 @@ func (b *BatchEventsSender) loop() {
 			go b.flush(0)
 
 		case event := <-b.EventsChan:
+
 			b.EventsQueue = append(b.EventsQueue, event)
-			if len(b.EventsQueue) >= b.BatchSize {
+
+			var batchedEventsSize = 0
+			for i := 0; i < len(b.EventsQueue); i++ {
+				batchedEventsSize += len(b.EventsQueue[i].Body.(string))
+			}
+
+			if len(b.EventsQueue) >= b.BatchSize || batchedEventsSize >= b.PayLoadSize {
 				b.WaitGroup.Add(1)
 				go b.flush(1)
 			}
+
 		}
 	}
 }
@@ -160,19 +173,27 @@ func (b *BatchEventsSender) flush(flushSource int) {
 
 }
 
-// sendEventInBatches slices events into batch size to send
+// sendEventInBatches slices events into batches to send  based on batch size and/or payload size whichever is hit first
 func (b *BatchEventsSender) sendEventInBatches(events []Event) {
 	if len(events) <= 0 {
 		return
 	}
+	end := 0
 	for i := 0; i < len(events); {
-		end := len(events)
-		if i+b.BatchSize < len(events) {
-			end = i + b.BatchSize
-		}
+		end = end + 1
 		batchedEvents := events[i:end]
+		batchedSize := len(events[end-1].Body.(string))
+
+		for batchedSize <= b.PayLoadSize && len(batchedEvents) < b.BatchSize && end < len(events) {
+			batchedSize += len(events[end].Body.(string))
+			if batchedSize <= b.PayLoadSize {
+				end = end + 1
+				batchedEvents = events[i:end]
+			}
+		}
+		i = end
 		err := b.EventService.PostEvents(batchedEvents)
-		i = i + b.BatchSize
+
 		if err != nil {
 			b.Errors = append(b.Errors, ingestError{Error: err, Events: events})
 
