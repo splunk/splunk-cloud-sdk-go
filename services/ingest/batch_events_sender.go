@@ -22,13 +22,14 @@ type ingestError struct {
 	Events []Event
 }
 
+//Default Payload Size in unit Bytes
 const (
-	payLoadSize = 1000000 // ~1MiB 1048576 bytes
+	payLoadSize = 1040000 // ~1MiB 1048576 bytes
 )
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
-	PayLoadSize    int
+	PayLoadBytes   int
 	BatchSize      int
 	EventsChan     chan Event
 	EventsQueue    []Event
@@ -62,6 +63,7 @@ func (b *BatchEventsSender) Run() {
 // otherwise it'll constantly checking conditions for ticker and events
 func (b *BatchEventsSender) loop() {
 	errorMsgCount := 0
+	batchPayLoadSize := 0
 
 	defer close(b.EventsChan)
 	for {
@@ -89,14 +91,13 @@ func (b *BatchEventsSender) loop() {
 
 			b.EventsQueue = append(b.EventsQueue, event)
 
-			var batchedEventsSize = 0
 			for i := 0; i < len(b.EventsQueue); i++ {
-				batchedEventsSize += len(b.EventsQueue[i].Body.(string))
+				batchPayLoadSize += len(b.EventsQueue[i].Body.(string))
 			}
-
-			if len(b.EventsQueue) >= b.BatchSize || batchedEventsSize >= b.PayLoadSize {
+			if len(b.EventsQueue) >= b.BatchSize || batchPayLoadSize >= b.PayLoadBytes {
 				b.WaitGroup.Add(1)
 				go b.flush(1)
+				batchPayLoadSize = 0
 			}
 
 		}
@@ -173,20 +174,23 @@ func (b *BatchEventsSender) flush(flushSource int) {
 
 }
 
-// sendEventInBatches slices events into batches to send  based on batch size and/or payload size whichever is hit first
+//sendEventInBatches will slice Event Queue into batches.
+//Add events from event queue into a batch until either the batch events counts size is reached or the payload size limit is hit
+//Once the batch is flushed, another batch is initialized with the remaining elements from events queue until either of the two limits are reached
 func (b *BatchEventsSender) sendEventInBatches(events []Event) {
 	if len(events) <= 0 {
 		return
 	}
 	end := 0
 	for i := 0; i < len(events); {
-		end = end + 1
-		batchedEvents := events[i:end]
-		batchedSize := len(events[end-1].Body.(string))
+		batchedEvents := events[i : i+1]
+		batchPayLoadSize := len(events[i].Body.(string))
 
-		for batchedSize <= b.PayLoadSize && len(batchedEvents) < b.BatchSize && end < len(events) {
-			batchedSize += len(events[end].Body.(string))
-			if batchedSize <= b.PayLoadSize {
+		end = i + 1
+		//Increment batch until Payload Size limit is reached or batch events count is hit
+		for batchPayLoadSize <= b.PayLoadBytes && len(batchedEvents) < b.BatchSize && end < len(events) {
+			batchPayLoadSize += len(events[end].Body.(string))
+			if batchPayLoadSize <= b.PayLoadBytes {
 				end = end + 1
 				batchedEvents = events[i:end]
 			}

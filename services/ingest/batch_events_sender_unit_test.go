@@ -38,12 +38,12 @@ func TestBatchEventsSenderInitializationWithZeroPayloadSize(t *testing.T) {
 	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
 	require.Nil(t, err, "error creating ingest service client")
 	collector, _ := client.NewBatchEventsSender(5, 10000, 0)
-	assert.Equal(t, collector.PayLoadSize, 1000000)
+	assert.Equal(t, collector.PayLoadBytes, 1000000)
 }
 
 func TestBatchEventsSenderInitializationWithNonZeroPayloadSize(t *testing.T) {
 	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
 	require.Nil(t, err, "error creating ingest service client")
 	collector, _ := client.NewBatchEventsSender(5, 1000, 1000)
-	assert.Equal(t, collector.PayLoadSize, 1000)
+	assert.Equal(t, collector.PayLoadBytes, 1000)
 }

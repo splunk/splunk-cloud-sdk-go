@@ -94,7 +94,7 @@ func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interva
 
 	batchEventsSender := &BatchEventsSender{
 		BatchSize:      batchSize,
-		PayLoadSize:    dataSize,
+		PayLoadBytes:   dataSize,
 		EventsChan:     eventsChan,
 		EventsQueue:    eventsQueue,
 		EventService:   s,
