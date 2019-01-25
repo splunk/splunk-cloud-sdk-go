@@ -91,7 +91,7 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	assert.EqualValues(t, act, webhookAction)
 }
 
-// Get Non-Existent Action should result in 404 Not Found
+// Invalid action name should result in 400 Bad Request
 func TestCreateActionFailInvalidAction(t *testing.T) {
 	client := getSdkClient(t)
 	// Get Invalid Action
@@ -100,8 +100,8 @@ func TestCreateActionFailInvalidAction(t *testing.T) {
 	require.NotEmpty(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
-	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-	assert.Equal(t, "404 Not Found", httpErr.HTTPStatus)
+	assert.Equal(t, 400, httpErr.HTTPStatusCode)
+	assert.Equal(t, "400 Bad Request", httpErr.HTTPStatus)
 }
 
 // Create Existing action should result in 409 Conflict
@@ -223,20 +223,20 @@ func TestDeleteAction(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// Access action endpoints with a non-existent Action results in a 404 NotFound
+// Get non-existent Action results in a 404 NotFound
 func TestActionFailNotFoundAction(t *testing.T) {
 	client := getSdkClient(t)
 	// Get Invalid Action
-	_, err := client.ActionService.GetAction("Action123")
+	_, err := client.ActionService.GetAction("action123")
 	validateNotFoundActionError(t, err)
 
-	_, err = client.ActionService.GetActionStatus("Action123", "statusID")
+	_, err = client.ActionService.GetActionStatus("action123", "statusID")
 	validateNotFoundActionError(t, err)
 
-	_, err = client.ActionService.UpdateAction("Action123", action.UpdateFields{Subject: "updated subject"})
+	_, err = client.ActionService.UpdateAction("action123", action.UpdateFields{Subject: "updated subject"})
 	validateNotFoundActionError(t, err)
 
-	err = client.ActionService.DeleteAction("Action123")
+	err = client.ActionService.DeleteAction("action123")
 	validateNotFoundActionError(t, err)
 }
 
