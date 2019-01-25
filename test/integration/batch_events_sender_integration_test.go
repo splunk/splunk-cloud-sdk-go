@@ -105,6 +105,37 @@ func TestBatchEventsSenderPayloadSizeQueueFlush(t *testing.T) {
 	assert.Equal(t, 0, len(collector.EventsQueue))
 }
 
+// Should flush when queue is full, only payloadSize is hit, batchsize has no impact
+func TestBatchEventsSenderBatchSizeNoImpact(t *testing.T) {
+	var client = getClient(t)
+
+	event1 := model.Event{Host: "host1", Body: "thisisalongstring"}
+	event2 := model.Event{Host: "host2", Body: "for event"}
+	event3 := model.Event{Host: "host3", Body: "thisisalongstring"}
+	event4 := model.Event{Host: "host4", Body: "host4"}
+	event5 := model.Event{Host: "host5", Body: "host5"}
+	done := make(chan bool, 1)
+
+	collector, err := client.IngestService.NewBatchEventsSender(10, 1000, 20)
+	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
+	collector.Run()
+	go blocking(done, 3)
+	err = collector.AddEvent(event1)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event1): %s", err)
+	err = collector.AddEvent(event2)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event2): %s", err)
+	err = collector.AddEvent(event3)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event3): %s", err)
+	err = collector.AddEvent(event4)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event4): %s", err)
+	err = collector.AddEvent(event5)
+	assert.Emptyf(t, err, "Error collector.AddEvent(event5): %s", err)
+
+	collector.Stop()
+	<-done
+	assert.Equal(t, 0, len(collector.EventsQueue))
+}
+
 // Should flush when queue is full, batchSize is hit before payLoadSize
 func TestBatchEventsSenderPayloadSizeNoImpact(t *testing.T) {
 	var client = getClient(t)
