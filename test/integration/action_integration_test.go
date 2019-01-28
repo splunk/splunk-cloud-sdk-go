@@ -95,13 +95,25 @@ func TestGetCreateActionWebhook(t *testing.T) {
 func TestCreateActionFailInvalidAction(t *testing.T) {
 	client := getSdkClient(t)
 	// Get Invalid Action
-	_, err := client.ActionService.GetAction("Dontexist")
+	_, err := client.ActionService.GetAction("NoCapitals")
 
 	require.NotEmpty(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
 	assert.Equal(t, 400, httpErr.HTTPStatusCode)
 	assert.Equal(t, "400 Bad Request", httpErr.HTTPStatus)
+}
+
+// Getting non-existent action should result in 404
+func TestCreateActionFailNonExistentAction(t *testing.T) {
+	client := getSdkClient(t)
+	// Get Invalid Action
+	_, err := client.ActionService.GetAction("dontexist")
+
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 }
 
 // Create Existing action should result in 409 Conflict
@@ -284,3 +296,61 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 	assert.Equal(t, 403, httpErr.HTTPStatusCode)
 	assert.Equal(t, "403 Forbidden", httpErr.HTTPStatus)
 }
+
+// TODO: deploy a test runner with none of these permissions in order to do 403 testing:
+// action.actions.create
+// action.actions.modify
+// action.actions.read
+// action.actions.trigger
+
+/*
+// Access action endpoints using an Unauthorized client results in a 403 Forbidden error
+func TestActionFailUnauthorizedClient(t *testing.T) {
+	client := getSdkClient(t)
+	webhookActionName := fmt.Sprintf("w_unauthorized_%d", testutils.TimeSec)
+	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	defer cleanupAction(client, webhookAction.Name)
+	_, err := client.ActionService.CreateAction(*webhookAction)
+	require.Nil(t, err)
+
+	emailActionName := fmt.Sprintf("e_unauth_%d", testutils.TimeSec)
+	emailAction := model.NewEmailAction(emailActionName, htmlPart, subjectPArt, textPart, templateName, addresses)
+	// This shouldn't be needed since the CreateAction should fail with a 403:
+	// defer cleanupAction(client, emailAction.Name)
+	invalidClient := getInvalidClient(t)
+
+	_, err = invalidClient.ActionService.CreateAction(*emailAction)
+	validateUnauthorizedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetAction(webhookAction.Name)
+	validateUnauthorizedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetActions()
+	validateUnauthorizedActionError(t, err)
+
+	_, err = invalidClient.ActionService.TriggerAction(webhookAction.Name,
+		model.ActionNotification{
+			Kind:    model.RawJSONPayloadKind,
+			Tenant:  testutils.TestTenant,
+			Payload: webhookPayload,
+		})
+	validateUnauthorizedActionError(t, err)
+
+	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, model.ActionUpdateFields{TextPart: "updated email text"})
+	validateUnauthorizedActionError(t, err)
+
+	_, err = invalidClient.ActionService.GetActionStatus("Action123", "statusID")
+	validateUnauthorizedActionError(t, err)
+
+	err = invalidClient.ActionService.DeleteAction(webhookActionName)
+	validateUnauthorizedActionError(t, err)
+}
+
+func validateUnauthorizedActionError(t *testing.T, err error) {
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok, fmt.Sprintf("error casting err to HTTPError, err: %+v", err))
+	assert.Equal(t, 403, httpErr.HTTPStatusCode)
+	assert.Equal(t, "403 Forbidden", httpErr.HTTPStatus)
+}
+*/
