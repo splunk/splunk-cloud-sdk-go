@@ -69,13 +69,16 @@ func (s *Service) PostMetrics(events []MetricEvent) error {
 }
 
 // NewBatchEventsSenderWithMaxAllowedError used to initialize dependencies and set values, the maxErrorsAllowed is the max number of errors allowed before the eventsender quit
-func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, maxErrorsAllowed int) (*BatchEventsSender, error) {
+func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, dataSize int, maxErrorsAllowed int) (*BatchEventsSender, error) {
 	// Rather than return a super general error for both it will block on batchSize first
 	if batchSize == 0 {
 		return nil, errors.New("batchSize cannot be 0")
 	}
 	if interval == 0 {
 		return nil, errors.New("interval cannot be 0")
+	}
+	if dataSize == 0 {
+		dataSize = payLoadSize
 	}
 
 	if maxErrorsAllowed < 0 {
@@ -91,6 +94,7 @@ func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interva
 
 	batchEventsSender := &BatchEventsSender{
 		BatchSize:      batchSize,
+		PayLoadBytes:   dataSize,
 		EventsChan:     eventsChan,
 		EventsQueue:    eventsQueue,
 		EventService:   s,
@@ -107,6 +111,6 @@ func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interva
 }
 
 // NewBatchEventsSender used to initialize dependencies and set values
-func (s *Service) NewBatchEventsSender(batchSize int, interval int64) (*BatchEventsSender, error) {
-	return s.NewBatchEventsSenderWithMaxAllowedError(batchSize, interval, 1)
+func (s *Service) NewBatchEventsSender(batchSize int, interval int64, payLoadSize int) (*BatchEventsSender, error) {
+	return s.NewBatchEventsSenderWithMaxAllowedError(batchSize, interval, payLoadSize, 1)
 }
