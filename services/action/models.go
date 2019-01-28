@@ -17,81 +17,64 @@ const (
 	EmailKind Kind = "email"
 	// WebhookKind for webhook actions
 	WebhookKind Kind = "webhook"
-	// SNSKind for SNS actions
-	SNSKind Kind = "sns"
 )
 
 // UpdateFields defines the fields that may be updated for an existing Action
 type UpdateFields struct {
+	// Common action fields:
+	// Title is the human readable name title for the action. Optional.
+	Title *string `json:"title,omitempty"`
+
 	// Email action fields:
-	// HTMLPart to send via Email action
-	HTMLPart string `json:"htmlPart,omitempty"`
-	// SubjectPart to send via Email action
-	SubjectPart string `json:"subjectPart,omitempty"`
-	// TextPart to send via Email action
-	TextPart string `json:"textPart,omitempty"`
-	// TemplateName to send via Email action
-	TemplateName string `json:"templateName,omitempty"`
-	// Addresses to send to when Email action triggered
+	// Body to send via Email action
+	Body string `json:"body,omitempty"`
+	// Subject to send via Email action
+	Subject string `json:"subject,omitempty"`
+	// Addresses to send to when Email action triggered (required for Email actions)
 	Addresses []string `json:"addresses,omitempty"`
 
-	// SNS action fields:
-	// Topic to trigger SNS action
-	Topic string `json:"topic,omitempty"`
-	// Message to send via SNS or Webhook action
-	Message string `json:"message,omitempty"`
-
 	// Webhook action fields:
-	// WebhookURL to trigger Webhook action
+	// WebhookPayload is the (possibly) templated payload body which will be POSTed to the webhookUrl when triggered
+	WebhookPayload string `json:"webhookPayload,omitempty"`
+	// WebhookURL to trigger Webhook action, only allows the HTTPS scheme
 	WebhookURL string `json:"webhookUrl,omitempty"`
-	// Message string `json:"message"`(defined above)
 }
 
 // Action defines the fields for email, sns, and webhooks as one aggregated model
 type Action struct {
 	UpdateFields
 	// Common action fields:
-	// Name of action, all actions have this field
-	Name string `json:"name" binding:"required"`
-	// Kind of action (email, webhook, or sns), all actions have this field
-	Kind Kind `json:"kind" binding:"required"`
+	// Name of the action. The name is one or more identifier strings separated by dots. Each
+	// identifier string consists of lower case letters, digits, and underscores, and cannot start
+	// with a digit.
+	Name string `json:"name"`
+	// Kind of action (email or webhook)
+	Kind Kind `json:"kind"`
 }
 
 // NewEmailAction creates a new email kind action
-func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action {
+func NewEmailAction(name string, title string, body string, subject string, addresses []string) *Action {
 	return &Action{
 		Name: name,
 		Kind: EmailKind,
 		UpdateFields: UpdateFields{
-			HTMLPart:     htmlPart,
-			SubjectPart:  subjectPart,
-			TextPart:     textPart,
-			TemplateName: templateName,
-			Addresses:    addresses,
-		},
-	}
-}
-
-// NewSNSAction creates a new sns kind action
-func NewSNSAction(name string, topic string, message string) *Action {
-	return &Action{
-		Name: name,
-		Kind: SNSKind,
-		UpdateFields: UpdateFields{
-			Topic:   topic,
-			Message: message,
+			Title:     &title,
+			Body:      body,
+			Subject:   subject,
+			Addresses: addresses,
 		},
 	}
 }
 
 // NewWebhookAction creates a new webhook kind action
-func NewWebhookAction(name string, webhookURL string, message string) *Action {
+func NewWebhookAction(name string, title string, webhookURL string, payload string) *Action {
 	return &Action{
 		Name: name,
 		Kind: WebhookKind,
 		UpdateFields: UpdateFields{
-			WebhookURL: webhookURL,
-			Message:    message,
+			Title:          &title,
+			WebhookURL:     webhookURL,
+			WebhookPayload: payload,
 		},
 	}
 }
@@ -123,29 +106,21 @@ type TriggerResponse struct {
 	StatusURL *url.URL
 }
 
-// Error defines format for returned errors
-type Error struct {
-	Code     string      `json:"code"`
-	Message  string      `json:"message"`
-	Details  interface{} `json:"details,omitempty"`
-	MoreInfo string      `json:"moreInfo,omitempty"`
-}
-
 // NotificationKind defines the types of notifications
 type NotificationKind string
 
 const (
-	//SplunkEventKind for splunk event payloads
+	// SplunkEventKind for splunk event payloads
 	SplunkEventKind NotificationKind = "splunkEvent"
-	//RawJSONPayloadKind for raw json payloads
+	// RawJSONPayloadKind for raw json payloads
 	RawJSONPayloadKind NotificationKind = "rawJSON"
 )
 
 // Notification defines the action notification format
 type Notification struct {
-	Kind    NotificationKind `json:"kind" binding:"required"`
-	Tenant  string           `json:"tenant" binding:"required"`
-	Payload Payload          `json:"payload" binding:"required"`
+	Kind    NotificationKind `json:"kind"`
+	Tenant  string           `json:"tenant"`
+	Payload Payload          `json:"payload"`
 }
 
 // Payload is what is sent when the action is triggered
@@ -156,11 +131,11 @@ type RawJSONPayload map[string]interface{}
 
 // SplunkEventPayload is the payload for a notification coming from Splunk
 type SplunkEventPayload struct {
-	Event      map[string]interface{} `json:"event" binding:"required"`
-	Fields     map[string]string      `json:"fields" binding:"required"`
-	Host       string                 `json:"host" binding:"required"`
-	Index      string                 `json:"index" binding:"required"`
-	Source     string                 `json:"source" binding:"required"`
-	Sourcetype string                 `json:"sourcetype" binding:"required"`
-	Time       float64                `json:"time" binding:"required"`
+	Event      map[string]interface{} `json:"event"`
+	Fields     map[string]string      `json:"fields"`
+	Host       string                 `json:"host"`
+	Index      string                 `json:"index"`
+	Source     string                 `json:"source"`
+	Sourcetype string                 `json:"sourcetype"`
+	Time       float64                `json:"time"`
 }

@@ -14,7 +14,7 @@ import (
 
 // action service url prefix
 const servicePrefix = "action"
-const serviceVersion = "v1beta1"
+const serviceVersion = "v1beta2"
 const serviceCluster = "api"
 
 // Service - A service the receives incoming notifications and uses

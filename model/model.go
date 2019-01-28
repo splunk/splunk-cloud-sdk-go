@@ -30,8 +30,6 @@ const (
 	EmailKind = action.EmailKind
 	// WebhookKind is Deprecated: please use services/action.WebhookKind
 	WebhookKind = action.WebhookKind
-	// SNSKind is Deprecated: please use services/action.SNSKind
-	SNSKind = action.SNSKind
 )
 
 // ActionUpdateFields is Deprecated: please use services/action.UpdateFields
@@ -40,19 +38,9 @@ type ActionUpdateFields = action.UpdateFields
 // Action is Deprecated: please use services/action.Action
 type Action = action.Action
 
-// NewEmailAction is Deprecated: please use services/action.NewEmailAction
-func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action {
-	return action.NewEmailAction(name, htmlPart, subjectPart, textPart, templateName, addresses)
-}
-
-// NewSNSAction is Deprecated: please use services/action.NewSNSAction
-func NewSNSAction(name string, topic string, message string) *Action {
-	return action.NewSNSAction(name, topic, message)
-}
-
 // NewWebhookAction is Deprecated: please use services/action.NewWebhookAction
 func NewWebhookAction(name string, webhookURL string, message string) *Action {
-	return action.NewWebhookAction(name, webhookURL, message)
+	return action.NewWebhookAction(name, "", webhookURL, message)
 }
 
 // ActionStatusState is Deprecated: please use services/action.StatusState
@@ -74,9 +62,6 @@ type ActionStatus = action.Status
 
 // ActionTriggerResponse is Deprecated: please use services/action.TriggerResponse
 type ActionTriggerResponse = action.TriggerResponse
-
-// ActionError is Deprecated: please use services/action.Error
-type ActionError = action.Error
 
 // ActionNotificationKind is Deprecated: please use services/action.NotificationKind
 type ActionNotificationKind = action.NotificationKind
