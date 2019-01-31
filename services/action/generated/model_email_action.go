@@ -16,6 +16,9 @@ type EmailAction struct {
 	// Human readable name title for the action. Must be less than 128 characters.
 	Title *string `json:"title,omitempty"`
 	Subject *string `json:"subject,omitempty"`
+	// HTML content that will be sent as the body of this email.
 	Body *string `json:"body,omitempty"`
+	// Optional text that will be sent as the text/plain part of this email. If this field is not set for an email action, when triggering that action the Action Service will convert the value from the body field to text and send that as the text/plain part.
+	BodyPlainText *string `json:"bodyPlainText,omitempty"`
 	Addresses *[]string `json:"addresses,omitempty"`
 }
