@@ -168,11 +168,12 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 		action.Notification{
 			Kind:    action.RawJSONPayloadKind,
 			Tenant:  testutils.TestTenant,
-			Payload: webhookJSONPayload,
+			Payload: *webhookJSONPayload,
 		})
 	validateUnauthenticatedActionError(t, err)
 
-	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, action.UpdateFields{WebhookPayload: "new payload is a {{ .species }}"})
+	payload := "new payload is a {{ .species }}"
+	_, err = invalidClient.ActionService.UpdateAction(webhookActionName, action.UpdateFields{WebhookPayload: &payload})
 	validateUnauthenticatedActionError(t, err)
 
 	_, err = invalidClient.ActionService.GetActionStatus("Action123", "statusID")
@@ -194,7 +195,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 		action.Notification{
 			Kind:    action.RawJSONPayloadKind,
 			Tenant:  "",
-			Payload: webhookJSONPayload,
+			Payload: *webhookJSONPayload,
 		})
 
 	require.NotEmpty(t, err)
@@ -212,12 +213,12 @@ func TestUpdateAction(t *testing.T) {
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
 	defer cleanupAction(client, emailAction.Name)
-	const newText = "updated email text"
+	var newText = "updated email text"
 	var newTitle = "I am a new title"
 	result, err := client.ActionService.UpdateAction(emailActionName,
 		action.UpdateFields{
 			Title:   &newTitle,
-			Subject: newText,
+			Subject: &newText,
 		})
 	assert.Equal(t, newText, result.Subject)
 	assert.Equal(t, newTitle, *result.Title)
@@ -245,7 +246,8 @@ func TestActionFailNotFoundAction(t *testing.T) {
 	_, err = client.ActionService.GetActionStatus("action123", "statusID")
 	validateNotFoundActionError(t, err)
 
-	_, err = client.ActionService.UpdateAction("action123", action.UpdateFields{Subject: "updated subject"})
+	subject := "updated subject"
+	_, err = client.ActionService.UpdateAction("action123", action.UpdateFields{Subject: &subject})
 	validateNotFoundActionError(t, err)
 
 	err = client.ActionService.DeleteAction("action123")
@@ -265,7 +267,7 @@ func TestGetActionStatus(t *testing.T) {
 		action.Notification{
 			Kind:    action.RawJSONPayloadKind,
 			Tenant:  testutils.TestTenant,
-			Payload: webhookJSONPayload,
+			Payload: *webhookJSONPayload,
 		})
 	require.Nil(t, err)
 	require.NotNil(t, resp.StatusID)
@@ -288,7 +290,7 @@ func TestTriggerActionTenantMismatch(t *testing.T) {
 		action.Notification{
 			Kind:    action.RawJSONPayloadKind,
 			Tenant:  "INCORRECT_TENANT",
-			Payload: webhookJSONPayload,
+			Payload: *webhookJSONPayload,
 		})
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)

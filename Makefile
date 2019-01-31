@@ -25,7 +25,7 @@ noop:
 clean: build
 
 lint:
-	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
+	golangci-lint run ./... --skip-dirs test --skip-dirs services/*/generated --enable golint --disable megacheck
 
 linttest:
 	golangci-lint run test/... --disable-all
