@@ -28,14 +28,15 @@ type UpdateFields = generated.ActionMutable
 type Action = generated.Action
 
 // NewEmailAction creates a new email kind action
-func NewEmailAction(name string, title string, body string, subject string, addresses []string) *Action {
+func NewEmailAction(name string, title string, body string, bodyPlainText string, subject string, addresses []string) *Action {
 	return &Action{
-		Name:      name,
-		Kind:      EmailKind,
-		Title:     &title,
-		Body:      &body,
-		Subject:   &subject,
-		Addresses: &addresses,
+		Name:          name,
+		Kind:          EmailKind,
+		Title:         &title,
+		Body:          &body,
+		BodyPlainText: &bodyPlainText,
+		Subject:       &subject,
+		Addresses:     &addresses,
 	}
 }
 
