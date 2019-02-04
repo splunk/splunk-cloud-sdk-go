@@ -10,7 +10,7 @@ git fetch --all && git pull --all
 echo "Checking out a release/v$NEW_VERSION branch ..."
 BRANCH_NAME=release/v$NEW_VERSION
 git checkout -b $BRANCH_NAME
-echo "Renerating the services/*/interface.go files ..."
+echo "Regenerating the services/*/interface.go files ..."
 make generate_interface
 git add services/*/interface.go
 echo "Updating Version in services/client_info.go ..."
