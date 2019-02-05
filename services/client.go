@@ -37,8 +37,8 @@ const (
 	AuthorizationType = "Bearer"
 )
 
-// Declare default urls for each cluster
-var DEFAULT_URLS = map[string]string{
+// DefaultURLs is a mapping between service cluster and its url
+var DefaultURLs = map[string]string{
 	"api": "https://api.splunkbeta.com",
 	"app": "https://apps.splunkbeta.com",
 }
@@ -318,7 +318,7 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	urls := DEFAULT_URLS
+	urls := DefaultURLs
 	if config.URLs != nil && len(config.URLs) > 0 {
 		urls = config.URLs
 	}
