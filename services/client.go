@@ -39,8 +39,8 @@ const (
 
 // DefaultURLs is a mapping between service cluster and its url
 var DefaultURLs = map[string]string{
-	"api": "https://api.splunkbeta.com",
-	"app": "https://apps.splunkbeta.com",
+	"api": "api.splunkbeta.com",
+	"app": "apps.splunkbeta.com",
 }
 
 // A BaseClient for communicating with Splunk Cloud
@@ -309,7 +309,10 @@ func (c *BaseClient) SetDefaultTenant(tenant string) {
 
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
-	host := c.BuildHost(serviceCluster)
+	host := c.urls[serviceCluster]
+	if host == "" {
+		host = c.BuildHost(serviceCluster)
+	}
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   host,

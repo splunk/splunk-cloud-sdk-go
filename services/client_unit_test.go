@@ -61,6 +61,9 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
 	var host = "example.com"
+	var urls = map[string]string{
+		"api": "api.example.com:8882",
+	}
 	var hostWithPort = host + ":" + apiPort
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
@@ -69,11 +72,12 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 		Scheme: apiURLProtocol,
 		Host:   hostWithPort,
 		Tenant: tenant,
+		URLs:   urls,
 	})
 	require.Nil(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
-
+	fmt.Println(testURL)
 	require.Nil(t, err)
 	apiHostName := fmt.Sprintf("%s%s%s", "api", ".", host)
 	apiHostWithPort := fmt.Sprintf("%s%s%s", apiHostName, ":", apiPort)
