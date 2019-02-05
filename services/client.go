@@ -37,7 +37,7 @@ const (
 	AuthorizationType = "Bearer"
 )
 
-// DefaultURLs is a mapping between service cluster and its url
+// DefaultURLs is a mapping between service cluster and its host name
 var DefaultURLs = map[string]string{
 	"api": "api.splunkbeta.com",
 	"app": "app.splunkbeta.com",
@@ -57,7 +57,7 @@ type BaseClient struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	// urls is the (optional) mapping of service clusters and corresponding urls. Default value is:
+	// urls is the (optional) mapping of service clusters and corresponding host name. Default value is:
 	// {
 	//   "api": "https://api.splunkbeta.com",
 	//   "app": "https://apps.splunkbeta.com",
@@ -113,7 +113,7 @@ type Config struct {
 	Tenant string
 	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
 	Host string
-	// URLs is the (optional) mapping of service clusters and corresponding urls. Default value is:
+	// URLs is the (optional) mapping of service clusters and corresponding host name. Default value is:
 	// {
 	//   "api": "https://api.splunkbeta.com",
 	//   "app": "https://apps.splunkbeta.com",
