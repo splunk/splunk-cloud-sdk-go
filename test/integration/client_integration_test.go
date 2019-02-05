@@ -29,6 +29,7 @@ func getSdkClient(t *testing.T) *sdk.Client {
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
+		URLs:    testutils.TestURLs,
 	})
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
 	return client
