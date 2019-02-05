@@ -37,6 +37,12 @@ const (
 	AuthorizationType = "Bearer"
 )
 
+// Declare default urls for each cluster
+var DEFAULT_URLS = map[string]string{
+	"api": "https://api.splunkbeta.com",
+	"app": "https://apps.splunkbeta.com",
+}
+
 // A BaseClient for communicating with Splunk Cloud
 type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
@@ -51,6 +57,12 @@ type BaseClient struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
+	// urls is the (optional) mapping of service clusters and corresponding urls. Default value is:
+	// {
+	//   "api": "https://api.splunkbeta.com",
+	//   "app": "https://apps.splunkbeta.com",
+	// }
+	urls map[string]string
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -101,6 +113,12 @@ type Config struct {
 	Tenant string
 	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
 	Host string
+	// URLs is the (optional) mapping of service clusters and corresponding urls. Default value is:
+	// {
+	//   "api": "https://api.splunkbeta.com",
+	//   "app": "https://apps.splunkbeta.com",
+	// }
+	URLs map[string]string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
@@ -174,7 +192,11 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	host := c.BuildHost(serviceCluster)
+	// use c.urls mapping first, if no match, build host from c.BuildHost
+	host := c.urls[serviceCluster]
+	if host == "" {
+		host = c.BuildHost(serviceCluster)
+	}
 	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
 
 	u = url.URL{
@@ -296,6 +318,10 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
+	urls := DEFAULT_URLS
+	if config.URLs != nil && len(config.URLs) > 0 {
+		urls = config.URLs
+	}
 	host := "splunkbeta.com"
 	if config.Host != "" {
 		host = config.Host
@@ -348,6 +374,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
+		urls:             urls,
 	}
 
 	if config.RoundTripper != nil {
