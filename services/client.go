@@ -40,7 +40,7 @@ const (
 // DefaultURLs is a mapping between service cluster and its url
 var DefaultURLs = map[string]string{
 	"api": "api.splunkbeta.com",
-	"app": "apps.splunkbeta.com",
+	"app": "app.splunkbeta.com",
 }
 
 // A BaseClient for communicating with Splunk Cloud
