@@ -22,8 +22,14 @@ type ingestError struct {
 	Events []Event
 }
 
+//Default Payload Size in unit Bytes
+const (
+	payLoadSize = 1040000 // ~1MiB 1048576 bytes
+)
+
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
 type BatchEventsSender struct {
+	PayLoadBytes   int
 	BatchSize      int
 	EventsChan     chan Event
 	EventsQueue    []Event
@@ -57,6 +63,7 @@ func (b *BatchEventsSender) Run() {
 // otherwise it'll constantly checking conditions for ticker and events
 func (b *BatchEventsSender) loop() {
 	errorMsgCount := 0
+	batchPayLoadSize := 0
 
 	defer close(b.EventsChan)
 	for {
@@ -81,11 +88,18 @@ func (b *BatchEventsSender) loop() {
 			go b.flush(0)
 
 		case event := <-b.EventsChan:
+
 			b.EventsQueue = append(b.EventsQueue, event)
-			if len(b.EventsQueue) >= b.BatchSize {
+
+			for i := 0; i < len(b.EventsQueue); i++ {
+				batchPayLoadSize += len(b.EventsQueue[i].Body.(string))
+			}
+			if len(b.EventsQueue) >= b.BatchSize || batchPayLoadSize >= b.PayLoadBytes {
 				b.WaitGroup.Add(1)
 				go b.flush(1)
+				batchPayLoadSize = 0
 			}
+
 		}
 	}
 }
@@ -160,19 +174,30 @@ func (b *BatchEventsSender) flush(flushSource int) {
 
 }
 
-// sendEventInBatches slices events into batch size to send
+//sendEventInBatches will slice Event Queue into batches.
+//Add events from event queue into a batch until either the batch events counts size is reached or the payload size limit is hit
+//Once the batch is flushed, another batch is initialized with the remaining elements from events queue until either of the two limits are reached
 func (b *BatchEventsSender) sendEventInBatches(events []Event) {
 	if len(events) <= 0 {
 		return
 	}
+	end := 0
 	for i := 0; i < len(events); {
-		end := len(events)
-		if i+b.BatchSize < len(events) {
-			end = i + b.BatchSize
+		batchedEvents := events[i : i+1]
+		batchPayLoadSize := len(events[i].Body.(string))
+
+		end = i + 1
+		//Increment batch until Payload Size limit is reached or batch events count is hit
+		for batchPayLoadSize <= b.PayLoadBytes && len(batchedEvents) < b.BatchSize && end < len(events) {
+			batchPayLoadSize += len(events[end].Body.(string))
+			if batchPayLoadSize <= b.PayLoadBytes {
+				end = end + 1
+				batchedEvents = events[i:end]
+			}
 		}
-		batchedEvents := events[i:end]
+		i = end
 		err := b.EventService.PostEvents(batchedEvents)
-		i = i + b.BatchSize
+
 		if err != nil {
 			b.Errors = append(b.Errors, ingestError{Error: err, Events: events})
 

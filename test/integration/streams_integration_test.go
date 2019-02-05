@@ -20,17 +20,17 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	pipelineName2 := fmt.Sprintf("testPipeline02%d", testutils.TimeSec)
 
 	// Create two test pipelines
-	pipeline1, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName1, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
+	pipeline1, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName1, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline1.ID, pipeline1.Name)
 	require.NotEmpty(t, pipeline1)
 	assert.Equal(t, model.Created, pipeline1.Status)
 	assert.Equal(t, pipelineName1, pipeline1.Name)
 	assert.Equal(t, testPipelineDescription, pipeline1.Description)
 
-	pipeline2, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName2, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
+	pipeline2, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName2, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline2.ID, pipeline2.Name)
 	require.NotEmpty(t, pipeline2)
 	assert.Equal(t, model.Created, pipeline2.Status)
 	assert.Equal(t, pipelineName2, pipeline2.Name)
@@ -63,9 +63,9 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline and verify that the pipeline was created
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -73,42 +73,23 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	require.NotEmpty(t, pipeline.Data)
 	require.NotEmpty(t, pipeline.Data.Edges)
-	require.Equal(t, 3, len(pipeline.Data.Edges))
+	require.Equal(t, 1, len(pipeline.Data.Edges))
 	assert.NotEmpty(t, pipeline.Data.Edges[0].SourceNode)
 	assert.NotEmpty(t, pipeline.Data.Edges[0].TargetNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[1].SourceNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[1].TargetNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[2].SourceNode)
-	assert.NotEmpty(t, pipeline.Data.Edges[2].TargetNode)
 
 	require.NotEmpty(t, pipeline.Data.Nodes)
-	require.Equal(t, 4, len(pipeline.Data.Nodes))
+	require.Equal(t, 2, len(pipeline.Data.Nodes))
 
 	dataNode1, ok := pipeline.Data.Nodes[0].(map[string]interface{})
 	require.True(t, ok)
 	assert.NotEmpty(t, dataNode1["id"])
-	assert.Equal(t, "unauthenticated-read-kafka", dataNode1["op"])
-	assert.Equal(t, "localhost:9092", dataNode1["brokers"])
-	assert.Equal(t, "intopic", dataNode1["topic"])
+	assert.Equal(t, "read-splunk-firehose", dataNode1["op"])
 
 	dataNode2, ok := pipeline.Data.Nodes[1].(map[string]interface{})
 	require.True(t, ok)
 	assert.NotEmpty(t, dataNode2["id"])
-	assert.Equal(t, "deserialize-events", dataNode2["op"])
+	assert.Equal(t, "write-splunk-index", dataNode2["op"])
 	assert.Empty(t, dataNode2["attributes"])
-
-	dataNode3, ok := pipeline.Data.Nodes[2].(map[string]interface{})
-	require.True(t, ok)
-	assert.NotEmpty(t, dataNode3["id"])
-	assert.Equal(t, "serialize-events", dataNode3["op"])
-	assert.Equal(t, "output-topic-1", dataNode3["topic"])
-
-	dataNode4, ok := pipeline.Data.Nodes[3].(map[string]interface{})
-	require.True(t, ok)
-	assert.NotEmpty(t, dataNode4["id"])
-	assert.Equal(t, "unauthenticated-write-kafka", dataNode4["op"])
-	assert.Equal(t, "localhost:9092", dataNode4["brokers"])
-	assert.Empty(t, dataNode4["producer-properties"])
 }
 
 // Test ActivatePipeline streams endpoint
@@ -116,9 +97,9 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -147,9 +128,9 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -183,16 +164,16 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
 	// Update the newly created test pipeline
 	updatedPipelineName := fmt.Sprintf("updated%v", pipelineName)
-	updatedPipeline, err := getClient(t).StreamsService.UpdatePipeline(pipeline.ID, CreatePipelineRequest(t, updatedPipelineName, "Updated Integration Test Pipeline"))
+	updatedPipeline, err := getClient(t).StreamsService.UpdatePipeline(pipeline.ID, makePipelineRequest(t, updatedPipelineName, "Updated Integration Test Pipeline"))
 	require.Nil(t, err)
 	require.NotEmpty(t, updatedPipeline)
 	assert.Equal(t, updatedPipelineName, updatedPipeline.Name)
@@ -205,7 +186,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(CreatePipelineRequest(t, pipelineName, testPipelineDescription))
+	pipeline, err := getClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
@@ -223,10 +204,10 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 	require.Empty(t, pipeline)
 }
 
-// Creates a pipeline request
-func CreatePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
+// makePipelineRequest is a helper function to make a PipelineRequest model
+func makePipelineRequest(t *testing.T, name string, description string) *model.PipelineRequest {
 	// Create a test UPL JSON from a test DSL
-	var dsl = "kafka-brokers=\"localhost:9092\";input-topic = \"intopic\";output-topic-1 = \"output-topic-1\";events = deserialize-events(unauthenticated-read-kafka(kafka-brokers, input-topic, {}));unauthenticated-write-kafka(serialize-events(events, output-topic-1), kafka-brokers, {});"
+	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
 	result, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)

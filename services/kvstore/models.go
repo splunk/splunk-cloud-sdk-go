@@ -5,24 +5,6 @@
 
 package kvstore
 
-// Error error reason
-type Error struct {
-
-	// The reason of the error
-	Code int64 `json:"code"`
-	// Error message
-	Message string `json:"message"`
-	// State Storage error code
-	SsCode int64 `json:"ssCode"`
-}
-
-// AuthError auth error reason
-type AuthError struct {
-
-	// The reason of the auth error
-	Reason string `json:"reason"`
-}
-
 // PingOKBody ping ok body
 type PingOKBody struct {
 

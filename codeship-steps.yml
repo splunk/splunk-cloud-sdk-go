@@ -7,9 +7,9 @@
       - name: lint
         service: splunk-cloud-sdk-go
         command: bash -c "make lint"
-      - name: vet
+      - name: linttest
         service: splunk-cloud-sdk-go
-        command: bash -c "make vet"
+        command: bash -c "make linttest"
       - name: build
         service: splunk-cloud-sdk-go
         command: bash -c "make build"
@@ -34,22 +34,16 @@
     - type: parallel
       name: integration tests
       steps:
-        - name: integration tests - not gated
-          service: splunk-cloud-sdk-go-against-playground
-          exclude: ^(master|develop)$
-          command: bash -c "allow_failures=1 make run_integration_tests"
-          encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: integration tests - gated
-          service: splunk-cloud-sdk-go-against-playground
-          tag: ^(master|develop)$
+          service: splunk-cloud-sdk-go-integration
           command: bash -c "allow_failures=0 make run_integration_tests"
         - name: run example - gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           tag: ^(master)$
           command: bash -c "allow_failures=0 make run_integration_examples"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: run example - not gated
-          service: splunk-cloud-sdk-go-against-playground
+          service: splunk-cloud-sdk-go-integration
           exclue: ^(master)$
           command: bash -c "allow_failures=1 make run_integration_examples"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
@@ -61,5 +55,5 @@
                                       -apiKey $WHITESOURCE_API_KEY \
                                       -productToken $WHITESOURCE_PRODUCT_TOKEN \
                                       -userKey $WHITESOURCE_USER_KEY"
-          tag: ^(master|develop)$
+          tag: (?i)^(master$|release.*)
           encrypted_dockercfg_path: ci/dockercfg.encrypted

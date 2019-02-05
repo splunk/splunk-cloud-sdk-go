@@ -14,7 +14,7 @@ import (
 
 // action service url prefix
 const servicePrefix = "action"
-const serviceVersion = "v1beta1"
+const serviceVersion = "v1beta2"
 const serviceCluster = "api"
 
 // Service - A service the receives incoming notifications and uses
@@ -108,6 +108,9 @@ func (s *Service) TriggerAction(name string, notification Notification) (*Trigge
 	}
 
 	u, err := response.Location()
+	if err != nil {
+		return nil, err
+	}
 	parts := strings.Split(u.Path, "/")
 	l := len(parts)
 	if l >= 2 && parts[l-2] == "status" {

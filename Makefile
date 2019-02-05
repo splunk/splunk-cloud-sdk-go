@@ -25,11 +25,10 @@ noop:
 clean: build
 
 lint:
-	go get golang.org/x/lint/golint && golint --set_exit_status $(GO_NON_VENDOR_PACKAGES)
+	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
 
-vet:
-	make install_test_dep # Needed here to avoid compile errors
-	go vet $(GO_NON_VENDOR_PACKAGES)
+linttest:
+	golangci-lint run test/... --disable-all
 
 build:
 	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)

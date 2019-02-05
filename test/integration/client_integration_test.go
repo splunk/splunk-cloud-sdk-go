@@ -73,10 +73,9 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 	return client
 }
 
-// This is the legacy client initialization
-// Deprecated: please use sdk.NewClient()
+// Get a client with an invalid (expired) token
 func getInvalidClient(t *testing.T) *service.Client {
-	client, err := service.NewClient(&service.Config{
+	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
@@ -152,10 +151,10 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	webhookActionName := "testaction"
-	webhookAction := model.NewWebhookAction(webhookActionName, webhookURL, webhookMsg)
+	webhookAction := model.NewWebhookAction(webhookActionName, "https://webhook.site/test", "{{ .name }} is a {{ .species }}")
 	action, err := client.ActionService.CreateAction(*webhookAction)
-	defer client.ActionService.DeleteAction(webhookActionName)
 	require.Nil(t, err)
+	defer client.ActionService.DeleteAction(webhookActionName)
 	require.NotEmpty(t, action)
 	assert.Equal(t, 2, len(LoggerOutput))
 

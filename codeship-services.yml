@@ -26,9 +26,9 @@ splunk-cloud-sdk-go-whitesource:
   volumes_from:
     - splunk-cloud-sdk-go
 
-splunk-cloud-sdk-go-against-playground:
+splunk-cloud-sdk-go-integration:
   build:
-    image: splunk/splunk-cloud-sdk-go-against-playground
+    image: splunk/splunk-cloud-sdk-go-integration
     dockerfile: ci/Dockerfile
   encrypted_env_file: ci/env.encrypted
   volumes_from:

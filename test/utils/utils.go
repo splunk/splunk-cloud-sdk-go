@@ -23,14 +23,17 @@ var TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
 // TestTenant - the tenant to be used for the API
 var TestTenant = os.Getenv("TENANT_ID")
 
+// TestUsername - the user running tests on behalf of
+var TestUsername = os.Getenv("TEST_USERNAME")
+
 // TestInvalidTestTenant - the invalid tenant ID that denies permission to make requests against the api
 var TestInvalidTestTenant = "INVALID_TENANT_ID"
 
 // ExpiredAuthenticationToken - to test authentication retries
 var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
 
-// TestNamespace - A namespace for integration testing
-var TestNamespace = fmt.Sprintf("gonamespace%d", TimeSec)
+// TestModule - A namespace for integration testing
+var TestModule = fmt.Sprintf("gomod%d", TimeSec)
 
 // TestCollection - A collection for integration testing
 var TestCollection = fmt.Sprintf("gocollection%d", TimeSec)

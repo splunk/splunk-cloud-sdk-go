@@ -24,13 +24,13 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
-//go:generate go run ../util/gen-interface.go -svc=action -s=Service -i=Servicer -p=action
-//go:generate go run ../util/gen-interface.go -svc=catalog -s=Service -i=Servicer -p=catalog
-//go:generate go run ../util/gen-interface.go -svc=identity -s=Service -i=Servicer -p=identity
-//go:generate go run ../util/gen-interface.go -svc=ingest -s=Service -i=Servicer -p=ingest
-//go:generate go run ../util/gen-interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
-//go:generate go run ../util/gen-interface.go -svc=search -s=Service -i=Servicer -p=search
-//go:generate go run ../util/gen-interface.go -svc=streams -s=Service -i=Servicer -p=streams
+//go:generate go run ../util/gen_interface.go -svc=action -s=Service -i=Servicer -p=action
+//go:generate go run ../util/gen_interface.go -svc=catalog -s=Service -i=Servicer -p=catalog
+//go:generate go run ../util/gen_interface.go -svc=identity -s=Service -i=Servicer -p=identity
+//go:generate go run ../util/gen_interface.go -svc=ingest -s=Service -i=Servicer -p=ingest
+//go:generate go run ../util/gen_interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
+//go:generate go run ../util/gen_interface.go -svc=search -s=Service -i=Servicer -p=search
+//go:generate go run ../util/gen_interface.go -svc=streams -s=Service -i=Servicer -p=streams
 
 // Declare constants for service package
 const (
@@ -171,19 +171,16 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
 	}
-	var buildPath = ""
-	for _, pathPart := range urlPathParts {
-		buildPath = path.Join(buildPath, url.PathEscape(pathPart))
-	}
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
 	host := c.BuildHost(serviceCluster)
+	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
 
 	u = url.URL{
 		Scheme:   c.scheme,
 		Host:     host,
-		Path:     path.Join(tenant, buildPath),
+		Path:     pathWithTenant,
 		RawQuery: queryValues.Encode(),
 	}
 	return u, nil
@@ -254,11 +251,18 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 	if contentBytes, ok := requestParams.Body.([]byte); ok {
 		buffer = bytes.NewBuffer(contentBytes)
 	} else {
-		if content, err := json.Marshal(requestParams.Body); err == nil {
-			buffer = bytes.NewBuffer(content)
+		bodyMarshaler, ok := requestParams.Body.(util.MethodMarshaler)
+		var marshalErr error
+		var content []byte
+		if ok {
+			content, marshalErr = bodyMarshaler.MarshalJSONByMethod(requestParams.Method)
 		} else {
-			return nil, err
+			content, marshalErr = json.Marshal(requestParams.Body)
 		}
+		if marshalErr != nil {
+			return nil, marshalErr
+		}
+		buffer = bytes.NewBuffer(content)
 	}
 	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {

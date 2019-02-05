@@ -46,7 +46,7 @@ func TestParseHTTPStatusCodeInResponseEmptyBody(t *testing.T) {
 	httpResp := &http.Response{
 		StatusCode: 400,
 		Status:     "400 Bad Request",
-		Body:       ioutil.NopCloser(bytes.NewReader([]byte(""))),
+		Body:       ioutil.NopCloser(bytes.NewReader([]byte(`{}`))),
 	}
 	expectErrMsg := `{"HTTPStatusCode":400,"HTTPStatus":"400 Bad Request"}`
 	_, err := ParseHTTPStatusCodeInResponse(httpResp)
