@@ -40,6 +40,7 @@ func TestSDKClientInit(t *testing.T) {
 	client, err := sdk.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
+		URLs:   testutils.TestURLs,
 		Tenant: "system",
 	})
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
@@ -54,6 +55,7 @@ func getClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
@@ -67,6 +69,7 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestInvalidTestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
@@ -79,6 +82,7 @@ func getInvalidClient(t *testing.T) *service.Client {
 	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
@@ -116,6 +120,7 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	client, err := service.NewClient(&service.Config{
 		Token:            testutils.TestAuthenticationToken,
 		Host:             testutils.TestSplunkCloudHost,
+		URLs:             testutils.TestURLs,
 		Tenant:           testutils.TestInvalidTestTenant,
 		Timeout:          testutils.TestTimeOut,
 		ResponseHandlers: handlers,
@@ -146,6 +151,7 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	client, err := sdk.NewClient(&service.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
+		URLs:         testutils.TestURLs,
 		Tenant:       testutils.TestTenant,
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
