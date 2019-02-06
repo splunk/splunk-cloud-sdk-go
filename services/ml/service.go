@@ -50,12 +50,7 @@ func (s *Service) CreateWorkflow(workflow Workflow) (*Workflow, error) {
 		return &createdWorkflow, err
 	}
 
-	// TODO: something wrong with the umarshalling here, the model isn't quite right
-	//bodyBytes, _ := ioutil.ReadAll(response.Body)
-	//bodyString := string(bodyBytes)
-	//fmt.Println(bodyString)
-
-	err = util.ParseResponse(createdWorkflow, response)
+	err = util.ParseResponse(&createdWorkflow, response)
 
 	return &createdWorkflow, err
 }
@@ -82,9 +77,9 @@ func (s *Service) CreateWorkflowBuild(id string, workflowBuild WorkflowBuild) (*
 		return &createdWorkflowBuild, err
 	}
 
-	err = util.ParseResponse(createdWorkflowBuild, response)
+	err = util.ParseResponse(&createdWorkflowBuild, response)
 
-	return &createdWorkflowBuild, nil
+	return &createdWorkflowBuild, err
 }
 
 //CreateWorkflowRun Create a workflow Run
@@ -111,7 +106,7 @@ func (s *Service) CreateWorkflowRun(id string, buildID string, workflowRun Workf
 
 	err = util.ParseResponse(createdWorkflowRun, response)
 
-	return &createdWorkflowRun, nil
+	return &createdWorkflowRun, err
 }
 
 //DeleteWorkflow Delete a workflow configuration
@@ -124,10 +119,7 @@ func (s *Service) DeleteWorkflow(id string) error {
 	if response != nil {
 		defer response.Body.Close()
 	}
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 //DeleteWorkflowBuild Delete workflow build
@@ -140,10 +132,7 @@ func (s *Service) DeleteWorkflowBuild(id string, buildID string) error {
 	if response != nil {
 		defer response.Body.Close()
 	}
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 //DeleteWorkflowRun Delete a workflow run
@@ -156,10 +145,7 @@ func (s *Service) DeleteWorkflowRun(id string, buildID string, runID string) err
 	if response != nil {
 		defer response.Body.Close()
 	}
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 //GetWorkflow Get a workflow configuration
@@ -179,7 +165,7 @@ func (s *Service) GetWorkflow(id string) (*Workflow, error) {
 	}
 	err = util.ParseResponse(&workflow, response)
 
-	return &workflow, nil
+	return &workflow, err
 }
 
 //GetWorkflowBuild Get status of a workflow build
@@ -199,11 +185,11 @@ func (s *Service) GetWorkflowBuild(id string, buildID string) (*WorkflowBuild, e
 	}
 	err = util.ParseResponse(&workflowBuild, response)
 
-	return &workflowBuild, nil
+	return &workflowBuild, err
 }
 
 //GetWorkflowBuilds Get list of workflow builds
-func (s *Service) GetWorkflowBuilds(id string) ([]WorkflowBuild, error) {
+func (s *Service) ListWorkflowBuilds(id string) ([]WorkflowBuild, error) {
 	var workflowBuilds []WorkflowBuild
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "workflows", id, "builds")
@@ -219,11 +205,11 @@ func (s *Service) GetWorkflowBuilds(id string) ([]WorkflowBuild, error) {
 	}
 	err = util.ParseResponse(&workflowBuilds, response)
 
-	return workflowBuilds, nil
+	return workflowBuilds, err
 }
 
 //GetWorkflowRun Get status of a workflow run
-func (s *Service) GetWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error) {
+func (s *Service) ListWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error) {
 	var workflowRun WorkflowRun
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "workflows", id, "builds", buildID, "runs", runID)
@@ -239,11 +225,11 @@ func (s *Service) GetWorkflowRun(id string, buildID string, runID string) (*Work
 	}
 	err = util.ParseResponse(&workflowRun, response)
 
-	return &workflowRun, nil
+	return &workflowRun, err
 }
 
 //GetWorkflowRuns Get list of workflow runs
-func (s *Service) GetWorkflowRuns(id string, buildID string) ([]WorkflowRun, error) {
+func (s *Service) ListWorkflowRuns(id string, buildID string) ([]WorkflowRun, error) {
 	var workflowRuns []WorkflowRun
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "workflows", id, "builds", buildID, "runs")
@@ -259,7 +245,7 @@ func (s *Service) GetWorkflowRuns(id string, buildID string) ([]WorkflowRun, err
 	}
 	err = util.ParseResponse(&workflowRuns, response)
 
-	return workflowRuns, nil
+	return workflowRuns, err
 }
 
 //GetWorkflows Get the list of workflow configurations
@@ -279,5 +265,5 @@ func (s *Service) GetWorkflows() ([]WorkflowsGetResponse, error) {
 	}
 	err = util.ParseResponse(&workflows, response)
 
-	return workflows, nil
+	return workflows, err
 }
