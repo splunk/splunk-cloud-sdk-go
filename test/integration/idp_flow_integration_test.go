@@ -78,7 +78,6 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	tr := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
@@ -94,7 +93,6 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	tr := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultOIDCScopes, RefreshToken, IdpURL, IdpAuthz)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
@@ -119,7 +117,6 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
@@ -135,7 +132,6 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpURL, IdpAuthz)}
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
@@ -164,7 +160,6 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpURL, IdpAuthz)
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         "system",
 		Timeout:        testutils.TestTimeOut,
@@ -181,7 +176,6 @@ func TestIntegrationPKCERetryWorkflow(t *testing.T) {
 
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
@@ -207,7 +201,6 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 
 	client, err := service.NewClient(&service.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHost,
 		URLs:           testutils.TestURLs,
 		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,

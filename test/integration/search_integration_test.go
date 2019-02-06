@@ -180,7 +180,6 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
 		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
@@ -203,7 +202,6 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
 		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
@@ -226,7 +224,6 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 func TestRetryOff(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
 		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: false,

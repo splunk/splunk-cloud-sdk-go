@@ -321,12 +321,17 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
+	urlsIsOverwritten := config.URLs != nil && len(config.URLs) > 0
+	hostIsOverwritten := config.Host != ""
+	if urlsIsOverwritten && hostIsOverwritten {
+		return nil, errors.New("either URLs or Host must be set, not both. URLs are prefferred since Host will be depreciated")
+	}
 	urls := DefaultURLs
-	if config.URLs != nil && len(config.URLs) > 0 {
+	if urlsIsOverwritten {
 		urls = config.URLs
 	}
 	host := "splunkbeta.com"
-	if config.Host != "" {
+	if hostIsOverwritten {
 		host = config.Host
 	}
 	scheme := "https"
