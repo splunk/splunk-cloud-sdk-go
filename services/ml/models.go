@@ -5,8 +5,6 @@
 
 package ml
 
-import "time"
-
 // TODO: add HTTP methods annotations to all models here
 
 type Fields struct {
@@ -142,10 +140,10 @@ type Task struct {
 }
 
 type Workflow struct {
-	ID           *string    `json:"id,omitempty"`
-	Name         *string    `json:"name,omitempty"`
-	Tasks        []Task     `json:"tasks"`
-	CreationTime *time.Time `json:"creationTime,omitempty"`
+	ID           *string `json:"id,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	Tasks        []Task  `json:"tasks"`
+	CreationTime *string `json:"creationTime,omitempty"`
 }
 
 type WorkflowBuild struct {
@@ -155,9 +153,9 @@ type WorkflowBuild struct {
 	Input        InputData            `json:"input"`
 	Output       *OutputData          `json:"output,omitempty"`
 	Workflow     *Workflow            `json:"workflow,omitempty"`
-	CreationTime *time.Time           `json:"creationTime,omitempty"`
-	StartTime    *time.Time           `json:"startTime,omitempty"`
-	EndTime      *time.Time           `json:"endTime,omitempty"`
+	CreationTime *string              `json:"creationTime,omitempty"`
+	StartTime    *string              `json:"startTime,omitempty"`
+	EndTime      *string              `json:"endTime,omitempty"`
 }
 
 type WorkflowBuildStatus string
@@ -177,9 +175,9 @@ type WorkflowRun struct {
 	WorkflowBuild *WorkflowBuild     `json:"workflowBuild,omitempty"`
 	Input         InputData          `json:"input"`
 	Output        OutputData         `json:"output"`
-	CreationTime  *time.Time         `json:"creationTime,omitempty"`
-	StartTime     *time.Time         `json:"startTime,omitempty"`
-	EndTime       *time.Time         `json:"endTime,omitempty"`
+	CreationTime  *string            `json:"creationTime,omitempty"`
+	StartTime     *string            `json:"startTime,omitempty"`
+	EndTime       *string            `json:"endTime,omitempty"`
 }
 
 type WorkflowRunStatus string
@@ -194,7 +192,7 @@ const (
 
 // TODO: is this model needed? Can we just use the Workflow model instead?
 type WorkflowsGetResponse struct {
-	ID           *string    `json:"id,omitempty"`
-	Name         *string    `json:"name,omitempty"`
-	CreationTime *time.Time `json:"creationTime,omitempty"`
+	ID           *string `json:"id,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	CreationTime *string `json:"creationTime,omitempty"`
 }
