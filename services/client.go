@@ -31,6 +31,7 @@ import (
 //go:generate go run ../util/gen_interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
 //go:generate go run ../util/gen_interface.go -svc=search -s=Service -i=Servicer -p=search
 //go:generate go run ../util/gen_interface.go -svc=streams -s=Service -i=Servicer -p=streams
+//go:generate go run ../util/gen_interface.go -svc=ml -s=Service -i=Servicer -p=ml
 
 // Declare constants for service package
 const (
