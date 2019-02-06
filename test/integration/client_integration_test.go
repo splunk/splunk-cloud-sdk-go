@@ -192,9 +192,13 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 }
 
 func TestRoundTripperWithInvalidClient(t *testing.T) {
+	urls := map[string]string{
+		"api": "api.invalid.host",
+	}
 	identityClient, err := identity.NewService(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         "invalid.host",
+		URLs:         urls,
 		Tenant:       "system",
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
