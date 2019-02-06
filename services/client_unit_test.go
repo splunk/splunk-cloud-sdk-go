@@ -77,7 +77,6 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
-	fmt.Println(testURL)
 	require.Nil(t, err)
 	apiHostName := fmt.Sprintf("%s%s%s", "api", ".", host)
 	apiHostWithPort := fmt.Sprintf("%s%s%s", apiHostName, ":", apiPort)
