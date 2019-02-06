@@ -9,6 +9,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
+	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
 )
@@ -34,6 +35,8 @@ type Client struct {
 	ForwardersService *forwarders.Service
 	// appRegistryService talks to the Splunk Cloud app registry service
 	AppRegistryService *appregistry.Service
+	// MachineLearningService talks to the Splunk Cloud machine learning service
+	MachineLearningService *ml.Service
 }
 
 // NewClient returns a Splunk Cloud client for communicating with any service
@@ -53,6 +56,7 @@ func NewClient(config *services.Config) (*Client, error) {
 		StreamsService:     &streams.Service{Client: client},
 		ForwardersService:  &forwarders.Service{Client: client},
 		AppRegistryService: &appregistry.Service{Client: client},
+		MachineLearningService: &ml.Service{Client: client},
 	}, nil
 }
 
