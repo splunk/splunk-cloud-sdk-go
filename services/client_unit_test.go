@@ -16,7 +16,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const defaultCloudURL = "https://api.splunkbeta.com"
+const (
+	defaultAPIClusterURL = "https://api.splunkbeta.com"
+	defaultAPPClusterURL = "https://app.splunkbeta.com"
+)
 
 func TestNewClientDefaultProductionClient(t *testing.T) {
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
@@ -24,20 +27,8 @@ func TestNewClientDefaultProductionClient(t *testing.T) {
 		Token: token,
 	})
 	require.Nil(t, err)
-	baseURL := client.GetURL("")
-	require.Equal(t, baseURL.String(), defaultCloudURL)
-	apiURL := client.GetURL("api")
-	require.Equal(t, apiURL.String(), defaultCloudURL)
-}
-
-func TestNewClientAppClusterClient(t *testing.T) {
-	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
-	client, err := NewClient(&Config{
-		Token: token,
-	})
-	require.Nil(t, err)
-	appURL := client.GetURL("app")
-	require.Equal(t, appURL.String(), "https://app.splunkbeta.com")
+	require.Equal(t, client.GetURL("api").String(), defaultAPIClusterURL)
+	require.Equal(t, client.GetURL("app").String(), defaultAPPClusterURL)
 }
 
 func TestBuildURLDefaultProductionClient(t *testing.T) {
@@ -53,36 +44,83 @@ func TestBuildURLDefaultProductionClient(t *testing.T) {
 	testEndpoint := "widgets"
 	testURL, err := client.BuildURL(nil, "", testService, testVersion, testEndpoint)
 	require.Nil(t, err)
-	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultCloudURL, tenant, testService, testVersion, testEndpoint)
+	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultAPIClusterURL, tenant, testService, testVersion, testEndpoint)
 	require.Equal(t, testURL.String(), expectedURL)
 }
 
-func TestBuildURLDefaultTenant(t *testing.T) {
+func TestBuildAPIClusterCustomURL(t *testing.T) {
 	var apiURLProtocol = "http"
+	var apiHostname = "apiexample.com"
 	var apiPort = "8882"
-	var host = "example.com"
-	var hostWithPort = host + ":" + apiPort
+	var apiHostWithPort = fmt.Sprintf("%s%s%s", apiHostname, ":", apiPort)
+	var urls = map[string]string{
+		"api": apiHostWithPort,
+	}
 	var tenant = "EXAMPLE_TENANT"
 	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
 	client, err := NewClient(&Config{
 		Token:  token,
 		Scheme: apiURLProtocol,
-		Host:   hostWithPort,
+		URLs:   urls,
 		Tenant: tenant,
 	})
 	require.Nil(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
-
 	require.Nil(t, err)
-	apiHostName := fmt.Sprintf("%s%s%s", "api", ".", host)
-	apiHostWithPort := fmt.Sprintf("%s%s%s", apiHostName, ":", apiPort)
-	assert.Equal(t, apiHostName, testURL.Hostname())
+	assert.Equal(t, apiHostname, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
 	assert.Equal(t, apiHostWithPort, testURL.Host)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
+}
+
+func TestBuildAPPClusterCustomURL(t *testing.T) {
+	var appURLProtocol = "http"
+	var appHostname = "appexample.com"
+	var appPort = "8882"
+	var appHostWithPort = fmt.Sprintf("%s%s%s", appHostname, ":", appPort)
+	var urls = map[string]string{
+		"app": appHostWithPort,
+	}
+	var tenant = "EXAMPLE_TENANT"
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		Token:  token,
+		Scheme: appURLProtocol,
+		URLs:   urls,
+		Tenant: tenant,
+	})
+	require.Nil(t, err)
+	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
+	testURL, err := client.BuildURL(nil, "app", "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, appHostname, testURL.Hostname())
+	assert.Equal(t, appURLProtocol, testURL.Scheme)
+	assert.Equal(t, appPort, testURL.Port())
+	assert.Equal(t, appHostWithPort, testURL.Host)
+	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+}
+
+func TestBuildURLWithHostAndURLs(t *testing.T) {
+	var hostname = "appexample.com"
+	var port = "8882"
+	var host = fmt.Sprintf("%s%s%s", hostname, ":", port)
+	var urls = map[string]string{
+		"app": host,
+	}
+	var tenant = "EXAMPLE_TENANT"
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	_, err := NewClient(&Config{
+		URLs:   urls,
+		Host:   "localhost.com",
+		Token:  token,
+		Tenant: tenant,
+	})
+	assert.NotNil(t, err)
+	assert.Equal(t, "either URLs or Host must be set, not both. URLs are preferred since Host will be deprecated", err.Error())
 }
 
 func TestBuildURLEscapedCharacters(t *testing.T) {
@@ -122,7 +160,7 @@ func TestBuildURLSetDefaultTenant(t *testing.T) {
 	assert.Empty(t, testURL.Fragment)
 }
 
-func TestNewTokenClient(t *testing.T) {
+func TestHostOnlyClient(t *testing.T) {
 	var apiURLProtocol = "http"
 	var apiPort = "8882"
 	var apiHostname = "example.com"
@@ -142,11 +180,18 @@ func TestNewTokenClient(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
-	testURL := client.GetURL("")
-	assert.Equal(t, clusterAPIHostname, testURL.Hostname())
-	assert.Equal(t, apiURLProtocol, testURL.Scheme)
-	assert.Equal(t, apiPort, testURL.Port())
-	assert.Equal(t, clusterAPIHost, testURL.Host)
+	NoClusterMatchFromURLs := client.GetURL("")
+	assert.Equal(t, clusterAPIHostname, NoClusterMatchFromURLs.Hostname())
+	assert.Equal(t, apiURLProtocol, NoClusterMatchFromURLs.Scheme)
+	assert.Equal(t, apiPort, NoClusterMatchFromURLs.Port())
+	assert.Equal(t, clusterAPIHost, NoClusterMatchFromURLs.Host)
+
+	FoundClusterMatchFromURLs := client.GetURL("api")
+	assert.Equal(t, "api.splunkbeta.com", FoundClusterMatchFromURLs.Hostname())
+	assert.Equal(t, apiURLProtocol, FoundClusterMatchFromURLs.Scheme)
+	assert.Equal(t, "", FoundClusterMatchFromURLs.Port())
+	assert.Equal(t, "api.splunkbeta.com", FoundClusterMatchFromURLs.Host)
+
 }
 
 type tRet struct{}
