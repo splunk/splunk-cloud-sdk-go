@@ -26,6 +26,6 @@ type Servicer interface {
 	GetWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error)
 	//GetWorkflowRuns Get list of workflow runs
 	GetWorkflowRuns(id string, buildID string) ([]WorkflowRun, error)
-	//GetWorkflows Get the list of workflow configurations
+	//ListWorkflows Get the list of workflow configurations
 	GetWorkflows() ([]WorkflowsGetResponse, error)
 }

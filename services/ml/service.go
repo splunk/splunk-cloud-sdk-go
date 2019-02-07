@@ -104,7 +104,7 @@ func (s *Service) CreateWorkflowRun(id string, buildID string, workflowRun Workf
 		return &createdWorkflowRun, err
 	}
 
-	err = util.ParseResponse(createdWorkflowRun, response)
+	err = util.ParseResponse(&createdWorkflowRun, response)
 
 	return &createdWorkflowRun, err
 }
@@ -188,7 +188,7 @@ func (s *Service) GetWorkflowBuild(id string, buildID string) (*WorkflowBuild, e
 	return &workflowBuild, err
 }
 
-//GetWorkflowBuilds Get list of workflow builds
+//ListWorkflowBuilds Get list of workflow builds
 func (s *Service) ListWorkflowBuilds(id string) ([]WorkflowBuild, error) {
 	var workflowBuilds []WorkflowBuild
 
@@ -209,7 +209,7 @@ func (s *Service) ListWorkflowBuilds(id string) ([]WorkflowBuild, error) {
 }
 
 //GetWorkflowRun Get status of a workflow run
-func (s *Service) ListWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error) {
+func (s *Service) GetWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error) {
 	var workflowRun WorkflowRun
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "workflows", id, "builds", buildID, "runs", runID)
@@ -228,7 +228,7 @@ func (s *Service) ListWorkflowRun(id string, buildID string, runID string) (*Wor
 	return &workflowRun, err
 }
 
-//GetWorkflowRuns Get list of workflow runs
+//ListWorkflowRuns Get list of workflow runs
 func (s *Service) ListWorkflowRuns(id string, buildID string) ([]WorkflowRun, error) {
 	var workflowRuns []WorkflowRun
 
@@ -248,8 +248,8 @@ func (s *Service) ListWorkflowRuns(id string, buildID string) ([]WorkflowRun, er
 	return workflowRuns, err
 }
 
-//GetWorkflows Get the list of workflow configurations
-func (s *Service) GetWorkflows() ([]WorkflowsGetResponse, error) {
+//ListWorkflows Get the list of workflow configurations
+func (s *Service) ListWorkflows() ([]WorkflowsGetResponse, error) {
 	var workflows []WorkflowsGetResponse
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "workflows")
