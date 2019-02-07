@@ -72,8 +72,8 @@ type InputDataSource struct {
 }
 
 type OutputData struct {
-	Kind        *OutputDataKind `json:"kind,omitempty"`
-	Destination *OutputDataKind `json:"destination,omitempty"`
+	Kind        *OutputDataKind        `json:"kind,omitempty"`
+	Destination *OutputDataDestination `json:"destination,omitempty"`
 }
 
 type OutputDataDestination struct {
