@@ -120,7 +120,7 @@ func TestBuildURLWithHostAndURLs(t *testing.T) {
 		Tenant: tenant,
 	})
 	assert.NotNil(t, err)
-	assert.Equal(t, "either URLs or Host must be set, not both. URLs are prefferred since Host will be depreciated", err.Error())
+	assert.Equal(t, "either URLs or Host must be set, not both. URLs are preferred since Host will be deprecated", err.Error())
 }
 
 func TestBuildURLEscapedCharacters(t *testing.T) {
