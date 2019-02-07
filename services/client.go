@@ -324,7 +324,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 	urlsIsOverwritten := config.URLs != nil && len(config.URLs) > 0
 	hostIsOverwritten := config.Host != ""
 	if urlsIsOverwritten && hostIsOverwritten {
-		return nil, errors.New("either URLs or Host must be set, not both. URLs are prefferred since Host will be depreciated")
+		return nil, errors.New("either URLs or Host must be set, not both. URLs are preferred since Host will be deprecated")
 	}
 	urls := DefaultURLs
 	if urlsIsOverwritten {
