@@ -24,14 +24,19 @@ import (
 
 // This is the latest/correct client initialization to use
 func getSdkClient(t *testing.T) *sdk.Client {
-	client, err := sdk.NewClient(&services.Config{
+	client, err := MakeSdkClient()
+	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
+	return client
+}
+
+// Get an client without the testing interface
+func MakeSdkClient() (*sdk.Client, error) {
+	return sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
-	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
-	return client
 }
 
 // TestSDKClientTokenInit tests initializing a service-wide Splunk Cloud client and validating the token provided
