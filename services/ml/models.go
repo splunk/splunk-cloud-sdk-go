@@ -190,7 +190,6 @@ const (
 	ScheduledWorkflowRunStatus WorkflowRunStatus = "scheduled"
 )
 
-// TODO: is this model needed? Can we just use the Workflow model instead?
 type WorkflowsGetResponse struct {
 	ID           *string `json:"id,omitempty"`
 	Name         *string `json:"name,omitempty"`
