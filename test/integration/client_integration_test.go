@@ -33,7 +33,7 @@ func getSdkClient(t *testing.T) *sdk.Client {
 func MakeSdkClient() (*sdk.Client, error) {
 	return sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
@@ -43,7 +43,7 @@ func MakeSdkClient() (*sdk.Client, error) {
 func TestSDKClientInit(t *testing.T) {
 	client, err := sdk.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
-		Host:   testutils.TestSplunkCloudHost,
+		URLs:   testutils.TestURLs,
 		Tenant: "system",
 	})
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
@@ -57,21 +57,8 @@ func TestSDKClientInit(t *testing.T) {
 func getClient(t *testing.T) *service.Client {
 	client, err := service.NewClient(&service.Config{
 		Token:   testutils.TestAuthenticationToken,
-		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
-		Timeout: testutils.TestTimeOut,
-	})
-	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
-	return client
-}
-
-// This is the legacy client initialization
-// Deprecated: please use sdk.NewClient()
-func getInvalidTenantClient(t *testing.T) *service.Client {
-	client, err := service.NewClient(&service.Config{
-		Token:   testutils.TestAuthenticationToken,
-		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestInvalidTestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
@@ -82,7 +69,7 @@ func getInvalidTenantClient(t *testing.T) *service.Client {
 func getInvalidClient(t *testing.T) *service.Client {
 	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.ExpiredAuthenticationToken,
-		Host:    testutils.TestSplunkCloudHost,
+		URLs:    testutils.TestURLs,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.TestTimeOut,
 	})
@@ -119,7 +106,7 @@ func TestClientMultipleResponseHandlers(t *testing.T) {
 	var handlers = []service.ResponseHandler{handler1, handler2, handler3}
 	client, err := service.NewClient(&service.Config{
 		Token:            testutils.TestAuthenticationToken,
-		Host:             testutils.TestSplunkCloudHost,
+		URLs:             testutils.TestURLs,
 		Tenant:           testutils.TestInvalidTestTenant,
 		Timeout:          testutils.TestTimeOut,
 		ResponseHandlers: handlers,
@@ -149,7 +136,7 @@ func (ml *MyLogger) Print(v ...interface{}) {
 func TestRoundTripperWithSdkClient(t *testing.T) {
 	client, err := sdk.NewClient(&service.Config{
 		Token:        testutils.TestAuthenticationToken,
-		Host:         testutils.TestSplunkCloudHost,
+		URLs:         testutils.TestURLs,
 		Tenant:       testutils.TestTenant,
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
@@ -178,7 +165,7 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 func TestRoundTripperWithIdentityClient(t *testing.T) {
 	identityClient, err := identity.NewService(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
-		Host:         testutils.TestSplunkCloudHost,
+		URLs:         testutils.TestURLs,
 		Tenant:       "system",
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
@@ -190,9 +177,12 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 }
 
 func TestRoundTripperWithInvalidClient(t *testing.T) {
+	urls := map[string]string{
+		"api": "api.invalid.host",
+	}
 	identityClient, err := identity.NewService(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
-		Host:         "invalid.host",
+		URLs:         urls,
 		Tenant:       "system",
 		RoundTripper: util.CreateRoundTripperWithLogger(&MyLogger{}),
 	})
