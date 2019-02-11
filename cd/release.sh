@@ -3,15 +3,16 @@ echo "Input the version to release omitting the leading 'v' (e.g. 0.7.1) followe
 read NEW_VERSION
 
 echo "Preparing v$NEW_VERSION for release ..."
-echo "Running `git checkout develop` ..."
+echo "Running \"git checkout develop\" ..."
 git checkout develop
-echo "Running `git fetch --all && git pull --all` ..."
+echo "Running \"git fetch --all && git pull --all\" ..."
 git fetch --all && git pull --all
 echo "Checking out a release/v$NEW_VERSION branch ..."
 BRANCH_NAME=release/v$NEW_VERSION
 git checkout -b $BRANCH_NAME
-echo "Renerating the services/*/interface.go files ..."
+echo "Regenerating the services/*/interface.go files ..."
 make generate_interface
+git add services/*/interface.go
 echo "Updating Version in services/client_info.go ..."
 if [ "$(uname)" == "Darwin" ]; then
     # MacOS
@@ -24,7 +25,7 @@ git add services/client_info.go
 echo "Updating docs and generating cicd-publish artifact ..."
 make docs_publish
 git add docs/
-echo "Showing changes with `git status` ..."
+echo "Showing changes with \"git status\" ..."
 git status
 echo "Review the git status above and if your changes look good press y followed by [ENTER] to commit and push your release branch:"
 read PUSH_TO_GIT
@@ -42,7 +43,7 @@ then
     echo ""
     echo "   3. Create the release in Github with the option of creating a new tag = v$NEW_VERSION"
     echo ""
-    echo "   4. Pull the master branch and run \`make docs_publish\` ... then deliver the contents of ci/docs/build/*v$NEW_VERSION.tgz to the portals team"
+    echo "   4. Pull the master branch and run \"make docs_publish\" ... then deliver the contents of ci/docs/build/*v$NEW_VERSION.tgz to the portals team"
     echo ""
     echo "   5. Create/merge a PR from master -> develop"
     echo ""

@@ -15,8 +15,6 @@ const (
 	EmailKind = action.EmailKind
 	// WebhookKind is Deprecated: please use services/action.WebhookKind
 	WebhookKind = action.WebhookKind
-	// SNSKind is Deprecated: please use services/action.SNSKind
-	SNSKind = action.SNSKind
 )
 ```
 
@@ -50,34 +48,12 @@ type Action = action.Action
 
 Action is Deprecated: please use services/action.Action
 
-#### func  NewEmailAction
-
-```go
-func NewEmailAction(name string, htmlPart string, subjectPart string, textPart string, templateName string, addresses []string) *Action
-```
-NewEmailAction is Deprecated: please use services/action.NewEmailAction
-
-#### func  NewSNSAction
-
-```go
-func NewSNSAction(name string, topic string, message string) *Action
-```
-NewSNSAction is Deprecated: please use services/action.NewSNSAction
-
 #### func  NewWebhookAction
 
 ```go
 func NewWebhookAction(name string, webhookURL string, message string) *Action
 ```
 NewWebhookAction is Deprecated: please use services/action.NewWebhookAction
-
-#### type ActionError
-
-```go
-type ActionError = action.Error
-```
-
-ActionError is Deprecated: please use services/action.Error
 
 #### type ActionKind
 
@@ -305,16 +281,17 @@ const (
 type DatasetCreationPayload = catalog.DatasetCreationPayload
 ```
 
-DatasetCreationPayload is Deprecated: please use
-services/catalog.DatasetCreationPayload
+DatasetCreationPayload is Deprecated: please use services/catalog.*Dataset for
+each kind
 
 #### type DatasetInfo
 
 ```go
-type DatasetInfo = catalog.DatasetInfo
+type DatasetInfo = catalog.Dataset
 ```
 
-DatasetInfo is Deprecated: please use services/catalog.DatasetInfo
+DatasetInfo is Deprecated: please use services/catalog.Dataset and *Dataset for
+each kind
 
 #### type DatasetInfoKind
 
@@ -790,8 +767,8 @@ Tenant is Deprecated: please use services/identity.Tenant
 type UpdateDatasetInfoFields = catalog.UpdateDatasetInfoFields
 ```
 
-UpdateDatasetInfoFields is Deprecated: please use
-services/catalog.UpdateDatasetInfoFields
+UpdateDatasetInfoFields is Deprecated: please use services/catalog.*Dataset for
+each kind
 
 #### type UplEdge
 
