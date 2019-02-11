@@ -49,6 +49,13 @@ type PipelineDeleteResponse struct {
 	Running         bool `json:"running"`
 }
 
+// PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
+type PipelineReactivateResponse struct {
+	CurrentlyActiveVersion     int    `json:"currentlyActiveVersion"`
+	PipelineId                 string `json:"pipelineId"`
+	PipelineReactivationStatus string `json:"pipelineReactivationStatus"`
+}
+
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
 	Offset       *int32  `json:"offset,omitempty"`
@@ -69,6 +76,56 @@ type PipelineRequest struct {
 	Description              string       `json:"description"`
 	Name                     string       `json:"name"`
 	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
+}
+
+// PreviewSessionStartRequest contains the preview session start request data
+type PreviewSessionStartRequest struct {
+	RecordsLimit             int          `json:"recordsLimit,omitempty"`
+	RecordsPerPipeline       int          `json:"recordsPerPipeline,omitempty"`
+	SessionLifetimeMs        int          `json:"sessionLifetimeMs,omitempty"`
+	StreamingConfigurationID int          `json:"streamingConfigurationId,omitempty"`
+	Upl                      *UplPipeline `json:"upl"`
+	UseNewData               bool         `json:"useNewData,omitempty"`
+}
+
+// PreviewStartResponse contains the preview start response
+type PreviewStartResponse struct {
+	PipelineId string `json:"pipelineId"`
+	PreviewId  int64  `json:"previewId"`
+}
+
+// PreviewState contains the preview session data
+type PreviewState struct {
+	ActivatedDate          int64  `json:"activatedDate"`
+	CreatedDate            int64  `json:"createdDate"`
+	CurrentNumberOfRecords int64  `json:"currentNumberOfRecords"`
+	JobId                  string `json:"jobId"`
+	PreviewId              int64  `json:"previewId"`
+	RecordsPerPipeline     int64  `json:"recordsPerPipeline"`
+}
+
+// PaginatedPipelineStatusResponse contains a list of pipeline job statuses and the total count of pipeline jobs
+type PaginatedPipelineStatusResponse struct {
+	Items []PipelineJob `json:"items"`
+	Total int64         `json:"total"`
+}
+
+// PipelineJob contains pipeline job data from the underlying streaming system
+type PipelineJob struct {
+	JobId      string `json:"jobId"`
+	JobStatus  string `json:"jobStatus"`
+	PipelineId string `json:"createUserId,omitempty"`
+}
+
+// PipelineStatusQueryParams contains the query parameters that can be provided by the user to fetch specific pipeline job statuses
+type PipelineStatusQueryParams struct {
+	Offset       *int32  `json:"offset,omitempty"`
+	PageSize     *int32  `json:"pageSize,omitempty"`
+	SortField    *string `json:"sortField,omitempty"`
+	SortDir      *string `json:"sortDir,omitempty"`
+	Activated    *bool   `json:"activated,omitempty"`
+	CreateUserID *string `json:"createUserId,omitempty"`
+	Name         *string `json:"name,omitempty"`
 }
 
 // PipelineStatus reflects the status of a pipeline
@@ -99,4 +156,36 @@ type UplEdge struct {
 	SourcePort string      `json:"sourcePort"`
 	TargetNode string      `json:"targetNode"`
 	TargetPort string      `json:"targetPort"`
+}
+
+// TemplateRequest contains the create/update template request data
+type TemplateRequest struct {
+	Data        *UplPipeline `json:"data"`
+	Description string       `json:"description"`
+	Name        string       `json:"name"`
+}
+
+// PartialTemplateRequest contains the template request data for partial update operation
+type PartialTemplateRequest struct {
+	Data        *UplPipeline `json:"data,omitempty"`
+	Description string       `json:"description,omitempty"`
+	Name        string       `json:"name,omitempty"`
+}
+
+// TemplateResponse contains the create template response data
+type TemplateResponse struct {
+	CreateDate    int64        `json:"createDate,omitempty"`
+	CreateUserId  string       `json:"createUserId,omitempty"`
+	Data          *UplPipeline `json:"data"`
+	Description   string       `json:"description,omitempty"`
+	Name          string       `json:"name,omitempty"`
+	OwnerTenantId string       `json:"ownerTenantId,omitempty"`
+	TemplateId    string       `json:"templateId,omitempty"`
+	Version       int64        `json:"version,omitempty"`
+}
+
+// PaginatedTemplateResponse contains a list of templates and the total count of templates
+type PaginatedTemplateResponse struct {
+	Items []TemplateResponse `json:"items"`
+	Total int64              `json:"total"`
 }

@@ -52,6 +52,32 @@ func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, err
 	return &result, nil
 }
 
+// GetPipelineStatus gets status of pipelines from the underlying streaming system
+func (s *Service) GetPipelineStatus(queryParams PipelineStatusQueryParams) (*PaginatedPipelineStatusResponse, error) {
+	queryValues, err := convertToURLQueryValues(queryParams)
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := s.Client.BuildURL(queryValues, serviceCluster, servicePrefix, serviceVersion, "pipelines", "status")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PaginatedPipelineStatusResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // GetPipelines gets all the pipelines
 func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipelineResponse, error) {
 	queryValues, err := convertToURLQueryValues(queryParams)
@@ -141,6 +167,27 @@ func (s *Service) DeactivatePipeline(ids []string) (AdditionalProperties, error)
 	return result, nil
 }
 
+// ReactivatePipeline reactivates an existing pipeline
+func (s *Service) ReactivatePipeline(id string) (*PipelineReactivateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id, "reactivate")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PipelineReactivateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // GetPipeline gets an individual pipeline
 func (s *Service) GetPipeline(id string) (*Pipeline, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id)
@@ -204,9 +251,183 @@ func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
 	return &result, nil
 }
 
+// StartPreviewSession starts a preview session for an existing pipeline
+func (s *Service) StartPreviewSession(previewSession *PreviewSessionStartRequest) (*PreviewStartResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview-session")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: previewSession})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PreviewStartResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetPreviewSession gets an individual pipeline
+func (s *Service) GetPreviewSession(id string) (*PreviewState, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PreviewState
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// DeletePreviewSession stops a preview session
+func (s *Service) DeletePreviewSession(id string) error {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview-session", id)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
+// CreateTemplate creates a new template for a tenant
+func (s *Service) CreateTemplate(previewSession *TemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates")
+	fmt.Println(url)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: previewSession})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetTemplates gets a list of latest templates
+func (s *Service) GetTemplates() (*PaginatedTemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PaginatedTemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetTemplate gets an individual template by template id
+func (s *Service) GetTemplate(id string) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// UpdateTemplate updates an existing template (requires all fields)
+func (s *Service) UpdateTemplate(id string, template *TemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: url, Body: template})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// UpdateTemplatePatially partially updates an existing template (able to send partial data)
+func (s *Service) UpdateTemplatePatially(id string, template *PartialTemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Patch(services.RequestParams{URL: url, Body: template})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// DeleteTemplate deletes a template based on the provided template id
+func (s *Service) DeleteTemplate(id string) error {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
 // TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
-func convertToURLQueryValues(queryParams PipelineQueryParams) (url.Values, error) {
+func convertToURLQueryValues(queryParams interface{}) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)
 	if err != nil {
 		return nil, err
