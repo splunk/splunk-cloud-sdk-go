@@ -204,6 +204,354 @@ func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
 	return &result, nil
 }
 
+//Returns the input schema for a function in the pipeline
+func (s *Service) GetInputSchema(request *GetInputSchemaRequest) (*Parameters, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "input-schema")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetInputSchemaRequest{request.NodeUUID, request.TargetPortName, request.UplJSON}})
+
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *Parameters
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Returns the output schema for the specified function in the pipeline.
+func (s *Service) GetOutputSchema(request *GetOutputSchemaRequest) (*Parameters, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "output-schema")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetOutputSchemaRequest{request.NodeUUID, request.SourcePortName, request.UplJSON}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *Parameters
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Returns all functions in JSON format in the registry
+func (s *Service) GetRegistry(local url.Values) (*UplRegistry, error) {
+
+	url, err := s.Client.BuildURL(local, serviceCluster, servicePrefix, serviceVersion, "pipelines", "registry")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *UplRegistry
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Get latest Preview session metrics
+func (s *Service) GetLatestPreviewSessionMetrics(previewSessionId string) (*MetricsResponse, error) {
+
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", previewSessionId, "metrics", "latest")
+
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *MetricsResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Get latest Pipeline metrics
+func (s *Service) GetLatestPipelineMetrics(pipelineId string) (*MetricsResponse, error) {
+
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", pipelineId, "metrics", "latest")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *MetricsResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Validate if the Streams JSON is valid
+func (s *Service) ValidateUplResponse(request *ValidateRequest) (*ValidateResponse, error) {
+
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "validate")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: ValidateRequest{request.Upl}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *ValidateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+//Get all the available connectors
+func (s *Service) GetConnectors() (*Connectors, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connectors")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result Connectors
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+
+}
+
+//Get the connections for a specific connector
+func (s *Service) GetConnections(connectorId string) (*Connections, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connections", connectorId)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result *Connections
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// StartPreviewSession starts a preview session for an existing pipeline
+func (s *Service) StartPreviewSession(previewSession *PreviewSessionStartRequest) (*PreviewStartResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview-session")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: previewSession})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PreviewStartResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetPreviewSession gets an individual pipeline
+func (s *Service) GetPreviewSession(id string) (*PreviewState, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PreviewState
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// DeletePreviewSession stops a preview session
+func (s *Service) DeletePreviewSession(id string) error {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview-session", id)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
+// CreateTemplate creates a new template for a tenant
+func (s *Service) CreateTemplate(previewSession *TemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: previewSession})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetTemplates gets a list of latest templates
+func (s *Service) GetTemplates() (*PaginatedTemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PaginatedTemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetTemplate gets an individual template by template id
+func (s *Service) GetTemplate(id string) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// UpdateTemplate updates an existing template (requires all fields)
+func (s *Service) UpdateTemplate(id string, template *TemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: url, Body: template})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// UpdateTemplatePartially partially updates an existing template (able to send partial data)
+func (s *Service) UpdateTemplatePartially(id string, template *PartialTemplateRequest) (*TemplateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Patch(services.RequestParams{URL: url, Body: template})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result TemplateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// DeleteTemplate deletes a template based on the provided template id
+func (s *Service) DeleteTemplate(id string) error {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates", id)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	return err
+}
+
 // TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
 func convertToURLQueryValues(queryParams PipelineQueryParams) (url.Values, error) {
