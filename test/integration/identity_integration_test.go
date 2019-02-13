@@ -22,7 +22,7 @@ import (
 func TestIdentityClientInit(t *testing.T) {
 	identityClient, err := identity.NewService(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
-		Host:   testutils.TestSplunkCloudHost,
+		URLs:   testutils.TestURLs,
 		Tenant: "system",
 	})
 	require.Emptyf(t, err, "error calling services.NewService(): %s", err)

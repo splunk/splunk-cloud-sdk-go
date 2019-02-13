@@ -60,7 +60,6 @@ func TestGetJob(t *testing.T) {
 	response, err := client.SearchService.GetJob(job.ID)
 	assert.Nil(t, err)
 	require.NotEmpty(t, response)
-	assert.NotNil(t, response.Messages)
 	assert.Equal(t, job.ID, response.ID)
 	assert.NotEmpty(t, response.Status)
 	assert.Equal(t, DefaultSearchQuery, response.Query)
@@ -85,7 +84,6 @@ func TestCreateJobWithModule(t *testing.T) {
 	response, err := client.SearchService.GetJob(job.ID)
 	assert.Nil(t, err)
 	require.NotEmpty(t, response)
-	assert.NotNil(t, response.Messages)
 	assert.Equal(t, job.ID, response.ID)
 	assert.NotEmpty(t, response.Status)
 	assert.Equal(t, PostJobsRequestModule.Query, response.Query)
@@ -182,7 +180,7 @@ func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
+		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
@@ -204,7 +202,7 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
+		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
@@ -226,7 +224,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 func TestRetryOff(t *testing.T) {
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
-		Host:          testutils.TestSplunkCloudHost,
+		URLs:          testutils.TestURLs,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: false,
 	})
