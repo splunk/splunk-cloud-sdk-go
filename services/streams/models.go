@@ -49,6 +49,13 @@ type PipelineDeleteResponse struct {
 	Running         bool `json:"running"`
 }
 
+// PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
+type PipelineReactivateResponse struct {
+	CurrentlyActiveVersion     int    `json:"currentlyActiveVersion"`
+	PipelineId                 string `json:"pipelineId"`
+	PipelineReactivationStatus string `json:"pipelineReactivationStatus"`
+}
+
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
 	Offset       *int32  `json:"offset,omitempty"`

@@ -52,6 +52,32 @@ func (s *Service) CompileDslToUpl(dsl *DslCompilationRequest) (*UplPipeline, err
 	return &result, nil
 }
 
+// GetPipelineStatus gets status of pipelines from the underlying streaming system
+func (s *Service) GetPipelineStatus(queryParams PipelineStatusQueryParams) (*PaginatedPipelineStatusResponse, error) {
+	queryValues, err := convertToURLQueryValues(queryParams)
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := s.Client.BuildURL(queryValues, serviceCluster, servicePrefix, serviceVersion, "pipelines", "status")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PaginatedPipelineStatusResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // GetPipelines gets all the pipelines
 func (s *Service) GetPipelines(queryParams PipelineQueryParams) (*PaginatedPipelineResponse, error) {
 	queryValues, err := convertToURLQueryValues(queryParams)
@@ -139,6 +165,27 @@ func (s *Service) DeactivatePipeline(ids []string) (AdditionalProperties, error)
 		return nil, err
 	}
 	return result, nil
+}
+
+// ReactivatePipeline reactivates an existing pipeline
+func (s *Service) ReactivatePipeline(id string) (*PipelineReactivateResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id, "reactivate")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PipelineReactivateResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }
 
 // GetPipeline gets an individual pipeline
@@ -554,7 +601,7 @@ func (s *Service) DeleteTemplate(id string) error {
 
 // TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
-func convertToURLQueryValues(queryParams PipelineQueryParams) (url.Values, error) {
+func convertToURLQueryValues(queryParams interface{}) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)
 	if err != nil {
 		return nil, err
