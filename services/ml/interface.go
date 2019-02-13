@@ -20,12 +20,12 @@ type Servicer interface {
 	GetWorkflow(id string) (*Workflow, error)
 	//GetWorkflowBuild Get status of a workflow build
 	GetWorkflowBuild(id string, buildID string) (*WorkflowBuild, error)
-	//GetWorkflowBuilds Get list of workflow builds
-	GetWorkflowBuilds(id string) ([]WorkflowBuild, error)
+	//ListWorkflowBuilds Get list of workflow builds
+	ListWorkflowBuilds(id string) ([]WorkflowBuild, error)
 	//GetWorkflowRun Get status of a workflow run
 	GetWorkflowRun(id string, buildID string, runID string) (*WorkflowRun, error)
-	//GetWorkflowRuns Get list of workflow runs
-	GetWorkflowRuns(id string, buildID string) ([]WorkflowRun, error)
+	//ListWorkflowRuns Get list of workflow runs
+	ListWorkflowRuns(id string, buildID string) ([]WorkflowRun, error)
 	//ListWorkflows Get the list of workflow configurations
-	GetWorkflows() ([]WorkflowsGetResponse, error)
+	ListWorkflows() ([]WorkflowsGetResponse, error)
 }
