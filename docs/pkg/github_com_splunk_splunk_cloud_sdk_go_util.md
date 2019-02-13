@@ -5,6 +5,47 @@
 
 ## Usage
 
+#### func  MarshalByMethod
+
+```go
+func MarshalByMethod(v interface{}, method string) ([]byte, error)
+```
+MarshalByMethod marshals any json tagged struct fields matching the method being
+specified.
+
+If the `methods:` tag is specified for the field, then the field is marshaled if
+the input method is present in the comma-separated list within the tag (case
+insensitive).
+
+If no `methods:` tag is present then it is presumed that the field is valid for
+all methods, so the field is marshaled.
+
+Example:
+
+    ```go
+    type Model struct {
+    	// Marshal this field for PATCH or POST methods
+    	A string `json:"a" methods:"PATCH,POST"`
+    	// Never marshal this field (no methods)
+    	B string `json:"b" methods:""`
+    	// Always marshal this field (all methods)
+    	C string `json:"c"`
+    	// Marshal this field for POST methods but only if value is not empty
+    	D string `json:"d,omitempty" methods:"POST"`
+    }
+    model := Model{
+    	A: "valueA",
+    	B: "valueB",
+    	D: "",
+    }
+    // A is marshaled because it matches the POST method
+    // B is not marshaled because the `methods:""` tag prevents marshaling for all methods
+    // C is marshaled because omitting the `methods:` tag always marshals the field
+    // D is not marshaled because even though the POST method matches the tag, the value is empty
+    //   and omitempty is specified
+    bytes, err := MarshalByMethod(model, "POST") // string(bytes) == `{"a":"valueA","c":""}`
+    ```
+
 #### func  ParseHTTPStatusCodeInResponse
 
 ```go
@@ -92,6 +133,17 @@ type Logger interface {
 ```
 
 Logger compatible with standard "log" library
+
+#### type MethodMarshaler
+
+```go
+type MethodMarshaler interface {
+	MarshalJSONByMethod(method string) ([]byte, error)
+}
+```
+
+MethodMarshaler is the interface implemented by types that can marshal
+themselves into valid JSON according to the input http method
 
 #### type SdkTransport
 
