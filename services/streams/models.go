@@ -188,10 +188,10 @@ type ValidateResponse struct {
 
 // PreviewSessionStartRequest contains the preview session start request data
 type PreviewSessionStartRequest struct {
-	RecordsLimit             int          `json:"recordsLimit,omitempty"`
-	RecordsPerPipeline       int          `json:"recordsPerPipeline,omitempty"`
-	SessionLifetimeMs        int          `json:"sessionLifetimeMs,omitempty"`
-	StreamingConfigurationID int          `json:"streamingConfigurationId,omitempty"`
+	RecordsLimit             int64        `json:"recordsLimit,omitempty"`
+	RecordsPerPipeline       int64        `json:"recordsPerPipeline,omitempty"`
+	SessionLifetimeMs        int64        `json:"sessionLifetimeMs,omitempty"`
+	StreamingConfigurationID int64        `json:"streamingConfigurationId,omitempty"`
 	Upl                      *UplPipeline `json:"upl"`
 	UseNewData               bool         `json:"useNewData,omitempty"`
 }
