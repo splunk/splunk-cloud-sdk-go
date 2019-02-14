@@ -10,6 +10,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
+	"github.com/splunk/splunk-cloud-sdk-go/services/appreg"
 )
 
 // Client to communicate with Splunk Cloud service endpoints
@@ -31,6 +32,8 @@ type Client struct {
 	StreamsService *streams.Service
 	// ForwardersService talks to the Splunk Cloud forwarders service
 	ForwardersService *forwarders.Service
+	// AppRegService talks to the Splunk Cloud app registry service
+	AppRegService *appreg.Service
 }
 
 // NewClient returns a Splunk Cloud client for communicating with any service
