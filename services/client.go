@@ -333,6 +333,10 @@ func NewClient(config *Config) (*BaseClient, error) {
 	host := "splunkbeta.com"
 	if hostIsOverwritten {
 		host = config.Host
+		// HACK: force urls[k] to point to ${k}.${host}
+		for k, _ := range urls {
+			urls[k] = fmt.Sprintf("%s.%s", k, host)
+		}
 	}
 	scheme := "https"
 	if config.Scheme != "" {
