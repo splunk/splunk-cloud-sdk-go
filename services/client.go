@@ -264,6 +264,11 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 		}
 		buffer = bytes.NewBuffer(content)
 	}
+
+	//htmlData, err := ioutil.ReadAll(resp.Body) //<--- here!
+	//fmt.Println(string(htmlData)) //<-- here !
+
+
 	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), buffer, requestParams.Headers)
 	if err != nil {
 		return nil, err

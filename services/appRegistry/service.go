@@ -104,14 +104,32 @@ func (s *Service) GetApp(appName string) (*AppResponse,  error) {
 
 
 
-///*
-//GetAppSubscriptions
-//Retrieve the collection of subscriptions to an app.
-//* @param tenant The tenant issuing the request.
-//* @param appName Application name.
-//@return []Subscription
-//*/
-//func (s *Service) GetAppSubscriptions(tenant string, appName ResourceName) ([]Subscription, *http.Response, error)
+/*
+GetAppSubscriptions
+Retrieve the collection of subscriptions to an app.
+* @param appName Application name.
+@return []Subscription
+*/
+func (s *Service) GetAppSubscriptions(appName string) ([]Subscription, error) {
+
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName, "subscriptions")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var results []Subscription
+	err = util.ParseResponse(&results, response)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
 
 /*
 ListApps
@@ -139,20 +157,60 @@ func (s *Service) ListApps() ([]AppResponse, error){
 }
 
 
-///*
-//RotateSecret
-//Rotate the client secret for the application.
-//* @param tenant The tenant issuing the request.
-//* @param appName Application name.
-//@return AppResponse
-//*/
-//func (s *Service) RotateSecret(tenant string, appName ResourceName) (AppResponse, *http.Response, error)
-///*
-//UpdateApp
-//Update an application.
-//* @param tenant The tenant issuing the request.
-//* @param appName Application name.
-//* @param updateAppRequest Updated app contents.
-//@return AppResponse
-//*/
-//func (s *Service) UpdateApp(tenant string, appName ResourceName, updateAppRequest UpdateAppRequest) (AppResponse, *http.Response, error)
+/*
+RotateSecret
+Rotate the client secret for the application.
+* @param appName Application name.
+@return AppResponse
+*/
+func (s *Service) RotateSecret(appName string) (*AppResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps",appName, "rotate_secret")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result AppResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+/*
+UpdateApp
+Update an application.
+* @param appName Application name.
+* @param updateAppRequest Updated app contents.
+@return AppResponse
+*/
+func (s *Service) UpdateApp(appName string, updateAppRequest *UpdateAppRequest) (*AppResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName)
+	if err != nil {
+		return nil, err
+	}
+
+	// wait for the app-reg service to implement patch method, which will use the updateRequest more appropriate,
+	// where PUT basically need to use the createAppRequest payload
+	response, err := s.Client.Put(services.RequestParams{URL: url, Body: updateAppRequest})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var result AppResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
