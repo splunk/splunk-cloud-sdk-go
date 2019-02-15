@@ -230,6 +230,27 @@ func (s *Service) UpdatePipeline(id string, pipeline *PipelineRequest) (*Pipelin
 	return &result, nil
 }
 
+// MergePipelines merges two Upl pipelines into one Upl pipeline
+func (s *Service) MergePipelines(mergeRequest *PipelinesMergeRequest) (*UplPipeline, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "merge")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result UplPipeline
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // DeletePipeline deletes a pipeline
 func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", id)
@@ -481,6 +502,27 @@ func (s *Service) DeletePreviewSession(id string) error {
 	return err
 }
 
+// GetPreviewData gets preview data for a session
+func (s *Service) GetPreviewData(id string) (*PreviewData, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview-data", id)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result PreviewData
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // CreateTemplate creates a new template for a tenant
 func (s *Service) CreateTemplate(previewSession *TemplateRequest) (*TemplateResponse, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "templates")
@@ -599,7 +641,6 @@ func (s *Service) DeleteTemplate(id string) error {
 	return err
 }
 
-// TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
 func convertToURLQueryValues(queryParams interface{}) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)

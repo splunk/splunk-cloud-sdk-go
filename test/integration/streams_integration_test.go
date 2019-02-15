@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	"net/url"
+	//"net/url"
 	"strconv"
+	//"time"
+
+	"net/url"
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
@@ -129,7 +132,6 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 }
 
-// TODO (Parul): Known bug - BLAM-4340, until the fix is ready, setting a workaround field - skipSavePoint (=true)
 // Test DeactivatePipeline streams endpoint
 func TestIntegrationDeactivatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
@@ -239,6 +241,39 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.Equal(t, pipelineName2, result.Items[0].PipelineId)*/
 }
 
+/*// Test MergePipelines streams endpoint
+func TestIntegrationMergePipelines(t *testing.T) {
+
+	// Create two test upl pipelines
+	pipeline1 := createTestUplPipeline(t)
+	require.NotEmpty(t, pipeline1)
+
+	pipeline2 := createTestUplPipeline(t)
+	require.NotEmpty(t, pipeline2)
+	require.NotEmpty(t, pipeline2.Edges)
+	require.Equal(t, 1, len(pipeline2.Edges))
+	assert.NotEmpty(t, pipeline2.Edges[0].TargetPort)
+	assert.NotEmpty(t, pipeline2.Edges[0].TargetNode)
+
+	mergeRequest := streams.PipelinesMergeRequest{
+		InputTree: pipeline1,
+		MainTree: pipeline2,
+		TargetPort: pipeline2.Edges[0].TargetPort,
+		TargetNode: pipeline2.Edges[0].TargetNode,
+	}
+
+	fmt.Println(mergeRequest)
+
+	// Merge and verify the status of the merged UPL pipelines
+	result, err := getSdkClient(t).StreamsService.MergePipelines(&mergeRequest)
+	require.Nil(t, err)
+	require.NotEmpty(t, result)
+	require.NotEmpty(t, result.Edges)
+	require.Equal(t, 3, len(pipeline2.Edges))
+	require.NotEmpty(t, result.Nodes)
+	require.Equal(t, 4, len(pipeline2.Nodes))
+}*/
+
 // Test UpdatePipeline streams endpoint
 func TestIntegrationUpdatePipeline(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
@@ -327,11 +362,6 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	assert.Equal(t, *result1.Parameters[0].FieldName, "timestamp")
 	assert.Equal(t, *result1.Parameters[0].Parameters[0].Type, "long")
 
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
-
 }
 
 // Test Get Input Schema streams endpoint
@@ -377,11 +407,6 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	//assert.Equal(t, *result1.Parameters[0].Type, "field")
 	//assert.Equal(t, *result1.Parameters[0].FieldName, "timestamp")
 	//assert.Equal(t, *result1.Parameters[0].Parameters[0].Type, "long")
-
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test Get Registry endpoint
@@ -523,12 +548,6 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)
-
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
-
 }
 
 // Test StartPreviewSession streams endpoint TODO: The pipelineID returned is currently equal to previewID and is incorrect and will be soon removed by the ingest team.
@@ -571,6 +590,24 @@ func TestIntegrationDeletePreviewSession(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 	assert.Equal(t, "preview-id-not-found", httpErr.Code)
+}
+
+// Test GetPreviewData streams endpoint
+func TestIntegrationGetPreviewData(t *testing.T) {
+	// Create and start a test preview session
+	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
+	require.Nil(t, err)
+	require.NotEmpty(t, response)
+	previewIdStringVal := strconv.FormatInt(response.PreviewID, 10)
+	defer cleanupPreview(t, previewIdStringVal)
+	assert.NotEmpty(t, response.PipelineID)
+	assert.NotEmpty(t, response.PreviewID)
+
+	// Verify that the preview data is generated
+	previewData, err := getSdkClient(t).StreamsService.GetPreviewData(previewIdStringVal)
+	require.Nil(t, err)
+	require.NotEmpty(t, previewData)
+	assert.NotEmpty(t, response.PreviewID, previewData.PreviewID)
 }
 
 // Test CreateTemplate streams endpoint
@@ -682,7 +719,6 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template.TemplateID)
 	require.NotEmpty(t, template)
 	assert.Equal(t, templateName, template.Name)
 	assert.Equal(t, testTemplateDescription, template.Description)
