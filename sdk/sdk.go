@@ -52,6 +52,7 @@ func NewClient(config *services.Config) (*Client, error) {
 		SearchService:     &search.Service{Client: client},
 		StreamsService:    &streams.Service{Client: client},
 		ForwardersService: &forwarders.Service{Client: client},
+		AppRegService:     &appreg.Service{Client: client},
 	}, nil
 }
 

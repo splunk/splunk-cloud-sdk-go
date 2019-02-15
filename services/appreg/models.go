@@ -90,27 +90,27 @@ type AppResponse struct {
 	// Application name that is unique within the SDC platform.
 	Name string `json:"name"`
 	// Short paragraph describing the application.
-	Description *string `json:"description,omitempty"`
+	Description string `json:"description,omitempty"`
 	// The URL used to login to the app.
-	LoginUrl *string `json:"loginUrl,omitempty"`
+	LoginUrl string `json:"loginUrl,omitempty"`
 	// The URL used to display the application's logo.
-	LogoUrl *string `json:"logoUrl,omitempty"`
+	LogoUrl string `json:"logoUrl,omitempty"`
 	// Human readable title for the application.
-	Title *string `json:"title,omitempty"`
+	Title string `json:"title"`
 	// Array of permissions that are granted to the app principal when a tenant subscribes
-	PrincipalPermissions *[]string `json:"principalPermissions,omitempty"`
+	PrincipalPermissions []string `json:"principalPermissions,omitempty"`
 	// Array of URLs that can be used for redirect after logging into the app
-	RedirectUrls *[]string `json:"redirectUrls,omitempty"`
+	RedirectUrls []string `json:"redirectUrls"`
 	// URL to redirect to after a subscription is created
-	SetupUrl *string `json:"setupUrl,omitempty"`
+	SetupUrl string `json:"setupUrl,omitempty"`
 	// URL that webhook events will be sent to.
-	WebhookUrl *string `json:"webhookUrl,omitempty"`
+	WebhookUrl string `json:"webhookUrl,omitempty"`
 	// OAuth 2.0 Client ID.
 	ClientId string `json:"clientId"`
 	// OAuth 2.0 Client Secret string (used for confidential clients).
-	ClientSecret *string `json:"clientSecret,omitempty"`
+	ClientSecret string `json:"clientSecret,omitempty"`
 	// Time at which the Client Secret will expire, or 0 if it does not expire (unix epoch seconds).
-	ClientSecretExpiresAt *int64 `json:"clientSecretExpiresAt,omitempty"`
+	ClientSecretExpiresAt int64 `json:"clientSecretExpiresAt,omitempty"`
 	// The date that the application was created.
 	CreatedAt time.Time `json:"createdAt"`
 	// The principal who created this application.
@@ -129,11 +129,11 @@ type CreateAppRequest struct {
 	// The URL used to display the application's logo.
 	LogoUrl *string `json:"logoUrl,omitempty"`
 	// Human readable title for the application.
-	Title *string `json:"title,omitempty"`
+	Title string `json:"title,omitempty"`
 	// Array of permissions that are granted to the app principal when a tenant subscribes
 	PrincipalPermissions *[]string `json:"principalPermissions,omitempty"`
 	// Array of URLs that can be used for redirect after logging into the app
-	RedirectUrls *[]string `json:"redirectUrls,omitempty"`
+	RedirectUrls []string `json:"redirectUrls"`
 	// URL to redirect to after a subscription is created
 	SetupUrl *string `json:"setupUrl,omitempty"`
 	// URL that webhook events will be sent to.

@@ -12,7 +12,7 @@ import (
 )
 
 // action service url prefix
-const servicePrefix = "appreg"
+const servicePrefix = "app-registry"
 const serviceVersion = "v1beta2"
 const serviceCluster = "api"
 
@@ -29,32 +29,81 @@ func NewService(config *services.Config) (*Service, error) {
 	return &Service{Client: baseClient}, nil
 }
 
-///*
-//CreateApp
-//Create a new application.
-//* @param tenant The tenant issuing the request.
-//* @param createAppRequest Create a new application.
-//@return AppResponse
-//*/
-//func (s *Service) CreateApp(tenant string, createAppRequest CreateAppRequest) (AppResponse, *http.Response, error)
-//{
-//
-//}
-///*
-//DeleteApp
-//Delete an application.
-//* @param tenant The tenant issuing the request.
-//* @param appName Application name.
-//*/
-//func (s *Service) DeleteApp(tenant string, appName ResourceName) (*http.Response, error)
-///*
-//GetApp
-//Retrieve the metadata of an application.
-//* @param tenant The tenant issuing the request.
-//* @param appName Application name.
-//@return AppResponse
-//*/
-//func (s *Service) GetApp(tenant string, appName ResourceName) (AppResponse, *http.Response, error)
+/*
+CreateApp
+Create a new application.
+* @param createAppRequest Create a new application.
+@return AppResponse
+*/
+func (s *Service) CreateApp(createAppRequest *CreateAppRequest) (*AppResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: createAppRequest})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result AppResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+
+/*
+DeleteApp
+Delete an application.
+* @param appName Application name.
+*/
+func (s *Service) DeleteApp(appName string) (error){
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+GetApp
+Retrieve the metadata of an application.
+* @param appName Application name.
+@return AppResponse
+*/
+func (s *Service) GetApp(appName string) (*AppResponse,  error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result AppResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+
+
 ///*
 //GetAppSubscriptions
 //Retrieve the collection of subscriptions to an app.
@@ -67,11 +116,10 @@ func NewService(config *services.Config) (*Service, error) {
 /*
 ListApps
 List applications.
-* @param tenant The tenant issuing the request.
 @return []AppResponse
 */
 func (s *Service) ListApps() ([]AppResponse, error){
-	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "appreg")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps")
 	if err != nil {
 		return nil, err
 	}
