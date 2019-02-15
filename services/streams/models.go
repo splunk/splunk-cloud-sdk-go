@@ -49,6 +49,13 @@ type PipelineDeleteResponse struct {
 	Running         bool `json:"running"`
 }
 
+// PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
+type PipelineReactivateResponse struct {
+	CurrentlyActiveVersion     int    `json:"currentlyActiveVersion"`
+	PipelineId                 string `json:"pipelineId"`
+	PipelineReactivationStatus string `json:"pipelineReactivationStatus"`
+}
+
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
 	Offset       *int32  `json:"offset,omitempty"`
@@ -182,10 +189,10 @@ type ValidateResponse struct {
 
 // PreviewSessionStartRequest contains the preview session start request data
 type PreviewSessionStartRequest struct {
-	RecordsLimit             int          `json:"recordsLimit,omitempty"`
-	RecordsPerPipeline       int          `json:"recordsPerPipeline,omitempty"`
-	SessionLifetimeMs        int          `json:"sessionLifetimeMs,omitempty"`
-	StreamingConfigurationID int          `json:"streamingConfigurationId,omitempty"`
+	RecordsLimit             int64        `json:"recordsLimit,omitempty"`
+	RecordsPerPipeline       int64        `json:"recordsPerPipeline,omitempty"`
+	SessionLifetimeMs        int64        `json:"sessionLifetimeMs,omitempty"`
+	StreamingConfigurationID int64        `json:"streamingConfigurationId,omitempty"`
 	Upl                      *UplPipeline `json:"upl"`
 	UseNewData               bool         `json:"useNewData,omitempty"`
 }
@@ -317,4 +324,76 @@ type GroupFunctionArgsNode struct {
 type GroupFunctionArgsMappingNode struct {
 	Arguments  *[]GroupFunctionArgsNode `json:"arguments,omitempty"`
 	FunctionID *string                  `json:"function_id,omitempty"`
+}
+
+// PreviewData contains the preview data response
+type PreviewData struct {
+	CurrentNumberOfRecords int64                  `json:"currentNumberOfRecords"`
+	Nodes                  map[string]PreviewNode `json:"nodes"`
+	PipelineID             string                 `json:"pipelineId"`
+	PreviewID              string                 `json:"previewId"`
+	RecordsPerPipeline     int64                  `json:"recordsPerPipeline"`
+}
+
+// PreviewNode contains Preview node data
+type PreviewNode struct {
+	NodeName string       `json:"nodeName"`
+	Records  []ObjectNode `json:"records"`
+}
+
+// ObjectNode contains different object types
+type ObjectNode struct {
+	Array               bool     `json:"array,omitempty"`
+	BigDecimal          bool     `json:"bigDecimal,omitempty"`
+	BigInteger          bool     `json:"bigInteger,omitempty"`
+	Binary              bool     `json:"binary,omitempty"`
+	Boolean             bool     `json:"boolean,omitempty"`
+	ContainerNode       bool     `json:"containerNode,omitempty"`
+	Double              bool     `json:"double,omitempty"`
+	Float               bool     `json:"float,omitempty"`
+	FloatingPointNumber bool     `json:"floatingPointNumber,omitempty"`
+	Int                 bool     `json:"int,omitempty"`
+	IntegralNumber      bool     `json:"integralNumber,omitempty"`
+	Long                bool     `json:"long,omitempty"`
+	MissingNode         bool     `json:"missingNode,omitempty"`
+	NodeType            NodeType `json:"nodeType,omitempty"`
+	Null                bool     `json:"null,omitempty"`
+	Number              bool     `json:"number,omitempty"`
+	Object              bool     `json:"object,omitempty"`
+	Pojo                bool     `json:"pojo,omitempty"`
+	Short               bool     `json:"short,omitempty"`
+	Textual             bool     `json:"textual,omitempty"`
+	ValueNode           bool     `json:"valueNode,omitempty"`
+}
+
+// NodeType lists different node types
+type NodeType string
+
+const (
+	// Array nodetype
+	Array NodeType = "ARRAY"
+	// Binary nodetype
+	Binary NodeType = "BINARY"
+	// Boolean nodetype
+	Boolean NodeType = "BOOLEAN"
+	// Missing nodetype
+	Missing NodeType = "MISSING"
+	// Null nodetype
+	Null NodeType = "NULL"
+	// Number nodetype
+	Number NodeType = "NUMBER"
+	// Object nodetype
+	Object NodeType = "OBJECT"
+	// Pojo nodetype
+	Pojo NodeType = "POJO"
+	// String nodetype
+	String NodeType = "STRING"
+)
+
+// PipelinesMergeRequest contains pipelines merge request data
+type PipelinesMergeRequest struct {
+	InputTree  *UplPipeline `json:"inputTree"`
+	MainTree   *UplPipeline `json:"mainTree"`
+	TargetNode string       `json:"targetNode"`
+	TargetPort string       `json:"targetPort"`
 }
