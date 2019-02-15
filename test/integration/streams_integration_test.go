@@ -230,7 +230,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.Equal(t, int64(2), *result.Total)
 	require.NotEmpty(t, result.Items)
 
-	/*// Get and verify the status of the pipelines based on filters (query parameters)
+	/*// Get and verify the status of the pipelines based on filters (query parameters) TODO (Parul): Verify specs with ingest team
 	result, err = getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{s: p})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
@@ -239,7 +239,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.Equal(t, pipelineName2, result.Items[0].PipelineId)*/
 }
 
-/*// Test MergePipelines streams endpoint
+/*// Test MergePipelines streams endpoint TODO(Parul): Fix the failing test
 func TestIntegrationMergePipelines(t *testing.T) {
 
 	// Create two test upl pipelines
