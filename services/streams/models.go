@@ -189,18 +189,18 @@ type ValidateResponse struct {
 
 // PreviewSessionStartRequest contains the preview session start request data
 type PreviewSessionStartRequest struct {
-	RecordsLimit             int64        `json:"recordsLimit,omitempty"`
-	RecordsPerPipeline       int64        `json:"recordsPerPipeline,omitempty"`
-	SessionLifetimeMs        int64        `json:"sessionLifetimeMs,omitempty"`
-	StreamingConfigurationID int64        `json:"streamingConfigurationId,omitempty"`
+	RecordsLimit             *int64       `json:"recordsLimit,omitempty"`
+	RecordsPerPipeline       *int64       `json:"recordsPerPipeline,omitempty"`
+	SessionLifetimeMs        *int64       `json:"sessionLifetimeMs,omitempty"`
+	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
 	Upl                      *UplPipeline `json:"upl"`
-	UseNewData               bool         `json:"useNewData,omitempty"`
+	UseNewData               *bool        `json:"useNewData,omitempty"`
 }
 
 // PreviewStartResponse contains the preview start response
 type PreviewStartResponse struct {
-	PipelineID string `json:"pipelineId"`
-	PreviewID  int64  `json:"previewId"`
+	PipelineID *string `json:"pipelineId"`
+	PreviewID  *int64  `json:"previewId"`
 }
 
 // Connector represents a single connector
@@ -227,18 +227,18 @@ type Connectors struct {
 
 // PreviewState contains the preview session data
 type PreviewState struct {
-	ActivatedDate          int64  `json:"activatedDate"`
-	CreatedDate            int64  `json:"createdDate"`
-	CurrentNumberOfRecords int64  `json:"currentNumberOfRecords"`
-	JobID                  string `json:"jobId"`
-	PreviewID              int64  `json:"previewId"`
-	RecordsPerPipeline     int64  `json:"recordsPerPipeline"`
+	ActivatedDate          *int64  `json:"activatedDate"`
+	CreatedDate            *int64  `json:"createdDate"`
+	CurrentNumberOfRecords *int64  `json:"currentNumberOfRecords"`
+	JobID                  *string `json:"jobId"`
+	PreviewID              *int64  `json:"previewId"`
+	RecordsPerPipeline     *int64  `json:"recordsPerPipeline"`
 }
 
 // PaginatedPipelineStatusResponse contains a list of pipeline job statuses and the total count of pipeline jobs
 type PaginatedPipelineStatusResponse struct {
 	Items []PipelineJob `json:"items"`
-	Total int64         `json:"total"`
+	Total *int64        `json:"total"`
 }
 
 // PipelineJob contains pipeline job data from the underlying streaming system
@@ -262,33 +262,33 @@ type PipelineStatusQueryParams struct {
 // TemplateRequest contains the create/update template request data
 type TemplateRequest struct {
 	Data        *UplPipeline `json:"data"`
-	Description string       `json:"description"`
-	Name        string       `json:"name"`
+	Description *string      `json:"description"`
+	Name        *string      `json:"name"`
 }
 
 // PartialTemplateRequest contains the template request data for partial update operation
 type PartialTemplateRequest struct {
 	Data        *UplPipeline `json:"data,omitempty"`
-	Description string       `json:"description,omitempty"`
-	Name        string       `json:"name,omitempty"`
+	Description *string      `json:"description,omitempty"`
+	Name        *string      `json:"name,omitempty"`
 }
 
 // TemplateResponse contains the create template response data
 type TemplateResponse struct {
-	CreateDate    int64        `json:"createDate,omitempty"`
-	CreateUserID  string       `json:"createUserId,omitempty"`
+	CreateDate    *int64       `json:"createDate,omitempty"`
+	CreateUserID  *string      `json:"createUserId,omitempty"`
 	Data          *UplPipeline `json:"data"`
-	Description   string       `json:"description,omitempty"`
-	Name          string       `json:"name,omitempty"`
-	OwnerTenantID string       `json:"ownerTenantId,omitempty"`
-	TemplateID    string       `json:"templateId,omitempty"`
-	Version       int64        `json:"version,omitempty"`
+	Description   *string      `json:"description,omitempty"`
+	Name          *string      `json:"name,omitempty"`
+	OwnerTenantID *string      `json:"ownerTenantId,omitempty"`
+	TemplateID    *string      `json:"templateId,omitempty"`
+	Version       *int64       `json:"version,omitempty"`
 }
 
 // PaginatedTemplateResponse contains a list of templates and the total count of templates
 type PaginatedTemplateResponse struct {
 	Items []TemplateResponse `json:"items"`
-	Total int64              `json:"total"`
+	Total *int64             `json:"total"`
 }
 
 // GroupResponse contains full streams response of a group
@@ -331,42 +331,42 @@ type GroupFunctionArgsMappingNode struct {
 
 // PreviewData contains the preview data response
 type PreviewData struct {
-	CurrentNumberOfRecords int64                  `json:"currentNumberOfRecords"`
+	CurrentNumberOfRecords *int64                 `json:"currentNumberOfRecords"`
 	Nodes                  map[string]PreviewNode `json:"nodes"`
-	PipelineID             string                 `json:"pipelineId"`
-	PreviewID              string                 `json:"previewId"`
-	RecordsPerPipeline     int64                  `json:"recordsPerPipeline"`
+	PipelineID             *string                `json:"pipelineId"`
+	PreviewID              *string                `json:"previewId"`
+	RecordsPerPipeline     *int64                 `json:"recordsPerPipeline"`
 }
 
 // PreviewNode contains Preview node data
 type PreviewNode struct {
-	NodeName string       `json:"nodeName"`
+	NodeName *string      `json:"nodeName"`
 	Records  []ObjectNode `json:"records"`
 }
 
 // ObjectNode contains different object types
 type ObjectNode struct {
-	Array               bool     `json:"array,omitempty"`
-	BigDecimal          bool     `json:"bigDecimal,omitempty"`
-	BigInteger          bool     `json:"bigInteger,omitempty"`
-	Binary              bool     `json:"binary,omitempty"`
-	Boolean             bool     `json:"boolean,omitempty"`
-	ContainerNode       bool     `json:"containerNode,omitempty"`
-	Double              bool     `json:"double,omitempty"`
-	Float               bool     `json:"float,omitempty"`
-	FloatingPointNumber bool     `json:"floatingPointNumber,omitempty"`
-	Int                 bool     `json:"int,omitempty"`
-	IntegralNumber      bool     `json:"integralNumber,omitempty"`
-	Long                bool     `json:"long,omitempty"`
-	MissingNode         bool     `json:"missingNode,omitempty"`
+	Array               *bool    `json:"array,omitempty"`
+	BigDecimal          *bool    `json:"bigDecimal,omitempty"`
+	BigInteger          *bool    `json:"bigInteger,omitempty"`
+	Binary              *bool    `json:"binary,omitempty"`
+	Boolean             *bool    `json:"boolean,omitempty"`
+	ContainerNode       *bool    `json:"containerNode,omitempty"`
+	Double              *bool    `json:"double,omitempty"`
+	Float               *bool    `json:"float,omitempty"`
+	FloatingPointNumber *bool    `json:"floatingPointNumber,omitempty"`
+	Int                 *bool    `json:"int,omitempty"`
+	IntegralNumber      *bool    `json:"integralNumber,omitempty"`
+	Long                *bool    `json:"long,omitempty"`
+	MissingNode         *bool    `json:"missingNode,omitempty"`
 	NodeType            NodeType `json:"nodeType,omitempty"`
-	Null                bool     `json:"null,omitempty"`
-	Number              bool     `json:"number,omitempty"`
-	Object              bool     `json:"object,omitempty"`
-	Pojo                bool     `json:"pojo,omitempty"`
-	Short               bool     `json:"short,omitempty"`
-	Textual             bool     `json:"textual,omitempty"`
-	ValueNode           bool     `json:"valueNode,omitempty"`
+	Null                *bool    `json:"null,omitempty"`
+	Number              *bool    `json:"number,omitempty"`
+	Object              *bool    `json:"object,omitempty"`
+	Pojo                *bool    `json:"pojo,omitempty"`
+	Short               *bool    `json:"short,omitempty"`
+	Textual             *bool    `json:"textual,omitempty"`
+	ValueNode           *bool    `json:"valueNode,omitempty"`
 }
 
 // NodeType lists different node types
@@ -397,6 +397,6 @@ const (
 type PipelinesMergeRequest struct {
 	InputTree  *UplPipeline `json:"inputTree"`
 	MainTree   *UplPipeline `json:"mainTree"`
-	TargetNode string       `json:"targetNode"`
-	TargetPort string       `json:"targetPort"`
+	TargetNode *string      `json:"targetNode"`
+	TargetPort *string      `json:"targetPort"`
 }
