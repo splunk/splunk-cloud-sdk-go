@@ -52,7 +52,7 @@ type PipelineDeleteResponse struct {
 // PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
 type PipelineReactivateResponse struct {
 	CurrentlyActiveVersion     int    `json:"currentlyActiveVersion"`
-	PipelineId                 string `json:"pipelineId"`
+	PipelineID                 string `json:"pipelineId"`
 	PipelineReactivationStatus string `json:"pipelineReactivationStatus"`
 }
 
@@ -291,7 +291,7 @@ type PaginatedTemplateResponse struct {
 	Total int64              `json:"total"`
 }
 
-// GroupResponse
+// GroupResponse contains full streams response of a group
 type GroupResponse struct {
 	Ast             *UplPipeline                   `json:"ast,omitempty"`
 	Attributes      *map[string]interface{}        `json:"attributes,omitempty"`
@@ -309,6 +309,7 @@ type GroupResponse struct {
 	Variadic        *bool                          `json:"variadic,omitempty"`
 }
 
+// GroupExpandRequest contains request to create expanded group
 type GroupExpandRequest struct {
 	// Function arguments for the given id. Overrides default values.
 	Arguments map[string]interface{} `json:"arguments"`
@@ -316,11 +317,13 @@ type GroupExpandRequest struct {
 	ID string `json:"id"`
 }
 
+// GroupFunctionArgsNode contains arguments specific to a function and group
 type GroupFunctionArgsNode struct {
 	FunctionArg *string `json:"function_arg,omitempty"`
 	GroupArg    *string `json:"group_arg,omitempty"`
 }
 
+// GroupFunctionArgsMappingNode Group Arguments Mapping
 type GroupFunctionArgsMappingNode struct {
 	Arguments  *[]GroupFunctionArgsNode `json:"arguments,omitempty"`
 	FunctionID *string                  `json:"function_id,omitempty"`
