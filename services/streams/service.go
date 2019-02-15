@@ -338,9 +338,9 @@ func (s *Service) GetRegistry(local url.Values) (*UplRegistry, error) {
 }
 
 //Get latest Preview session metrics
-func (s *Service) GetLatestPreviewSessionMetrics(previewSessionId string) (*MetricsResponse, error) {
+func (s *Service) GetLatestPreviewSessionMetrics(previewSessionID string) (*MetricsResponse, error) {
 
-	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", previewSessionId, "metrics", "latest")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", previewSessionID, "metrics", "latest")
 
 	if err != nil {
 		return nil, err
@@ -361,9 +361,9 @@ func (s *Service) GetLatestPreviewSessionMetrics(previewSessionId string) (*Metr
 }
 
 //Get latest Pipeline metrics
-func (s *Service) GetLatestPipelineMetrics(pipelineId string) (*MetricsResponse, error) {
+func (s *Service) GetLatestPipelineMetrics(pipelineID string) (*MetricsResponse, error) {
 
-	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", pipelineId, "metrics", "latest")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", pipelineID, "metrics", "latest")
 	if err != nil {
 		return nil, err
 	}
@@ -427,8 +427,8 @@ func (s *Service) GetConnectors() (*Connectors, error) {
 }
 
 //Get the connections for a specific connector
-func (s *Service) GetConnections(connectorId string) (*Connections, error) {
-	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connections", connectorId)
+func (s *Service) GetConnections(connectorID string) (*Connections, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connections", connectorID)
 	if err != nil {
 		return nil, err
 	}
@@ -641,6 +641,47 @@ func (s *Service) DeleteTemplate(id string) error {
 	return err
 }
 
+func (s *Service) GetGroupByID(groupID string) (*GroupResponse, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "groups", groupID)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result GroupResponse
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (s *Service) CreateExpandedGroup(groupID string, groupExpandedRequest *GroupExpandRequest) (*UplPipeline, error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "groups", groupID, "expand")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: groupExpandedRequest})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result UplPipeline
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
 func convertToURLQueryValues(queryParams interface{}) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)

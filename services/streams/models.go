@@ -136,27 +136,28 @@ type Parameters struct {
 
 //UplFunction contains the basic building block of a UPL pipeline
 type UplFunction struct {
-	Arguments  map[string]interface{} `json:"arguments,omitempty"`
+	Arguments  map[string]UplArgument `json:"arguments,omitempty"`
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
 	Categories *[]int64               `json:"categories,omitempty"`
 	ID         *string                `json:"id,omitempty"`
 	IsVariadic *bool                  `json:"isVariadic,omitempty"`
 	Op         *string                `json:"op,omitempty"`
-	Output     *UplArgument           `json:"output,omitempty"`
-	ResolvedId *string                `json:"resolvedId,omitempty"`
+	Output     UplArgument            `json:"output,omitempty"`
+	ResolvedID *string                `json:"resolvedId,omitempty"`
 }
 
 //UplArgument are arguments to UplFunctions, UplFunctions have one or more of the arguments.
 type UplArgument struct {
-	ElementType *map[string]interface{} `json:"element-type,omitempty"`
-	Type        string                  `json:"type"`
+	//ElementType *map[string]interface{} `json:"element-type,omitempty"`
+	ElementType interface{} `json:"element-type,omitempty"`
+	Type        string      `json:"type"`
 }
 
 //UplRegistry contains all functions and types
 type UplRegistry struct {
-	Categories []UplCategory  `json:"categories,omitempty"`
-	Functions  *[]UplFunction `json:"functions,omitempty"`
-	Types      *[]UplType     `json:"types,omitempty"`
+	Categories []UplCategory `json:"categories,omitempty"`
+	Functions  []UplFunction `json:"functions,omitempty"`
+	Types      []UplType     `json:"types,omitempty"`
 }
 
 //UplCategory represents a category in the Upl registry
@@ -288,6 +289,41 @@ type TemplateResponse struct {
 type PaginatedTemplateResponse struct {
 	Items []TemplateResponse `json:"items"`
 	Total *int64             `json:"total"`
+}
+
+// GroupResponse
+type GroupResponse struct {
+	Ast             *UplPipeline                   `json:"ast,omitempty"`
+	Attributes      *map[string]interface{}        `json:"attributes,omitempty"`
+	Categories      *[]int64                       `json:"categories,omitempty"`
+	CreateDate      *int64                         `json:"createDate,omitempty"`
+	CreateUserID    *string                        `json:"createUserId,omitempty"`
+	GroupID         *string                        `json:"groupId,omitempty"`
+	LastUpdateDate  *int64                         `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserD *string                        `json:"lastUpdateUserId,omitempty"`
+	Mappings        []GroupFunctionArgsMappingNode `json:"mappings,omitempty"`
+	Name            *string                        `json:"name,omitempty"`
+	OutputType      *string                        `json:"outputType,omitempty"`
+	Scalar          *bool                          `json:"scalar,omitempty"`
+	TenantID        *string                        `json:"tenantId,omitempty"`
+	Variadic        *bool                          `json:"variadic,omitempty"`
+}
+
+type GroupExpandRequest struct {
+	// Function arguments for the given id. Overrides default values.
+	Arguments map[string]interface{} `json:"arguments"`
+	// The ID associated with your group function in the pipeline Streams JSON
+	ID string `json:"id"`
+}
+
+type GroupFunctionArgsNode struct {
+	FunctionArg *string `json:"function_arg,omitempty"`
+	GroupArg    *string `json:"group_arg,omitempty"`
+}
+
+type GroupFunctionArgsMappingNode struct {
+	Arguments  *[]GroupFunctionArgsNode `json:"arguments,omitempty"`
+	FunctionID *string                  `json:"function_id,omitempty"`
 }
 
 // PreviewData contains the preview data response

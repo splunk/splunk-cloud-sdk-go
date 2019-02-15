@@ -338,7 +338,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -383,7 +383,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -412,10 +412,12 @@ func TestIntegrationGetRegistry(t *testing.T) {
 	//Set local query parameter
 	local := make(url.Values)
 	local.Add("local", `true`)
-	//ToDo(shilpa) Follow up Element-Type collision during json unmarshalling
 	result, err := getClient(t).StreamsService.GetRegistry(local)
-	require.NotEmpty(t, err)
+	require.Empty(t, err)
 	require.NotEmpty(t, result)
+	assert.NotEmpty(t, *result.Functions[0].ID)
+	assert.NotEmpty(t, result.Categories[0].ID)
+	assert.NotEmpty(t, *result.Types[0].Type)
 }
 
 //Test Get Latest pipeline metrics endpoint
@@ -473,7 +475,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 //TODO(shilpa) Follow up potential timing issue for the metrics to return
 func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 
-	// Create and start a test preview session
+	// Create and start a test Ge session
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
@@ -733,6 +735,125 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
 	assert.Equal(t, "template-id-not-found", httpErr.Code)
+}
+
+// Test Get Groups endpoint
+func TestIntegrationGetGroups(t *testing.T) {
+	local := make(url.Values)
+	local.Add("local", `true`)
+	result, err := getClient(t).StreamsService.GetRegistry(local)
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
+	assert.NotEmpty(t, *result.Functions[0].ID)
+	assert.NotEmpty(t, result.Categories[0].ID)
+	assert.NotEmpty(t, *result.Types[0].Type)
+
+	cnt := 0
+	var groupIdName string
+	var groupIdVal string
+	var finalGroupIdVal string
+	var finalGroupName string
+
+	foundGroupName := false
+	foundGroupId := false
+	for cnt < len(result.Functions) {
+		for key, value := range result.Functions[cnt].Attributes {
+
+			if key == "application" {
+				val := value.(map[string]interface{})
+				for key, value := range val {
+					if key == "groupId" {
+						groupIdVal = value.(string)
+						foundGroupId = true
+					}
+					if key == "name" && value == "Receive from Ingest REST API" {
+						groupIdName = key
+						foundGroupName = true
+					}
+					if foundGroupName && foundGroupId {
+
+						finalGroupIdVal = groupIdVal
+						finalGroupName = groupIdName
+
+					}
+				}
+				foundGroupName = false
+				foundGroupId = false
+			}
+			cnt++
+		}
+	}
+	assert.NotEmpty(t, finalGroupName)
+	assert.NotEmpty(t, finalGroupIdVal)
+
+	test, err := getClient(t).StreamsService.GetGroupByID(finalGroupIdVal)
+	require.Empty(t, err)
+	require.NotEmpty(t, test)
+	assert.NotEmpty(t, *test.Name)
+	assert.NotEmpty(t, *test.CreateUserID)
+	assert.NotEmpty(t, *test.OutputType)
+}
+
+func TestIntegrationCreateExpandedGroup(t *testing.T) {
+	local := make(url.Values)
+	local.Add("local", `true`)
+	result, err := getClient(t).StreamsService.GetRegistry(local)
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
+	assert.NotEmpty(t, *result.Functions[0].ID)
+	assert.NotEmpty(t, result.Categories[0].ID)
+	assert.NotEmpty(t, *result.Types[0].Type)
+
+	cnt := 0
+	var groupIdName string
+	var groupIdVal string
+	var finalGroupIdVal string
+	var finalGroupName string
+
+	foundGroupName := false
+	foundGroupId := false
+	for cnt < len(result.Functions) {
+		for key, value := range result.Functions[cnt].Attributes {
+			if key == "application" {
+				val := value.(map[string]interface{})
+				for key, value := range val {
+					if key == "groupId" {
+						groupIdVal = value.(string)
+						foundGroupId = true
+					}
+					if key == "name" && value == "Receive from Ingest REST API" {
+						groupIdName = key
+						foundGroupName = true
+					}
+					if foundGroupName && foundGroupId {
+						finalGroupIdVal = groupIdVal
+						finalGroupName = groupIdName
+
+					}
+				}
+				foundGroupName = false
+				foundGroupId = false
+			}
+			cnt++
+		}
+	}
+	assert.NotEmpty(t, finalGroupName)
+	assert.NotEmpty(t, finalGroupIdVal)
+
+	result1, err := getClient(t).StreamsService.GetGroupByID(finalGroupIdVal)
+	require.Empty(t, err)
+	require.NotEmpty(t, result1)
+	functionID := *result1.Mappings[0].FunctionID
+
+	type argumentsMap map[string]interface{}
+
+	arguments := argumentsMap{"group_arg": "connection", "function_arg": "right"}
+
+	result2, err := getClient(t).StreamsService.CreateExpandedGroup(finalGroupIdVal, &streams.GroupExpandRequest{arguments, functionID})
+	require.Empty(t, err)
+	require.NotEmpty(t, result2)
+	assert.NotEmpty(t, result2.Version)
+	assert.NotEmpty(t, result2.RootNode)
 }
 
 // makePipelineRequest is a helper function to make a PipelineRequest model
