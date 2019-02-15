@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package appreg
+package appRegistry
 
 import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
