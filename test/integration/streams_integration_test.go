@@ -321,11 +321,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 // Test Get Input Schema streams endpoint
 func TestIntegrationGetInputSchema(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
-
-	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
-	uplPipeline, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
-	require.Empty(t, err)
-	require.NotEmpty(t, uplPipeline)
+	uplPipeline := createTestUplPipeline(t)
 
 	nodeUid := uplPipeline.Edges[0].TargetNode
 	port := uplPipeline.Edges[0].TargetPort
@@ -366,11 +362,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 // Test Get Input Schema streams endpoint
 func TestIntegrationGetOutputSchema(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
-
-	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
-	uplPipeline, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
-	require.Empty(t, err)
-	require.NotEmpty(t, uplPipeline)
+	uplPipeline := createTestUplPipeline(t)
 
 	nodeUid := uplPipeline.Edges[0].SourceNode
 	port := uplPipeline.Edges[0].SourcePort
@@ -749,7 +741,6 @@ func TestIntegrationGetGroups(t *testing.T) {
 
 	cnt := 0
 	temp := 0
-
 	for cnt < len(result.Functions) {
 		if *result.Functions[cnt].ID == "receive-from-ingest-rest-api" {
 			temp = cnt
@@ -782,7 +773,6 @@ func TestIntegrationCreateExpandedGroup(t *testing.T) {
 
 	cnt := 0
 	temp := 0
-
 	for cnt < len(result.Functions) {
 		if *result.Functions[cnt].ID == "receive-from-ingest-rest-api" {
 			temp = cnt
