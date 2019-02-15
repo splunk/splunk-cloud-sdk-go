@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	//"net/url"
 	"strconv"
-	//"time"
 
 	"net/url"
 	"time"
@@ -229,7 +227,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	result, err := getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
-	assert.Equal(t, int64(2), result.Total)
+	assert.Equal(t, int64(2), *result.Total)
 	require.NotEmpty(t, result.Items)
 
 	/*// Get and verify the status of the pipelines based on filters (query parameters)
@@ -479,7 +477,7 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(response.PreviewID, 10)
+	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
 	defer cleanupPreview(t, previewIdStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
@@ -556,7 +554,7 @@ func TestIntegrationStartPreviewSession(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(response.PreviewID, 10)
+	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
 	defer cleanupPreview(t, previewIdStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
@@ -575,7 +573,7 @@ func TestIntegrationDeletePreviewSession(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(response.PreviewID, 10)
+	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
@@ -598,7 +596,7 @@ func TestIntegrationGetPreviewData(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(response.PreviewID, 10)
+	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
 	defer cleanupPreview(t, previewIdStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
@@ -617,10 +615,10 @@ func TestIntegrationCreateTemplate(t *testing.T) {
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template.TemplateID)
+	defer cleanupTemplate(t, *template.TemplateID)
 	require.NotEmpty(t, template)
-	assert.Equal(t, templateName, template.Name)
-	assert.Equal(t, testTemplateDescription, template.Description)
+	assert.Equal(t, templateName, *template.Name)
+	assert.Equal(t, testTemplateDescription, *template.Description)
 
 	require.NotEmpty(t, template.Data)
 	require.NotEmpty(t, template.Data.Edges)
@@ -651,17 +649,17 @@ func TestIntegrationGetAllTemplates(t *testing.T) {
 	// Create two test templates
 	template1, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName1, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template1.TemplateID)
+	defer cleanupTemplate(t, *template1.TemplateID)
 	require.NotEmpty(t, template1)
-	assert.Equal(t, templateName1, template1.Name)
-	assert.Equal(t, testTemplateDescription, template1.Description)
+	assert.Equal(t, templateName1, *template1.Name)
+	assert.Equal(t, testTemplateDescription, *template1.Description)
 
 	template2, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName2, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template2.TemplateID)
+	defer cleanupTemplate(t, *template2.TemplateID)
 	require.NotEmpty(t, template2)
-	assert.Equal(t, templateName2, template2.Name)
-	assert.Equal(t, testTemplateDescription, template2.Description)
+	assert.Equal(t, templateName2, *template2.Name)
+	assert.Equal(t, testTemplateDescription, *template2.Description)
 
 	// Get all the templates
 	result, err := getSdkClient(t).StreamsService.GetTemplates()
@@ -676,19 +674,19 @@ func TestIntegrationUpdateTemplate(t *testing.T) {
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template.TemplateID)
+	defer cleanupTemplate(t, *template.TemplateID)
 	require.NotEmpty(t, template)
-	assert.Equal(t, templateName, template.Name)
-	assert.Equal(t, testTemplateDescription, template.Description)
+	assert.Equal(t, templateName, *template.Name)
+	assert.Equal(t, testTemplateDescription, *template.Description)
 
 	// Update the newly created test template
 	updatedTemplateName := fmt.Sprintf("updated%v", templateName)
-	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplate(template.TemplateID, makeTemplateRequest(t, updatedTemplateName, "Updated Integration Test Template"))
+	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplate(*template.TemplateID, makeTemplateRequest(t, updatedTemplateName, "Updated Integration Test Template"))
 	require.Nil(t, err)
 	require.NotEmpty(t, updatedTemplate)
-	assert.Equal(t, updatedTemplateName, updatedTemplate.Name)
-	assert.Equal(t, "Updated Integration Test Template", updatedTemplate.Description)
-	assert.Equal(t, template.Version+1, updatedTemplate.Version)
+	assert.Equal(t, updatedTemplateName, *updatedTemplate.Name)
+	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
+	assert.Equal(t, *template.Version+1, *updatedTemplate.Version)
 }
 
 // Test PartialUpdateTemplate streams endpoint
@@ -698,18 +696,19 @@ func TestIntegrationPartialUpdateTemplate(t *testing.T) {
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
 	require.Nil(t, err)
-	defer cleanupTemplate(t, template.TemplateID)
+	defer cleanupTemplate(t, *template.TemplateID)
 	require.NotEmpty(t, template)
-	assert.Equal(t, templateName, template.Name)
-	assert.Equal(t, testTemplateDescription, template.Description)
+	assert.Equal(t, templateName, *template.Name)
+	assert.Equal(t, testTemplateDescription, *template.Description)
 
 	// Update the newly created test template (partial update data is provided)
-	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplatePartially(template.TemplateID, &streams.PartialTemplateRequest{Description: "Updated Integration Test Template"})
+	updatedDescription := "Updated Integration Test Template"
+	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplatePartially(*template.TemplateID, &streams.PartialTemplateRequest{Description: &updatedDescription})
 	require.Nil(t, err)
 	require.NotEmpty(t, updatedTemplate)
-	assert.Equal(t, templateName, updatedTemplate.Name)
-	assert.Equal(t, "Updated Integration Test Template", updatedTemplate.Description)
-	assert.Equal(t, template.Version+1, updatedTemplate.Version)
+	assert.Equal(t, templateName, *updatedTemplate.Name)
+	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
+	assert.Equal(t, *template.Version+1, *updatedTemplate.Version)
 }
 
 // Test DeleteTemplate streams endpoint
@@ -720,15 +719,15 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
 	require.Nil(t, err)
 	require.NotEmpty(t, template)
-	assert.Equal(t, templateName, template.Name)
-	assert.Equal(t, testTemplateDescription, template.Description)
+	assert.Equal(t, templateName, *template.Name)
+	assert.Equal(t, testTemplateDescription, *template.Description)
 
 	// Delete the test template
-	err = getSdkClient(t).StreamsService.DeleteTemplate(template.TemplateID)
+	err = getSdkClient(t).StreamsService.DeleteTemplate(*template.TemplateID)
 	require.Nil(t, err)
 
 	// Verify that the test template is deleted
-	_, err = getSdkClient(t).StreamsService.GetTemplate(template.TemplateID)
+	_, err = getSdkClient(t).StreamsService.GetTemplate(*template.TemplateID)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -762,13 +761,17 @@ func createTestUplPipeline(t *testing.T) *streams.UplPipeline {
 // createPreviewSessionStartRequest is a helper function to create a test PreviewSessionStartRequest model
 func createPreviewSessionStartRequest(t *testing.T) *streams.PreviewSessionStartRequest {
 	result := createTestUplPipeline(t)
+	recordsLimit := int64(100)
+	recordsPerPipeline := int64(2)
+	sessionLifetimeMs := int64(10000)
+	useNewData := false
 
 	return &streams.PreviewSessionStartRequest{
-		RecordsLimit:       100,
-		RecordsPerPipeline: 2,
-		SessionLifetimeMs:  10000,
+		RecordsLimit:       &recordsLimit,
+		RecordsPerPipeline: &recordsPerPipeline,
+		SessionLifetimeMs:  &sessionLifetimeMs,
 		Upl:                result,
-		UseNewData:         false,
+		UseNewData:         &useNewData,
 	}
 }
 
@@ -778,8 +781,8 @@ func makeTemplateRequest(t *testing.T, name string, description string) *streams
 
 	return &streams.TemplateRequest{
 		Data:        result,
-		Description: description,
-		Name:        name,
+		Description: &description,
+		Name:        &name,
 	}
 }
 
