@@ -322,6 +322,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 func TestIntegrationGetInputSchema(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 	uplPipeline := createTestUplPipeline(t)
+	require.NotEmpty(t, uplPipeline)
 
 	nodeUid := uplPipeline.Edges[0].TargetNode
 	port := uplPipeline.Edges[0].TargetPort
@@ -363,6 +364,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 func TestIntegrationGetOutputSchema(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 	uplPipeline := createTestUplPipeline(t)
+	require.NotEmpty(t, uplPipeline)
 
 	nodeUid := uplPipeline.Edges[0].SourceNode
 	port := uplPipeline.Edges[0].SourcePort
@@ -418,9 +420,7 @@ func TestIntegrationGetRegistry(t *testing.T) {
 func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
-	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
-	uplPipeline, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
-	require.Empty(t, err)
+	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
 	// Create a test pipeline
@@ -514,9 +514,7 @@ func TestIntegrationGetConnections(t *testing.T) {
 func TestIntegrationValidateResponse(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
-	var dsl = "events = read-splunk-firehose(); write-splunk-index(events);"
-	uplPipeline, err := getClient(t).StreamsService.CompileDslToUpl(&model.DslCompilationRequest{Dsl: dsl})
-	require.Empty(t, err)
+	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
 	// Create a test pipeline
