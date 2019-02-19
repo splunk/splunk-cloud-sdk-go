@@ -10,21 +10,21 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/splunk/splunk-cloud-sdk-go/services/appRegistry"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
 )
 
 // Test Create/Get/Update/Delete app in app-registry service
 func TestCRUDApp(t *testing.T) {
 	client := getSdkClient(t)
-	appName := "testapp"
+	appName := "gotestapp"
 
 	// Create app
-	app := appRegistry.CreateAppRequest{
+	app := appregistry.CreateAppRequest{
 		Kind:                 "web",
 		Name:                 appName,
 		Title:                "testtitle",
-		RedirectUrls: []string{
+		RedirectURLs: []string{
 			"https://localhost",
 		},
 	}
@@ -44,16 +44,16 @@ func TestCRUDApp(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, app.Name, app_ret.Name)
 	require.Equal(t, app.Title, app_ret.Title)
-	require.Equal(t, app.RedirectUrls, app_ret.RedirectUrls)
+	require.Equal(t, app.RedirectURLs, app_ret.RedirectURLs)
 	require.Equal(t, app.Kind, app_ret.Kind)
 
 	// Update the app. TODO: title and redirecturl should not needed once patch method is implemented.
 	description:="new Description"
 	title:= "new title"
 	redirecturl:=[]string{"http://newlocalhost"}
-	updateApp:=appRegistry.UpdateAppRequest{
+	updateApp:=appregistry.UpdateAppRequest{
 		Description: &description,
-		RedirectUrls:&redirecturl,
+		RedirectURLs:&redirecturl,
 		Title:&title,
 	}
 	app_ret, err = client.AppRegistryService.UpdateApp(appName, &updateApp)
@@ -76,14 +76,14 @@ func TestCRUDApp(t *testing.T) {
 // Test RotateSecret in app-registry service
 func TestAppRotateSecret(t *testing.T) {
 	client := getSdkClient(t)
-	appName := "testrotatesecret"
+	appName := "gotestrotatesecret"
 
 	// Create app
-	app := appRegistry.CreateAppRequest{
+	app := appregistry.CreateAppRequest{
 		Kind:  "web",
 		Name:  appName,
 		Title: "testtitle",
-		RedirectUrls: []string{
+		RedirectURLs: []string{
 			"https://localhost",
 		},
 	}
@@ -101,14 +101,14 @@ func TestAppRotateSecret(t *testing.T) {
 // Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
 func TestSubscriptions(t *testing.T) {
 	client := getSdkClient(t)
-	appName := "testsubscriptions"
+	appName := "gotestsubscriptions"
 
 	// Create app
-	app := appRegistry.CreateAppRequest{
+	app := appregistry.CreateAppRequest{
 		Kind:  "web",
 		Name:  appName,
 		Title: "testtitle",
-		RedirectUrls: []string{
+		RedirectURLs: []string{
 			"https://localhost",
 		},
 	}
@@ -140,18 +140,18 @@ func TestSubscriptions(t *testing.T) {
 
 	// List all subscriptions
 	// create the 2nd subscription
-	appName2 := "testsubscriptions_2"
-	app2 := appRegistry.CreateAppRequest{
+	appName2 := "gotestsubscriptions_2"
+	app2 := appregistry.CreateAppRequest{
 		Kind:  "web",
 		Name:  appName2,
 		Title: "testtitle2",
-		RedirectUrls: []string{
+		RedirectURLs: []string{
 			"https://localhost",
 		},
 	}
 	_, err = client.AppRegistryService.CreateApp(&app2)
 	require.Nil(t, err)
-	defer client.AppRegistryService.DeleteApp(appName)
+	defer client.AppRegistryService.DeleteApp(appName2)
 	err = client.AppRegistryService.CreateSubscription(appName2)
 	require.Nil(t, err)
 	defer client.AppRegistryService.DeleteSubscription(appName2)

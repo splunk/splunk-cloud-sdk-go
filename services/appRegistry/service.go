@@ -3,7 +3,7 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package appRegistry
+package appregistry
 
 import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -55,13 +55,12 @@ func (s *Service) CreateApp(createAppRequest *CreateAppRequest) (*AppResponse, e
 	return &result, nil
 }
 
-
 /*
 DeleteApp
 Delete an application.
 * @param appName Application name.
 */
-func (s *Service) DeleteApp(appName string) (error){
+func (s *Service) DeleteApp(appName string) error {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName)
 	if err != nil {
 		return err
@@ -82,7 +81,7 @@ Retrieve the metadata of an application.
 * @param appName Application name.
 @return AppResponse
 */
-func (s *Service) GetApp(appName string) (*AppResponse,  error) {
+func (s *Service) GetApp(appName string) (*AppResponse, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName)
 	if err != nil {
 		return nil, err
@@ -101,8 +100,6 @@ func (s *Service) GetApp(appName string) (*AppResponse,  error) {
 	}
 	return &result, nil
 }
-
-
 
 /*
 GetAppSubscriptions
@@ -136,7 +133,7 @@ ListApps
 List applications.
 @return []AppResponse
 */
-func (s *Service) ListApps() ([]AppResponse, error){
+func (s *Service) ListApps() ([]AppResponse, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps")
 	if err != nil {
 		return nil, err
@@ -156,7 +153,6 @@ func (s *Service) ListApps() ([]AppResponse, error){
 	return results, nil
 }
 
-
 /*
 RotateSecret
 Rotate the client secret for the application.
@@ -164,7 +160,7 @@ Rotate the client secret for the application.
 @return AppResponse
 */
 func (s *Service) RotateSecret(appName string) (*AppResponse, error) {
-	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps",appName, "rotate_secret")
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "apps", appName, "rotate_secret")
 	if err != nil {
 		return nil, err
 	}
@@ -215,18 +211,17 @@ func (s *Service) UpdateApp(appName string, updateAppRequest *UpdateAppRequest) 
 	return &result, nil
 }
 
-
 /*
 CreateSubscription
 Create a subscription.
 * @param appName Subscribe a tenant to an app.
 */
-func (s *Service) CreateSubscription(appName string) (error){
+func (s *Service) CreateSubscription(appName string) error {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions")
 	if err != nil {
-		return  err
+		return err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"appName":appName}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"appName": appName}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -241,7 +236,7 @@ DeleteSubscription
 Delete a subscription.
 * @param appName Application name.
 */
-func (s *Service) DeleteSubscription(appName string) (error){
+func (s *Service) DeleteSubscription(appName string) error {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions", appName)
 	if err != nil {
 		return err
@@ -256,13 +251,14 @@ func (s *Service) DeleteSubscription(appName string) (error){
 	return nil
 
 }
+
 /*
 GetSubscription
 Retrieve or validate a subscription.
 * @param appName Application name.
 @return Subscription
 */
-func (s *Service) GetSubscription(appName string) (*Subscription,  error) {
+func (s *Service) GetSubscription(appName string) (*Subscription, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions", appName)
 	if err != nil {
 		return nil, err
@@ -287,7 +283,7 @@ ListSubscriptions
 Retrieve this tenant&#39;s subscriptions.
 @return []Subscription
 */
-func (s *Service) ListSubscriptions() ([]Subscription, error){
+func (s *Service) ListSubscriptions() ([]Subscription, error) {
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions")
 	if err != nil {
@@ -307,4 +303,3 @@ func (s *Service) ListSubscriptions() ([]Subscription, error){
 	}
 	return results, nil
 }
-

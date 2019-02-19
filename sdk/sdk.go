@@ -3,6 +3,7 @@ package sdk
 import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services/action"
+	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
@@ -10,7 +11,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
-	"github.com/splunk/splunk-cloud-sdk-go/services/appRegistry"
 )
 
 // Client to communicate with Splunk Cloud service endpoints
@@ -33,7 +33,7 @@ type Client struct {
 	// ForwardersService talks to the Splunk Cloud forwarders service
 	ForwardersService *forwarders.Service
 	// appRegistryService talks to the Splunk Cloud app registry service
-	AppRegistryService *appRegistry.Service
+	AppRegistryService *appregistry.Service
 }
 
 // NewClient returns a Splunk Cloud client for communicating with any service
@@ -43,16 +43,16 @@ func NewClient(config *services.Config) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		BaseClient:        client,
-		ActionService:     &action.Service{Client: client},
-		CatalogService:    &catalog.Service{Client: client},
-		IdentityService:   &identity.Service{Client: client},
-		IngestService:     &ingest.Service{Client: client},
-		KVStoreService:    &kvstore.Service{Client: client},
-		SearchService:     &search.Service{Client: client},
-		StreamsService:    &streams.Service{Client: client},
-		ForwardersService: &forwarders.Service{Client: client},
-		AppRegistryService:     &appRegistry.Service{Client: client},
+		BaseClient:         client,
+		ActionService:      &action.Service{Client: client},
+		CatalogService:     &catalog.Service{Client: client},
+		IdentityService:    &identity.Service{Client: client},
+		IngestService:      &ingest.Service{Client: client},
+		KVStoreService:     &kvstore.Service{Client: client},
+		SearchService:      &search.Service{Client: client},
+		StreamsService:     &streams.Service{Client: client},
+		ForwardersService:  &forwarders.Service{Client: client},
+		AppRegistryService: &appregistry.Service{Client: client},
 	}, nil
 }
 
