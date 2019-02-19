@@ -4,4 +4,77 @@ package appregistry
 
 // Servicer ...
 type Servicer interface {
+	/*
+	   CreateApp
+	   Create a new application.
+	   * @param createAppRequest Create a new application.
+	   @return AppResponse
+	*/
+	CreateApp(createAppRequest *CreateAppRequest) (*AppResponse, error)
+	/*
+	   DeleteApp
+	   Delete an application.
+	   * @param appName Application name.
+	*/
+	DeleteApp(appName string) error
+	/*
+	   GetApp
+	   Retrieve the metadata of an application.
+	   * @param appName Application name.
+	   @return AppResponse
+	*/
+	GetApp(appName string) (*AppResponse, error)
+	/*
+	   GetAppSubscriptions
+	   Retrieve the collection of subscriptions to an app.
+	   * @param appName Application name.
+	   @return []Subscription
+	*/
+	GetAppSubscriptions(appName string) ([]Subscription, error)
+	/*
+	   ListApps
+	   List applications.
+	   @return []AppResponse
+	*/
+	ListApps() ([]AppResponse, error)
+	/*
+	   RotateSecret
+	   Rotate the client secret for the application.
+	   * @param appName Application name.
+	   @return AppResponse
+	*/
+	RotateSecret(appName string) (*AppResponse, error)
+	/*
+	   UpdateApp
+	   Update an application.
+	   * @param appName Application name.
+	   * @param updateAppRequest Updated app contents.
+	   @return AppResponse
+	*/
+	UpdateApp(appName string, updateAppRequest *UpdateAppRequest) (*AppResponse, error)
+	/*
+	   CreateSubscription
+	   Create a subscription.
+	   * @param appName Subscribe a tenant to an app.
+	*/
+	CreateSubscription(appName string) error
+	/*
+	   DeleteSubscription
+	   Delete a subscription.
+	   * @param appName Application name.
+	*/
+	DeleteSubscription(appName string) error
+	/*
+	   GetSubscription
+	   Retrieve or validate a subscription.
+	   * @param appName Application name.
+	   @return Subscription
+	*/
+	GetSubscription(appName string) (*Subscription, error)
+	/*
+	   ListSubscriptions
+	   Retrieve this tenant&#39;s subscriptions.
+	   @return []Subscription
+	*/
+	ListSubscriptions() ([]Subscription, error)
 }
