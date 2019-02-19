@@ -62,11 +62,11 @@ func NewEmailAction(name string, title string, body string, bodyPlainText string
 		Name: name,
 		Kind: EmailKind,
 		UpdateFields: UpdateFields{
-			Title:     &title,
-			Body:      body,
+			Title:         &title,
+			Body:          body,
 			BodyPlainText: bodyPlainText,
-			Subject:   subject,
-			Addresses: addresses,
+			Subject:       subject,
+			Addresses:     addresses,
 		},
 	}
 }
