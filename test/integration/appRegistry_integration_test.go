@@ -11,22 +11,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/splunk/splunk-cloud-sdk-go/services/appRegistry"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
-
-// Test GetActions which returns the list of all actions for the tenant
-func TestIntegrationGetApps(t *testing.T) {
-	client := getSdkClient(t)
-
-	// Get Actions
-	apps, err := client.AppRegistryService.ListApps()
-	require.Nil(t, err)
-	assert.True(t, len(apps) >= 0)
-}
 
 // Test Create/Get/Update/Delete app in app-registry service
 func TestCRUDApp(t *testing.T) {
 	client := getSdkClient(t)
-	appName := "testname"
+	appName := "testapp"
 
 	// Create app
 	app := appRegistry.CreateAppRequest{
@@ -39,7 +30,6 @@ func TestCRUDApp(t *testing.T) {
 	}
 	_, err := client.AppRegistryService.CreateApp(&app)
 	require.Nil(t, err)
-
 	defer client.AppRegistryService.DeleteApp(appName)
 
 	// List all apps
@@ -90,26 +80,87 @@ func TestAppRotateSecret(t *testing.T) {
 
 	// Create app
 	app := appRegistry.CreateAppRequest{
-		Kind:                 "web",
-		Name:                 appName,
-		Title:                "testtitle",
+		Kind:  "web",
+		Name:  appName,
+		Title: "testtitle",
 		RedirectUrls: []string{
 			"https://localhost",
 		},
 	}
 	app_created, err := client.AppRegistryService.CreateApp(&app)
 	require.Nil(t, err)
-
 	defer client.AppRegistryService.DeleteApp(appName)
 
 	// rotate secret
 	app_ret, err := client.AppRegistryService.RotateSecret(appName)
 	require.Nil(t, err)
 	require.NotEmpty(t, app_created.ClientSecret, app_ret.ClientSecret)
-
-	// get subscription
-	subs, err := client.AppRegistryService.GetAppSubscriptions(appName)
-	require.Nil(t, err)
-	require.NotEmpty(t, 0, len(subs));
 }
 
+
+// Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
+func TestSubscriptions(t *testing.T) {
+	client := getSdkClient(t)
+	appName := "testsubscriptions"
+
+	// Create app
+	app := appRegistry.CreateAppRequest{
+		Kind:  "web",
+		Name:  appName,
+		Title: "testtitle",
+		RedirectUrls: []string{
+			"https://localhost",
+		},
+	}
+	_, err := client.AppRegistryService.CreateApp(&app)
+	require.Nil(t, err)
+	defer client.AppRegistryService.DeleteApp(appName)
+
+	// create subscription
+	err = client.AppRegistryService.CreateSubscription(appName)
+	require.Nil(t, err)
+	defer client.AppRegistryService.DeleteSubscription(appName)
+
+	// get app subscription
+	appsubs, err := client.AppRegistryService.GetAppSubscriptions(appName)
+	require.Nil(t, err)
+	require.Equal(t, 1, len(appsubs));
+
+	// Get a subscription of an app
+	subs, err := client.AppRegistryService.GetSubscription(appName)
+	require.Nil(t, err)
+	require.NotEmpty(t, subs)
+
+	// Get a subscription from non-exist-app
+	_, err = client.AppRegistryService.GetSubscription("notExistApp")
+	require.NotEmpty(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	require.Equal(t, 404, httpErr.HTTPStatusCode)
+
+	// List all subscriptions
+	// create the 2nd subscription
+	appName2 := "testsubscriptions_2"
+	app2 := appRegistry.CreateAppRequest{
+		Kind:  "web",
+		Name:  appName2,
+		Title: "testtitle2",
+		RedirectUrls: []string{
+			"https://localhost",
+		},
+	}
+	_, err = client.AppRegistryService.CreateApp(&app2)
+	require.Nil(t, err)
+	defer client.AppRegistryService.DeleteApp(appName)
+	err = client.AppRegistryService.CreateSubscription(appName2)
+	require.Nil(t, err)
+	defer client.AppRegistryService.DeleteSubscription(appName2)
+
+	all_subs, err := client.AppRegistryService.ListSubscriptions()
+	require.Nil(t, err)
+	require.Equal(t, 2, len(all_subs))
+
+	// Delete the subscription
+	err = client.AppRegistryService.DeleteSubscription(appName)
+	require.Nil(t, err)
+}

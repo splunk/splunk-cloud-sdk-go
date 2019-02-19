@@ -214,3 +214,97 @@ func (s *Service) UpdateApp(appName string, updateAppRequest *UpdateAppRequest) 
 	}
 	return &result, nil
 }
+
+
+/*
+CreateSubscription
+Create a subscription.
+* @param appName Subscribe a tenant to an app.
+*/
+func (s *Service) CreateSubscription(appName string) (error){
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions")
+	if err != nil {
+		return  err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: map[string]string{"appName":appName}})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+DeleteSubscription
+Delete a subscription.
+* @param appName Application name.
+*/
+func (s *Service) DeleteSubscription(appName string) (error){
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions", appName)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+/*
+GetSubscription
+Retrieve or validate a subscription.
+* @param appName Application name.
+@return Subscription
+*/
+func (s *Service) GetSubscription(appName string) (*Subscription,  error) {
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions", appName)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var result Subscription
+	err = util.ParseResponse(&result, response)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+/*
+ListSubscriptions
+Retrieve this tenant&#39;s subscriptions.
+@return []Subscription
+*/
+func (s *Service) ListSubscriptions() ([]Subscription, error){
+
+	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "subscriptions")
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: url})
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	var results []Subscription
+	err = util.ParseResponse(&results, response)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
