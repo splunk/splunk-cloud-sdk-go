@@ -108,33 +108,33 @@ type UplEdge struct {
 	TargetPort string      `json:"targetPort"`
 }
 
-//Input schema request contains the request for the input schema for a function in the pipeline
+// GetInputSchemaRequest contains the request for the input schema for a function in the pipeline
 type GetInputSchemaRequest struct {
 	NodeUUID       *string      `json:"nodeUuid,omitempty"`
 	TargetPortName *string      `json:"targetPortName,omitempty"`
 	UplJSON        *UplPipeline `json:"uplJson,omitempty"`
 }
 
-//Output schema request contains the request for the output schema for a function in the pipeline
+// GetOutputSchemaRequest contains the request for the output schema for a function in the pipeline
 type GetOutputSchemaRequest struct {
 	NodeUUID       *string      `json:"nodeUuid,omitempty"`
 	SourcePortName *string      `json:"sourcePortName,omitempty"`
 	UplJSON        *UplPipeline `json:"uplJson,omitempty"`
 }
 
-//UplType contains UplTypes stored in the registry
+// UplType contains UplTypes stored in the registry
 type UplType struct {
 	FieldName  *string   `json:"fieldName,omitempty"`
 	Parameters []UplType `json:"parameters,omitempty"`
 	Type       *string   `json:"type,omitempty"`
 }
 
-//Parameters represents all the UplTypes in the pipeline
+// Parameters represents all the UplTypes in the pipeline
 type Parameters struct {
 	Parameters []UplType `json:"parameters"`
 }
 
-//UplFunction contains the basic building block of a UPL pipeline
+// UplFunction contains the basic building block of a UPL pipeline
 type UplFunction struct {
 	Arguments  map[string]UplArgument `json:"arguments,omitempty"`
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
@@ -146,42 +146,42 @@ type UplFunction struct {
 	ResolvedID *string                `json:"resolvedId,omitempty"`
 }
 
-//UplArgument are arguments to UplFunctions, UplFunctions have one or more of the arguments.
+// UplArgument are arguments to UplFunctions, UplFunctions have one or more of the arguments.
 type UplArgument struct {
 	//ElementType *map[string]interface{} `json:"element-type,omitempty"`
 	ElementType interface{} `json:"element-type,omitempty"`
 	Type        string      `json:"type"`
 }
 
-//UplRegistry contains all functions and types
+// UplRegistry contains all functions and types
 type UplRegistry struct {
 	Categories []UplCategory `json:"categories,omitempty"`
 	Functions  []UplFunction `json:"functions,omitempty"`
 	Types      []UplType     `json:"types,omitempty"`
 }
 
-//UplCategory represents a category in the Upl registry
+// UplCategory represents a category in the Upl registry
 type UplCategory struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }
 
-//Contains metrics for a single pipeline.
+// MetricsResponse contains metrics for a single pipeline.
 type MetricsResponse struct {
 	Nodes map[string]NodeMetrics `json:"nodes,omitempty"`
 }
 
-//NodeMetrics contains metrics corresponding to each node
+// NodeMetrics contains metrics corresponding to each node
 type NodeMetrics struct {
 	Metrics map[string]interface{} `json:"metrics,omitempty"`
 }
 
-//ValidateRequest contains the request with the UplPipeline to validate
+// ValidateRequest contains the request with the UplPipeline to validate
 type ValidateRequest struct {
 	Upl *UplPipeline `json:"upl,omitempty"`
 }
 
-//ValidateRequest contains the Validation response after validating the UplPipeline
+// ValidateRequest contains the Validation response after validating the UplPipeline
 type ValidateResponse struct {
 	Success            *bool     `json:"success,omitempty"`
 	ValidationMessages *[]string `json:"validationMessages,omitempty"`

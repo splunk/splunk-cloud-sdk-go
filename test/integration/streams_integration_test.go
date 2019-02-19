@@ -16,7 +16,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	//"github.com/golangci/golangci-lint/pkg/result"
 )
 
 // Test variables
@@ -204,6 +203,25 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 
 // Test GetPipelinesStatus streams endpoint
 func TestIntegrationGetPipelinesStatus(t *testing.T) {
+	// Delete any pre-existing pipelines to ensure no prior pipelines exist
+	result1, err1 := getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{})
+	require.Empty(t, err1)
+	require.NotEmpty(t, result1)
+	if *result1.Total != 0 {
+		result, err := getSdkClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
+		require.Empty(t, err)
+		require.NotEmpty(t, result)
+
+		cnt := 0
+		for cnt < len(result.Items) {
+			id := result.Items[cnt].ID
+			deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(id)
+			require.Nil(t, err)
+			require.NotNil(t, deletePipelineResponse)
+			cnt++
+		}
+	}
+
 	pipelineName1 := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
 	pipelineName2 := fmt.Sprintf("testPipeline02%d", testutils.TimeSec)
 
