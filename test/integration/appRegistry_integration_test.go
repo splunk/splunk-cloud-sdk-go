@@ -8,10 +8,10 @@ package integration
 import (
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
-	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
 )
 
 // Test Create/Get/Update/Delete app in app-registry service
@@ -21,9 +21,9 @@ func TestCRUDApp(t *testing.T) {
 
 	// Create app
 	app := appregistry.CreateAppRequest{
-		Kind:                 "web",
-		Name:                 appName,
-		Title:                "testtitle",
+		Kind:  "web",
+		Name:  appName,
+		Title: "testtitle",
 		RedirectURLs: []string{
 			"https://localhost",
 		},
@@ -48,13 +48,13 @@ func TestCRUDApp(t *testing.T) {
 	require.Equal(t, app.Kind, app_ret.Kind)
 
 	// Update the app. TODO: title and redirecturl should not needed once patch method is implemented.
-	description:="new Description"
-	title:= "new title"
-	redirecturl:=[]string{"http://newlocalhost"}
-	updateApp:=appregistry.UpdateAppRequest{
-		Description: &description,
-		RedirectURLs:&redirecturl,
-		Title:&title,
+	description := "new Description"
+	title := "new title"
+	redirecturl := []string{"http://newlocalhost"}
+	updateApp := appregistry.UpdateAppRequest{
+		Description:  &description,
+		RedirectURLs: &redirecturl,
+		Title:        &title,
 	}
 	app_ret, err = client.AppRegistryService.UpdateApp(appName, &updateApp)
 	require.Nil(t, err)
@@ -62,7 +62,6 @@ func TestCRUDApp(t *testing.T) {
 	require.Equal(t, title, app_ret.Title)
 	require.Equal(t, description, app_ret.Description)
 	require.Equal(t, app.Kind, app_ret.Kind)
-
 
 	// Delete the app
 	err = client.AppRegistryService.DeleteApp(appName)
@@ -97,7 +96,6 @@ func TestAppRotateSecret(t *testing.T) {
 	require.NotEmpty(t, app_created.ClientSecret, app_ret.ClientSecret)
 }
 
-
 // Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
 func TestSubscriptions(t *testing.T) {
 	client := getSdkClient(t)
@@ -124,7 +122,7 @@ func TestSubscriptions(t *testing.T) {
 	// get app subscription
 	appsubs, err := client.AppRegistryService.GetAppSubscriptions(appName)
 	require.Nil(t, err)
-	require.Equal(t, 1, len(appsubs));
+	require.Equal(t, 1, len(appsubs))
 
 	// Get a subscription of an app
 	subs, err := client.AppRegistryService.GetSubscription(appName)
