@@ -324,7 +324,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
-	nodeUid := uplPipeline.Edges[0].TargetNode
+	nodeUID := uplPipeline.Edges[0].TargetNode
 	port := uplPipeline.Edges[0].TargetPort
 
 	// Create a test pipeline
@@ -351,7 +351,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	result1, err1 := getClient(t).StreamsService.GetInputSchema(&streams.GetInputSchemaRequest{NodeUUID: &nodeUid, TargetPortName: &port, UplJSON: uplPipeline})
+	result1, err1 := getClient(t).StreamsService.GetInputSchema(&streams.GetInputSchemaRequest{NodeUUID: &nodeUID, TargetPortName: &port, UplJSON: uplPipeline})
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Parameters[0].Type, "field")
@@ -366,7 +366,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
-	nodeUid := uplPipeline.Edges[0].SourceNode
+	nodeUID := uplPipeline.Edges[0].SourceNode
 	port := uplPipeline.Edges[0].SourcePort
 
 	// Create a test pipeline
@@ -393,7 +393,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	_, err1 := getClient(t).StreamsService.GetOutputSchema(&streams.GetOutputSchemaRequest{NodeUUID: &nodeUid, SourcePortName: &port, UplJSON: uplPipeline})
+	_, err1 := getClient(t).StreamsService.GetOutputSchema(&streams.GetOutputSchemaRequest{NodeUUID: &nodeUID, SourcePortName: &port, UplJSON: uplPipeline})
 	require.Empty(t, err1)
 	//TODO(shilpa) Follow up why output schema result is empty
 	//require.NotEmpty(t, result1)
@@ -470,13 +470,13 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
-	defer cleanupPreview(t, previewIdStringVal)
+	previewIDStringVal := strconv.FormatInt(*response.PreviewID, 10)
+	defer cleanupPreview(t, previewIDStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
 	//Get latest pipeline metrics
-	_, err1 := getClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIdStringVal)
+	_, err1 := getClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIDStringVal)
 	time.Sleep(time.Duration(60) * time.Second)
 	require.Empty(t, err1)
 	//require.NotEmpty(t, result1)
@@ -545,13 +545,13 @@ func TestIntegrationStartPreviewSession(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
-	defer cleanupPreview(t, previewIdStringVal)
+	previewIDStringVal := strconv.FormatInt(*response.PreviewID, 10)
+	defer cleanupPreview(t, previewIDStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
 	// Verify that the test preview session is created
-	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(previewIdStringVal)
+	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(previewIDStringVal)
 	require.Nil(t, err)
 	require.NotEmpty(t, previewState)
 	assert.NotEmpty(t, response.PreviewID, previewState.PreviewID)
@@ -564,16 +564,16 @@ func TestIntegrationDeletePreviewSession(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
+	previewIDStringVal := strconv.FormatInt(*response.PreviewID, 10)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
 	// Delete the test preview session
-	err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIdStringVal)
+	err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIDStringVal)
 	require.Nil(t, err)
 
 	// Verify that the test preview session is deleted
-	_, err = getSdkClient(t).StreamsService.GetPreviewSession(previewIdStringVal)
+	_, err = getSdkClient(t).StreamsService.GetPreviewSession(previewIDStringVal)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -587,13 +587,13 @@ func TestIntegrationGetPreviewData(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	previewIdStringVal := strconv.FormatInt(*response.PreviewID, 10)
-	defer cleanupPreview(t, previewIdStringVal)
+	previewIDStringVal := strconv.FormatInt(*response.PreviewID, 10)
+	defer cleanupPreview(t, previewIDStringVal)
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
 	// Verify that the preview data is generated
-	previewData, err := getSdkClient(t).StreamsService.GetPreviewData(previewIdStringVal)
+	previewData, err := getSdkClient(t).StreamsService.GetPreviewData(previewIDStringVal)
 	require.Nil(t, err)
 	require.NotEmpty(t, previewData)
 	assert.NotEmpty(t, response.PreviewID, previewData.PreviewID)
@@ -761,7 +761,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 func TestIntegrationCreateExpandedGroup(t *testing.T) {
 	local := make(url.Values)
 	local.Add("local", `true`)
-	//GetRegistry to retrieve the GroupId
+	//GetRegistry to retrieve the groupID
 	result, err := getClient(t).StreamsService.GetRegistry(local)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)

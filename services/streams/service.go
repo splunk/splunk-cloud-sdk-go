@@ -272,7 +272,7 @@ func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
 	return &result, nil
 }
 
-//Returns the input schema for a function in the pipeline
+// GetInputSchema returns the input schema for a function in the pipeline
 func (s *Service) GetInputSchema(request *GetInputSchemaRequest) (*Parameters, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "input-schema")
 	if err != nil {
@@ -294,7 +294,7 @@ func (s *Service) GetInputSchema(request *GetInputSchemaRequest) (*Parameters, e
 	return result, nil
 }
 
-//Returns the output schema for the specified function in the pipeline.
+// GetOutputSchema returns the output schema for the specified function in the pipeline.
 func (s *Service) GetOutputSchema(request *GetOutputSchemaRequest) (*Parameters, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "output-schema")
 	if err != nil {
@@ -315,7 +315,7 @@ func (s *Service) GetOutputSchema(request *GetOutputSchemaRequest) (*Parameters,
 	return result, nil
 }
 
-//Returns all functions in JSON format in the registry
+// GetRegistry returns all functions in JSON format in the registry
 func (s *Service) GetRegistry(local url.Values) (*UplRegistry, error) {
 
 	url, err := s.Client.BuildURL(local, serviceCluster, servicePrefix, serviceVersion, "pipelines", "registry")
@@ -337,7 +337,7 @@ func (s *Service) GetRegistry(local url.Values) (*UplRegistry, error) {
 	return result, nil
 }
 
-//Get latest Preview session metrics
+// GetLatestPreviewSessionMetrics gets latest Preview session metrics
 func (s *Service) GetLatestPreviewSessionMetrics(previewSessionID string) (*MetricsResponse, error) {
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "preview", previewSessionID, "metrics", "latest")
@@ -360,7 +360,7 @@ func (s *Service) GetLatestPreviewSessionMetrics(previewSessionID string) (*Metr
 	return result, nil
 }
 
-//Get latest Pipeline metrics
+// GetLatestPipelineMetrics gets latest Pipeline metrics
 func (s *Service) GetLatestPipelineMetrics(pipelineID string) (*MetricsResponse, error) {
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", pipelineID, "metrics", "latest")
@@ -382,7 +382,7 @@ func (s *Service) GetLatestPipelineMetrics(pipelineID string) (*MetricsResponse,
 	return result, nil
 }
 
-//Validate if the Streams JSON is valid
+// ValidateUplResponse validates if the Streams JSON is valid
 func (s *Service) ValidateUplResponse(request *ValidateRequest) (*ValidateResponse, error) {
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "validate")
@@ -404,7 +404,7 @@ func (s *Service) ValidateUplResponse(request *ValidateRequest) (*ValidateRespon
 	return result, nil
 }
 
-//Get all the available connectors
+// GetConnectors gets all the available connectors
 func (s *Service) GetConnectors() (*Connectors, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connectors")
 	if err != nil {
@@ -426,7 +426,7 @@ func (s *Service) GetConnectors() (*Connectors, error) {
 
 }
 
-//Get the connections for a specific connector
+// GetConnections gets the connections for a specific connector
 func (s *Service) GetConnections(connectorID string) (*Connections, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "connections", connectorID)
 	if err != nil {
