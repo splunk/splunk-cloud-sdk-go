@@ -641,6 +641,7 @@ func (s *Service) DeleteTemplate(id string) error {
 	return err
 }
 
+// Retrieve the full streams JSON of a group
 func (s *Service) GetGroupByID(groupID string) (*GroupResponse, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "groups", groupID)
 	if err != nil {
@@ -661,6 +662,7 @@ func (s *Service) GetGroupByID(groupID string) (*GroupResponse, error) {
 	return &result, nil
 }
 
+// Create and return the expanded version of a group
 func (s *Service) CreateExpandedGroup(groupID string, groupExpandedRequest *GroupExpandRequest) (*UplPipeline, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "groups", groupID, "expand")
 	if err != nil {

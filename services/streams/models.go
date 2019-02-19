@@ -262,7 +262,7 @@ type PipelineStatusQueryParams struct {
 // TemplateRequest contains the create/update template request data
 type TemplateRequest struct {
 	Data        *UplPipeline `json:"data"`
-	Description *string      `json:"description"`
+	Description *string      `json:"description,omitempty"`
 	Name        *string      `json:"name"`
 }
 
