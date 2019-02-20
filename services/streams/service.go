@@ -273,12 +273,12 @@ func (s *Service) DeletePipeline(id string) (*PipelineDeleteResponse, error) {
 }
 
 // GetInputSchema returns the input schema for a function in the pipeline
-func (s *Service) GetInputSchema(request *GetInputSchemaRequest) (*Parameters, error) {
+func (s *Service) GetInputSchema(nodeUUID *string, targetPortName *string, upl *UplPipeline) (*Parameters, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "input-schema")
 	if err != nil {
 		return nil, err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetInputSchemaRequest{request.NodeUUID, request.TargetPortName, request.UplJSON}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetInputSchemaRequest{nodeUUID, targetPortName, upl}})
 
 	if response != nil {
 		defer response.Body.Close()
@@ -295,12 +295,12 @@ func (s *Service) GetInputSchema(request *GetInputSchemaRequest) (*Parameters, e
 }
 
 // GetOutputSchema returns the output schema for the specified function in the pipeline.
-func (s *Service) GetOutputSchema(request *GetOutputSchemaRequest) (*Parameters, error) {
+func (s *Service) GetOutputSchema(nodeUUID *string, sourcePortName *string, upl *UplPipeline) (*Parameters, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "output-schema")
 	if err != nil {
 		return nil, err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetOutputSchemaRequest{request.NodeUUID, request.SourcePortName, request.UplJSON}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GetOutputSchemaRequest{nodeUUID, sourcePortName, upl}})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -374,6 +374,7 @@ func (s *Service) GetLatestPipelineMetrics(pipelineID string) (*MetricsResponse,
 	if err != nil {
 		return nil, err
 	}
+
 	var result *MetricsResponse
 	err = util.ParseResponse(&result, response)
 	if err != nil {
@@ -663,12 +664,12 @@ func (s *Service) GetGroupByID(groupID string) (*GroupResponse, error) {
 }
 
 // CreateExpandedGroup creates and returns the expanded version of a group
-func (s *Service) CreateExpandedGroup(groupID string, groupExpandedRequest *GroupExpandRequest) (*UplPipeline, error) {
+func (s *Service) CreateExpandedGroup(groupID string, args map[string]interface{}, functionID string) (*UplPipeline, error) {
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "groups", groupID, "expand")
 	if err != nil {
 		return nil, err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: url, Body: groupExpandedRequest})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: GroupExpandRequest{args, functionID}})
 	if response != nil {
 		defer response.Body.Close()
 	}

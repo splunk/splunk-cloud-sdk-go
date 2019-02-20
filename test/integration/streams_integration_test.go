@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"net/url"
+
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/model"
@@ -350,7 +351,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	result1, err1 := getClient(t).StreamsService.GetInputSchema(&streams.GetInputSchemaRequest{NodeUUID: &nodeUID, TargetPortName: &port, UplJSON: uplPipeline})
+	result1, err1 := getClient(t).StreamsService.GetInputSchema(&nodeUID, &port, uplPipeline)
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Parameters[0].Type, "field")
@@ -359,7 +360,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 
 }
 
-// Test Get Input Schema streams endpoint
+// Test Get Output Schema streams endpoint
 func TestIntegrationGetOutputSchema(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 	uplPipeline := createTestUplPipeline(t)
@@ -392,9 +393,9 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	_, err1 := getClient(t).StreamsService.GetOutputSchema(&streams.GetOutputSchemaRequest{NodeUUID: &nodeUID, SourcePortName: &port, UplJSON: uplPipeline})
+	_, err1 := getClient(t).StreamsService.GetOutputSchema(&nodeUID, &port, uplPipeline)
 	require.Empty(t, err1)
-	//TODO(shilpa) Follow up why output schema result is empty
+	//TODO(shilpa) Follow up when INGEST-8089 is investigated. Currently the output from this call could be empty sometimes
 	//require.NotEmpty(t, result1)
 	//assert.Equal(t, *result1.Parameters[0].Type, "field")
 	//assert.Equal(t, *result1.Parameters[0].FieldName, "timestamp")
@@ -415,7 +416,6 @@ func TestIntegrationGetRegistry(t *testing.T) {
 }
 
 //Test Get Latest pipeline metrics endpoint
-//TODO(shilpa) Follow up potential timing issue for the metrics to return
 func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
 
@@ -431,7 +431,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
+	//defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -446,24 +446,29 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get latest pipeline metrics
-	_, err1 := getClient(t).StreamsService.GetLatestPipelineMetrics(pipeline.ID)
-	require.Empty(t, err1)
-	//require.NotEmpty(t, result1)
-	//assert.NotEmpty(t, result1.Nodes)
-	//
-	//for key, element := range result1.Nodes {
-	//	assert.NotEmpty(t, key)
-	//	assert.NotEmpty(t, element.Metrics)
-	//}
+	//Validation of the metrics output is not reliable since its real-time data, no guarantees if metric data will be populated at that instant of time
+	//Attempt the call to get metrics 5 times and validate if there is data returned.
+	cnt := 0
+	for cnt < 5 {
+		result1, err1 := getClient(t).StreamsService.GetLatestPipelineMetrics(pipeline.ID)
+		require.Empty(t, err1)
+		require.NotEmpty(t, result1)
+		if len(result1.Nodes) > 0 {
+			for key, element := range result1.Nodes {
+				assert.NotEmpty(t, key)
+				assert.NotEmpty(t, element.Metrics)
+			}
+		}
+		time.Sleep(20 * time.Second)
+		cnt++
+	}
 	// Delete the test pipeline
 	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
 	require.Nil(t, err)
 	require.NotNil(t, deletePipelineResponse)
-
 }
 
 //Test Latest Preview Session Metrics
-//TODO(shilpa) Follow up potential timing issue for the metrics to return
 func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	// Create and start a test Ge session
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
@@ -474,17 +479,26 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	assert.NotEmpty(t, response.PipelineID)
 	assert.NotEmpty(t, response.PreviewID)
 
-	//Get latest pipeline metrics
-	_, err1 := getClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIDStringVal)
-	time.Sleep(time.Duration(60) * time.Second)
-	require.Empty(t, err1)
-	//require.NotEmpty(t, result1)
-	//assert.NotEmpty(t, result1.Nodes)
-	//
-	//for key, element := range result1.Nodes {
-	//	assert.NotEmpty(t, key)
-	//	assert.NotEmpty(t, element.Metrics)
-	//}
+	//Get latest preview session metrics
+	//Validation of the metrics output is not reliable since its real-time data, no guarantees if metric data will be populated at that instant of time
+	//Attempt the call to get metrics 5 times and validate if there is data returned.
+	cnt := 0
+	for cnt < 5 {
+		result1, err1 := getClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIDStringVal)
+		require.Empty(t, err1)
+		require.NotEmpty(t, result1)
+		if len(result1.Nodes) > 0 {
+			for key, element := range result1.Nodes {
+				assert.NotEmpty(t, key)
+				assert.NotEmpty(t, element.Metrics)
+			}
+		}
+		time.Sleep(20 * time.Second)
+		cnt++
+	}
+	// Delete the test preview session
+	err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIDStringVal)
+	require.Nil(t, err)
 }
 
 // Test Get Connectors
@@ -531,11 +545,16 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
-	//Get input Schema
+	//Validate Upl response
 	result1, err1 := getClient(t).StreamsService.ValidateUplResponse(uplPipeline)
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)
+
+	// Delete the test pipeline
+	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
+	require.Nil(t, err)
+	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test StartPreviewSession streams endpoint TODO: The pipelineID returned is currently equal to previewID and is incorrect and will be soon removed by the ingest team.
@@ -793,7 +812,7 @@ func TestIntegrationCreateExpandedGroup(t *testing.T) {
 	type argumentsMap map[string]interface{}
 	arguments := argumentsMap{"group_arg": "connection", "function_arg": "right"}
 
-	result2, err := getClient(t).StreamsService.CreateExpandedGroup(groupId, &streams.GroupExpandRequest{arguments, functionID})
+	result2, err := getClient(t).StreamsService.CreateExpandedGroup(groupId, arguments, functionID)
 	require.Empty(t, err)
 	require.NotEmpty(t, result2)
 	assert.NotEmpty(t, result2.Version)
