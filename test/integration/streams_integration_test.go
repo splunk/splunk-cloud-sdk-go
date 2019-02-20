@@ -532,7 +532,7 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
 	//Get input Schema
-	result1, err1 := getClient(t).StreamsService.ValidateUplResponse(&streams.ValidateRequest{Upl: uplPipeline})
+	result1, err1 := getClient(t).StreamsService.ValidateUplResponse(uplPipeline)
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)

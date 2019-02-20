@@ -383,13 +383,13 @@ func (s *Service) GetLatestPipelineMetrics(pipelineID string) (*MetricsResponse,
 }
 
 // ValidateUplResponse validates if the Streams JSON is valid
-func (s *Service) ValidateUplResponse(request *ValidateRequest) (*ValidateResponse, error) {
+func (s *Service) ValidateUplResponse(upl *UplPipeline) (*ValidateResponse, error) {
 
 	url, err := s.Client.BuildURL(nil, serviceCluster, servicePrefix, serviceVersion, "pipelines", "validate")
 	if err != nil {
 		return nil, err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: url, Body: ValidateRequest{request.Upl}})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: ValidateRequest{upl}})
 	if response != nil {
 		defer response.Body.Close()
 	}
