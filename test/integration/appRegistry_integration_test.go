@@ -21,7 +21,7 @@ func TestCRUDApp(t *testing.T) {
 
 	// Create app
 	app := appregistry.CreateAppRequest{
-		Kind:  "web",
+		Kind:  appregistry.WEB,
 		Name:  appName,
 		Title: "testtitle",
 		RedirectURLs: []string{
@@ -79,7 +79,7 @@ func TestAppRotateSecret(t *testing.T) {
 
 	// Create app
 	app := appregistry.CreateAppRequest{
-		Kind:  "web",
+		Kind:  appregistry.WEB,
 		Name:  appName,
 		Title: "testtitle",
 		RedirectURLs: []string{
@@ -103,7 +103,7 @@ func TestSubscriptions(t *testing.T) {
 
 	// Create app
 	app := appregistry.CreateAppRequest{
-		Kind:  "web",
+		Kind:  appregistry.NATIVE,
 		Name:  appName,
 		Title: "testtitle",
 		RedirectURLs: []string{
@@ -140,7 +140,7 @@ func TestSubscriptions(t *testing.T) {
 	// create the 2nd subscription
 	appName2 := "gotestsubscriptions_2"
 	app2 := appregistry.CreateAppRequest{
-		Kind:  "web",
+		Kind:  appregistry.SERVICE,
 		Name:  appName2,
 		Title: "testtitle2",
 		RedirectURLs: []string{
