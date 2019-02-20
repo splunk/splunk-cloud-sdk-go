@@ -236,7 +236,7 @@ func (s *Service) MergePipelines(mergeRequest *PipelinesMergeRequest) (*UplPipel
 	if err != nil {
 		return nil, err
 	}
-	response, err := s.Client.Get(services.RequestParams{URL: url})
+	response, err := s.Client.Post(services.RequestParams{URL: url, Body: mergeRequest})
 	if response != nil {
 		defer response.Body.Close()
 	}
@@ -683,7 +683,6 @@ func (s *Service) CreateExpandedGroup(groupID string, groupExpandedRequest *Grou
 	return &result, nil
 }
 
-// TODO: Change input parameters to take in generic struct
 // Converts the Pipeline query parameters to url.Values type
 func convertToURLQueryValues(queryParams interface{}) (url.Values, error) {
 	jsonQueryParams, err := json.Marshal(queryParams)

@@ -230,16 +230,15 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.True(t, *result.Total >= 2)
 	require.NotEmpty(t, result.Items)
 
-	/*// Get and verify the status of the pipelines based on filters (query parameters) TODO (Parul): Verify specs with ingest team
-	result, err = getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{s: p})
+	// Get and verify the status of the pipelines based on filters (query parameters)
+	result, err = getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{Name: &pipeline2.Name})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
-	assert.Equal(t, int64(2), result.Total)
+	assert.Equal(t, int64(1), *result.Total)
 	require.NotEmpty(t, result.Items)
-	assert.Equal(t, pipelineName2, result.Items[0].PipelineId)*/
 }
 
-/*// Test MergePipelines streams endpoint TODO(Parul): Fix the failing test
+// Test MergePipelines streams endpoint
 func TestIntegrationMergePipelines(t *testing.T) {
 
 	// Create two test upl pipelines
@@ -254,23 +253,21 @@ func TestIntegrationMergePipelines(t *testing.T) {
 	assert.NotEmpty(t, pipeline2.Edges[0].TargetNode)
 
 	mergeRequest := streams.PipelinesMergeRequest{
-		InputTree: pipeline1,
-		MainTree: pipeline2,
-		TargetPort: pipeline2.Edges[0].TargetPort,
-		TargetNode: pipeline2.Edges[0].TargetNode,
+		InputTree:  pipeline1,
+		MainTree:   pipeline2,
+		TargetPort: &pipeline2.Edges[0].TargetPort,
+		TargetNode: &pipeline2.Edges[0].TargetNode,
 	}
-
-	fmt.Println(mergeRequest)
 
 	// Merge and verify the status of the merged UPL pipelines
 	result, err := getSdkClient(t).StreamsService.MergePipelines(&mergeRequest)
 	require.Nil(t, err)
 	require.NotEmpty(t, result)
 	require.NotEmpty(t, result.Edges)
-	require.Equal(t, 3, len(pipeline2.Edges))
+	require.Equal(t, 3, len(result.Edges))
 	require.NotEmpty(t, result.Nodes)
-	require.Equal(t, 4, len(pipeline2.Nodes))
-}*/
+	require.Equal(t, 4, len(result.Nodes))
+}
 
 // Test UpdatePipeline streams endpoint
 func TestIntegrationUpdatePipeline(t *testing.T) {
@@ -327,7 +324,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	port := uplPipeline.Edges[0].TargetPort
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
 		BypassValidation: true,
 		Name:             pipelineName,
 		Description:      testPipelineDescription,
@@ -335,7 +332,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -343,14 +340,14 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 
 	// Activate the test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	result1, err1 := getClient(t).StreamsService.GetInputSchema(&streams.GetInputSchemaRequest{NodeUUID: &nodeUID, TargetPortName: &port, UplJSON: uplPipeline})
+	result1, err1 := getSdkClient(t).StreamsService.GetInputSchema(&streams.GetInputSchemaRequest{NodeUUID: &nodeUID, TargetPortName: &port, UplJSON: uplPipeline})
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Parameters[0].Type, "field")
@@ -369,7 +366,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	port := uplPipeline.Edges[0].SourcePort
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
 		BypassValidation: true,
 		Name:             pipelineName,
 		Description:      testPipelineDescription,
@@ -377,7 +374,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -385,14 +382,14 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 
 	// Activate the test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get input Schema
-	_, err1 := getClient(t).StreamsService.GetOutputSchema(&streams.GetOutputSchemaRequest{NodeUUID: &nodeUID, SourcePortName: &port, UplJSON: uplPipeline})
+	_, err1 := getSdkClient(t).StreamsService.GetOutputSchema(&streams.GetOutputSchemaRequest{NodeUUID: &nodeUID, SourcePortName: &port, UplJSON: uplPipeline})
 	require.Empty(t, err1)
 	//TODO(shilpa) Follow up why output schema result is empty
 	//require.NotEmpty(t, result1)
@@ -406,7 +403,7 @@ func TestIntegrationGetRegistry(t *testing.T) {
 	//Set local query parameter
 	local := make(url.Values)
 	local.Add("local", `true`)
-	result, err := getClient(t).StreamsService.GetRegistry(local)
+	result, err := getSdkClient(t).StreamsService.GetRegistry(local)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 	assert.NotEmpty(t, *result.Functions[0].ID)
@@ -423,7 +420,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	require.NotEmpty(t, uplPipeline)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
 		BypassValidation: true,
 		Name:             pipelineName,
 		Description:      testPipelineDescription,
@@ -431,7 +428,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipelineName)
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
@@ -439,14 +436,14 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 
 	// Activate the test pipeline
 	ids := []string{pipeline.ID}
-	activatePipelineResponse, err := getClient(t).StreamsService.ActivatePipeline(ids)
+	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(ids)
 	require.Nil(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, []string{pipeline.ID}, activatePipelineResponse["activated"])
 	assert.Empty(t, activatePipelineResponse["notActivated"])
 
 	//Get latest pipeline metrics
-	_, err1 := getClient(t).StreamsService.GetLatestPipelineMetrics(pipeline.ID)
+	_, err1 := getSdkClient(t).StreamsService.GetLatestPipelineMetrics(pipeline.ID)
 	require.Empty(t, err1)
 	//require.NotEmpty(t, result1)
 	//assert.NotEmpty(t, result1.Nodes)
@@ -456,7 +453,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	//	assert.NotEmpty(t, element.Metrics)
 	//}
 	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
+	deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(pipeline.ID)
 	require.Nil(t, err)
 	require.NotNil(t, deletePipelineResponse)
 
@@ -475,7 +472,7 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	assert.NotEmpty(t, response.PreviewID)
 
 	//Get latest pipeline metrics
-	_, err1 := getClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIDStringVal)
+	_, err1 := getSdkClient(t).StreamsService.GetLatestPreviewSessionMetrics(previewIDStringVal)
 	time.Sleep(time.Duration(60) * time.Second)
 	require.Empty(t, err1)
 	//require.NotEmpty(t, result1)
@@ -517,7 +514,7 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	require.NotEmpty(t, uplPipeline)
 
 	// Create a test pipeline
-	pipeline, err := getClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(&model.PipelineRequest{
 		BypassValidation: true,
 		Name:             pipelineName,
 		Description:      testPipelineDescription,
@@ -525,20 +522,20 @@ func TestIntegrationValidateResponse(t *testing.T) {
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
-	defer cleanupPipeline(getClient(t), pipeline.ID, pipeline.Name)
+	defer cleanupPipeline(getSdkClient(t), pipeline.ID, pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, model.Created, pipeline.Status)
 	assert.Equal(t, pipelineName, pipeline.Name)
 	assert.Equal(t, testPipelineDescription, pipeline.Description)
 
 	//Get input Schema
-	result1, err1 := getClient(t).StreamsService.ValidateUplResponse(uplPipeline)
+	result1, err1 := getSdkClient(t).StreamsService.ValidateUplResponse(uplPipeline)
 	require.Empty(t, err1)
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)
 }
 
-// Test StartPreviewSession streams endpoint TODO: The pipelineID returned is currently equal to previewID and is incorrect and will be soon removed by the ingest team.
+// Test StartPreviewSession streams endpoint
 func TestIntegrationStartPreviewSession(t *testing.T) {
 	// Create and start a test preview session
 	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
@@ -729,7 +726,7 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 func TestIntegrationGetGroups(t *testing.T) {
 	local := make(url.Values)
 	local.Add("local", `true`)
-	result, err := getClient(t).StreamsService.GetRegistry(local)
+	result, err := getSdkClient(t).StreamsService.GetRegistry(local)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 	assert.NotEmpty(t, *result.Functions[0].ID)
@@ -748,7 +745,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 	groupId := applicationData["groupId"].(string)
 	assert.NotEmpty(t, groupId)
 
-	test, err := getClient(t).StreamsService.GetGroupByID(groupId)
+	test, err := getSdkClient(t).StreamsService.GetGroupByID(groupId)
 	require.Empty(t, err)
 	require.NotEmpty(t, test)
 	assert.NotEmpty(t, *test.Name)
@@ -761,7 +758,7 @@ func TestIntegrationCreateExpandedGroup(t *testing.T) {
 	local := make(url.Values)
 	local.Add("local", `true`)
 	//GetRegistry to retrieve the groupID
-	result, err := getClient(t).StreamsService.GetRegistry(local)
+	result, err := getSdkClient(t).StreamsService.GetRegistry(local)
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
 	assert.NotEmpty(t, *result.Functions[0].ID)
@@ -781,7 +778,7 @@ func TestIntegrationCreateExpandedGroup(t *testing.T) {
 	assert.NotEmpty(t, groupId)
 
 	//GetGroupID to get the Group Function ID
-	result1, err := getClient(t).StreamsService.GetGroupByID(groupId)
+	result1, err := getSdkClient(t).StreamsService.GetGroupByID(groupId)
 	require.Empty(t, err)
 	require.NotEmpty(t, result1)
 	assert.NotEmpty(t, *result1.Name)
@@ -793,7 +790,7 @@ func TestIntegrationCreateExpandedGroup(t *testing.T) {
 	type argumentsMap map[string]interface{}
 	arguments := argumentsMap{"group_arg": "connection", "function_arg": "right"}
 
-	result2, err := getClient(t).StreamsService.CreateExpandedGroup(groupId, &streams.GroupExpandRequest{arguments, functionID})
+	result2, err := getSdkClient(t).StreamsService.CreateExpandedGroup(groupId, &streams.GroupExpandRequest{Arguments: arguments, ID: functionID})
 	require.Empty(t, err)
 	require.NotEmpty(t, result2)
 	assert.NotEmpty(t, result2.Version)
