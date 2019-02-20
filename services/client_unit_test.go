@@ -180,18 +180,26 @@ func TestHostOnlyClient(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
-	NoClusterMatchFromURLs := client.GetURL("")
+	NoClusterMatchFromURLs, err := client.BuildURL(nil, "", "")
+	require.Nil(t, err)
 	assert.Equal(t, clusterAPIHostname, NoClusterMatchFromURLs.Hostname())
 	assert.Equal(t, apiURLProtocol, NoClusterMatchFromURLs.Scheme)
 	assert.Equal(t, apiPort, NoClusterMatchFromURLs.Port())
 	assert.Equal(t, clusterAPIHost, NoClusterMatchFromURLs.Host)
 
-	FoundClusterMatchFromURLs := client.GetURL("api")
-	assert.Equal(t, "api.splunkbeta.com", FoundClusterMatchFromURLs.Hostname())
+	FoundClusterMatchFromURLs, err := client.BuildURL(nil, "api", "")
+	require.Nil(t, err)
+	assert.Equal(t, clusterAPIHostname, FoundClusterMatchFromURLs.Hostname())
 	assert.Equal(t, apiURLProtocol, FoundClusterMatchFromURLs.Scheme)
-	assert.Equal(t, "", FoundClusterMatchFromURLs.Port())
-	assert.Equal(t, "api.splunkbeta.com", FoundClusterMatchFromURLs.Host)
+	assert.Equal(t, apiPort, FoundClusterMatchFromURLs.Port())
+	assert.Equal(t, clusterAPIHost, FoundClusterMatchFromURLs.Host)
 
+	URLWithTenant, err := client.BuildURLWithTenant(tenant, nil, "api")
+	require.Nil(t, err)
+	assert.Equal(t, clusterAPIHostname, URLWithTenant.Hostname())
+	assert.Equal(t, apiURLProtocol, URLWithTenant.Scheme)
+	assert.Equal(t, apiPort, URLWithTenant.Port())
+	assert.Equal(t, clusterAPIHost, URLWithTenant.Host)
 }
 
 type tRet struct{}
