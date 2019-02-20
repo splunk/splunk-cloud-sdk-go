@@ -203,25 +203,6 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 
 // Test GetPipelinesStatus streams endpoint
 func TestIntegrationGetPipelinesStatus(t *testing.T) {
-	// Delete any pre-existing pipelines to ensure no prior pipelines exist
-	result1, err1 := getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{})
-	require.Empty(t, err1)
-	require.NotEmpty(t, result1)
-	if *result1.Total != 0 {
-		result, err := getSdkClient(t).StreamsService.GetPipelines(model.PipelineQueryParams{})
-		require.Empty(t, err)
-		require.NotEmpty(t, result)
-
-		cnt := 0
-		for cnt < len(result.Items) {
-			id := result.Items[cnt].ID
-			deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(id)
-			require.Nil(t, err)
-			require.NotNil(t, deletePipelineResponse)
-			cnt++
-		}
-	}
-
 	pipelineName1 := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
 	pipelineName2 := fmt.Sprintf("testPipeline02%d", testutils.TimeSec)
 
@@ -246,7 +227,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	result, err := getSdkClient(t).StreamsService.GetPipelineStatus(streams.PipelineStatusQueryParams{})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
-	assert.Equal(t, int64(2), *result.Total)
+	assert.True(t, *result.Total >= 2)
 	require.NotEmpty(t, result.Items)
 
 	/*// Get and verify the status of the pipelines based on filters (query parameters) TODO (Parul): Verify specs with ingest team
