@@ -38,3 +38,7 @@ splunk-cloud-sdk-go-integration:
 
 splunk-cloud-sdk-shared-stubby:
   image: cloudrepo-docker-playground.jfrog.io/sdk/shared/stubby:latest
+
+splunk-cloud-codegen:
+  image: cloudrepo-docker-playground.jfrog.io/sdk/codegen:latest
+  encrypted_dockercfg_path: ci/dockercfg.encrypted

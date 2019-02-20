@@ -130,4 +130,10 @@ run_integration_examples:
 generate_interface:
 	cd services && go generate
 
+generate_code:
+	jet load splunk-cloud-codegen
+	mkdir -p $(shell pwd)/codegen/generated
+	docker run -v $(shell pwd)/codegen/specs:/opt/specs -v $(shell pwd)/codegen/generated:/opt/generated -e TEMPLATE_LOC=/opt/splunk/sdk-codegen/templates cloudrepo-docker-playground.jfrog.io/sdk/codegen generate
+	sh ./codegen/process_output.sh
+
 .FORCE:
