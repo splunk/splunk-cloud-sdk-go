@@ -42,7 +42,7 @@ func TestBuildURLDefaultProductionClient(t *testing.T) {
 	testService := "myservice"
 	testVersion := "v1beta1"
 	testEndpoint := "widgets"
-	testURL, err := client.BuildURL(nil, "", testService, testVersion, testEndpoint)
+	testURL, err := client.BuildURL(nil, "api", testService, testVersion, testEndpoint)
 	require.Nil(t, err)
 	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultAPIClusterURL, tenant, testService, testVersion, testEndpoint)
 	require.Equal(t, testURL.String(), expectedURL)
@@ -104,7 +104,27 @@ func TestBuildAPPClusterCustomURL(t *testing.T) {
 	assert.Empty(t, testURL.Fragment)
 }
 
-func TestBuildURLWithHostAndURLs(t *testing.T) {
+func TestBuildURLClusterNotFound(t *testing.T) {
+	var hostname = "appexample.com"
+	var port = "8882"
+	var host = fmt.Sprintf("%s%s%s", hostname, ":", port)
+	var urls = map[string]string{
+		"app": host,
+	}
+	var tenant = "EXAMPLE_TENANT"
+	var token = "EXAMPLE_AUTHENTICATION_TOKEN"
+	client, err := NewClient(&Config{
+		URLs:   urls,
+		Token:  token,
+		Tenant: tenant,
+	})
+	assert.Nil(t, err)
+	_, err = client.BuildURL(nil, "api", "services", "search", "jobs")
+	require.NotNil(t, err)
+	assert.Equal(t, "no host found for \"api\", please configure a URL for this cluster in Config.URLs", err.Error())
+}
+
+func TestNewClientWithHostAndURLs(t *testing.T) {
 	var hostname = "appexample.com"
 	var port = "8882"
 	var host = fmt.Sprintf("%s%s%s", hostname, ":", port)
@@ -180,19 +200,13 @@ func TestHostOnlyClient(t *testing.T) {
 	require.Nil(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
-	NoClusterMatchFromURLs, err := client.BuildURL(nil, "", "")
-	require.Nil(t, err)
-	assert.Equal(t, clusterAPIHostname, NoClusterMatchFromURLs.Hostname())
-	assert.Equal(t, apiURLProtocol, NoClusterMatchFromURLs.Scheme)
-	assert.Equal(t, apiPort, NoClusterMatchFromURLs.Port())
-	assert.Equal(t, clusterAPIHost, NoClusterMatchFromURLs.Host)
-
-	FoundClusterMatchFromURLs, err := client.BuildURL(nil, "api", "")
+	FoundClusterMatchFromURLs, err := client.BuildURL(nil, "api", "my", "path")
 	require.Nil(t, err)
 	assert.Equal(t, clusterAPIHostname, FoundClusterMatchFromURLs.Hostname())
 	assert.Equal(t, apiURLProtocol, FoundClusterMatchFromURLs.Scheme)
 	assert.Equal(t, apiPort, FoundClusterMatchFromURLs.Port())
 	assert.Equal(t, clusterAPIHost, FoundClusterMatchFromURLs.Host)
+	assert.Equal(t, "EXAMPLE_TENANT/my/path", FoundClusterMatchFromURLs.Path)
 
 	URLWithTenant, err := client.BuildURLWithTenant(tenant, nil, "api")
 	require.Nil(t, err)

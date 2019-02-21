@@ -47,8 +47,6 @@ var DefaultURLs = map[string]string{
 type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
 	defaultTenant string
-	// host is the Splunk Cloud host or host:port used to form requests, `"splunkbeta.com"` by default
-	host string
 	// scheme is the HTTP scheme used to form requests, `"https"` by default
 	scheme string
 	// tokenContext is the access token to include in `"Authorization: Bearer"` headers and related context information
@@ -58,10 +56,10 @@ type BaseClient struct {
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
 	// urls is the (optional) mapping of service clusters and corresponding host name. Default value is:
-	// {
+	// `map[string]string{
 	//   "api": "https://api.splunkbeta.com",
 	//   "app": "https://apps.splunkbeta.com",
-	// }
+	// }`
 	urls map[string]string
 }
 
@@ -111,13 +109,13 @@ type Config struct {
 	Token string
 	// Tenant is the default Tenant used to form requests
 	Tenant string
-	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
+	// // Deprecated: v0.8.0 - use URLs rather than Host, Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
 	Host string
 	// URLs is the (optional) mapping of service clusters and corresponding host name. Default value is:
-	// {
+	// `map[string]string{
 	//   "api": "https://api.splunkbeta.com",
 	//   "app": "https://apps.splunkbeta.com",
-	// }
+	// }`
 	URLs map[string]string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
@@ -170,14 +168,6 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 	return retryRequest, nil
 }
 
-// BuildHost returns host including serviceCluster
-func (c *BaseClient) BuildHost(serviceCluster string) string {
-	if serviceCluster != "" {
-		return fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
-	}
-	return fmt.Sprintf("%s%s%s", "api", ".", c.host)
-}
-
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
 func (c *BaseClient) BuildURL(queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
 	return c.BuildURLWithTenant(c.defaultTenant, queryValues, serviceCluster, urlPathParts...)
@@ -192,10 +182,11 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	// use c.urls mapping first, if no match, build host from c.BuildHost
+
 	host := c.urls[serviceCluster]
 	if host == "" {
-		host = c.BuildHost(serviceCluster)
+		// if no host found for this cluster, return err
+		return u, fmt.Errorf("no host found for \"%s\", please configure a URL for this cluster in Config.URLs", serviceCluster)
 	}
 	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
 
@@ -310,9 +301,6 @@ func (c *BaseClient) SetDefaultTenant(tenant string) {
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 	host := c.urls[serviceCluster]
-	if host == "" {
-		host = c.BuildHost(serviceCluster)
-	}
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   host,
@@ -321,19 +309,23 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
+	urls := DefaultURLs
 	urlsIsOverwritten := config.URLs != nil && len(config.URLs) > 0
 	hostIsOverwritten := config.Host != ""
 	if urlsIsOverwritten && hostIsOverwritten {
 		return nil, errors.New("either URLs or Host must be set, not both. URLs are preferred since Host will be deprecated")
 	}
-	urls := DefaultURLs
 	if urlsIsOverwritten {
+		// if config.URLs is specified, use that
 		urls = config.URLs
+	} else if hostIsOverwritten {
+		// if config.Host is specified, construct urls using that host
+		urls = map[string]string{
+			"api": fmt.Sprintf("api.%s", config.Host),
+			"app": fmt.Sprintf("app.%s", config.Host),
+		}
 	}
-	host := "splunkbeta.com"
-	if hostIsOverwritten {
-		host = config.Host
-	}
+
 	scheme := "https"
 	if config.Scheme != "" {
 		scheme = config.Scheme
@@ -376,7 +368,6 @@ func NewClient(config *Config) (*BaseClient, error) {
 
 	// Finally, initialize the Client
 	c := &BaseClient{
-		host:             host,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
 		httpClient:       &http.Client{Timeout: timeout},
