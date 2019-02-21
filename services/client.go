@@ -41,8 +41,11 @@ const (
 type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
 	defaultTenant string
-	// host is the Splunk Cloud host or host:port used to form requests, `"splunkbeta.com"` by default
-	host string
+	// rootDomain is the Splunk Cloud rootDomain or rootDomain:port used to form requests, `"splunkbeta.com"` by default.
+	// Note that requests would be made to `"<scheme>://api.<rootDomain>/..."` for most services by default.
+	rootDomain string
+	// overrideHost if set would override rootDomain and service cluster settings when forming the host such that requests would be made to `"<scheme>://<overrideHost>/..."` for all services.
+	overrideHost string
 	// scheme is the HTTP scheme used to form requests, `"https"` by default
 	scheme string
 	// tokenContext is the access token to include in `"Authorization: Bearer"` headers and related context information
@@ -99,7 +102,8 @@ type Config struct {
 	Token string
 	// Tenant is the default Tenant used to form requests
 	Tenant string
-	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
+	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default.
+	// NOTE: This is really a root domain, most requests will be formed using `<config.Scheme>://api.<config.Host>/<tenant>/<service>/<version>/...` where `api` could vary by service
 	Host string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
@@ -154,10 +158,15 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 
 // BuildHost returns host including serviceCluster
 func (c *BaseClient) BuildHost(serviceCluster string) string {
-	if serviceCluster != "" {
-		return fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	// If overrideHost is specified, always use that
+	if c.overrideHost != "" {
+		return c.overrideHost
 	}
-	return fmt.Sprintf("%s%s%s", "api", ".", c.host)
+	// Otherwise form using <serviceCluster>.<rootDomain>
+	if serviceCluster != "" {
+		return fmt.Sprintf("%s.%s", serviceCluster, c.rootDomain)
+	}
+	return fmt.Sprintf("api.%s", c.rootDomain)
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
@@ -285,6 +294,11 @@ func (c *BaseClient) SetDefaultTenant(tenant string) {
 	c.defaultTenant = tenant
 }
 
+// SetOverrideHost updates the host to force all requests to be made to `<scheme>://<overrideHost>/...` ignoring Config.Host and serviceCluster values
+func (c *BaseClient) SetOverrideHost(host string) {
+	c.overrideHost = host
+}
+
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 	host := c.BuildHost(serviceCluster)
@@ -296,9 +310,9 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	host := "splunkbeta.com"
+	rootDomain := "splunkbeta.com"
 	if config.Host != "" {
-		host = config.Host
+		rootDomain = config.Host
 	}
 	scheme := "https"
 	if config.Scheme != "" {
@@ -342,7 +356,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 
 	// Finally, initialize the Client
 	c := &BaseClient{
-		host:             host,
+		rootDomain:       rootDomain,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
 		httpClient:       &http.Client{Timeout: timeout},
