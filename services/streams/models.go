@@ -52,7 +52,7 @@ type PipelineDeleteResponse struct {
 // PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
 type PipelineReactivateResponse struct {
 	CurrentlyActiveVersion     int                        `json:"currentlyActiveVersion"`
-	PipelineId                 string                     `json:"pipelineId"`
+	PipelineID                 string                     `json:"pipelineId"`
 	PipelineReactivationStatus PipelineReactivationStatus `json:"pipelineReactivationStatus"`
 }
 
