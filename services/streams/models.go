@@ -49,6 +49,31 @@ type PipelineDeleteResponse struct {
 	Running         bool `json:"running"`
 }
 
+// PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
+type PipelineReactivateResponse struct {
+	CurrentlyActiveVersion     int                        `json:"currentlyActiveVersion"`
+	PipelineID                 string                     `json:"pipelineId"`
+	PipelineReactivationStatus PipelineReactivationStatus `json:"pipelineReactivationStatus"`
+}
+
+// PipelineReactivationStatus reflects the possible states of a pipeline that are returned when reactivation request is sent
+type PipelineReactivationStatus string
+
+const (
+	// ReactivationActivated status
+	ReactivationActivated PipelineReactivationStatus = "activated"
+	// AlreadyActivatedWithCurrentVersion status
+	AlreadyActivatedWithCurrentVersion PipelineReactivationStatus = "alreadyActivatedWithCurrentVersion"
+	// CurrentVersionInvalid status
+	CurrentVersionInvalid PipelineReactivationStatus = "currentVersionInvalid"
+	// FailedToDeactivateCurrentVersion status
+	FailedToDeactivateCurrentVersion PipelineReactivationStatus = "failedToDeactivateCurrentVersion"
+	// RolledBack status
+	RolledBack PipelineReactivationStatus = "rolledBack"
+	// RolledBackError status
+	RolledBackError PipelineReactivationStatus = "rolledBackError"
+)
+
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
 	Offset       *int32  `json:"offset,omitempty"`
@@ -99,4 +124,297 @@ type UplEdge struct {
 	SourcePort string      `json:"sourcePort"`
 	TargetNode string      `json:"targetNode"`
 	TargetPort string      `json:"targetPort"`
+}
+
+// GetInputSchemaRequest contains the request for the input schema for a function in the pipeline
+type GetInputSchemaRequest struct {
+	NodeUUID       *string      `json:"nodeUuid,omitempty"`
+	TargetPortName *string      `json:"targetPortName,omitempty"`
+	UplJSON        *UplPipeline `json:"uplJson,omitempty"`
+}
+
+// GetOutputSchemaRequest contains the request for the output schema for a function in the pipeline
+type GetOutputSchemaRequest struct {
+	NodeUUID       *string      `json:"nodeUuid,omitempty"`
+	SourcePortName *string      `json:"sourcePortName,omitempty"`
+	UplJSON        *UplPipeline `json:"uplJson,omitempty"`
+}
+
+// UplType contains UplTypes stored in the registry
+type UplType struct {
+	FieldName  *string   `json:"fieldName,omitempty"`
+	Parameters []UplType `json:"parameters,omitempty"`
+	Type       *string   `json:"type,omitempty"`
+}
+
+// Parameters represents all the UplTypes in the pipeline
+type Parameters struct {
+	Parameters []UplType `json:"parameters"`
+}
+
+// UplFunction contains the basic building block of a UPL pipeline
+type UplFunction struct {
+	Arguments  map[string]UplArgument `json:"arguments,omitempty"`
+	Attributes map[string]interface{} `json:"attributes,omitempty"`
+	Categories *[]int64               `json:"categories,omitempty"`
+	ID         *string                `json:"id,omitempty"`
+	IsVariadic *bool                  `json:"isVariadic,omitempty"`
+	Op         *string                `json:"op,omitempty"`
+	Output     UplArgument            `json:"output,omitempty"`
+	ResolvedID *string                `json:"resolvedId,omitempty"`
+}
+
+// UplArgument are arguments to UplFunctions, UplFunctions have one or more of the arguments.
+type UplArgument struct {
+	//ElementType *map[string]interface{} `json:"element-type,omitempty"`
+	ElementType interface{} `json:"element-type,omitempty"`
+	Type        string      `json:"type"`
+}
+
+//UplRegistry contains all functions and types
+type UplRegistry struct {
+	Categories []UplCategory `json:"categories,omitempty"`
+	Functions  []UplFunction `json:"functions,omitempty"`
+	Types      []UplType     `json:"types,omitempty"`
+}
+
+// UplCategory represents a category in the Upl registry
+type UplCategory struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+// MetricsResponse contains metrics for a single pipeline.
+type MetricsResponse struct {
+	Nodes map[string]NodeMetrics `json:"nodes,omitempty"`
+}
+
+// NodeMetrics contains metrics corresponding to each node
+type NodeMetrics struct {
+	Metrics map[string]interface{} `json:"metrics,omitempty"`
+}
+
+// ValidateRequest contains the request with the UplPipeline to validate
+type ValidateRequest struct {
+	Upl *UplPipeline `json:"upl,omitempty"`
+}
+
+// ValidateResponse contains the Validation response after validating the UplPipeline
+type ValidateResponse struct {
+	Success            *bool     `json:"success,omitempty"`
+	ValidationMessages *[]string `json:"validationMessages,omitempty"`
+}
+
+// PreviewSessionStartRequest contains the preview session start request data
+type PreviewSessionStartRequest struct {
+	RecordsLimit             *int64       `json:"recordsLimit,omitempty"`
+	RecordsPerPipeline       *int64       `json:"recordsPerPipeline,omitempty"`
+	SessionLifetimeMs        *int64       `json:"sessionLifetimeMs,omitempty"`
+	StreamingConfigurationID *int64       `json:"streamingConfigurationId,omitempty"`
+	Upl                      *UplPipeline `json:"upl"`
+	UseNewData               *bool        `json:"useNewData,omitempty"`
+}
+
+// PreviewStartResponse contains the preview start response
+type PreviewStartResponse struct {
+	PipelineID *string `json:"pipelineId"`
+	PreviewID  *int64  `json:"previewId"`
+}
+
+// Connector represents a single connector
+type Connector struct {
+	ID   *string `json:"id,omitempty"`
+	Name *string `json:"name,omitempty"`
+}
+
+// Connections for a specific connector
+type Connections struct {
+	Connections []Connection `json:"connections,omitempty"`
+}
+
+// Connection represents a single connection
+type Connection struct {
+	ID   *string `json:"id,omitempty"`
+	Name *string `json:"name,omitempty"`
+}
+
+// Connectors contains all the available connectors
+type Connectors struct {
+	Connectors []Connector `json:"connectors,omitempty"`
+}
+
+// PreviewState contains the preview session data
+type PreviewState struct {
+	ActivatedDate          *int64  `json:"activatedDate"`
+	CreatedDate            *int64  `json:"createdDate"`
+	CurrentNumberOfRecords *int64  `json:"currentNumberOfRecords"`
+	JobID                  *string `json:"jobId"`
+	PreviewID              *int64  `json:"previewId"`
+	RecordsPerPipeline     *int64  `json:"recordsPerPipeline"`
+}
+
+// PaginatedPipelineStatusResponse contains a list of pipeline job statuses and the total count of pipeline jobs
+type PaginatedPipelineStatusResponse struct {
+	Items []PipelineJob `json:"items"`
+	Total *int64        `json:"total"`
+}
+
+// PipelineJob contains pipeline job data from the underlying streaming system
+type PipelineJob struct {
+	JobID      string `json:"jobId"`
+	JobStatus  string `json:"jobStatus"`
+	PipelineID string `json:"createUserId,omitempty"`
+}
+
+// PipelineStatusQueryParams contains the query parameters that can be provided by the user to fetch specific pipeline job statuses
+type PipelineStatusQueryParams struct {
+	Offset       *int32  `json:"offset,omitempty"`
+	PageSize     *int32  `json:"pageSize,omitempty"`
+	SortField    *string `json:"sortField,omitempty"`
+	SortDir      *string `json:"sortDir,omitempty"`
+	Activated    *bool   `json:"activated,omitempty"`
+	CreateUserID *string `json:"createUserId,omitempty"`
+	Name         *string `json:"name,omitempty"`
+}
+
+// TemplateRequest contains the create/update template request data
+type TemplateRequest struct {
+	Data        *UplPipeline `json:"data"`
+	Description *string      `json:"description"`
+	Name        *string      `json:"name"`
+}
+
+// PartialTemplateRequest contains the template request data for partial update operation
+type PartialTemplateRequest struct {
+	Data        *UplPipeline `json:"data,omitempty"`
+	Description *string      `json:"description,omitempty"`
+	Name        *string      `json:"name,omitempty"`
+}
+
+// TemplateResponse contains the create template response data
+type TemplateResponse struct {
+	CreateDate    *int64       `json:"createDate,omitempty"`
+	CreateUserID  *string      `json:"createUserId,omitempty"`
+	Data          *UplPipeline `json:"data"`
+	Description   *string      `json:"description,omitempty"`
+	Name          *string      `json:"name,omitempty"`
+	OwnerTenantID *string      `json:"ownerTenantId,omitempty"`
+	TemplateID    *string      `json:"templateId,omitempty"`
+	Version       *int64       `json:"version,omitempty"`
+}
+
+// PaginatedTemplateResponse contains a list of templates and the total count of templates
+type PaginatedTemplateResponse struct {
+	Items []TemplateResponse `json:"items"`
+	Total *int64             `json:"total"`
+}
+
+// GroupResponse contains full streams response of a group
+type GroupResponse struct {
+	Ast             *UplPipeline                   `json:"ast,omitempty"`
+	Attributes      *map[string]interface{}        `json:"attributes,omitempty"`
+	Categories      *[]int64                       `json:"categories,omitempty"`
+	CreateDate      *int64                         `json:"createDate,omitempty"`
+	CreateUserID    *string                        `json:"createUserId,omitempty"`
+	GroupID         *string                        `json:"groupId,omitempty"`
+	LastUpdateDate  *int64                         `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserD *string                        `json:"lastUpdateUserId,omitempty"`
+	Mappings        []GroupFunctionArgsMappingNode `json:"mappings,omitempty"`
+	Name            *string                        `json:"name,omitempty"`
+	OutputType      *string                        `json:"outputType,omitempty"`
+	Scalar          *bool                          `json:"scalar,omitempty"`
+	TenantID        *string                        `json:"tenantId,omitempty"`
+	Variadic        *bool                          `json:"variadic,omitempty"`
+}
+
+// GroupExpandRequest contains request to create expanded group
+type GroupExpandRequest struct {
+	// Function arguments for the given id. Overrides default values.
+	Arguments map[string]interface{} `json:"arguments"`
+	// The ID associated with your group function in the pipeline Streams JSON
+	ID string `json:"id"`
+}
+
+// GroupFunctionArgsNode contains arguments specific to a function and group
+type GroupFunctionArgsNode struct {
+	FunctionArg *string `json:"function_arg,omitempty"`
+	GroupArg    *string `json:"group_arg,omitempty"`
+}
+
+// GroupFunctionArgsMappingNode Group Arguments Mapping
+type GroupFunctionArgsMappingNode struct {
+	Arguments  *[]GroupFunctionArgsNode `json:"arguments,omitempty"`
+	FunctionID *string                  `json:"function_id,omitempty"`
+}
+
+// PreviewData contains the preview data response
+type PreviewData struct {
+	CurrentNumberOfRecords *int64                 `json:"currentNumberOfRecords"`
+	Nodes                  map[string]PreviewNode `json:"nodes"`
+	PipelineID             *string                `json:"pipelineId"`
+	PreviewID              *string                `json:"previewId"`
+	RecordsPerPipeline     *int64                 `json:"recordsPerPipeline"`
+}
+
+// PreviewNode contains Preview node data
+type PreviewNode struct {
+	NodeName *string      `json:"nodeName"`
+	Records  []ObjectNode `json:"records"`
+}
+
+// ObjectNode contains different object types
+type ObjectNode struct {
+	Array               *bool    `json:"array,omitempty"`
+	BigDecimal          *bool    `json:"bigDecimal,omitempty"`
+	BigInteger          *bool    `json:"bigInteger,omitempty"`
+	Binary              *bool    `json:"binary,omitempty"`
+	Boolean             *bool    `json:"boolean,omitempty"`
+	ContainerNode       *bool    `json:"containerNode,omitempty"`
+	Double              *bool    `json:"double,omitempty"`
+	Float               *bool    `json:"float,omitempty"`
+	FloatingPointNumber *bool    `json:"floatingPointNumber,omitempty"`
+	Int                 *bool    `json:"int,omitempty"`
+	IntegralNumber      *bool    `json:"integralNumber,omitempty"`
+	Long                *bool    `json:"long,omitempty"`
+	MissingNode         *bool    `json:"missingNode,omitempty"`
+	NodeType            NodeType `json:"nodeType,omitempty"`
+	Null                *bool    `json:"null,omitempty"`
+	Number              *bool    `json:"number,omitempty"`
+	Object              *bool    `json:"object,omitempty"`
+	Pojo                *bool    `json:"pojo,omitempty"`
+	Short               *bool    `json:"short,omitempty"`
+	Textual             *bool    `json:"textual,omitempty"`
+	ValueNode           *bool    `json:"valueNode,omitempty"`
+}
+
+// NodeType lists different node types
+type NodeType string
+
+const (
+	// Array nodetype
+	Array NodeType = "ARRAY"
+	// Binary nodetype
+	Binary NodeType = "BINARY"
+	// Boolean nodetype
+	Boolean NodeType = "BOOLEAN"
+	// Missing nodetype
+	Missing NodeType = "MISSING"
+	// Null nodetype
+	Null NodeType = "NULL"
+	// Number nodetype
+	Number NodeType = "NUMBER"
+	// Object nodetype
+	Object NodeType = "OBJECT"
+	// Pojo nodetype
+	Pojo NodeType = "POJO"
+	// String nodetype
+	String NodeType = "STRING"
+)
+
+// PipelinesMergeRequest contains pipelines merge request data
+type PipelinesMergeRequest struct {
+	InputTree  *UplPipeline `json:"inputTree"`
+	MainTree   *UplPipeline `json:"mainTree"`
+	TargetNode *string      `json:"targetNode"`
+	TargetPort *string      `json:"targetPort"`
 }
