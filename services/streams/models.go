@@ -51,10 +51,28 @@ type PipelineDeleteResponse struct {
 
 // PipelineReactivateResponse contains the response returned as a result of a reactivate pipeline call
 type PipelineReactivateResponse struct {
-	CurrentlyActiveVersion     int    `json:"currentlyActiveVersion"`
-	PipelineID                 string `json:"pipelineId"`
-	PipelineReactivationStatus string `json:"pipelineReactivationStatus"`
+	CurrentlyActiveVersion     int                        `json:"currentlyActiveVersion"`
+	PipelineId                 string                     `json:"pipelineId"`
+	PipelineReactivationStatus PipelineReactivationStatus `json:"pipelineReactivationStatus"`
 }
+
+// PipelineReactivationStatus reflects the possible states of a pipeline that are returned when reactivation request is sent
+type PipelineReactivationStatus string
+
+const (
+	// ReactivationActivated status
+	ReactivationActivated PipelineReactivationStatus = "activated"
+	// AlreadyActivatedWithCurrentVersion status
+	AlreadyActivatedWithCurrentVersion PipelineReactivationStatus = "alreadyActivatedWithCurrentVersion"
+	// CurrentVersionInvalid status
+	CurrentVersionInvalid PipelineReactivationStatus = "currentVersionInvalid"
+	// FailedToDeactivateCurrentVersion status
+	FailedToDeactivateCurrentVersion PipelineReactivationStatus = "failedToDeactivateCurrentVersion"
+	// RolledBack status
+	RolledBack PipelineReactivationStatus = "rolledBack"
+	// RolledBackError status
+	RolledBackError PipelineReactivationStatus = "rolledBackError"
+)
 
 // PipelineQueryParams contains the query parameters that can be provided by the user to fetch specific pipelines
 type PipelineQueryParams struct {
