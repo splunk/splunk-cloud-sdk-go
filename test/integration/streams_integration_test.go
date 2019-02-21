@@ -198,7 +198,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	reactivatePipelineResponse, err := getSdkClient(t).StreamsService.ReactivatePipeline(pipeline.ID)
 	require.Nil(t, err)
 	require.NotEmpty(t, reactivatePipelineResponse)
-	assert.Equal(t, pipeline.ID, reactivatePipelineResponse.PipelineId)
+	assert.Equal(t, pipeline.ID, reactivatePipelineResponse.PipelineID)
 	assert.Equal(t, streams.ReactivationActivated, reactivatePipelineResponse.PipelineReactivationStatus)
 }
 
