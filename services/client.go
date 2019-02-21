@@ -37,12 +37,6 @@ const (
 	AuthorizationType = "Bearer"
 )
 
-// DefaultURLs is a mapping between service cluster and its host name
-var DefaultURLs = map[string]string{
-	"api": "api.splunkbeta.com",
-	"app": "app.splunkbeta.com",
-}
-
 // A BaseClient for communicating with Splunk Cloud
 type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
@@ -57,12 +51,6 @@ type BaseClient struct {
 	httpClient *http.Client
 	// responseHandlers is a slice of handlers to call after a response has been received in the client
 	responseHandlers []ResponseHandler
-	// urls is the (optional) mapping of service clusters and corresponding host name. Default value is:
-	// {
-	//   "api": "https://api.splunkbeta.com",
-	//   "app": "https://apps.splunkbeta.com",
-	// }
-	urls map[string]string
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -113,12 +101,6 @@ type Config struct {
 	Tenant string
 	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
 	Host string
-	// URLs is the (optional) mapping of service clusters and corresponding host name. Default value is:
-	// {
-	//   "api": "https://api.splunkbeta.com",
-	//   "app": "https://apps.splunkbeta.com",
-	// }
-	URLs map[string]string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
@@ -192,11 +174,7 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	// use c.urls mapping first, if no match, build host from c.BuildHost
-	host := c.urls[serviceCluster]
-	if host == "" {
-		host = c.BuildHost(serviceCluster)
-	}
+	host := c.BuildHost(serviceCluster)
 	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
 
 	u = url.URL{
@@ -309,10 +287,7 @@ func (c *BaseClient) SetDefaultTenant(tenant string) {
 
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
-	host := c.urls[serviceCluster]
-	if host == "" {
-		host = c.BuildHost(serviceCluster)
-	}
+	host := c.BuildHost(serviceCluster)
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   host,
@@ -321,17 +296,8 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	urlsIsOverwritten := config.URLs != nil && len(config.URLs) > 0
-	hostIsOverwritten := config.Host != ""
-	if urlsIsOverwritten && hostIsOverwritten {
-		return nil, errors.New("either URLs or Host must be set, not both. URLs are preferred since Host will be deprecated")
-	}
-	urls := DefaultURLs
-	if urlsIsOverwritten {
-		urls = config.URLs
-	}
 	host := "splunkbeta.com"
-	if hostIsOverwritten {
+	if config.Host != "" {
 		host = config.Host
 	}
 	scheme := "https"
@@ -382,7 +348,6 @@ func NewClient(config *Config) (*BaseClient, error) {
 		httpClient:       &http.Client{Timeout: timeout},
 		tokenContext:     ctx,
 		responseHandlers: handlers,
-		urls:             urls,
 	}
 
 	if config.RoundTripper != nil {

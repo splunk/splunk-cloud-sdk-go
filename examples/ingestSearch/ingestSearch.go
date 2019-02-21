@@ -64,7 +64,7 @@ func exitOnError(err error) {
 func getClient() *sdk.Client {
 	client, err := sdk.NewClient(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
-		URLs:   testutils.TestURLs,
+		Host:   testutils.TestSplunkCloudHost,
 		Tenant: testutils.TestTenant,
 	})
 
