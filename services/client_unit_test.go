@@ -108,6 +108,33 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	assert.Empty(t, testURL.Fragment)
 }
 
+func TestNewClientOverrideHost(t *testing.T) {
+	client, err := NewClient(&Config{
+		Token:        "MY TOKEN",
+		OverrideHost: "localhost:8080",
+		Tenant:       "mytenant",
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, "localhost:8080", client.overrideHost)
+	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, "localhost", testURL.Hostname())
+	assert.Equal(t, "https", testURL.Scheme)
+	assert.Equal(t, "8080", testURL.Port())
+	assert.Equal(t, "localhost:8080", testURL.Host)
+	assert.Equal(t, "mytenant/services/search/jobs", testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+}
+
+func TestNewClientHostAndOverrideHost(t *testing.T) {
+	_, err := NewClient(&Config{
+		Token:        "MY TOKEN",
+		Host:         "splunkbeta.com",
+		OverrideHost: "localhost:8080",
+	})
+	assert.Equal(t, "either config.Host or config.OverrideHost may be set, setting both is invalid", err.Error())
+}
+
 func TestBuildURLEscapedCharacters(t *testing.T) {
 	client, err := NewClient(&Config{
 		Token:  "TEST_TOKEN",

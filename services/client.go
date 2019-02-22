@@ -105,6 +105,9 @@ type Config struct {
 	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default.
 	// NOTE: This is really a root domain, most requests will be formed using `<config.Scheme>://api.<config.Host>/<tenant>/<service>/<version>/...` where `api` could vary by service
 	Host string
+	// OverrideHost if set would override the Splunk Cloud root domain (`"splunkbeta.com"` by default) and service settings when forming the host such that requests would be made to `"<scheme>://<overrideHost>/..."` for all services.
+	// NOTE: Providing a Host and OverrideHost is not valid.
+	OverrideHost string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
@@ -310,10 +313,19 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
+	// Enforce that at most one of Host or OverrideHost may be specified, not both
+	if config.Host != "" && config.OverrideHost != "" {
+		return nil, errors.New("either config.Host or config.OverrideHost may be set, setting both is invalid")
+	}
 	rootDomain := "splunkbeta.com"
 	if config.Host != "" {
 		rootDomain = config.Host
 	}
+	overrideHost := ""
+	if config.OverrideHost != "" {
+		overrideHost = config.OverrideHost
+	}
+
 	scheme := "https"
 	if config.Scheme != "" {
 		scheme = config.Scheme
@@ -357,6 +369,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 	// Finally, initialize the Client
 	c := &BaseClient{
 		rootDomain:       rootDomain,
+		overrideHost:     overrideHost,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
 		httpClient:       &http.Client{Timeout: timeout},
