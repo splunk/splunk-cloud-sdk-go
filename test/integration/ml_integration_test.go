@@ -13,6 +13,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
@@ -27,7 +29,8 @@ import (
 )
 
 var workflowName = fmt.Sprintf("go_sdk_wf_%d", testutils.TimeSec)
-var source = "sdk_ml_csv_import"
+var source = fmt.Sprintf("sdk_ml_csv_import_%d", testutils.TimeSec)
+var sourcetype = "_json"
 var inputQuerySPL = fmt.Sprintf("| from main where source=\"%s\"", source)
 
 func TestMain(t *testing.M) {
@@ -221,12 +224,14 @@ func TestGetWorkflowRun(t *testing.T) {
 func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 	var taskName = "fitTask"
 	var kind = ml.FitTaskKind
+	var target = "sepal_width"
 	var task = ml.Task{
 		Name:      &taskName,
 		Kind:      &kind,
 		Algorithm: "PCA",
 		Fields: ml.Fields{
-			Features: []string{"host", "index"},
+			Features: []string{"sepal_width", "sepal_length", "petal_width", "petal_length"},
+			Target:   &target,
 		},
 		TimeoutSecs: 2,
 	}
@@ -246,12 +251,12 @@ func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 
 func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.WorkflowBuild {
 	// TODO: this will be necessary for each new tenant, and will make tests more robust, will revisit
-	//ensureWorkflowCSVData(t, client)
+	ensureWorkflowCSVData(t, client)
 
 	var buildName = fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
 	extract := true
 	queryParams := map[string]interface{}{
-		"earliest": "0",
+		"earliest": "0", // TODO: change this to -10 min or something closer to "this test run"
 		"latest":   "now",
 	}
 	build := ml.WorkflowBuild{
@@ -259,7 +264,7 @@ func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.
 		Input: ml.InputData{
 			Kind: ml.SPLInputKind,
 			Source: ml.InputDataSource{
-				Query:            fmt.Sprintf("| from main where source=\"%s\"", "sdk_ml_csv_import"),
+				Query:            fmt.Sprintf("| from main where source=\"%s\"", source),
 				ExtractAllFields: &extract,
 				QueryParameters:  &queryParams,
 			},
@@ -365,13 +370,13 @@ func ensureWorkflowCSVData(t *testing.T, client *sdk.Client) {
 	require.NotNil(t, job)
 
 	state, err := client.SearchService.WaitForJob(job.ID, time.Second)
-	require.NotNil(t, err)
+	require.Nil(t, err) // TODO: something wrong here
 	require.Equal(t, search.Done, state)
 
 	rawResults, err := client.SearchService.GetResults(job.ID, 0, 0)
 	require.Nil(t, err)
 	require.NotNil(t, rawResults)
-	require.IsType(t, search.Results{}, rawResults)
+	require.IsType(t, &search.Results{}, rawResults)
 
 	results := rawResults.(*search.Results)
 
@@ -384,7 +389,9 @@ func ensureWorkflowCSVData(t *testing.T, client *sdk.Client) {
 }
 
 func ingestWorkflowCSVData(t *testing.T, client *sdk.Client) {
-	file, err := os.Open("../data/iris.csv")
+	ensureJSONAutoKVNone(t, client)
+
+	file, err := os.Open("./data/iris.csv")
 	require.Nil(t, err)
 	require.NotNil(t, file)
 
@@ -405,12 +412,31 @@ func ingestWorkflowCSVData(t *testing.T, client *sdk.Client) {
 		}
 
 		event := ingest.Event{
-			Body:   body,
-			Source: source,
+			Body:       body,
+			Source:     source,
+			Sourcetype: sourcetype,
 		}
 		events = append(events, event)
 	}
 
 	err = client.IngestService.PostEvents(events)
+	require.Nil(t, err)
+}
+
+// Set this rule to ingest doesn't index fields twice
+func ensureJSONAutoKVNone(t *testing.T, client *sdk.Client) {
+	actions := make([]catalog.Action, 1)
+	actions = append(actions, catalog.Action{
+		Kind: catalog.AutoKV,
+		Mode: "none",
+	})
+	rule := catalog.Rule{
+		Module:  "",
+		Name:    fmt.Sprintf("rule%d", testutils.TimeSec),
+		Match:   fmt.Sprintf("sourcetype::%s", sourcetype),
+		Actions: actions,
+	}
+
+	err, _ := client.CatalogService.CreateRule(rule)
 	require.Nil(t, err)
 }
