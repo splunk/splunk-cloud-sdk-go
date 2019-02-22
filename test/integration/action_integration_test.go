@@ -20,6 +20,7 @@ import (
 // Test consts
 const (
 	body           = "<html><h1>The HTML</h1></html>"
+	bodyPlainText  = "This is a plain text body."
 	subject        = "The Subject"
 	title          = "The Title."
 	webhookURL     = "https://webhook.site/test"
@@ -69,7 +70,7 @@ func TestIntegrationGetActions(t *testing.T) {
 func TestGetCreateActionEmail(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_cr_%d", testutils.TimeSec)
-	emailAction := action.NewEmailAction(emailActionName, title, body, subject, addresses)
+	emailAction := action.NewEmailAction(emailActionName, title, body, bodyPlainText, subject, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
 	defer cleanupAction(client, emailAction.Name)
@@ -120,7 +121,7 @@ func TestCreateActionFailNonExistentAction(t *testing.T) {
 func TestCreateActionFailExistingAction(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_confl_%d", testutils.TimeSec)
-	emailAction := action.NewEmailAction(emailActionName, title, body, subject, addresses)
+	emailAction := action.NewEmailAction(emailActionName, title, body, bodyPlainText, subject, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
 	defer cleanupAction(client, emailAction.Name)
@@ -146,7 +147,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	defer cleanupAction(client, webhookAction.Name)
 
 	emailActionName := fmt.Sprintf("e_unauth_%d", testutils.TimeSec)
-	emailAction := action.NewEmailAction(emailActionName, title, body, subject, addresses)
+	emailAction := action.NewEmailAction(emailActionName, title, body, bodyPlainText, subject, addresses)
 	// This shouldn't be needed since the CreateAction should fail for 401:
 	// defer cleanupAction(client, emailAction.Name)
 	invalidClient := getInvalidClient(t)
@@ -208,7 +209,7 @@ func TestTriggerActionFailInvalidFields(t *testing.T) {
 func TestUpdateAction(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_up_%d", testutils.TimeSec)
-	emailAction := action.NewEmailAction(emailActionName, title, body, subject, addresses)
+	emailAction := action.NewEmailAction(emailActionName, title, body, bodyPlainText, subject, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
 	defer cleanupAction(client, emailAction.Name)
@@ -228,7 +229,7 @@ func TestUpdateAction(t *testing.T) {
 func TestDeleteAction(t *testing.T) {
 	client := getSdkClient(t)
 	emailActionName := fmt.Sprintf("e_del_%d", testutils.TimeSec)
-	emailAction := action.NewEmailAction(emailActionName, title, body, subject, addresses)
+	emailAction := action.NewEmailAction(emailActionName, title, body, bodyPlainText, subject, addresses)
 	_, err := client.ActionService.CreateAction(*emailAction)
 	require.Nil(t, err)
 	err = client.ActionService.DeleteAction(emailActionName)
