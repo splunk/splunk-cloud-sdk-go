@@ -153,7 +153,7 @@ func TestCRUDRoles(t *testing.T) {
 	_, err = client.IdentityService.GetRolePermissions(roleName)
 	require.Nil(t, err)
 
-	permissionName := fmt.Sprintf("%v:all:perm1-%d", testutils.TestTenant, testutils.TimeSec)
+	permissionName := fmt.Sprintf("%v:all:perm1.%d", testutils.TestTenant, testutils.TimeSec)
 	resultroleperm, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
 	require.Nil(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
@@ -252,7 +252,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result5, roleName)
 
 	// add permission to role
-	permissionName := fmt.Sprintf("%v:%v:myperm", testutils.TestTenant, groupName)
+	permissionName := fmt.Sprintf("%v:%v:myperm.%d", testutils.TestTenant, groupName, testutils.TimeSec)
 	result6, err := client.IdentityService.AddPermissionToRole(roleName, permissionName)
 	require.Nil(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
