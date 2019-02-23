@@ -459,10 +459,6 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		time.Sleep(20 * time.Second)
 		cnt++
 	}
-	// Delete the test pipeline
-	deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 //Test Latest Preview Session Metrics
@@ -493,9 +489,6 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 		time.Sleep(20 * time.Second)
 		cnt++
 	}
-	// Delete the test preview session
-	err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIDStringVal)
-	require.Nil(t, err)
 }
 
 // Test Get Connectors
