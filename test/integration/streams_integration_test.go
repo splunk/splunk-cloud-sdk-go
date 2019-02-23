@@ -541,10 +541,6 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)
 
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test StartPreviewSession streams endpoint
