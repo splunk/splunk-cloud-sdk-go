@@ -20,7 +20,7 @@ import (
 // Test consts
 const (
 	body           = "<html><h1>The HTML</h1></html>"
-	bodyPlainText  = "The Plain Text Body"
+	bodyPlainText  = "This is a plain text body."
 	subject        = "The Subject"
 	title          = "The Title."
 	webhookURL     = "https://webhook.site/test"
