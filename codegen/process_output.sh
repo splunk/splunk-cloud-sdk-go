@@ -1,10 +1,10 @@
 #!/bin/sh
 script_dir=$(dirname "$0")
-for service in "action identity" ; do
+for service in "action" ; do
     src_dir="$script_dir/generated/$service-go"
     dest_dir="$script_dir/../services/$service/generated"
     echo "Replacing services/$service/generated with newly-generated code..."
-    if [[ ! -d   ]] ; then
+    if [[ ! -d "$script_dir/generated/$service-go" ]] ; then
         echo "$script_dir/generated/$service-go not found, skipping ..."
         continue
     fi

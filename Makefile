@@ -131,9 +131,12 @@ generate_interface:
 	cd services && go generate
 
 generate_code:
+	echo "\n\nLoading docker image ...\n\n"
 	jet load splunk-cloud-codegen
 	mkdir -p $(shell pwd)/codegen/generated
-	docker run -v $(shell pwd)/codegen/specs:/opt/specs -v $(shell pwd)/codegen/generated:/opt/generated -e TEMPLATE_LOC=/opt/splunk/sdk-codegen/templates cloudrepo-docker-playground.jfrog.io/sdk/codegen generate
+	echo "\n\nGenerating code using splunk-cloud-codegen service ...\n\n"
+	docker run -e LANGUAGES=go -v $(shell pwd)/codegen/specs:/opt/specs -v $(shell pwd)/codegen/generated:/opt/generated cloudrepo-docker-playground.jfrog.io/sdk/codegen generate
+	echo "\n\nIntegrating codegen output into Go SDK ...\n\n"
 	sh ./codegen/process_output.sh
 
 .FORCE:
