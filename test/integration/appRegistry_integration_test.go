@@ -147,9 +147,9 @@ func TestSubscriptions(t *testing.T) {
 	perms := []string{"*:action.*"}
 	permFilter := []string{"*:*.*"}
 	app2 := appregistry.CreateAppRequest{
-		Kind:  appregistry.SERVICE,
-		Name:  appName2,
-		Title: newAppTitle("testtitle2"),
+		Kind:                    appregistry.SERVICE,
+		Name:                    appName2,
+		Title:                   newAppTitle("testtitle2"),
 		AppPrincipalPermissions: &perms,
 		UserPermissionsFilter:   &permFilter,
 		RedirectURLs: []string{
