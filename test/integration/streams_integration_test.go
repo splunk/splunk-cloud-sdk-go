@@ -459,10 +459,6 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		time.Sleep(20 * time.Second)
 		cnt++
 	}
-	// Delete the test pipeline
-	deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 //Test Latest Preview Session Metrics
@@ -493,9 +489,6 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 		time.Sleep(20 * time.Second)
 		cnt++
 	}
-	// Delete the test preview session
-	err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIDStringVal)
-	require.Nil(t, err)
 }
 
 // Test Get Connectors
@@ -548,10 +541,6 @@ func TestIntegrationValidateResponse(t *testing.T) {
 	require.NotEmpty(t, result1)
 	assert.Equal(t, *result1.Success, true)
 
-	// Delete the test pipeline
-	deletePipelineResponse, err := getClient(t).StreamsService.DeletePipeline(pipeline.ID)
-	require.Nil(t, err)
-	require.NotNil(t, deletePipelineResponse)
 }
 
 // Test StartPreviewSession streams endpoint
@@ -889,9 +878,13 @@ func cleanupPipeline(client *service.Client, id string, name string) {
 
 // Deletes the test preview-session
 func cleanupPreview(t *testing.T, id string) {
-	err := getSdkClient(t).StreamsService.DeletePreviewSession(id)
-	if err != nil {
-		fmt.Printf("WARN: error deleting preview session: id:%s, err: %s", id, err)
+	// First check if the preview session exists
+	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(id)
+	if err == nil && previewState != nil {
+		err := getSdkClient(t).StreamsService.DeletePreviewSession(id)
+		if err != nil {
+			fmt.Printf("WARN: error deleting preview session: id:%s, err: %s", id, err)
+		}
 	}
 }
 
