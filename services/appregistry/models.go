@@ -18,6 +18,7 @@ const (
 )
 
 type AppResponse struct {
+	// The kind of application.
 	Kind AppKind `json:"kind"`
 	// Application name that is unique within the SDC platform.
 	Name string `json:"name"`
@@ -29,8 +30,10 @@ type AppResponse struct {
 	LogoURL string `json:"logoUrl,omitempty"`
 	// Human readable title for the application.
 	Title string `json:"title"`
-	// Array of permissions that are granted to the app principal when a tenant subscribes
-	PrincipalPermissions []string `json:"principalPermissions,omitempty"`
+	// Array of permissions that are granted to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Array of Permission Filter Templates that are used to intersect with a Users permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
 	// Array of URLs that can be used for redirect after logging into the app
 	RedirectURLs []string `json:"redirectUrls"`
 	// URL to redirect to after a subscription is created
@@ -60,9 +63,11 @@ type CreateAppRequest struct {
 	// The URL used to display the application's logo.
 	LogoURL *string `json:"logoUrl,omitempty"`
 	// Human readable title for the application.
-	Title string `json:"title,omitempty"`
+	Title string `json:"title"`
 	// Array of permissions that are granted to the app principal when a tenant subscribes
-	PrincipalPermissions *[]string `json:"principalPermissions,omitempty"`
+	AppPrincipalPermissions *[]string `json:"appPrincipalPermissions,omitempty"`
+	// Array of Permission Filter Templates that are used to intersect with a Users permissions when using the app.
+	UserPermissionsFilter *[]string `json:"userPermissionsFilter,omitempty"`
 	// Array of URLs that can be used for redirect after logging into the app
 	RedirectURLs []string `json:"redirectUrls"`
 	// URL to redirect to after a subscription is created
@@ -100,7 +105,9 @@ type UpdateAppRequest struct {
 	// Human readable title for the application.
 	Title *string `json:"title,omitempty"`
 	// Array of permissions that are granted to the app principal when a tenant subscribes
-	PrincipalPermissions *[]string `json:"principalPermissions,omitempty"`
+	AppPrincipalPermissions *[]string `json:"appPrincipalPermissions,omitempty"`
+	// Array of Permission Filter Templates that are used to intersect with a Users permissions when using the app.
+	UserPermissionsFilter *[]string `json:"userPermissionsFilter,omitempty"`
 	// Array of URLs that can be used for redirect after logging into the app
 	RedirectURLs *[]string `json:"redirectUrls,omitempty"`
 	// URL to redirect to after a subscription is created
