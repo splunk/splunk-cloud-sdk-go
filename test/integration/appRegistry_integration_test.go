@@ -31,6 +31,7 @@ func TestCRUDApp(t *testing.T) {
 		Kind:  appregistry.WEB,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
+
 		RedirectURLs: []string{
 			"https://localhost",
 		},
@@ -143,10 +144,14 @@ func TestSubscriptions(t *testing.T) {
 	// List all subscriptions
 	// create the 2nd subscription
 	appName2 := fmt.Sprintf("g.s2%d", testutils.TimeSec)
+	perms := []string{"*:action.*"}
+	permFilter := []string{"*:*.*"}
 	app2 := appregistry.CreateAppRequest{
 		Kind:  appregistry.SERVICE,
 		Name:  appName2,
 		Title: newAppTitle("testtitle2"),
+		AppPrincipalPermissions: &perms,
+		UserPermissionsFilter:   &permFilter,
 		RedirectURLs: []string{
 			"https://localhost",
 		},
