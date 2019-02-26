@@ -63,7 +63,7 @@ type CreateAppRequest struct {
 	// The URL used to display the application's logo.
 	LogoURL *string `json:"logoUrl,omitempty"`
 	// Human readable title for the application.
-	Title *string `json:"title,omitempty"`
+	Title string `json:"title"`
 	// Array of permissions that are granted to the app principal when a tenant subscribes
 	AppPrincipalPermissions *[]string `json:"appPrincipalPermissions,omitempty"`
 	// Array of Permission Filter Templates that are used to intersect with a Users permissions when using the app.
