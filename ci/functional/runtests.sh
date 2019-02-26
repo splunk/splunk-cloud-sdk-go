@@ -30,11 +30,13 @@ else
         || exit 1
 fi
 
+# TODO: skip uploading the coverage report since our codecov license has expired
+# 
 # Upload code cov report
-if [[ -z "$CODECOV_TOKEN" ]];
-then
-    echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
-else
-    # Upload coverage information
-    ./ci/codecov -f $FULL_FUNCTIONAL_TEST_CODECOV_PATH -F functional -t $CODECOV_TOKEN
-fi
+# if [[ -z "$CODECOV_TOKEN" ]];
+# then
+#     echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
+# else
+#     # Upload coverage information
+#     ./ci/codecov -f $FULL_FUNCTIONAL_TEST_CODECOV_PATH -F functional -t $CODECOV_TOKEN
+# fi
