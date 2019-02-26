@@ -878,9 +878,13 @@ func cleanupPipeline(client *service.Client, id string, name string) {
 
 // Deletes the test preview-session
 func cleanupPreview(t *testing.T, id string) {
-	err := getSdkClient(t).StreamsService.DeletePreviewSession(id)
-	if err != nil {
-		fmt.Printf("WARN: error deleting preview session: id:%s, err: %s", id, err)
+	// First check if the preview session exists
+	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(id)
+	if err == nil && previewState != nil {
+		err := getSdkClient(t).StreamsService.DeletePreviewSession(id)
+		if err != nil {
+			fmt.Printf("WARN: error deleting preview session: id:%s, err: %s", id, err)
+		}
 	}
 }
 
