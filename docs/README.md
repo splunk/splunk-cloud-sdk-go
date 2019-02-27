@@ -10,6 +10,7 @@
 * [github.com/splunk/splunk-cloud-sdk-go/service](pkg/github_com_splunk_splunk_cloud_sdk_go_service.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services](pkg/github_com_splunk_splunk_cloud_sdk_go_services.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/action](pkg/github_com_splunk_splunk_cloud_sdk_go_services_action.md)
+* [github.com/splunk/splunk-cloud-sdk-go/services/appregistry](pkg/github_com_splunk_splunk_cloud_sdk_go_services_appregistry.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/catalog](pkg/github_com_splunk_splunk_cloud_sdk_go_services_catalog.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/forwarders](pkg/github_com_splunk_splunk_cloud_sdk_go_services_forwarders.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/identity](pkg/github_com_splunk_splunk_cloud_sdk_go_services_identity.md)

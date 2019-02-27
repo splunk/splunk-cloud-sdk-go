@@ -25,7 +25,9 @@ import (
 )
 
 //go:generate go run ../util/gen_interface.go -svc=action -s=Service -i=Servicer -p=action
+//go:generate go run ../util/gen_interface.go -svc=appregistry -s=Service -i=Servicer -p=appregistry
 //go:generate go run ../util/gen_interface.go -svc=catalog -s=Service -i=Servicer -p=catalog
+//go:generate go run ../util/gen_interface.go -svc=forwarders -s=Service -i=Servicer -p=forwarders
 //go:generate go run ../util/gen_interface.go -svc=identity -s=Service -i=Servicer -p=identity
 //go:generate go run ../util/gen_interface.go -svc=ingest -s=Service -i=Servicer -p=ingest
 //go:generate go run ../util/gen_interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
