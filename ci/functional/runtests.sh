@@ -31,10 +31,4 @@ else
 fi
 
 # Upload code cov report
-if [[ -z "$CODECOV_TOKEN" ]];
-then
-    echo "THE CODE COVERAGE TOKEN IS NOT SET! CODECOV REPORT WILL NOT BE UPLOADED."
-else
-    # Upload coverage information
-    ./ci/codecov -f $FULL_FUNCTIONAL_TEST_CODECOV_PATH -F functional -t $CODECOV_TOKEN
-fi
+echo "TODO: CODE COVERAGE IS NOT CURRENTLY SUPPORTED! CODECOV REPORT WILL NOT BE UPLOADED."

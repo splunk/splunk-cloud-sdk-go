@@ -75,14 +75,64 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
 
 	require.Nil(t, err)
-	apiHostName := fmt.Sprintf("%s%s%s", "api", ".", host)
-	apiHostWithPort := fmt.Sprintf("%s%s%s", apiHostName, ":", apiPort)
+	apiHostName := fmt.Sprintf("api.%s", host)
+	apiHostWithPort := fmt.Sprintf("%s:%s", apiHostName, apiPort)
 	assert.Equal(t, apiHostName, testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, apiPort, testURL.Port())
 	assert.Equal(t, apiHostWithPort, testURL.Host)
-	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
+	assert.Equal(t, fmt.Sprintf("%s/services/search/jobs", tenant), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
+
+	client.SetOverrideHost("localhost")
+	assert.Equal(t, "localhost", client.overrideHost)
+	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, "localhost", testURL.Hostname())
+	assert.Equal(t, apiURLProtocol, testURL.Scheme)
+	// "localhost" has no port specified, so port is now "" rather than 8882
+	assert.Equal(t, "", testURL.Port())
+	assert.Equal(t, "localhost", testURL.Host)
+	assert.Equal(t, fmt.Sprintf("%s/services/search/jobs", tenant), testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+
+	client.SetOverrideHost("127.0.0.1:8080")
+	assert.Equal(t, "127.0.0.1:8080", client.overrideHost)
+	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, "127.0.0.1", testURL.Hostname())
+	assert.Equal(t, apiURLProtocol, testURL.Scheme)
+	assert.Equal(t, "8080", testURL.Port())
+	assert.Equal(t, "127.0.0.1:8080", testURL.Host)
+	assert.Equal(t, fmt.Sprintf("%s/services/search/jobs", tenant), testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+}
+
+func TestNewClientOverrideHost(t *testing.T) {
+	client, err := NewClient(&Config{
+		Token:        "MY TOKEN",
+		OverrideHost: "localhost:8080",
+		Tenant:       "mytenant",
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, "localhost:8080", client.overrideHost)
+	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
+	require.Nil(t, err)
+	assert.Equal(t, "localhost", testURL.Hostname())
+	assert.Equal(t, "https", testURL.Scheme)
+	assert.Equal(t, "8080", testURL.Port())
+	assert.Equal(t, "localhost:8080", testURL.Host)
+	assert.Equal(t, "mytenant/services/search/jobs", testURL.Path)
+	assert.Empty(t, testURL.Fragment)
+}
+
+func TestNewClientHostAndOverrideHost(t *testing.T) {
+	_, err := NewClient(&Config{
+		Token:        "MY TOKEN",
+		Host:         "splunkbeta.com",
+		OverrideHost: "localhost:8080",
+	})
+	assert.Equal(t, "either config.Host or config.OverrideHost may be set, setting both is invalid", err.Error())
 }
 
 func TestBuildURLEscapedCharacters(t *testing.T) {

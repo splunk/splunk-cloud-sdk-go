@@ -6,6 +6,7 @@
 package integration
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -186,16 +187,27 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
 	})
 
-	var cnt int
-	for i := 0; i < 20; i++ {
+	concurrentSearches := 20
+	var wg sync.WaitGroup
+	wg.Add(concurrentSearches)
+	jobIDs := make(chan string, concurrentSearches)
+	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
+			defer wg.Done()
 			job, _ := service.CreateJob(PostJobsRequest)
-			cnt++
 			assert.NotNil(t, job)
+			jobIDs <- job.ID
 		}(searchService)
 	}
-	time.Sleep(time.Duration(35) * time.Second)
-	assert.Equal(t, 20, cnt)
+	// block on all jobs being created
+	wg.Wait()
+	close(jobIDs)
+	cnt := 0
+	for id := range jobIDs {
+		assert.NotEmpty(t, id)
+		cnt++
+	}
+	assert.Equal(t, concurrentSearches, cnt)
 }
 
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
@@ -208,16 +220,27 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
 	})
 
-	var cnt int
-	for i := 0; i < 20; i++ {
+	concurrentSearches := 20
+	var wg sync.WaitGroup
+	wg.Add(concurrentSearches)
+	jobIDs := make(chan string, concurrentSearches)
+	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
+			defer wg.Done()
 			job, _ := service.CreateJob(PostJobsRequest)
-			cnt++
 			assert.NotNil(t, job)
+			jobIDs <- job.ID
 		}(searchService)
 	}
-	time.Sleep(time.Duration(25) * time.Second)
-	assert.Equal(t, 20, cnt)
+	// block on all jobs being created
+	wg.Wait()
+	close(jobIDs)
+	cnt := 0
+	for id := range jobIDs {
+		assert.NotEmpty(t, id)
+		cnt++
+	}
+	assert.Equal(t, concurrentSearches, cnt)
 }
 
 //TestRetryOff and validate that job response is a 429 after certain number of requests
@@ -229,17 +252,28 @@ func TestRetryOff(t *testing.T) {
 		RetryRequests: false,
 	})
 
-	var errcnt int
-	for i := 0; i < 20; i++ {
+	concurrentSearches := 20
+	var wg sync.WaitGroup
+	wg.Add(concurrentSearches)
+	errs := make(chan error, concurrentSearches)
+	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
+			defer wg.Done()
 			job, err := service.CreateJob(PostJobsRequest)
 			assert.NotNil(t, job)
 			if err != nil {
 				assert.Contains(t, err.(*util.HTTPError).HTTPStatus, "429")
-				errcnt++
+				errs <- err
 			}
 		}(searchService)
 	}
-	time.Sleep(time.Duration(5) * time.Second)
+	// block on all jobs being created
+	wg.Wait()
+	close(errs)
+	errcnt := 0
+	for e := range errs {
+		assert.NotEmpty(t, e)
+		errcnt++
+	}
 	assert.NotZero(t, errcnt)
 }

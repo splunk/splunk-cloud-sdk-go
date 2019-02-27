@@ -16,6 +16,10 @@ import (
 
 // ParseResponse parses json-formatted http response and decodes it into pre-defined models
 func ParseResponse(model interface{}, response *http.Response) error {
+	if reflect.ValueOf(model).Kind() != reflect.Ptr {
+		return errors.New("model parameter to ParseResponse() must be a pointer")
+	}
+
 	if response == nil {
 		return errors.New("nil response provided")
 	}

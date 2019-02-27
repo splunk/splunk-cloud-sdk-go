@@ -26,6 +26,8 @@ type Client struct {
 	StreamsService *streams.Service
 	// ForwardersService talks to the Splunk Cloud forwarders service
 	ForwardersService *forwarders.Service
+	// appRegistryService talks to the Splunk Cloud app registry service
+	AppRegistryService *appregistry.Service
 }
 ```
 

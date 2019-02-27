@@ -25,7 +25,9 @@ import (
 )
 
 //go:generate go run ../util/gen_interface.go -svc=action -s=Service -i=Servicer -p=action
+//go:generate go run ../util/gen_interface.go -svc=appregistry -s=Service -i=Servicer -p=appregistry
 //go:generate go run ../util/gen_interface.go -svc=catalog -s=Service -i=Servicer -p=catalog
+//go:generate go run ../util/gen_interface.go -svc=forwarders -s=Service -i=Servicer -p=forwarders
 //go:generate go run ../util/gen_interface.go -svc=identity -s=Service -i=Servicer -p=identity
 //go:generate go run ../util/gen_interface.go -svc=ingest -s=Service -i=Servicer -p=ingest
 //go:generate go run ../util/gen_interface.go -svc=kvstore -s=Service -i=Servicer -p=kvstore
@@ -41,8 +43,11 @@ const (
 type BaseClient struct {
 	// defaultTenant is the Splunk Cloud tenant to use to form requests
 	defaultTenant string
-	// host is the Splunk Cloud host or host:port used to form requests, `"splunkbeta.com"` by default
-	host string
+	// rootDomain is the Splunk Cloud rootDomain or rootDomain:port used to form requests, `"splunkbeta.com"` by default.
+	// Note that requests would be made to `"<scheme>://api.<rootDomain>/..."` for most services by default.
+	rootDomain string
+	// overrideHost if set would override rootDomain and service cluster settings when forming the host such that requests would be made to `"<scheme>://<overrideHost>/..."` for all services.
+	overrideHost string
 	// scheme is the HTTP scheme used to form requests, `"https"` by default
 	scheme string
 	// tokenContext is the access token to include in `"Authorization: Bearer"` headers and related context information
@@ -99,8 +104,12 @@ type Config struct {
 	Token string
 	// Tenant is the default Tenant used to form requests
 	Tenant string
-	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
+	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default.
+	// NOTE: This is really a root domain, most requests will be formed using `<config.Scheme>://api.<config.Host>/<tenant>/<service>/<version>/...` where `api` could vary by service
 	Host string
+	// OverrideHost if set would override the Splunk Cloud root domain (`"splunkbeta.com"` by default) and service settings when forming the host such that requests would be made to `"<scheme>://<overrideHost>/..."` for all services.
+	// NOTE: Providing a Host and OverrideHost is not valid.
+	OverrideHost string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
@@ -154,10 +163,15 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 
 // BuildHost returns host including serviceCluster
 func (c *BaseClient) BuildHost(serviceCluster string) string {
-	if serviceCluster != "" {
-		return fmt.Sprintf("%s%s%s", serviceCluster, ".", c.host)
+	// If overrideHost is specified, always use that
+	if c.overrideHost != "" {
+		return c.overrideHost
 	}
-	return fmt.Sprintf("%s%s%s", "api", ".", c.host)
+	// Otherwise form using <serviceCluster>.<rootDomain>
+	if serviceCluster != "" {
+		return fmt.Sprintf("%s.%s", serviceCluster, c.rootDomain)
+	}
+	return fmt.Sprintf("api.%s", c.rootDomain)
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
@@ -285,6 +299,11 @@ func (c *BaseClient) SetDefaultTenant(tenant string) {
 	c.defaultTenant = tenant
 }
 
+// SetOverrideHost updates the host to force all requests to be made to `<scheme>://<overrideHost>/...` ignoring Config.Host and serviceCluster values
+func (c *BaseClient) SetOverrideHost(host string) {
+	c.overrideHost = host
+}
+
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 	host := c.BuildHost(serviceCluster)
@@ -296,10 +315,19 @@ func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
 
 // NewClient creates a Client with config values passed in
 func NewClient(config *Config) (*BaseClient, error) {
-	host := "splunkbeta.com"
-	if config.Host != "" {
-		host = config.Host
+	// Enforce that at most one of Host or OverrideHost may be specified, not both
+	if config.Host != "" && config.OverrideHost != "" {
+		return nil, errors.New("either config.Host or config.OverrideHost may be set, setting both is invalid")
 	}
+	rootDomain := "splunkbeta.com"
+	if config.Host != "" {
+		rootDomain = config.Host
+	}
+	overrideHost := ""
+	if config.OverrideHost != "" {
+		overrideHost = config.OverrideHost
+	}
+
 	scheme := "https"
 	if config.Scheme != "" {
 		scheme = config.Scheme
@@ -342,7 +370,8 @@ func NewClient(config *Config) (*BaseClient, error) {
 
 	// Finally, initialize the Client
 	c := &BaseClient{
-		host:             host,
+		rootDomain:       rootDomain,
+		overrideHost:     overrideHost,
 		scheme:           scheme,
 		defaultTenant:    config.Tenant,
 		httpClient:       &http.Client{Timeout: timeout},
