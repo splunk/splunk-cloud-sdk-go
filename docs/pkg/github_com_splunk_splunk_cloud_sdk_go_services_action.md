@@ -25,7 +25,7 @@ Action defines the fields for email, sns, and webhooks as one aggregated model
 #### func  NewEmailAction
 
 ```go
-func NewEmailAction(name string, title string, body string, subject string, addresses []string) *Action
+func NewEmailAction(name string, title string, body string, bodyPlainText string, subject string, addresses []string) *Action
 ```
 NewEmailAction creates a new email kind action
 
@@ -257,6 +257,10 @@ type UpdateFields struct {
 	// Email action fields:
 	// Body to send via Email action
 	Body string `json:"body,omitempty"`
+	// Optional text that will be sent as the text/plain part of this email. If this field is not set
+	// for an email action, when triggering that action the Action Service will convert the value from the body
+	// field to text and send that as the text/plain part.
+	BodyPlainText string `json:"bodyPlainText,omitempty"`
 	// Subject to send via Email action
 	Subject string `json:"subject,omitempty"`
 	// Addresses to send to when Email action triggered (required for Email actions)

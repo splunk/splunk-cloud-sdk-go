@@ -27,7 +27,7 @@ const UserAgent = "client-go"
 UserAgent SDK Client Identifier
 
 ```go
-const Version = "0.8.0"
+const Version = "0.8.1"
 ```
 Version the released version of the SDK
 
@@ -159,6 +159,14 @@ func (c *BaseClient) SetDefaultTenant(tenant string)
 ```
 SetDefaultTenant updates the tenant used to form most request URIs
 
+#### func (*BaseClient) SetOverrideHost
+
+```go
+func (c *BaseClient) SetOverrideHost(host string)
+```
+SetOverrideHost updates the host to force all requests to be made to
+`<scheme>://<overrideHost>/...` ignoring Config.Host and serviceCluster values
+
 #### func (*BaseClient) UpdateTokenContext
 
 ```go
@@ -187,8 +195,12 @@ type Config struct {
 	Token string
 	// Tenant is the default Tenant used to form requests
 	Tenant string
-	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default
+	// Host is the (optional) default host or host:port used to form requests, `"splunkbeta.com"` by default.
+	// NOTE: This is really a root domain, most requests will be formed using `<config.Scheme>://api.<config.Host>/<tenant>/<service>/<version>/...` where `api` could vary by service
 	Host string
+	// OverrideHost if set would override the Splunk Cloud root domain (`"splunkbeta.com"` by default) and service settings when forming the host such that requests would be made to `"<scheme>://<overrideHost>/..."` for all services.
+	// NOTE: Providing a Host and OverrideHost is not valid.
+	OverrideHost string
 	// Scheme is the (optional) default HTTP Scheme used to form requests, `"https"` by default
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
