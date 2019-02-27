@@ -17,12 +17,6 @@ var TimeSec = time.Now().Unix()
 // TestSplunkCloudHost - the url for the test api to be used
 var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
 
-// TestURLs - the url mapping for test
-var TestURLs = map[string]string{
-	"api": fmt.Sprintf("%s%s%s", "api", ".", TestSplunkCloudHost),
-	"app": fmt.Sprintf("%s%s%s", "app", ".", TestSplunkCloudHost),
-}
-
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
 var TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
 
