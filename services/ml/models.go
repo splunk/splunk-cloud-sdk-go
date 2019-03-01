@@ -136,7 +136,7 @@ type Task struct {
 	OutputTransformer *string   `json:"outputTransformer,omitempty"`
 	// time out in seconds
 	TimeoutSecs int32              `json:"timeoutSecs"`
-	Parameters  *map[string]string `json:"parameters,omitempty"`
+	Parameters  *map[string]interface{} `json:"parameters,omitempty"`
 }
 
 type Workflow struct {
