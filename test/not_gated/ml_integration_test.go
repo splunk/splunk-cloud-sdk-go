@@ -3,35 +3,30 @@
 // without a valid written license from Splunk Inc. is PROHIBITED.
 //
 
-package integration
+package not_gated
 
 import (
-	"encoding/csv"
 	"fmt"
 	"os"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
-
-	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
-
-	"github.com/splunk/splunk-cloud-sdk-go/services/search"
-
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-
 	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
-var workflowName = fmt.Sprintf("go_sdk_wf_%d", testutils.TimeSec)
-var source = fmt.Sprintf("sdk_ml_csv_import_%d", testutils.TimeSec)
-var sourcetype = "_json"
-var inputQuerySPL = fmt.Sprintf("| from main where source=\"%s\"", source)
+var hostTrain = "server_power_train_ef5wlcd4njiovmdl"
+var hostTest = "server_power_test_ef5wlcd4njiovmdl"
+var hostOut = "server_power_out_ef5wlcd4njiovmdl"
+
+var workflowName = "PredictServerPowerConsumption"
+var buildSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTrain)
+var runSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTest)
 
 func TestMain(t *testing.M) {
 	code := t.Run()
@@ -39,9 +34,26 @@ func TestMain(t *testing.M) {
 	os.Exit(code)
 }
 
+
+func getSdkClient(t *testing.T) *sdk.Client {
+	client, err := makeSdkClient()
+	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
+	return client
+}
+
+// Get an client without the testing interface
+func makeSdkClient() (*sdk.Client, error) {
+	return sdk.NewClient(&services.Config{
+		Token:   testutils.TestAuthenticationToken,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestMLTenant,  // testsdksml
+		Timeout: testutils.TestTimeOut,
+	})
+}
+
 // Try to delete all workflows that were created in this test run, ignoring errors
 func cleanup() {
-	client, _ := MakeSdkClient()
+	client, _ :=  makeSdkClient()
 	workflows, _ := client.MachineLearningService.ListWorkflows()
 	for i := 0; i < len(workflows); i++ {
 		if strings.HasPrefix(*workflows[i].Name, workflowName) {
@@ -52,50 +64,25 @@ func cleanup() {
 
 func TestCreateWorkflow(t *testing.T) {
 	client := getSdkClient(t)
-
 	workflow := newWorkflow(t, client)
-
 	assert.NotEmpty(t, workflow.ID)
 	assert.Equal(t, workflowName, *workflow.Name)
 	assert.NotEmpty(t, workflow.CreationTime)
 	assert.NotEmpty(t, workflow.Tasks)
-
 	cleanupWorkflow(t, client, workflow.ID)
 }
 
 func TestCreateWorkflowBuild(t *testing.T) {
 	client := getSdkClient(t)
 
-	//source := fmt.Sprintf("go_sdk_wfb_data_%d", testutils.TimeSec)
-	//f, err := os.Open("../data/iris.csv")
-	//require.Nil(t, err)
-	//require.NotNil(t, f)
-	//
-	//bytes, err := ioutil.ReadAll(f)
-	//require.Nil(t, err)
-	//require.NotNil(t, bytes)
-	//
-	//events := []ingest.Event{
-	//	{
-	//		Body:   string(bytes),
-	//		Source: source,
-	//	},
-	//}
-	//
-	//err = client.IngestService.PostEvents(events)
-	//require.Nil(t, err)
-
-	// Wait for events to be ingested
-	//time.Sleep(10 * time.Second)
-
-	buildName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
+	//buildName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
 
 	// TODO: need to ingest before this runs
 	workflow := newWorkflow(t, client)
 	workflowBuild := newWorkflowBuild(t, client, workflow.ID)
 
 	assert.NotEmpty(t, workflowBuild.ID)
-	assert.Equal(t, buildName, *workflowBuild.Name)
+	//assert.Equal(t, buildName, *workflowBuild.Name)
 	assert.NotEmpty(t, workflowBuild.CreationTime)
 	assert.NotEqual(t, ml.FailedWorkflowBuildStatus, workflowBuild.Status)
 
@@ -106,14 +93,14 @@ func TestCreateWorkflowBuild(t *testing.T) {
 func TestCreateWorkflowRun(t *testing.T) {
 	client := getSdkClient(t)
 
-	runName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
+	//runName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
 
 	workflow := newWorkflow(t, client)
 	workflowBuild := newWorkflowBuild(t, client, workflow.ID)
 	workflowRun := newWorkflowRun(t, client, workflow.ID, workflowBuild.ID)
 
 	assert.NotNil(t, workflowRun.ID)
-	assert.Equal(t, runName, *workflowRun.Name)
+	//assert.Equal(t, runName, *workflowRun.Name)
 	assert.NotEqual(t, ml.FailedWorkflowRunStatus, workflowRun.Status)
 
 	// Deleting a workflow will delete the builds and runs also
@@ -221,56 +208,64 @@ func TestGetWorkflowRun(t *testing.T) {
 
 // Util functions
 
+// Maps to data/01_ml_workflow.json
 func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
-	var taskName = "fitTask"
+	var taskName = "linearregression"
 	var kind = ml.FitTaskKind
-	var target = "sepal_width"
+	var target = "ac_power"
+	var outputTransformer = "example_server_power"
+	var parameters = map[string]interface{}{
+		"fit_intercept": true,
+		"normalize": false,
+	}
 	var task = ml.Task{
 		Name:      &taskName,
 		Kind:      &kind,
-		Algorithm: "PCA",
+		Algorithm: "LinearRegression",
 		Fields: ml.Fields{
-			Features: []string{"sepal_width", "sepal_length", "petal_width", "petal_length"},
+			Features: []string{
+				"total-unhalted_core_cycles",
+				"total-instructions_retired",
+				"total-last_level_cache_references",
+				"total-memory_bus_transactions",
+				"total-cpu-utilization",
+				"total-disk-accesses",
+				"total-disk-blocks",
+				"total-disk-utilization"},
 			Target:   &target,
 		},
-		TimeoutSecs: 2,
+		OutputTransformer: &outputTransformer,
+		Parameters : &parameters,
+		TimeoutSecs: 600,
 	}
-
-	var name = fmt.Sprintf(workflowName)
+	name := "PredictServerPowerConsumption"
 	var workflow = ml.Workflow{
 		Name:  &name,
 		Tasks: []ml.Task{task},
 	}
-
 	createdWorkFlow, err := client.MachineLearningService.CreateWorkflow(workflow)
 	require.Nil(t, err)
 	require.NotEmpty(t, createdWorkFlow)
-
 	return createdWorkFlow
 }
 
+// Maps to data/02_ml_build.json
 func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.WorkflowBuild {
-	// TODO: this will be necessary for each new tenant, and will make tests more robust, will revisit
-	ensureWorkflowCSVData(t, client)
-
-	var buildName = fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
 	extract := true
 	queryParams := map[string]interface{}{
-		"earliest": "0", // TODO: change this to -10 min or something closer to "this test run"
+		"earliest": "0",
 		"latest":   "now",
 	}
 	build := ml.WorkflowBuild{
-		Name: &buildName,
 		Input: ml.InputData{
 			Kind: ml.SPLInputKind,
 			Source: ml.InputDataSource{
-				Query:            fmt.Sprintf("| from main where source=\"%s\"", source),
+				Query:            buildSpl,
 				ExtractAllFields: &extract,
 				QueryParameters:  &queryParams,
 			},
 		},
 	}
-
 	createdWorfklow, err := client.MachineLearningService.CreateWorkflowBuild(*workflowID, build)
 	require.Nil(t, err)
 	require.NotEmpty(t, createdWorfklow)
@@ -309,29 +304,32 @@ func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.
 func newWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workflowBuildID *string) *ml.WorkflowRun {
 	extract := true
 	outputKind := ml.HecOutputKind
-	outputSource := fmt.Sprintf("sdk_ml_csv_export")
+	outputSource := "mlapi-showcase"
 
-	outputDestination := ml.OutputDataDestination{
-		Source: &outputSource,
-	}
 	queryParams := map[string]interface{}{
 		"earliest": "0",
 		"latest":   "now",
 	}
-	runName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
+	//runName := fmt.Sprintf("go_sdk_wfb_%d", testutils.TimeSec)
 	var run = ml.WorkflowRun{
-		Name: &runName,
 		Input: ml.InputData{
 			Kind: ml.SPLInputKind,
 			Source: ml.InputDataSource{
-				Query:            fmt.Sprintf(inputQuerySPL),
+				Query:            runSpl,
 				ExtractAllFields: &extract,
 				QueryParameters:  &queryParams,
 			},
 		},
 		Output: ml.OutputData{
 			Kind:        &outputKind,
-			Destination: &outputDestination,
+			Destination: &ml.OutputDataDestination{
+				Attributes: &map[string]interface{}{
+					"index": "mlapishowcase",
+					"module": "mlapishowcase",
+	},
+				Source: &outputSource,
+				Host: &hostOut,
+			},
 		},
 	}
 
@@ -360,83 +358,4 @@ func cleanupWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, wo
 	require.Nil(t, err)
 }
 
-func ensureWorkflowCSVData(t *testing.T, client *sdk.Client) {
-	// First, check if we already have data
-	searchRequest := search.CreateJobRequest{
-		Query: inputQuerySPL,
-	}
-	job, err := client.SearchService.CreateJob(&searchRequest)
-	require.Nil(t, err)
-	require.NotNil(t, job)
 
-	state, err := client.SearchService.WaitForJob(job.ID, time.Second)
-	require.Nil(t, err) // TODO: something wrong here
-	require.Equal(t, search.Done, state)
-
-	rawResults, err := client.SearchService.GetResults(job.ID, 0, 0)
-	require.Nil(t, err)
-	require.NotNil(t, rawResults)
-	require.IsType(t, &search.Results{}, rawResults)
-
-	results := rawResults.(*search.Results)
-
-	// TODO: this might be not be right way to check for no results
-	// If there's no data, ingest it
-	if len(results.Results) == 0 {
-		ingestWorkflowCSVData(t, client)
-		// TODO: sleep & verify that data has been ingested and ready to build a workflow
-	}
-}
-
-func ingestWorkflowCSVData(t *testing.T, client *sdk.Client) {
-	ensureJSONAutoKVNone(t, client)
-
-	file, err := os.Open("./data/iris.csv")
-	require.Nil(t, err)
-	require.NotNil(t, file)
-
-	reader := csv.NewReader(file)
-	records, err := reader.ReadAll()
-
-	require.Nil(t, err)
-	require.NotNil(t, records)
-
-	headers := records[0]
-
-	events := make([]ingest.Event, 0, len(records))
-	for i := 1; i < len(records); i++ {
-		// Convert the CSV rows to a header->value map
-		body := make(map[string]interface{})
-		for j := 0; j < len(headers); j++ {
-			body[headers[j]] = records[i][j]
-		}
-
-		event := ingest.Event{
-			Body:       body,
-			Source:     source,
-			Sourcetype: sourcetype,
-		}
-		events = append(events, event)
-	}
-
-	err = client.IngestService.PostEvents(events)
-	require.Nil(t, err)
-}
-
-// Set this rule to ingest doesn't index fields twice
-func ensureJSONAutoKVNone(t *testing.T, client *sdk.Client) {
-	actions := make([]catalog.Action, 1)
-	actions = append(actions, catalog.Action{
-		Kind: catalog.AutoKV,
-		Mode: "none",
-	})
-	rule := catalog.Rule{
-		Module:  "",
-		Name:    fmt.Sprintf("rule%d", testutils.TimeSec),
-		Match:   fmt.Sprintf("sourcetype::%s", sourcetype),
-		Actions: actions,
-	}
-
-	err, _ := client.CatalogService.CreateRule(rule)
-	require.Nil(t, err)
-}
