@@ -47,6 +47,11 @@
           exclue: ^(master)$
           command: bash -c "allow_failures=1 make run_integration_examples"
           encrypted_dockercfg_path: ci/dockercfg.encrypted
+        - name: run ML integration tests - not gated
+          service: splunk-cloud-sdk-go-integration
+          exclue: ^(master)$
+          command: bash -c "allow_failures=1 make run_ml_integration_tests"
+          encrypted_dockercfg_path: ci/dockercfg.encrypted
         - name: WhiteSource Testing
           service: splunk-cloud-sdk-go-whitesource
           command: bash -c "java -jar /opt/whitesource/whitesource-fs-agent.jar \

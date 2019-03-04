@@ -46,16 +46,16 @@ func NewClient(config *services.Config) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		BaseClient:         client,
-		ActionService:      &action.Service{Client: client},
-		CatalogService:     &catalog.Service{Client: client},
-		IdentityService:    &identity.Service{Client: client},
-		IngestService:      &ingest.Service{Client: client},
-		KVStoreService:     &kvstore.Service{Client: client},
-		SearchService:      &search.Service{Client: client},
-		StreamsService:     &streams.Service{Client: client},
-		ForwardersService:  &forwarders.Service{Client: client},
-		AppRegistryService: &appregistry.Service{Client: client},
+		BaseClient:             client,
+		ActionService:          &action.Service{Client: client},
+		CatalogService:         &catalog.Service{Client: client},
+		IdentityService:        &identity.Service{Client: client},
+		IngestService:          &ingest.Service{Client: client},
+		KVStoreService:         &kvstore.Service{Client: client},
+		SearchService:          &search.Service{Client: client},
+		StreamsService:         &streams.Service{Client: client},
+		ForwardersService:      &forwarders.Service{Client: client},
+		AppRegistryService:     &appregistry.Service{Client: client},
 		MachineLearningService: &ml.Service{Client: client},
 	}, nil
 }

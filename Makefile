@@ -127,6 +127,10 @@ run_integration_tests:
 run_integration_examples:
 	./ci/integration/runexamples.sh
 
+run_ml_integration_tests:
+	make install_test_dep
+	sh ./ci/integration/run_ml_tests.sh
+
 generate_interface:
 	cd services && go generate
 
