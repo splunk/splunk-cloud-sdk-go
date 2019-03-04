@@ -11,13 +11,14 @@ import (
 	"strings"
 	"testing"
 	"time"
+
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 
+	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
 var hostTrain = "server_power_train_ef5wlcd4njiovmdl"
@@ -34,7 +35,6 @@ func TestMain(t *testing.M) {
 	os.Exit(code)
 }
 
-
 func getSdkClient(t *testing.T) *sdk.Client {
 	client, err := makeSdkClient()
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
@@ -46,14 +46,14 @@ func makeSdkClient() (*sdk.Client, error) {
 	return sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
-		Tenant:  testutils.TestMLTenant,  // testsdksml
+		Tenant:  testutils.TestMLTenant, // testsdksml
 		Timeout: testutils.TestTimeOut,
 	})
 }
 
 // Try to delete all workflows that were created in this test run, ignoring errors
 func cleanup() {
-	client, _ :=  makeSdkClient()
+	client, _ := makeSdkClient()
 	workflows, _ := client.MachineLearningService.ListWorkflows()
 	for i := 0; i < len(workflows); i++ {
 		if strings.HasPrefix(*workflows[i].Name, workflowName) {
@@ -187,7 +187,7 @@ func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 	var outputTransformer = "example_server_power"
 	var parameters = map[string]interface{}{
 		"fit_intercept": true,
-		"normalize": false,
+		"normalize":     false,
 	}
 	var task = ml.Task{
 		Name:      &taskName,
@@ -203,11 +203,11 @@ func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 				"total-disk-accesses",
 				"total-disk-blocks",
 				"total-disk-utilization"},
-			Target:   &target,
+			Target: &target,
 		},
 		OutputTransformer: &outputTransformer,
-		Parameters : &parameters,
-		TimeoutSecs: 600,
+		Parameters:        &parameters,
+		TimeoutSecs:       600,
 	}
 	name := "PredictServerPowerConsumption"
 	var workflow = ml.Workflow{
@@ -287,14 +287,14 @@ func newWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workfl
 			},
 		},
 		Output: ml.OutputData{
-			Kind:        &outputKind,
+			Kind: &outputKind,
 			Destination: &ml.OutputDataDestination{
 				Attributes: &map[string]interface{}{
-					"index": "mlapishowcase",
+					"index":  "mlapishowcase",
 					"module": "mlapishowcase",
-	},
+				},
 				Source: &outputSource,
-				Host: &hostOut,
+				Host:   &hostOut,
 			},
 		},
 	}
