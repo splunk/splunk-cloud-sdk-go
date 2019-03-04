@@ -135,7 +135,7 @@ type Task struct {
 	Fields            Fields    `json:"fields"`
 	OutputTransformer *string   `json:"outputTransformer,omitempty"`
 	// time out in seconds
-	TimeoutSecs int32              `json:"timeoutSecs"`
+	TimeoutSecs int32                   `json:"timeoutSecs"`
 	Parameters  *map[string]interface{} `json:"parameters,omitempty"`
 }
 
