@@ -262,7 +262,8 @@ func TestBatchEventsSenderErrorHandle(t *testing.T) {
 	require.True(t, ok)
 	assert.Equal(t, httpError.HTTPStatusCode, 401)
 	assert.Equal(t, httpError.HTTPStatus, "401 Unauthorized")
-	assert.Equal(t, httpError.Message, "Error validating request")
+	errFound := httpError.Message == "Error validating request" || httpError.Message == "Invalid or Expired Bearer Token"
+	assert.True(t, errFound)
 
 	assert.Equal(t, "host1", collector.Errors[0].Events[0].Host)
 	collector.Stop()
