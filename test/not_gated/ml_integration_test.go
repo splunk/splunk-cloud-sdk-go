@@ -17,6 +17,7 @@ import (
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,6 +29,7 @@ var hostOut = "server_power_out_ef5wlcd4njiovmdl"
 var workflowName = "PredictServerPowerConsumption"
 var buildSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTrain)
 var runSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTest)
+var searchSPL = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostOut)
 
 func TestMain(t *testing.M) {
 	code := t.Run()
@@ -64,6 +66,10 @@ func cleanup() {
 
 func TestCreateWorkflow(t *testing.T) {
 	client := getSdkClient(t)
+
+	// check for ingested ML data
+	ensureWorkflowData(t, client)
+
 	workflow := newWorkflow(t, client)
 	assert.NotEmpty(t, workflow.ID)
 	assert.Equal(t, workflowName, *workflow.Name)
@@ -319,4 +325,28 @@ func cleanupWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string, 
 func cleanupWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workflowBuildID *string, workflowRunID *string) {
 	err := client.MachineLearningService.DeleteWorkflowRun(*workflowID, *workflowBuildID, *workflowRunID)
 	require.Nil(t, err)
+}
+
+func ensureWorkflowData(t *testing.T, client *sdk.Client) {
+	searchRequest := search.CreateJobRequest{
+		Query:           searchSPL,
+		QueryParameters: &search.QueryParameters{Earliest: "0", Latest: "now"},
+	}
+	job, err := client.SearchService.CreateJob(&searchRequest)
+	require.Nil(t, err)
+	require.NotNil(t, job)
+
+	state, err := client.SearchService.WaitForJob(job.ID, time.Second)
+	require.NotNil(t, err)
+	require.Equal(t, search.Done, state)
+
+	rawResults, err := client.SearchService.GetResults(job.ID, 0, 0)
+	require.Nil(t, err)
+	require.NotNil(t, rawResults)
+	require.IsType(t, search.Results{}, rawResults)
+
+	results := rawResults.(*search.Results)
+	if len(results.Results) <= 0 {
+		assert.Fail(t, "No ML Data returned.")
+	}
 }
