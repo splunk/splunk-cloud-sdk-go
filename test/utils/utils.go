@@ -23,6 +23,9 @@ var TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
 // TestTenant - the tenant to be used for the API
 var TestTenant = os.Getenv("TENANT_ID")
 
+// TestTenant - the tenant to be used for the API
+var TestMLTenant = os.Getenv("ML_TENANT_ID")
+
 // TestUsername - the user running tests on behalf of
 var TestUsername = os.Getenv("TEST_USERNAME")
 

@@ -48,7 +48,8 @@ func TestIntegrationIngestEventFail(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	errFound := httpErr.Message == "Error validating request" || httpErr.Message == "Invalid or Expired Bearer Token"
+	assert.True(t, errFound)
 }
 
 func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
