@@ -16,6 +16,7 @@
 * [github.com/splunk/splunk-cloud-sdk-go/services/identity](pkg/github_com_splunk_splunk_cloud_sdk_go_services_identity.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/ingest](pkg/github_com_splunk_splunk_cloud_sdk_go_services_ingest.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/kvstore](pkg/github_com_splunk_splunk_cloud_sdk_go_services_kvstore.md)
+* [github.com/splunk/splunk-cloud-sdk-go/services/ml](pkg/github_com_splunk_splunk_cloud_sdk_go_services_ml.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/search](pkg/github_com_splunk_splunk_cloud_sdk_go_services_search.md)
 * [github.com/splunk/splunk-cloud-sdk-go/services/streams](pkg/github_com_splunk_splunk_cloud_sdk_go_services_streams.md)
 * [github.com/splunk/splunk-cloud-sdk-go/util](pkg/github_com_splunk_splunk_cloud_sdk_go_util.md)
