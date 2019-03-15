@@ -27,7 +27,7 @@ const UserAgent = "client-go"
 UserAgent SDK Client Identifier
 
 ```go
-const Version = "0.8.1"
+const Version = "0.8.2"
 ```
 Version the released version of the SDK
 

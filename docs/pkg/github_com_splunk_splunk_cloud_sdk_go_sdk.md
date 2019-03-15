@@ -28,6 +28,8 @@ type Client struct {
 	ForwardersService *forwarders.Service
 	// appRegistryService talks to the Splunk Cloud app registry service
 	AppRegistryService *appregistry.Service
+	// MachineLearningService talks to the Splunk Cloud machine learning service
+	MachineLearningService *ml.Service
 }
 ```
 
