@@ -31,7 +31,7 @@ var IdpAuthz = os.Getenv("IDP_AUTHZ_SERVER")
 var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 
 // NativeAppRedirectURI is one of the redirect uris configured for the app
-const NativeAppRedirectURI = "http://localhost:9090"
+const NativeAppRedirectURI = "https://login.splunkbeta.com"
 
 // BackendClientID - Okta app Client id for client credentials flow
 var BackendClientID = os.Getenv("BACKEND_CLIENT_ID")

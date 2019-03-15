@@ -59,7 +59,7 @@ func TestCRUDApp(t *testing.T) {
 	// Update the app. TODO: title and redirecturl should not needed once patch method is implemented.
 	description := "new Description"
 	title := newAppTitle("newtitle")
-	redirecturl := []string{"http://newlocalhost"}
+	redirecturl := []string{"https://newlocalhost"}
 	updateApp := appregistry.UpdateAppRequest{
 		Description:  &description,
 		RedirectURLs: &redirecturl,
@@ -165,7 +165,7 @@ func TestSubscriptions(t *testing.T) {
 
 	all_subs, err := client.AppRegistryService.ListSubscriptions()
 	require.Nil(t, err)
-	require.Equal(t, 2, len(all_subs))
+	require.Equal(t, 3, len(all_subs))
 
 	// Delete the subscription
 	err = client.AppRegistryService.DeleteSubscription(appName)
