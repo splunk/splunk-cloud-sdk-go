@@ -1,0 +1,846 @@
+components:
+  parameters:
+    AppName:
+      description: App name.
+      in: path
+      name: appName
+      required: true
+      schema:
+        maxLength: 36
+        minLength: 4
+        pattern: ^[_a-z][_\.a-z0-9]*$
+        type: string
+    ClientID:
+      description: The unique ID for a client.
+      in: path
+      name: clientID
+      required: true
+      schema:
+        type: string
+    Kind:
+      description: |
+        The kind of application.
+      in: query
+      name: kind
+      schema:
+        $ref: '#/components/schemas/AppResourceKind'
+    Tenant:
+      description: The tenant name.
+      in: path
+      name: tenant
+      required: true
+      schema:
+        maxLength: 36
+        minLength: 4
+        pattern: ^[a-z][a-z0-9]*$
+        type: string
+  schemas:
+    AppMetadataInternal:
+      properties:
+        clientId:
+          description: OAuth 2.0 Client ID.
+          readOnly: true
+          type: string
+        createdAt:
+          description: The date that the app was created.
+          format: date-time
+          readOnly: true
+          type: string
+        createdBy:
+          description: The principal who created this app.
+          readOnly: true
+          type: string
+      required:
+      - clientId
+      - createdBy
+      - createdAt
+      type: object
+    AppMetadataPrivate:
+      properties:
+        redirectUrls:
+          description: Array of URLs that can be used for redirect after logging into
+            the app.
+          items:
+            format: uri
+            type: string
+          type: array
+        setupUrl:
+          description: URL to redirect to after a subscription is created.
+          format: uri
+          type: string
+        webhookUrl:
+          description: URL that webhook events are sent to.
+          format: uri
+          type: string
+      type: object
+    AppMetadataPublic:
+      properties:
+        appPrincipalPermissions:
+          description: Array of permission templates that are used to grant permission
+            to the app principal when a tenant subscribes.
+          items:
+            type: string
+          type: array
+        description:
+          description: Short paragraph describing the app.
+          maxLength: 1024
+          type: string
+        loginUrl:
+          description: The URL used to log in to the app.
+          format: uri
+          type: string
+        logoUrl:
+          description: The URL used to display the app's logo.
+          format: uri
+          type: string
+        title:
+          description: Human-readable title for the app.
+          maxLength: 128
+          minLength: 1
+          type: string
+        userPermissionsFilter:
+          description: Array of permission filter templates that are used to intersect
+            with a user's permissions when using the app.
+          items:
+            type: string
+          type: array
+      required:
+      - title
+      type: object
+    AppMetadataSecret:
+      properties:
+        clientSecret:
+          description: OAuth 2.0 Client Secret string (used for confidential clients).
+          readOnly: true
+          type: string
+      required:
+      - clientSecret
+      type: object
+    AppName:
+      properties:
+        appName:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z][_a-z0-9]*(?:\.[_a-z][_a-z0-9]*)*$
+          type: string
+      required:
+      - appName
+      type: object
+    AppResource:
+      properties:
+        kind:
+          $ref: '#/components/schemas/AppResourceKind'
+          description: The kind of application.
+        name:
+          description: App name that is unique within Splunk Cloud Platform.
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z][_\.a-z0-9]*$
+          type: string
+      required:
+      - name
+      - kind
+      type: object
+    AppResourceKind:
+      enum:
+      - web
+      - native
+      - service
+      type: string
+    AppResponseCreateUpdate:
+      allOf:
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      - $ref: '#/components/schemas/AppMetadataInternal'
+      - $ref: '#/components/schemas/AppMetadataSecret'
+    AppResponseGetList:
+      allOf:
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      - $ref: '#/components/schemas/AppMetadataInternal'
+    CreateAppRequest:
+      allOf:
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+    Error:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    Key:
+      description: Public Key
+      properties:
+        key:
+          description: Public key used for verifying signed webhook requests.
+          readOnly: true
+          type: string
+      type: object
+    Subscription:
+      properties:
+        appName:
+          description: App name.
+          readOnly: true
+          type: string
+        createdAt:
+          description: Time of subscription creation (UTC).
+          format: date-time
+          readOnly: true
+          type: string
+        createdBy:
+          description: The user who created the subscription.
+          readOnly: true
+          type: string
+        description:
+          description: Short paragraph describing the app.
+          maxLength: 1024
+          readOnly: true
+          type: string
+        loginUrl:
+          description: URL used to login to the app.
+          format: uri
+          readOnly: true
+          type: string
+        logoUrl:
+          description: The URL used to display the app's logo.
+          format: uri
+          readOnly: true
+          type: string
+        tenant:
+          description: The tenant that is subscribed to the app.
+          readOnly: true
+          type: string
+        title:
+          description: Human-readable name for the application.
+          readOnly: true
+          type: string
+      required:
+      - appName
+      - title
+      - description
+      - logoUrl
+      - loginUrl
+      - createdBy
+      - createdAt
+      type: object
+    UpdateAppRequest:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+  securitySchemes:
+    BearerToken:
+      scheme: bearer
+      type: http
+info:
+  description: With the Splunk Cloud App Registry service, you can create, update,
+    and manage apps built with Splunk Developer Cloud.
+  title: App Registry
+  version: v1beta2.0
+openapi: 3.0.0
+paths:
+  /{tenant}/app-registry/v1beta2/apps:
+    get:
+      description: Returns a list of apps.
+      operationId: listApps
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AppResponseGetList'
+                type: array
+          description: Returns a list of apps.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Creates an app.
+      operationId: createApp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequest'
+        description: Creates a new app.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseCreateUpdate'
+          description: The app was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request isn't valid.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The provided fields aren't valid.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Too many requests.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.write
+  /{tenant}/app-registry/v1beta2/apps/{appName}:
+    delete:
+      description: Removes an app.
+      operationId: deleteApp
+      responses:
+        "204":
+          description: The app was removed successfully.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: This operation isn't authorized.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.write
+    get:
+      description: Returns the metadata of an app.
+      operationId: getApp
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseGetList'
+          description: Returns a list of public, private, and internal app metadata.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn’t authenticated.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/AppName'
+    put:
+      description: Updates an app.
+      operationId: updateApp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppRequest'
+        description: Updates app contents.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseCreateUpdate'
+          description: 'The app was updated successfully. '
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn’t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The provided fields aren't valid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.write
+  /{tenant}/app-registry/v1beta2/apps/{appName}/rotate-secret:
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/AppName'
+    post:
+      description: Rotates the client secret for an app.
+      operationId: rotateSecret
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppResponseCreateUpdate'
+          description: The secret was rotated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request isn't valid.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.write
+  /{tenant}/app-registry/v1beta2/apps/{appName}/subscriptions:
+    get:
+      description: Returns the collection of subscriptions to an app.
+      operationId: listAppSubscriptions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: Returns a list of app subscriptions.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn’t authenticated.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 App Management
+      x-authz-scope: appregistry.apps.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/AppName'
+  /{tenant}/app-registry/v1beta2/subscriptions:
+    get:
+      description: Returns the tenant subscriptions.
+      operationId: listSubscriptions
+      parameters:
+      - $ref: '#/components/parameters/Kind'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Subscription'
+                type: array
+          description: Returns a list of tenant subscriptions.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The provided fields aren't valid.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 Subscriptions
+      x-authz-scope: appregistry.subscriptions.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Creates a subscription.
+      operationId: createSubscription
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppName'
+        description: Creates a subscription between a tenant and an app.
+        required: true
+      responses:
+        "201":
+          description: The subscription was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request isn't valid.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn’t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 Subscriptions
+      x-authz-scope: appregistry.subscriptions.write
+  /{tenant}/app-registry/v1beta2/subscriptions/{appName}:
+    delete:
+      description: Removes a subscription.
+      operationId: deleteSubscription
+      responses:
+        "204":
+          description: The subscription was removed successfully.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 Subscriptions
+      x-authz-scope: appregistry.subscriptions.write
+    get:
+      description: Returns or validates a subscription.
+      operationId: getSubscription
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Returns the requested subscription.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The user isn't authenticated.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The resource wasn't found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 Subscriptions
+      x-authz-scope: appregistry.subscriptions.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/AppName'
+  /system/app-registry/v1beta2/keys:
+    get:
+      description: Returns a list of the public keys used for verifying signed webhook
+        requests.
+      operationId: getKeys
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Key'
+                type: array
+          description: Returns a list of active and stale public keys.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An internal service error occurred.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: A downstream service isn't available to process the request.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request could not be processed due to an internal server
+            error.
+      tags:
+      - v1beta2 Keys
+      x-auth-required: false
+security:
+- BearerToken: []
+
+# Retrieved from scp-openapi commit 83849208375253db5aabdf6005b17db196bc3289 path: app-registry/openapi.yaml

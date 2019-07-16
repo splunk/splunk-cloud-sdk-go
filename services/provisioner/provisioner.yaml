@@ -1,0 +1,445 @@
+components:
+  parameters:
+    AuthorizationHeader:
+      description: Bearer token of the user
+      in: header
+      name: Authorization
+      required: true
+      schema:
+        pattern: ^Bearer .+
+        type: string
+    InviteId:
+      in: path
+      name: inviteId
+      required: true
+      schema:
+        type: string
+    JobId:
+      in: path
+      name: jobId
+      required: true
+      schema:
+        type: string
+    Tenant:
+      in: path
+      name: tenant
+      required: true
+      schema:
+        type: string
+    TenantName:
+      in: path
+      name: tenantName
+      required: true
+      schema:
+        type: string
+  schemas:
+    CreateProvisionJobBody:
+      properties:
+        apps:
+          items:
+            maxLength: 36
+            minLength: 4
+            pattern: ^[_a-z][_\.a-z0-9]*$
+            type: string
+          type: array
+        tenant:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[a-z][a-z0-9]*$
+          type: string
+      type: object
+    CreateUpdateTenantStatusJobBody:
+      properties:
+        action:
+          enum:
+          - delete
+          - suspend
+          - resume
+          type: string
+        tenant:
+          type: string
+      required:
+      - tenant
+      - action
+      type: object
+    Error:
+      properties:
+        code:
+          description: Service error code
+          type: string
+        message:
+          description: Human readable error message
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    InviteBody:
+      properties:
+        comment:
+          maxLength: 250
+          type: string
+        email:
+          format: email
+          type: string
+        groups:
+          items:
+            type: string
+          type: array
+      required:
+      - email
+      type: object
+    InviteInfo:
+      properties:
+        comment:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        email:
+          type: string
+        errors:
+          items:
+            properties:
+              action:
+                type: string
+              code:
+                type: string
+              group:
+                type: string
+              message:
+                type: string
+            required:
+            - code
+            - message
+            - action
+            type: object
+          type: array
+        expiresAt:
+          format: date-time
+          type: string
+        groups:
+          items:
+            type: string
+          type: array
+        inviteID:
+          minLength: 1
+          type: string
+        status:
+          enum:
+          - created
+          - invited
+          - accepted
+          - rejected
+          - expired
+          - failed
+          - invalid
+          type: string
+        tenant:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        updatedBy:
+          type: string
+      required:
+      - inviteID
+      - tenant
+      - email
+      - groups
+      - status
+      - comment
+      - createdAt
+      - createdBy
+      - updatedAt
+      - updatedBy
+      - expiresAt
+      - errors
+      type: object
+    Invites:
+      items:
+        $ref: '#/components/schemas/InviteInfo'
+      type: array
+    ProvisionJobInfo:
+      properties:
+        apps:
+          items:
+            type: string
+          type: array
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        errors:
+          items:
+            properties:
+              app:
+                type: string
+              code:
+                type: string
+              job_stage:
+                type: string
+              message:
+                type: string
+            required:
+            - job_stage
+            - code
+            - message
+            type: object
+          type: array
+        jobID:
+          minLength: 1
+          type: string
+        status:
+          enum:
+          - created
+          - running
+          - completed
+          type: string
+        tenant:
+          type: string
+      required:
+      - jobID
+      - tenant
+      - apps
+      - status
+      - createdAt
+      - createdBy
+      - errors
+      type: object
+    ProvisionJobs:
+      items:
+        $ref: '#/components/schemas/ProvisionJobInfo'
+      type: array
+    TenantInfo:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+      required:
+      - name
+      - status
+      - createdAt
+      - createdBy
+      type: object
+    Tenants:
+      items:
+        $ref: '#/components/schemas/TenantInfo'
+      type: array
+    UpdateInviteBody:
+      properties:
+        action:
+          enum:
+          - accept
+          - reject
+          - resend
+          type: string
+      required:
+      - action
+      type: object
+    UpdateTenantStatusJobInfo:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        errors:
+          items:
+            properties:
+              code:
+                type: string
+              job_stage:
+                type: string
+              message:
+                type: string
+            required:
+            - job_stage
+            - code
+            - message
+            type: object
+          type: array
+        jobID:
+          minLength: 1
+          type: string
+        status:
+          enum:
+          - created
+          - running
+          - completed
+          type: string
+        tenant:
+          type: string
+      required:
+      - jobID
+      - tenant
+      - status
+      - createdAt
+      - createdBy
+      - errors
+      type: object
+    UpdateTenantStatusJobs:
+      items:
+        $ref: '#/components/schemas/UpdateTenantStatusJobInfo'
+      type: array
+info:
+  description: With the Provisioner Service, you can provision your tenant and manage
+    it
+  title: Provisioner
+  version: v1beta1.1
+openapi: 3.0.0
+paths:
+  /system/provisioner/v1beta1/jobs/tenants/provision:
+    get:
+      description: Lists all provision jobs created by the user
+      operationId: listProvisionJobs
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionJobs'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    post:
+      description: Creates a new job that provisions a new tenant and subscribes apps
+        to the tenant
+      operationId: createProvisionJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProvisionJobBody'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionJobInfo'
+          description: Successful operation
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "409":
+          description: Conflict
+        "422":
+          description: Unprocessable Entity
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+  /system/provisioner/v1beta1/jobs/tenants/provision/{jobId}:
+    get:
+      description: Gets details of a specific provision job
+      operationId: getProvisionJob
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionJobInfo'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/JobId'
+  /system/provisioner/v1beta1/tenants:
+    get:
+      description: Lists all tenants that the user can read
+      operationId: listTenants
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenants'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.tenants.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+  /system/provisioner/v1beta1/tenants/{tenantName}:
+    get:
+      description: Gets a specific tenant
+      operationId: getTenant
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantInfo'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "422":
+          description: Unprocessable Entity
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.tenants.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/TenantName'
+servers:
+- url: /
+
+# Retrieved from scp-openapi commit 8c9b2755a9865808d5b612bd0d7ac2295c59d550 path: provisioner/openapi.yaml

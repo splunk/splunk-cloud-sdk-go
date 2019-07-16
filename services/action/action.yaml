@@ -1,0 +1,616 @@
+components:
+  parameters:
+    ActionName:
+      description: The name of the action as one or more identifier strings separated
+        by periods. Each identifier string consists of lowercase letters, digits,
+        and underscores, and cannot start with a digit.
+      in: path
+      name: action_name
+      required: true
+      schema:
+        pattern: ^[_a-z][_a-z0-9]*(?:\.[_a-z][_a-z0-9]*)*$
+        type: string
+    AuthorizationHeaderParam:
+      description: The access token, which is obtained from a known identity provider.
+      in: header
+      name: Authorization
+      required: true
+      schema:
+        pattern: ^Bearer .+
+        type: string
+    EntryName:
+      description: The name of the trigger map entry.
+      in: path
+      name: entry_name
+      required: true
+      schema:
+        pattern: ^[_a-z][_a-z0-9]*(?:\\.[_a-z][_a-z0-9]*)*$
+        type: string
+    StatusID:
+      description: The ID of the action status.
+      in: path
+      name: status_id
+      required: true
+      schema:
+        type: string
+    Tenant:
+      description: The tenant name.
+      example: wingdings-widgets
+      in: path
+      name: tenant
+      required: true
+      schema:
+        type: string
+    TriggerEventID:
+      description: The ID of the trigger event.
+      in: path
+      name: trigger_event_id
+      required: true
+      schema:
+        type: string
+    TriggerName:
+      description: The name of the trigger.
+      in: path
+      name: trigger_name
+      required: true
+      schema:
+        pattern: ^[_a-z][_a-z0-9]*(?:\\.[_a-z][_a-z0-9]*)*$
+        type: string
+  schemas:
+    Action:
+      discriminator:
+        mapping:
+          email: '#/components/schemas/EmailAction'
+          webhook: '#/components/schemas/WebhookAction'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/EmailAction'
+      - $ref: '#/components/schemas/WebhookAction'
+    ActionImmutable:
+      properties:
+        createdAt:
+          description: The date and time this action template was created (ISO-8601
+            date/time with zone).
+          format: date-time
+          readOnly: true
+          type: string
+        createdBy:
+          description: The principal that created this action template.
+          readOnly: true
+          type: string
+        kind:
+          $ref: '#/components/schemas/ActionKind'
+        name:
+          description: The name of the action, as one or more identifier strings separated
+            by periods. Each identifier string consists of lowercase letters, digits,
+            and underscores, and cannot start with a digit.
+          pattern: ^[_a-z][_a-z0-9]*(?:\.[_a-z][_a-z0-9]*)*$
+          type: string
+        updatedAt:
+          description: The date and time this action template was updated (ISO-8601
+            date/time with zone).
+          format: date-time
+          readOnly: true
+          type: string
+        updatedBy:
+          description: The principal that updated this action template.
+          readOnly: true
+          type: string
+      required:
+      - name
+      - kind
+      type: object
+    ActionKind:
+      enum:
+      - webhook
+      - email
+      type: string
+    ActionMutable:
+      oneOf:
+      - $ref: '#/components/schemas/EmailActionMutable'
+      - $ref: '#/components/schemas/WebhookActionMutable'
+    ActionResult:
+      properties:
+        actionName:
+          pattern: ^[_a-z][_a-z0-9]*(?:\.[_a-z][_a-z0-9]*)*$
+          type: string
+        message:
+          type: string
+        state:
+          $ref: '#/components/schemas/StatusState'
+        statusId:
+          type: string
+      required:
+      - state
+      - statusId
+      - actionName
+      type: object
+    ActionResultEmailDetail:
+      properties:
+        emailAddress:
+          type: string
+        state:
+          enum:
+          - PENDING
+          - NOT_FOUND
+          - SUCCEEDED
+          - BOUNCED
+          - RECIPIENT_COMPLAINED
+          type: string
+    EmailAction:
+      allOf:
+      - $ref: '#/components/schemas/ActionImmutable'
+      - $ref: '#/components/schemas/EmailActionMutable'
+    EmailActionMutable:
+      properties:
+        addresses:
+          description: |
+            An array of email addresses to include as recipients. Requires a special permission set for use. Please DO NOT include actual bouncing emails in automated testing.
+          items:
+            format: email
+            type: string
+          type: array
+        body:
+          description: HTML content to send as the body of the email. You can use
+            a template in this field.
+          example: <html><body>Hello, this is my test email.</body></html>
+          type: string
+        bodyPlainText:
+          description: Optional text to send as the text/plain part of the email.
+            If this field is not set for an email action, the Action service converts
+            the value from the body field to text and sends that as the text/plain
+            part when triggering the action.
+          example: Hello, this is my test email.
+          type: string
+        fromName:
+          description: Optional text providing a human-friendly name for the sender.
+            Must be less than or equal to 20 characters.
+          type: string
+        members:
+          description: An array of tenant member names, whose profile email addresses
+            will be included as recipients.
+          items:
+            type: string
+          type: array
+        subject:
+          type: string
+        title:
+          description: A human-readable title for the action. Must be less than or
+            equal to 128 characters.
+          type: string
+      type: object
+    PublicWebhookKey:
+      properties:
+        key:
+          description: A PEM-formatted, ASN.1 DER-encoded PKCS#1 key.
+          type: string
+      required:
+      - key
+      type: object
+    RawJSONPayload:
+      additionalProperties: true
+      type: object
+    ServiceError:
+      properties:
+        code:
+          type: string
+        details:
+          type: object
+        message:
+          type: string
+        moreInfo:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    StatusState:
+      enum:
+      - QUEUED
+      - RUNNING
+      - DONE
+      - FAILED
+      type: string
+    TriggerEvent:
+      properties:
+        actionMetadata:
+          properties:
+            addresses:
+              description: |
+                An array of email addresses to include as recipients. Requires a special permission set for use. Please DO NOT include actual bouncing emails in automated testing.
+              items:
+                format: email
+                type: string
+              type: array
+            members:
+              description: An array of tenant member names, whose profile email addresses
+                will be included as recipients.
+              items:
+                type: string
+              type: array
+          type: object
+        createdAt:
+          description: string-ified ISO-8601 date/time with zone.
+          readOnly: true
+          type: string
+        createdBy:
+          description: The principal that generated the trigger event.
+          readOnly: true
+          type: string
+        id:
+          description: A unique identifier for this trigger event. Generated from
+            a hash of all recursively-sorted event field values.
+          readOnly: true
+          type: string
+        kind:
+          $ref: '#/components/schemas/TriggerEventKind'
+        payload:
+          $ref: '#/components/schemas/RawJSONPayload'
+        tenant:
+          description: The tenant within which the trigger event was generated.
+          pattern: ^[_a-z][_a-z0-9]*(?:\\.[_a-z][_a-z0-9]*)*$
+          readOnly: true
+          type: string
+        triggerCondition:
+          description: A description of the condition that caused the trigger event.
+          type: string
+        triggerName:
+          description: The name of the trigger for which this event was created.
+          pattern: ^[_a-z][_a-z0-9]*(?:\\.[_a-z][_a-z0-9]*)*$
+          type: string
+        ttlSeconds:
+          default: 3600
+          description: A time to live (TTL), expressed as seconds after createdAt,
+            after which the trigger event will no longer be acted upon.
+          format: int32
+          minimum: 1
+          type: integer
+      required:
+      - kind
+      type: object
+    TriggerEventKind:
+      default: trigger
+      enum:
+      - trigger
+      type: string
+    WebhookAction:
+      allOf:
+      - $ref: '#/components/schemas/ActionImmutable'
+      - $ref: '#/components/schemas/WebhookActionMutable'
+      required:
+      - webhookUrl
+      - webhookPayload
+    WebhookActionMutable:
+      properties:
+        title:
+          description: A human-readable title for the action. Must be less than 128
+            characters.
+          type: string
+        webhookHeaders:
+          additionalProperties:
+            items:
+              type: string
+            type: array
+          type: object
+        webhookPayload:
+          description: |
+            The (possibly) templated payload body, which is POSTed to the webhookUrl when triggered.
+          type: string
+        webhookUrl:
+          description: |
+            Only HTTPS is allowed.
+          format: uri
+          type: string
+      type: object
+info:
+  description: |
+    With the Splunk Cloud Action service, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
+  title: Action Service
+  version: v1beta2.5
+openapi: 3.0.0
+paths:
+  /{tenant}/action/v1beta2/actions:
+    get:
+      operationId: listActions
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Action'
+                type: array
+          description: The action templates were returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Returns the list of action templates.
+      tags:
+      - Actions
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      operationId: createAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+        description: The action template to create.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The action template was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "409":
+          description: The action template already exists.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: The provided fields aren't valid.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Creates an action template.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.create
+  /{tenant}/action/v1beta2/actions/{action_name}:
+    delete:
+      operationId: deleteAction
+      responses:
+        "204":
+          description: The action template was removed successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Removes an action template.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.modify
+    get:
+      operationId: getAction
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The action template was returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Returns a specific action template.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/ActionName'
+    patch:
+      operationId: updateAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionMutable'
+        description: Updates to the action template.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The action was updated successfully.
+          headers:
+            Location:
+              description: The URL of the updated action.
+              schema:
+                type: string
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: The provided fields aren't valid.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Modifies an action template.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.modify
+    post:
+      operationId: triggerAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerEvent'
+        description: The action payload, which should include values for any templated
+          fields.
+        required: true
+      responses:
+        "201":
+          description: The trigger event was received successfully.
+          headers:
+            Location:
+              description: The URL of the run status, with the format "{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}".
+                Send a GET request to this URL to check the status.
+              schema:
+                type: string
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: The request isn't valid.
+        "422":
+          description: The provided fields aren't valid.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Triggers an action.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.invoke
+  /{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}:
+    get:
+      operationId: getActionStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResult'
+          description: The status was returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Returns the status of a triggered action.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/ActionName'
+    - $ref: '#/components/parameters/StatusID'
+  /{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}/details:
+    get:
+      operationId: getActionStatusDetails
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ActionResultEmailDetail'
+                type: array
+          description: The status was returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Returns the status details of the triggered email action.
+      tags:
+      - Actions
+      x-authz-scope: action.actions.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/ActionName'
+    - $ref: '#/components/parameters/StatusID'
+  /system/action/v1beta2/webhook/keys:
+    get:
+      operationId: getPublicWebhookKeys
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PublicWebhookKey'
+                type: array
+          description: The public webhook keys were returned successfully.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+          description: An error occurred.
+      summary: Returns an array of one or two webhook keys. The first key is active.
+        The second key, if present, is expired.
+      tags:
+      - Webhook Keys
+      x-auth-required: false
+servers:
+- description: Action service
+  url: https://api.splunkbeta.com
+- description: Action service in staging cluster
+  url: https://api.staging.splunkbeta.com
+- description: Action service in playground cluster
+  url: https://api.playground.splunkbeta.com
+
+# Retrieved from scp-openapi commit c6cc325952cb6da92bd774acc15a27e585430daf path: action/openapi.yaml

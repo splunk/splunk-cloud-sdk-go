@@ -1,0 +1,5 @@
+{
+    "category": "sdks",
+    "name": "Splunk Cloud SDK for Go",
+    "description": "A SDK in Go for making requests to Splunk Cloud hosted services."
+}

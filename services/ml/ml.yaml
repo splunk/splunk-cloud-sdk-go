@@ -1,0 +1,1504 @@
+components:
+  parameters:
+    Count:
+      description: The number of results to return.
+      in: query
+      name: count
+      required: false
+      schema:
+        default: 50
+        type: integer
+    Offset:
+      description: The offset to use when requesting results.
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: string
+    Tenant:
+      description: The tenant issuing the request.
+      in: path
+      name: tenant
+      required: true
+      schema:
+        maxLength: 36
+        minLength: 4
+        pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?([a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+        type: string
+  responses:
+    Error400:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request isn't valid.
+    Error401:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The user isn't authenticated.
+    Error403:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The operation isn't authorized.
+    Error404:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The resource wasn't found.
+    Error500:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: An internal service error occurred.
+  schemas:
+    ClassificationReport:
+      type: object
+    ClusteringReport:
+      type: object
+    CrossValidation:
+      properties:
+        kFold:
+          default: 5
+          description: Number of folds in the K-fold cross validation.
+          minimum: 2
+          type: integer
+        randomSeed:
+          default: 0
+          description: Random state to shuffle and partition data.
+          type: integer
+        stratified:
+          default: false
+          description: Determine whether stratification is used in partitioning the
+            data.
+          type: boolean
+      type: object
+    CrossValidationScore:
+      items:
+        properties:
+          foldId:
+            description: Fold ID in k-fold cross-validation.
+            type: integer
+          testScore:
+            $ref: '#/components/schemas/Score'
+          trainingScore:
+            $ref: '#/components/schemas/Score'
+        type: object
+      type: array
+    DeploymentSpec:
+      properties:
+        cpuLimit:
+          default: "1"
+          description: CPU Resource limit for each container in a deployment.
+          type: string
+        cpuRequest:
+          default: 125m
+          description: CPU Resource limit for serving requests.
+          pattern: ^([0-9])+([a-z]){1}$
+          type: string
+        memoryLimit:
+          default: 1G
+          description: Memory Resource limit for each container in a deployment.
+          pattern: ^([0-9])+([A-Z]){1}$
+          type: string
+        memoryRequest:
+          default: 128M
+          description: Memory Resource limit for serving requests.
+          pattern: ^([0-9])+([a-z]){1}$
+          type: string
+        replicas:
+          default: 1
+          description: Create replicated pods in a deployment.
+          minimum: 1
+          type: integer
+      type: object
+    Error:
+      properties:
+        code:
+          type: string
+        details:
+          items:
+            type: object
+          type: array
+        message:
+          type: string
+      required:
+      - code
+      - message
+    Events:
+      description: Output events to the Ingest /events endpoint.
+      properties:
+        attributes:
+          description: Specifies a JSON object that contains explicit custom fields
+            to be defined at index time.
+          type: object
+        host:
+          description: Splunk host field.
+          type: string
+        source:
+          description: Splunk source field.
+          type: string
+        sourcetype:
+          description: Splunk sourcetype field.
+          type: string
+    ExecutorErrors:
+      description: Executor errors.
+      properties:
+        message:
+          type: string
+      type: object
+    ExecutorLogs:
+      description: Executor logs.
+      properties:
+        level:
+          type: string
+        message:
+          type: string
+      type: object
+    Fields:
+      properties:
+        created:
+          description: Fields produced by task.
+          items:
+            type: string
+          type: array
+        features:
+          description: Fields necessary for task.
+          items:
+            type: string
+          type: array
+        target:
+          description: Target field necessary for task.
+          type: string
+      required:
+      - features
+      type: object
+    FitTask:
+      allOf:
+      - $ref: '#/components/schemas/TaskCommon'
+      - properties:
+          algorithm:
+            type: string
+          fields:
+            $ref: '#/components/schemas/Fields'
+          outputTransformer:
+            type: string
+          parameters:
+            $ref: '#/components/schemas/TrainingParameters'
+        required:
+        - algorithm
+        - fields
+        type: object
+      description: Fit task does an estimation/training/fitting, fit task outputs
+        a transformer.
+    ForecastingReport:
+      type: object
+    Health:
+      properties:
+        healthy:
+          type: boolean
+        version:
+          type: string
+      required:
+      - healthy
+      - version
+    InputData:
+      properties:
+        kind:
+          enum:
+          - SPL
+          - RawData
+        source:
+          $ref: '#/components/schemas/InputDataSource'
+      required:
+      - kind
+      - source
+      type: object
+    InputDataSource:
+      oneOf:
+        - $ref: '#/components/schemas/SPL'
+        - $ref: '#/components/schemas/RawData'
+      type: object
+    OutputData:
+      properties:
+        destination:
+          $ref: '#/components/schemas/OutputDataDestination'
+        kind:
+          enum:
+          - Events
+      type: object
+    OutputDataDestination:
+      oneOf:
+        - $ref: '#/components/schemas/Events'
+      type: object
+    RawData:
+      description: Send data directly via the reqest body as a base-64 encoded CSV
+        string.
+      properties:
+        data:
+          description: A base-64 encoded CSV string.
+          type: string
+    RegressionReport:
+      type: object
+    SPL:
+      properties:
+        extractAllFields:
+          description: Determine whether the Search service extracts all available
+            fields in the data, including fields not mentioned in the SPL for the
+            search job. Set to 'false' for better search performance.
+          type: boolean
+        maxTime:
+          description: The number of seconds to run this search before finalizing.
+          type: integer
+        module:
+          description: The module to run the search in. The default module is used
+            if a module is not specified.
+          type: string
+        query:
+          type: string
+        queryParameters:
+          description: Represents parameters on the search job such as 'earliest'
+            and 'latest'.
+          type: object
+      required:
+      - query
+      type: object
+    Score:
+      properties:
+        kind:
+          enum:
+          - regression
+          - classification
+          - clustering
+          - forecasting
+        report:
+         $ref: '#/components/schemas/ScoreReport'
+      required:
+      - kind
+      - report
+      type: object
+    ScoreReport:
+      oneOf:
+        - $ref: '#/components/schemas/RegressionReport'
+        - $ref: '#/components/schemas/ClassificationReport'
+        - $ref: '#/components/schemas/ClusteringReport'
+        - $ref: '#/components/schemas/ForecastingReport'
+    Task:
+      discriminator:
+        mapping:
+          fit: '#/components/schemas/FitTask'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/FitTask'
+      required:
+      - kind
+    TaskCommon:
+      properties:
+        kind:
+          enum:
+          - fit
+          type: string
+        name:
+          description: The name has to be unique in the same workflow, it is optional,
+            can be used to identify that task artifact.
+          pattern: ^[A-Za-z][A-Za-z0-9_]*
+          type: string
+      type: object
+    TaskSummary:
+      properties:
+        algorithm:
+          type: string
+        name:
+          type: string
+        summary:
+          description: Summary of the task, including but not limited to learned parameters
+            and statistics.
+      type: object
+    TrainTestScore:
+      properties:
+        testScore:
+          $ref: '#/components/schemas/Score'
+        trainingScore:
+          $ref: '#/components/schemas/Score'
+      type: object
+    TrainTestSplit:
+      properties:
+        randomSeed:
+          default: 0
+          description: Random state to shuffle and partition data.
+          type: integer
+        ratio:
+          default: 0.8
+          description: Ratio to split out training set and test set. For example,
+            0.8 means 80% of data for the training set and 20% for the test set.
+          format: float
+          maximum: 1
+          minimum: 0
+          type: number
+        stratified:
+          default: false
+          description: Determine whether stratification is used in partitioning the
+            data.
+          type: boolean
+      type: object
+    TrainingParameters:
+      type: object
+    Workflow:
+      properties:
+        creationTime:
+          format: date-time
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: string
+        name:
+          pattern: ^[A-Za-z][A-Za-z0-9_]*
+          type: string
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+      required:
+      - tasks
+      type: object
+    WorkflowBuild:
+      properties:
+        creationTime:
+          format: date-time
+          readOnly: true
+          type: string
+        endTime:
+          format: date-time
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: string
+        input:
+          $ref: '#/components/schemas/InputData'
+        name:
+          pattern: ^[A-Za-z][A-Za-z0-9_]*
+          type: string
+        output:
+          $ref: '#/components/schemas/OutputData'
+        pipelineSummary:
+          items:
+            $ref: '#/components/schemas/TaskSummary'
+          readOnly: true
+          type: array
+        startTime:
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          enum:
+          - running
+          - failed
+          - success
+          - scheduled
+          readOnly: true
+        timeoutSecs:
+          default: 86400
+          description: Number of seconds before a workflow build times out.
+          minimum: 1
+          type: integer
+        trainingScore:
+          $ref: '#/components/schemas/Score'
+          description: The final training score produced from model training.
+          readOnly: true
+        validationOption:
+          description: Represents which type of validation to use in the workflow
+            along with any parameters if specified. If this is not included, no validation
+            is done (all data is used for training). Default parameter values are
+            used if no `option` is specified.
+          properties:
+            kind:
+              enum:
+              - TrainTest
+              - CrossValidation
+            option:
+             $ref: '#/components/schemas/WorkflowValidationOption'
+          required:
+          - kind
+          type: object
+        validationScore:
+          description: The validation score whose type is specified by the user in
+            `validationOption`.
+          properties:
+            kind:
+              enum:
+              - TrainTest
+              - CrossValidation
+            score:
+              $ref: '#/components/schemas/WorkflowValidationScore'
+          readOnly: true
+          required:
+          - kind
+          - score
+          type: object
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+          readOnly: true
+      required:
+      - input
+      type: object
+    WorkflowValidationOption:
+          oneOf:
+            - $ref: '#/components/schemas/TrainTestSplit'
+            - $ref: '#/components/schemas/CrossValidation'
+    WorkflowValidationScore:
+          oneOf:
+          - $ref: '#/components/schemas/TrainTestScore'
+          - $ref: '#/components/schemas/CrossValidationScore'
+    WorkflowBuildError:
+      properties:
+        executorErrors:
+          items:
+            $ref: '#/components/schemas/ExecutorErrors'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerErrors:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerErrors'
+          type: array
+      required:
+      - id
+      - workflowId
+      type: object
+    WorkflowBuildLog:
+      properties:
+        executorLogs:
+          items:
+            $ref: '#/components/schemas/ExecutorLogs'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerLogs:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerLogs'
+          type: array
+      required:
+      - id
+      - workflowId
+      type: object
+    WorkflowDeployment:
+      properties:
+        creationTime:
+          format: date-time
+          readOnly: true
+          type: string
+        endTime:
+          format: date-time
+          type: string
+        id:
+          readOnly: true
+          type: string
+        name:
+          pattern: ^[A-Za-z][A-Za-z0-9_]*$
+          type: string
+        spec:
+          $ref: '#/components/schemas/DeploymentSpec'
+        startTime:
+          format: date-time
+          type: string
+        status:
+          enum:
+          - running
+          - failed
+          - success
+          - scheduled
+          readOnly: true
+        workflowBuild:
+          $ref: '#/components/schemas/WorkflowBuild'
+          readOnly: true
+      required:
+      - spec
+      type: object
+    WorkflowDeploymentError:
+      properties:
+        buildId:
+          readOnly: true
+          type: string
+        executorErrors:
+          items:
+            $ref: '#/components/schemas/ExecutorErrors'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerErrors:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerErrors'
+          type: array
+      required:
+      - id
+      - workflowId
+      - buildId
+      type: object
+    WorkflowDeploymentLog:
+      properties:
+        buildId:
+          readOnly: true
+          type: string
+        executorLogs:
+          items:
+            $ref: '#/components/schemas/ExecutorLogs'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerLogs:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerLogs'
+          type: array
+      required:
+      - id
+      - workflowId
+      - buildId
+      type: object
+    WorkflowInference:
+      properties:
+        input:
+          type: string
+        output:
+          readOnly: true
+          type: string
+      required:
+      - input
+      type: object
+    WorkflowManagerErrors:
+      description: Workflow manager errors.
+      properties:
+        message:
+          type: string
+      type: object
+    WorkflowManagerLogs:
+      description: Workflow manager logs.
+      properties:
+        level:
+          type: string
+        message:
+          type: string
+      type: object
+    WorkflowRun:
+      properties:
+        creationTime:
+          format: date-time
+          readOnly: true
+          type: string
+        endTime:
+          format: date-time
+          readOnly: true
+          type: string
+        evaluate:
+          default: true
+          description: Determine whether to evaluate the prediction.
+          type: boolean
+        id:
+          readOnly: true
+          type: string
+        input:
+          $ref: '#/components/schemas/InputData'
+        name:
+          pattern: ^[A-Za-z][A-Za-z0-9_]*
+          type: string
+        output:
+          $ref: '#/components/schemas/OutputData'
+        predictionScore:
+          $ref: '#/components/schemas/Score'
+          readOnly: true
+        startTime:
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          enum:
+          - running
+          - failed
+          - success
+          - scheduled
+          readOnly: true
+        timeoutSecs:
+          default: 86400
+          description: Number of seconds before a workflow run times out.
+          minimum: 1
+          type: integer
+        workflowBuild:
+          $ref: '#/components/schemas/WorkflowBuild'
+          readOnly: true
+      required:
+      - input
+      - output
+      type: object
+    WorkflowRunError:
+      properties:
+        buildId:
+          readOnly: true
+          type: string
+        executorErrors:
+          items:
+            $ref: '#/components/schemas/ExecutorErrors'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerErrors:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerErrors'
+          type: array
+      required:
+      - id
+      - workflowId
+      - buildId
+      type: object
+    WorkflowRunLog:
+      properties:
+        buildId:
+          readOnly: true
+          type: string
+        executorLogs:
+          items:
+            $ref: '#/components/schemas/ExecutorLogs'
+          type: array
+        id:
+          readOnly: true
+          type: string
+        requestId:
+          readOnly: true
+          type: string
+        workflowId:
+          readOnly: true
+          type: string
+        workflowManagerLogs:
+          items:
+            $ref: '#/components/schemas/WorkflowManagerLogs'
+          type: array
+      required:
+      - id
+      - workflowId
+      - buildId
+      type: object
+    WorkflowsGetResponse:
+      properties:
+        creationTime:
+          format: date-time
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: string
+        name:
+          pattern: ^[A-Za-z][A-Za-z0-9_]*
+          type: string
+      type: object
+info:
+  title: Machine Learning Service (ML API)
+  version: v2beta1.1
+openapi: 3.0.0
+paths:
+  /{tenant}/ml/v2beta1/workflows:
+    get:
+      operationId: listWorkflows
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowsGetResponse'
+                type: array
+          description: The workflow configurations were returned successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow configurations.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflows.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      operationId: createWorkflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Workflow'
+        description: Workflow configuration to be created.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: The workflow configuration was created successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Creates a workflow configuration.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflows.create
+  /{tenant}/ml/v2beta1/workflows/{id}:
+    delete:
+      operationId: deleteWorkflow
+      responses:
+        "204":
+          description: The workflow configuration was removed successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "404":
+          $ref: '#/components/responses/Error404'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Removes a workflow configuration.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflows.delete
+    get:
+      operationId: getWorkflow
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: The workflow configuration was returned successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a workflow configuration.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflows.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds:
+    get:
+      operationId: listWorkflowBuilds
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowBuild'
+                type: array
+          description: Returns a list of workflow builds.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow builds.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: createWorkflowBuild
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowBuild'
+        description: Input data used to build the workflow.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuild'
+          description: The workflow build was created successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Creates a workflow build.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.create
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}:
+    delete:
+      operationId: deleteWorkflowBuild
+      responses:
+        "204":
+          description: The workflow build was removed successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "404":
+          $ref: '#/components/responses/Error404'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Removes a workflow build.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.delete
+    get:
+      operationId: getWorkflowBuild
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuild'
+          description: Returns the status of a workflow build.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the status of a workflow build.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/deployments:
+    get:
+      operationId: listWorkflowDeployments
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowDeployment'
+                type: array
+          description: Returns a list of workflow deployments.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow deployments.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: createWorkflowDeployment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowDeployment'
+        description: Input data used to build the workflow deployment.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowDeployment'
+          description: The workflow deployment was created successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Creates a workflow deployment.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.create
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/deployments/{deploymentId}:
+    delete:
+      operationId: deleteWorkflowDeployment
+      responses:
+        "204":
+          description: The workflow deployment was removed successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "404":
+          $ref: '#/components/responses/Error404'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Removes a workflow deployment.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.delete
+    get:
+      operationId: getWorkflowDeployment
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowDeployment'
+          description: Returns the status of a workflow deployment.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the status of a workflow deployment.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow deployment ID.
+      in: path
+      name: deploymentId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/deployments/{deploymentId}/errors:
+    get:
+      operationId: getWorkflowDeploymentError
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowDeploymentError'
+          description: Returns a list of workflow deployment errors.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow deployment errors.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow deployment ID.
+      in: path
+      name: deploymentId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/deployments/{deploymentId}/inference:
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow deployment ID.
+      in: path
+      name: deploymentId
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: createWorkflowInference
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowInference'
+        description: Input data to the inference request.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowInference'
+          description: The workflow inference request was created successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Creates a workflow inference request.
+      tags:
+      - Workflow
+      x-authz-scope: ml.inference.infer
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/deployments/{deploymentId}/logs:
+    get:
+      operationId: getWorkflowDeploymentLog
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowDeploymentLog'
+          description: Returns the logs from a workflow deployment.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the logs from a workflow deployment.
+      tags:
+      - Workflow
+      x-authz-scope: ml.deployments.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow deployment ID.
+      in: path
+      name: deploymentId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/errors:
+    get:
+      operationId: getWorkflowBuildError
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuildError'
+          description: Returns the list of workflow errors.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow errors.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/logs:
+    get:
+      operationId: getWorkflowBuildLog
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuildLog'
+          description: Returns the logs from a workflow build.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the logs from a workflow build.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowbuilds.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/runs:
+    get:
+      operationId: listWorkflowRuns
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowRun'
+                type: array
+          description: Returns a list of workflow runs.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns a list of workflow runs.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    post:
+      operationId: createWorkflowRun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowRun'
+        description: Input data used to build the workflow.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+          description: The workflow run was created successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Creates a workflow run.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.create
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/runs/{runId}:
+    delete:
+      operationId: deleteWorkflowRun
+      responses:
+        "204":
+          description: The workflow run was removed successfully.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "404":
+          $ref: '#/components/responses/Error404'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Removes a workflow run.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.delete
+    get:
+      operationId: getWorkflowRun
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+          description: Returns the status of a workflow run.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the status of a workflow run.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow run ID.
+      in: path
+      name: runId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/runs/{runId}/errors:
+    get:
+      operationId: getWorkflowRunError
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRunError'
+          description: Returns the errors for a workflow run.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the errors for a workflow run.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow run ID.
+      in: path
+      name: runId
+      required: true
+      schema:
+        type: string
+  /{tenant}/ml/v2beta1/workflows/{id}/builds/{buildId}/runs/{runId}/logs:
+    get:
+      operationId: getWorkflowRunLog
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRunLog'
+          description: Returns the logs for a workflow run.
+        "400":
+          $ref: '#/components/responses/Error400'
+        "401":
+          $ref: '#/components/responses/Error401'
+        "403":
+          $ref: '#/components/responses/Error403'
+        "500":
+          $ref: '#/components/responses/Error500'
+      summary: Returns the logs for a workflow run.
+      tags:
+      - Workflow
+      x-authz-scope: ml.workflowruns.read
+    parameters:
+    - $ref: '#/components/parameters/Tenant'
+    - description: The workflow ID.
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    - description: The workflow build ID.
+      in: path
+      name: buildId
+      required: true
+      schema:
+        type: string
+    - description: The workflow run ID.
+      in: path
+      name: runId
+      required: true
+      schema:
+        type: string
+tags:
+- description: With the Splunk Cloud Machine Learning service, you can create ML workflows,
+    build and persist models of those workflows, and generate insights on new data.
+  name: mlTag
+
+# Retrieved from scp-openapi commit c6cc325952cb6da92bd774acc15a27e585430daf path: ml/openapi.yaml

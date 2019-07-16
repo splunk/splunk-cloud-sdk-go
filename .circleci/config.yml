@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11
+
+    working_directory: /go/src/github.com/splunk/splunk-cloud-sdk-go
+
+    steps:
+      - checkout
+
+      - run:
+          name: setup
+          command: |
+            export CGO_ENABLED=0
+            make setup
+
+      - run:
+          name: lint
+          command: make lint
+
+      - run:
+          name: build
+          command: make build
+
+      - run:
+          name: unittest
+          command: make test_unit
+
+experimental:
+  notify:
+    branches:
+      only:
+        - master
+

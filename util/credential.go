@@ -1,0 +1,39 @@
+/*
+ * Copyright 2019 Splunk, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"): you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+package util
+
+// Credential is a simple string whose value is redacted when converted to a
+// string via the Stringer interface in order to prevent accidental logging or
+// other unintentional disclosure - value is retrieved using ClearText() method
+type Credential struct {
+	string
+}
+
+// NewCredential creates a Credential from a simple string
+func NewCredential(s string) *Credential {
+	return &Credential{s}
+}
+
+// String returns a redacted string
+func (c *Credential) String() string {
+	return "XXXXX"
+}
+
+// ClearText returns the actual cleartext string value
+func (c *Credential) ClearText() string {
+	return c.string
+}

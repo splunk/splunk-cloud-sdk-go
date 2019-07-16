@@ -1,0 +1,782 @@
+components:
+  parameters:
+    AuthorizationHeaderParam:
+      description: Access token provided by the user (obtained from a known identity
+        provider).
+      in: header
+      name: Authorization
+      required: false
+      schema:
+        pattern: ^Bearer .+
+        type: string
+    CollectionParam:
+      description: The name of the collection.
+      in: path
+      name: collection
+      required: true
+      schema:
+        type: string
+    CountParam:
+      description: Maximum number of records to return.
+      in: query
+      name: count
+      required: false
+      schema:
+        type: integer
+    FieldsParam:
+      description: Comma-separated list of fields to include or exclude.
+      in: query
+      name: fields
+      required: false
+      schema:
+        items:
+          type: string
+        type: array
+    IndexParam:
+      description: The name of the index.
+      in: path
+      name: index
+      required: true
+      schema:
+        type: string
+    KeyParam:
+      description: The key of the record.
+      in: path
+      name: key
+      required: true
+      schema:
+        type: string
+    OffsetParam:
+      description: Number of records to skip from the start.
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+    OrderByParam:
+      description: Sort order. Format is `<field>:<sort order>`. Valid sort orders
+        are 1 for ascending, -1 for descending.
+      in: query
+      name: orderby
+      required: false
+      schema:
+        items:
+          type: string
+        type: array
+    OutputLookupJobParam:
+      description: The outputlookup job id.
+      in: path
+      name: outputLookupJobId
+      required: true
+      schema:
+        type: string
+    QueryParam:
+      description: Query JSON expression.
+      in: query
+      name: query
+      required: false
+      schema:
+        type: string
+    TenantParam:
+      description: The tenant id.
+      in: path
+      name: tenant
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    insertRecordRecord:
+      content:
+        application/json:
+          schema:
+            type: object
+      description: Record to add to the collection, formatted as a JSON object.
+      required: true
+    insertRecordsRecords:
+      content:
+        application/json:
+          schema:
+            items:
+              type: object
+            maxItems: 10000
+            type: array
+      description: Array of records to insert.
+      required: true
+  responses:
+    AuthError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The user isn't authenticated.
+    BadRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The request isn't valid.
+    DefaultError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The reason for the error.
+    ForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The operation isn't authorized.
+    InsertRecordsConflictError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The record already exists.
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: An internal server error occurred.
+    NotFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The resource wasn't found.
+    ServiceUnavailableError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Service unavailable.
+    TooManyRequestsError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Too many requests were sent.
+    UnsupportedMediaTypeError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The media type isn't supported.
+  schemas:
+    CollectionDefinition:
+      properties:
+        collection:
+          description: The collection name.
+          minLength: 1
+          type: string
+      required:
+      - collection
+      type: object
+    CollectionDescription:
+      properties:
+        indexes:
+          description: The list of indexes on this collection.
+          items:
+            $ref: '#/components/schemas/IndexDescription'
+          type: array
+        name:
+          description: The collection name.
+          type: string
+      type: object
+    CollectionStats:
+      properties:
+        collection:
+          description: The collection name.
+          type: string
+        count:
+          description: Number of records in collection.
+          type: integer
+        indexSizes:
+          description: Map of index name to index size in bytes.
+          type: object
+        nindexes:
+          description: Number of indexes on collection.
+          type: integer
+        size:
+          description: Size in bytes of collection, not including indexes.
+          type: integer
+        totalIndexSize:
+          description: Total size of indexes.
+          type: integer
+      required:
+      - collection
+      - count
+      - size
+      - nindexes
+      - totalIndexSize
+      - indexSizes
+      type: object
+    CreateCollectionResponse:
+      properties:
+        name:
+          description: The collection name.
+          type: string
+      required:
+      - name
+      type: object
+    CreateTenantResponse:
+      properties:
+        name:
+          description: The name of the tenant.
+          type: string
+      required:
+      - name
+      type: object
+    ErrorResponse:
+      properties:
+        code:
+          description: Internal status code of the error.
+          type: string
+        message:
+          description: Detailed error message.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    IndexDefinition:
+      properties:
+        fields:
+          items:
+            $ref: '#/components/schemas/IndexFieldDefinition'
+          type: array
+        name:
+          description: The name of the index.
+          minLength: 1
+          type: string
+      required:
+      - name
+      - fields
+      type: object
+    IndexDescription:
+      properties:
+        collection:
+          description: The collection name.
+          type: string
+        fields:
+          items:
+            $ref: '#/components/schemas/IndexFieldDefinition'
+          type: array
+        name:
+          description: The name of the index.
+          type: string
+      type: object
+    IndexFieldDefinition:
+      properties:
+        direction:
+          description: The sort direction for the indexed field.
+          type: integer
+        field:
+          description: The name of the field to index.
+          type: string
+      required:
+      - field
+      - direction
+      type: object
+    Key:
+      properties:
+        _key:
+          description: Key of the inserted document.
+          type: string
+      required:
+      - _key
+      type: object
+    LookupRequest:
+      description: Request payload for lookup query.
+      properties:
+        caseSensitiveMatch:
+          default: true
+          description: Determines whether the lookup match is case sensitive.
+          type: boolean
+        filter:
+          type: object
+        lookupFields:
+          description: List of fields to perform lookup on.
+          items:
+            type: string
+          type: array
+        lookupValues:
+          $ref: '#/components/schemas/LookupValues'
+        name:
+          description: The name of the lookup.
+          type: string
+        outputFields:
+          description: List of output fields to project.
+          items:
+            type: string
+          type: array
+        sid:
+          type: string
+      required:
+      - sid
+      - outputFields
+      - lookupFields
+      - lookupValues
+      type: object
+    LookupValues:
+      description: Corresponding list of tuples for lookupFields (must match ordering
+        in keyHeaders).
+      items:
+        items:
+          type: object
+        minItems: 1
+        type: array
+      type: array
+    OutputLookupsResponse:
+      properties:
+        id:
+          description: The id of outputlookup job.
+          type: string
+      required:
+      - id
+      type: object
+    PingResponse:
+      properties:
+        errorMessage:
+          description: If database is not healthy, detailed error message.
+          type: string
+        status:
+          default: unknown
+          description: Database status.
+          enum:
+          - healthy
+          - unhealthy
+          - unknown
+          type: string
+      required:
+      - status
+      type: object
+    TenantDescription:
+      properties:
+        collections:
+          description: The list of collections.
+          items:
+            $ref: '#/components/schemas/CollectionDescription'
+          type: array
+        name:
+          description: The name of the tenant.
+          type: string
+      type: object
+info:
+  description: With KV store, you can save and retrieve data within your Splunk apps,
+    thereby enabling you to manage and maintain the state of the application.
+  title: KV Store API
+  version: v1beta1.1
+openapi: 3.0.0
+paths:
+  /{tenant}/kvstore/v1beta1/collections/{collection}:
+    get:
+      description: Use key-value query parameters to filter fields. Fields are implicitly
+        ANDed and values for the same field are implicitly ORed.
+      operationId: listRecords
+      parameters:
+      - $ref: '#/components/parameters/FieldsParam'
+      - $ref: '#/components/parameters/CountParam'
+      - $ref: '#/components/parameters/OffsetParam'
+      - $ref: '#/components/parameters/OrderByParam'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                type: array
+          description: Returns a list of records.
+          headers:
+            Content-Encoding:
+              description: Encoding scheme used for the response.
+              schema:
+                enum:
+                - gzip
+                type: string
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Returns a list of records in a collection with basic filtering, sorting,
+        pagination and field projection.
+      x-authz-scope: kvstore.records.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    post:
+      operationId: insertRecord
+      requestBody:
+        $ref: '#/components/requestBodies/insertRecordRecord'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
+          description: The record was inserted successfully.
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "409":
+          $ref: '#/components/responses/InsertRecordsConflictError'
+        "415":
+          $ref: '#/components/responses/UnsupportedMediaTypeError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Inserts a record into a collection.
+      x-authz-scope: kvstore.records.create
+  /{tenant}/kvstore/v1beta1/collections/{collection}/batch:
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    post:
+      operationId: insertRecords
+      requestBody:
+        $ref: '#/components/requestBodies/insertRecordsRecords'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Successfully returned a list of the keys of the inserted records.
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "409":
+          $ref: '#/components/responses/InsertRecordsConflictError'
+        "415":
+          $ref: '#/components/responses/UnsupportedMediaTypeError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Inserts multiple records in a single request.
+      x-authz-scope: kvstore.records.create
+  /{tenant}/kvstore/v1beta1/collections/{collection}/indexes:
+    get:
+      operationId: listIndexes
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/IndexDefinition'
+                type: array
+          description: Returns a list of indexes.
+          headers:
+            Content-Encoding:
+              description: Encoding scheme used for the response.
+              schema:
+                enum:
+                - gzip
+                type: string
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Returns a list of all indexes on a collection.
+      x-authz-scope: kvstore.indexes.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    post:
+      operationId: createIndex
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexDefinition'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexDescription'
+          description: The index was created successfully.
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The index already exists.
+        "415":
+          $ref: '#/components/responses/UnsupportedMediaTypeError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Creates an index on a collection.
+      x-authz-scope: kvstore.indexes.create
+  /{tenant}/kvstore/v1beta1/collections/{collection}/indexes/{index}:
+    delete:
+      operationId: deleteIndex
+      responses:
+        "204":
+          description: The index was removed successfully.
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Removes an index from a collection.
+      x-authz-scope: kvstore.indexes.delete
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    - $ref: '#/components/parameters/IndexParam'
+  /{tenant}/kvstore/v1beta1/collections/{collection}/query:
+    delete:
+      operationId: deleteRecords
+      responses:
+        "204":
+          description: The record was removed successfully.
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Removes records in a collection that match the query.
+      x-authz-scope: kvstore.records.delete
+    get:
+      operationId: queryRecords
+      parameters:
+      - $ref: '#/components/parameters/FieldsParam'
+      - $ref: '#/components/parameters/CountParam'
+      - $ref: '#/components/parameters/OffsetParam'
+      - $ref: '#/components/parameters/OrderByParam'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                type: array
+          description: The list of records was returned successfully.
+          headers:
+            Content-Encoding:
+              description: Encoding scheme used for the response.
+              schema:
+                enum:
+                - gzip
+                type: string
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Returns a list of query records in a collection.
+      x-authz-scope: kvstore.records.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    - $ref: '#/components/parameters/QueryParam'
+  /{tenant}/kvstore/v1beta1/collections/{collection}/records/{key}:
+    delete:
+      operationId: deleteRecordByKey
+      responses:
+        "204":
+          description: The record with the given key was removed successfully.
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Deletes a record with a given key.
+      x-authz-scope: kvstore.records.delete
+    get:
+      operationId: getRecordByKey
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: The record with the given key was returned successfully.
+          headers:
+            Content-Encoding:
+              description: Encoding scheme used for the response.
+              schema:
+                enum:
+                - gzip
+                type: string
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Returns a record with a given key.
+      x-authz-scope: kvstore.records.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+    - $ref: '#/components/parameters/CollectionParam'
+    - $ref: '#/components/parameters/KeyParam'
+    put:
+      operationId: putRecord
+      requestBody:
+        $ref: '#/components/requestBodies/insertRecordRecord'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
+          description: The record with the given key was updated successfully.
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Key'
+          description: The record with the given key was inserted successfully.
+        "400":
+          $ref: '#/components/responses/BadRequestError'
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "404":
+          $ref: '#/components/responses/NotFoundError'
+        "415":
+          $ref: '#/components/responses/UnsupportedMediaTypeError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Updates the record with a given key, either by inserting or replacing
+        the record.
+      x-authz-scope: kvstore.records.update
+  /{tenant}/kvstore/v1beta1/ping:
+    get:
+      operationId: ping
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponse'
+          description: Returns the health status from the database.
+          headers:
+            Content-Encoding:
+              description: Encoding scheme used for the response.
+              schema:
+                enum:
+                - gzip
+                type: string
+        "401":
+          $ref: '#/components/responses/AuthError'
+        "403":
+          $ref: '#/components/responses/ForbiddenError'
+        "429":
+          $ref: '#/components/responses/TooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/InternalServerError'
+        "503":
+          $ref: '#/components/responses/ServiceUnavailableError'
+        default:
+          $ref: '#/components/responses/DefaultError'
+      summary: Returns the health status from the database.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/TenantParam'
+servers:
+- url: /
+
+# Retrieved from scp-openapi commit c6cc325952cb6da92bd774acc15a27e585430daf path: kvstore/openapi.yaml

@@ -1,0 +1,342 @@
+components:
+  responses:
+    badRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request isn't valid.
+    errorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Error response.
+    fileUploadSuccessResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UploadSuccessResponse'
+      description: The file was uploaded successfully.
+    forbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The operation is unauthorized.
+    internalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: An internal service error occurred.
+    notFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The resource wasn't found.
+    successResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPResponse'
+      description: The event was sent successfully.
+    tooManyRequestsError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Too many requests were sent.
+    unauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The user isn't authenticated.
+    unprocessableEntityError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Unprocessable entity in request.
+  schemas:
+    Error:
+      properties:
+        code:
+          type: string
+        details:
+          type: object
+        message:
+          type: string
+      type: object
+    Event:
+      properties:
+        attributes:
+          additionalProperties: {}
+          description: Specifies a JSON object that contains explicit custom fields
+            to be defined at index time.
+          type: object
+        body:
+          description: JSON object for the event.
+        host:
+          description: The host value assigned to the event data. Typically, this
+            is the hostname of the client from which you are sending data.
+          type: string
+        id:
+          description: |-
+            An optional ID that uniquely identifies the event data. It is used to deduplicate the data if same data is set multiple times.
+            If ID is not specified, it will be assigned by the system.
+          type: string
+        nanos:
+          description: Optional nanoseconds part of the timestamp.
+          format: int32
+          type: integer
+        source:
+          description: |-
+            The source value to assign to the event data. For example, if you are sending data from an app that you are developing,
+            set this key to the name of the app.
+          type: string
+        sourcetype:
+          description: The sourcetype value assigned to the event data.
+          type: string
+        timestamp:
+          description: Epoch time in milliseconds.
+          format: int64
+          type: integer
+      required:
+      - body
+      type: object
+    FileUploadDetails:
+      properties:
+        filename:
+          type: string
+      type: object
+    HTTPResponse:
+      properties:
+        code:
+          type: string
+        details:
+          type: object
+        message:
+          type: string
+      type: object
+    Metric:
+      properties:
+        dimensions:
+          additionalProperties:
+            type: string
+          description: Dimensions allow metrics to be classified e.g. {"Server":"nginx",
+            "Region":"us-west-1", ...}
+          type: object
+        name:
+          description: Name of the metric e.g. CPU, Memory etc.
+          type: string
+        type:
+          description: Type of metric. Default is g for gauge.
+          type: string
+        unit:
+          description: Unit of the metric e.g. percent, megabytes, seconds etc.
+          type: string
+        value:
+          description: Value of the metric. If not specified, it will be defaulted
+            to 0.
+          format: double
+          type: number
+      required:
+      - name
+      title: Specifies individual metric data.
+      type: object
+    MetricAttribute:
+      properties:
+        defaultDimensions:
+          additionalProperties:
+            type: string
+          description: Optional. If set, individual metrics inherit these dimensions
+            and can override any and/or all of them.
+          type: object
+        defaultType:
+          description: Optional. If set, individual metrics inherit this type and
+            can optionally override.
+          type: string
+        defaultUnit:
+          description: Optional. If set, individual metrics inherit this unit and
+            can optionally override.
+          type: string
+      title: Default attributes for the metric.
+      type: object
+    MetricEvent:
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricAttribute'
+        body:
+          description: Specifies multiple related metrics e.g. Memory, CPU etc.
+          items:
+            $ref: '#/components/schemas/Metric'
+          type: array
+        host:
+          description: The host value assigned to the event data. Typically, this
+            is the hostname of the client from which you are sending data.
+          type: string
+        id:
+          description: |-
+            An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.
+            If ID is not specified, it will be assigned by the system.
+          type: string
+        nanos:
+          description: Optional nanoseconds part of the timestamp.
+          format: int32
+          type: integer
+        source:
+          description: |-
+            The source value to assign to the event data. For example, if you are sending data from an app that you are developing,
+            set this key to the name of the app.
+          type: string
+        sourcetype:
+          description: The sourcetype value assigned to the event data.
+          type: string
+        timestamp:
+          description: Epoch time in milliseconds.
+          format: int64
+          type: integer
+      required:
+      - body
+      type: object
+    UploadSuccessResponse:
+      properties:
+        code:
+          type: string
+        details:
+          $ref: '#/components/schemas/FileUploadDetails'
+        message:
+          type: string
+      type: object
+info:
+  description: With the Splunk Cloud Ingest service, you can send event or metrics
+    data to the Splunk platform.
+  title: Ingest API
+  version: v1beta2.2
+openapi: 3.0.0
+paths:
+  /{tenant}/ingest/v1beta2/events:
+    post:
+      operationId: postEvents
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/Event'
+              type: array
+      responses:
+        "200":
+          $ref: '#/components/responses/successResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "404":
+          $ref: '#/components/responses/notFoundError'
+        "422":
+          $ref: '#/components/responses/unprocessableEntityError'
+        "429":
+          $ref: '#/components/responses/tooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        default:
+          $ref: '#/components/responses/errorResponse'
+      summary: Sends events.
+      tags:
+      - Events
+      x-auth-required: false
+      x-authz-scope: ingest.events.write
+  /{tenant}/ingest/v1beta2/files:
+    post:
+      operationId: uploadFiles
+      x-hidden: true
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                upfile:
+                  format: binary
+                  type: string
+              type: object
+      responses:
+        "201":
+          $ref: '#/components/responses/fileUploadSuccessResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "404":
+          $ref: '#/components/responses/notFoundError'
+        "429":
+          $ref: '#/components/responses/tooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        default:
+          $ref: '#/components/responses/errorResponse'
+      summary: Upload a CSV or text file that contains events.
+      tags:
+      - Files
+      x-authz-scope: ingest.files.write
+  /{tenant}/ingest/v1beta2/metrics:
+    post:
+      operationId: postMetrics
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/MetricEvent'
+              type: array
+      responses:
+        "200":
+          $ref: '#/components/responses/successResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "404":
+          $ref: '#/components/responses/notFoundError'
+        "429":
+          $ref: '#/components/responses/tooManyRequestsError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        default:
+          $ref: '#/components/responses/errorResponse'
+      summary: Sends metric events.
+      tags:
+      - Metrics
+      x-auth-required: false
+      x-authz-scope: ingest.metrics.write
+servers:
+- url: /
+
+# Retrieved from scp-openapi commit 83849208375253db5aabdf6005b17db196bc3289 path: ingest/openapi.yaml

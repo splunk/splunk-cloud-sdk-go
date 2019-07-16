@@ -1,0 +1,3939 @@
+components:
+  parameters:
+    ActionID:
+      description: ID of an Action.
+      in: path
+      name: actionid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    AnnotationID:
+      description: ID of a annotation.
+      in: path
+      name: annotationid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    AuthorizationHeader:
+      description: Access token provided by the user (obtained from a known identity
+        provider).
+      in: header
+      name: Authorization
+      required: true
+      schema:
+        pattern: ^Bearer .+
+        type: string
+    DashboardID:
+      description: ID of a dashboard.
+      in: path
+      name: dashboardid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    DashboardResourceName:
+      description: The resource name of a dashvboard. The resource name format is
+        module.dashboardname.
+      in: path
+      name: dashboardresourcename
+      required: true
+      schema:
+        type: string
+    DatasetID:
+      description: ID of a Dataset.
+      in: path
+      name: datasetid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    DatasetResourceName:
+      description: The resource name of a dataset. For the default module, the resource
+        name format is datasetName. Otherwise, the resource name format is module.datasetName.
+      in: path
+      name: datasetresourcename
+      required: true
+      schema:
+        type: string
+    FieldID:
+      description: ID of a Field.
+      in: path
+      name: fieldid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    RelationshipID:
+      description: ID of a relationship.
+      in: path
+      name: relationshipid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    RuleID:
+      description: ID of a Field.
+      in: path
+      name: ruleid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    RuleResourceName:
+      description: The resource name of a rule. For the default module, the resource
+        name format is ruleName. Otherwise, the resource name format is module.ruleName.
+      in: path
+      name: ruleresourcename
+      required: true
+      schema:
+        type: string
+    Tenant:
+      description: The tenant name.
+      in: path
+      name: tenant
+      required: true
+      schema:
+        type: string
+    WorkflowBuildID:
+      description: ID of a workflow build.
+      in: path
+      name: workflowbuildid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    WorkflowID:
+      description: ID of a workflow.
+      in: path
+      name: workflowid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+    WorkflowRunID:
+      description: ID of a workflow run.
+      in: path
+      name: workflowrunid
+      required: true
+      schema:
+        format: mongo-object-id
+        type: string
+  schemas:
+    Action:
+      description: A complete action as rendered in POST, PATCH, and GET responses.
+      discriminator:
+        mapping:
+          ALIAS: '#/components/schemas/AliasAction'
+          AUTOKV: '#/components/schemas/AutoKVAction'
+          EVAL: '#/components/schemas/EvalAction'
+          LOOKUP: '#/components/schemas/LookupAction'
+          REGEX: '#/components/schemas/RegexAction'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/AliasAction'
+      - $ref: '#/components/schemas/AutoKVAction'
+      - $ref: '#/components/schemas/EvalAction'
+      - $ref: '#/components/schemas/LookupAction'
+      - $ref: '#/components/schemas/RegexAction'
+    ActionCommon:
+      description: Properties common across all action kinds as rendered in POST,
+        PATCH, and GET responses and alos for creating a new action using a POST request.
+      properties:
+        id:
+          description: A unique action ID.
+          example: 5bc3c0cdfee0d854a4188132
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        ruleid:
+          description: The rule that this action is part of.
+          example: 5bc1a7a0fee0d854a418812e
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        version:
+          description: The catalog version.
+          minimum: 1
+          type: integer
+      type: object
+    ActionPATCH:
+      description: Property values to be set in an existing action using a PATCH request.
+      oneOf:
+      - $ref: '#/components/schemas/AliasActionPATCH'
+      - $ref: '#/components/schemas/AutoKVActionPATCH'
+      - $ref: '#/components/schemas/EvalActionPATCH'
+      - $ref: '#/components/schemas/LookupActionPATCH'
+      - $ref: '#/components/schemas/RegexActionPATCH'
+      type: object
+    ActionPATCHCommon:
+      description: Property values common across action kinds for setting existing
+        actions using a PATCH request.
+      properties:
+        owner:
+          description: The name of the user who owns this action. This value is obtained
+            from the bearer token if not present.
+          example: janedoe
+          type: string
+        version:
+          description: The catalog version.
+          minimum: 1
+          type: integer
+      type: object
+    ActionPOST:
+      description: Initial property values for creating a new action using a POST
+        request.
+      discriminator:
+        mapping:
+          ALIAS: '#/components/schemas/AliasActionPOST'
+          AUTOKV: '#/components/schemas/AutoKVActionPOST'
+          EVAL: '#/components/schemas/EvalActionPOST'
+          LOOKUP: '#/components/schemas/LookupActionPOST'
+          REGEX: '#/components/schemas/RegexActionPOST'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/AliasActionPOST'
+      - $ref: '#/components/schemas/AutoKVActionPOST'
+      - $ref: '#/components/schemas/EvalActionPOST'
+      - $ref: '#/components/schemas/LookupActionPOST'
+      - $ref: '#/components/schemas/RegexActionPOST'
+      type: object
+    AliasAction:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/AliasActionProperties'
+      description: A complete alias action as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - field
+      - alias
+      - id
+      - ruleid
+      type: object
+    AliasActionKind:
+      description: The alias action kind.
+      enum:
+      - ALIAS
+      type: string
+    AliasActionPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ActionPATCHCommon'
+      - $ref: '#/components/schemas/AliasActionProperties'
+      description: Property values for setting existing alias actions using a PATCH
+        request.
+    AliasActionPOST:
+      allOf:
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/AliasActionProperties'
+      description: Initial property values for creating a new alias action using a
+        POST request.
+      required:
+      - kind
+      - field
+      - alias
+      type: object
+    AliasActionProperties:
+      description: Properties of alias actions which may be read, set, and changed
+        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
+        do not use directly.
+      properties:
+        alias:
+          description: The alias name.
+          example: newFieldName
+          type: string
+        field:
+          description: The name of the field to be aliased.
+          example: existingFieldName
+          type: string
+        kind:
+          $ref: '#/components/schemas/AliasActionKind'
+      type: object
+    Annotation:
+      allOf:
+      - $ref: '#/components/schemas/AnnotationsProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          id:
+            description: A unique annotation ID.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      description: A complete annotation as rendered in POST, PATCH, and GET responses.
+        Key:Value pairs in addition to the defined properties will become annotation
+        tags
+      required:
+      - id
+      - annotationtypeid
+      - owner
+      - created
+      - modified
+      - createdby
+      - modifiedby
+      - version
+      - properties
+      type: object
+    AnnotationPOST:
+      allOf:
+      - $ref: '#/components/schemas/AnnotationsProperties'
+      - $ref: '#/components/schemas/AnnotationTypeResourceName'
+      - properties:
+          id:
+            description: A unique annotation ID. If not specified, an auto generated
+              ID is created.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      description: The properties required to create a new annotation using a POST
+        request. Key:Value pairs in addition to the defined properties will become
+        annotation tags
+      required:
+      - annotationtypeid
+      type: object
+    AnnotationTypeResourceName:
+      description: The resource name of an AnnotationType. For the default module,
+        the resource name format is annotationTypeName. Otherwise, the resource name
+        format is module.annotationTypeName.
+      properties:
+        annotationtyperesourcename:
+          description: Resource name of the annotation type
+          example: catalog.favorite
+          type: string
+      type: string
+    AnnotationsProperties:
+      description: Properties of annotations which are read through the API.
+      properties:
+        annotationtypeid:
+          description: The annotation type ID.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        datasetid:
+          description: The dataset ID. Null if not annotating a dataset.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        fieldid:
+          description: The field ID. Null if not annotating a field.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        relationshipid:
+          description: The relationship ID. Null if not annotating a relationship.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+      type: object
+    AutoKVAction:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/AutoKVActionProperties'
+      description: A complete autokv action as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - mode
+      - id
+      - ruleid
+      type: object
+    AutoKVActionKind:
+      description: The autokv action kind.
+      enum:
+      - AUTOKV
+      type: string
+    AutoKVActionPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ActionPATCHCommon'
+      - $ref: '#/components/schemas/AutoKVActionProperties'
+      description: Property values for setting existing autokv actions using a PATCH
+        request.
+    AutoKVActionPOST:
+      allOf:
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/AutoKVActionProperties'
+      description: Initial property values for creating a new autokv action using
+        a POST request.
+      required:
+      - kind
+      - mode
+      type: object
+    AutoKVActionProperties:
+      description: Properties of auto kv actions which may be read, set, and changed
+        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
+        do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/AutoKVActionKind'
+        mode:
+          description: The autokv action mode.
+          type: string
+      type: object
+    Dashboard:
+      allOf:
+      - properties:
+          id:
+            description: A unique dashboard ID. Random ID used if not provided.
+            example: 5bbf6d876d059d0b9ea8da31
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DashboardMutable'
+      description: A complete dashboard as rendered in POST, PATCH, and GET responses.
+      required:
+      - definition
+      - id
+      - module
+      - name
+      type: object
+    DashboardMutable:
+      description: A list of the mutable dashboard fields.
+      properties:
+        definition:
+          description: The JSON dashboard definition.
+          example: '{ "dataSources": {}, "inputs": {}, "layout": {}, "title": "Title
+            for dashboard", "description": "Description for dashboard", "visualizations":
+            {} }'
+          type: string
+        isactive:
+          description: Whether the dashboard is active or not.
+          example: true
+          type: boolean
+        module:
+          description: The module that contains the dashboard.
+          example: nameofmodule
+          maxLength: 100
+          type: string
+        name:
+          description: The dashboard name. Dashboard names must be unique within each
+            tenant.
+          example: nameofdashboard
+          maxLength: 100
+          type: string
+        version:
+          description: The version of the dashboard.
+          example: 1
+          minimum: 1
+          type: integer
+      type: object
+    DashboardPATCH:
+      allOf:
+      - $ref: '#/components/schemas/DashboardMutable'
+      description: Values for updating a dashboard using a PATCH request.
+      type: object
+    DashboardPOST:
+      allOf:
+      - properties:
+          id:
+            description: A unique dashboard ID. Random ID used if not provided.
+            example: 5bbf6d876d059d0b9ea8da31
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      - $ref: '#/components/schemas/DashboardMutable'
+      description: Initial values for creating a new dashboard using a POST request.
+      required:
+      - definition
+      - module
+      - name
+      type: object
+    Dataset:
+      description: A complete dataset as rendered in POST, PATCH, and GET responses.
+      discriminator:
+        mapping:
+          import: '#/components/schemas/ImportDataset'
+          index: '#/components/schemas/IndexDataset'
+          job: '#/components/schemas/JobDataset'
+          kvcollection: '#/components/schemas/KVCollectionDataset'
+          lookup: '#/components/schemas/LookupDataset'
+          metric: '#/components/schemas/MetricDataset'
+          view: '#/components/schemas/ViewDataset'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/LookupDataset'
+      - $ref: '#/components/schemas/IndexDataset'
+      - $ref: '#/components/schemas/ViewDataset'
+      - $ref: '#/components/schemas/ImportDataset'
+      - $ref: '#/components/schemas/JobDataset'
+      - $ref: '#/components/schemas/MetricDataset'
+      - $ref: '#/components/schemas/KVCollectionDataset'
+    DatasetCommon:
+      description: Properties that are common across all Dataset kinds rendered in
+        POST, PATCH, and GET responses.
+      properties:
+        description:
+          description: Detailed description of the dataset.
+          type: string
+        id:
+          description: A unique dataset ID.
+          example: 5bbf6d876d059d0b9ea8da3e
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        module:
+          description: The name of the module that contains the dataset.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+        resourcename:
+          description: The dataset name qualified by the module name.
+          example: nameOfModule.nameOfDataset
+          maxLength: 201
+          type: string
+        summary:
+          description: Summary of the dataset's purpose.
+          type: string
+        title:
+          description: The title of the dataset.  Does not have to be unique.
+          example: titleOfDataset
+          type: string
+        version:
+          description: The catalog version.
+          minimum: 1
+          type: integer
+      required:
+      - id
+      - module
+      - name
+      - resourcename
+      type: object
+    DatasetImportedBy:
+      properties:
+        module:
+          description: The module that is importing the dataset.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+      required:
+      - module
+      - name
+      type: object
+    DatasetPATCH:
+      description: Property values to be set in an existing dataset using a PATCH
+        request.
+      oneOf:
+      - $ref: '#/components/schemas/LookupDatasetPATCH'
+      - $ref: '#/components/schemas/IndexDatasetPATCH'
+      - $ref: '#/components/schemas/ViewDatasetPATCH'
+      - $ref: '#/components/schemas/ImportDatasetPATCH'
+      - $ref: '#/components/schemas/JobDatasetPATCH'
+      - $ref: '#/components/schemas/MetricDatasetPATCH'
+      - $ref: '#/components/schemas/KVCollectionDatasetPATCH'
+    DatasetPATCHCommon:
+      description: Properties that are common across all Dataset kinds to be set in
+        an existing dataset using a PATCH request.
+      properties:
+        module:
+          description: The name of module to reassign dataset into.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+        owner:
+          description: The name of the dataset owner. This value is obtained from
+            the bearer token.
+          example: johndoe
+          maxLength: 24
+          type: string
+      type: object
+    DatasetPOST:
+      description: Initial property values for creating a new action using a POST
+        request.
+      discriminator:
+        mapping:
+          import: '#/components/schemas/ImportDatasetPOST'
+          index: '#/components/schemas/IndexDatasetPOST'
+          job: '#/components/schemas/JobDatasetPOST'
+          kvcollection: '#/components/schemas/KVCollectionDatasetPOST'
+          lookup: '#/components/schemas/LookupDatasetPOST'
+          metric: '#/components/schemas/MetricDatasetPOST'
+          view: '#/components/schemas/ViewDatasetPOST'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/LookupDatasetPOST'
+      - $ref: '#/components/schemas/IndexDatasetPOST'
+      - $ref: '#/components/schemas/ViewDatasetPOST'
+      - $ref: '#/components/schemas/ImportDatasetPOST'
+      - $ref: '#/components/schemas/JobDatasetPOST'
+      - $ref: '#/components/schemas/MetricDatasetPOST'
+      - $ref: '#/components/schemas/KVCollectionDatasetPOST'
+    DatasetPOSTCommon:
+      description: Properties that are common across all Dataset kinds for creating
+        a new dataset using a POST request.
+      properties:
+        fields:
+          description: The fields to be associated with this dataset.
+          items:
+            $ref: '#/components/schemas/FieldPOST'
+          type: array
+        id:
+          description: A unique dataset ID. Random ID used if not provided.
+          example: 5bc3c0cdfee0d854a4188132
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        module:
+          description: The name of the module to create the new dataset in.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+      required:
+      - name
+      type: object
+    DateMetadataProperties:
+      description: Created and Modified date-time properties for inclusion in other
+        objects.
+      properties:
+        created:
+          description: The date and time object was created.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          readOnly: true
+          type: string
+        modified:
+          description: The date and time object was modified.
+          example: "2018-10-11 07:56:35.000770"
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - created
+      - modified
+      type: object
+    EvalAction:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/EvalActionProperties'
+      description: A complete eval action as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - field
+      - expression
+      - id
+      - ruleid
+      type: object
+    EvalActionKind:
+      description: The eval action kind.
+      enum:
+      - EVAL
+      type: string
+    EvalActionPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ActionPATCHCommon'
+      - $ref: '#/components/schemas/EvalActionProperties'
+      description: Property values for setting existing eval actions using a PATCH
+        request.
+    EvalActionPOST:
+      allOf:
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/EvalActionProperties'
+      description: Initial property values for creating a new eval action using a
+        POST request.
+      required:
+      - kind
+      - field
+      - expression
+      type: object
+    EvalActionProperties:
+      description: Properties of eval actions which may be read, set, and changed
+        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
+        do not use directly.
+      properties:
+        expression:
+          description: The EVAL expression that calculates the field.
+          type: string
+        field:
+          description: The name of the field that is added or modified by the EVAL
+            expression.
+          example: nameOfNewField
+          type: string
+        kind:
+          $ref: '#/components/schemas/EvalActionKind'
+      type: object
+    Field:
+      allOf:
+      - properties:
+          datasetid:
+            description: The dataset that the field is part of.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          id:
+            description: The unique ID of this field.
+            example: 5bc1a7a0fee0d854a418812e
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      - $ref: '#/components/schemas/FieldProperties'
+      - $ref: '#/components/schemas/DateMetadataProperties'
+      description: A complete field as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - datasetid
+      - name
+      - datatype
+      - fieldtype
+      - prevalence
+      - created
+      - modified
+      type: object
+    FieldDataType:
+      description: The type of data in the field. Must be one of the valid values.
+      enum:
+      - DATE
+      - NUMBER
+      - OBJECT_ID
+      - STRING
+      - UNKNOWN
+      type: string
+    FieldPATCH:
+      allOf:
+      - $ref: '#/components/schemas/FieldProperties'
+      description: Property values to be set in an existing field using a PATCH request.
+      type: object
+    FieldPOST:
+      allOf:
+      - $ref: '#/components/schemas/FieldProperties'
+      description: Initial property values for creating a new field using a POST request.
+      required:
+      - name
+      type: object
+    FieldPrevalence:
+      description: How frequent the field appears in the dataset. Must be one of the
+        valid values.
+      enum:
+      - ALL
+      - SOME
+      - UNKNOWN
+      type: string
+    FieldProperties:
+      description: Properties of fields which can be read, set, and changed through
+        the API. Implementation detail of FieldPOST, FieldPATCH, and Field, do not
+        use directly.
+      properties:
+        datatype:
+          $ref: '#/components/schemas/FieldDataType'
+        description:
+          description: The field description.
+          example: Count of all the users in the request
+          type: string
+        fieldtype:
+          $ref: '#/components/schemas/FieldType'
+        indexed:
+          description: Whether or not the field has been indexed.
+          type: boolean
+        name:
+          description: The field name.
+          example: nameOfField
+          maxLength: 100
+          type: string
+        prevalence:
+          $ref: '#/components/schemas/FieldPrevalence'
+        summary:
+          description: The field summary.
+          example: Count of the users
+          type: string
+        title:
+          description: The field title.
+          example: User Count
+          type: string
+    FieldType:
+      description: The type of field. Must be one of the valid values.
+      enum:
+      - DIMENSION
+      - MEASURE
+      - UNKNOWN
+      type: string
+    ImportDataset:
+      allOf:
+      - $ref: '#/components/schemas/ImportDatasetByNameProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete import dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - sourceName
+      - sourceModule
+      type: object
+    ImportDatasetByIdPOST:
+      allOf:
+      - $ref: '#/components/schemas/ImportDatasetByIdProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new import dataset by sourceId
+        using a POST request.
+      required:
+      - kind
+      - sourceId
+      type: object
+    ImportDatasetByIdProperties:
+      description: Initial property values for creating a new import dataset by sourceId
+        using a POST request.
+      properties:
+        kind:
+          $ref: '#/components/schemas/ImportDatasetKind'
+        sourceId:
+          description: The dataset ID being imported.
+          example: 5bbf6d876d059d0b9ea8da3e
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+      type: object
+    ImportDatasetByNamePOST:
+      allOf:
+      - $ref: '#/components/schemas/ImportDatasetByNameProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new import dataset by sourceName
+        and sourceModule using a POST request.
+      required:
+      - kind
+      - sourceModule
+      - sourceName
+      type: object
+    ImportDatasetByNameProperties:
+      description: Properties of import datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/ImportDatasetKind'
+        sourceModule:
+          description: The dataset module being imported.
+          example: nameOfModule
+          type: string
+        sourceName:
+          description: The dataset name being imported.
+          example: nameOfIndex
+          type: string
+      type: object
+    ImportDatasetKind:
+      description: The dataset kind.
+      enum:
+      - import
+      type: string
+    ImportDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing import dataset using a
+        PATCH request.
+    ImportDatasetPOST:
+      description: Initial property values for creating a new import dataset using
+        a POST request.
+      oneOf:
+      - $ref: '#/components/schemas/ImportDatasetByIdPOST'
+      - $ref: '#/components/schemas/ImportDatasetByNamePOST'
+    ImportDatasetProperties:
+      description: Properties of import datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      oneOf:
+      - properties:
+          sourceModule:
+            description: The dataset module being imported.
+            example: nameOfModule
+            type: string
+          sourceName:
+            description: The dataset name being imported.
+            example: nameOfIndex
+            type: string
+        required:
+        - sourceName
+        - sourceModule
+        type: object
+      - properties:
+          sourceId:
+            description: The dataset ID being imported.
+            example: 5bbf6d876d059d0b9ea8da3e
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        required:
+        - sourceId
+        type: object
+      properties:
+        kind:
+          enum:
+          - import
+          type: string
+      type: object
+    IndexDataset:
+      allOf:
+      - $ref: '#/components/schemas/IndexDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete index dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - disabled
+      type: object
+    IndexDatasetKind:
+      description: The dataset kind.
+      enum:
+      - index
+      type: string
+    IndexDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/IndexDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing index dataset using a
+        PATCH request.
+    IndexDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/IndexDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new index dataset using
+        a POST request.
+      required:
+      - kind
+      - disabled
+      type: object
+    IndexDatasetProperties:
+      description: Properties of job datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        disabled:
+          description: Specifies whether or not the Splunk index is disabled.
+          type: boolean
+        frozenTimePeriodInSecs:
+          description: The frozenTimePeriodInSecs to use for the index
+          type: integer
+        kind:
+          $ref: '#/components/schemas/IndexDatasetKind'
+      type: object
+    JobDataset:
+      allOf:
+      - $ref: '#/components/schemas/JobDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete job dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - sid
+      - query
+      - sql
+      - resolvedEarliest
+      - resolvedLatest
+      - dispatchTime
+      - completionTime
+      - deleteTime
+      - parameters
+      type: object
+    JobDatasetEventSummaryAvailableStatus:
+      description: Availability of event summary.
+      enum:
+      - true
+      - false
+      - UNKNOWN
+      type: string
+    JobDatasetFieldSummaryAvailableStatus:
+      description: Availability of field summary.
+      enum:
+      - true
+      - false
+      - UNKNOWN
+      type: string
+    JobDatasetKind:
+      description: The dataset kind.
+      enum:
+      - job
+      type: string
+    JobDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/JobDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing job dataset using a PATCH
+        request.
+    JobDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/JobDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new job dataset using a
+        POST request.
+      required:
+      - kind
+      - sid
+      - query
+      - sql
+      - resolvedEarliest
+      - resolvedLatest
+      - dispatchTime
+      - completionTime
+      - deleteTime
+      - parameters
+      type: object
+    JobDatasetProperties:
+      description: Properties of job datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        collectEventSummary:
+          description: Was the event summary requested for this searhc job?
+          type: boolean
+        collectFieldSummary:
+          description: Was the field summary requested for this searhc job?
+          type: boolean
+        collectTimeBuckets:
+          description: Were the time bucketes requested for this searhc job?
+          type: boolean
+        completionTime:
+          description: Time that the job was completed
+          type: string
+        deleteTime:
+          description: The time the dataset will be available in S3.
+          type: string
+        dispatchTime:
+          description: Time that the job was dispatched
+          type: string
+        executionTime:
+          description: The runtime of the search in seconds.
+          type: number
+        extractAllFields:
+          description: Should the search produce all fields (including those not explicity
+            mentioned in the SPL)?
+          type: boolean
+        hasSideEffects:
+          description: Did the SPL query cause any side effects on a dataset?
+          type: boolean
+        kind:
+          $ref: '#/components/schemas/JobDatasetKind'
+        maxTime:
+          description: The maximum number of seconds to run this search before finishing.
+          type: integer
+        parameters:
+          description: Parameters for the search job, mainly earliest, latest, timezone,
+            and relativeTimeAnchor.
+          type: object
+        percentComplete:
+          description: An estimate of how complete the search job is.
+          type: integer
+        query:
+          description: The SPL query string for the search job.
+          type: string
+        resolvedEarliest:
+          description: Resolved earliest time for the job
+          type: string
+        resolvedLatest:
+          description: Resolved latest time for the job
+          type: string
+        resultsAvailable:
+          description: The instantaneous number of results produced by the search
+            job.
+          type: integer
+        searchHead:
+          description: The search head that started this search job.
+          type: string
+        sid:
+          description: The ID assigned to the search job.
+          type: string
+        spl:
+          description: The SPLv2 version of the search job query string.
+          type: string
+        status:
+          description: The current status of the search job.
+          type: string
+        timelineMetadata:
+          description: Availability of timeline metadata artifacts.
+          properties:
+            auto:
+              description: Availability of automatic timeline metadata artifacts.
+              properties:
+                eventSummaryAvailable:
+                  $ref: '#/components/schemas/JobDatasetEventSummaryAvailableStatus'
+                fieldSummaryAvailable:
+                  $ref: '#/components/schemas/JobDatasetFieldSummaryAvailableStatus'
+                timeBucketsAvailable:
+                  $ref: '#/components/schemas/JobDatasetTimeBucketsAvailableStatus'
+              type: object
+          type: object
+    JobDatasetTimeBucketsAvailableStatus:
+      description: Availability of time buckets (histogram of events).
+      enum:
+      - true
+      - false
+      - UNKNOWN
+      type: string
+    KVCollectionDataset:
+      allOf:
+      - $ref: '#/components/schemas/KVCollectionDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete kvcollection dataset as rendered in POST, PATCH, and
+        GET responses.
+      required:
+      - kind
+      type: object
+    KVCollectionDatasetKind:
+      description: The dataset kind.
+      enum:
+      - kvcollection
+      type: string
+    KVCollectionDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/KVCollectionDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing kvcollection dataset using
+        a PATCH request.
+    KVCollectionDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/KVCollectionDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new kvcollection dataset
+        using a POST request.
+      required:
+      - kind
+      type: object
+    KVCollectionDatasetProperties:
+      description: Properties of kvcollection datasets which may be read, set, and
+        changed through the API. Implementation detail of DatasetPOST, DatasetPATCH,
+        and Dataset, do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/KVCollectionDatasetKind'
+      type: object
+    LookupAction:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/LookupActionProperties'
+      description: A complete lookup action as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - expression
+      - id
+      - ruleid
+      type: object
+    LookupActionKind:
+      description: The lookup action kind.
+      enum:
+      - LOOKUP
+      type: string
+    LookupActionPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ActionPATCHCommon'
+      - $ref: '#/components/schemas/LookupActionProperties'
+      description: Property values for setting existing lookup actions using a PATCH
+        request.
+    LookupActionPOST:
+      allOf:
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/LookupActionProperties'
+      description: Initial property values for creating a new lookup action using
+        a POST request.
+      required:
+      - kind
+      - expression
+      type: object
+    LookupActionProperties:
+      description: Properties of lookup actions which may be read, set, and changed
+        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
+        do not use directly.
+      properties:
+        expression:
+          description: The lookup body.
+          type: string
+        kind:
+          $ref: '#/components/schemas/LookupActionKind'
+      type: object
+    LookupDataset:
+      allOf:
+      - $ref: '#/components/schemas/LookupDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete lookup dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - externalKind
+      - externalName
+      type: object
+    LookupDatasetExternalKind:
+      description: The type of the external lookup.
+      enum:
+      - kvcollection
+      type: string
+    LookupDatasetKind:
+      description: The dataset kind.
+      enum:
+      - lookup
+      type: string
+    LookupDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/LookupDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing lookup dataset using a
+        PATCH request.
+    LookupDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/LookupDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new lookup dataset using
+        a POST request.
+      required:
+      - kind
+      - externalKind
+      - externalName
+      type: object
+    LookupDatasetProperties:
+      description: Properties of lookup datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        caseSensitiveMatch:
+          default: true
+          description: Match case-sensitively against the lookup.
+          type: boolean
+        externalKind:
+          $ref: '#/components/schemas/LookupDatasetExternalKind'
+        externalName:
+          description: The name of the external lookup.
+          example: nameOfKvCollection
+          type: string
+        filter:
+          description: A query that filters results out of the lookup before those
+            results are returned.
+          type: string
+        kind:
+          $ref: '#/components/schemas/LookupDatasetKind'
+    MetadataProperties:
+      allOf:
+      - $ref: '#/components/schemas/DateMetadataProperties'
+      - $ref: '#/components/schemas/UserMetadataProperties'
+      description: Created, createdby, modified, modifiedby, and owner properties
+        for inclusion in other objects.
+    MetricDataset:
+      allOf:
+      - $ref: '#/components/schemas/MetricDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete metric dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - disabled
+      type: object
+    MetricDatasetKind:
+      description: The dataset kind.
+      enum:
+      - metric
+      type: string
+    MetricDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/MetricDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing metric dataset using a
+        PATCH request.
+    MetricDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/MetricDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new metric dataset using
+        a POST request.
+      required:
+      - kind
+      - disabled
+      type: object
+    MetricDatasetProperties:
+      description: Properties of metric datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        disabled:
+          description: Specifies whether or not the Splunk index is disabled.
+          type: boolean
+        frozenTimePeriodInSecs:
+          description: The frozenTimePeriodInSecs to use for the index
+          type: integer
+        kind:
+          $ref: '#/components/schemas/MetricDatasetKind'
+      type: object
+    Module:
+      description: The name of a module.
+      properties:
+        name:
+          maxLength: 100
+          type: string
+      type: object
+    RegexAction:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/RegexActionProperties'
+      description: A complete regex action as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - field
+      - pattern
+      - id
+      - ruleid
+      type: object
+    RegexActionKind:
+      description: The regex action kind.
+      enum:
+      - REGEX
+      type: string
+    RegexActionPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ActionPATCHCommon'
+      - $ref: '#/components/schemas/RegexActionProperties'
+      description: Property values for setting existing regex actions using a PATCH
+        request.
+    RegexActionPOST:
+      allOf:
+      - $ref: '#/components/schemas/ActionCommon'
+      - $ref: '#/components/schemas/RegexActionProperties'
+      description: Initial property values for creating a new regex action using a
+        POST request.
+      required:
+      - kind
+      - field
+      - pattern
+      type: object
+    RegexActionProperties:
+      description: Properties of regex actions which may be read, set, and changed
+        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
+        do not use directly.
+      properties:
+        field:
+          description: Name of the field that is matched against the regular expression.
+          example: nameOfExistingField
+          type: string
+        kind:
+          $ref: '#/components/schemas/RegexActionKind'
+        limit:
+          description: The maximum number of times per event to attempt to match fields
+            with the regular expression.
+          type: integer
+        pattern:
+          description: A regular expression that includes named capture groups for
+            the purpose of field extraction.
+          type: string
+      type: object
+    Relationship:
+      allOf:
+      - $ref: '#/components/schemas/RelationshipProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          fields:
+            description: The relationship fields associated with the relationship.
+            items:
+              $ref: '#/components/schemas/RelationshipField'
+            type: array
+          id:
+            description: A unique relationship ID.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      description: A complete relationship as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - name
+      - sourceid
+      - targetid
+      - kind
+      - module
+      - owner
+      - created
+      - modified
+      - createdby
+      - modifiedby
+      - version
+      - fields
+      type: object
+    RelationshipField:
+      allOf:
+      - $ref: '#/components/schemas/DateMetadataProperties'
+      - $ref: '#/components/schemas/RelationshipFieldProperties'
+      description: A complete relationship field as rendered in POST, PATCH, and GET
+        responses.
+      required:
+      - sourceid
+      - targetid
+      - kind
+      type: object
+    RelationshipFieldKind:
+      description: The type of match between the fields. Must be one of the valid
+        values. The LATEST_BEFORE match type specifies that the datetime field in
+        one dataset binds to the latest time before the datetime field in another
+        dataset.
+      enum:
+      - EXACT
+      - LATEST_BEFORE
+      type: string
+    RelationshipFieldPOST:
+      allOf:
+      - $ref: '#/components/schemas/RelationshipFieldProperties'
+      description: The properties required to create a new relationship field using
+        a relationship POST request.
+      required:
+      - sourceid
+      - targetid
+      - kind
+      type: object
+    RelationshipFieldProperties:
+      description: Properties of relationship fields which are read through the API.
+        Implementation detail of RelationshipFieldPOST. Do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/RelationshipFieldKind'
+        relationshipid:
+          description: A unique relationship ID.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        sourceid:
+          description: A unique source dataset ID.
+          example: 5bc1a6fefee0d854a4188126
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        targetid:
+          description: A unique target dataset ID.
+          example: 5bc1a6fefee0d854a4188127
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+      type: object
+    RelationshipKind:
+      description: The relationship type. Must be one of the valid values.
+      enum:
+      - ONE
+      - MANY
+      - DEPENDENCY
+      type: string
+    RelationshipPATCH:
+      properties:
+        name:
+          description: The name of the relationship.
+          example: nameOfRelationship
+          type: string
+        owner:
+          description: The user who is the owner of the relationship.
+          example: johndoe
+          type: string
+      type: object
+    RelationshipPOST:
+      allOf:
+      - $ref: '#/components/schemas/RelationshipProperties'
+      - properties:
+          fields:
+            description: The fields associated with this relationship.
+            items:
+              $ref: '#/components/schemas/RelationshipFieldPOST'
+            type: array
+          id:
+            description: A unique relationship ID. If not specified, an auto generated
+              ID is created.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      description: The properties required to create a new relationship using a POST
+        request.
+      required:
+      - name
+      - kind
+      type: object
+    RelationshipProperties:
+      description: Properties of relationships which are read through the API. Implementation
+        detail of RelationshipPOST, RelationshipPATCH and Relationship. Do not use
+        directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/RelationshipKind'
+        module:
+          default: The module of the source dataset.
+          description: The module that contains the relationship.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The relationship name.
+          example: nameOfRelationship
+          maxLength: 100
+          type: string
+        sourceid:
+          description: A unique source dataset ID. Either the sourceid or sourceresourcename
+            property must be specified.
+          example: 5bc1a6fefee0d854a4188126
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        sourceresourcename:
+          description: The source dataset name qualified by module name. Either the
+            sourceid or sourceresourcename property must be specified.
+          example: nameOfModule.nameOfDataset
+          type: string
+        targetid:
+          description: A unique target dataset ID. Either the targetid or targetresourcename
+            property must be specified.
+          example: 5bc1a6fefee0d854a4188127
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        targetresourcename:
+          description: The target dataset name qualified by module name. Either the
+            targetid or targetresourcename property must be specified.
+          example: nameOfModule.nameOfDataset
+          type: string
+        version:
+          description: The Catalog version.
+          minimum: 1
+          type: integer
+      type: object
+    Rule:
+      allOf:
+      - $ref: '#/components/schemas/RuleProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          actions:
+            description: The actions associated with the rule.
+            items:
+              $ref: '#/components/schemas/Action'
+            type: array
+          id:
+            description: A unique Rule ID.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          resourcename:
+            description: The rule name qualified by the module name.
+            example: nameOfModule.nameOfRule
+            maxLength: 201
+            type: string
+        type: object
+      description: A complete rule as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - name
+      - module
+      - resourcename
+      - match
+      - actions
+      - versions
+      - owner
+      - created
+      - createdby
+      - modified
+      - modifiedby
+      type: object
+    RulePATCH:
+      allOf:
+      - $ref: '#/components/schemas/RuleProperties'
+      properties:
+        owner:
+          description: The name of the user who owns the rule.
+          example: johndoe
+          type: string
+      type: object
+    RulePOST:
+      allOf:
+      - $ref: '#/components/schemas/RuleProperties'
+      - properties:
+          actions:
+            description: The actions to be associated with this rule.
+            items:
+              $ref: '#/components/schemas/ActionPOST'
+            type: array
+          id:
+            description: A unique rule ID. The newly created rule object will use
+              this ID value if provided.
+            example: 5bc1a6fefee0d854a4188125
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+        type: object
+      description: Initial property values for creating a new rule using a POST request.
+      required:
+      - name
+      - match
+      type: object
+    RuleProperties:
+      description: Properties of rules which may be read, set, and changed through
+        the API. Implementation detail of RulePOST, RulePATCH, and Rule, do not use
+        directly.
+      properties:
+        match:
+          description: The rule match type.
+          maxLength: 100
+          type: string
+        module:
+          default: ""
+          description: The module containing the rule.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The rule name.
+          example: nameOfRole
+          maxLength: 100
+          type: string
+        version:
+          description: The catalog version.
+          minimum: 1
+          type: integer
+      type: object
+    Task:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          algorithm:
+            description: The task algorithm name.
+            example: PCA
+            type: string
+          children:
+            description: The children tasks of the task.
+            items:
+              description: A unique task ID.
+              example: 5bbf6d876d059d0b9ea8da46
+              format: mongo-object-id
+              maxLength: 24
+              minLength: 24
+              type: string
+            type: array
+          evaluation:
+            description: The evaluation criteria of the task.
+            items:
+              type: string
+            type: array
+          features:
+            description: The features of the task.
+            items:
+              type: string
+            type: array
+          id:
+            description: A unique task ID.
+            example: 5bbf6d876d059d0b9ea8da41
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          name:
+            description: The task name.
+            example: nameOfTask
+            maxLength: 100
+            type: string
+          outputtransformer:
+            description: The output transformer of the task.
+            example: pca_model
+            type: string
+          parameters:
+            description: The task parameters.
+            example: '{"k":3}'
+            type: string
+          parents:
+            description: The parent tasks of the task.
+            items:
+              description: A unique task ID.
+              example: 5bbf6d876d059d0b9ea8da45
+              format: mongo-object-id
+              maxLength: 24
+              minLength: 24
+              type: string
+            type: array
+          targetfeature:
+            description: The target feature of the task.
+            example: feature
+            type: string
+          tasktype:
+            description: The task type.
+            example: fit
+            type: string
+          timeoutsecs:
+            description: The timeout secs of the task.
+            example: 600
+            minimum: 1
+            type: integer
+          workflowid:
+            description: A unique workflow ID that is associatd with the task.
+            example: 5bbf6d876d059d0b9ea8da42
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          workflowversion:
+            description: The version of the workflow that is associated with the task.
+            example: 1
+            minimum: 1
+            type: integer
+        type: object
+      description: A complete task as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - workflowid
+      - workflowversion
+      - name
+      - algorithm
+      - tasktype
+      - parameters
+      - features
+      - targetfeature
+      - outputtransformer
+      - evaluation
+      - timeoutsecs
+      - parents
+      - children
+      type: object
+    TaskPOST:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          algorithm:
+            description: The task algorithm name.
+            example: PCA
+            type: string
+          children:
+            description: The children tasks of the task.
+            items:
+              description: A unique task ID.
+              example: 5bbf6d876d059d0b9ea8da46
+              format: mongo-object-id
+              maxLength: 24
+              minLength: 24
+              type: string
+            type: array
+          evaluation:
+            description: The evaluation criteria of the task.
+            items:
+              type: string
+            type: array
+          features:
+            description: The features of the task.
+            items:
+              type: string
+            type: array
+          id:
+            description: A unique task ID.
+            example: 5bbf6d876d059d0b9ea8da41
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          name:
+            description: The task name.
+            example: nameOfTask
+            maxLength: 100
+            type: string
+          outputtransformer:
+            description: The output transformer of the task.
+            example: pca_model
+            type: string
+          parameters:
+            description: The task parameters.
+            example: '{"k":3}'
+            type: string
+          parents:
+            description: The parent tasks of the task.
+            items:
+              description: A unique task ID.
+              example: 5bbf6d876d059d0b9ea8da45
+              format: mongo-object-id
+              maxLength: 24
+              minLength: 24
+              type: string
+            type: array
+          targetfeature:
+            description: The target feature of the task.
+            example: feature
+            type: string
+          tasktype:
+            description: The task type.
+            example: fit
+            type: string
+          timeoutsecs:
+            description: The timeout secs of the task.
+            example: 600
+            minimum: 1
+            type: integer
+          workflowid:
+            description: A unique workflow ID that is associated with the task.
+            example: 5bbf6d876d059d0b9ea8da42
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          workflowversion:
+            description: The version of the workflow that is associated with the task.
+            example: 1
+            minimum: 1
+            type: integer
+        type: object
+      description: A complete task as rendered in POST, PATCH, and GET responses.
+      required:
+      - algorithm
+      - tasktype
+      - parameters
+      - features
+      - timeoutsecs
+      type: object
+    UserMetadataProperties:
+      description: Owner, createdby, and modifiedby user name properties for inclusion
+        in other objects.
+      properties:
+        createdby:
+          description: The name of the user who created the object. This value is
+            obtained from the bearer token and may not be changed.
+          example: janedoe
+          readOnly: true
+          type: string
+        modifiedby:
+          description: The name of the user who most recently modified the object.
+          example: suedoe
+          readOnly: true
+          type: string
+        owner:
+          description: The name of the object's owner.
+          example: johndoe
+          readOnly: true
+          type: string
+      required:
+      - owner
+      - createdby
+      - modifiedby
+      type: object
+    ViewDataset:
+      allOf:
+      - $ref: '#/components/schemas/ViewDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete view dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - search
+      type: object
+    ViewDatasetKind:
+      description: The dataset kind.
+      enum:
+      - view
+      type: string
+    ViewDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/ViewDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing view dataset using a PATCH
+        request.
+    ViewDatasetPOST:
+      allOf:
+      - $ref: '#/components/schemas/ViewDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Initial property values for creating a new view dataset using a
+        POST request.
+      required:
+      - kind
+      - search
+      type: object
+    ViewDatasetProperties:
+      description: Properties of job datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/ViewDatasetKind'
+        search:
+          description: A valid SPL-defined search.
+          type: string
+      type: object
+    Workflow:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          description:
+            description: The workflow description.
+            example: Description of workflow.
+            type: string
+          experimentid:
+            description: A unique experiment ID that is associated with the workflow.
+            example: 5bbf6d876d059d0b9ea8da32
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          id:
+            description: A unique workflow ID.
+            example: 5bbf6d876d059d0b9ea8da31
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          name:
+            description: The workflow name. Workflow names must be unique within each
+              tenant.
+            example: nameOfWorkflow
+            maxLength: 100
+            type: string
+          tasks:
+            items:
+              $ref: '#/components/schemas/Task'
+            type: array
+          version:
+            description: The version of the workflow.
+            example: 1
+            minimum: 1
+            type: integer
+        type: object
+      description: A complete workflow as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - name
+      - owner
+      - created
+      - createdby
+      - modified
+      - modifiedby
+      type: object
+    WorkflowBuild:
+      allOf:
+      - $ref: '#/components/schemas/MetadataProperties'
+      - properties:
+          description:
+            description: The description of the workflow build.
+            example: Description of workflow build.
+            type: string
+          ended:
+            description: The date and time the workflow build ended.
+            example: "2018-10-14 10:18:53.000417"
+            format: date-time
+            type: string
+          evaluationresults:
+            description: The evaluation results of the workflow build.
+            items:
+              type: string
+            type: array
+          failuremessage:
+            description: The failure message of the workflow build.
+            example: Algorithm not recognized.
+            type: string
+          id:
+            description: A unique workflow build ID.
+            example: 5bbf6d876d059d0b9ea8da31
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          inputdata:
+            description: The input data of the workflow build.
+            items:
+              type: string
+            type: array
+          kfold:
+            description: The number of kfold when the validation type if CrossValidation.
+            exclusiveMinimum: true
+            minimum: 0
+            type: number
+          name:
+            description: The workflow build name.
+            example: nameOfWorkflowBuild
+            maxLength: 100
+            type: string
+          outputdata:
+            description: The output data of the workflow build.
+            items:
+              type: string
+            type: array
+          randomstate:
+            description: The random state of the workflow build.
+            example: 123
+            type: integer
+          started:
+            description: The date and time the workflow build started.
+            example: "2018-10-14 10:18:53.000417"
+            format: date-time
+            type: string
+          status:
+            description: The status of the workflow build.
+            example: success
+            type: string
+          stratified:
+            description: Whether data is stratified.
+            type: boolean
+          timeoutsecs:
+            description: The timeout in seconds of the workflow.
+            example: 600
+            minimum: 1
+            type: integer
+          traintestsplit:
+            description: The train test split of the workflow build.
+            exclusiveMinimum: true
+            maximum: 1
+            minimum: 0
+            type: number
+          validationkind:
+            description: The type of validation.
+            enum:
+            - TrainTest
+            - CrossValidation
+            type: string
+          version:
+            description: The version of the workflow.
+            example: 1
+            minimum: 1
+            type: integer
+          workflowid:
+            description: A unique workflow ID that is associated with the workflow
+              build.
+            example: 5bbf6d876d059d0b9ea8da32
+            format: mongo-object-id
+            maxLength: 24
+            minLength: 24
+            type: string
+          workflowversion:
+            description: The version of the workflow that is associated with the workflow
+              build.
+            example: 1
+            minimum: 1
+            type: integer
+        type: object
+      description: A complete workflow build as rendered in POST, PATCH, and GET responses.
+      required:
+      - id
+      - workflowid
+      - workflowversion
+      - inputdata
+      - outputdata
+      - traintestsplit
+      - randomstate
+      - timeoutsecs
+      - owner
+      - created
+      - createdby
+      - modified
+      - modifiedby
+      type: object
+    WorkflowBuildPATCH:
+      description: Values for updating a workflow build using a PATCH request.
+      properties:
+        description:
+          description: The workflow build description.
+          example: Description of workflow build.
+          type: string
+        name:
+          description: The workflow build name.
+          example: workflow_build_updated
+          maxLength: 100
+          type: string
+        status:
+          description: The status of the workflow build.
+          example: started
+          type: string
+      type: object
+    WorkflowBuildPOST:
+      description: Initial values for creating a new workflow using a POST request.
+      properties:
+        description:
+          description: The description of the workflow build.
+          example: Description of workflow build.
+          type: string
+        ended:
+          description: The date and time the workflow build ended.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        evaluationresults:
+          description: The evaluation results of the workflow build.
+          items:
+            type: string
+          type: array
+        failuremessage:
+          description: The failure message of the workflow build.
+          example: Algorithm not recognized.
+          type: string
+        id:
+          description: A unique workflow build ID.
+          example: 5bbf6d876d059d0b9ea8da31
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        inputdata:
+          description: The input data of the workflow build.
+          items:
+            type: string
+          type: array
+        name:
+          description: The workflow build name.
+          example: nameOfWorkflowBuild
+          maxLength: 100
+          type: string
+        outputdata:
+          description: The output data of the workflow build.
+          items:
+            type: string
+          type: array
+        randomstate:
+          description: The random state of the workflow build.
+          example: 123
+          type: integer
+        started:
+          description: The date and time the workflow build started.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        status:
+          description: The status of the workflow build.
+          example: success
+          type: string
+        timeoutsecs:
+          description: The timeout in seconds of the workflow.
+          example: 600
+          minimum: 1
+          type: integer
+        traintestsplit:
+          description: The train test split of the workflow build.
+          exclusiveMinimum: true
+          maximum: 1
+          minimum: 0
+          type: number
+        version:
+          description: The version of the workflow.
+          example: 1
+          minimum: 1
+          type: integer
+        workflowid:
+          description: A unique workflow ID that is associated with the workflow build.
+          example: 5bbf6d876d059d0b9ea8da32
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        workflowversion:
+          description: The version of the workflow that is associated with the workflow
+            build.
+          example: 1
+          minimum: 1
+          type: integer
+      required:
+      - inputdata
+      - timeoutsecs
+      type: object
+    WorkflowPATCH:
+      description: Values for updating a workflow using a PATCH request.
+      properties:
+        description:
+          description: The workflow description.
+          example: Description of workflow.
+          type: string
+        name:
+          description: The workflow name.
+          example: workflow_name
+          maxLength: 100
+          type: string
+      type: object
+    WorkflowPOST:
+      description: Initial values for creating a new workflow using a POST request.
+      properties:
+        description:
+          description: The workflow description.
+          example: Description of workflow.
+          type: string
+        experimentid:
+          description: A unique experiment ID that is associate with the workflow.
+          example: 5bbf6d876d059d0b9ea8da36
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        id:
+          description: A unique workflow ID. Random ID used if not provided.
+          example: 5bc3c0cdfee0d854a4188135
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskPOST'
+          type: array
+        version:
+          description: The version of the workflow.
+          example: 1
+          minimum: 1
+          type: integer
+      required:
+      - tasks
+      type: object
+    WorkflowRun:
+      description: A complete workflow run as rendered in POST, PATCH, and GET responses.
+      properties:
+        created:
+          description: The date and time the workflow run was created.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        createdby:
+          description: The name of the user who created the workflow run. This value
+            is obtained from the bearer token and may not be changed.
+          example: janedoe
+          type: string
+        description:
+          description: The description of the workflow run.
+          example: Description of workflow run.
+          type: string
+        ended:
+          description: The date and time the workflow build ended.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        failuremessage:
+          description: The failure message of the workflow run.
+          example: Algorithm not recognized.
+          type: string
+        id:
+          description: A unique workflow Run ID.
+          example: 5bbf6d876d059d0b9ea8da31
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        inputdata:
+          description: The input data of the workflow run.
+          items:
+            type: string
+          type: array
+        name:
+          description: The workflow run name.
+          example: nameOfWorkflowRun
+          maxLength: 100
+          type: string
+        outputdata:
+          description: The output data of the workflow run.
+          items:
+            type: string
+          type: array
+        owner:
+          description: The name of the workflow run's owner.
+          example: johndoe
+          type: string
+        started:
+          description: The date and time the workflow build started.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        status:
+          description: The status of the workflow run.
+          example: success
+          type: string
+        timeoutsecs:
+          description: The timeout in seconds of the workflow.
+          example: 600
+          minimum: 1
+          type: integer
+        workflowbuildid:
+          description: A unique workflow build ID that is associated with the workflow
+            run.
+          example: 5bbf6d876d059d0b9ea8da32
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        workflowbuildversion:
+          description: The version of the workflow build that is associated with the
+            workflow run.
+          example: 1
+          minimum: 1
+          type: integer
+      required:
+      - id
+      - workflowbuildid
+      - workflowbuildversion
+      - inputdata
+      - outputdata
+      - timeoutsecs
+      - owner
+      - created
+      - createdby
+      type: object
+    WorkflowRunPATCH:
+      description: Values for updating a workflow run using a PATCH request.
+      properties:
+        description:
+          description: The workflow run description.
+          example: Description of workflow run.
+          type: string
+        name:
+          description: The workflow run name.
+          example: workflow_run_updated
+          maxLength: 100
+          type: string
+        status:
+          description: The status of the workflow run.
+          example: started
+          type: string
+      type: object
+    WorkflowRunPOST:
+      description: Initial values for creating a new workflow run using a POST request.
+      properties:
+        description:
+          description: The description of the workflow run.
+          example: Description of workflow run.
+          type: string
+        ended:
+          description: The date and time the workflow run ended for specified workflow
+            build ID.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        failuremessage:
+          description: The failure message of the workflow run for specified workflow
+            build ID.
+          example: Algorithm not recognized.
+          type: string
+        id:
+          description: A unique workflow Run ID.
+          example: 5bbf6d876d059d0b9ea8da31
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        inputdata:
+          description: The input data of the workflow run for specified workflow build
+            ID.
+          items:
+            type: string
+          type: array
+        name:
+          description: The workflow run name.
+          example: nameOfWorkflowRun
+          maxLength: 100
+          type: string
+        outputdata:
+          description: The output data of the workflow run for specified workflow
+            build ID.
+          items:
+            type: string
+          type: array
+        started:
+          description: The date and time the workflow run started for specified workflow
+            build ID.
+          example: "2018-10-14 10:18:53.000417"
+          format: date-time
+          type: string
+        status:
+          description: The status of the workflow run for specified workflow build
+            ID.
+          example: success
+          type: string
+        timeoutsecs:
+          description: The timeout in seconds of the workflow run for specified workflow
+            build ID.
+          example: 600
+          minimum: 1
+          type: integer
+        workflowbuildid:
+          description: A unique workflow build ID that is associated with the workflow
+            run.
+          example: 5bbf6d876d059d0b9ea8da32
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        workflowbuildversion:
+          description: The version of the workflow build that is assocaited with the
+            workflow run.
+          example: 1
+          minimum: 1
+          type: integer
+      required:
+      - inputdata
+      - outputdata
+      - timeoutsecs
+      type: object
+info:
+  description: With the Metadata Catalog you can create and manage knowledge objects
+    such as datasets, fields, rules, actions, dashboards, and workflows.
+  title: Metadata Catalog
+  version: v2beta1.1
+openapi: 3.0.0
+paths:
+  /{tenant}/catalog/v2beta1/dashboards:
+    get:
+      description: Return a list of Dashboards.
+      operationId: listDashboards
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Dashboard'
+                type: array
+          description: A list of dashboards has been returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Create a new dashboard.
+      operationId: createDashboard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardPOST'
+        description: The JSON representation of the Dashboard to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: The dashboard was created.
+        "400":
+          description: The dashboard is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The dashboard is already present.
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardid}:
+    delete:
+      description: Delete the dashboard with the specified ID.
+      operationId: deleteDashboardById
+      responses:
+        "204":
+          description: The dashboard was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dashboard was not found.
+    get:
+      description: Return information about a dashboard with the specified ID.
+      operationId: getDashboardByID
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: Information about a dashboard with the specified ID was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardID'
+    patch:
+      description: Update the dashboard with the specified ID.
+      operationId: updateDashboardById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardPATCH'
+        description: An updated representation of the dashboard to be persisted.
+        required: true
+      responses:
+        "200":
+          description: The dashboard was updated.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dashboard was not found.
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}:
+    delete:
+      description: Delete the dashboard with the specified resource name.
+      operationId: deleteDashboardByResourceName
+      responses:
+        "204":
+          description: The dashboard was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dashboard was not found.
+    get:
+      description: Return information about a dashboard with the specified resource
+        name.
+      operationId: getDashboardByResourceName
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: Information about a dashboard with the specified resource name
+            was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardResourceName'
+    patch:
+      description: Update the dashboard with the specified resource name.
+      operationId: updateDashboardByResourceName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardPATCH'
+        description: An updated representation of the dashboard to be persisted.
+        required: true
+      responses:
+        "200":
+          description: The dashboard was updated.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dashboard was not found.
+  /{tenant}/catalog/v2beta1/datasets:
+    get:
+      description: Returns a list of all datasets, unless you specify a filter. Use
+        a filter to return a specific list of datasets.
+      operationId: listDatasets
+      parameters:
+      - description: A filter to apply to the dataset list. The filter must be a SPL
+          predicate expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Dataset'
+                type: array
+          description: A list of datasets that match your filter has been returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Create a new dataset.
+      operationId: createDataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetPOST'
+        description: JSON representation of the DatasetInfo to be persisted
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: The dataset was created.
+        "400":
+          description: The dataset is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The dataset is already present.
+        "429":
+          description: Too many concurrent requests to create datasets.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}:
+    delete:
+      description: Delete a specific dataset. Deleting a dataset also deletes its
+        dependent objects, such as fields.
+      operationId: deleteDatasetById
+      responses:
+        "204":
+          description: The dataset with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A dataset with the specified ID was not found.
+        "405":
+          description: The dataset with the specified ID cannot be deleted because
+            there are external objects dependent on the dataset.
+    get:
+      description: Return information about the dataset with the specified ID.
+      operationId: getDatasetById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: Information about the dataset with the specified ID was returned.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A dataset with the specified ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    patch:
+      description: Update a specific dataset.
+      operationId: updateDatasetById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetPATCH'
+        description: An updated representation of the dataset to be persisted.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: The dataset with the specified ID was updated.
+        "404":
+          description: The dataset with the specified ID was not found.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations:
+    get:
+      description: Return the set of annotations that are part of a dataset.
+      operationId: listAnnotationsForDatasetById
+      parameters:
+      - description: A filter query to apply to the annotations.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Annotation'
+                type: array
+          description: An array of annotations matching the dataset was returned.
+        "400":
+          description: The filter you have applied is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    post:
+      description: Create a new annotation for a specific dataset.
+      operationId: createAnnotationForDatasetById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationPOST'
+        description: The JSON representation of the annotation to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: An annotation has been created for the specified dataset.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The annotation is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations/{annotationid}:
+    delete:
+      description: Delete a specific annotation of a dataset.
+      operationId: deleteAnnotationOfDatasetById
+      responses:
+        "204":
+          description: The annotation with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A annotation with the specified ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    - $ref: '#/components/parameters/AnnotationID'
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/fields:
+    get:
+      description: Return the set of fields for the specified dataset.
+      operationId: listFieldsForDatasetById
+      parameters:
+      - description: A filter to apply to a specified dataset. The filter must be
+          a SPL predicate expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Field'
+                type: array
+          description: An array of matching fields was returned.
+        "400":
+          description: The filter is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    post:
+      description: Add a new field to a dataset.
+      operationId: createFieldForDatasetById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldPOST'
+        description: The JSON representation of the field to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: The field was created.
+        "400":
+          description: The field is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The field is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/fields/{fieldid}:
+    delete:
+      description: Delete a field that is part of a specific dataset.
+      operationId: deleteFieldByIdForDatasetById
+      responses:
+        "204":
+          description: A field with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The field with the specified ID was not found.
+    get:
+      description: Return a field that is part of a specific dataset.
+      operationId: getFieldByIdForDatasetById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: A field with the specified ID was retrieved.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    - $ref: '#/components/parameters/FieldID'
+    patch:
+      description: Update a field for a specific dataset.
+      operationId: updateFieldByIdForDatasetById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldPATCH'
+        description: The properties to update in the specified field.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: A field with the specified ID was updated.
+        "404":
+          description: The field with the specified ID was not found.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/importedby:
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    post:
+      description: Create a new dataset import.
+      operationId: createDatasetImportById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetImportedBy'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportDataset'
+          description: The dataset import was created.
+        "400":
+          description: The dataset import is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dataset with the specified ID was not found.
+        "409":
+          description: The dataset cannot be imported because it is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}:
+    delete:
+      description: Delete the dataset with the specified resource name, along with
+        its dependencies. For the default module, the resource name format is datasetName.
+        Otherwise, the resource name format is module.datasetName.
+      operationId: deleteDataset
+      responses:
+        "204":
+          description: A dataset with the specified resource name was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A dataset with the specified resource name was not found.
+        "405":
+          description: The dataset with the specified ID cannot be deleted because
+            there are external objects dependent on the dataset.
+    get:
+      description: Return the dataset with the specified resource name. For the default
+        module, the resource name format is datasetName. Otherwise, the resource name
+        format is module.datasetName.
+      operationId: getDataset
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: A dataset with the specified resource name was returned.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A dataset with the specified resource name was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    patch:
+      description: Update the dataset with the specified resource name. For the default
+        module, the resource name format is datasetName. Otherwise, the resource name
+        format is module.datasetName.
+      operationId: updateDataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetPATCH'
+        description: An updated representation of the dataset to be persisted.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: A dataset with the specified resource name was updated.
+        "404":
+          description: A dataset with the specified resource name was not found.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations:
+    get:
+      description: Return the set of annotations that are part of a dataset.
+      operationId: listAnnotationsForDatasetByResourceName
+      parameters:
+      - description: A filter query to apply to the annotations.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Annotation'
+                type: array
+          description: An array of annotations matching the dataset was returned.
+        "400":
+          description: The filter you have applied is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    post:
+      description: Create a new annotation for a specific dataset.
+      operationId: createAnnotationForDatasetByResourceName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationPOST'
+        description: The JSON representation of the annotation to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: An annotation has been created for the specified dataset.
+        "400":
+          description: The annotation is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The action is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations/{annotationid}:
+    delete:
+      description: Delete a specific annotation of a dataset.
+      operationId: deleteAnnotationOfDatasetByResourceName
+      responses:
+        "204":
+          description: The annotation with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A annotation with the specified ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    - $ref: '#/components/parameters/AnnotationID'
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/fields:
+    get:
+      description: Return the list of fields that are part of a specified dataset.
+      operationId: listFieldsForDataset
+      parameters:
+      - description: A filter to apply to the dataset.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Field'
+                type: array
+          description: An array of fields matching the filter has been returned.
+        "400":
+          description: The filter is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    post:
+      description: Create a new field on a specific dataset.
+      operationId: createFieldForDataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldPOST'
+        description: The JSON representation of the field to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: The field was created.
+        "400":
+          description: The field is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The field is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/fields/{fieldid}:
+    delete:
+      description: Delete a field that is part of a specific dataset.
+      operationId: deleteFieldByIdForDataset
+      responses:
+        "204":
+          description: A field with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The field with the specified ID was not found.
+    get:
+      description: Return a field that is part of a specific dataset.
+      operationId: getFieldByIdForDataset
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: A field with the specified ID was retrieved.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/FieldID'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    patch:
+      description: Update a field with a specified ID for a specified dataset.
+      operationId: updateFieldByIdForDataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldPATCH'
+        description: The properties to update in the specified field.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: A field with the specified ID was updated.
+        "404":
+          description: The field with the specified ID was not found.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/importedby:
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    post:
+      description: Create a new dataset import.
+      operationId: createDatasetImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetImportedBy'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportDataset'
+          description: The dataset import was created.
+        "400":
+          description: The dataset import is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dataset with the specified ID was not found.
+        "409":
+          description: The dataset cannot be imported because it is already present.
+  /{tenant}/catalog/v2beta1/fields:
+    get:
+      description: Get a list of all fields in the Catalog.
+      operationId: listFields
+      parameters:
+      - description: A filter query to apply to the the field list.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Field'
+                type: array
+          description: A list of fields matching the query was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+  /{tenant}/catalog/v2beta1/fields/{fieldid}:
+    get:
+      description: Get a field that corresponds to a specific field ID.
+      operationId: getFieldByID
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Field'
+          description: A field matching the specified field ID was retrieved.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The field with the specified ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/FieldID'
+  /{tenant}/catalog/v2beta1/modules:
+    get:
+      description: Return a list of all modules, unless you specify a filter. Use
+        a filter to return a specific list of modules.
+      operationId: listModules
+      parameters:
+      - description: A filter to apply to the modules.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Module'
+                type: array
+          description: A list of modules matching your filter has been returned.
+        "401":
+          description: Unauthorized operation.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+  /{tenant}/catalog/v2beta1/relationships:
+    get:
+      description: Returns a list of all relationships, unless you specify a filter.
+        Use a filter to return a specific list of relationships.
+      operationId: listRelationships
+      parameters:
+      - description: A filter to apply to the complete set of relationships.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Relationship'
+                type: array
+          description: A list of relationships that match the filter was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Create a new relationship.
+      operationId: createRelationship
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipPOST'
+        description: The JSON representation of the relationship to persist.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relationship'
+          description: The relationship was created.
+        "400":
+          description: The relationship is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The relationship is already present.
+  /{tenant}/catalog/v2beta1/relationships/{relationshipid}:
+    delete:
+      description: Delete a specific relationship. Deleting a relationship also deleletes
+        any objects that are dependents of that relationship, such as relationship
+        fields.
+      operationId: deleteRelationshipById
+      responses:
+        "204":
+          description: A relationship with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A relationship with the specified ID was not found.
+    get:
+      description: Get a specific relationship.
+      operationId: getRelationshipById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relationship'
+          description: A relationship with the selected relationship ID was retrieved.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A relationship with the specified relationship ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RelationshipID'
+    patch:
+      description: Update a specific relationship.
+      operationId: updateRelationshipById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationshipPATCH'
+        description: The properties to update in the specified relationship.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relationship'
+          description: The relationship was updated.
+        "404":
+          description: A relationship matching the specified ID was not found.
+  /{tenant}/catalog/v2beta1/rules:
+    get:
+      description: Return a list of rules that match a filter query if it is given,
+        otherwise return all rules.
+      operationId: listRules
+      parameters:
+      - description: A query filter to apply to the complete set of rules.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Rule'
+                type: array
+          description: A list of rules matching the query filter was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Create a new rule.
+      operationId: createRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulePOST'
+        description: The JSON representation of the rule to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: The rule was created.
+        "400":
+          description: The rule is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The rule is already present.
+  /{tenant}/catalog/v2beta1/rules/{ruleid}:
+    delete:
+      description: Delete a specific rule. Deleting a rule also deleletes any objects
+        that are dependents of that rule, such as rule actions.
+      operationId: deleteRuleById
+      responses:
+        "204":
+          description: A rule with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A rule with the specified ID was not found.
+        "405":
+          description: The rule cannot be deleted because it has dependencies.
+    get:
+      description: Get information about a specific rule.
+      operationId: getRuleById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: A rule with the selected rule ID was retrieved.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A rule with the specified rule ID was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleID'
+    patch:
+      description: Update a specific rule.
+      operationId: updateRuleById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulePATCH'
+        description: The properties to update in the specified rule.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: The rule was updated.
+        "404":
+          description: A rule matching the specified ID was not found.
+  /{tenant}/catalog/v2beta1/rules/{ruleid}/actions:
+    get:
+      description: Return the set of actions that are part of a rule.
+      operationId: listActionsForRuleById
+      parameters:
+      - description: A filter query to apply to the actions.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Action'
+                type: array
+          description: An array of actions matching the rule was returned.
+        "400":
+          description: The filter you have applied is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleID'
+    post:
+      description: Create a new action for a specific rule.
+      operationId: createActionForRuleById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionPOST'
+        description: The JSON representation of the action to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: An action has been created for the specified rule.
+        "400":
+          description: The action is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The action is already present.
+  /{tenant}/catalog/v2beta1/rules/{ruleid}/actions/{actionid}:
+    delete:
+      description: Delete an action that is part of a specific rule.
+      operationId: deleteActionByIdForRuleById
+      responses:
+        "204":
+          description: The action was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The action was not found.
+    get:
+      description: Return information about an action that is part of a specific rule.
+      operationId: getActionByIdForRuleById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: An action matching the specified rule ID was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleID'
+    - $ref: '#/components/parameters/ActionID'
+    patch:
+      description: Update an action for a specific rule.
+      operationId: updateActionByIdForRuleById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionPATCH'
+        description: The properties to update in the specified action.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The action was updated.
+        "404":
+          description: The action was not found.
+  /{tenant}/catalog/v2beta1/rules/{ruleresourcename}:
+    delete:
+      description: Delete the rule with the specified resource name and its dependencies.
+      operationId: deleteRule
+      responses:
+        "204":
+          description: The rule with the specified resource name was deleted, along
+            with its dependencies.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A rule with the specified resource name was not found.
+        "405":
+          description: The rule with the specified resource name cannot be deleted
+            because of dependencies.
+    get:
+      description: Get a rule with a specified resource name.
+      operationId: getRule
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: A rule matching the specified resource name was retrieved.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A rule with the specified resource name was not found.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleResourceName'
+    patch:
+      description: Update the Rule with the specified resourcename
+      operationId: updateRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulePATCH'
+        description: The properties to update in the specified rule.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+          description: The rule with the specified resource name was updated.
+        "404":
+          description: The rule with the specified resource was not found.
+  /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions:
+    get:
+      description: Return the list of actions that are part of a specified rule.
+      operationId: listActionsForRule
+      parameters:
+      - description: A filter query to apply to the rule.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Action'
+                type: array
+          description: An array of actions that match the specified rule have been
+            retrieved.
+        "400":
+          description: The filter query is invalid.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleResourceName'
+    post:
+      description: Create a new action for a rule associated with a specific resource
+        name.
+      operationId: createActionForRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionPOST'
+        description: The JSON representation of the action to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The action was created for the specified rule.
+        "400":
+          description: The action is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The action is already present.
+  /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions/{actionid}:
+    delete:
+      description: Delete an action on a rule.
+      operationId: deleteActionByIdForRule
+      responses:
+        "204":
+          description: The specified action was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The specified action does not exist.
+    get:
+      description: Return an action that is part of a specified rule.
+      operationId: getActionByIdForRule
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: An action matching the specified ID was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/RuleResourceName'
+    - $ref: '#/components/parameters/ActionID'
+    patch:
+      description: Update the Action with the specified id for the specified Rule
+      operationId: updateActionByIdForRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionPATCH'
+        description: The fields to update in the specified action.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+          description: The specified action was updated.
+        "404":
+          description: The specified action was not found.
+  /{tenant}/catalog/v2beta1/workflows:
+    get:
+      description: Return a list of Machine Learning workflow configurations.
+      operationId: listWorkflows
+      parameters:
+      - description: A filter to apply to the workflows. Must be a SPL predicate expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Workflow'
+                type: array
+          description: A list of workflows matching your filter has been returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Create a new workflow configuration.
+      operationId: createWorkflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowPOST'
+        description: The JSON representation of the workflow to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: The workflow was created.
+        "400":
+          description: The workflow is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The workflow is already present.
+  /{tenant}/catalog/v2beta1/workflows/{workflowid}:
+    delete:
+      description: Delete the workflow with the specified workflow ID.
+      operationId: deleteWorkflowById
+      responses:
+        "204":
+          description: The workflow was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow was not found.
+    get:
+      description: Return information about a workflow with the specified workflow
+        ID.
+      operationId: getWorkflowById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+          description: Information about a workflow with the specified workflow ID
+            was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/WorkflowID'
+    patch:
+      description: Update the workflow with the specified workflow ID.
+      operationId: updateWorkflowById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowPATCH'
+        description: An updated representation of the workflow to be persisted.
+        required: true
+      responses:
+        "200":
+          description: The workflow was update.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow was not found.
+  /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds:
+    get:
+      description: Return a list of Machine Learning workflow builds.
+      operationId: listWorkflowBuilds
+      parameters:
+      - description: A filter to apply to the workflow builds. Must be a SPL predicate
+          expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowBuild'
+                type: array
+          description: A list of workflow builds that match your filter has been returned.
+        "401":
+          description: Unauthorized operation.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/WorkflowID'
+    post:
+      description: Create a new workflow build.
+      operationId: createWorkflowBuild
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowBuildPOST'
+        description: The JSON representation of the workflow build to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuild'
+          description: The workflow build was created.
+        "400":
+          description: The workflow build is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The workflow build is already present.
+  /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds/{workflowbuildid}:
+    delete:
+      description: Delete the workflow build with the specified workflow build ID.
+      operationId: deleteWorkflowBuildById
+      responses:
+        "204":
+          description: The workflow build was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow build was not found.
+    get:
+      description: Return information about the workflow build with the specified
+        workflow build ID.
+      operationId: getWorkflowBuildById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowBuild'
+          description: A workflow build that matches the specified workflow build
+            ID was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/WorkflowID'
+    - $ref: '#/components/parameters/WorkflowBuildID'
+    patch:
+      description: Update the workflow build with the specified workflow build ID.
+      operationId: updateWorkflowBuildById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowBuildPATCH'
+        description: An updated representation of the workflow build to be persisted.
+        required: true
+      responses:
+        "200":
+          description: The workflow build was updated.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow build was not found.
+  /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds/{workflowbuildid}/runs:
+    get:
+      description: Return a list of Machine Learning workflow runs for specified workflow
+        build ID.
+      operationId: listWorkflowRuns
+      parameters:
+      - description: A filter to apply to the workflow runs for specified workflow
+          build ID. Must be an SPL predicate expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/WorkflowRun'
+                type: array
+          description: A list of workflow runs that match your filter has been returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/WorkflowID'
+    - $ref: '#/components/parameters/WorkflowBuildID'
+    post:
+      description: Create a new workflow run for the specified workflow build ID.
+      operationId: createWorkflowRun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowRunPOST'
+        description: The JSON representation of the workflow run to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+          description: The workflow run was created for the specified workflow build
+            ID.
+        "400":
+          description: The workflow run is invalid for specified workflow build ID.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The workflow run is already present for specified workflow
+            build ID.
+  /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds/{workflowbuildid}/runs/{workflowrunid}:
+    delete:
+      description: Delete the workflow run with the specified workflow run ID.
+      operationId: deleteWorkflowRunById
+      responses:
+        "204":
+          description: The workflow run was deleted for the specified workflow build
+            ID.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow run was not found for the specified workflow run
+            ID.
+    get:
+      description: Return information about the workflow run with the specified workflow
+        build ID.
+      operationId: getWorkflowRunById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowRun'
+          description: Information about the workflow run that matches the specified
+            workflow run ID was returned.
+        "401":
+          description: The operation is unauthorized.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/WorkflowID'
+    - $ref: '#/components/parameters/WorkflowBuildID'
+    - $ref: '#/components/parameters/WorkflowRunID'
+    patch:
+      description: Update the workflow run with the specified workflow run ID.
+      operationId: updateWorkflowRunById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowRunPATCH'
+        description: An updated representation of the workflow run to be persisted.
+        required: true
+      responses:
+        "200":
+          description: The workflow run was updated.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The workflow run was not found.
+
+# Retrieved from scp-openapi commit 8c9b2755a9865808d5b612bd0d7ac2295c59d550 path: catalog/openapi.yaml

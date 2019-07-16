@@ -1,0 +1,2896 @@
+components:
+  schemas:
+    ActivatePipelineRequest:
+      description: ""
+      properties:
+        activateLatestVersion:
+          description: Set to true to activate the latest version of the pipeline.
+            Set to false to use the previously activated version of the pipeline.
+            Defaults to true.
+          type: boolean
+        allowNonRestoredState:
+          description: Set to true to allow the pipeline to ignore any unused progress
+            states. In some cases, when a data pipeline is changed, the progress state
+            will be stored for functions that no longer exist, so this must be set
+            to activate a pipeline in this state. Defaults to false.
+          type: boolean
+        skipRestoreState:
+          description: Set to true to start reading from the latest input rather than
+            from where the pipeline's previous run left off, which can cause data
+            loss. Defaults to false.
+          type: boolean
+      type: object
+    ConnectionPatchRequest:
+      description: ""
+      properties:
+        data:
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
+          example: ""
+          properties: {}
+          type: object
+        description:
+          description: The description of the connection.
+          example: ""
+          type: string
+        name:
+          description: The name of the connection.
+          example: ""
+          type: string
+      type: object
+    ConnectionPutRequest:
+      description: ""
+      properties:
+        data:
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
+          example: ""
+          properties: {}
+          type: object
+        description:
+          description: The description of the connection.
+          example: ""
+          type: string
+        name:
+          description: The name of the connection.
+          example: ""
+          type: string
+      required:
+      - data
+      - description
+      - name
+      type: object
+    ConnectionRequest:
+      description: ""
+      properties:
+        connectorId:
+          description: The ID of the parent connector.
+          example: ""
+          type: string
+        data:
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
+          example: ""
+          properties: {}
+          type: object
+        description:
+          description: The description of the connection.
+          example: ""
+          type: string
+        name:
+          description: The name of the connection.
+          example: ""
+          type: string
+      required:
+      - connectorId
+      - data
+      - description
+      - name
+      type: object
+    ConnectionResponse:
+      description: ""
+      properties:
+        activePipelinesUsing:
+          items:
+            $ref: '#/components/schemas/MapOfstringAndobject'
+          type: array
+        connectorId:
+          type: string
+        connectorName:
+          type: string
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        id:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        versions:
+          items:
+            $ref: '#/components/schemas/ConnectionVersionResponse'
+          type: array
+      type: object
+    ConnectionSaveResponse:
+      description: ""
+      properties:
+        connectorId:
+          type: string
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        data:
+          $ref: '#/components/schemas/ObjectNode'
+        description:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    ConnectionVersionResponse:
+      description: ""
+      properties:
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        data:
+          $ref: '#/components/schemas/ObjectNode'
+        description:
+          type: string
+        name:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    ConnectorResponse:
+      description: ""
+      properties:
+        config:
+          $ref: '#/components/schemas/ObjectNode'
+        connectorType:
+          type: string
+        description:
+          type: string
+        functions:
+          items:
+            $ref: '#/components/schemas/MapOfstringAndobject'
+          type: array
+        hidden:
+          type: boolean
+        id:
+          type: string
+        name:
+          type: string
+        panelUrl:
+          type: string
+        tag:
+          type: string
+      type: object
+    DeactivatePipelineRequest:
+      description: ""
+      properties:
+        skipSavepoint:
+          description: Set to true to skip saving the state of a deactivated pipeline.
+            When the pipeline is later activated, it will start with the newest data
+            and skip any data that arrived after this deactivation, which can cause
+            data loss. Defaults to false.
+          type: boolean
+      type: object
+    DslCompilationRequest:
+      description: ""
+      properties:
+        dsl:
+          description: The Streams DSL representation of a pipeline.
+          example: ""
+          type: string
+      required:
+      - dsl
+      type: object
+    GetInputSchemaRequest:
+      description: ""
+      properties:
+        nodeUuid:
+          description: The function ID.
+          example: ""
+          type: string
+        targetPortName:
+          description: The name of the input port.
+          example: ""
+          type: string
+        uplJson:
+          $ref: '#/components/schemas/UplPipeline'
+      required:
+      - nodeUuid
+      - targetPortName
+      - uplJson
+      type: object
+    GetOutputSchemaRequest:
+      description: ""
+      properties:
+        nodeUuid:
+          description: The function ID. If omitted, returns the output schema for
+            all functions.
+          example: ""
+          type: string
+        sourcePortName:
+          description: The name of the output port. Deprecated.
+          example: ""
+          type: string
+        uplJson:
+          $ref: '#/components/schemas/UplPipeline'
+      required:
+      - uplJson
+      type: object
+    GroupArgumentsNode:
+      description: ""
+      properties:
+        groupArg:
+          description: The argument name for your group function.
+          example: ""
+          type: string
+        position:
+          description: Group function argument position number.
+          format: int32
+          type: integer
+        type:
+          description: The group function's data type.
+          example: ""
+          type: string
+      required:
+      - groupArg
+      - position
+      - type
+      type: object
+    GroupExpandRequest:
+      description: ""
+      properties:
+        arguments:
+          description: Function arguments for the given id. Overrides default values.
+          example: ""
+          properties: {}
+          type: object
+        id:
+          description: The ID associated with your group function in the pipeline
+            Streams JSON
+          example: ""
+          type: string
+      required:
+      - arguments
+      - id
+      type: object
+    GroupFunctionArgsMappingNode:
+      description: ""
+      properties:
+        arguments:
+          description: List of mappings from group function argument to function argument.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupFunctionArgsNode'
+          type: array
+        functionId:
+          description: The function id to map to a group function argument.
+          example: ""
+          type: string
+      required:
+      - arguments
+      - functionId
+      type: object
+    GroupFunctionArgsNode:
+      description: ""
+      properties:
+        functionArg:
+          description: Function argument name.
+          example: ""
+          type: string
+        groupArg:
+          description: The argument name for your group function.
+          example: ""
+          type: string
+      required:
+      - functionArg
+      - groupArg
+      type: object
+    GroupPatchRequest:
+      description: ""
+      properties:
+        arguments:
+          description: Group function arguments list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupArgumentsNode'
+          type: array
+        ast:
+          $ref: '#/components/schemas/UplPipeline'
+        attributes:
+          description: Attributes map for function.
+          example: ""
+          properties: {}
+          type: object
+        categories:
+          description: Categories for this function.
+          example: ""
+          items:
+            format: int64
+            type: integer
+          type: array
+        mappings:
+          description: Group function mappings list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupFunctionArgsMappingNode'
+          type: array
+        name:
+          description: The name for the group function.
+          example: ""
+          type: string
+        outputType:
+          description: The data type of the output of your function.
+          example: ""
+          type: string
+        scalar:
+          type: boolean
+        variadic:
+          type: boolean
+      type: object
+    GroupPutRequest:
+      description: ""
+      properties:
+        arguments:
+          description: The group function arguments list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupArgumentsNode'
+          type: array
+        ast:
+          $ref: '#/components/schemas/UplPipeline'
+        attributes:
+          description: The attributes map for function.
+          example: ""
+          properties: {}
+          type: object
+        categories:
+          description: The categories for this function.
+          example: ""
+          items:
+            format: int64
+            type: integer
+          type: array
+        mappings:
+          description: The group function mappings list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupFunctionArgsMappingNode'
+          type: array
+        name:
+          description: The group function name.
+          example: ""
+          type: string
+        outputType:
+          description: The data type of the function's output.
+          example: ""
+          type: string
+        scalar:
+          type: boolean
+        variadic:
+          type: boolean
+      required:
+      - arguments
+      - ast
+      - attributes
+      - categories
+      - mappings
+      - name
+      - outputType
+      type: object
+    GroupRequest:
+      description: ""
+      properties:
+        arguments:
+          description: The group function arguments list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupArgumentsNode'
+          type: array
+        ast:
+          $ref: '#/components/schemas/UplPipeline'
+        attributes:
+          description: The attributes map for function.
+          example: ""
+          properties: {}
+          type: object
+        categories:
+          description: The categories for this function.
+          example: ""
+          items:
+            format: int64
+            type: integer
+          type: array
+        mappings:
+          description: The group function mappings list.
+          example: ""
+          items:
+            $ref: '#/components/schemas/GroupFunctionArgsMappingNode'
+          type: array
+        name:
+          description: The group function name.
+          example: ""
+          type: string
+        outputType:
+          description: The data type of the function's output.
+          example: ""
+          type: string
+        scalar:
+          type: boolean
+        variadic:
+          type: boolean
+      required:
+      - arguments
+      - ast
+      - attributes
+      - categories
+      - mappings
+      - name
+      - outputType
+      type: object
+    GroupResponse:
+      description: ""
+      properties:
+        arguments:
+          items:
+            $ref: '#/components/schemas/GroupArgumentsNode'
+          type: array
+        ast:
+          $ref: '#/components/schemas/UplPipeline'
+        attributes:
+          properties: {}
+          type: object
+        categories:
+          items:
+            format: int64
+            type: integer
+          type: array
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        groupId:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        mappings:
+          items:
+            $ref: '#/components/schemas/GroupFunctionArgsMappingNode'
+          type: array
+        name:
+          type: string
+        outputType:
+          type: string
+        scalar:
+          type: boolean
+        tenantId:
+          type: string
+        variadic:
+          type: boolean
+      type: object
+    MapOfstringAndobject:
+      description: ""
+      type: object
+    MetricsResponse:
+      description: ""
+      properties:
+        nodes:
+          additionalProperties:
+            $ref: '#/components/schemas/NodeMetrics'
+          type: object
+      type: object
+    NodeMetrics:
+      description: ""
+      properties:
+        metrics:
+          properties: {}
+          type: object
+      type: object
+    ObjectNode:
+      description: ""
+      properties:
+        array:
+          type: boolean
+        bigDecimal:
+          type: boolean
+        bigInteger:
+          type: boolean
+        binary:
+          type: boolean
+        boolean:
+          type: boolean
+        containerNode:
+          type: boolean
+        double:
+          type: boolean
+        float:
+          type: boolean
+        floatingPointNumber:
+          type: boolean
+        int:
+          type: boolean
+        integralNumber:
+          type: boolean
+        long:
+          type: boolean
+        missingNode:
+          type: boolean
+        nodeType:
+          enum:
+          - ARRAY
+          - BINARY
+          - BOOLEAN
+          - MISSING
+          - "NULL"
+          - NUMBER
+          - OBJECT
+          - POJO
+          - STRING
+          type: string
+        "null":
+          type: boolean
+        number:
+          type: boolean
+        object:
+          type: boolean
+        pojo:
+          type: boolean
+        short:
+          type: boolean
+        textual:
+          type: boolean
+        valueNode:
+          type: boolean
+      type: object
+    PaginatedResponseOfConnectionResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ConnectionResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PaginatedResponseOfConnectorResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ConnectorResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PaginatedResponseOfPipelineJobStatus:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PipelineJobStatus'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PaginatedResponseOfPipelineResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PipelineResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PaginatedResponseOfTemplateResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/TemplateResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PipelineDeleteResponse:
+      description: ""
+      properties:
+        couldDeactivate:
+          type: boolean
+        running:
+          type: boolean
+      type: object
+    PipelineJobStatus:
+      description: ""
+      properties:
+        jobId:
+          type: string
+        jobStatus:
+          type: string
+        pipelineId:
+          type: string
+      type: object
+    PipelinePatchRequest:
+      description: ""
+      properties:
+        bypassValidation:
+          description: Set to true to bypass initial pipeline validation upon creation.
+            The pipeline still needs to be validated before activation. Defaults to
+            false.
+          type: boolean
+        createUserId:
+          description: The user that created the pipeline. Deprecated.
+          example: ""
+          type: string
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          description: The description of the pipeline. Defaults to null.
+          example: ""
+          type: string
+        name:
+          description: The name of the pipeline.
+          example: ""
+          type: string
+      type: object
+    PipelineReactivateResponse:
+      description: ""
+      properties:
+        currentlyActiveVersion:
+          format: int64
+          type: integer
+        pipelineId:
+          type: string
+        pipelineReactivationStatus:
+          enum:
+          - activated
+          - alreadyActivatedWithCurrentVersion
+          - currentVersionInvalid
+          - failedToDeactivateCurrentVersion
+          - rolledBack
+          - rolledBackError
+          type: string
+      type: object
+    PipelineRequest:
+      description: ""
+      properties:
+        bypassValidation:
+          description: Set to true to bypass initial pipeline validation upon creation.
+            The pipeline still needs to be validated before activation. Defaults to
+            false.
+          type: boolean
+        createUserId:
+          description: The user that created the pipeline. Deprecated.
+          example: ""
+          type: string
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          description: The description of the pipeline. Defaults to null.
+          example: ""
+          type: string
+        name:
+          description: The name of the pipeline.
+          example: ""
+          type: string
+      required:
+      - data
+      - name
+      type: object
+    PipelineResponse:
+      description: ""
+      properties:
+        activatedDate:
+          format: int64
+          type: integer
+        activatedUserId:
+          type: string
+        activatedVersion:
+          format: int64
+          type: integer
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        currentVersion:
+          format: int64
+          type: integer
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          type: string
+        id:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+          - CREATED
+          - ACTIVATED
+          type: string
+        statusMessage:
+          type: string
+        streamingConfigurationId:
+          format: int64
+          type: integer
+        tenantId:
+          type: string
+        validationMessages:
+          items:
+            type: string
+          type: array
+        version:
+          format: int64
+          type: integer
+      type: object
+    PipelinesMergeRequest:
+      description: ""
+      properties:
+        inputTree:
+          $ref: '#/components/schemas/UplPipeline'
+        mainTree:
+          $ref: '#/components/schemas/UplPipeline'
+        targetNode:
+          description: The function ID of the merge target in the main pipeline.
+          example: ""
+          type: string
+        targetPort:
+          description: The input port of the merge target in the main pipeline.
+          example: ""
+          type: string
+      required:
+      - inputTree
+      - mainTree
+      - targetNode
+      - targetPort
+      type: object
+    PreviewData:
+      description: ""
+      properties:
+        currentNumberOfRecords:
+          format: int32
+          type: integer
+        nodes:
+          additionalProperties:
+            $ref: '#/components/schemas/PreviewNode'
+          type: object
+        previewId:
+          type: string
+        recordsPerPipeline:
+          format: int32
+          type: integer
+        tenantId:
+          type: string
+      type: object
+    PreviewNode:
+      description: ""
+      properties:
+        nodeName:
+          type: string
+        records:
+          items:
+            $ref: '#/components/schemas/ObjectNode'
+          type: array
+      type: object
+    PreviewNodeData:
+      description: ""
+      properties:
+        nodes:
+          additionalProperties:
+            $ref: '#/components/schemas/PreviewNode'
+          type: object
+      type: object
+    PreviewSessionStartRequest:
+      description: ""
+      properties:
+        recordsLimit:
+          description: The maximum number of events per function. Defaults to 100.
+          format: int32
+          type: integer
+        recordsPerPipeline:
+          description: The maximum number of events per pipeline. Defaults to 10000.
+          format: int32
+          type: integer
+        sessionLifetimeMs:
+          description: The maximum lifetime of a session, in milliseconds. Defaults
+            to 300,000.
+          format: int64
+          type: integer
+        streamingConfigurationId:
+          description: Deprecated. Must be null if set.
+          format: int64
+          type: integer
+        upl:
+          $ref: '#/components/schemas/UplPipeline'
+        useNewData:
+          description: Deprecated. Must be true if set.
+          type: boolean
+      required:
+      - upl
+      type: object
+    PreviewStartResponse:
+      description: ""
+      properties:
+        previewId:
+          format: int64
+          type: integer
+      type: object
+    PreviewState:
+      description: ""
+      properties:
+        activatedDate:
+          format: int64
+          type: integer
+        createdDate:
+          format: int64
+          type: integer
+        currentNumberOfRecords:
+          format: int32
+          type: integer
+        jobId:
+          type: string
+        previewId:
+          format: int64
+          type: integer
+        recordsPerPipeline:
+          format: int32
+          type: integer
+      type: object
+    PreviewStoreResponse:
+      description: ""
+      properties:
+        recordsDropped:
+          format: int32
+          type: integer
+        recordsStored:
+          format: int32
+          type: integer
+      type: object
+    Response:
+      description: ""
+      properties:
+        activated:
+          description: Only set for /activate endpoint
+          example: ""
+          type: string
+        deactivated:
+          description: Only set for /deactivate endpoint
+          example: ""
+          type: string
+      type: object
+    TemplatePatchRequest:
+      description: ""
+      properties:
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          description: Template description
+          example: ""
+          type: string
+        name:
+          description: Template name
+          example: ""
+          type: string
+      type: object
+    TemplatePutRequest:
+      description: ""
+      properties:
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          description: Template description
+          example: ""
+          type: string
+        name:
+          description: Template name
+          example: ""
+          type: string
+      required:
+      - data
+      - description
+      - name
+      type: object
+    TemplateRequest:
+      description: ""
+      properties:
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          description: Template description
+          example: ""
+          type: string
+        name:
+          description: Template name
+          example: ""
+          type: string
+      required:
+      - data
+      - description
+      - name
+      type: object
+    TemplateResponse:
+      description: ""
+      properties:
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        data:
+          $ref: '#/components/schemas/UplPipeline'
+        description:
+          type: string
+        name:
+          type: string
+        ownerTenantId:
+          type: string
+        templateId:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    UplArgument:
+      description: ""
+      properties:
+        elementType:
+          properties: {}
+        type:
+          type: string
+      required:
+      - type
+      type: object
+    UplCategory:
+      description: ""
+      properties:
+        id:
+          format: int64
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    UplEdge:
+      description: ""
+      properties:
+        attributes:
+          properties: {}
+          type: object
+        sourceNode:
+          description: The source function's (node's) id
+          example: ""
+          type: string
+        sourcePort:
+          description: The source function's (node's) port
+          example: ""
+          type: string
+        targetNode:
+          description: The target function's (node's) id
+          example: ""
+          type: string
+        targetPort:
+          description: The target function's (node's) port
+          example: ""
+          type: string
+      required:
+      - sourceNode
+      - sourcePort
+      - targetNode
+      - targetPort
+      type: object
+    UplFunction:
+      description: ""
+      properties:
+        arguments:
+          additionalProperties:
+            $ref: '#/components/schemas/UplArgument'
+          type: object
+        attributes:
+          properties: {}
+          type: object
+        categories:
+          items:
+            format: int64
+            type: integer
+          type: array
+        id:
+          type: string
+        isVariadic:
+          type: boolean
+        op:
+          type: string
+        output:
+          $ref: '#/components/schemas/UplArgument'
+        resolvedId:
+          type: string
+      type: object
+    UplNode:
+      additionalProperties: true
+      description: ""
+      properties:
+        attributes:
+          description: Optional key-value pair for a function (node)
+          example: ""
+          properties: {}
+          type: object
+        id:
+          description: The function's (node's) UUID
+          example: ""
+          type: string
+        op:
+          description: The function's ID or its API name
+          example: ""
+          type: string
+        resolvedId:
+          type: string
+      required:
+      - id
+      - op
+      type: object
+    UplPipeline:
+      description: ""
+      properties:
+        edges:
+          description: A list of links or connections between the output of one pipeline
+            function and the input of another pipeline function
+          example: ""
+          items:
+            $ref: '#/components/schemas/UplEdge'
+          type: array
+        nodes:
+          description: The functions (or nodes) in your entire pipeline, including
+            each function's operations, attributes, and properties
+          example: ""
+          items:
+            $ref: '#/components/schemas/UplNode'
+          type: array
+        rootNode:
+          description: The UUIDs of all sink functions in a given pipeline
+          example: ""
+          items:
+            type: string
+          type: array
+      required:
+      - edges
+      - nodes
+      - rootNode
+      type: object
+    UplRegistry:
+      description: ""
+      properties:
+        categories:
+          items:
+            $ref: '#/components/schemas/UplCategory'
+          type: array
+        functions:
+          items:
+            $ref: '#/components/schemas/UplFunction'
+          type: array
+        types:
+          items:
+            $ref: '#/components/schemas/UplType'
+          type: array
+      type: object
+    UplType:
+      description: ""
+      properties:
+        fieldName:
+          type: string
+        parameters:
+          items:
+            $ref: '#/components/schemas/UplType'
+          type: array
+        type:
+          type: string
+      type: object
+    ValidateRequest:
+      description: ""
+      properties:
+        upl:
+          $ref: '#/components/schemas/UplPipeline'
+      required:
+      - upl
+      type: object
+    ValidateResponse:
+      description: ""
+      properties:
+        success:
+          type: boolean
+        validationMessages:
+          items:
+            type: string
+          type: array
+      type: object
+info:
+  contact:
+    email: api@splunk.com
+  description: With the Splunk Cloud Data Stream Processing service, you can perform
+    create, read, update, and delete (CRUD) operations on your data pipeline. The
+    Streams API also has metrics and preview session endpoints and gives you full
+    control over your data pipeline
+  title: Data Stream Processing REST API
+  version: v2beta1.1
+openapi: 3.0.1
+paths:
+  /{tenantId}/streams/v2beta1/connections:
+    get:
+      deprecated: false
+      operationId: listConnections
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: functionId
+        schema:
+          type: string
+      - in: query
+        name: createUserId
+        schema:
+          type: string
+      - in: query
+        name: connectorId
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: sortField
+        schema:
+          type: string
+      - description: Specify either ascending ('asc') or descending ('desc') sort
+          order for a given field (sortField), which must be set for sortDir to apply.
+          Defaults to 'asc'.
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - in: query
+        name: showSecretNames
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfConnectionResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns a list of connections (latest versions only) by tenant ID.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.read
+    post:
+      deprecated: false
+      operationId: createConnection
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Create a new DSP connection.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.create
+  /{tenantId}/streams/v2beta1/connections/{connectionId}:
+    delete:
+      deprecated: false
+      operationId: deleteConnection
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the connection
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Delete all versions of a connection by its id.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.delete
+    patch:
+      deprecated: false
+      operationId: updateConnection
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the connection
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionPatchRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Partially modifies an existing DSP connection.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.update
+    put:
+      deprecated: false
+      operationId: putConnection
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the connection
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionPutRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Modifies an existing DSP connection.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.update
+  /{tenantId}/streams/v2beta1/connectors:
+    get:
+      deprecated: false
+      operationId: listConnectors
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfConnectorResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns a list of the available connectors.
+      tags:
+      - apiv-2-beta-1-connector-controller
+      x-authz-scope: streams.connections.read
+  /{tenantId}/streams/v2beta1/groups:
+    post:
+      deprecated: false
+      operationId: createGroup
+      parameters:
+      - description: The tenant name
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Create a new group function by combining the Streams JSON of two or
+        more functions.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.create
+  /{tenantId}/streams/v2beta1/groups/{groupId}:
+    delete:
+      deprecated: false
+      operationId: deleteGroup
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: The group function's ID from the function registry
+        in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Removes an existing group.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.delete
+    get:
+      deprecated: false
+      operationId: getGroup
+      parameters:
+      - description: The tenant name
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: The group function's ID from the function registry
+        in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the full Streams JSON of a group.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.read
+    patch:
+      deprecated: false
+      operationId: updateGroup
+      parameters:
+      - description: The tenant name
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: The group function's ID from the function registry
+        in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPatchRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Modify a group function by combining the Streams JSON of two or more
+        functions.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.update
+    put:
+      deprecated: false
+      operationId: putGroup
+      parameters:
+      - description: The tenant name
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: The group function's ID from the function registry
+        in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPutRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Update a group function combining the Streams JSON of two or more functions.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.update
+  /{tenantId}/streams/v2beta1/groups/{groupId}/expand:
+    post:
+      deprecated: false
+      operationId: expandGroup
+      parameters:
+      - description: The tenant name
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: The group function's ID from the function registry
+        in: path
+        name: groupId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupExpandRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplPipeline'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Creates and returns the expanded version of a group.
+      tags:
+      - apiv-2-beta-1-group-controller
+      x-authz-scope: streams.groups.read
+  /{tenantId}/streams/v2beta1/pipelines:
+    get:
+      deprecated: false
+      operationId: listPipelines
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - description: activated
+        in: query
+        name: activated
+        schema:
+          type: boolean
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
+      - description: name
+        in: query
+        name: name
+        schema:
+          type: string
+      - description: includeData
+        in: query
+        name: includeData
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfPipelineResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns all pipelines.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+    post:
+      deprecated: false
+      operationId: createPipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Creates a pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.create
+  /{tenantId}/streams/v2beta1/pipelines/{id}:
+    delete:
+      deprecated: false
+      operationId: deletePipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: id of the pipeline to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineDeleteResponse'
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Removes a pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.delete
+    get:
+      deprecated: false
+      operationId: getPipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: id of the pipeline to get
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: version
+        in: query
+        name: version
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns an individual pipeline by version.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+    patch:
+      deprecated: false
+      operationId: updatePipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: id of the pipeline to update
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelinePatchRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Partially modifies an existing pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v2beta1/pipelines/{id}/activate:
+    post:
+      deprecated: false
+      operationId: activatePipeline
+      parameters:
+      - description: id of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: id of the pipeline to activate
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivatePipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Activates an existing pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.activate
+  /{tenantId}/streams/v2beta1/pipelines/{id}/deactivate:
+    post:
+      deprecated: false
+      operationId: deactivatePipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: id of the pipeline to deactivate
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeactivatePipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Deactivates an existing pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.deactivate
+  /{tenantId}/streams/v2beta1/pipelines/{id}/metrics/latest:
+    get:
+      deprecated: false
+      operationId: getPipelineLatestMetrics
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the pipeline to get metrics for
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the latest metrics for a single pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+  /{tenantId}/streams/v2beta1/pipelines/{id}/reactivate:
+    post:
+      deprecated: false
+      operationId: reactivatePipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline UUID to reactivate
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineReactivateResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Reactivate a pipeline
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.activate
+  /{tenantId}/streams/v2beta1/pipelines/compile-dsl:
+    post:
+      deprecated: false
+      operationId: compileDSL
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DslCompilationRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplPipeline'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Compiles the Streams DSL and returns Streams JSON.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v2beta1/pipelines/expand:
+    post:
+      deprecated: false
+      operationId: expandPipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UplPipeline'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplPipeline'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the entire Streams JSON, including the expanded Streams JSON
+        of any group functions in the pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.groups.read
+  /{tenantId}/streams/v2beta1/pipelines/input-schema:
+    post:
+      deprecated: false
+      operationId: getInputSchema
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetInputSchemaRequest'
+        description: Input Schema Request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplType'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the input schema for a function in a pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+  /{tenantId}/streams/v2beta1/pipelines/merge:
+    post:
+      deprecated: false
+      operationId: mergePipelines
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelinesMergeRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplPipeline'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Combines two Streams JSON programs.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v2beta1/pipelines/output-schema:
+    post:
+      deprecated: false
+      operationId: getOutputSchema
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetOutputSchemaRequest'
+        description: Output Schema Request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: '#/components/schemas/UplType'
+                type: object
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the output schema for a specified function in a pipeline. If
+        no function ID is  specified, the request returns the output schema for all
+        functions in a pipeline.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+  /{tenantId}/streams/v2beta1/pipelines/registry:
+    get:
+      deprecated: false
+      operationId: getRegistry
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: local
+        in: query
+        name: local
+        schema:
+          default: true
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplRegistry'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns all functions in JSON format.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+  /{tenantId}/streams/v2beta1/pipelines/status:
+    get:
+      deprecated: false
+      operationId: getPipelinesStatus
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - description: activated
+        in: query
+        name: activated
+        schema:
+          type: boolean
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
+      - description: name
+        in: query
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfPipelineJobStatus'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the status of pipelines from the underlying streaming system.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.read
+  /{tenantId}/streams/v2beta1/pipelines/validate:
+    post:
+      deprecated: false
+      operationId: validatePipeline
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateRequest'
+        description: JSON UPL to validate
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Verifies whether the Streams JSON is valid.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v2beta1/preview-data/{previewSessionId}:
+    get:
+      deprecated: false
+      operationId: getPreviewData
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the preview session
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreviewData'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the preview data for a session.
+      tags:
+      - apiv-2-beta-1-preview-controller
+      x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v2beta1/preview-session:
+    post:
+      deprecated: false
+      operationId: startPreview
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreviewSessionStartRequest'
+        description: Parameters to start a new Preview session
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreviewStartResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Creates a preview session for a pipeline.
+      tags:
+      - apiv-2-beta-1-preview-controller
+      x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v2beta1/preview-session/{previewSessionId}:
+    delete:
+      deprecated: false
+      operationId: stopPreview
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the preview session
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: string
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Stops a preview session.
+      tags:
+      - apiv-2-beta-1-preview-controller
+      x-authz-scope: streams.pipelines.preview
+    get:
+      deprecated: false
+      operationId: getPreviewSession
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the preview session
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/PreviewState'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns information from a preview session.
+      tags:
+      - apiv-2-beta-1-preview-controller
+      x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v2beta1/preview-session/{previewSessionId}/metrics/latest:
+    get:
+      deprecated: false
+      operationId: getPreviewSessionLatestMetrics
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the preview session
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns the latest metrics for a preview session.
+      tags:
+      - apiv-2-beta-1-preview-controller
+      x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v2beta1/templates:
+    get:
+      deprecated: false
+      operationId: listTemplates
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfTemplateResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns a list of all templates.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.read
+    post:
+      deprecated: false
+      operationId: createTemplate
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Creates a template for a tenant.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.create
+  /{tenantId}/streams/v2beta1/templates/{templateId}:
+    delete:
+      deprecated: false
+      operationId: deleteTemplate
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the template to delete
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content: {}
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Removes a template with a specific ID.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.delete
+    get:
+      deprecated: false
+      operationId: getTemplate
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the template
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+      - description: version of the template
+        in: query
+        name: version
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Returns an individual template by version.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.read
+    patch:
+      deprecated: false
+      operationId: updateTemplate
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the template
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplatePatchRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+          description: OK
+        "204":
+          content: {}
+          description: No Content
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+      summary: Partially modifies an existing template.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.update
+    put:
+      deprecated: false
+      operationId: putTemplate
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: ID of the template
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplatePutRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Updates an existing template.
+      tags:
+      - apiv-2-beta-1-template-controller
+      x-authz-scope: streams.templates.update
+servers:
+- url: /
+tags:
+- description: V2Beta1 Connectors and Connections Endpoints
+  name: apiv-2-beta-1-connector-controller
+- description: V2Beta1 Group API Endpoints
+  name: apiv-2-beta-1-group-controller
+- description: V2Beta1 Pipeline API Endpoints
+  name: apiv-2-beta-1-pipeline-controller
+- description: V2Beta1 Template API Endpoints
+  name: apiv-2-beta-1-template-controller
+- description: V2Beta1 Preview API Endpoints
+  name: apiv-2-beta-1-preview-controller
+
+# Retrieved from scp-openapi commit bf5b6257bcb70c17dd169ff257c06f3a410819aa path: streams/openapi.yaml
