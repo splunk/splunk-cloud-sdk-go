@@ -861,11 +861,11 @@ func TestDatasetFieldGetList(t *testing.T) {
 	require.Nil(t, err)
 	assert.NotNil(t, fdid2)
 	assert.Equal(t, testField2.Name, fdid2.Name)
-	fr1, err := client.CatalogService.GetFieldByID(f1.Id)
+	fr1, err := client.CatalogService.GetFieldById(f1.Id)
 	require.Nil(t, err)
 	assert.NotNil(t, fr1)
 	assert.Equal(t, testField1.Name, fr1.Name)
-	fr2, err := client.CatalogService.GetFieldByID(f2.Id)
+	fr2, err := client.CatalogService.GetFieldById(f2.Id)
 	require.Nil(t, err)
 	assert.NotNil(t, fr2)
 	assert.Equal(t, testField2.Name, fr2.Name)
@@ -1277,7 +1277,7 @@ func TestCRUDDashboard(t *testing.T) {
 	assert.Equal(t, module, db.Module)
 
 	//List
-	db, err = client.CatalogService.GetDashboardByID(db.Id)
+	db, err = client.CatalogService.GetDashboardById(db.Id)
 	require.Nil(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 

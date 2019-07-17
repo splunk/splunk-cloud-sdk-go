@@ -657,14 +657,15 @@ components:
       name: Authorization
       type: apiKey
 info:
-  description: Service for authenticating and authorizing users of Splunk APIs
+  description: With the Splunk Cloud Identity and Access Control (IAC) Service, you
+    can authenticate and authorize Splunk API users.
   title: Identity and Access Control
   version: v2beta1.6
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
     get:
-      description: List groups that exist in the tenant
+      description: List the groups that exist in a given tenant.
       operationId: listGroups
       responses:
         "200":
@@ -674,25 +675,25 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of groups was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     post:
-      description: Creates a new group in the given tenant
+      description: Creates a new group in a given tenant.
       operationId: createGroup
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateGroupBody'
-        description: Group definition
+        description: The group definition.
         required: true
       responses:
         "201":
@@ -700,40 +701,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
-          description: Successfully created
+          description: The group was successfully created.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "409":
-          description: Group already exists
+          description: The group already exists.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
   /{tenant}/identity/v2beta1/groups/{group}:
     delete:
-      description: Deletes a group in the given tenant
+      description: Deletes a group in a given tenant.
       operationId: deleteGroup
       responses:
         "204":
-          description: Group successfully deleted
+          description: The group was successfully deleted.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
     get:
-      description: Defines a group in the given tenant
+      description: Returns information about a given group within a tenant.
       operationId: getGroup
       responses:
         "200":
@@ -741,22 +742,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
-          description: Successful operation
+          description: The group was successfully defined.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/group'
   /{tenant}/identity/v2beta1/groups/{group}/members:
     get:
-      description: Lists the members attached to the group
+      description: Returns a list of the members within a given group.
       operationId: listGroupMembers
       responses:
         "200":
@@ -766,28 +767,28 @@ paths:
                 items:
                   type: string
                 type: array
-          description: The request succeeded
+          description: The list of group members was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/group'
     post:
-      description: Adds a member to the group
+      description: Adds a member to a given group.
       operationId: addGroupMember
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AddGroupMemberBody'
-        description: Member to add to a group
+        description: The member to add to a group.
         required: true
       responses:
         "201":
@@ -795,40 +796,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupMember'
-          description: The member has been added
+          description: The member has been successfully added to the group.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "409":
-          description: Member already exists
+          description: The member already exists.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
   /{tenant}/identity/v2beta1/groups/{group}/members/{member}:
     delete:
-      description: Removes the member from the group
+      description: Removes the member from a given group.
       operationId: removeGroupMember
       responses:
         "204":
-          description: Successfully removed
+          description: The member was successfully removed from the group.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
     get:
-      description: Returns group-member relationship details
+      description: Returns information about a given member within a given group.
       operationId: getGroupMember
       responses:
         "200":
@@ -836,15 +837,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupMember'
-          description: Successful operation
+          description: The group-to-member relationship details were successfully
+            returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
@@ -852,7 +854,8 @@ paths:
     - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/groups/{group}/roles:
     get:
-      description: Lists the roles attached to the group
+      description: Returns a list of the roles that are attached to a group within
+        a given tenant.
       operationId: listGroupRoles
       responses:
         "200":
@@ -862,28 +865,28 @@ paths:
                 items:
                   type: string
                 type: array
-          description: The request succeeded
+          description: The list of roles was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/group'
     post:
-      description: Adds a role to the group
+      description: Adds a role to a given group.
       operationId: addGroupRole
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AddGroupRoleBody'
-        description: Role to add to a group
+        description: The role to add to a group.
         required: true
       responses:
         "201":
@@ -891,40 +894,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupRole'
-          description: The role has been added
+          description: The role has been successfully added to the group.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "409":
-          description: Role already exists
+          description: The role already exists.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
   /{tenant}/identity/v2beta1/groups/{group}/roles/{role}:
     delete:
-      description: Removes the role from the group
+      description: Removes a role from a given group.
       operationId: removeGroupRole
       responses:
         "204":
-          description: Role successfully removed
+          description: The role was successfully removed from the group.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.groups.write
     get:
-      description: Returns group-role relationship details
+      description: Returns information about a given role within a given group.
       operationId: getGroupRole
       responses:
         "200":
@@ -932,15 +935,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupRole'
-          description: Success
+          description: The group-to-role relationship details were successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.groups.read
     parameters:
     - $ref: '#/components/parameters/tenant'
@@ -948,7 +951,7 @@ paths:
     - $ref: '#/components/parameters/role'
   /{tenant}/identity/v2beta1/members:
     get:
-      description: Returns the list of members in the given tenant
+      description: Returns a list of members in a given tenant.
       operationId: listMembers
       responses:
         "200":
@@ -958,27 +961,27 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of tenant members was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.members.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     post:
-      description: Adds a member to the given tenant
+      description: Adds a member to a given tenant.
       operationId: addMember
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AddMemberBody'
-        description: Member to associate with a tenant
+        description: The member to associate with a tenant.
         required: true
       responses:
         "201":
@@ -986,38 +989,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
-          description: Member successfully added
+          description: The member was successfully added.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.members.write
   /{tenant}/identity/v2beta1/members/{member}:
     delete:
-      description: Removes a member from the given tenant
+      description: Removes a member from a given tenant
       operationId: removeMember
       responses:
         "204":
-          description: Member successfully removed
+          description: The member was successfully removed.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.members.write
     get:
-      description: Get a member of the given tenant
+      description: Returns a member of a given tenant.
       operationId: getMember
       responses:
         "200":
@@ -1025,22 +1028,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Member'
-          description: Successful operation
+          description: The member was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.members.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/members/{member}/groups:
     get:
-      description: Returns the list of groups a member belongs to within a tenant
+      description: Returns a list of groups that a member belongs to within a tenant.
       operationId: listMemberGroups
       responses:
         "200":
@@ -1050,15 +1053,15 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of groups was successfully retrieved.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.members.read
     parameters:
     - $ref: '#/components/parameters/tenant'
@@ -1066,7 +1069,7 @@ paths:
   /{tenant}/identity/v2beta1/members/{member}/permissions:
     get:
       description: |
-        Returns the set of permissions granted to the member within the tenant
+        Returns a set of permissions granted to the member within the tenant.
       operationId: listMemberPermissions
       responses:
         "200":
@@ -1076,15 +1079,15 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The set of permissions was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.members.read
     parameters:
     - $ref: '#/components/parameters/tenant'
@@ -1092,7 +1095,7 @@ paths:
   /{tenant}/identity/v2beta1/members/{member}/roles:
     get:
       description: |
-        Returns the set of roles the member possesses within the tenant
+        Returns a set of roles that a given member holds within the tenant.
       operationId: listMemberRoles
       responses:
         "200":
@@ -1102,22 +1105,22 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The set of roles was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.members.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/roles:
     get:
-      description: Get all roles for the given tenant
+      description: Returns all roles for a given tenant.
       operationId: listRoles
       responses:
         "200":
@@ -1127,20 +1130,20 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of roles for the given tenant was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.roles.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     post:
-      description: Creates a new authorization role in the given tenant
+      description: Creates a new authorization role in a given tenant.
       operationId: createRole
       requestBody:
         content:
@@ -1155,40 +1158,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Role'
-          description: Successfully created
+          description: The authorization role was successfully created.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "409":
-          description: Role already exists
+          description: The role already exists.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.roles.write
   /{tenant}/identity/v2beta1/roles/{role}:
     delete:
-      description: Deletes a defined role for the given tenant
+      description: Deletes a defined role for a given tenant.
       operationId: deleteRole
       responses:
         "204":
-          description: Successfully deleted
+          description: The role was successfully deleted.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.roles.write
     get:
-      description: Get a role for the given tenant
+      description: Returns a role for a given tenant.
       operationId: getRole
       responses:
         "200":
@@ -1196,22 +1199,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Role'
-          description: Successful operation
+          description: The role was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.roles.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/role'
   /{tenant}/identity/v2beta1/roles/{role}/groups:
     get:
-      description: Gets groups for a role in this tenant
+      description: Gets a list of groups for a role in a given tenant.
       operationId: listRoleGroups
       responses:
         "200":
@@ -1221,20 +1224,20 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of groups was successfully returned.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.roles.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/role'
   /{tenant}/identity/v2beta1/roles/{role}/permissions:
     get:
-      description: Gets permissions for a role in this tenant
+      description: Gets the permissions for a role in a given tenant.
       operationId: listRolePermissions
       responses:
         "200":
@@ -1244,28 +1247,28 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The list of permissions was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.roles.read
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/role'
     post:
-      description: Adds permissions to a role in this tenant
+      description: Adds permissions to a role in a given tenant.
       operationId: addRolePermission
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AddRolePermissionBody'
-        description: Permission to add to a role
+        description: The permission to add to a role.
         required: true
       responses:
         "200":
@@ -1273,40 +1276,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RolePermission'
-          description: Successful operation
+          description: The permission was successfully added to the role.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "422":
-          description: Unprocessable entity in request
+          description: The provided fields aren't valid.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.roles.write
   /{tenant}/identity/v2beta1/roles/{role}/permissions/{permission}:
     delete:
-      description: Removes a permission from the role
+      description: Removes a permission from the role.
       operationId: removeRolePermission
       responses:
         "204":
-          description: Permission successfully removed
+          description: The permission was successfully removed from the role.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "423":
-          description: Resource locked
+          description: The resource is locked.
       x-authz-scope: identity.roles.write
     get:
-      description: Gets a permission
+      description: Gets a permission for the specified role.
       operationId: getRolePermission
       responses:
         "200":
@@ -1314,15 +1317,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RolePermission'
-          description: Permission successfully added
+          description: The permission was successfully added to the role.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.roles.read
     parameters:
     - $ref: '#/components/parameters/tenant'
@@ -1331,7 +1334,7 @@ paths:
   /{tenant}/identity/v2beta1/validate:
     get:
       description: |
-        Validates the access token obtained from authorization header and returns the principal name and tenant memberships
+        Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
       operationId: validateToken
       parameters:
       - $ref: '#/components/parameters/include'
@@ -1341,37 +1344,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidateInfo'
-          description: Token is valid
+          description: The submitted token is valid.
           headers:
             Cache-Control:
               description: Specify how/whether to cache the response, etc.
               schema:
                 type: string
             Vary:
-              description: Tell the HTTP cache what parts of the request header to
-                use when trying to find the right object
+              description: Tells the HTTP cache what parts of the request header to
+                use when trying to find the right object.
               schema:
                 type: string
             X-Internal-Cache-Control:
               description: max-age=<seconds>, specifies the time a token can be cached.
-                This is meant for internal services only
+                This is meant for internal services only.
               schema:
                 type: string
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated request
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
     parameters:
     - $ref: '#/components/parameters/tenant'
   /system/identity/v2beta1/principals:
     get:
-      description: Returns the list of principals known to IAC
+      description: Returns the list of principals known to IAC.
       operationId: listPrincipals
       responses:
         "200":
@@ -1381,17 +1384,17 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successful operation
+          description: The principal list was successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
       x-authz-scope: identity.principals.read
   /system/identity/v2beta1/principals/{principal}:
     get:
-      description: Returns details of a principal, including their tenant membership
+      description: Returns the details of a principal, including its tenant membership.
       operationId: getPrincipal
       responses:
         "200":
@@ -1399,15 +1402,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Principal'
-          description: Successful operation
+          description: The principal details were successfully returned.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.principals.read
     parameters:
     - $ref: '#/components/parameters/principal'
@@ -1416,4 +1419,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5390d54064e1915ad3ea04b0c136609d8f0f2cf9 path: identity/openapi.yaml
+# Retrieved from scp-openapi commit 1e014bb9fba73e574e1a17c9b6f858b382810487 path: identity/openapi.yaml
