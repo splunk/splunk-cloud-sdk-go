@@ -4090,12 +4090,12 @@ action that is part of a specific rule. Parameters:
     actionid: ID of an Action.
     resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 
-#### func (*Service) GetDashboardByID
+#### func (*Service) GetDashboardById
 
 ```go
-func (s *Service) GetDashboardByID(dashboardid string, resp ...*http.Response) (*Dashboard, error)
+func (s *Service) GetDashboardById(dashboardid string, resp ...*http.Response) (*Dashboard, error)
 ```
-GetDashboardByID - catalog service endpoint Return information about a dashboard
+GetDashboardById - catalog service endpoint Return information about a dashboard
 with the specified ID. Parameters:
 
     dashboardid: ID of a dashboard.
@@ -4135,12 +4135,12 @@ with the specified ID. Parameters:
     datasetid: ID of a Dataset.
     resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 
-#### func (*Service) GetFieldByID
+#### func (*Service) GetFieldById
 
 ```go
-func (s *Service) GetFieldByID(fieldid string, resp ...*http.Response) (*Field, error)
+func (s *Service) GetFieldById(fieldid string, resp ...*http.Response) (*Field, error)
 ```
-GetFieldByID - catalog service endpoint Get a field that corresponds to a
+GetFieldById - catalog service endpoint Get a field that corresponds to a
 specific field ID. Parameters:
 
     fieldid: ID of a Field.
@@ -4880,13 +4880,13 @@ type Servicer interface {
 	*/
 	GetActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) (*Action, error)
 	/*
-		GetDashboardByID - catalog service endpoint
+		GetDashboardById - catalog service endpoint
 		Return information about a dashboard with the specified ID.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDashboardByID(dashboardid string, resp ...*http.Response) (*Dashboard, error)
+	GetDashboardById(dashboardid string, resp ...*http.Response) (*Dashboard, error)
 	/*
 		GetDashboardByResourceName - catalog service endpoint
 		Return information about a dashboard with the specified resource name.
@@ -4912,13 +4912,13 @@ type Servicer interface {
 	*/
 	GetDatasetById(datasetid string, resp ...*http.Response) (*Dataset, error)
 	/*
-		GetFieldByID - catalog service endpoint
+		GetFieldById - catalog service endpoint
 		Get a field that corresponds to a specific field ID.
 		Parameters:
 			fieldid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetFieldByID(fieldid string, resp ...*http.Response) (*Field, error)
+	GetFieldById(fieldid string, resp ...*http.Response) (*Field, error)
 	/*
 		GetFieldByIdForDataset - catalog service endpoint
 		Return a field that is part of a specific dataset.

@@ -26,50 +26,50 @@ import (
 type Servicer interface {
 	/*
 		AddGroupMember - identity service endpoint
-		Adds a member to the group
+		Adds a member to a given group.
 		Parameters:
 			group: The group name.
-			addGroupMemberBody: Member to add to a group
+			addGroupMemberBody: The member to add to a group.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	AddGroupMember(group string, addGroupMemberBody AddGroupMemberBody, resp ...*http.Response) (*GroupMember, error)
 	/*
 		AddGroupRole - identity service endpoint
-		Adds a role to the group
+		Adds a role to a given group.
 		Parameters:
 			group: The group name.
-			addGroupRoleBody: Role to add to a group
+			addGroupRoleBody: The role to add to a group.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	AddGroupRole(group string, addGroupRoleBody AddGroupRoleBody, resp ...*http.Response) (*GroupRole, error)
 	/*
 		AddMember - identity service endpoint
-		Adds a member to the given tenant
+		Adds a member to a given tenant.
 		Parameters:
-			addMemberBody: Member to associate with a tenant
+			addMemberBody: The member to associate with a tenant.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	AddMember(addMemberBody AddMemberBody, resp ...*http.Response) (*Member, error)
 	/*
 		AddRolePermission - identity service endpoint
-		Adds permissions to a role in this tenant
+		Adds permissions to a role in a given tenant.
 		Parameters:
 			role: The role name.
-			body: Permission to add to a role
+			body: The permission to add to a role.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	AddRolePermission(role string, body string, resp ...*http.Response) (*RolePermission, error)
 	/*
 		CreateGroup - identity service endpoint
-		Creates a new group in the given tenant
+		Creates a new group in a given tenant.
 		Parameters:
-			createGroupBody: Group definition
+			createGroupBody: The group definition.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateGroup(createGroupBody CreateGroupBody, resp ...*http.Response) (*Group, error)
 	/*
 		CreateRole - identity service endpoint
-		Creates a new authorization role in the given tenant
+		Creates a new authorization role in a given tenant.
 		Parameters:
 			createRoleBody: Role definition
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -77,7 +77,7 @@ type Servicer interface {
 	CreateRole(createRoleBody CreateRoleBody, resp ...*http.Response) (*Role, error)
 	/*
 		DeleteGroup - identity service endpoint
-		Deletes a group in the given tenant
+		Deletes a group in a given tenant.
 		Parameters:
 			group: The group name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -85,7 +85,7 @@ type Servicer interface {
 	DeleteGroup(group string, resp ...*http.Response) error
 	/*
 		DeleteRole - identity service endpoint
-		Deletes a defined role for the given tenant
+		Deletes a defined role for a given tenant.
 		Parameters:
 			role: The role name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -93,7 +93,7 @@ type Servicer interface {
 	DeleteRole(role string, resp ...*http.Response) error
 	/*
 		GetGroup - identity service endpoint
-		Defines a group in the given tenant
+		Returns information about a given group within a tenant.
 		Parameters:
 			group: The group name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -101,7 +101,7 @@ type Servicer interface {
 	GetGroup(group string, resp ...*http.Response) (*Group, error)
 	/*
 		GetGroupMember - identity service endpoint
-		Returns group-member relationship details
+		Returns information about a given member within a given group.
 		Parameters:
 			group: The group name.
 			member: The member name.
@@ -110,7 +110,7 @@ type Servicer interface {
 	GetGroupMember(group string, member string, resp ...*http.Response) (*GroupMember, error)
 	/*
 		GetGroupRole - identity service endpoint
-		Returns group-role relationship details
+		Returns information about a given role within a given group.
 		Parameters:
 			group: The group name.
 			role: The role name.
@@ -119,7 +119,7 @@ type Servicer interface {
 	GetGroupRole(group string, role string, resp ...*http.Response) (*GroupRole, error)
 	/*
 		GetMember - identity service endpoint
-		Get a member of the given tenant
+		Returns a member of a given tenant.
 		Parameters:
 			member: The member name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -127,7 +127,7 @@ type Servicer interface {
 	GetMember(member string, resp ...*http.Response) (*Member, error)
 	/*
 		GetPrincipal - identity service endpoint
-		Returns details of a principal, including their tenant membership
+		Returns the details of a principal, including its tenant membership.
 		Parameters:
 			principal: The principal name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -135,7 +135,7 @@ type Servicer interface {
 	GetPrincipal(principal string, resp ...*http.Response) (*Principal, error)
 	/*
 		GetRole - identity service endpoint
-		Get a role for the given tenant
+		Returns a role for a given tenant.
 		Parameters:
 			role: The role name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -143,7 +143,7 @@ type Servicer interface {
 	GetRole(role string, resp ...*http.Response) (*Role, error)
 	/*
 		GetRolePermission - identity service endpoint
-		Gets a permission
+		Gets a permission for the specified role.
 		Parameters:
 			role: The role name.
 			permission: The permission string.
@@ -152,7 +152,7 @@ type Servicer interface {
 	GetRolePermission(role string, permission string, resp ...*http.Response) (*RolePermission, error)
 	/*
 		ListGroupMembers - identity service endpoint
-		Lists the members attached to the group
+		Returns a list of the members within a given group.
 		Parameters:
 			group: The group name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -160,7 +160,7 @@ type Servicer interface {
 	ListGroupMembers(group string, resp ...*http.Response) ([]string, error)
 	/*
 		ListGroupRoles - identity service endpoint
-		Lists the roles attached to the group
+		Returns a list of the roles that are attached to a group within a given tenant.
 		Parameters:
 			group: The group name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -168,14 +168,14 @@ type Servicer interface {
 	ListGroupRoles(group string, resp ...*http.Response) ([]string, error)
 	/*
 		ListGroups - identity service endpoint
-		List groups that exist in the tenant
+		List the groups that exist in a given tenant.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListGroups(resp ...*http.Response) ([]string, error)
 	/*
 		ListMemberGroups - identity service endpoint
-		Returns the list of groups a member belongs to within a tenant
+		Returns a list of groups that a member belongs to within a tenant.
 		Parameters:
 			member: The member name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -183,7 +183,7 @@ type Servicer interface {
 	ListMemberGroups(member string, resp ...*http.Response) ([]string, error)
 	/*
 		ListMemberPermissions - identity service endpoint
-		Returns the set of permissions granted to the member within the tenant
+		Returns a set of permissions granted to the member within the tenant.
 		Parameters:
 			member: The member name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -191,7 +191,7 @@ type Servicer interface {
 	ListMemberPermissions(member string, resp ...*http.Response) ([]string, error)
 	/*
 		ListMemberRoles - identity service endpoint
-		Returns the set of roles the member possesses within the tenant
+		Returns a set of roles that a given member holds within the tenant.
 		Parameters:
 			member: The member name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -199,21 +199,21 @@ type Servicer interface {
 	ListMemberRoles(member string, resp ...*http.Response) ([]string, error)
 	/*
 		ListMembers - identity service endpoint
-		Returns the list of members in the given tenant
+		Returns a list of members in a given tenant.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListMembers(resp ...*http.Response) ([]string, error)
 	/*
 		ListPrincipals - identity service endpoint
-		Returns the list of principals known to IAC
+		Returns the list of principals known to IAC.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListPrincipals(resp ...*http.Response) ([]string, error)
 	/*
 		ListRoleGroups - identity service endpoint
-		Gets groups for a role in this tenant
+		Gets a list of groups for a role in a given tenant.
 		Parameters:
 			role: The role name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -221,7 +221,7 @@ type Servicer interface {
 	ListRoleGroups(role string, resp ...*http.Response) ([]string, error)
 	/*
 		ListRolePermissions - identity service endpoint
-		Gets permissions for a role in this tenant
+		Gets the permissions for a role in a given tenant.
 		Parameters:
 			role: The role name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -229,14 +229,14 @@ type Servicer interface {
 	ListRolePermissions(role string, resp ...*http.Response) ([]string, error)
 	/*
 		ListRoles - identity service endpoint
-		Get all roles for the given tenant
+		Returns all roles for a given tenant.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListRoles(resp ...*http.Response) ([]string, error)
 	/*
 		RemoveGroupMember - identity service endpoint
-		Removes the member from the group
+		Removes the member from a given group.
 		Parameters:
 			group: The group name.
 			member: The member name.
@@ -245,7 +245,7 @@ type Servicer interface {
 	RemoveGroupMember(group string, member string, resp ...*http.Response) error
 	/*
 		RemoveGroupRole - identity service endpoint
-		Removes the role from the group
+		Removes a role from a given group.
 		Parameters:
 			group: The group name.
 			role: The role name.
@@ -254,7 +254,7 @@ type Servicer interface {
 	RemoveGroupRole(group string, role string, resp ...*http.Response) error
 	/*
 		RemoveMember - identity service endpoint
-		Removes a member from the given tenant
+		Removes a member from a given tenant
 		Parameters:
 			member: The member name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -262,7 +262,7 @@ type Servicer interface {
 	RemoveMember(member string, resp ...*http.Response) error
 	/*
 		RemoveRolePermission - identity service endpoint
-		Removes a permission from the role
+		Removes a permission from the role.
 		Parameters:
 			role: The role name.
 			permission: The permission string.
@@ -271,7 +271,7 @@ type Servicer interface {
 	RemoveRolePermission(role string, permission string, resp ...*http.Response) error
 	/*
 		ValidateToken - identity service endpoint
-		Validates the access token obtained from authorization header and returns the principal name and tenant memberships
+		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
