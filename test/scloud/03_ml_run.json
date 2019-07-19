@@ -1,0 +1,24 @@
+{
+  "input": {
+    "kind": "SPL",
+    "source": {
+      "query": "| from mlapishowcase.mlapishowcase where host=\"server_power_test_ef5wlcd4njiovmdl\"",
+      "queryParameters": {
+        "earliest": "0",
+        "latest": "now"
+      },
+      "extractAllFields": true
+    }
+  },
+  "output": {
+    "kind": "HEC",
+    "destination": {
+      "attributes": {
+        "index": "mlapishowcase",
+        "module": "mlapishowcase"
+      },
+      "source": "mlapi-showcase",
+      "host": "server_power_out_ef5wlcd4njiovmdl"
+    }
+  }
+}

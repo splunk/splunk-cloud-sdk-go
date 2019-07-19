@@ -1,0 +1,495 @@
+Use Splunk Cloud CLI commands with the Catalog service to create, edit, and view
+catalog datasets, rules, and fields.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        catalog <subcommand> [params]
+
+
+SUBCOMMANDS
+
+    create-action <rule-full-name> -kind <kind> [-owner <user-id>] 
+    [-field <field-name>] [-alias <alias-name>] [-mode <mode>] [-expression <expression>] 
+    [-pattern <pattern>] [-limit <limit>]
+        Create a new action for a rule associated with a specific resource name.
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+            -kind <kind>
+                The alias action kind.
+
+            -owner <user-id>
+                The user ID of the dataset owner.
+
+            -field <field-name>
+                The name of the field to be aliased.
+
+            -alias <alias-name>
+                The alias name.
+
+            -mode <mode>
+                The autokv action mode.
+
+            -expression <expression>
+                The EVAL expression that calculates the field.
+
+            -pattern <pattern>
+                A regular expression that includes named capture groups for the 
+                purpose of field extraction.
+
+            -limit <limit>
+                The maximum number of times per event to attempt to match fields 
+                with the regular expression. 
+
+    create-dataset <dataset-name> lookup|kvcollection||metric|index [-owner <user-id>]
+    [-module <module-name>] [-read-roles <role-name>] [-write-roles <role-name>] 
+    [-case-sensitive-match true|false] [-external-kind <lookup-type>] 
+    [-external-name <lookup-name>] [-filter true|false] [-max-matches true|false] 
+    [-min-matches true|false] [-default-match true|false] [-disabled true|false] 
+    [-fields true|false]
+        Create a dataset with the specified values.
+
+        Arguments:
+            <dataset-name>
+                The dataset name, which must be unique within each module. 
+
+            lookup|kvcollection|index
+                The type of dataset to create. 
+
+            -owner <user-id>
+                The user ID of the dataset owner.
+
+            -module <module-name>
+                The name of the module that contains the dataset.
+
+            -read-roles <role-name>
+                The roles allowed to read this dataset.
+
+            -write-roles <role-name>
+                The roles allowed to write to this dataset.
+
+            -case-sensitive-match true|false
+                Perform a case-sensitive match against the lookup. Applicable
+                to lookup datasets.
+
+            -external-kind <lookup-type>
+                The type of the external lookup. Applicable to lookup datasets.
+
+            -external-name <lookup-name>
+                The name of the external lookup. Applicable to lookup datasets.
+
+            -filter true|false
+                Filter results from the lookup before returning data. Applicable
+                to lookup datasets.
+
+            -max-matches true|false
+                The maximum number of matches to return. Applicable to lookup 
+                datasets.
+
+            -min-matches true|false
+                The minimum number of matches to return. Applicable to lookup 
+                datasets.
+
+            -default-match true|false
+                The default match. If minMatches > 0 and no matches are found,
+                this value is returned instead. Applicable to lookup datasets.
+
+            -disabled true|false
+                Indicates whether the index is disabled. Applicable to index 
+                datasets.
+
+            -fields true|false
+                Indicates whether the fields are dataset fields.
+
+    create-field <dataset-name> <field-name> [-data-type date|number|object_id|string|unknown] 
+    [-field-type dimension|measure|unknown] [-prevalence all|some|unknown]
+        Create a dataset field with the specified attributes.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+            <field-name>
+                The field name. 
+
+            -data-type date|number|object_id|string|unknown
+                The datatype for this field.
+
+            -field-type dimension|measure|unknown
+                The field type.
+
+            -prevalence all|some|unknown
+                The prevalence of the field indicating how many rows this field
+                appears in.
+
+    create-rule <rule-name> <module-name> <match> [-owner <user-id>] [-actions <actions>]
+        Create a rule with the specified fields.
+
+        Arguments:
+            <rule-name>
+                The rule name. 
+
+            <module-name>
+                The module name. 
+
+            <match>
+                The rule match type.
+
+            -owner <user-id>
+                The user ID of the dataset owner.
+
+            -actions <actions>
+                A JSON array with actions associated with the rule.
+
+    delete-action <rule-full-name> <action-id>
+        Delete the specified action. 
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+            <action-id>
+                The action ID.
+
+    delete-dataset <dataset-name>
+        Delete the dataset matching the specified name, if it exists.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+    delete-field <dataset-name> <dataset-field-id>
+        Delete the dataset field matching the specified ID for the specified 
+        dataset, if it exists.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+            <dataset-field-id>
+                The dataset field ID. 
+
+    delete-rule <rule-full-name>
+        Delete the rule matching the specified ID, if it exists. 
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+    get-action <rule-full-name> <action-id>
+        Display the specified action.
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+            <action-id>
+                The action ID.
+
+    get-dataset <dataset-name>
+        Display the dataset matching the name.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+    get-dataset-field <dataset-name> <dataset-field-id>
+        Display the dataset field matching the specified dataset name and 
+        dataset field ID.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+            <dataset-field-id>
+                The dataset field ID.
+
+    get-field <field-id>
+        Display the specified field.
+
+        Arguments:
+            <field-id>
+                The field ID. 
+
+    get-rule <rule-full-name>
+        Display the rule matching the specified name.
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+    get-spec-json
+        Display the OpenAPI spec for the Catalog service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Catalog service in YAML format.
+
+    list-actions <rule-full-name>
+        Display all the actions associated with the specified rule.
+
+        Arguments:
+            <rule-full-name>
+                The full name of the rule. Include the dataset module as a prefix
+                and separate it with a period, for example "catalog.my-rule".
+
+    list-dataset-fields <dataset-name> [<filter>]
+        Display all fields for the specified dataset, or only fields that 
+        contain the specified filter.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+            <filter>
+                A filter string.
+
+    list-datasets [-count <integer>] [-filter <filter>] [-orderby <field-name>] 
+        Display all the datasets in the catalog with optional filters.
+
+        Arguments:
+            -count <integer>
+                Number of datasets to return.
+
+            -filter <filter>
+                A filter string to apply to the datasets.
+
+            -orderby <field-name>
+                Name of the fields to sort by. Separate multiple fields with a
+                comma.
+
+    list-fields
+        Display all the fields in the catalog.
+
+    list-modules [<filter>]
+        Display all modules, or only modules that contain the specified filter.
+
+        Arguments:
+            <filter>
+                A filter string.
+
+
+    list-rules
+        Display all the rules currently in the catalog.
+
+    update-dataset <dataset-name> [-owner <user-id>]
+    [-module <module-name>] [-read-roles <role-name>] [-write-roles <role-name>]
+    [-case-sensitive-match true|false] [-external-kind <lookup-type>] 
+    [-external-name <lookup-name>] [-filter true|false] [-max-matches true|false]
+    [-min-matches true|false] [-default-match true|false] [-disabled true|false]
+    [-fields true|false]
+        Update the definition of the dataset with the specified ID.
+        NOTE: Do not use this command to update fields. Use update-field instead.
+
+        Arguments:
+            <dataset-name>
+                The dataset name.
+
+            -owner <user-id>
+                The user ID of the dataset owner.
+
+            -module <module-name>
+                The module that this dataset belongs to.
+
+            -read-roles <role-name>
+                The roles allowed to read this dataset.
+
+            -write-roles <role-name>
+                The roles allowed to write to this dataset.
+
+            -case-sensitive-match true|false
+                Perform a case-sensitive match against the lookup. Applicable
+                to lookup datasets.
+
+            -external-kind <lookup-type>
+                The type of the external lookup. Applicable to lookup datasets.
+
+            -external-name <lookup-name>
+                The name of the external lookup. Applicable to lookup datasets.
+
+            -filter true|false
+                Filter results from the lookup before returning data. Applicable
+                to lookup datasets.
+
+            -max-matches true|false
+                The maximum number of matches to return. Applicable to lookup 
+                datasets.
+
+            -min-matches true|false
+                The minimum number of matches to return. Applicable to lookup 
+                datasets.
+
+            -default-match true|false
+                The default match. If minMatches > 0 and no matches are found,
+                this value is returned instead. Applicable to lookup datasets.
+
+            -disabled true|false
+                Indicates whether the index is disabled. Applicable to index 
+                datasets.
+
+            -fields true|false
+                Indicates whether the fields are dataset fields.
+
+    update-field <dataset-name> <dataset-field-id> [-datasetid <dataset-id>] 
+    [-data-type date|number|object_id|string|unknown] 
+    [-field-type dimension|measure|unknown] [-name <field-name>] 
+    [-prevalence all|some|unknown]
+        Update a dataset field with the specified ID belonging to the specified 
+        dataset.
+
+        Arguments:
+            <dataset-name>
+                The dataset name. 
+
+            <dataset-field-id>
+                The dataset field ID.
+
+            -datasetid <dataset-id>
+                The ID of the dataset to assign this field to. 
+
+            -data-type date|number|object_id|string|unknown
+                The datatype for this field.
+
+            -field-type dimension|measure|unknown
+                The field type.
+
+            -name <field-name>
+                The field name.
+
+            -prevalence all|some|unknown
+                The prevalence of the field indicating how many rows this field
+                appears in.
+
+
+EXAMPLES
+
+    Create an index dataset:
+        $ scloud catalog create-dataset myindex index -disabled=false
+        {
+            "id": "5bbcdb199d73980001fdf732",
+            "name": "myindex5",
+            "kind": "index",
+        ...
+        }
+
+    Create a kvcollection dataset: 
+        $ scloud catalog create-dataset kvtest1 kvcollection
+        {
+            "id": "5bcf82831b14b60001954fa1",
+            "name": "kvtest1",
+            "kind": "kvcollection",
+        ...
+        }
+
+    Create a lookup datatset: 
+        $ scloud catalog create-dataset kvlook1 lookup -external-name kvtest1 -external-kind kvcollection
+        {
+            "id": "5bcf836cda6bdf0001bcd944",
+            "name": "kvlookup1",
+            "kind": "lookup",
+        ...
+        }
+
+    Get a specified dataset: 
+        $ scloud catalog get-dataset 0000000000000000000002bc
+        {
+            "id": "0000000000000000000002bc",
+            "name": "geo_hex",
+        ...
+        }
+
+    Get any two datasets in the catalog: 
+        $ scloud catalog list-datasets -count 2
+        [
+            {
+                "id": "5c383063cbfd11000117497b",
+                "name": "go_integ_dataset_5000",
+                "kind": "kvcollection",
+                "module": "gonamespace1542134530",
+                "created": "2019-01-11 05:57:55.000841",
+                "modified": "2019-01-11 05:57:55.000841",
+            ...
+            },
+            {
+                "id": "5c38265c1bbf50000152662b",
+                "name": "myindex",
+                "kind": "index",
+                "created": "2019-01-11 05:15:08.000842",
+                "modified": "2019-01-11 05:15:08.000842",
+            ...
+            }
+        ]
+
+    Get all the datasets in the catalog where kind=="lookup":
+        $ scloud catalog list-datasets -filter "kind==\"lookup\""
+        [
+            {
+                "id": "5c383063cbfd11000117497b",
+                "name": "go_integ_dataset_5000",
+                "kind": "lookup",
+                "module": "gonamespace1542134530",
+                "created": "2019-01-11 05:57:55.000841",
+                "modified": "2019-01-11 05:57:55.000841",
+            ...
+            },
+            {
+                "id": "5c38265c1bbf50000152662b",
+                "name": "go_integ_dataset_6000",
+                "kind": "lookup",
+                "created": "2019-01-11 05:15:08.000842",
+                "modified": "2019-01-11 05:15:08.000842",
+            ...
+            },
+        ...
+        ]
+
+    Get all the datasets in the catalog sorted by "id", using orderby, and 
+    separate multiple fields with commas (-orderby field1,field2):
+        $ scloud catalog list-datasets -count 2 -orderby id
+        [
+            {
+                "id": "5c38265c1bbf50000152662b",
+                "name": "go_integ_dataset_6000",
+                "kind": "lookup",
+                "created": "2019-01-11 05:15:08.000842",
+                "modified": "2019-01-11 05:15:08.000842",
+            ...
+            },
+            {
+                "id": "5c383063cbfd11000117497b",
+                "name": "go_integ_dataset_5000",
+                "kind": "lookup",
+                "module": "gonamespace1542134530",
+                "created": "2019-01-11 05:57:55.000841",
+                "modified": "2019-01-11 05:57:55.000841",
+            ...
+            }
+        ]
+
+    Get all the rules in the catalog:
+        $ scloud catalog list-rules
+        [
+            {
+                "id": "5b900b10f247070001237dd1",
+            ...
+            }
+        ]
+
+    Create a rule with actions:
+        $ scloud catalog create-rule my-test-rule mymodule \
+            sourcetype::catalog splunk -actions '[{"kind":"AUTOKV","owner"\
+            :"splunk", "mode": "AUTO"}]'
+
+    Get a rule:
+        $ scloud catalog get-rule mymodule/my-test-rule
+
+    Get modules with an optional filter:
+        $ scloud catalog list-modules 'module="catalog"'

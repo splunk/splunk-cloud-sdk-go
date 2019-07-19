@@ -17,8 +17,6 @@ import (
 )
 
 const (
-	//notMap   = `foo=bar`
-	noKind   = `{"foo":"bar"}`
 	lookupDS = `{
 		"owner": "me@example.com",
 		"created": "2018-11-29 08:25:19.000987",
