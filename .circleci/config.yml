@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:1.11
+      - image: golang:1.12-alpine
 
     working_directory: /go/src/github.com/splunk/splunk-cloud-sdk-go
 
@@ -13,11 +13,20 @@ jobs:
           name: setup
           command: |
             export CGO_ENABLED=0
+            export SKIP_DOWNLOAD_CONFIG=true
             make setup
 
       - run:
           name: lint
           command: make lint
+
+      - run:
+          name: format
+          command: make format_check
+
+      - run:
+          name: vet
+          command: make vet
 
       - run:
           name: build

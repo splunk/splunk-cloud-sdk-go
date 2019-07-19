@@ -1,0 +1,179 @@
+Use Splunk Cloud CLI commands with the Machine Learning service to manage 
+workflows, builds, runs, and endpoints.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        ml <subcommand> [params]
+
+
+SUBCOMMANDS
+   
+    create-workflow <file-path>
+        Create a workflow configuration for the specified JSON file.
+
+        Arguments: 
+            <file-path>
+                The path to the JSON file.
+
+    create-workflow-build <workflow-id> <file-path>
+        Create a workflow build for the specified JSON file.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <file-path>
+                The path to the JSON file.
+
+    create-workflow-run <workflow-id> <build-id> <file-path>
+        Create a workflow run for the specified JSON file.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+            <file-path>
+                The path to the JSON file.
+
+    delete-workflow <workflow-id>
+        Delete a workflow configuration for the specified workflow ID.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+    delete-workflow-build <workflow-id> <build-id>
+        Delete a workflow build.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+    delete-workflow-run <workflow-id> <build-id> <run-id>
+        Delete a workflow run.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+            <run-id>
+                The workflow run ID. 
+
+    get-spec-json
+        Display the OpenAPI spec for the Machine Learning service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Machine Learning service in YAML format.
+
+    get-workflow <workflow-id>
+        Get a workflow configuration.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+
+    get-workflow-build <workflow-id> <build-id>
+        Delete a workflow build.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+    get-workflow-run <workflow-id> <build-id> <run-id>
+        Get a workflow run.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+            <run-id>
+                The workflow run ID. 
+
+    list-workflows
+        Get the list of workflow configurations.
+
+    list-workflow-builds <workflow-id>
+        Get the list of workflow builds.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+    list-workflow-runs <workflow-id> <build-id>
+        Get the list of workflow runs.
+
+        Arguments: 
+            <workflow-id>
+                The workflow ID.
+
+            <build-id>
+                The build ID.
+
+
+EXAMPLES
+    Get a workflow configuration: 
+        $ scloud ml get-workflow 5c412cb8f0912f0007000015
+        {
+            "id": "5c412cb8f0912f0007000015",
+            "tasks": [
+                {
+                    "kind": "fit",
+                    "name": "PCA_Transformer",
+                    "timeoutSecs": 600,
+                    "algorithm": "PCA",
+                    "fields": {
+                        "features": [
+                            "petal_length",
+                            "petal_width",
+                            "sepal_length",
+                            "sepal_width"
+                        ],
+                        "created": null,
+                        "target": ""
+                    },
+                    "outputTransformer": "PCA_transformer",
+                    "parameters": {
+                        "k": 3
+                    }
+                },
+                {
+                    "kind": "fit",
+                    "name": "LogisticRegression",
+                    "timeoutSecs": 600,
+                    "algorithm": "LogisticRegression",
+                    "fields": {
+                        "features": [
+                            "PC_1",
+                            "PC_2",
+                            "PC_3"
+                        ],
+                        "created": null,
+                        "target": "species"
+                    },
+                    "outputTransformer": "LogisticRegression_classifier",
+                    "parameters": {
+                        "fit_intercept": true,
+                        "probabilities": true
+                    }
+                }
+            ],
+            "creationTime": "2018-09-13T23:05:13Z"
+        }
