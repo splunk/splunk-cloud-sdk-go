@@ -1,0 +1,86 @@
+Use Splunk Cloud CLI commands with the Ingest service to send event and metrics
+data to a pipeline in Splunk Cloud.
+
+The ingest command reads data from standard input (stdin) in the following formats:
+
+    * raw:   The command interprets each line of input as a single line of raw 
+             text event data.
+
+    * json:  The command interprets each line of input as a single JSON object
+             and posts it as structured JSON event data.
+
+    * event: The command interprets each line of input as a JSON object that
+             represents a fully formed event object, including body and event
+             metadata.
+
+    Use options to specify the host, source, and source type to assign to
+    posted events.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        ingest <subcommand> [params]
+
+
+SUBCOMMANDS
+
+    get-spec-json
+        Display the OpenAPI spec for the Ingest service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Ingest service in YAML format.
+
+    post-events [-host <host>] [-source <source>] [-sourcetype <sourcetype>] 
+    [-format raw|json|event]
+        Send one or more events to a pipeline. The command reads event data from
+        stdin, and interprets each line as a separate event.
+
+        Arguments:
+            -host <host>
+                The host name associated with the event.
+
+            -source <source>
+                The source of the event.
+
+            -sourcetype <sourcetype>
+                The source type of the event.
+
+            -format raw|json|event
+                The format of the event. The default is "raw".
+
+    post-metrics [-host <host>] [-source <source>] [-sourcetype <sourcetype>] 
+    [-dimensions <json-object>] [-type <metric-type>] [-unit <unit>]
+        Post one or more metric events to a pipeline. The command reads metric 
+        data from stdin, and interprets each line as a separate list of one or 
+        more metrics.
+
+        Arguments:
+            -host <host>
+                The host name associated with the event.
+
+            -source <source>
+                The source of the event.
+
+            -sourcetype <sourcetype>
+                The source type of the event.
+
+            -dimensions <json-object>
+                The default dimensions to use for all metrics posted by this
+                command.
+
+            -type <metric-type>
+                The default metric type to use for all metrics posted by this
+                command. The default is "g" for gauge.
+
+            -unit <unit>
+                The default unit to use for all metrics posted by this command.
+
+
+EXAMPLES
+
+    Send events from a log file, foo.log, to your pipeline (*nix):
+        $ tail foo.log | scloud ingest post-events -sourcetype foo
+
+    Send events from a log file, foo.log, to your pipeline (Windows):
+        $ more foo.log | scloud ingest post-events -sourcetype foo

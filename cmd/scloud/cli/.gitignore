@@ -1,0 +1,7 @@
+.context
+.settings
+config.yaml
+default.yaml
+scloud.txt
+statik/
+version/version.go

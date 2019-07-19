@@ -30,7 +30,16 @@ tmp/
 .token
 
 # Docs/build info
-ci/docs/node_modules
-ci/docs/build
-ci/docs/package.json
-docs/docs.manifest.json
+cicd/docs/node_modules
+cicd/docs/build
+cicd/docs/package.json
+./docs/
+
+# scloud
+bin
+default.yaml
+
+# TODO: remove python testing for scloud
+*.pyc
+venv
+.python-version

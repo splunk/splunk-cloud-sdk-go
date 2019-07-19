@@ -20,6 +20,12 @@ components:
       required: true
       schema:
         type: string
+    PrincipalName:
+      in: path
+      name: principalName
+      required: true
+      schema:
+        type: string
     Tenant:
       in: path
       name: tenant
@@ -31,8 +37,18 @@ components:
       name: tenantName
       required: true
       schema:
+        maxLength: 36
+        minLength: 4
         type: string
+  requestBodies:
+    UpdateEntitlementsBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateEntitlementsBody'
+      required: true
   schemas:
+    AnyValue: {}
     CreateProvisionJobBody:
       properties:
         apps:
@@ -62,6 +78,57 @@ components:
       - tenant
       - action
       type: object
+    EntitlementLog:
+      properties:
+        action:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        updatedBy:
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - name
+      - sku
+      - value
+      - updatedAt
+      - updatedBy
+      - action
+      type: object
+    EntitlementLogs:
+      items:
+        $ref: '#/components/schemas/EntitlementLog'
+      type: array
+    EntitlementSetting:
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        updatedBy:
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - name
+      - sku
+      - value
+      - updatedAt
+      - updatedBy
+      type: object
+    EntitlementSettings:
+      items:
+        $ref: '#/components/schemas/EntitlementSetting'
+      type: array
     Error:
       properties:
         code:
@@ -101,22 +168,7 @@ components:
         email:
           type: string
         errors:
-          items:
-            properties:
-              action:
-                type: string
-              code:
-                type: string
-              group:
-                type: string
-              message:
-                type: string
-            required:
-            - code
-            - message
-            - action
-            type: object
-          type: array
+          $ref: '#/components/schemas/InviteInfoErrors'
         expiresAt:
           format: date-time
           type: string
@@ -158,6 +210,25 @@ components:
       - expiresAt
       - errors
       type: object
+    InviteInfoErrors:
+      items:
+        $ref: '#/components/schemas/InviteInfoErrorsItems'
+      type: array
+    InviteInfoErrorsItems:
+      properties:
+        action:
+          type: string
+        code:
+          type: string
+        group:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+      - action
+      type: object
     Invites:
       items:
         $ref: '#/components/schemas/InviteInfo'
@@ -174,22 +245,7 @@ components:
         createdBy:
           type: string
         errors:
-          items:
-            properties:
-              app:
-                type: string
-              code:
-                type: string
-              job_stage:
-                type: string
-              message:
-                type: string
-            required:
-            - job_stage
-            - code
-            - message
-            type: object
-          type: array
+          $ref: '#/components/schemas/ProvisionJobInfoErrors'
         jobID:
           minLength: 1
           type: string
@@ -209,6 +265,25 @@ components:
       - createdAt
       - createdBy
       - errors
+      type: object
+    ProvisionJobInfoErrors:
+      items:
+        $ref: '#/components/schemas/ProvisionJobInfoErrorsItems'
+      type: array
+    ProvisionJobInfoErrorsItems:
+      properties:
+        app:
+          type: string
+        code:
+          type: string
+        job_stage:
+          type: string
+        message:
+          type: string
+      required:
+      - job_stage
+      - code
+      - message
       type: object
     ProvisionJobs:
       items:
@@ -235,6 +310,34 @@ components:
       items:
         $ref: '#/components/schemas/TenantInfo'
       type: array
+    UpdateEntitlement:
+      properties:
+        name:
+          type: string
+        sku:
+          maxLength: 36
+          minLength: 2
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - name
+      - sku
+      - value
+      type: object
+    UpdateEntitlementsBody:
+      items:
+        $ref: '#/components/schemas/UpdateEntitlement'
+      type: array
+    UpdateEntitlementsResponse:
+      properties:
+        failed:
+          items:
+            type: string
+          type: array
+      required:
+      - failed
+      type: object
     UpdateInviteBody:
       properties:
         action:
@@ -254,20 +357,7 @@ components:
         createdBy:
           type: string
         errors:
-          items:
-            properties:
-              code:
-                type: string
-              job_stage:
-                type: string
-              message:
-                type: string
-            required:
-            - job_stage
-            - code
-            - message
-            type: object
-          type: array
+          $ref: '#/components/schemas/UpdateTenantStatusJobInfoErrors'
         jobID:
           minLength: 1
           type: string
@@ -286,6 +376,23 @@ components:
       - createdAt
       - createdBy
       - errors
+      type: object
+    UpdateTenantStatusJobInfoErrors:
+      items:
+        $ref: '#/components/schemas/UpdateTenantStatusJobInfoErrorsItems'
+      type: array
+    UpdateTenantStatusJobInfoErrorsItems:
+      properties:
+        code:
+          type: string
+        job_stage:
+          type: string
+        message:
+          type: string
+      required:
+      - job_stage
+      - code
+      - message
       type: object
     UpdateTenantStatusJobs:
       items:
@@ -442,4 +549,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 8c9b2755a9865808d5b612bd0d7ac2295c59d550 path: provisioner/openapi.yaml
+# Retrieved from scp-openapi commit 1e014bb9fba73e574e1a17c9b6f858b382810487 path: provisioner/openapi.yaml

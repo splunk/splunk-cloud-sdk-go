@@ -36,13 +36,13 @@ type Error struct {
 }
 
 type ProvisionJobInfo struct {
-	Apps      []string                 `json:"apps"`
-	CreatedAt string                   `json:"createdAt"`
-	CreatedBy string                   `json:"createdBy"`
-	Errors    []ProvisionJobInfoErrors `json:"errors"`
-	JobID     string                   `json:"jobID"`
-	Status    ProvisionJobInfoStatus   `json:"status"`
-	Tenant    string                   `json:"tenant"`
+	Apps      []string               `json:"apps"`
+	CreatedAt string                 `json:"createdAt"`
+	CreatedBy string                 `json:"createdBy"`
+	Errors    ProvisionJobInfoErrors `json:"errors"`
+	JobID     string                 `json:"jobID"`
+	Status    ProvisionJobInfoStatus `json:"status"`
+	Tenant    string                 `json:"tenant"`
 }
 
 type ProvisionJobInfoStatus string
@@ -54,7 +54,9 @@ const (
 	ProvisionJobInfoStatusCompleted ProvisionJobInfoStatus = "completed"
 )
 
-type ProvisionJobInfoErrors struct {
+type ProvisionJobInfoErrors []ProvisionJobInfoErrorsItems
+
+type ProvisionJobInfoErrorsItems struct {
 	Code     string  `json:"code"`
 	JobStage string  `json:"job_stage"`
 	Message  string  `json:"message"`

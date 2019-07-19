@@ -1,0 +1,74 @@
+Use Splunk Cloud CLI commands with the Provisioner service to provision and manage tenants.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        provisioner <subcommand> [params]
+
+
+SUBCOMMANDS
+
+    create-provision-job [-tenant <tenant>] [-apps <list-of-apps>]
+        Create a job to provision a tenant and optionally subscribe the tenant to 
+        one or more apps.
+
+        Arguments:
+            -tenant <tenant>
+                The tenant name. If one is not specified, a name based on the user
+                name is used.
+
+            -apps <apps>
+                List of apps to subscribe to.
+
+    get-provision-job <jobId>
+        Display details of the specified job.
+
+        Arguments:
+            <jobId>
+                The job ID.
+
+    get-spec-json
+        Display the OpenAPI spec for the Provisioner service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Provisioner service in YAML format.
+
+    get-tenant <tenant>
+        Display details of the specified tenant.
+
+        Arguments:
+            <tenant>
+                The tenant name.
+
+    list-provision-jobs
+        List provision jobs created by the user.
+
+    list-tenants
+        List tenants for the current user.
+
+
+EXAMPLES
+
+    List the tenants for the current user:
+        $ scloud provisioner list-tenants
+        [
+            "tenant10",
+            "tenant20",
+            "tenant30",
+            "tenant40"
+        ]
+    Create a tenant for a current user:
+        $ scloud provisioner create-provision-job -tenant scloudxyz -apps dashboards -apps cloud.admin.tool
+        {
+            "apps": [
+                "dashboards",
+                "cloud.admin.tool"
+            ],
+            "createdAt": "2019-07-12T19:47:55.094Z",
+            "createdBy": "xyz@splunk.com",
+            "errors": [],
+            "jobID": "1222",
+            "status": "created",
+            "tenant": "scloudxyz"
+        }

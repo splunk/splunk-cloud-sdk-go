@@ -2,103 +2,140 @@
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-.DEFAULT_GOAL := noop
-GOLANGCI_VER:=1.12.3
+.DEFAULT_GOAL:=build_all
 
-GO_NON_TEST_NON_VENDOR_PACKAGES := $(shell go list ./... | grep -v /vendor/ | grep -v test)
+NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
 
-setup: prereqs dependencies
+SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
+CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
+SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
-lint:
+setup: prereqs version statik download_config
+
+lint: linttest
+	# vendor/ needed for golangci-lint to work at the moment
+	GO111MODULE=on go mod vendor
 	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
+	rm -rf vendor/
 
 linttest:
+	# vendor/ needed for golangci-lint to work at the moment
+	GO111MODULE=on go mod vendor
 	golangci-lint run test/... --disable-all
+	rm -rf vendor/
+
+build_all:
+	make build
+	make build_scloud
 
 build:
-	go build $(GO_NON_TEST_NON_VENDOR_PACKAGES)
+	GO111MODULE=on go build ./...
 
-clean:
-	build
+build_scloud: statik version
+	@echo "Building scloud .."
+	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/cli
+
+build_cross_compile:
+	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
 
 format:
-	gofmt -s -w .
-	goimports -w .
+	GO111MODULE=on gofmt -s -w $(NON_VENDOR_GO_FILES)
+	GO111MODULE=on goimports -w $(NON_VENDOR_GO_FILES)
 
 format_check:
 	echo "Checking gofmt / goimports, if this fails you need to re-run 'make format' ..."
-	test -z $(shell gofmt -l .)
-	test -z $(shell goimports -l .)
+	test -z $(shell GO111MODULE=on gofmt -l $(NON_VENDOR_GO_FILES))
+	test -z $(shell GO111MODULE=on goimports -l $(NON_VENDOR_GO_FILES))
 
-vet: install_test_dep
-	go vet ./...
+vet:
+	GO111MODULE=on go vet ./...
 
-install_dep:
-	go get -u github.com/golang/dep/cmd/dep
+login: build_scloud
+	./cicd/scripts/login.sh
 
-install_test_dep:
-	go get -u github.com/stretchr/testify
+token:
+	./cicd/scripts/token.sh
 
-dependencies:
-	@echo "Ensuring dependencies .."
-	@rm -rf vendor/
-	@rm -rf .vendor-new/
-	@go get github.com/vburenin/ifacemaker
-	@dep ensure -vendor-only
-
-dependencies_update:
-	@echo "Updating dep files (Gopkg.toml. Gopkg.lock) .."
-	@rm -rf vendor/
-	@rm -rf .vendor-new/
-	@dep ensure -update
-	@echo "Rebuilding mod files (go.mod, go.sum) .."
-	@rm go.mod go.sum
-	GO111MODULE=on go mod init
-	GO111MODULE=on go mod tidy
-	@make dependencies
+clean: download_config
+	@rm -rf bin/
+	build_all
 
 generate_interface:
-	cd services && go generate
+	@GO111MODULE=off && go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate
+
+download_config:
+	@echo "Downloading current config ($(SCLOUD_CONFIG_VERSION)) from artifactory ..."
+ifndef SKIP_DOWNLOAD_CONFIG
+	@test -n "$(ARTIFACTORY_SCLOUD_LOC)" || (echo "ARTIFACTORY_SCLOUD_LOC must be set ..." && exit 1)
+	@curl -s "$(ARTIFACTORY_SCLOUD_LOC)/config/$(SCLOUD_CONFIG_VERSION)/default.yaml" -o "./cmd/scloud/cli/static/default.yaml.$(SCLOUD_CONFIG_VERSION)"
+	@test -f "./cmd/scloud/cli/static/default.yaml.$(SCLOUD_CONFIG_VERSION)" || (echo "default.yaml not downloaded ..." && exit 1)
+	@cat "./cmd/scloud/cli/static/default.yaml.$(SCLOUD_CONFIG_VERSION)" | grep 'environments:' || (echo "default.yaml contents not correct ..." && rm -f "./cmd/scloud/cli/static/default.yaml.$(SCLOUD_CONFIG_VERSION)" && exit 1)
+	@rm -f ./cmd/scloud/cli/static/default.yaml
+	@mv "./cmd/scloud/cli/static/default.yaml.$(SCLOUD_CONFIG_VERSION)" ./cmd/scloud/cli/static/default.yaml
+endif
+
+upload_config:
+	@echo "Uploading current config from ./cmd/scloud/cli/static/default.yaml to artifactory ..."
+	@test -n "$(ARTIFACTORY_SCLOUD_LOC)" || (echo "ARTIFACTORY_SCLOUD_LOC must be set ..." && exit 1)
+	@test -n "$(ARTIFACTORY_TOKEN)" || (echo "ARTIFACTORY_TOKEN must be set ..." && exit 1)
+	@cat "./cmd/scloud/cli/static/default.yaml" | grep 'environments:' || (echo "default.yaml contents not correct ..." && exit 1)
+	@curl -s -H 'Content-Type:text/plain' -H "X-JFrog-Art-Api: $(ARTIFACTORY_TOKEN)" -X PUT "$(ARTIFACTORY_SCLOUD_LOC)/config/$(DATETIME)/default.yaml" -T ./cmd/scloud/cli/static/default.yaml | jq -e .downloadUri || (echo "Error uploading config ..." && exit 1)
+	@echo "Upload successful, updating contents of $(CONFIG_VER_FILE) to contain $(DATETIME) ..."
+	@echo "$(DATETIME)" > $(CONFIG_VER_FILE)
 
 prereqs:
-	@echo "Installing dep .."
-	@DEP_RELEASE_TAG=0.5.0 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-	@echo "Installing goimports ..."
-	@go get golang.org/x/tools/cmd/goimports
-	@echo "Installing golangci-lint .."
-	@curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sudo sh -s  -- -b $(shell go env GOPATH)/bin v$(GOLANGCI_VER)
+	echo "Installing goimports .."
+	GO111MODULE=off go get golang.org/x/tools/cmd/goimports
+	echo "Installing statik .."
+	GO111MODULE=off go get github.com/rakyll/statik
+	echo "Installing golangci-lint .."
+	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
+
+statik:
+	@echo "Generate static assets .."
+	@statik -src=$(CURDIR)/cmd/scloud/cli/static -dest $(CURDIR)/cmd/scloud/cli
+
+version:
+	@echo "Generate version.go .."
+	cd $(CURDIR)/cmd/scloud/cli && go generate
 
 # This is a generic target that should invoke all levels of tests, i.e. unit tests, integration tests.
 test: test_unit test_integration
 
 test_unit:
-	make install_test_dep
-	sh ./ci/unit_tests/run_unit_tests.sh
+	GO111MODULE=on sh ./cicd/unit_tests/run_unit_tests.sh
 
 test_integration:
-	make install_test_dep
-	sh ./ci/integration/runtests.sh
+	GO111MODULE=on sh ./cicd/integration/runtests.sh
+
+test_integration_scloud: login
+	export PYTHONPATH=$(PYTHONPATH):.
+	cd test/scloud && sh run.sh
 
 test_integration_examples:
-	sh ./ci/integration/runexamples.sh
+	GO111MODULE=on sh ./cicd/integration/runexamples.sh
 
 test_ml_integration_tests:
-	make install_test_dep
-	sh ./ci/integration/run_ml_tests.sh
+	GO111MODULE=on sh ./cicd/integration/run_ml_tests.sh
 
-release: .FORCE
-	./cd/release.sh
+prerelease: .FORCE
+	./cicd/prerelease/prerelease.sh
 
 docs: docs_md
 
 docs_md: .FORCE
-	./ci/docs/docs_md.sh
+	./cicd/docs/docs_md.sh
 
 docs_publish: docs_md
-	./ci/docs/publish.sh
+	./cicd/docs/publish.sh
 
 publish:
-	./cd/publish.sh
+	./cicd/publish/sdk/publish.sh
 	make docs_publish
+
+publish_scloud:
+	SIGN_PACKAGES=true ./cicd/scripts/build_cross_compile.sh
+	./cicd/publish/scloud/publish_github.sh
+	./cicd/publish/scloud/publish_artifactory.sh
 
 .FORCE:

@@ -1,9 +1,17 @@
 # Splunk Cloud SDK for Go
+[![Go Report Card](https://goreportcard.com/badge/github.com/splunk/splunk-cloud-sdk-go)](https://goreportcard.com/report/github.com/splunk/splunk-cloud-sdk-go) 
+[![GoDoc](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go?status.svg)](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go)
 
 The Splunk Cloud software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud services with the Go programming language.
 
 To use Splunk Cloud SDKs, you must be included in the Splunk Investigates Beta Program.
 Sign up here: https://si.scp.splunk.com/.
+
+# Splunk Cloud CLI
+
+Splunk Cloud CLI, `scloud`, is a command-line tool for developers using Splunk Developer Cloud to make API calls in the Splunk Cloud Platform.
+
+For more information about Splunk Cloud CLI [see the README](cmd/scloud/README.md).
 
 ## Terms of Service (TOS)
 [Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-pre-release-terms-of-service.html)

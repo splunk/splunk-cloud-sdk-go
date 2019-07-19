@@ -3,11 +3,13 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 type filesFlag []string
@@ -66,4 +68,78 @@ func main() {
 	if err != nil {
 		fatal("%v", err)
 	}
+
+	for _, v := range options.serviceFiles {
+		if strings.Contains(v, "service_generated.go") {
+			file := filepath.Join(options.service, "interface.go")
+			fmt.Printf("adding license to %s\n", file)
+			err := addLicense(file)
+
+			if err != nil {
+				os.Exit(1)
+			}
+		}
+	}
+}
+
+func addLicense(filepath string) error {
+	licensetxt := []string{
+		"/*",
+		" * Copyright © 2019 Splunk, Inc.",
+		" *",
+		" * Licensed under the Apache License, Version 2.0 (the \"License\"): you may",
+		" * not use this file except in compliance with the License. You may obtain",
+		" * a copy of the License at",
+		" *",
+		" * http://www.apache.org/licenses/LICENSE-2.0",
+		" *",
+		" * Unless required by applicable law or agreed to in writing, software",
+		" * distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT",
+		" * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the",
+		" * License for the specific language governing permissions and limitations",
+		" * under the License.",
+		" */",
+		"",
+	}
+
+	// read file
+	f, err := os.Open(filepath)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	var lines []string
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	f.Close()
+
+	// recreate file with license
+	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		fmt.Println("failed creating file: %s", err)
+		return err
+	}
+
+	datawriter := bufio.NewWriter(file)
+
+	for _, data := range licensetxt {
+		_, _ = datawriter.WriteString(data + "\n")
+	}
+
+	for _, data := range lines {
+		_, _ = datawriter.WriteString(data + "\n")
+	}
+
+	datawriter.Flush()
+	file.Close()
+	return nil
 }

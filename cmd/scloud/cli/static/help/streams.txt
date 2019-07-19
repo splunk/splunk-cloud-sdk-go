@@ -1,0 +1,1408 @@
+Use Splunk Cloud CLI commands with the Streams service to create and manage
+data stream pipelines.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt]
+        streams <subcommand> [params]
+
+
+SUBCOMMANDS
+
+    activate-pipelines <pipeline-ids> [-skip-restorestate true|false] [-activate-latest-version true|false] [-allow-non-restored-state true|false]
+        Activate one or more pipelines.
+
+        Arguments:
+            <pipeline-ids>
+                One or more pipeline IDs, separated by commas.
+            -skip-restorestate true|false
+                Skip restoring the state of an activated pipeline
+            -activate-latest-version true|false
+                Activate latest version of the pipeline
+            -allow-non-restored-state true|false
+                Allow non restored state of the pipeline
+
+    compile-dsl (-dsl <dsl-text> | -dsl-file <dsl-file>)
+        Compile domain-specific language (DSL) text and return the streams
+        JSON abstract syntax tree (AST).
+
+        Arguments:
+            -dsl <dsl-text>
+                DSL text.
+
+            -dsl-file <dsl-file>
+                A path to the file containing DSL text.
+
+    create-expanded-group -groupId <group-id> -group-function-id <group-function-id>
+    (-arguments <args>) | (-arguments-file <filepath>)
+        Create and return the expanded version of a group.
+
+        Arguments:
+            -group-id <group-id>
+                The group function's ID from the function registry.
+            -group-function-id <group-function-id>
+                The group function's ID from the function registry.
+            -arguments <args>
+                Function arguments for the given ID.
+            -arguments-file <filepath>
+                A path to the file containing the function arguments for the given ID.
+
+    create-pipeline -name <pipeline-name> -description <description>
+    (-data <streams-json> | -data-file <streams-json-file>) [-bypass-validation true|false]
+        Create a pipeline with the specified fields.
+
+        Arguments:
+            -name <pipeline-name>
+                The name of the pipeline.
+
+            -description <description>
+                The description of the pipeline. Defaults to null.
+
+            -data <streams-json>
+                The Streams JSON representation of a pipeline.
+
+            -data-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                a pipeline.
+
+            -bypass-validation true|false
+                Indicates whether to bypass initial pipeline validation when the
+                pipeline is created. The pipeline must still be validated before
+                it is activated. Defaults to false.
+
+    create-template -name <name> -description <description> (-data <value>) | (-data-file <value>)
+        Create a template with the specified fields. The data must be in streams
+        JSON form.
+
+        Arguments:
+            -name <name>
+                The name of the template.
+
+            -description <description>
+                The description of the template.
+
+            -data <value>
+                The Streams JSON representation of the pipeline.
+
+            -data-file <value>
+                A path to the file containing the Streams JSON representation of
+                the pipeline.
+
+    deactivate-pipelines <pipeline-ids> -skip-savepoint <skip-savepoint>
+        Deactivate one or more pipelines.
+
+        Arguments:
+            <pipeline-ids>
+                One or more pipeline IDs, separated by commas.
+            -skip-savepoint true|false
+                Skip saving the state of a deactivated pipeline
+
+
+    delete-pipeline <pipeline-id>
+        Delete the specified pipeline.
+
+        Arguments:
+            <pipeline-id>
+                The pipeline ID.
+
+    delete-preview-session <preview-session-id>
+        Stop and delete the specified preview session.
+
+        Arguments:
+            <preview-session-id>
+                The ID for the preview session.
+
+    delete-template <template-id>
+        Delete the specified template.
+
+        Arguments:
+            <template-id>
+                The ID for the template
+
+    list-connections -connector-id <connector-id> -function-id <function-id> -create-user-id <create-user-id>
+                    -name <name> -offset <offset> -page-size <page-size> -sort-field <sort-field> -sort-dir <sort-dir>
+                    -show-secret-name <show-secret-name>
+        Get the connections for a specific connector by ID and by applying other optional params to filter by.
+
+        Arguments:
+            -connector-id<connector-id>
+                The connector ID.
+            -function-id <function-id>
+                The function ID.
+            -create-user-id <create-user-id>
+                Create user ID
+            -name <name>
+                Name
+            -offset <offset>
+                Offset
+            -page-size <page-size>
+                Page size
+            -sort-field <sort-field>
+                Sort field
+            -sort-dir <sort-dir>
+                Sort dir
+            -show-secret-name <show-secret-name>
+                Show secret name
+
+    get-connectors
+        Get all available connectors.
+
+    get-group <group-function-id>
+        Retrieve the full streams JSON of a group.
+
+        Arguments:
+            <group-function-id>
+                The group function ID from the function registry.
+
+    get-input-schema <target-node-uuid> <target-port-name>
+    (-upl-json <streams-json> | -upl-file <streams-json-file>)
+        Display the input schema for a pipeline at the specified node. You must
+        provide the pipeline UPL.
+
+        Arguments:
+            <target-node-uuid>
+                The target node ID.
+
+            <target-port-name>
+                The name of the input port.
+
+            -upl-json <streams-json>
+                The Streams JSON representation of a pipeline.
+
+            -upl-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                a pipeline.
+
+    get-output-schema <source-node-uuid> <source-port-name>
+    (-upl-json <streams-json> | -upl-file <streams-json-file>)
+        Display the output schema for a pipeline at the specified node. You must
+        provide the pipeline UPL.
+
+        Arguments:
+            <source-node-uuid>
+                The source node ID.
+
+            <source-port-name>
+                The name of the output port.
+
+            -upl-json <streams-json>
+                The Streams JSON representation of a pipeline.
+
+            -upl-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                a pipeline.
+
+    get-pipeline <pipeline-id>
+        Display the pipeline with the specified ID.
+
+        Arguments:
+            <pipeline-id>
+               The pipeline ID.
+
+    get-pipeline-status [-offset <integer>] [-page-size <integer>]
+    [-sort-field <field-name>] [-sort-dir <sort-dir>] [-activated true|false]
+    [-create-user-id <user-id>] [-name <pipeline-name>]
+        Display the status of a pipeline.
+
+        Arguments:
+            -offset <integer>
+                The maximum number of items to return.
+
+            -page-size <integer>
+                The page size.
+
+            -sort-field <field-name>
+                The field to sort by.
+
+            -sort-dir <sort-dir>
+                The sort direction.
+
+            -activated true|false
+                Indicates whether the pipeline is activated.
+
+            -create-user-id <user-id>
+                Deprecated. The user that created the pipeline.
+
+            -name <pipeline-name>
+                The name of the pipeline.
+
+    get-preview-data <preview-session-id>
+        Display data for a preview session.
+
+        Arguments:
+            <preview-session-id>
+                The ID of the preview session.
+
+    get-preview-session <preview-session-id>
+        Display information about a specified preview session.
+
+        Arguments:
+            <preview-session-id>
+                The ID for the preview session.
+
+    get-registry [-local true|false]
+        Display the UPL function and types registry.
+
+        Arguments:
+            -local true|false
+                Deprecated. This value is ignored.
+
+    get-spec-json
+        Display the OpenAPI spec for the Streams service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Streams service in YAML format.
+
+    get-template <template-id> -version <version>
+        Get a template based on the template ID.
+
+        Arguments:
+            <template-id>
+                The template ID.
+            -version <version>
+                Version of the template.
+
+    list-templates [-offset <integer>] [-page-size <integer>]
+    [-sort-field <field-name>] [-sort-dir <sort-dir>]
+        Get a list of all templates.
+
+         Arguments:
+            -offset <integer>
+                The maximum number of items to return.
+
+            -page-size <integer>
+                The page size.
+
+            -sort-field <field-name>
+                The field to sort by.
+
+            -sort-dir <sort-dir>
+                The sort direction.
+
+    list-latest-pipeline-metrics <pipeline-id>
+        Display the latest metrics for a single pipeline.
+
+        Arguments:
+            <pipeline-id>
+                The pipeline ID.
+
+    list-latest-preview-metrics <preview-session-id>
+        Display the latest metrics for a preview session.
+
+        Arguments:
+            <preview-session-id>
+                The ID for the preview session.
+
+    list-pipelines [-offset <integer>] [-page-size <integer>]
+    [-sort-field <field-name>] [-sort-dir <sort-dir>] [-activated true|false]
+    [-create-user-id <user-id>] [-name <pipeline-name>] [-include-data true|false]
+        Search for pipelines by specifying various criteria.
+
+        Arguments:
+            -offset <integer>
+                The maximum number of items to return.
+
+            -page-size <integer>
+                The page size.
+
+            -sort-field <field-name>
+                The field to sort by.
+
+            -sort-dir <sort-dir>
+                The sort direction.
+
+            -activated true|false
+                Indicates whether the pipeline is activated.
+
+            -create-user-id <user-id>
+                Deprecated. The user that created the pipeline.
+
+            -name <pipeline-name>
+                The name of the pipeline.
+
+            -include-data true|false
+                Inidicates whether to include data.
+
+    merge-pipelines <target-node> <target-port-name>
+    (-input-tree-json <streams-json> | -input-tree-file <streams-json-file>)
+    (-main-tree-json <streams-json> | -main-tree-file <streams-json-file>)
+        Merge two pipelines.
+
+        Arguments:
+            <target-node>
+                The function ID of the merge target in the main pipeline.
+
+            <target-port-name>
+                The input port of the merge target in the main pipeline.
+
+            -input-tree-json <streams-json>
+                The Streams JSON representation of the pipeline being merged.
+
+            -input-tree-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                the pipeline being merged.
+
+            -main-tree-json <streams-json>
+                The Streams JSON representation of the main pipeline.
+
+            -main-tree-file <streams-json>
+                A path to the file containing the  Streams JSON representation
+                of the main pipeline.
+
+    reactivate-pipeline <pipeline-id>
+        Reactivate a pipeline that was previously deactivated.
+
+        Arguments:
+            <pipeline-id>
+                The pipeline ID.
+
+    replace-pipeline <pipeline-id> -name <pipeline-name> -description <description>
+    -data <streams-json> -bypass-validation true|false
+        Replace all the fields in the specified pipeline.
+
+        Arguments:
+            <pipeline-id>
+                The pipeline ID.
+
+            -name <pipeline-name>
+                The name of the pipeline.
+
+            -description <description>
+                The description of the pipeline.
+
+            -data <streams-json>
+                The Streams JSON representation of the pipeline.
+
+            -bypass-validation true|false
+                Indicates whether to bypass initial pipeline validation when the
+                pipeline is created. The pipeline must still be validated before
+                it is activated. Defaults to false.
+
+    start-preview-session (-upl-json <streams-json> | -upl-file <streams-json-file>)
+    [-records-limit <integer>] [-session-lifetime-ms <integer>]
+    [-records-per-pipeline <integer>] [-use-new-data true]
+        Start a preview session from any UPL tree.
+
+        Arguments:
+            -upl-json <streams-json>
+                The Streams JSON representation of the pipeline.
+
+            -upl-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                the pipeline.
+
+            -records-limit <integer>
+                The maximum number of events per function. Defaults to 100.
+
+            -session-lifetime-ms <integer>
+                The maximum lifetime of a session, in milliseconds. Defaults to
+                300,000.
+
+            -records-per-pipeline <integer>
+                The total number of records per pipeline.
+
+            -use-new-data true
+                Deprecated. Must be true if set.
+
+    update-template <template-id> -name <name> -description <description>
+    (-data <value>) | (-data-file <filepath>)
+        Update a template with the specified fields. The data must be in streams
+        JSON form.
+
+        Arguments:
+            <template-id>
+                The template ID.
+
+            -name <name>
+                The name of the template.
+
+            -description <description>
+                The description of the template.
+
+            -data <value>
+                The Streams JSON representation of the pipeline.
+
+            -data-file <filepath>
+                A path to the file containing the Streams JSON representation of
+                the pipeline.
+
+    update-template-partially <template-id> [-name <name>] [-description <description>]
+    [(-data <value>) | (-data-file <filepath>)]
+        Update a template with the specified fields. Partial data or fields can
+        be provided. The data must be in streams JSON form.
+
+        Arguments:
+            <template-id>
+                The template ID.
+
+            -name <name>
+                The name of the template.
+
+            -description <description>
+                The description of the template.
+
+            -data <value>
+                The Streams JSON representation of the pipeline.
+
+            -data-file <filepath>
+                A path to the file containing the Streams JSON representation of
+                the pipeline.
+
+    validate-upl (-upl-json <streams-json> | -upl-file <streams-json-file>)
+        Validate UPL specified as JSON.
+
+        Arguments:
+            -upl-json <streams-json>
+                The Streams JSON representation of the pipeline.
+
+            -upl-file <streams-json-file>
+                A path to the file containing the Streams JSON representation of
+                the pipeline.
+
+EXAMPLES
+
+   Compile DSL:
+       $ scloud streams compile-dsl -dsl-file pass-through.dsl > pass-through.upl
+
+   Create a pipeline:
+       $ scloud streams create-pipeline -name passthrough -description "A passthrough pipeline" -bypass-validation true -data-file pass-through.upl
+       {
+           "activatedDate": 0,
+           "activatedUserId": "",
+           ...
+       }
+
+   Activate a pipeline:
+       $ scloud streams activate-pipelines 437854a8-ceca-41a6-8447-bfa9cd91db40
+
+   Display all the available pipelines:
+       $ scloud streams list-pipelines
+        {
+            "items": [
+                {
+                    "activatedDate": 1550645653838,
+                    "activatedUserId": "test@splunk.com",
+                    "activatedVersion": 1,
+                    "createDate": 1550640245769,
+                    "createUserId": "test@splunk.com",
+                    "currentVersion": 1,
+                    "data": {
+                        "edges": null,
+                        "nodes": null,
+                        "root-node": null,
+                        "version": 0
+                    },
+                    "description": "A passthrough pipeline",
+                    "id": "140547fb-1d02-4f78-9343-27ad16b928ab",
+                    "jobId": "57eaf4897084a79d017d2bf0100ccb2f",
+                    "lastUpdateDate": 0,
+                    "lastUpdateUserId": "",
+                    "name": "passthrough",
+                    "status": "ACTIVATED",
+                    "statusMessage": "Activated by user test@splunk.com",
+                    "streamingConfigurationId": 0,
+                    "tenantId": "testtenant",
+                    "validationMessages": [],
+                    "version": 1
+                },
+                {
+                    "activatedDate": 0,
+                    "activatedUserId": "",
+                    "activatedVersion": 0,
+                    "createDate": 1550645861776,
+                    "createUserId": "test@splunk.com",
+                    "currentVersion": 1,
+                    "data": {
+                        "edges": null,
+                        "nodes": null,
+                        "root-node": null,
+                        "version": 0
+                    },
+                    "description": "Test pipeline",
+                    "id": "5cd2e891-f6a9-47d4-b69d-c847034e1b5e",
+                    "jobId": "",
+                    "lastUpdateDate": 0,
+                    "lastUpdateUserId": "",
+                    "name": "TestPipeline",
+                    "status": "CREATED",
+                    "statusMessage": "",
+                    "streamingConfigurationId": 0,
+                    "tenantId": "testtenant",
+                    "validationMessages": [],
+                    "version": 1
+                }
+            ],
+            "total": 2
+        }
+
+   Display all the available pipelines based on filters:
+       $ scloud streams list-pipelines -activated true -name passthrough
+        {
+            "items": [
+                {
+                    "activatedDate": 1536972409935,
+                    "activatedUserId": "0",
+                ...
+                }
+            ],
+            "total": 1
+        }
+
+    Merge two pipelines:
+       $ scloud streams merge-pipelines a2803c83-1315-47b0-80f0-e77c4ca9f5ff input -main-tree-file main.upl -input-tree-file input.upl
+
+    Activate a pipeline:
+       $ scloud streams activate-pipelines 437854a8-ceca-41a6-8447-bfa9cd91db40
+        {
+            "activated": [
+                "140547fb-1d02-4f78-9343-27ad16b928ab"
+            ],
+            "alreadyActivated": [],
+            "notActivated": [],
+            "notFound": []
+        }
+
+    Deactivate a pipeline:
+        $ scloud streams deactivate-pipelines 437854a8-ceca-41a6-8447-bfa9cd91db40
+         {
+            "alreadyDeactivated": [],
+            "deactivated": [
+            "140547fb-1d02-4f78-9343-27ad16b928ab"
+            ],
+            "notDeactivated": [],
+            "notFound": []
+         }
+
+    Reactivate a pipeline:
+        $ scloud streams reactivate-pipeline 437854a8-ceca-41a6-8447-bfa9cd91db40
+         {
+            "currentlyActiveVersion": 1,
+            "pipelineId": "140547fb-1d02-4f78-9343-27ad16b928ab",
+            "pipelineReactivationStatus": "activated"
+         }
+
+    Get an existing pipeline:
+        $ scloud streams get-pipeline 437854a8-ceca-41a6-8447-bfa9cd91db40
+         {
+            "activatedDate": 0,
+            "activatedUserId": "",
+            "activatedVersion": 0,
+            "createDate": 1550645861776,
+            "createUserId": "test@splunk.com",
+            "currentVersion": 1,
+            "data": {
+                "edges": [
+                    {
+                        "attributes": null,
+                        "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "sourcePort": "output",
+                        "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "targetPort": "input"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "attributes": {},
+                        "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "op": "read-splunk-firehose"
+                    },
+                    {
+                        "attributes": {},
+                        "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "op": "write-splunk-index"
+                    }
+                ],
+                "root-node": [
+                    "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                ],
+                "version": 3
+            },
+            "description": "Test pipeline",
+            "id": "5cd2e891-f6a9-47d4-b69d-c847034e1b5e",
+            "jobId": "",
+            "lastUpdateDate": 0,
+            "lastUpdateUserId": "",
+            "name": "TestPipeline",
+            "status": "CREATED",
+            "statusMessage": "",
+            "streamingConfigurationId": 0,
+            "tenantId": "testtenant",
+            "validationMessages": [],
+            "version": 1
+         }
+
+    Update an existing pipeline:
+        $ scloud streams replace-pipeline aa7decca-2474-4ee0-9ecd-04bee43e75bb -name "Test pipeline 2" -description "Test pipeline desc" -data-file test-dsl.upl -bypass-validation true
+         {
+             "activatedDate": 0,
+             "activatedUserId": "",
+             "activatedVersion": 0,
+             "createDate": 1550689398345,
+             "createUserId": "test@splunk.com",
+             "currentVersion": 2,
+             "data": {
+                 "edges": [
+                     {
+                         "attributes": null,
+                         "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "sourcePort": "output",
+                         "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "targetPort": "input"
+                     }
+                 ],
+                 "nodes": [
+                     {
+                         "attributes": {},
+                         "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "op": "read-splunk-firehose"
+                     },
+                     {
+                         "attributes": {},
+                         "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "op": "write-splunk-index"
+                     }
+                 ],
+                 "root-node": [
+                     "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                 ],
+                 "version": 3
+             },
+             "description": "Test pipeline desc",
+             "id": "aa7decca-2474-4ee0-9ecd-04bee43e75bb",
+             "jobId": "",
+             "lastUpdateDate": 1550691558832,
+             "lastUpdateUserId": "test@splunk.com",
+             "name": "Test pipeline 2",
+             "status": "CREATED",
+             "statusMessage": "",
+             "streamingConfigurationId": 0,
+             "tenantId": "testtenant",
+             "validationMessages": [],
+             "version": 2
+         }
+
+    Get pipeline status:
+        $ scloud streams get-pipeline-status
+         {
+             "items": [
+                 {
+                     "jobId": "57eaf4897084a79d017d2bf0100ccb2f",
+                     "jobStatus": "RUNNING"
+                 },
+                 {
+                     "jobId": "NOT_SUBMITTED",
+                     "jobStatus": "NOT_SUBMITTED"
+                 }
+             ],
+             "total": 2
+         }
+
+    Get the pipeline status based on a query:
+        $ scloud streams get-pipeline-status -name passthrough
+         {
+             "items": [
+                 {
+                     "jobId": "57eaf4897084a79d017d2bf0100ccb2f",
+                     "jobStatus": "RUNNING"
+                 }
+             ],
+             "total": 1
+         }
+
+    Delete a pipeline:
+        $ scloud streams delete-pipeline 5cd2e891-f6a9-47d4-b69d-c847034e1b5e
+         {
+             "couldDeactivate": true,
+             "running": false
+         }
+
+
+    Get the input schema:
+        $ scloud streams get-input-schema 99f635d1-63f6-433e-af57-06613d4f317f input -upl-file ps.upl
+         {
+                          "parameters": [
+                              {
+                                  "fieldName": "timestamp",
+                                  "parameters": [
+                                      {
+                                          "type": "long"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "nanos",
+                                  "parameters": [
+                                      {
+                                          "type": "integer"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "id",
+                                  "parameters": [
+                                      {
+                                          "type": "string"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "host",
+                                  "parameters": [
+                                      {
+                                          "type": "string"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "source",
+                                  "parameters": [
+                                      {
+                                          "type": "string"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "source_type",
+                                  "parameters": [
+                                      {
+                                          "type": "string"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "kind",
+                                  "parameters": [
+                                      {
+                                          "type": "string"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "body",
+                                  "parameters": [
+                                      {
+                                          "type": "union\u003cstring, bytes, boolean, integer, long, float, double, collection\u003cany\u003e, map\u003cstring,any\u003e\u003e"
+                                      }
+                                  ],
+                                  "type": "field"
+                              },
+                              {
+                                  "fieldName": "attributes",
+                                  "parameters": [
+                                      {
+                                          "parameters": [
+                                              {
+                                                  "type": "string"
+                                              },
+                                              {
+                                                  "type": "union\u003cstring, bytes, boolean, integer, long, float, double, collection\u003cany\u003e, map\u003cstring,any\u003e\u003e"
+                                              }
+                                          ],
+                                          "type": "map"
+                                      }
+                                  ],
+                                  "type": "field"
+                              }
+                          ]
+                      }
+
+    Get the output schema:
+        $ scloud streams get-output-schema 5e659af4-4f03-469c-b07c-f2dbee657837 output -upl-file ps.upl
+            Similar to example for get-input-schema
+
+    Get connectors:
+        $ scloud streams get-connectors
+        {
+            "connectors": [
+                {
+                "id": "read-splunk-firehose",
+                "name": "Splunk Firehose"
+            },
+            {
+                "id": "receive-from-forwarders",
+                "name": "Splunk Forwarders"
+            },
+            {
+                "id": "receive-from-ingest-rest-api",
+                "name": "Ingest REST API"
+            }
+            ]
+        }
+
+    Get connections for a connector:
+        $ scloud streams list-connections -name read-splunk-firehose
+         {
+             "connections": [
+                 {
+                     "id": "splunk-firehose:all",
+                     "name": "Splunk Firehose"
+                 }
+             ]
+         }
+
+   Create the expanded version of a group:
+        $ scloud streams create-expanded-group -group-id 341db8b4-cdad-4989-91eb-7cf0b1888776 -group-function-id a7ba1333-3fd8-43fe-9358-5b7a397c20bc -arguments "{\"function_arg\": \"right\", \"group_arg\": \"connection\"}"
+        {
+            "edges": [
+                {
+                    "attributes": null,
+                    "sourceNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-1",
+                    "sourcePort": "output",
+                    "targetNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-0",
+                    "targetPort": "input"
+                },
+                {
+                    "attributes": null,
+                    "sourceNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-4",
+                    "sourcePort": "output",
+                    "targetNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-3",
+                    "targetPort": "input"
+                },
+                {
+                    "attributes": null,
+                    "sourceNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-3",
+                    "sourcePort": "output",
+                    "targetNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-2",
+                    "targetPort": "left"
+                },
+                {
+                    "attributes": null,
+                    "sourceNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-2",
+                    "sourcePort": "output",
+                    "targetNode": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-0",
+                    "targetPort": "predicate"
+                }
+            ],
+            "nodes": [
+                {
+                    "id": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-1",
+                    "op": "read-splunk-firehose"
+                },
+                {
+                    "id": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-0",
+                    "op": "filter"
+                },
+                {
+                    "fieldName": "attributes",
+                    "id": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-4",
+                    "op": "get"
+                },
+                {
+                    "id": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-3",
+                    "key": "_splunk_connection_id",
+                    "op": "map-get"
+                },
+                {
+                    "id": "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-2",
+                    "op": "eq"
+                }
+            ],
+            "root-node": [
+                "a7ba1333-3fd8-43fe-9358-5b7a397c20bc-expanded-0"
+            ],
+            "version": 3
+        }
+
+
+    Get the full streams JSON of a group:
+        $ scloud streams get-group e002ca17-534f-4787-9bc2-fbf214ad18c1
+         {
+             "ast": {
+                 "edges": [
+                     {
+                         "attributes": null,
+                         "sourceNode": "552a1f70-0c27-48a6-97d6-eae12b4dccc9",
+                         "sourcePort": "output",
+                         "targetNode": "420162b9-1956-45b9-8240-81b18574b066",
+                         "targetPort": "input"
+                     },
+                     {
+                         "attributes": null,
+                         "sourceNode": "22ae2adb-604e-47ab-8e35-599d64d3c8c8",
+                         "sourcePort": "output",
+                         "targetNode": "8fd8d512-33af-4329-9572-0dfcd8004504",
+                         "targetPort": "input"
+                     },
+                     {
+                         "attributes": null,
+                         "sourceNode": "8fd8d512-33af-4329-9572-0dfcd8004504",
+                         "sourcePort": "output",
+                         "targetNode": "ef9b322a-05db-4787-9b6f-8295bcfd837a",
+                         "targetPort": "left"
+                     },
+                     {
+                         "attributes": null,
+                         "sourceNode": "ef9b322a-05db-4787-9b6f-8295bcfd837a",
+                         "sourcePort": "output",
+                         "targetNode": "420162b9-1956-45b9-8240-81b18574b066",
+                         "targetPort": "predicate"
+                     }
+                 ],
+                 "nodes": [
+                     {
+                         "id": "420162b9-1956-45b9-8240-81b18574b066",
+                         "op": "filter",
+                         "resolvedId": "filter:collection\u003crecord\u003cR\u003e\u003e:expression\u003cboolean\u003e"
+                     },
+                     {
+                         "id": "552a1f70-0c27-48a6-97d6-eae12b4dccc9",
+                         "op": "read-splunk-firehose",
+                         "resolvedId": "read-splunk-firehose:string"
+                     },
+                     {
+                         "fieldName": "attributes",
+                         "id": "22ae2adb-604e-47ab-8e35-599d64d3c8c8",
+                         "op": "get",
+                         "resolvedId": "get:string"
+                     },
+                     {
+                         "id": "8fd8d512-33af-4329-9572-0dfcd8004504",
+                         "key": "_splunk_connection_id",
+                         "op": "map-get",
+                         "resolvedId": "map-get:map\u003cstring,T\u003e:string"
+                     },
+                     {
+                         "id": "ef9b322a-05db-4787-9b6f-8295bcfd837a",
+                         "op": "eq",
+                         "resolvedId": "eq:T:T"
+                     }
+                 ],
+                 "root-node": [
+                     "420162b9-1956-45b9-8240-81b18574b066"
+                 ],
+                 "version": 4
+             },
+             "attributes": {
+                 "description": "Get data via the REST API.",
+                 "groupId": "e002ca17-534f-4787-9bc2-fbf214ad18c1",
+                 "isGroup": "true",
+                 "isHidden": "true",
+                 "isSource": "true",
+                 "name": "Receive from Ingest REST API (Reading all previous data on the firehose)"
+             },
+             "categories": [
+                 1
+             ],
+             "createDate": 1543433962,
+             "createUserId": "splunk",
+             "groupId": "e002ca17-534f-4787-9bc2-fbf214ad18c1",
+             "lastUpdateDate": 1543433962,
+             "lastUpdateUserId": "splunk",
+             "mappings": [
+                 {
+                     "arguments": [
+                         {
+                             "function_arg": "right",
+                             "group_arg": "connection"
+                         }
+                     ],
+                     "function_id": "ef9b322a-05db-4787-9b6f-8295bcfd837a"
+                 },
+                 {
+                     "arguments": [
+                         {
+                             "function_arg": "initial-position",
+                             "group_arg": "initial-position"
+                         }
+                     ],
+                     "function_id": "552a1f70-0c27-48a6-97d6-eae12b4dccc9"
+                 }
+             ],
+             "name": "receive-from-ingest-rest-api",
+             "outputType": "collection\u003crecord\u003cschema\u003ctimestamp: long, nanos: integer, id: string, host: string, source: string, source_type: string, kind: string,\n                           body: union\u003cstring, bytes, boolean, integer, long, float, double, collection\u003cany\u003e, map\u003cstring, any\u003e\u003e,\n                           attributes: map\u003cstring, union\u003cstring, bytes, boolean, integer, long, float, double, collection\u003cany\u003e, map\u003cstring, any\u003e\u003e\u003e\u003e\u003e\u003e",
+             "scalar": false,
+             "tenantId": "*",
+             "variadic": false
+         }
+
+    List the latest pipeline metrics (the pipeline must be activated already):
+        $ scloud streams list-latest-pipeline-metrics 5cd2e891-f6a9-47d4-b69d-c847034e1b5e
+         {
+             "nodes": {
+                 "05bf4dbf-fcd3-4803-a5dc-927cc72b5bb8": {
+                     "metrics": {
+                         "numBytesOutPerSecond": 87.35436570647947,
+                         "numRecordsOutPerSecond": 0.13414900181384853,
+                         "latency_mean": 7,
+                         "latency_p999": 76
+                     }
+                 },
+                 "6d36b17d-699d-4cad-b07f-5b0eb21d7cec": {
+                     "metrics": {
+                         "latency_mean": 0.391304347826087,
+                         "latency_p999": 3,
+                         "numRecordsInPerSecond": 0.270668622377514,
+                         "numBytesInPerSecond": 68.1812058620709
+                     }
+                 }
+             }
+         }
+
+    Start a preview session:
+        $ scloud streams start-preview-session -upl-file test-dsl.upl
+         {
+             "pipelineId": "1584",
+             "previewId": 1584
+         }
+
+    Get a preview session:
+        $ scloud streams get-preview-session 1584
+         {
+             "activatedDate": 1550649982325,
+             "createdDate": 1550649980655,
+             "currentNumberOfRecords": 0,
+             "jobId": "e00f30c0d74b9fac50895b315dff8a90",
+             "previewId": 1584,
+             "recordsPerPipeline": 10000
+         }
+
+    Get preview data:
+       $ scloud streams get-preview-data 1584
+        {
+            "currentNumberOfRecords": 0,
+            "nodes": {},
+            "pipelineId": "1584",
+            "previewId": "1584",
+            "recordsPerPipeline": 10000
+        }
+
+    Get the latest preview metrics:
+       $ scloud streams list-latest-preview-metrics 1584
+        {
+             "nodes": {
+                 "8fc3dd53-8642-4f04-9caa-ab6f43828a64": {
+                     "metrics": {
+                         "latency_mean": 0.16666666666666666,
+                         "latency_p999": 1,
+                         "numRecordsInPerSecond": 0.5668398632892179,
+                         "numBytesInPerSecond": 189.9858275124362
+                     }
+                 },
+                 "1d6cf10d-ad79-4101-9132-6061d3f1c337": {
+                     "metrics": {
+                         "latency_mean": 11.333333333333334,
+                         "latency_p999": 50,
+                         "numRecordsInPerSecond": 0.5668398632892179,
+                         "numBytesInPerSecond": 189.9858275124362
+                     }
+                 },
+                 "fe7d80d7-720b-4c05-ba20-b4fdc856aa9d": {
+                     "metrics": {
+                         "numBytesOutPerSecond": 266.50920905648064,
+                         "latency_mean": 40.5,
+                         "numRecordsOutPerSecond": 0.37789324219281195,
+                         "latency_p999": 132
+                     }
+                 }
+             }
+        }
+
+    Delete a preview session:
+       $ scloud streams delete-preview-session 1584
+
+    Validate the UPL JSON:
+       $ scloud streams validate-upl -upl-file test-dsl.upl
+        {
+            "success": true,
+            "validationMessages": []
+        }
+
+    Create a new template:
+       $ scloud streams create-template -name testTemplate -description "testTemplate description" -data-file test-dsl.upl
+        {
+            "createDate": 1550652271940,
+            "createUserId": "test@splunk.com",
+            "data": {
+                "edges": [
+                    {
+                        "attributes": null,
+                        "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "sourcePort": "output",
+                        "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "targetPort": "input"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "attributes": {},
+                        "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "op": "read-splunk-firehose"
+                    },
+                    {
+                        "attributes": {},
+                        "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "op": "write-splunk-index"
+                    }
+                ],
+                "root-node": [
+                    "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                ],
+                "version": 3
+            },
+            "description": "testTemplate description",
+            "name": "testTemplate",
+            "ownerTenantId": "testtenant",
+            "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+            "version": 1
+        }
+
+    Get all templates:
+       $ scloud streams list-templates
+        {
+            "items": [
+                {
+                    "createDate": 1541630317000,
+                    "createUserId": "splunk",
+                    "data": null,
+                    "description": "Use this template to send a full stream of your data to a Splunk Index.",
+                    "name": "Splunk Firehose to Splunk Index",
+                    "ownerTenantId": "*",
+                    "templateId": "3136ec0a-e2ed-11e8-9f32-f2801f1b9fd1",
+                    "version": 1
+                },
+                {
+                    "createDate": 1550652271940,
+                    "createUserId": "test@splunk.com",
+                    "data": null,
+                    "description": "testTemplate description",
+                    "name": "testTemplate",
+                    "ownerTenantId": "testtenant",
+                    "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+                    "version": 1
+                }
+            ],
+            "total": 2
+        }
+
+    Get a template for a specific template ID:
+       $ scloud streams get-template 417fb4ad-d264-4920-8028-7d4cba20528f -version 1
+        {
+            "createDate": 1550652271940,
+            "createUserId": "test@splunk.com",
+            "data": {
+                "edges": [
+                    {
+                        "attributes": null,
+                        "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "sourcePort": "output",
+                        "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "targetPort": "input"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "attributes": {},
+                        "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "op": "read-splunk-firehose"
+                    },
+                    {
+                        "attributes": {},
+                        "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "op": "write-splunk-index"
+                    }
+                ],
+                "root-node": [
+                    "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                ],
+                "version": 3
+            },
+            "description": "testTemplate description",
+            "name": "testTemplate",
+            "ownerTenantId": "testtenant",
+            "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+            "version": 1
+        }
+
+    Update an existing template:
+        $ scloud streams update-template 417fb4ad-d264-4920-8028-7d4cba20528f -name "testTemplate1" -description "testTemplate description1" -data-file test-dsl.upl
+         {
+             "createDate": 1550652942167,
+             "createUserId": "test@splunk.com",
+             "data": {
+                 "edges": [
+                     {
+                         "attributes": null,
+                         "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "sourcePort": "output",
+                         "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "targetPort": "input"
+                     }
+                 ],
+                 "nodes": [
+                     {
+                         "attributes": {},
+                         "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "op": "read-splunk-firehose"
+                     },
+                     {
+                         "attributes": {},
+                         "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "op": "write-splunk-index"
+                     }
+                 ],
+                 "root-node": [
+                     "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                 ],
+                 "version": 3
+             },
+             "description": "testTemplate description1",
+             "name": "testTemplate1",
+             "ownerTenantId": "testtenant",
+             "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+             "version": 2
+         }
+
+    Update an existing template with partial data:
+        $ scloud streams update-template-partially 417fb4ad-d264-4920-8028-7d4cba20528f -description "testTemplate description2"
+         {
+             "createDate": 1550653304057,
+             "createUserId": "test@splunk.com",
+             "data": {
+                 "edges": [
+                     {
+                         "attributes": null,
+                         "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "sourcePort": "output",
+                         "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "targetPort": "input"
+                     }
+                 ],
+                 "nodes": [
+                     {
+                         "attributes": {},
+                         "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                         "op": "read-splunk-firehose"
+                     },
+                     {
+                         "attributes": {},
+                         "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                         "op": "write-splunk-index"
+                     }
+                 ],
+                 "root-node": [
+                     "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                 ],
+                 "version": 3
+             },
+             "description": "testTemplate description2",
+             "name": "testTemplate1",
+             "ownerTenantId": "testtenant",
+             "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+             "version": 3
+         }
+
+    Delete a template:
+        $ scloud streams delete-template 417fb4ad-d264-4920-8028-7d4cba20528f
+
+    Get data from the registry:
+        $ scloud streams get-registry true
+         [
+           {
+            "arguments": {
+                "aggregations": {
+                    "element-type": "expression\u003cany\u003e",
+                    "type": "collection\u003cexpression\u003cany\u003e\u003e"
+                },
+                "by": {
+                    "element-type": "expression\u003cany\u003e",
+                    "type": "collection\u003cexpression\u003cany\u003e\u003e"
+                },
+                "grace-period": {
+                    "type": "long"
+                },
+                "input": {
+                    "element-type": "record\u003cr\u003e",
+                    "type": "collection\u003crecord\u003cr\u003e\u003e"
+                },
+                "size": {
+                    "type": "long"
+                },
+                "slide": {
+                    "type": "long"
+                },
+                "timestamp": {
+                    "type": "expression\u003clong\u003e"
+                }
+            },
+            "attributes": {
+                "application": {
+                    "component": "aggregation",
+                    "description": "Perform a streaming aggregation after grouping based on dimensions and event timestamp.",
+                    "groupId": "974ffeb4-55dc-4b4c-8e94-1ff552317652",
+                    "isGroup": "true",
+                    "isHidden": "false",
+                    "isSource": "false",
+                    "name": "Aggregate"
+                }
+            },
+            "categories": [
+                3
+            ],
+            "id": "aggregate",
+            "isVariadic": true,
+            "output": {
+                "element-type": "record\u003cS\u003e",
+                "type": "collection\u003crecord\u003cS\u003e\u003e"
+            }
+          }
+          ...
+         ]
+
+    Merge two UPL pipelines:
+        $ scloud streams merge-pipelines d94acae8-f69c-4540-ab55-85b890ca8d68 input -input-tree-file test-dsl.upl -main-tree-file test-dsl-01.upl
+         {
+             "edges": [
+                 {
+                     "sourceNode": "826296c2-cdef-4ec4-a9d8-02eb30c20950",
+                     "sourcePort": "output",
+                     "targetNode": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "targetPort": "input"
+                 },
+                 {
+                     "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                     "sourcePort": "output",
+                     "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "targetPort": "input"
+                 },
+                 {
+                     "sourceNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "sourcePort": "output",
+                     "targetNode": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "targetPort": "input"
+                 }
+             ],
+             "nodes": [
+                 {
+                     "attributes": {},
+                     "id": "826296c2-cdef-4ec4-a9d8-02eb30c20950",
+                     "op": "read-splunk-firehose"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "op": "write-splunk-index"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                     "op": "read-splunk-firehose"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "op": "write-splunk-index"
+                 }
+             ],
+             "root-node": [
+                 "d94acae8-f69c-4540-ab55-85b890ca8d68"
+             ],
+             "version": 3
+         }

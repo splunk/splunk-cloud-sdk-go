@@ -975,13 +975,13 @@ func (s *Service) GetActionByIdForRuleById(ruleid string, actionid string, resp 
 }
 
 /*
-	GetDashboardByID - catalog service endpoint
+	GetDashboardById - catalog service endpoint
 	Return information about a dashboard with the specified ID.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetDashboardByID(dashboardid string, resp ...*http.Response) (*Dashboard, error) {
+func (s *Service) GetDashboardById(dashboardid string, resp ...*http.Response) (*Dashboard, error) {
 	pp := struct {
 		Dashboardid string
 	}{
@@ -1095,13 +1095,13 @@ func (s *Service) GetDatasetById(datasetid string, resp ...*http.Response) (*Dat
 }
 
 /*
-	GetFieldByID - catalog service endpoint
+	GetFieldById - catalog service endpoint
 	Get a field that corresponds to a specific field ID.
 	Parameters:
 		fieldid: ID of a Field.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetFieldByID(fieldid string, resp ...*http.Response) (*Field, error) {
+func (s *Service) GetFieldById(fieldid string, resp ...*http.Response) (*Field, error) {
 	pp := struct {
 		Fieldid string
 	}{
