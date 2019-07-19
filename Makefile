@@ -61,7 +61,8 @@ clean: download_config
 	build_all
 
 generate_interface:
-    @go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate
+	@go get github.com/vburenin/ifacemaker
+    cd services && GO111MODULE=on go generate
 
 download_config:
 	@echo "Downloading current config ($(SCLOUD_CONFIG_VERSION)) from artifactory ..."
