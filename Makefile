@@ -134,8 +134,7 @@ publish:
 	make docs_publish
 
 publish_scloud:
-	SIGN_PACKAGES=true ./cicd/scripts/build_cross_compile.sh
+	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
 	./cicd/publish/scloud/publish_github.sh
-	./cicd/publish/scloud/publish_artifactory.sh
 
 .FORCE:
