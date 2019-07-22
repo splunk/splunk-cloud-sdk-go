@@ -2,7 +2,7 @@
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-.DEFAULT_GOAL:=build_all
+.DEFAULT_GOAL:=build
 
 NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
 
@@ -10,7 +10,7 @@ SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
-setup: prereqs version statik download_config
+setup: prereqs download_config
 
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
@@ -18,18 +18,15 @@ lint: linttest
 	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
 	rm -rf vendor/
 
-linttest:
+linttest: statik version
 	# vendor/ needed for golangci-lint to work at the moment
 	GO111MODULE=on go mod vendor
 	golangci-lint run test/... --disable-all
 	rm -rf vendor/
 
-build_all:
-	make build
+build: statik version
+	GO111MODULE=on go build -v ./...
 	make build_scloud
-
-build:
-	GO111MODULE=on go build ./...
 
 build_scloud: statik version
 	@echo "Building scloud .."
@@ -47,7 +44,7 @@ format_check:
 	test -z $(shell GO111MODULE=on gofmt -l $(NON_VENDOR_GO_FILES))
 	test -z $(shell GO111MODULE=on goimports -l $(NON_VENDOR_GO_FILES))
 
-vet:
+vet: statik version
 	GO111MODULE=on go vet ./...
 
 login: build_scloud
