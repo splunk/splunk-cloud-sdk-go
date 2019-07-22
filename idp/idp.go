@@ -21,13 +21,14 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // Supported authentication flows
@@ -111,15 +112,6 @@ func (e *HTTPError) Error() string {
 		return err.Error()
 	}
 	return string(b)
-}
-
-// Returns a golang error corresponding to the given http response.
-func httpError(response *http.Response) error {
-	var result = &HTTPError{StatusCode: response.StatusCode}
-
-	// ignore if we cant read body details
-	_ = json.NewDecoder(response.Body).Decode(&result.Body)
-	return result
 }
 
 // Context Represents an authentication "context", which is the result of a
@@ -277,16 +269,24 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 		"scope":      {scope}}
 	request, err := newFormPost(c.makeURL(c.TokenPath), form)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to create request to token endpoint")
 	}
 	request.SetBasicAuth(clientID, clientSecret)
 	response, err := newHTTPClient().Do(request)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get response from token endpoint")
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return nil, httpError(response)
+		data, err := load(response.Body)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
+		}
+		msg := response.Status
+		if errMsg, found := data["description"]; found {
+			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
+		}
+		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
 	}
 	return decode(response)
 }
@@ -300,30 +300,30 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 
 	response, err := post(c.makeURL(c.AuthnPath), body)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "failed to get valid response from authn endpoint")
 	}
 	defer response.Body.Close()
 	data, err := load(response.Body)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "failed to parse response body from authn endpoint")
 	}
 	if response.StatusCode != http.StatusOK {
 		msg := response.Status
 		if errMsg, found := data["description"]; found {
 			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
 		}
-		return "", errors.New(msg)
+		return "", errors.Wrap(errors.New(msg), "unexpected status response from authn endpoint")
 	}
 	status, err := gets(data, "status")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Unable to get status data from authn endpoint")
 	}
 	if status != "SUCCESS" { // eg: LOCKED_OUT
-		return "", errors.New(status)
+		return "", errors.Wrap(errors.New(status), "unexpected status data from authn endpoint")
 	}
 	sessionToken, err := gets(data, "sessionToken")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "failed to parse session token data from authn endpoint response")
 	}
 	return sessionToken, nil
 }
@@ -354,13 +354,13 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 	// retrieve one-time session token
 	sessionToken, err := c.GetSessionToken(username, password)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get session token")
 	}
 
 	cv, cc, err := createCodeChallenge(50)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get challenge code")
 	}
 
 	// request authorization code
@@ -376,19 +376,23 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"state":                 {state()}}
 	response, err := get(c.makeURL(c.AuthorizePath), params)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get valid response from authorize endpoint")
 	}
 	if response.StatusCode != http.StatusFound {
-		return nil, httpError(response)
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from authorize endpoint")
 	}
 
 	// retrieve the authorization code from the redirect url query string
 	location := response.Header.Get("Location")
 	locationURL, err := url.Parse(location)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to parse location header")
 	}
 	code := locationURL.Query().Get("code")
+	if code == "" {
+		err := errors.New("")
+		return nil, errors.Wrap(err, "failed to retrieve valid authorization code from the redirect url")
+	}
 
 	// exchange authorization code for token(s)
 	form := url.Values{
@@ -399,13 +403,21 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"redirect_uri":  {redirectURI}}
 	response, err = formPost(c.makeURL(c.TokenPath), form)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}
-
+	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return nil, httpError(response)
-	}
+		data, err := load(response.Body)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
+		}
+		msg := response.Status
+		if errMsg, found := data["description"]; found {
+			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
+		}
+		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
 
+	}
 	return decode(response)
 }
 
@@ -418,7 +430,10 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 		"scope":         {scope}}
 	response, err := formPost(c.makeURL(c.TokenPath), form)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
+	}
+	if response.StatusCode != http.StatusOK {
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from token endpoint")
 	}
 	return decode(response)
 }
