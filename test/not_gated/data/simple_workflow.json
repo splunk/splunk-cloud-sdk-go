@@ -1,0 +1,54 @@
+{
+  "name": "test_workflow",
+  "tasks": [
+    {
+      "kind": "fit",
+      "name": "PCA",
+      "algorithm": "PCA",
+      "fields": {
+        "features": [
+          "petal_length",
+          "petal_width",
+          "sepal_length",
+          "sepal_width"
+        ],
+        "target": "",
+        "created": [
+          "PC_1",
+          "PC_2",
+          "PC_3"
+        ]
+      },
+      "timeoutSecs": 600,
+      "outputTransformer": "PCA_model",
+      "parameters": {
+        "k": 3
+      }
+    },
+    {
+      "kind": "fit",
+      "name": "RandomForestClassifier",
+      "algorithm": "RandomForestClassifier",
+      "fields": {
+        "features": [
+          "PC_1",
+          "PC_2",
+          "PC_3"
+        ],
+        "target": "species",
+        "created": [
+          "predicted(species)"
+        ]
+      },
+      "timeoutSecs": 600,
+      "outputTransformer": "RFC_model",
+      "parameters": {
+        "n_estimators": 25,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "max_features": "auto",
+        "criterion": "gini"
+      }
+    }
+  ]
+}
