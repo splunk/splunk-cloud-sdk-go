@@ -42,5 +42,9 @@ do
     fi
 done
 
-# Upload code cov report
-echo "TODO: CODE COVERAGE IS NOT CURRENTLY SUPPORTED! CODECOV REPORT WILL NOT BE UPLOADED."
+if [[ -z "${CI_PROJECT_DIR}" ]] ; then
+    CI_PROJECT_DIR="$(pwd)/cicd/unit_tests"
+fi
+
+mkdir -p $CI_PROJECT_DIR/coverage-unit
+mv $FULL_UNIT_TEST_CODECOV_PATH $CI_PROJECT_DIR/coverage-unit/coverage.out

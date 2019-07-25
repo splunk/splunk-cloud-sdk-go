@@ -10,7 +10,7 @@ SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
-setup: prereqs download_config
+setup: prereqs download_config statik version
 
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
@@ -55,7 +55,7 @@ token:
 
 clean: download_config
 	@rm -rf bin/
-	build_all
+	build
 
 generate_interface:
 	@GO111MODULE=off && go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate
@@ -99,20 +99,20 @@ version:
 # This is a generic target that should invoke all levels of tests, i.e. unit tests, integration tests.
 test: test_unit test_integration
 
-test_unit:
+test_unit: build
 	GO111MODULE=on sh ./cicd/unit_tests/run_unit_tests.sh
 
-test_integration:
+test_integration: build
 	GO111MODULE=on sh ./cicd/integration/runtests.sh
 
-test_integration_scloud: login
+test_integration_scloud: login build
 	export PYTHONPATH=$(PYTHONPATH):.
-	cd test/scloud && sh run.sh
+	SCLOUD_TEST_DIR=$(shell pwd)/test/scloud GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
 
-test_integration_examples:
+test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh
 
-test_ml_integration_tests:
+test_ml_integration_tests: build
 	GO111MODULE=on sh ./cicd/integration/run_ml_tests.sh
 
 prerelease: .FORCE
