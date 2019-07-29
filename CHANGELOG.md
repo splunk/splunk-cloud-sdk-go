@@ -1,7 +1,7 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.0.0-beta.2
-###Non-breaking Changes
+### Non-breaking Changes
 * Updated Provisioner service with spec changes for invites
 * Updated KVStore service with spec changes
 * Updated catalog service with spec changes
