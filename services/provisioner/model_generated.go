@@ -35,6 +35,51 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+type InviteBody struct {
+	Email   string   `json:"email"`
+	Comment *string  `json:"comment,omitempty"`
+	Groups  []string `json:"groups,omitempty"`
+}
+
+type InviteInfo struct {
+	Comment   string           `json:"comment"`
+	CreatedAt string           `json:"createdAt"`
+	CreatedBy string           `json:"createdBy"`
+	Email     string           `json:"email"`
+	Errors    InviteInfoErrors `json:"errors"`
+	ExpiresAt string           `json:"expiresAt"`
+	Groups    []string         `json:"groups"`
+	InviteID  string           `json:"inviteID"`
+	Status    InviteInfoStatus `json:"status"`
+	Tenant    string           `json:"tenant"`
+	UpdatedAt string           `json:"updatedAt"`
+	UpdatedBy string           `json:"updatedBy"`
+}
+
+type InviteInfoStatus string
+
+// List of InviteInfoStatus
+const (
+	InviteInfoStatusCreated  InviteInfoStatus = "created"
+	InviteInfoStatusInvited  InviteInfoStatus = "invited"
+	InviteInfoStatusAccepted InviteInfoStatus = "accepted"
+	InviteInfoStatusRejected InviteInfoStatus = "rejected"
+	InviteInfoStatusExpired  InviteInfoStatus = "expired"
+	InviteInfoStatusFailed   InviteInfoStatus = "failed"
+	InviteInfoStatusInvalid  InviteInfoStatus = "invalid"
+)
+
+type InviteInfoErrors []InviteInfoErrorsItems
+
+type InviteInfoErrorsItems struct {
+	Action  string  `json:"action"`
+	Code    string  `json:"code"`
+	Message string  `json:"message"`
+	Group   *string `json:"group,omitempty"`
+}
+
+type Invites []InviteInfo
+
 type ProvisionJobInfo struct {
 	Apps      []string               `json:"apps"`
 	CreatedAt string                 `json:"createdAt"`
@@ -73,3 +118,16 @@ type TenantInfo struct {
 }
 
 type Tenants []TenantInfo
+
+type UpdateInviteBody struct {
+	Action UpdateInviteBodyAction `json:"action"`
+}
+
+type UpdateInviteBodyAction string
+
+// List of UpdateInviteBodyAction
+const (
+	UpdateInviteBodyActionAccept UpdateInviteBodyAction = "accept"
+	UpdateInviteBodyActionReject UpdateInviteBodyAction = "reject"
+	UpdateInviteBodyActionResend UpdateInviteBodyAction = "resend"
+)

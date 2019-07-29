@@ -306,7 +306,7 @@ info:
   description: |
     With the Splunk Cloud Action service, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
   title: Action Service
-  version: v1beta2.5
+  version: v1beta2.6
 openapi: 3.0.0
 paths:
   /{tenant}/action/v1beta2/actions:
@@ -605,12 +605,5 @@ paths:
       tags:
       - Webhook Keys
       x-auth-required: false
-servers:
-- description: Action service
-  url: https://api.splunkbeta.com
-- description: Action service in staging cluster
-  url: https://api.staging.splunkbeta.com
-- description: Action service in playground cluster
-  url: https://api.playground.splunkbeta.com
 
-# Retrieved from scp-openapi commit c6cc325952cb6da92bd774acc15a27e585430daf path: action/openapi.yaml
+# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: action/openapi.yaml

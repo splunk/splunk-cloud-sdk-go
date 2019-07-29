@@ -95,6 +95,24 @@ type Servicer interface {
 	*/
 	CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error)
 	/*
+		CreateDatasetImportByIdv1 - catalog service endpoint
+		Create a new dataset import.
+		Parameters:
+			datasetid: ID of a Dataset.
+			datasetImportedBy
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateDatasetImportByIdv1(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
+	/*
+		CreateDatasetImportv1 - catalog service endpoint
+		Create a new dataset import.
+		Parameters:
+			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetImportedBy
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateDatasetImportv1(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error)
+	/*
 		CreateFieldForDataset - catalog service endpoint
 		Create a new field on a specific dataset.
 		Parameters:
@@ -459,9 +477,10 @@ type Servicer interface {
 		ListDashboards - catalog service endpoint
 		Return a list of Dashboards.
 		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListDashboards(resp ...*http.Response) ([]Dashboard, error)
+	ListDashboards(query *ListDashboardsQueryParams, resp ...*http.Response) ([]Dashboard, error)
 	/*
 		ListDatasets - catalog service endpoint
 		Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
@@ -575,7 +594,7 @@ type Servicer interface {
 			dashboardPatch: An updated representation of the dashboard to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateDashboardById(dashboardid string, dashboardPatch DashboardPatch, resp ...*http.Response) error
+	UpdateDashboardById(dashboardid string, dashboardPatch DashboardPatch, resp ...*http.Response) (*Dashboard, error)
 	/*
 		UpdateDashboardByResourceName - catalog service endpoint
 		Update the dashboard with the specified resource name.
