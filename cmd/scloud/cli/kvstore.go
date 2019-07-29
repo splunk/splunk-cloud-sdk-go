@@ -197,12 +197,14 @@ func (cmd *KVStoreCommand) listRecords(args []string) (interface{}, error) {
 	var offset int64
 	var fields multiFlags
 	var orderBy multiFlags
+	var filter string
 
 	flags := flag.NewFlagSet("list-records", flag.ExitOnError)
 	flags.Var(&fields, "field", "field definition field")
-	flags.Uint64("count", 1, "maximum number of records to return")
-	flags.Uint64("offset", 0, "number of records to skip from the start")
+	flags.Int64Var(&count, "count", 10, "maximum number of records to return")
+	flags.Int64Var(&offset, "offset", 1, "number of records to skip from the start")
 	flags.Var(&orderBy, "order-by", "keys to sort by")
+	flags.StringVar(&filter, "filter", "", "A filter to apply to the records")
 	flags.Parse(opts) //nolint:errcheck
 
 	fsArgs := flags.Args()
@@ -226,8 +228,8 @@ func (cmd *KVStoreCommand) queryRecords(args []string) (interface{}, error) {
 
 	flags := flag.NewFlagSet("query-records", flag.ExitOnError)
 	flags.Var(&fields, "field", "field definition field")
-	flags.Uint64("count", 1, "maximum number of records to return")
-	flags.Uint64("offset", 0, "number of records to skip from the start")
+	flags.Int64Var(&count, "count", 10, "maximum number of records to return")
+	flags.Int64Var(&offset, "offset", 1, "number of records to skip from the start")
 	flags.Var(&orderBy, "order-by", "keys to sort by")
 	flags.StringVar(&query, "json", "", "JSON string query")
 	flags.Parse(opts) //nolint:errcheck

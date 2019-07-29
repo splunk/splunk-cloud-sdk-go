@@ -1286,14 +1286,17 @@ func TestCRUDDashboard(t *testing.T) {
 	assert.Equal(t, dashboardName, db.Name)
 
 	//ListAll
-	dbs, err := client.CatalogService.ListDashboards()
+	count := int32(10)
+	dbs, err := client.CatalogService.ListDashboards(&catalog.ListDashboardsQueryParams{Count: &count, Filter: `module=="allmembers"`, Orderby: []string{"id Descending"}})
 	require.Nil(t, err)
-	assert.True(t, len(dbs) > 0)
+	assert.NotZero(t, len(dbs))
 
 	//Update
 	name_new := dashboardName + "_updated"
-	err = client.CatalogService.UpdateDashboardById(db.Id, catalog.DashboardPatch{Name: &name_new})
+	dashboard, err := client.CatalogService.UpdateDashboardById(db.Id, catalog.DashboardPatch{Name: &name_new})
 	require.Nil(t, err)
+	assert.Equal(t, name_new, dashboard.Name)
+
 	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + name_new)
 	assert.Equal(t, name_new, db.Name)
 

@@ -571,6 +571,20 @@ components:
             type: string
           type: array
       type: object
+    TakedownPrincipal:
+      properties:
+        addedAt:
+          format: date-time
+          type: string
+        addedBy:
+          type: string
+        name:
+          type: string
+      required:
+      - name
+      - addedBy
+      - addedAt
+      type: object
     Tenant:
       properties:
         createdAt:
@@ -660,7 +674,7 @@ info:
   description: With the Splunk Cloud Identity and Access Control (IAC) Service, you
     can authenticate and authorize Splunk API users.
   title: Identity and Access Control
-  version: v2beta1.6
+  version: v2beta1.7
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1419,4 +1433,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 1e014bb9fba73e574e1a17c9b6f858b382810487 path: identity/openapi.yaml
+# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: identity/openapi.yaml
