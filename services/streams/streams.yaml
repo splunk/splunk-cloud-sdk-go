@@ -1142,8 +1142,6 @@ components:
           type: array
       type: object
 info:
-  contact:
-    email: api@splunk.com
   description: With the Splunk Cloud Data Stream Processing service, you can perform
     create, read, update, and delete (CRUD) operations on your data pipeline. The
     Streams API also has metrics and preview session endpoints and gives you full
@@ -2893,4 +2891,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit bf5b6257bcb70c17dd169ff257c06f3a410819aa path: streams/openapi.yaml
+# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: streams/openapi.yaml

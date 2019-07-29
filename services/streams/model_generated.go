@@ -513,21 +513,13 @@ type UplFunction struct {
 	ResolvedId *string                `json:"resolvedId,omitempty"`
 }
 
-type UplNode struct {
-	// The function's (node's) UUID
-	Id string `json:"id"`
-	// The function's ID or its API name
-	Op string `json:"op"`
-	// Optional key-value pair for a function (node)
-	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	ResolvedId *string                `json:"resolvedId,omitempty"`
-}
+type UplNode map[string]interface{}
 
 type UplPipeline struct {
 	// A list of links or connections between the output of one pipeline function and the input of another pipeline function
 	Edges []UplEdge `json:"edges"`
 	// The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties
-	Nodes interface{} `json:"nodes"`
+	Nodes []UplNode `json:"nodes"`
 	// The UUIDs of all sink functions in a given pipeline
 	RootNode []string `json:"rootNode"`
 }
