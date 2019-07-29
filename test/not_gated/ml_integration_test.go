@@ -40,6 +40,8 @@ var sourceType = "json"
 var PkceTokenRetriver = idp.NewPKCERetriever(testutils.PkceClientID, testutils.NativeAppRedirectURI,
 	idp.DefaultOIDCScopes, testutils.Username, testutils.Password, testutils.IdpHost)
 
+var sdkClient, sdkErr = testutils.MakeSdkClient(PkceTokenRetriver, testutils.TestMLTenant)
+
 func TestMain(t *testing.M) {
 	code := t.Run()
 	cleanup()
@@ -47,9 +49,8 @@ func TestMain(t *testing.M) {
 }
 
 func getSdkClient(t *testing.T) *sdk.Client {
-	client, err := testutils.MakeSdkClient(PkceTokenRetriver, testutils.TestMLTenant)
-	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
-	return client
+	require.Emptyf(t, sdkErr, "error calling sdk.NewClient(): %s", sdkErr)
+	return sdkClient
 }
 
 // Try to delete all workflows that were created in this test run, ignoring errors
