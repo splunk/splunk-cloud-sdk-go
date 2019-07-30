@@ -405,6 +405,163 @@ info:
   version: v1beta1.1
 openapi: 3.0.0
 paths:
+  /{tenant}/provisioner/v1beta1/invites:
+    get:
+      description: Lists the invites in a given tenant
+      operationId: listInvites
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invites'
+          description: Successful operation
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "404":
+          description: Not Found
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.invites.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    post:
+      description: Creates an invite to invite a person to the tenant using their
+        email address
+      operationId: createInvite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteBody'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteInfo'
+          description: Successful operation
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "409":
+          description: Conflict
+        "422":
+          description: Unprocessable Entity
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.invites.write
+  /{tenant}/provisioner/v1beta1/invites/{inviteId}:
+    delete:
+      description: Deletes an invite in the given tenant
+      operationId: deleteInvite
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "422":
+          description: Unprocessable Entity
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.invites.write
+    get:
+      description: Gets an invite in the given tenant
+      operationId: getInvite
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteInfo'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.invites.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/InviteId'
+    patch:
+      description: Updates an invite in the given tenant
+      operationId: updateInvite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInviteBody'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteInfo'
+          description: Successful operation
+        "401":
+          description: Unauthorized operation
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "422":
+          description: Unprocessable Entity
+        "423":
+          description: Resource locked
+        "429":
+          description: Too many requests
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.invites.write
   /system/provisioner/v1beta1/jobs/tenants/provision:
     get:
       description: Lists all provision jobs created by the user
@@ -549,4 +706,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 1e014bb9fba73e574e1a17c9b6f858b382810487 path: provisioner/openapi.yaml
+# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: provisioner/openapi.yaml

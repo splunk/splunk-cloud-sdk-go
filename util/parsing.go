@@ -88,7 +88,7 @@ func toURLValues(keyName string, value reflect.Value, explode bool) url.Values {
 				}
 			}
 		}
-		if !explode {
+		if !explode && len(vals) != 0 {
 			values.Set(keyName, strings.Join(vals, ","))
 		}
 	case reflect.Struct:
@@ -120,7 +120,7 @@ func toURLValues(keyName string, value reflect.Value, explode bool) url.Values {
 				}
 			}
 		}
-		if !explode {
+		if !explode && len(keyvals) != 0 {
 			values.Set(keyName, strings.Join(keyvals, ","))
 		}
 	case reflect.Map:
@@ -145,7 +145,7 @@ func toURLValues(keyName string, value reflect.Value, explode bool) url.Values {
 				}
 			}
 		}
-		if !explode {
+		if !explode && len(keyvals) != 0 {
 			values.Set(keyName, strings.Join(keyvals, ","))
 		}
 	default:

@@ -1,0 +1,16 @@
+# unique project key, usually your project name
+sonar.projectKey=scloud
+sonar.projectName=Splunk Cloud CLI
+# define the directories to scan - need to include all src files to show coverage of
+# splunk-cloud-sdk-go api endpoints for scloud tests
+sonar.sources=.
+# define the files not to analyze for scanning
+sonar.exclusions=**/*_test.go,**/vendor/**,**/*.yaml,**/*.py
+sonar.tests=.
+sonar.test.inclusions=cmd/**/*_test.go
+sonar.test.exclusions=**/vendor/**
+# The file that the sonarqube scanner imports for coverage differs per language,
+# please refer to sonarqube docs on how to configure the path for your language
+# https://docs.sonarqube.org/display/PLUG/SonarSource+Plugins
+# For Go: https://docs.sonarqube.org/display/PLUG/Go+Coverage+Results+Import
+sonar.typescript.lcov.reportPaths=coverage-unit/coverage.out,coverage-integration-scloud/coverage.out

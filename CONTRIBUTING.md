@@ -1,48 +1,56 @@
-# Contributing Guidelines
+# Contribution Guidelines
 
-## How to contribute
+For general information about contributing to Splunk projects, see: 
 
-If you would like to contribute to this project, go here for more information:
+-  [Splunk and open source](http://dev.splunk.com/view/opensource/SP-CAAAEDM)
+-  [Individual contributions](http://dev.splunk.com/goto/individualcontributions)
+-  [Company contributions](http://dev.splunk.com/view/companycontributions/SP-CAAAEDR)
 
-* [Splunk and open source][contributions]
-* [Individual contributions][indivcontrib]
-* [Company contributions][companycontrib]
+## Issues and bug reports
 
-## Issues & Bug Reports
+If you see unexpected behavior with this project, please [create an issue on GitHub](/issues) with the following information:
 
-If you're seeing some unexpected behavior with this project, please create an [issue on GitHub][issues] with the following information:
+-  A title and a clear description of the issue.
+-  The project version (for example "0.1.4").
+-  The framework version (for example "Go 1.11").
 
-0. Version of this project you're using (ex: 0.1.4)
-0. Framework version (ex: Go 1.11)
+If possible, include the following to help us reproduce the issue: 
+-  A code sample that demonstrates the issue.
+-  Any unit test cases that show how the expected behavior is not occurring.
+-  An executable test case. 
 
-Alternatively, if you have a Splunk question please ask on [Splunk Answers][answers]
-
+If you have a question about Splunk, see [Splunk Answers](https://answers.splunk.com).
 
 ## Development
-Refer to the development wiki page for more info on how to setup the project [Development][wiki]
 
-## Pull requests
+Configure your development environment as described in the project [README](/blob/master/README.md).
 
-We love to see pull requests!
+## Submit a pull request
 
-To create a pull request:
+1. Fill out the [Individual Contributor Agreement](http://dev.splunk.com/goto/individualcontributions).
+2. Create a new branch. For example:
 
-0. Fill out the [Individual Contributor Agreement][indivcontrib].
-0. Fork [the repository][repo].
-0. Make changes to the **`develop`** branch, preferably with tests.
-0. Create a [pull request][pulls] against the **`develop`** branch.
+    ```
+    git checkout -b my-branch develop
+    ```
+
+3. Make code changes in your branch with tests. 
+4. Commit your changes.
+5. Push your branch to GitHub.
+
+    ```
+    git push origin my-branch
+    ```
+
+6. In GitHub, create a pull request that targets the **develop** branch. CI tests are run automatically.
+7. After the pull request is merged, delete your branch.
+8. Pull changes from the **develop** branch.
+
+    ```
+    git checkout develop
+    git pull develop
+    ```
 
 ## Contact us
 
-You can reach Splunk support at _support@splunk.com_ if you have Splunk related questions.
-
-You can reach the Developer Platform team at _devinfo@splunk.com_.
-
-[contributions]:            http://dev.splunk.com/view/opensource/SP-CAAAEDM
-[indivcontrib]:             http://dev.splunk.com/goto/individualcontributions
-[companycontrib]:           http://dev.splunk.com/view/companycontributions/SP-CAAAEDR
-[answers]:                  http://answers.splunk.com/
-[repo]:                     https://github.com/splunk/splunk-cloud-sdk-go
-[issues]:                   https://github.com/splunk/splunk-cloud-sdk-go/issues
-[pulls]:                    https://github.com/splunk/splunk-cloud-sdk-go/pulls
-[wiki]:                     https://github.com/splunk/splunk-cloud-sdk-go/wiki/Development
+If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _sdcbeta@splunk.com_.

@@ -17,6 +17,7 @@
 package idp
 
 import (
+	"github.com/pkg/errors"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
@@ -78,7 +79,7 @@ func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string
 func (tr *RefreshTokenRetriever) GetTokenContext() (*Context, error) {
 	ctx, err := tr.Refresh(tr.ClientID, tr.Scope, tr.RefreshToken.ClearText())
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get token in refresh token flow")
 	}
 	return ctx, nil
 }
@@ -110,7 +111,7 @@ func NewClientCredentialsRetriever(clientID string, clientSecret string, scope s
 func (tr *ClientCredentialsRetriever) GetTokenContext() (*Context, error) {
 	ctx, err := tr.ClientFlow(tr.ClientID, tr.ClientSecret.ClearText(), tr.Scope)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get token in client credentials flow")
 	}
 	return ctx, nil
 }
@@ -148,7 +149,7 @@ func NewPKCERetriever(clientID string, redirectURI string, scope string, usernam
 func (tr *PKCERetriever) GetTokenContext() (*Context, error) {
 	ctx, err := tr.PKCEFlow(tr.ClientID, tr.RedirectURI, tr.Scope, tr.Username, tr.Password.ClearText())
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to get token in PKCE flow")
 	}
 	return ctx, nil
 }

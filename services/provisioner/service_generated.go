@@ -34,7 +34,7 @@ const serviceCluster = "api"
 
 type Service services.BaseService
 
-// NewService creates a new provisioner service client from the given Config
+// NewService creates a new prov service client from the given Config
 func NewService(config *services.Config) (*Service, error) {
 	baseClient, err := services.NewClient(config)
 	if err != nil {
@@ -44,7 +44,32 @@ func NewService(config *services.Config) (*Service, error) {
 }
 
 /*
-	CreateProvisionJob - provisioner service endpoint
+	CreateInvite - prov service endpoint
+	Creates an invite to invite a person to the tenant using their email address
+	Parameters:
+		inviteBody
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateInvite(inviteBody InviteBody, resp ...*http.Response) (*InviteInfo, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/provisioner/v1beta1/invites`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: inviteBody})
+	// populate input *http.Response if provided
+	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb InviteInfo
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	CreateProvisionJob - prov service endpoint
 	Creates a new job that provisions a new tenant and subscribes apps to the tenant
 	Parameters:
 		createProvisionJobBody
@@ -69,7 +94,62 @@ func (s *Service) CreateProvisionJob(createProvisionJobBody CreateProvisionJobBo
 }
 
 /*
-	GetProvisionJob - provisioner service endpoint
+	DeleteInvite - prov service endpoint
+	Deletes an invite in the given tenant
+	Parameters:
+		inviteId
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteInvite(inviteId string, resp ...*http.Response) error {
+	pp := struct {
+		InviteId string
+	}{
+		InviteId: inviteId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/provisioner/v1beta1/invites/{{.InviteId}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	// populate input *http.Response if provided
+	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+	return err
+}
+
+/*
+	GetInvite - prov service endpoint
+	Gets an invite in the given tenant
+	Parameters:
+		inviteId
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetInvite(inviteId string, resp ...*http.Response) (*InviteInfo, error) {
+	pp := struct {
+		InviteId string
+	}{
+		InviteId: inviteId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/provisioner/v1beta1/invites/{{.InviteId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	// populate input *http.Response if provided
+	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb InviteInfo
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetProvisionJob - prov service endpoint
 	Gets details of a specific provision job
 	Parameters:
 		jobId
@@ -99,7 +179,7 @@ func (s *Service) GetProvisionJob(jobId string, resp ...*http.Response) (*Provis
 }
 
 /*
-	GetTenant - provisioner service endpoint
+	GetTenant - prov service endpoint
 	Gets a specific tenant
 	Parameters:
 		tenantName
@@ -129,7 +209,31 @@ func (s *Service) GetTenant(tenantName string, resp ...*http.Response) (*TenantI
 }
 
 /*
-	ListProvisionJobs - provisioner service endpoint
+	ListInvites - prov service endpoint
+	Lists the invites in a given tenant
+	Parameters:
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListInvites(resp ...*http.Response) (*Invites, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/provisioner/v1beta1/invites`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	// populate input *http.Response if provided
+	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Invites
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	ListProvisionJobs - prov service endpoint
 	Lists all provision jobs created by the user
 	Parameters:
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -153,7 +257,7 @@ func (s *Service) ListProvisionJobs(resp ...*http.Response) (*ProvisionJobs, err
 }
 
 /*
-	ListTenants - provisioner service endpoint
+	ListTenants - prov service endpoint
 	Lists all tenants that the user can read
 	Parameters:
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -172,6 +276,37 @@ func (s *Service) ListTenants(resp ...*http.Response) (*Tenants, error) {
 		return nil, err
 	}
 	var rb Tenants
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	UpdateInvite - prov service endpoint
+	Updates an invite in the given tenant
+	Parameters:
+		inviteId
+		updateInviteBody
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UpdateInvite(inviteId string, updateInviteBody UpdateInviteBody, resp ...*http.Response) (*InviteInfo, error) {
+	pp := struct {
+		InviteId string
+	}{
+		InviteId: inviteId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/provisioner/v1beta1/invites/{{.InviteId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Patch(services.RequestParams{URL: u, Body: updateInviteBody})
+	// populate input *http.Response if provided
+	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb InviteInfo
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

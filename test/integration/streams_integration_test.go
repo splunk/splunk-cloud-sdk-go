@@ -90,14 +90,17 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	require.NotEmpty(t, pipeline.Data.Nodes)
 	//require.Equal(t, 2, len(pipeline.Data.Nodes))
 
-	//dataNode1 := pipeline.Data.Nodes[0]
-	//assert.NotEmpty(t, dataNode1["Id"])
-	//assert.Equal(t, "read-splunk-firehose", dataNode1.Op)
-	//
-	//dataNode2 := pipeline.Data.Nodes[1]
-	//assert.NotEmpty(t, dataNode2.Id)
-	//assert.Equal(t, "write-index", dataNode2.Op)
-	//assert.Empty(t, dataNode2.Attributes)
+	dataNode1 := pipeline.Data.Nodes[0]
+	assert.NotEmpty(t, dataNode1["id"])
+	assert.Equal(t, "read-splunk-firehose", dataNode1["op"])
+	assert.Equal(t, "read-splunk-firehose", dataNode1["resolvedId"])
+
+	dataNode2 := pipeline.Data.Nodes[1]
+	assert.NotEmpty(t, dataNode2["id"])
+	assert.Equal(t, "write-index", dataNode2["op"])
+	assert.Empty(t, dataNode2["attributes"])
+	assert.Equal(t, "module:index", dataNode2["module"])
+	assert.Equal(t, "dataset:main", dataNode2["dataset"])
 }
 
 // Test ActivatePipeline streams endpoint
@@ -292,7 +295,7 @@ func TestIntegrationMergePipelines(t *testing.T) {
 	require.NotEmpty(t, result.Edges)
 	require.Equal(t, 3, len(result.Edges))
 	require.NotEmpty(t, result.Nodes)
-	//require.Equal(t, 4, len(result.Nodes))
+	require.Equal(t, 4, len(result.Nodes))
 }
 
 // Test UpdatePipeline streams endpoint
@@ -311,11 +314,11 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 	updatedPipelineName := fmt.Sprintf("updated%v", pipelineName)
 	desc := fmt.Sprintf("Updated Integration Test Pipeline %v", pipelineName)
 	updatedPipeline, err := getSdkClient(t).StreamsService.UpdatePipeline(*pipeline.Id,
-		streams.PipelinePatchRequest{Description: &desc})
+		streams.PipelinePatchRequest{Name: &updatedPipelineName, Description: &desc})
 	require.Nil(t, err)
 	require.NotEmpty(t, updatedPipeline)
 	assert.Equal(t, updatedPipelineName, *updatedPipeline.Name)
-	assert.Equal(t, "Updated Integration Test Pipeline", *updatedPipeline.Description)
+	assert.Equal(t, desc, *updatedPipeline.Description)
 	assert.Equal(t, *pipeline.CurrentVersion+1, *updatedPipeline.CurrentVersion)
 }
 
@@ -509,54 +512,71 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	}
 }
 
-////Test Latest Preview Session Metrics
-//func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
-//	// Create and start a test Ge session
-//	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
-//	require.Nil(t, err)
-//	require.NotEmpty(t, response)
-//	//defer cleanupPreview(t, *response.PreviewId)
-//	assert.NotEmpty(t, response.PreviewId)
-//
-//	////Get latest preview session metrics
-//	////Validation of the metrics output is not reliable since its real-time data, no guarantees if metric data will be populated at that instant of time
-//	////Attempt the call to get metrics 5 times and validate if there is data returned.
-//	//cnt := 0
-//	//for cnt < 5 {
-//	//	result1, err1 := getClient(t).StreamsService.GetPipelineLatestMetrics(strconv.FormatInt(*response.PreviewId, 10))
-//	//	require.Empty(t, err1)
-//	//	require.NotEmpty(t, result1)
-//	//	if len(result1.Nodes) > 0 {
-//	//		for key, element := range result1.Nodes {
-//	//			assert.NotEmpty(t, key)
-//	//			assert.NotEmpty(t, element.Metrics)
-//	//		}
-//	//	}
-//	//	time.Sleep(20 * time.Second)
-//	//	cnt++
-//	//}
-//}
+//Test Latest Preview Session Metrics
+func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
+	// Create and start a test Ge session
+	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
+	require.Nil(t, err)
+	require.NotEmpty(t, response)
+	assert.NotEmpty(t, response.PreviewId)
+
+	response1, err := getSdkClient(t).StreamsService.StopPreview(*response.PreviewId)
+	require.Nil(t, err)
+	assert.NotEmpty(t, response1)
+
+	////Get latest preview session metrics
+	////Validation of the metrics output is not reliable since its real-time data, no guarantees if metric data will be populated at that instant of time
+	////Attempt the call to get metrics 5 times and validate if there is data returned.
+	//cnt := 0
+	//for cnt < 5 {
+	//	result1, err1 := getClient(t).StreamsService.GetPipelineLatestMetrics(strconv.FormatInt(*response.PreviewId, 10))
+	//	require.Empty(t, err1)
+	//	require.NotEmpty(t, result1)
+	//	if len(result1.Nodes) > 0 {
+	//		for key, element := range result1.Nodes {
+	//			assert.NotEmpty(t, key)
+	//			assert.NotEmpty(t, element.Metrics)
+	//		}
+	//	}
+	//	time.Sleep(20 * time.Second)
+	//	cnt++
+	//}
+}
 
 // Test Get Connectors
 func TestIntegrationListConnectors(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.ListConnectors()
 	require.Nil(t, err)
 	require.NotEmpty(t, response)
-	//assert.Equal(t, *response.Items[0].Id, "read-splunk-firehose")
-	//assert.Equal(t, *response.Items[0].Name, "Splunk Firehose")
 }
 
-// Test Get Connections
-func TestIntegrationGetConnections(t *testing.T) {
-	connectors, err := getSdkClient(t).StreamsService.ListConnectors()
+// Test CRUD Connections
+func TestIntegrationCRUEConnections(t *testing.T) {
+	connectorId := "879837b0-cabf-4bc2-8589-fcc4dad753e7" //Splunk Enterprise Connector
+	data := make(map[string]interface{})
+	data["splunk-url"] = "https://hostname.port"
+	data["token"] = "mytoken"
+	connectionName := fmt.Sprintf("testConnection%d", testutils.TimeSec)
+	connection, err := getSdkClient(t).StreamsService.CreateConnection(streams.ConnectionRequest{ConnectorId: connectorId, Data: data, Name: connectionName})
 	require.Nil(t, err)
-	require.NotEmpty(t, connectors)
+	assert.NotEmpty(t, connection)
+	defer getSdkClient(t).StreamsService.DeleteConnection(*connection.Id)
 
-	//response1, err := getSdkClient(t).StreamsService.GetConnections(streams.GetConnectionsQueryParams{FunctionId: l})
-	//require.Nil(t, err)
-	//require.NotEmpty(t, response1)
-	////assert.Equal(t, *response1.Items[0].Id, "splunk-firehose:all")
-	////assert.Equal(t, *response1.Items[0].ConnectorName, "Splunk Firehose")
+	connections, err := getSdkClient(t).StreamsService.ListConnections(nil)
+	require.Nil(t, err)
+	require.NotEmpty(t, connections)
+
+	query := streams.ListConnectionsQueryParams{}.SetName(connectionName)
+	response1, err := getSdkClient(t).StreamsService.ListConnections(&query)
+	require.Nil(t, err)
+	require.NotEmpty(t, response1)
+	require.Equal(t, 1, len(response1.Items))
+	assert.Equal(t, connectorId, *response1.Items[0].ConnectorId)
+	assert.Equal(t, *connection.Name, *response1.Items[0].Versions[0].Name)
+	assert.Equal(t, *connection.Id, *response1.Items[0].Id)
+
+	err = getSdkClient(t).StreamsService.DeleteConnection(*connection.Id)
+	assert.Nil(t, err)
 }
 
 // Test Validate Upl Response streams endpoint
@@ -590,63 +610,61 @@ func TestIntegrationValidateResponse(t *testing.T) {
 
 }
 
-//
-//// Test StartPreviewSession streams endpoint
-//func TestIntegrationStartPreviewSession(t *testing.T) {
-//	// Create and start a test preview session
-//	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
-//	require.Nil(t, err)
-//	require.NotEmpty(t, response)
-//	previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
-//	defer cleanupPreview(t, previewIDStringVal)
-//	assert.NotEmpty(t, response.PreviewId)
-//
-//	// Verify that the test preview session is created
-//	previewState, err := getSdkClient(t).StreamsService.GetPipelinePreviewSession(*response.PreviewId)
-//	require.Nil(t, err)
-//	require.NotEmpty(t, previewState)
-//	assert.NotEmpty(t, response.PreviewId, previewState.PreviewId)
-//	assert.NotEmpty(t, previewState.JobId)
-//}
+// Test StartPreviewSession streams endpoint
+func TestIntegrationStartPreviewSession(t *testing.T) {
+	// Create and start a test preview session
+	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
+	require.Nil(t, err)
+	require.NotEmpty(t, response)
+	//previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
+	//defer cleanupPreview(t, previewIDStringVal)
+	assert.NotEmpty(t, response.PreviewId)
 
-//// Test DeletePreviewSession streams endpoint
-//func TestIntegrationDeletePreviewSession(t *testing.T) {
-//	// Create and start a test preview session
-//	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
-//	require.Nil(t, err)
-//	require.NotEmpty(t, response)
-//	//previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
-//	assert.NotEmpty(t, response.PreviewId)
-//
-//	//// Delete the test preview session
-//	//err = getSdkClient(t).StreamsService.DeletePreviewSession(previewIDStringVal)
-//	//require.Nil(t, err)
-//
-//	// Verify that the test preview session is deleted
-//	_, err = getSdkClient(t).StreamsService.GetPipelinePreviewSession(*response.PreviewId)
-//	require.NotNil(t, err)
-//	httpErr, ok := err.(*util.HTTPError)
-//	require.True(t, ok)
-//	assert.Equal(t, 404, httpErr.HTTPStatusCode)
-//	assert.Equal(t, "preview-id-not-found", httpErr.Code)
-//}
-//
-//// Test GetPreviewData streams endpoint
-//func TestIntegrationGetPreviewData(t *testing.T) {
-//	// Create and start a test preview session
-//	response, err := getSdkClient(t).StreamsService.StartPreviewSession(createPreviewSessionStartRequest(t))
-//	require.Nil(t, err)
-//	require.NotEmpty(t, response)
-//	previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
-//	defer cleanupPreview(t, previewIDStringVal)
-//	assert.NotEmpty(t, response.PreviewId)
-//
-//	//// Verify that the preview data is generated
-//	//previewData, err := getSdkClient(t).StreamsService.GetPreviewData(previewIDStringVal)
-//	//require.Nil(t, err)
-//	//require.NotEmpty(t, previewData)
-//	//assert.NotEmpty(t, response.PreviewId, previewData.PreviewId)
-//}
+	// Verify that the test preview session is created
+	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(*response.PreviewId)
+	require.Nil(t, err)
+	require.NotEmpty(t, previewState)
+	assert.NotEmpty(t, response.PreviewId, previewState.PreviewId)
+	assert.NotEmpty(t, previewState.JobId)
+}
+
+// Test DeletePreviewSession streams endpoint
+func TestIntegrationDeletePreviewSession(t *testing.T) {
+	// Create and start a test preview session
+	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
+	require.Nil(t, err)
+	require.NotEmpty(t, response)
+	assert.NotEmpty(t, response.PreviewId)
+
+	// Delete the test preview session
+	_, err = getSdkClient(t).StreamsService.StopPreview(*response.PreviewId)
+	require.Nil(t, err)
+
+	// Verify that the test preview session is deleted
+	_, err = getSdkClient(t).StreamsService.GetPreviewSession(*response.PreviewId)
+	require.NotNil(t, err)
+	httpErr, ok := err.(*util.HTTPError)
+	require.True(t, ok)
+	assert.Equal(t, 404, httpErr.HTTPStatusCode)
+	assert.Equal(t, "preview-id-not-found", httpErr.Code)
+}
+
+// Test GetPreviewData streams endpoint
+func TestIntegrationGetPreviewData(t *testing.T) {
+	// Create and start a test preview session
+	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
+	require.Nil(t, err)
+	require.NotEmpty(t, response)
+	//previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
+	//defer cleanupPreview(t, *response.PreviewId)
+	assert.NotEmpty(t, response.PreviewId)
+
+	// Verify that the preview data is generated
+	previewData, err := getSdkClient(t).StreamsService.GetPreviewData(*response.PreviewId)
+	require.Nil(t, err)
+	require.NotEmpty(t, previewData)
+	assert.NotEmpty(t, response.PreviewId, previewData.PreviewId)
+}
 
 // Test CreateTemplate streams endpoint
 func TestIntegrationCreateTemplate(t *testing.T) {
@@ -667,15 +685,15 @@ func TestIntegrationCreateTemplate(t *testing.T) {
 	assert.NotEmpty(t, template.Data.Edges[0].TargetNode)
 
 	require.NotEmpty(t, template.Data.Nodes)
-	//require.Equal(t, 2, len(template.Data.Nodes))
-	//
-	//assert.NotEmpty(t, (*template.Data).Nodes[0].Id)
-	//assert.Equal(t, "read-splunk-firehose", (*template.Data).Nodes[0].Op)
-	//
-	//dataNode2 := (*template.Data).Nodes[1]
-	//assert.NotEmpty(t, dataNode2.Id)
-	//assert.Equal(t, "write-splunk-index", dataNode2.Op)
-	//assert.Empty(t, dataNode2.Attributes)
+	require.Equal(t, 2, len(template.Data.Nodes))
+
+	assert.NotEmpty(t, (*template.Data).Nodes[0]["id"])
+	assert.Equal(t, "read-splunk-firehose", (*template.Data).Nodes[0]["op"])
+
+	dataNode2 := (*template.Data).Nodes[1]
+	assert.NotEmpty(t, dataNode2["id"])
+	assert.Equal(t, "write-index", dataNode2["op"])
+	assert.Empty(t, dataNode2["attributes"])
 }
 
 // Test GetTemplates streams endpoint
@@ -716,7 +734,7 @@ func TestIntegrationUpdateTemplate(t *testing.T) {
 	assert.Equal(t, templateName, *template.Name)
 	assert.Equal(t, testTemplateDescription, *template.Description)
 
-	// Update the newly created test template
+	// Update the newly created test template (partial update data is provided)
 	updatedTemplateName := fmt.Sprintf("updated%v", templateName)
 	desc := "Updated Integration Test Template"
 	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplate(*template.TemplateId,
@@ -728,27 +746,30 @@ func TestIntegrationUpdateTemplate(t *testing.T) {
 	assert.Equal(t, *template.Version+1, *updatedTemplate.Version)
 }
 
-//// Test PartialUpdateTemplate streams endpoint
-//func TestIntegrationPartialUpdateTemplate(t *testing.T) {
-//	templateName := fmt.Sprintf("testTemplate%d", testutils.TimeSec)
-//
-//	// Create a test template and verify that the template was created
-//	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
-//	require.Nil(t, err)
-//	defer cleanupTemplate(t, *template.TemplateId)
-//	require.NotEmpty(t, template)
-//	assert.Equal(t, templateName, *template.Name)
-//	assert.Equal(t, testTemplateDescription, *template.Description)
-//
-//	// Update the newly created test template (partial update data is provided)
-//	updatedDescription := "Updated Integration Test Template"
-//	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplate(*template.TemplateId, streams.TemplateRequest{Description: updatedDescription})
-//	require.Nil(t, err)
-//	require.NotEmpty(t, updatedTemplate)
-//	assert.Equal(t, templateName, *updatedTemplate.Name)
-//	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
-//	assert.Equal(t, *template.Version+1, *updatedTemplate.Version)
-//}
+// Test PutTemplate streams endpoint
+func TestIntegrationPutTemplate(t *testing.T) {
+	templateName := fmt.Sprintf("testTemplate%d", testutils.TimeSec)
+
+	// Create a test template and verify that the template was created
+	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
+	require.Nil(t, err)
+	defer cleanupTemplate(t, *template.TemplateId)
+	require.NotEmpty(t, template)
+	assert.Equal(t, templateName, *template.Name)
+	assert.Equal(t, testTemplateDescription, *template.Description)
+
+	// Update the newly created test template with PUT
+	updatedDescription := "Updated Integration Test Template"
+	result := createTestUplPipeline(t)
+
+	updatedTemplate, err := getSdkClient(t).StreamsService.PutTemplate(*template.TemplateId,
+		streams.TemplatePutRequest{Name: "new" + templateName, Description: updatedDescription, Data: result})
+	require.Nil(t, err)
+	require.NotEmpty(t, updatedTemplate)
+	assert.Equal(t, "new"+templateName, *updatedTemplate.Name)
+	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
+	assert.Equal(t, *template.Version+1, *updatedTemplate.Version)
+}
 
 // Test DeleteTemplate streams endpoint
 func TestIntegrationDeleteTemplate(t *testing.T) {
@@ -774,54 +795,56 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 	assert.Equal(t, "template-id-not-found", httpErr.Code)
 }
 
-//// Test Get Groups endpoint
-//func TestIntegrationGetGroups(t *testing.T) {
-//	//result, err := getSdkClient(t).StreamsService.GetUPLRegistry((&streams.GetUPLRegistryQueryParams{}.SetLocal(true))
-//	//require.Empty(t, err)
-//	//require.NotEmpty(t, result)
-//	//assert.NotEmpty(t, (result.Functions)[0].Id)
-//	//assert.NotEmpty(t, (result.Categories)[0].Id)
-//	//assert.NotEmpty(t, (result.Types)[0].Type)
-//
-//	pipelineName := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
-//	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-//	require.Nil(t, err)
-//	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
-//
-//	group, err := getSdkClient(t).StreamsService.SaveGroup(streams.GroupRequest{
-//		Arguments: []streams.GroupArgumentsNode{streams.GroupArgumentsNode{GroupArg: "time", Type: "long", Position: 0}},
-//		Name:      "test-fn",
-//		Ast:       *pipeline.Data,
-//	})
-//	require.Nil(t, err)
-//
-//	//cnt := 0
-//	//temp := 0
-//	//for cnt < len(result.Functions) {
-//	//	if result.Functions[cnt].ResolvedId != nil && strings.Contains(*result.Functions[cnt].ResolvedId, "receive-from-ingest-rest-api") {
-//	//		temp = cnt
-//	//		break
-//	//
-//	//	}
-//	//	cnt++
-//	//}
-//
-//	//assert.True(t, cnt < len(result.Functions))
-//
-//	//applicationData := ((result.Functions)[temp].Attributes)["application"]
-//	//application, ok := ((result.Functions)[temp].Attributes)["application"].(map[string]interface{})
-//	//assert.NotEmpty(t, applicationData)
-//	//require.True(t, ok)
-//	//groupId, ok := application["groupId"].(string)
-//	//require.True(t, ok)
-//
-//	test, err := getSdkClient(t).StreamsService.GetGroupById(*group.GroupId)
-//	require.Empty(t, err)
-//	require.NotEmpty(t, test)
-//	assert.NotEmpty(t, *test.Name)
-//	assert.NotEmpty(t, *test.CreateUserId)
-//	assert.NotEmpty(t, *test.OutputType)
-//}
+// Test Get Groups endpoint
+func TestIntegrationGetGroups(t *testing.T) {
+	request := streams.GetRegistryQueryParams{}.SetLocal(false)
+	result, err := getSdkClient(t).StreamsService.GetRegistry(&request)
+	require.Empty(t, err)
+	require.NotEmpty(t, result)
+	//assert.NotEmpty(t, (result.Functions)[0].Id)
+	//assert.NotEmpty(t, (result.Categories)[0].Id)
+	//assert.NotEmpty(t, (result.Types)[0].Type)
+
+	pipelineName := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
+	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
+	require.Nil(t, err)
+	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
+
+	group, err := getSdkClient(t).StreamsService.CreateGroup(streams.GroupRequest{
+		Arguments: []streams.GroupArgumentsNode{{GroupArg: "time", Type: "long", Position: 0}},
+		Name:      "test-fn",
+		Ast:       *pipeline.Data,
+	})
+	require.Nil(t, err)
+
+	//cnt := 0
+	//temp := 0
+	//for cnt < len(result.Functions) {
+	//	if result.Functions[cnt].ResolvedId != nil && strings.Contains(*result.Functions[cnt].ResolvedId, "receive-from-ingest-rest-api") {
+	//		temp = cnt
+	//		break
+	//
+	//	}
+	//	cnt++
+	//}
+
+	//assert.True(t, cnt < len(result.Functions))
+
+	//applicationData := ((result.Functions)[temp].Attributes)["application"]
+	//application, ok := ((result.Functions)[temp].Attributes)["application"].(map[string]interface{})
+	//assert.NotEmpty(t, applicationData)
+	//require.True(t, ok)
+	//groupId, ok := application["groupId"].(string)
+	//require.True(t, ok)
+
+	test, err := getSdkClient(t).StreamsService.GetGroup(*group.GroupId)
+	require.Empty(t, err)
+	require.NotEmpty(t, test)
+	assert.NotEmpty(t, *test.Name)
+	assert.NotEmpty(t, *test.CreateUserId)
+	assert.NotEmpty(t, *test.OutputType)
+}
+
 //
 ////Test the Create Expanded version of the group Endpoint
 //func TestIntegrationCreateExpandedGroup(t *testing.T) {
@@ -904,7 +927,7 @@ func makePipelineRequest(t *testing.T, name string, description string) streams.
 
 // createTestUplPipeline is a helper function to create a test UPL JSON from a test DSL.
 func createTestUplPipeline(t *testing.T) streams.UplPipeline {
-	var dsl = "events = read-splunk-firehose(); write-index(events, \"index\", \"main\");"
+	var dsl = "events = read-splunk-firehose(); write-index(events, \"module:index\", \"dataset:main\");"
 	result, err := getSdkClient(t).StreamsService.CompileDSL(streams.DslCompilationRequest{Dsl: dsl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
@@ -921,8 +944,8 @@ func createPreviewSessionStartRequest(t *testing.T) streams.PreviewSessionStartR
 	result := createTestUplPipeline(t)
 	recordsLimit := int32(100)
 	recordsPerPipeline := int32(2)
-	sessionLifetimeMs := int64(10000)
-	useNewData := false
+	sessionLifetimeMs := int64(300000)
+	useNewData := true
 
 	return streams.PreviewSessionStartRequest{
 		RecordsLimit:       &recordsLimit,
@@ -953,21 +976,21 @@ func cleanupPipeline(client *sdk.Client, id string, name string) {
 }
 
 // Deletes the test preview-session
-func cleanupPreview(t *testing.T, id string) {
+func cleanupPreview(t *testing.T, id int64) {
 	// First check if the preview session exists
 
-	n, err := strconv.ParseInt(id, 10, 64)
-	if err == nil {
-		fmt.Printf("%d of type %T", n, n)
-	}
-
-	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(n)
-	//if err == nil && previewState != nil {
-	//	_, err = getSdkClient(t).StreamsService.DeletePipeline(strconv.FormatInt(id, 10))
-	//	if err != nil {
-	//		fmt.Printf("WARN: error deleting preview session: id:%s, err: %s", id, err)
-	//	}
+	//n, err := strconv.ParseInt(id, 10, 64)
+	//if err == nil {
+	//	fmt.Printf("%d of type %T", n, n)
 	//}
+
+	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(id)
+	if err == nil && previewState != nil {
+		_, err = getSdkClient(t).StreamsService.DeletePipeline(strconv.FormatInt(id, 10))
+		if err != nil {
+			fmt.Printf("WARN: error deleting preview session: id:%v, err: %s", id, err)
+		}
+	}
 	fmt.Println(previewState)
 	fmt.Println(err)
 }

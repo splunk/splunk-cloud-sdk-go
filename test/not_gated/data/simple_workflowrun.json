@@ -1,0 +1,16 @@
+{
+  "name": "test_workflowRun",
+  "workflowBuildId": "RawData",
+  "input": {
+    "kind": "RawData",
+    "source": {
+      "data": "LHNlcGFsX2xlbmd0aCxzZXBhbF93aWR0aCxwZXRhbF9sZW5ndGgscGV0YWxfd2lkdGgsc3BlY2llcw0KMCw1LjEsMy41LDEuNCwwLjIsSXJpcyBTZXRvc2ENCjk5LDUuNywyLjgsNC4xLDEuMyxJcmlzIFZlcnNpY29sb3INCjE0OSw1LjksMy4wLDUuMSwxLjgsSXJpcyBWaXJnaW5pY2E="
+    }
+  },
+  "output": {
+    "kind": "S3",
+    "destination": {
+      "key": "iris.csv"
+    }
+  }
+}
