@@ -1,7 +1,0 @@
-{
-  "query": "| from mlapishowcase.mlapishowcase where host=\"server_power_out_ef5wlcd4njiovmdl\"",
-  "queryParameters": {
-    "earliest": "0",
-    "latest": "now"
-  }
-}

@@ -3,10 +3,8 @@
 echo "==============================================="
 echo "Running examples"
 echo "==============================================="
-env | grep SPLUNK_CLOUD_HOST
-env | grep URL_PROTOCOL
-env | grep TENANT_ID
-
+echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
+echo "TENANT_ID=$TENANT_ID"
 echo "==============================================="
 
 # Get the BEARER_TOKEN setup

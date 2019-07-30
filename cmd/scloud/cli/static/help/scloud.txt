@@ -1,0 +1,149 @@
+Welcome to the Splunk Cloud command-line interface (CLI) tool for working with
+Splunk Cloud services. Use this tool to create and manage platform resources and
+work with your data in Splunk Cloud.
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        [-logtostderr] [-host <hostname>] [-port <port>] [-scheme https|http] 
+        [-insecure false|true] [-ca-cert <file path>]
+        <command> <subcommand> [params]
+
+OPTIONS
+
+    -u <username>
+        Set the user name for authorization. You can save a user name in local 
+        settings for convenience. If this value is required, and is not set, 
+        scloud prompts for it.
+
+    -p <password>
+        Set the password for authorization. The password cannot be saved in
+        local settings. If this value is required, and is not set, scloud 
+        prompts for it.
+
+    -tenant <tenant>
+        Set the tenant to use for operations against platform services. You can
+        save a this tenant name in local settings for convenience. If this value
+        is required, and is not set, scloud prompts for it.
+
+    -no-prompt
+        Do not prompt for option values.
+
+    -logtostderr
+        Display verbose output and debug logging to the console, including the 
+        the raw request and response for each API call.
+
+    -host <hostname>
+        Set a host name to override the public SDC host.
+        
+    -port <port>
+        Set a valid port number. Default port is "443".
+
+    -scheme https|http
+        Set the protocol for the target host. The default will be "https".
+
+    -insecure false|true
+        Specify whether to skip TLS validation. The default is "false" to enable
+        TLS certificate validation.
+
+    -ca-cert <file path>
+        Set the public cert file to use for a local host using HTTPS with TLS
+        certificate validation enabled.
+
+
+COMMANDS
+
+* Authentication
+
+    When you log in, scloud prompts you for credentials, then caches your access
+    token and user name. Your access token expires after one hour. 
+
+    Use the following commands to authenticate:  
+
+        login
+            Authenticate by providing your user name and password when prompted.
+
+        get-context-cache
+            Display your access token.
+
+        delete-context-cache
+            Delete your access token.
+
+
+* Local settings and version
+
+    For convenience, you can store values for a user name and tenant so that you
+    don't have to provide these values for each new scloud session or command.
+    Specify different values at the command line to override these settings. 
+
+    Use the following scloud commands to manage local settings: 
+
+        set username|tenant <value>
+            Assign a value to the local setting for the user name or tenant. 
+
+            Arguments: 
+                username|tenant
+                    The setting.
+
+                <value>
+                    The setting value.
+
+        get username|tenant
+            Display the value of the local setting. 
+
+            Arguments: 
+                username|tenant
+                    The setting.
+
+        delete username|tenant
+            Delete the local setting.
+
+            Arguments: 
+                username|tenant
+                    The setting.
+
+        get-settings
+            Display all local settings.
+
+        delete-settings
+            Delete all local settings.
+
+        version
+            Display the scloud version number.
+
+
+* Commands for Splunk Cloud services
+
+    Perform operations against Splunk Cloud services using the following commands:
+
+        action <subcommand> [params]: 
+            Manage webhook actions.
+
+        appreg <subcommand> [params]
+            Register and manage apps.
+
+        catalog <subcommand> [params]
+            Work with the metadata catalog.
+
+        forwarders <subcommand> [params]
+            Manage forwarder certificates.
+   
+        identity <subcommand> [params]
+            Manage users, tenants, groups, roles, and permissions.
+
+        ingest <subcommand> [params]
+            Send data to a pipeline in Splunk Cloud.
+
+        kvstore <subcommand> [params]
+            Query and manage data stored in the KV Store.
+
+        ml <subcommand> [params]
+            Train, deploy, and manage machine learning models.
+
+        search <subcommand> [params]
+            Search and analyze data in Splunk Cloud.
+   
+        streams <subcommand> [params]
+            Perform CRUD operations on data pipelines.
+
+    For details about subcommands and parameters, enter "scloud <command> help".

@@ -2,7 +2,7 @@
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
 # without a valid written license from Splunk Inc. is PROHIBITED.
 
-.DEFAULT_GOAL:=build_all
+.DEFAULT_GOAL:=build
 
 NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
 
@@ -10,7 +10,7 @@ SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
-setup: prereqs version statik download_config
+setup: prereqs download_config statik version
 
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
@@ -18,18 +18,15 @@ lint: linttest
 	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
 	rm -rf vendor/
 
-linttest:
+linttest: statik version
 	# vendor/ needed for golangci-lint to work at the moment
 	GO111MODULE=on go mod vendor
 	golangci-lint run test/... --disable-all
 	rm -rf vendor/
 
-build_all:
-	make build
+build: statik version
+	GO111MODULE=on go build -v ./...
 	make build_scloud
-
-build:
-	GO111MODULE=on go build ./...
 
 build_scloud: statik version
 	@echo "Building scloud .."
@@ -47,7 +44,7 @@ format_check:
 	test -z $(shell GO111MODULE=on gofmt -l $(NON_VENDOR_GO_FILES))
 	test -z $(shell GO111MODULE=on goimports -l $(NON_VENDOR_GO_FILES))
 
-vet:
+vet: statik version
 	GO111MODULE=on go vet ./...
 
 login: build_scloud
@@ -58,7 +55,7 @@ token:
 
 clean: download_config
 	@rm -rf bin/
-	build_all
+	build
 
 generate_interface:
 	@GO111MODULE=off && go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate
@@ -102,20 +99,20 @@ version:
 # This is a generic target that should invoke all levels of tests, i.e. unit tests, integration tests.
 test: test_unit test_integration
 
-test_unit:
+test_unit: build
 	GO111MODULE=on sh ./cicd/unit_tests/run_unit_tests.sh
 
-test_integration:
+test_integration: build
 	GO111MODULE=on sh ./cicd/integration/runtests.sh
 
-test_integration_scloud: login
+test_integration_scloud: login build
 	export PYTHONPATH=$(PYTHONPATH):.
-	cd test/scloud && sh run.sh
+	SCLOUD_TEST_DIR=$(shell pwd)/test/scloud GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
 
-test_integration_examples:
+test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh
 
-test_ml_integration_tests:
+test_ml_integration_tests: build
 	GO111MODULE=on sh ./cicd/integration/run_ml_tests.sh
 
 prerelease: .FORCE
@@ -134,8 +131,7 @@ publish:
 	make docs_publish
 
 publish_scloud:
-	SIGN_PACKAGES=true ./cicd/scripts/build_cross_compile.sh
+	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
 	./cicd/publish/scloud/publish_github.sh
-	./cicd/publish/scloud/publish_artifactory.sh
 
 .FORCE:

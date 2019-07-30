@@ -12,23 +12,30 @@ import (
 	"testing"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"bufio"
+	"encoding/json"
+
+	"io"
+	"path/filepath"
+	"strconv"
 )
 
-var hostTrain = "server_power_train_ef5wlcd4njiovmdl"
-var hostTest = "server_power_test_ef5wlcd4njiovmdl"
-var hostOut = "server_power_out_ef5wlcd4njiovmdl"
-var module = "mlapishowcase"
+const mlData = "./data/iris.csv"
 
-var workflowName = "PredictServerPowerConsumption"
-var buildSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTrain)
-var runSpl = fmt.Sprintf("| from mlapishowcase.mlapishowcase where host=\"%s\"", hostTest)
+var workflowName = "test_go_workflow"
+var Base64DATA = "LHNlcGFsX2xlbmd0aCxzZXBhbF93aWR0aCxwZXRhbF9sZW5ndGgscGV0YWxfd2lkdGgsc3BlY2llcw0KMCw1LjEsMy41LDEuNCwwLjIsSXJpcyBTZXRvc2ENCjUwLDcuMCwzLjIsNC43LDEuNCxJcmlzIFZlcnNpY29sb3INCjEwMCw2LjMsMy4zLDYuMCwyLjUsSXJpcyBWaXJnaW5pY2ENCg=="
+
+var source = "go-tests"
+var sourceType = "json"
 
 var PkceTokenRetriver = idp.NewPKCERetriever(testutils.PkceClientID, testutils.NativeAppRedirectURI,
 	idp.DefaultOIDCScopes, testutils.Username, testutils.Password, testutils.IdpHost)
@@ -53,6 +60,62 @@ func cleanup() {
 		if strings.HasPrefix(*workflows[i].Name, workflowName) {
 			_ = client.MachineLearningService.DeleteWorkflow(*workflows[i].Id)
 		}
+	}
+}
+
+func TestIngestData(t *testing.T) {
+	// read in iris.csv file and populate data array
+	var data = make([]string, 0)
+	fp, _ := filepath.Abs(mlData)
+	f, err := os.Open(fp)
+	defer f.Close()
+	if err != nil {
+		assert.Error(t, err)
+	}
+	buf := bufio.NewReader(f)
+	for {
+		line, err := buf.ReadString('\n')
+		line = strings.TrimSuffix(line, "\n")
+		data = append(data, line)
+		if len(line) == 0 && err != nil {
+			if err == io.EOF {
+				break
+			}
+			assert.Error(t, err)
+		}
+	}
+	// transform to array of maps {header => column}
+	headers := strings.Split(data[0], ",")
+	rawData := data[1:]
+	var maps = make([]map[string]interface{}, 0)
+	var events = make([]ingest.Event, 0)
+	for _, e := range rawData {
+		cols := strings.Split(e, ",")
+		for i, c := range cols {
+			// parse cols at idx 0-3 to floats
+			if i < 4 {
+				f, err := strconv.ParseFloat(c, 64)
+				maps = append(maps, map[string]interface{}{headers[i]: f})
+				if err != nil {
+					assert.Error(t, err)
+				}
+				// last col at idx 4 is a string
+			} else {
+				maps = append(maps, map[string]interface{}{headers[i]: c})
+			}
+		}
+		payload, err := json.Marshal(maps)
+		if err != nil {
+			assert.Error(t, err)
+		}
+		events = append(events, ingest.Event{Body: string(payload), Sourcetype: &sourceType,
+			Source: &source, Attributes: map[string]interface{}{"index": "main"}})
+	}
+	// send data to ingest API
+	client := getSdkClient(t)
+	_, err = client.IngestService.PostEvents(events)
+	if err != nil {
+		assert.Error(t, err)
 	}
 }
 
@@ -175,40 +238,62 @@ func TestGetWorkflowRun(t *testing.T) {
 
 // Maps to data/01_ml_workflow.json
 func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
-	var taskName = "linearregression"
-	var target = "ac_power"
-	var outputTransformer = "example_server_power"
-	var parameters = map[string]interface{}{
-		"fit_intercept": "true",
-		"normalize":     "false",
+	var taskName1 = "PCA"
+	var target1 = ""
+	var outputTransformer1 = "PCA_model"
+	var parameters1 = map[string]interface{}{
+		"k": "3",
 	}
 
 	kind := ml.FitTaskKindFit
-	var fitTask = ml.FitTask{
+	var fitTask1 = ml.FitTask{
 		Kind:      &kind,
-		Name:      &taskName,
-		Algorithm: "LinearRegression",
+		Name:      &taskName1,
+		Algorithm: "PCA",
 		Fields: ml.Fields{
 			Features: []string{
-				"total-unhalted_core_cycles",
-				"total-instructions_retired",
-				"total-last_level_cache_references",
-				"total-memory_bus_transactions",
-				"total-cpu-utilization",
-				"total-disk-accesses",
-				"total-disk-blocks",
-				"total-disk-utilization"},
-			Target: &target,
+				"petal_length",
+				"petal_width",
+				"sepal_length",
+				"sepal_width"},
+			Target:  &target1,
+			Created: []string{"PC_1", "PC_2", "PC_3"},
 		},
-		OutputTransformer: &outputTransformer,
-		Parameters:        parameters,
+		OutputTransformer: &outputTransformer1,
+		Parameters:        parameters1,
 	}
+	var task1 = ml.MakeTaskFromFitTask(fitTask1)
 
-	var task = ml.MakeTaskFromFitTask(fitTask)
-	name := "PredictServerPowerConsumption"
+	var taskName2 = "RandomForestClassifier"
+	var target2 = "species"
+	var outputTransformer2 = "RFC_model"
+	var parameters2 = map[string]interface{}{
+		"n_estimators":      25,
+		"max_depth":         10,
+		"min_samples_split": 5,
+		"max_features":      "auto",
+		"criterion":         "gini"}
+
+	var fitTask2 = ml.FitTask{
+		Kind:      &kind,
+		Name:      &taskName2,
+		Algorithm: "RandomForestClassifier",
+		Fields: ml.Fields{
+			Features: []string{
+				"petal_length",
+				"petal_width",
+				"sepal_length",
+				"sepal_width"},
+			Target: &target2,
+		},
+		OutputTransformer: &outputTransformer2,
+		Parameters:        parameters2,
+	}
+	var task2 = ml.MakeTaskFromFitTask(fitTask2)
+
 	var workflow = ml.Workflow{
-		Name:  &name,
-		Tasks: []ml.Task{task},
+		Name:  &workflowName,
+		Tasks: []ml.Task{task1, task2},
 	}
 
 	createdWorkFlow, err := client.MachineLearningService.CreateWorkflow(workflow)
@@ -219,18 +304,10 @@ func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 
 // Maps to data/02_ml_build.json
 func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.WorkflowBuild {
-	extract := true
-	queryParams := map[string]interface{}{
-		"earliest": "0",
-		"latest":   "now",
-	}
-
-	var splDataSource = ml.Spl{ExtractAllFields: &extract, Query: buildSpl, QueryParameters: queryParams, Module: &module}
-
 	build := ml.WorkflowBuild{
 		Input: ml.InputData{
-			Kind:   ml.InputDataKindSpl,
-			Source: ml.MakeInputDataSourceFromSpl(splDataSource),
+			Kind:   ml.InputDataKindRawData,
+			Source: ml.MakeInputDataSourceFromRawData(ml.RawData{Data: &Base64DATA}),
 		},
 	}
 	createdWorfklow, err := client.MachineLearningService.CreateWorkflowBuild(*workflowID, build)
@@ -265,31 +342,13 @@ func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.
 }
 
 func newWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workflowBuildID *string) *ml.WorkflowRun {
-	extract := true
-	outputKind := ml.OutputDataKindEvents
-	outputSource := "mlapi-showcase"
+	var outputKind ml.OutputDataKind = "S3"
 
-	queryParams := map[string]interface{}{
-		"earliest": "0",
-		"latest":   "now",
-	}
-
-	var splDataSource = ml.Spl{ExtractAllFields: &extract, Query: runSpl, QueryParameters: queryParams, Module: &module}
-
-	events := ml.Events{
-		Attributes: map[string]interface{}{
-			"index":  "mlapishowcase",
-			"module": "mlapishowcase",
-		},
-		Source: &outputSource,
-		Host:   &hostOut,
-	}
-
-	des := ml.MakeOutputDataDestinationFromEvents(events)
+	des := ml.MakeOutputDataDestinationFromRawInterface(&map[string]interface{}{"key": "iris.csv"})
 	var run = ml.WorkflowRun{
 		Input: ml.InputData{
-			Kind:   ml.InputDataKindSpl,
-			Source: ml.MakeInputDataSourceFromSpl(splDataSource),
+			Kind:   ml.InputDataKindRawData,
+			Source: ml.MakeInputDataSourceFromRawData(ml.RawData{Data: &Base64DATA}),
 		},
 		Output: ml.OutputData{
 			Kind:        &outputKind,

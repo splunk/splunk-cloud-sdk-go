@@ -2410,13 +2410,39 @@ info:
   description: With the Metadata Catalog you can create and manage knowledge objects
     such as datasets, fields, rules, actions, dashboards, and workflows.
   title: Metadata Catalog
-  version: v2beta1.1
+  version: v2beta1.3
 openapi: 3.0.0
 paths:
   /{tenant}/catalog/v2beta1/dashboards:
     get:
       description: Return a list of Dashboards.
       operationId: listDashboards
+      parameters:
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -2493,6 +2519,10 @@ paths:
         required: true
       responses:
         "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
           description: The dashboard was updated.
         "401":
           description: The operation is unauthorized.
@@ -2550,7 +2580,7 @@ paths:
         a filter to return a specific list of datasets.
       operationId: listDatasets
       parameters:
-      - description: A filter to apply to the dataset list. The filter must be a SPL
+      - description: A filter to apply to the results list. The filter must be a SPL
           predicate expression.
         in: query
         name: filter
@@ -2737,14 +2767,31 @@ paths:
       description: Return the set of fields for the specified dataset.
       operationId: listFieldsForDatasetById
       parameters:
-      - description: A filter to apply to a specified dataset. The filter must be
-          a SPL predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -2832,7 +2879,7 @@ paths:
           description: A field with the specified ID was updated.
         "404":
           description: The field with the specified ID was not found.
-  /{tenant}/catalog/v2beta1/datasets/{datasetid}/importedby:
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/imported-by:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2851,6 +2898,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImportDataset'
+          description: The dataset import was created.
+        "400":
+          description: The dataset import is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dataset with the specified ID was not found.
+        "409":
+          description: The dataset cannot be imported because it is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetid}/importedby:
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetID'
+    post:
+      description: Create a new dataset import.
+      operationId: createDatasetImportByIdv1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetImportedBy'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetImportedBy'
           description: The dataset import was created.
         "400":
           description: The dataset import is invalid.
@@ -2990,13 +3065,31 @@ paths:
       description: Return the list of fields that are part of a specified dataset.
       operationId: listFieldsForDataset
       parameters:
-      - description: A filter to apply to the dataset.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3084,7 +3177,7 @@ paths:
           description: A field with the specified ID was updated.
         "404":
           description: The field with the specified ID was not found.
-  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/importedby:
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/imported-by:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3112,18 +3205,64 @@ paths:
           description: The dataset with the specified ID was not found.
         "409":
           description: The dataset cannot be imported because it is already present.
+  /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/importedby:
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DatasetResourceName'
+    post:
+      description: Create a new dataset import.
+      operationId: createDatasetImportv1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetImportedBy'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: The dataset import was created.
+        "400":
+          description: The dataset import is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: The dataset with the specified ID was not found.
+        "409":
+          description: The dataset cannot be imported because it is already present.
   /{tenant}/catalog/v2beta1/fields:
     get:
       description: Get a list of all fields in the Catalog.
       operationId: listFields
       parameters:
-      - description: A filter query to apply to the the field list.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3190,13 +3329,31 @@ paths:
         Use a filter to return a specific list of relationships.
       operationId: listRelationships
       parameters:
-      - description: A filter to apply to the complete set of relationships.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3290,13 +3447,31 @@ paths:
         otherwise return all rules.
       operationId: listRules
       parameters:
-      - description: A query filter to apply to the complete set of rules.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3390,13 +3565,31 @@ paths:
       description: Return the set of actions that are part of a rule.
       operationId: listActionsForRuleById
       parameters:
-      - description: A filter query to apply to the actions.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3541,13 +3734,31 @@ paths:
       description: Return the list of actions that are part of a specified rule.
       operationId: listActionsForRule
       parameters:
-      - description: A filter query to apply to the rule.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3642,13 +3853,31 @@ paths:
       description: Return a list of Machine Learning workflow configurations.
       operationId: listWorkflows
       parameters:
-      - description: A filter to apply to the workflows. Must be a SPL predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3737,14 +3966,31 @@ paths:
       description: Return a list of Machine Learning workflow builds.
       operationId: listWorkflowBuilds
       parameters:
-      - description: A filter to apply to the workflow builds. Must be a SPL predicate
-          expression.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3836,14 +4082,31 @@ paths:
         build ID.
       operationId: listWorkflowRuns
       parameters:
-      - description: A filter to apply to the workflow runs for specified workflow
-          build ID. Must be an SPL predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3936,4 +4199,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 1e014bb9fba73e574e1a17c9b6f858b382810487 path: catalog/openapi.yaml
+# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: catalog/openapi.yaml
