@@ -130,6 +130,13 @@ func pkceFlow(profile map[string]string) (*idp.Context, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Override idp_host from config file with -auth_url or auth_url in local settings
+	authURL := getAuthURL()
+	if authURL != "" {
+		idpHost = authURL
+	}
+
 	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost)
 	return tr.PKCEFlow(clientID, redirectURI, scope, username, password)
 }

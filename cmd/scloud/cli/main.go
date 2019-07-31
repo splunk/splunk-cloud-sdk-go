@@ -55,8 +55,9 @@ var options struct {
 	tenant   string
 	username string
 	password string
-	noPrompt bool // disable prompting for args
-	host     string
+	noPrompt bool   // disable prompting for args
+	authURL  string // scheme://host:port
+	hostURL  string // scheme://host:port
 	port     string
 	insecure string // needs to be a string so we can test if the flag is set
 	scheme   string
@@ -206,22 +207,16 @@ func getTenantName() string {
 	return tenant
 }
 
-// Returns host from passed-in options or local settings.
-// If host is not specified, returns ""
-func getHost() string {
-	return getOptionSettings(options.host, "host")
+// Returns auth url from passed-in options or local settings.
+// If auth_url is not specified, returns ""
+func getAuthURL() string {
+	return getOptionSettings(options.authURL, "auth-url")
 }
 
-// Returns port from passed-in options or local settings.
-// If port is not specified, returns ""
-func getPort() string {
-	return getOptionSettings(options.port, "port")
-}
-
-// Returns scheme from passed-in options or local settings.
-// If scheme is not specified, returns ""
-func getScheme() string {
-	return getOptionSettings(options.scheme, "scheme")
+// Returns host url from passed-in options or local settings.
+// If host_url is not specified, returns ""
+func getHostURL() string {
+	return getOptionSettings(options.hostURL, "host-url")
 }
 
 // Returns scheme from passed-in options or local settings.
@@ -294,11 +289,10 @@ func parseArgs() []string {
 	flag.StringVar(&options.username, "u", "", "user name")
 	flag.StringVar(&options.password, "p", "", "password")
 	flag.StringVar(&options.tenant, "tenant", "", "tenant name")
-	flag.StringVar(&options.host, "host", "", "host name")
-	flag.StringVar(&options.port, "port", "", "port number")
+	flag.StringVar(&options.authURL, "auth-url", "", "auth url")
+	flag.StringVar(&options.hostURL, "host-url", "", "host url")
 	flag.BoolVar(&options.noPrompt, "no-prompt", false, "disable prompting")
 	flag.StringVar(&options.insecure, "insecure", "", "disable tls cert validation")
-	flag.StringVar(&options.scheme, "scheme", "", "https or http")
 	flag.StringVar(&options.certFile, "ca-cert", "", "client certificate file")
 	flag.Parse()
 	return flag.Args()
