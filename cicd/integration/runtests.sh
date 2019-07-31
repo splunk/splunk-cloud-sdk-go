@@ -3,14 +3,14 @@
 echo "==============================================="
 echo "Beginning integration tests"
 echo "==============================================="
-env | grep SPLUNK_CLOUD_HOST
-env | grep TENANT_ID
-
+echo "TEST_USERNAME=$TEST_USERNAME"
+echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
+echo "TENANT_ID=$TENANT_ID"
 echo "==============================================="
 
 # Get the BEARER_TOKEN setup
 CONFIG_FILE="./.token"
-if [ -f $CONFIG_FILE ]; then
+if [[ -f $CONFIG_FILE ]]; then
     echo "Token found in $CONFIG_FILE"
     export BEARER_TOKEN=$(cat $CONFIG_FILE)
 else
@@ -25,21 +25,33 @@ FULL_INTEGRATION_TEST_CODECOV_FILE_NAME=integration_test_codecov.out
 FULL_INTEGRATION_TEST_CODECOV_PATH=$PACKAGE_COVERAGE_PREFIX$FULL_INTEGRATION_TEST_CODECOV_FILE_NAME
 
 # Required to run just the service tests
-if [ "$allow_failures" -eq "1" ]; then
+if [[ "$allow_failures" == "1" ]]; then
     echo "Running integration tests but not gating on failures..."
-    set +e
-    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
-               -covermode=count \
-               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
-               ./test/integration/...
 else
     echo "Running integration tests and gating on failures..."
-    go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
-               -covermode=count \
-               -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
-               ./test/integration/... \
-        || exit 1
 fi
 
-# Upload code cov report
-echo "TODO: CODE COVERAGE IS NOT CURRENTLY SUPPORTED! CODECOV REPORT WILL NOT BE UPLOADED."
+set +e
+go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
+            -covermode=count \
+            -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
+            ./test/integration/...
+result=$?
+
+if [[ -z "${CI_PROJECT_DIR}" ]] ; then
+    CI_PROJECT_DIR="$(pwd)/cicd/integration"
+fi
+
+mkdir -p $CI_PROJECT_DIR/coverage-integration
+mv $FULL_INTEGRATION_TEST_CODECOV_PATH $CI_PROJECT_DIR/coverage-integration/coverage.out
+
+if [[ "$result" -gt "0" ]]; then
+    echo "Tests FAILED"
+    if [[ "$allow_failures" == "1" ]]; then
+        echo "... but not gating, exiting with status 0"
+        exit 0
+    else
+        echo "... gating on failure, exiting with status 1"
+        exit 1
+    fi
+fi
