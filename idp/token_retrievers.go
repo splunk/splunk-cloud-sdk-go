@@ -41,7 +41,8 @@ func (tr *NoOpTokenRetriever) GetTokenContext() (*Context, error) {
 	return tr.Context, nil
 }
 
-func makeClientWithAuthz(idpHost string) *Client {
+// makeClient creates an *idp.Client
+func makeClient(idpHost string, insecure bool) *Client {
 	if idpHost == "" {
 		idpHost = SplunkCloudIdpHost
 	}
@@ -49,7 +50,8 @@ func makeClientWithAuthz(idpHost string) *Client {
 		idpHost,
 		defaultAuthnPath,
 		defaultAuthorizePath,
-		defaultTokenPath)
+		defaultTokenPath,
+		insecure)
 }
 
 // RefreshTokenRetriever retries a request after getting a new access token from the identity provider using a RefreshToken
@@ -68,7 +70,7 @@ type RefreshTokenRetriever struct {
 //     - if "" is specified then SplunkCloudIdpURL will be used.
 func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string, idpHost string) *RefreshTokenRetriever {
 	return &RefreshTokenRetriever{
-		Client:       makeClientWithAuthz(idpHost),
+		Client:       makeClient(idpHost, false),
 		ClientID:     clientID,
 		Scope:        scope,
 		RefreshToken: util.NewCredential(refreshToken),
@@ -100,7 +102,7 @@ type ClientCredentialsRetriever struct {
 //     - if "" is specified then SplunkCloudIdpURL will be used.
 func NewClientCredentialsRetriever(clientID string, clientSecret string, scope string, idpHost string) *ClientCredentialsRetriever {
 	return &ClientCredentialsRetriever{
-		Client:       makeClientWithAuthz(idpHost),
+		Client:       makeClient(idpHost, false),
 		ClientID:     clientID,
 		ClientSecret: util.NewCredential(clientSecret),
 		Scope:        scope,
@@ -136,7 +138,7 @@ type PKCERetriever struct {
 //     - if "" is specified then SplunkCloudIdpURL will be used.
 func NewPKCERetriever(clientID string, redirectURI string, scope string, username string, password string, idpHost string) *PKCERetriever {
 	return &PKCERetriever{
-		Client:      makeClientWithAuthz(idpHost),
+		Client:      makeClient(idpHost, false),
 		ClientID:    clientID,
 		RedirectURI: redirectURI,
 		Scope:       scope,

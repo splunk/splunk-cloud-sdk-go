@@ -138,6 +138,9 @@ func pkceFlow(profile map[string]string) (*idp.Context, error) {
 	}
 
 	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost)
+
+	// Allow on-prem to use insecure to bypass TLS Verification
+	tr.Insecure = isInsecure()
 	return tr.PKCEFlow(clientID, redirectURI, scope, username, password)
 }
 
