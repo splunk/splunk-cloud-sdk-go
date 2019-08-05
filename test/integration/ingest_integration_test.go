@@ -17,6 +17,9 @@
 package integration
 
 import (
+	"net/http"
+	"os"
+	"path"
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
@@ -163,4 +166,18 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 
 	_, err1 := client.IngestService.PostMetrics([]ingest.MetricEvent{metricEvent1, metricEvent1})
 	assert.Empty(t, err1)
+}
+
+func TestIntegrationUploadFile(t *testing.T) {
+	client := getClient(t)
+
+	dir, err := os.Getwd()
+	require.Nil(t, err)
+
+	var resp http.Response
+	filename := path.Join(dir, "ingest_integration_test.go")
+
+	err = client.IngestService.UploadFiles(filename, &resp)
+	require.Nil(t, err)
+	require.Equal(t, 201, resp.StatusCode)
 }

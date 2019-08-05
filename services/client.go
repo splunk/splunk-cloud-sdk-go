@@ -26,9 +26,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"sync"
 	"text/template"
@@ -158,6 +162,8 @@ type RequestParams struct {
 	Body interface{}
 	// Headers are additional headers to add to the request
 	Headers map[string]string
+	// Is request for uploading file
+	IsUpload bool
 }
 
 // BaseService provides the interface between client and services
@@ -331,7 +337,38 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 		c.UpdateTokenContext(ctx)
 		c.tokenMux.Unlock()
 	}
-	if requestParams.Body != nil {
+
+	if requestParams.IsUpload {
+		if forms, ok := requestParams.Body.(map[string]string); ok {
+			fieldname := forms["fieldname"]
+			filename := forms[fieldname]
+			file, err := os.Open(filename)
+
+			if err != nil {
+				return nil, err
+			}
+
+			defer file.Close()
+
+			body := &bytes.Buffer{}
+			writer := multipart.NewWriter(body)
+			part, err := writer.CreateFormFile(fieldname, filepath.Base(filename))
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			io.Copy(part, file)
+			writer.Close()
+
+			request, err = c.NewRequest(requestParams.Method, requestParams.URL.String(), body, requestParams.Headers)
+			if err != nil {
+				return nil, err
+			}
+
+			request.Header.Set("Content-Type", writer.FormDataContentType())
+		}
+	} else if requestParams.Body != nil {
 		var buffer *bytes.Buffer
 
 		if contentBytes, ok := requestParams.Body.([]byte); ok {
@@ -361,6 +398,7 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 			return nil, err
 		}
 	}
+
 	response, err := c.Do(request)
 	if err != nil {
 		return nil, err
