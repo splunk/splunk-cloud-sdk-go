@@ -358,7 +358,11 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 				log.Fatal(err)
 			}
 
-			io.Copy(part, file)
+			_, err = io.Copy(part, file)
+			if err != nil {
+				return nil, err
+			}
+
 			writer.Close()
 
 			request, err = c.NewRequest(requestParams.Method, requestParams.URL.String(), body, requestParams.Headers)

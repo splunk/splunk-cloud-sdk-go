@@ -84,7 +84,7 @@ func (s *Service) UploadFiles(upfile string, resp ...*http.Response) error {
 	if len(resp) > 0 && resp[0] != nil {
 		*resp[0] = *response
 	}
-	
+
 	if err != nil {
 		return err
 	}
