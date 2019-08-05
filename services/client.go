@@ -41,6 +41,7 @@ import (
 //go:generate go run ../util/gen_interface.go -svc=action -p=action -sf=service_generated.go -sf=service_sdk.go
 //go:generate go run ../util/gen_interface.go -svc=appregistry -p=appregistry -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=catalog -p=catalog -sf=service_generated.go
+//go:generate go run ../util/gen_interface.go -svc=collect -p=collect -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=forwarders -p=forwarders -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=identity -p=identity -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=ingest -p=ingest -sf=service.go -sf=service_generated.go
