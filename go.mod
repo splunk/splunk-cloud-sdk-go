@@ -1,4 +1,5 @@
 module github.com/splunk/splunk-cloud-sdk-go
+
 require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/mitchellh/go-homedir v1.1.0
