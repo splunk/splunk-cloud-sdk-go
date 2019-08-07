@@ -30,7 +30,7 @@ SUBCOMMANDS
     get-spec-yaml
         Display the OpenAPI spec for the Search service in YAML format.
 
-    list-results <job-id> [-count <integer>] [-offset <integer>][-fields <string>]
+    list-results <job-id> [-count <integer>] [-offset <integer>] [-fields <string>]
         Display the results computed by the specified search job.
 
         Arguments:
@@ -46,15 +46,14 @@ SUBCOMMANDS
             -field <string>
                 Fields to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
 
-    list-jobs
-        List search jobs, specify status to filter based on status of the search job
-        such as canceled, done, failed, running.
+    list-jobs [-status running|done|canceled|failed] [-count <integer>]
+        List search jobs.
 
         Arguments:
-            -status <job status>
-                Job status.
-            -count <count>
-                Number of jobs to return.
+            -status canceled|done|failed|running
+                The job status to filter on.
+            -count <integer>
+                The maximum number of jobs to return.
 
     wait <job-id>
         Wait for the specified search job to reach a terminal state, which is 
@@ -64,11 +63,10 @@ SUBCOMMANDS
             <job-id>
                 The search job ID.
 
-    <searchquery> [-earliest <time>] [-latest <time>] [-wait true|false] 
+    <searchquery> -earliest <time> -latest <time> [-wait true|false] 
     [-sync true|false]
-        Creates a new search job using the specified search query and must specify the earliest and latest time for the query.
-        Any argument that does not match the previous list of commands is 
-        interpreted as a literal search string.
+        Creates a new search job using the specified search query.
+        Any argument that does not match a CLI command is interpreted as a literal search string.
 
         Arguments:
             <searchquery>

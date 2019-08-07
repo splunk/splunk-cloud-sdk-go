@@ -46,7 +46,7 @@ SUBCOMMANDS
                 The maximum number of times per event to attempt to match fields 
                 with the regular expression. 
 
-    create-dataset <dataset-name> lookup|kvcollection||metric|index [-owner <user-id>]
+    create-dataset <dataset-name> lookup|kvcollection|metric|index [-owner <user-id>]
     [-module <module-name>] [-read-roles <role-name>] [-write-roles <role-name>] 
     [-case-sensitive-match true|false] [-external-kind <lookup-type>] 
     [-external-name <lookup-name>] [-filter true|false] [-max-matches true|false] 
