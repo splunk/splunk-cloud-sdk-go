@@ -17,6 +17,7 @@
 package integration
 
 import (
+	"bufio"
 	"net/http"
 	"os"
 	"path"
@@ -178,6 +179,25 @@ func TestIntegrationUploadFile(t *testing.T) {
 	filename := path.Join(dir, "ingest_integration_test.go")
 
 	err = client.IngestService.UploadFiles(filename, &resp)
+	require.Nil(t, err)
+	require.Equal(t, 201, resp.StatusCode)
+}
+
+func TestIntegrationUploadFileStream(t *testing.T) {
+	client := getClient(t)
+
+	dir, err := os.Getwd()
+	require.Nil(t, err)
+
+	filename := path.Join(dir, "ingest_integration_test.go")
+	file, err := os.Open(filename)
+	require.Nil(t, err)
+	defer file.Close()
+
+	var resp http.Response
+	stream := bufio.NewReader(file)
+
+	err = client.IngestService.UploadStream(stream, &resp)
 	require.Nil(t, err)
 	require.Equal(t, 201, resp.StatusCode)
 }
