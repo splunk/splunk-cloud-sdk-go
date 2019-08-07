@@ -1,0 +1,978 @@
+components:
+  schemas:
+    connector:
+      properties:
+        description:
+          description: The description of the connector.
+          readOnly: true
+          title: description
+          type: string
+        id:
+          description: The docker image of the container without tags.
+          readOnly: true
+          title: id
+          type: string
+        name:
+          description: The connector name.
+          readOnly: true
+          title: name
+          type: string
+        panelUrl:
+          description: The JS URL of LSDC and connector panel.
+          readOnly: true
+          title: panelUrl
+          type: string
+        pipelinesFunctionName:
+          description: The unique simplified name of the connector.
+          readOnly: true
+          title: pipelinesFunctionName
+          type: string
+        tag:
+          description: The tag of the connector.
+          readOnly: true
+          title: tag
+          type: string
+      title: Connector
+      type: object
+    error:
+      properties:
+        code:
+          title: code
+          type: string
+        details:
+          description: The optional details of the error.
+          title: details
+          type: object
+        message:
+          title: message
+          type: string
+        moreInfo:
+          description: An optional link to a web page with more information on the
+            error.
+          title: moreInfo
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    job:
+      allOf:
+      - properties:
+          connectorID:
+            description: The ID of the connector used in the job.
+            title: connectorID
+            type: string
+          createUserID:
+            nullable: true
+            readOnly: true
+            title: createUserID
+            type: string
+            x-omitempty: false
+          createdAt:
+            format: date-time
+            readOnly: true
+            type: string
+          id:
+            readOnly: true
+            title: id
+            type: string
+          lastModifiedAt:
+            format: date-time
+            readOnly: true
+            type: string
+          lastUpdateUserID:
+            nullable: true
+            readOnly: true
+            title: lastUpdateUserID
+            type: string
+            x-omitempty: false
+          name:
+            maxLength: 80
+            minLength: 3
+            pattern: ^[a-zA-Z][\w-\.]*$
+            title: name
+            type: string
+          parameters:
+            description: The configuration of the connector used in the job.
+            title: parameters
+            type: object
+          scalePolicy:
+            properties:
+              static:
+                properties:
+                  workers:
+                    description: The number of collect workers.
+                    format: int32
+                    title: workers
+                    type: integer
+                required:
+                - workers
+                title: staticScale
+                type: object
+            required:
+            - static
+            title: scalePolicy
+            type: object
+          schedule:
+            description: The cron schedule, in UTC time format.
+            title: schedule
+            type: string
+        required:
+        - name
+        - connectorID
+        - schedule
+        - parameters
+        - scalePolicy
+        title: job
+        type: object
+      - properties:
+          eventExtraFields:
+            items:
+              properties:
+                name:
+                  description: Field name
+                  minLength: 1
+                  pattern: ^([a-zA-Z][\w-]*\.)*[a-zA-Z][\w-]*$
+                  title: name
+                  type: string
+                value:
+                  description: Field value
+                  minLength: 1
+                  title: value
+                  type: string
+              required:
+              - name
+              - value
+              title: eventExtraField
+              type: object
+            title: eventExtraFields
+            type: array
+          scheduled:
+            default: true
+            description: Defines whether a job is scheduled or not
+            title: scheduled
+            type: boolean
+          tenant:
+            readOnly: true
+            title: tenant
+            type: string
+        type: object
+    jobPatch:
+      allOf:
+      - properties:
+          connectorID:
+            description: The ID of the connector used in the job.
+            nullable: true
+            title: connectorID
+            type: string
+          name:
+            description: The job name
+            maxLength: 80
+            minLength: 3
+            nullable: true
+            pattern: ^[a-zA-Z][\w-\.]*$
+            title: name
+            type: string
+          parameters:
+            description: The configuration of the connector used in the job.
+            title: parameters
+            type: object
+          scalePolicy:
+            properties:
+              static:
+                properties:
+                  workers:
+                    description: The number of collect workers.
+                    format: int32
+                    title: workers
+                    type: integer
+                required:
+                - workers
+                title: staticScale
+                type: object
+            required:
+            - static
+            title: scalePolicy
+            type: object
+          schedule:
+            description: The cron schedule, in UTC time format.
+            nullable: true
+            title: schedule
+            type: string
+        title: jobPatch
+        type: object
+      - properties:
+          eventExtraFields:
+            items:
+              properties:
+                name:
+                  description: Field name
+                  minLength: 1
+                  pattern: ^([a-zA-Z][\w-]*\.)*[a-zA-Z][\w-]*$
+                  title: name
+                  type: string
+                value:
+                  description: Field value
+                  minLength: 1
+                  title: value
+                  type: string
+              required:
+              - name
+              - value
+              title: eventExtraField
+              type: object
+            title: eventExtraFields
+            type: array
+          scheduled:
+            description: Defines wheather a job is scheduled or not
+            nullable: true
+            title: scheduled
+            type: boolean
+        type: object
+    jobsPatch:
+      properties:
+        connectorID:
+          description: The ID of the connector used in the job.
+          nullable: true
+          title: connectorID
+          type: string
+        eventExtraFields:
+          items:
+            properties:
+              name:
+                description: Field name
+                minLength: 1
+                pattern: ^([a-zA-Z][\w-]*\.)*[a-zA-Z][\w-]*$
+                title: name
+                type: string
+              value:
+                description: Field value
+                minLength: 1
+                title: value
+                type: string
+            required:
+            - name
+            - value
+            title: eventExtraField
+            type: object
+          title: eventExtraFields
+          type: array
+        scalePolicy:
+          properties:
+            static:
+              properties:
+                workers:
+                  description: The number of collect workers.
+                  format: int32
+                  title: workers
+                  type: integer
+              required:
+              - workers
+              title: staticScale
+              type: object
+          required:
+          - static
+          title: scalePolicy
+          type: object
+      title: jobsPatch
+      type: object
+info:
+  description: With the Splunk Cloud Collect service, you can manage how data collection
+    jobs ingest event and metric data.
+  title: Collect Service
+  version: v1beta1.5
+openapi: 3.0.0
+paths:
+  /{tenant}/collect/v1beta1/jobs:
+    delete:
+      operationId: deleteJobs
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                description: number of jobs deleted.
+                properties:
+                  count:
+                    title: count
+                    type: integer
+                required:
+                - count
+                title: deleteJobsResponse
+                type: object
+          description: Number of jobs deleted.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Removes all jobs on a tenant.
+      x-authz-scope: collect.jobs.delete
+    get:
+      operationId: listJobs
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      - description: |
+          Specifies the connector ID used to filter jobs. A tailing wildcard is supported for the connector ID tag. If no wildcard is used then an exact match is used.
+          Examples:
+          * `my-connector:v1.0.0` selects `my-connector` connector with an exact match with tag "v1.0.0"
+          * `my-connector` selects `my-connector` connector with an exact match. Note as no tag is specified it actually refers to "latest".
+          * `my-connector:v1.*` selects all `my-connector` connectors with tags starting with "v1.", e.g. "v1.0", "v1.1.1", "v1.2-alpha", etc.
+          * `my-connector:*` selects all `my-connector` connectors with any tag.
+        in: query
+        name: connectorID
+        schema:
+          pattern: ^(?:[a-zA-Z0-9][a-zA-Z0-9._\-]+(:\d+/)?)[a-zA-Z0-9._\-/]*(:[a-zA-Z0-9_.-]*\*?)?$
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                description: List of jobs.
+                properties:
+                  data:
+                    items:
+                      $ref: '#/components/schemas/job'
+                    title: data
+                    type: array
+                title: listJobsResponse
+                type: object
+          description: Returns a list of jobs.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Returns a list of all jobs that belong to a tenant.
+      x-authz-scope: collect.jobs.read
+    patch:
+      description: This is a non-atomic operation and the results are returned as
+        a list with each job patch result as its element. This API returns `200 OK`
+        regardless of how many jobs were successfully patched. You must read the response
+        body to find out if all jobs are patched. When the API is called, the `jobIDs`
+        or `connectorID` must be specified. Do not specify more than one of them at
+        the same time. This API returns `403` if the number of collect workers is
+        over a certain limit.
+      operationId: patchJobs
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      - description: The job ID list.
+        in: query
+        name: jobIDs
+        schema:
+          items:
+            type: string
+          type: array
+      - description: |
+          Specifies the connector ID used to filter jobs. A tailing wildcard is supported for the connector ID tag. If no wildcard is used then an exact match is used.
+          Examples:
+          * `my-connector:v1.0.0` selects `my-connector` connector with an exact match with tag "v1.0.0"
+          * `my-connector` selects `my-connector` connector with an exact match. Note as no tag is specified it actually refers to "latest".
+          * `my-connector:v1.*` selects all `my-connector` connectors with tags starting with "v1.", e.g. "v1.0", "v1.1.1", "v1.2-alpha", etc.
+          * `my-connector:*` selects all `my-connector` connectors with any tag.
+        in: query
+        name: connectorID
+        schema:
+          pattern: ^(?:[a-zA-Z0-9][a-zA-Z0-9._\-]+(:\d+/)?)[a-zA-Z0-9._\-/]*(:[a-zA-Z0-9_.-]*\*?)?$
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/jobsPatch'
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/jobsPatch'
+        description: The API request schema for patching jobs.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    items:
+                      properties:
+                        error:
+                          $ref: '#/components/schemas/error'
+                        id:
+                          description: The Job ID.
+                          title: id
+                          type: string
+                        updated:
+                          description: Successfully updated or not.
+                          title: updated
+                          type: boolean
+                      required:
+                      - id
+                      - updated
+                      title: patchJobResult
+                      type: object
+                    type: array
+                  metadata:
+                    description: The metadata for the patch jobs operation.
+                    properties:
+                      failures:
+                        description: The number of jobs that failed to update.
+                        format: int64
+                        title: failures
+                        type: integer
+                      totalMatchJobs:
+                        description: The number of jobs which match the query criteria.
+                        format: int64
+                        title: totalMatchJobs
+                        type: integer
+                    required:
+                    - totalMatchJobs
+                    - failures
+                    title: metadata
+                    type: object
+                required:
+                - metadata
+                - data
+                title: patchJobsResponse
+                type: object
+          description: Returns a list of batch job results.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: 'The request was invalid because: * `jobIDs` nor `connectorID`
+            were specified * `jobIDs` and `connectorID` were specified at the same
+            time * any ID in `jobIDs` was an invalid UUID * `connectorID` was not
+            a valid connector ID * the JSON object in request body is invalid'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The resource wasn't found.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The provided fields aren't valid.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Finds all jobs that match the query and modifies the with the changes
+        specified in the request.
+      x-authz-scope: collect.jobs.update
+    post:
+      description: This API returns `403` if the number of collect workers is over
+        a certain limit.
+      operationId: createJob
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/job'
+        description: The API request schema for the job.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/job'
+                required:
+                - data
+                title: singleJobResponse
+                type: object
+          description: Returns a single job.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The request isn't valid.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The resource wasn't found.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The provided fields aren't valid.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Creates a job
+      x-authz-scope: collect.jobs.create
+  /{tenant}/collect/v1beta1/jobs/{jobId}:
+    delete:
+      operationId: deleteJob
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      - description: The job ID.
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: The job was removed successfully.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The resource wasn't found.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The media type isn't supported.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Removes a job based on the job ID.
+      x-authz-scope: collect.jobs.delete
+    get:
+      operationId: getJob
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      - description: The job ID.
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/job'
+                required:
+                - data
+                title: singleJobResponse
+                type: object
+          description: Returns a single job.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The resource wasn't found.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Returns a job based on the job ID.
+      x-authz-scope: collect.jobs.read
+    patch:
+      description: This API returns `403` if the number of collect workers is over
+        a certain limit.
+      operationId: patchJob
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - description: The tenant.
+        in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*'
+          type: string
+      - description: The job ID.
+        in: path
+        name: jobId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/jobPatch'
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/jobPatch'
+        description: The API request schema for patching a job.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/job'
+                required:
+                - data
+                title: singleJobResponse
+                type: object
+          description: Returns a single job.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: 'The request was invalid because: * the JSON object in request
+            body is invalid'
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The user isn't authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The operation isn't authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The resource wasn't found.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The media type isn't supported.
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The client sent too many requests.
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server cannot handle the request.
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: The server times out.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+          description: An internal service error occurred.
+      summary: Modifies a job based on the job ID.
+      x-authz-scope: collect.jobs.update
+
+# Retrieved from scp-openapi commit b3828dc2e7ca8bea008c4f5c8265fa50a8b7c267 path: collect/openapi.yaml

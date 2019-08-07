@@ -19,6 +19,7 @@ package idp
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -138,11 +139,12 @@ type Client struct {
 	AuthnPath     string
 	AuthorizePath string
 	TokenPath     string
+	Insecure      bool
 }
 
 // NewClient Returns a new IdP client object.
 //   providerURL: should be of the form https://example.com or optionally https://example.com:port
-func NewClient(providerURL string, authnPath string, authorizePath string, tokenPath string) *Client {
+func NewClient(providerURL string, authnPath string, authorizePath string, tokenPath string, insecure bool) *Client {
 	// Add a trailing slash if none
 	if providerURL[len(providerURL)-1:] != "/" {
 		providerURL = providerURL + "/"
@@ -161,12 +163,14 @@ func NewClient(providerURL string, authnPath string, authorizePath string, token
 		AuthnPath:     authnPath,
 		AuthorizePath: authorizePath,
 		TokenPath:     tokenPath,
+		Insecure:      insecure,
 	}
 }
 
 // Returns a new HTTP client object with redirects disabled.
-func newHTTPClient() *http.Client {
+func newHTTPClient(insecure bool) *http.Client {
 	return &http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: insecure}},
 		CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
 			return http.ErrUseLastResponse
 		}}
@@ -204,12 +208,12 @@ func newFormPost(reqURL string, data url.Values) (*http.Request, error) {
 	return request, nil
 }
 
-func get(reqURL string, params url.Values) (*http.Response, error) {
+func get(reqURL string, params url.Values, insecure bool) (*http.Response, error) {
 	request, err := newGet(reqURL, params)
 	if err != nil {
 		return nil, err
 	}
-	return newHTTPClient().Do(request)
+	return newHTTPClient(insecure).Do(request)
 }
 
 // Encode the given value and return its reader.
@@ -235,20 +239,20 @@ func newPost(reqURL string, body interface{}) (*http.Request, error) {
 	return request, nil
 }
 
-func post(reqURL string, body interface{}) (*http.Response, error) {
+func post(reqURL string, body interface{}, insecure bool) (*http.Response, error) {
 	request, err := newPost(reqURL, body)
 	if err != nil {
 		return nil, err
 	}
-	return newHTTPClient().Do(request)
+	return newHTTPClient(insecure).Do(request)
 }
 
-func formPost(reqURL string, data url.Values) (*http.Response, error) {
+func formPost(reqURL string, data url.Values, insecure bool) (*http.Response, error) {
 	request, err := newFormPost(reqURL, data)
 	if err != nil {
 		return nil, err
 	}
-	return newHTTPClient().Do(request)
+	return newHTTPClient(insecure).Do(request)
 }
 
 // Returns a synthetic state value.
@@ -272,7 +276,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 		return nil, errors.Wrap(err, "failed to create request to token endpoint")
 	}
 	request.SetBasicAuth(clientID, clientSecret)
-	response, err := newHTTPClient().Do(request)
+	response, err := newHTTPClient(c.Insecure).Do(request)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get response from token endpoint")
 	}
@@ -298,7 +302,7 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 		"username": username,
 		"password": password}
 
-	response, err := post(c.makeURL(c.AuthnPath), body)
+	response, err := post(c.makeURL(c.AuthnPath), body, c.Insecure)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get valid response from authn endpoint")
 	}
@@ -374,7 +378,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"scope":                 {scope},
 		"session_token":         {sessionToken},
 		"state":                 {state()}}
-	response, err := get(c.makeURL(c.AuthorizePath), params)
+	response, err := get(c.makeURL(c.AuthorizePath), params, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from authorize endpoint")
 	}
@@ -401,7 +405,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"code_verifier": {cv},
 		"grant_type":    {"authorization_code"},
 		"redirect_uri":  {redirectURI}}
-	response, err = formPost(c.makeURL(c.TokenPath), form)
+	response, err = formPost(c.makeURL(c.TokenPath), form, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}
@@ -428,7 +432,7 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
-	response, err := formPost(c.makeURL(c.TokenPath), form)
+	response, err := formPost(c.makeURL(c.TokenPath), form, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}
