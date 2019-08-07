@@ -31,13 +31,16 @@ OPTIONS
 
     -logtostderr
         Display verbose output and debug logging to the console, including the 
-        the raw request and response for each API call.
+        raw request and response for each API call.
 
-    -auth-url <auth endpoint>
-            Set a auth url to override the public SDC auth url. (https://<host>:<port>)
+    -host <hostname>
+        Set a host name to override the public SDC host.
+        
+    -port <port>
+        Set a valid port number. Default port is "443".
 
-    -host-url <host endpoint>
-        Set a host url to override the public SDC host. (https://<host>:<port>)
+    -scheme https|http
+        Set the protocol for the target host. The default will be "https".
 
     -insecure false|true
         Specify whether to skip TLS validation. The default is "false" to enable

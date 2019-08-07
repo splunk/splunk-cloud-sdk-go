@@ -17,11 +17,11 @@ SUBCOMMANDS
             <pipeline-ids>
                 One or more pipeline IDs, separated by commas.
             -skip-restorestate true|false
-                Skip restoring the state of an activated pipeline
+                Skip restoring the state of an activated pipeline.
             -activate-latest-version true|false
-                Activate latest version of the pipeline
+                Activate the latest version of the pipeline.
             -allow-non-restored-state true|false
-                Allow non restored state of the pipeline
+                Allow a nonrestored state of the pipeline.
 
     compile-dsl (-dsl <dsl-text> | -dsl-file <dsl-file>)
         Compile domain-specific language (DSL) text and return the streams
@@ -34,15 +34,15 @@ SUBCOMMANDS
             -dsl-file <dsl-file>
                 A path to the file containing DSL text.
 
-    create-expanded-group -groupId <group-id> -group-function-id <group-function-id>
+    create-expanded-group -group-id <group-id> -group-function-id <group-function-id>
     (-arguments <args>) | (-arguments-file <filepath>)
         Create and return the expanded version of a group.
 
         Arguments:
             -group-id <group-id>
-                The group function's ID from the function registry.
+                The group ID from the function registry.
             -group-function-id <group-function-id>
-                The group function's ID from the function registry.
+                The group function ID from the function registry.
             -arguments <args>
                 Function arguments for the given ID.
             -arguments-file <filepath>
@@ -89,14 +89,15 @@ SUBCOMMANDS
                 A path to the file containing the Streams JSON representation of
                 the pipeline.
 
-    deactivate-pipelines <pipeline-ids> -skip-savepoint <skip-savepoint>
+    deactivate-pipelines <pipeline-ids> [-skip-savepoint true|false]
         Deactivate one or more pipelines.
 
         Arguments:
             <pipeline-ids>
                 One or more pipeline IDs, separated by commas.
             -skip-savepoint true|false
-                Skip saving the state of a deactivated pipeline
+                Indicates whether to skip saving the state of a deactivated pipeline. 
+                The default is false.
 
 
     delete-pipeline <pipeline-id>
@@ -119,31 +120,6 @@ SUBCOMMANDS
         Arguments:
             <template-id>
                 The ID for the template
-
-    list-connections -connector-id <connector-id> -function-id <function-id> -create-user-id <create-user-id>
-                    -name <name> -offset <offset> -page-size <page-size> -sort-field <sort-field> -sort-dir <sort-dir>
-                    -show-secret-name <show-secret-name>
-        Get the connections for a specific connector by ID and by applying other optional params to filter by.
-
-        Arguments:
-            -connector-id<connector-id>
-                The connector ID.
-            -function-id <function-id>
-                The function ID.
-            -create-user-id <create-user-id>
-                Create user ID
-            -name <name>
-                Name
-            -offset <offset>
-                Offset
-            -page-size <page-size>
-                Page size
-            -sort-field <sort-field>
-                Sort field
-            -sort-dir <sort-dir>
-                Sort dir
-            -show-secret-name <show-secret-name>
-                Show secret name
 
     get-connectors
         Get all available connectors.
@@ -201,7 +177,7 @@ SUBCOMMANDS
                The pipeline ID.
 
     get-pipeline-status [-offset <integer>] [-page-size <integer>]
-    [-sort-field <field-name>] [-sort-dir <sort-dir>] [-activated true|false]
+    [-sort-field <field-name>] [-sort-dir asc|desc] [-activated true|false]
     [-create-user-id <user-id>] [-name <pipeline-name>]
         Display the status of a pipeline.
 
@@ -215,7 +191,7 @@ SUBCOMMANDS
             -sort-field <field-name>
                 The field to sort by.
 
-            -sort-dir <sort-dir>
+            -sort-dir asc|desc
                 The sort direction.
 
             -activated true|false
@@ -255,17 +231,52 @@ SUBCOMMANDS
         Display the OpenAPI spec for the Streams service in YAML format.
 
     get-template <template-id> -version <version>
-        Get a template based on the template ID.
+        Get a template based on the template ID and version.
 
         Arguments:
             <template-id>
                 The template ID.
+                
             -version <version>
-                Version of the template.
+                The template version.
+
+    list-connections -connector-id <connector-id> [-function-id <function-id>] [-create-user-id <create-user-id>] 
+    [-name <string>] [-offset <integer>] [-page-size <integer>] [-sort-field <field-name>] [-sort-dir asc|desc>] 
+    [-show-secret-name <show-secret-name>]
+        List the connections for a specific connector by ID, filtered by optional parameters.
+
+        Arguments:
+            -connector-id <connector-id>
+                The connector ID.
+                
+            -function-id <function-id>
+                The function ID.
+                
+            -create-user-id <create-user-id>
+                The create user ID.
+                
+            -name <string>
+                The name to filter by.
+                
+            -offset <integer>
+                The maximum number of items to return.
+                
+            -page-size <integer>
+                The page size.
+
+            -sort-field <field-name>
+                The field to sort by.
+
+            -sort-dir asc|desc
+                The sort direction.
+                
+            -show-secret-name <string>
+                The secret name to filter by.
+
 
     list-templates [-offset <integer>] [-page-size <integer>]
-    [-sort-field <field-name>] [-sort-dir <sort-dir>]
-        Get a list of all templates.
+    [-sort-field <field-name>] [-sort-dir asc|desc]
+        List all templates.
 
          Arguments:
             -offset <integer>
@@ -277,7 +288,7 @@ SUBCOMMANDS
             -sort-field <field-name>
                 The field to sort by.
 
-            -sort-dir <sort-dir>
+            -sort-dir asc|desc
                 The sort direction.
 
     list-latest-pipeline-metrics <pipeline-id>
@@ -295,7 +306,7 @@ SUBCOMMANDS
                 The ID for the preview session.
 
     list-pipelines [-offset <integer>] [-page-size <integer>]
-    [-sort-field <field-name>] [-sort-dir <sort-dir>] [-activated true|false]
+    [-sort-field <field-name>] [-sort-dir asc|desc] [-activated true|false]
     [-create-user-id <user-id>] [-name <pipeline-name>] [-include-data true|false]
         Search for pipelines by specifying various criteria.
 
@@ -309,7 +320,7 @@ SUBCOMMANDS
             -sort-field <field-name>
                 The field to sort by.
 
-            -sort-dir <sort-dir>
+            -sort-dir asc|desc
                 The sort direction.
 
             -activated true|false
