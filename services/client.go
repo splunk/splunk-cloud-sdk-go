@@ -26,7 +26,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -163,7 +162,7 @@ type RequestParams struct {
 	// Headers are additional headers to add to the request
 	Headers map[string]string
 	// Is request for uploading file
-	IsUpload bool
+	IsFormData bool
 }
 
 // BaseService provides the interface between client and services
@@ -338,40 +337,12 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 		c.tokenMux.Unlock()
 	}
 
-	if requestParams.IsUpload {
-		if forms, ok := requestParams.Body.(map[string]string); ok {
-			fieldname := forms["fieldname"]
-			filename := forms[fieldname]
-			file, err := os.Open(filename)
-
-			if err != nil {
-				return nil, err
-			}
-
-			defer file.Close()
-
-			body := &bytes.Buffer{}
-			writer := multipart.NewWriter(body)
-			part, err := writer.CreateFormFile(fieldname, filepath.Base(filename))
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			_, err = io.Copy(part, file)
-			if err != nil {
-				return nil, err
-			}
-
-			writer.Close()
-
-			request, err = c.NewRequest(requestParams.Method, requestParams.URL.String(), body, requestParams.Headers)
-			if err != nil {
-				return nil, err
-			}
-
-			request.Header.Set("Content-Type", writer.FormDataContentType())
+	if requestParams.IsFormData {
+		request, err = c.makeFormRequest(requestParams)
+		if err != nil {
+			return nil, err
 		}
+
 	} else if requestParams.Body != nil {
 		var buffer *bytes.Buffer
 
@@ -408,6 +379,52 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 		return nil, err
 	}
 	return util.ParseHTTPStatusCodeInResponse(response)
+}
+
+func (c *BaseClient) makeFormRequest(requestParams RequestParams) (*Request, error) {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	if forms, ok := requestParams.Body.(map[string]string); ok {
+		fieldname := forms["fieldname"]
+		filename := forms[fieldname]
+		file, err := os.Open(filename)
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		part, err := writer.CreateFormFile(fieldname, filepath.Base(filename))
+		if err != nil {
+			return nil, err
+		}
+		_, err = io.Copy(part, file)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		forms, _ := requestParams.Body.(map[string]interface{})
+		fieldname := forms["fieldname"].(string)
+		stream := forms[fieldname].(io.Reader)
+
+		part, err := writer.CreateFormFile(fieldname, "steam")
+		if err != nil {
+			return nil, err
+		}
+		_, err = io.Copy(part, stream)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	writer.Close()
+
+	request, err := c.NewRequest(requestParams.Method, requestParams.URL.String(), body, requestParams.Headers)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	return request, err
 }
 
 // UpdateTokenContext the access token in the Authorization: Bearer header and retains related context information

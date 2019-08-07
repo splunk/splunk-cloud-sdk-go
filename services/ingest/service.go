@@ -6,6 +6,7 @@
 package ingest
 
 import (
+	"io"
 	"net/http"
 	"sync"
 	"time"
@@ -78,10 +79,37 @@ func (s *Service) UploadFiles(upfile string, resp ...*http.Response) error {
 		return err
 	}
 
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]string{"fieldname": "upfile", "upfile": upfile}, IsUpload: true})
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]string{"fieldname": "upfile", "upfile": upfile}, IsFormData: true})
 
 	// populate input *http.Response if provided
 	if len(resp) > 0 && resp[0] != nil {
+		*resp[0] = *response
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*
+	UploadFiles - Upload stream of io.Reader.
+	Parameters:
+		stream
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UploadStream(stream io.Reader, resp ...*http.Response) error {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ingest/v1beta2/files`, nil)
+
+	if err != nil {
+		return err
+	}
+
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]interface{}{"fieldname": "upfile", "upfile": stream}, IsFormData: true})
+
+	// populate input *http.Response if provided
+	if response != nil && len(resp) > 0 && resp[0] != nil {
 		*resp[0] = *response
 	}
 
