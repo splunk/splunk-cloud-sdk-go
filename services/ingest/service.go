@@ -81,9 +81,13 @@ func (s *Service) UploadFiles(upfile string, resp ...*http.Response) error {
 
 	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]string{"fieldname": "upfile", "upfile": upfile}, IsFormData: true})
 
-	// populate input *http.Response if provided
-	if len(resp) > 0 && resp[0] != nil {
-		*resp[0] = *response
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
 	}
 
 	if err != nil {
@@ -108,9 +112,13 @@ func (s *Service) UploadStream(stream io.Reader, resp ...*http.Response) error {
 
 	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]interface{}{"fieldname": "upfile", "upfile": stream}, IsFormData: true})
 
-	// populate input *http.Response if provided
-	if response != nil && len(resp) > 0 && resp[0] != nil {
-		*resp[0] = *response
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
 	}
 
 	if err != nil {
