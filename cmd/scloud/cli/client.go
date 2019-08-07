@@ -19,6 +19,7 @@ package main
 import (
 	"math/rand"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/util"
@@ -82,21 +83,28 @@ func (handler retryHandler) HandleResponse(client *services.BaseClient, request 
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
 func newClient(svc *config.Service) *sdk.Client {
+	var hostURL = getHostURL()
+	serviceURL, err := url.Parse(hostURL)
+	if err != nil {
+		glog.Errorf("%s, is not a valid url", hostURL)
+		return nil
+	}
+
 	var scheme string
-	if scheme = getScheme(); scheme == "" {
+	if scheme = serviceURL.Scheme; scheme == "" {
 		if scheme = svc.Scheme; scheme == "" {
 			scheme = defaultScheme
 		}
 	}
 
 	var port string
-	if port = getPort(); port == "" {
+	if port = serviceURL.Port(); port == "" {
 		if port = svc.Port; port == "" {
 			port = defaultPort
 		}
 	}
 
-	host := getHost()
+	host := serviceURL.Hostname()
 	if host == "" {
 		host = svc.Host
 	}

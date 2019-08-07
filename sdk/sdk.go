@@ -5,6 +5,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services/action"
 	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
 	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/services/collect"
 	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
@@ -22,6 +23,8 @@ type Client struct {
 	ActionService *action.Service
 	// CatalogService talks to the Splunk Cloud catalog service
 	CatalogService *catalog.Service
+	// CollectService talks to the Splunk Cloud collect service
+	CollectService *collect.Service
 	// IdentityService talks to Splunk Cloud IAC service
 	IdentityService *identity.Service
 	// IngestService talks to the Splunk Cloud ingest service
@@ -52,6 +55,7 @@ func NewClient(config *services.Config) (*Client, error) {
 		BaseClient:             client,
 		ActionService:          &action.Service{Client: client},
 		CatalogService:         &catalog.Service{Client: client},
+		CollectService:         &collect.Service{Client: client},
 		IdentityService:        &identity.Service{Client: client},
 		IngestService:          &ingest.Service{Client: client},
 		KVStoreService:         &kvstore.Service{Client: client},
