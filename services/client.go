@@ -45,7 +45,7 @@ import (
 //go:generate go run ../util/gen_interface.go -svc=collect -p=collect -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=forwarders -p=forwarders -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=identity -p=identity -sf=service_generated.go
-//go:generate go run ../util/gen_interface.go -svc=ingest -p=ingest -sf=service.go -sf=service_generated.go
+//go:generate go run ../util/gen_interface.go -svc=ingest -p=ingest -sf=service_sdk.go -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=kvstore -p=kvstore -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=ml -p=ml -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=search -p=search -sf=service.go -sf=service_generated.go
@@ -387,7 +387,10 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 func (c *BaseClient) makeFormRequest(requestParams RequestParams) (*Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	forms, _ := requestParams.Body.(FormData)
+	forms, ok := requestParams.Body.(FormData)
+	if !ok {
+		return nil, errors.New("Bad request of form data")
+	}
 
 	part, err := writer.CreateFormFile(forms.Key, forms.Filename)
 	if err != nil {
