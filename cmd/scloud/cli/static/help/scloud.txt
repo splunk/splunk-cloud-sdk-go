@@ -5,7 +5,7 @@ work with your data in Splunk Cloud.
 SYNTAX
 
     scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
-        [-logtostderr] [-host <hostname>] [-port <port>] [-scheme https|http] 
+        [-logtostderr] [-auth-url <auth endpoint>] [-host-url <host endpoint>] 
         [-insecure false|true] [-ca-cert <file path>]
         <command> <subcommand> [params]
 
@@ -31,13 +31,13 @@ OPTIONS
 
     -logtostderr
         Display verbose output and debug logging to the console, including the 
-        the raw request and response for each API call.
+        raw request and response for each API call.
 
     -auth-url <auth endpoint>
-            Set a auth url to override the public SDC auth url. (https://<host>:<port>)
-
+        Set an auth URL to override the public SDC auth URL (https://<host>:<port>).
+        
     -host-url <host endpoint>
-        Set a host url to override the public SDC host. (https://<host>:<port>)
+        Set a host URL to override the public SDC host (https://<host>:<port>).
 
     -insecure false|true
         Specify whether to skip TLS validation. The default is "false" to enable
@@ -126,7 +126,7 @@ COMMANDS
             Manage forwarder certificates.
    
         identity <subcommand> [params]
-            Manage users, tenants, groups, roles, and permissions.
+            Manage users, groups, roles, and permissions.
 
         ingest <subcommand> [params]
             Send data to a pipeline in Splunk Cloud.
@@ -137,6 +137,9 @@ COMMANDS
         ml <subcommand> [params]
             Train, deploy, and manage machine learning models.
 
+        provisioner <subcommand> [params]
+            Provision and manage tenants.
+   
         search <subcommand> [params]
             Search and analyze data in Splunk Cloud.
    

@@ -236,7 +236,7 @@ SUBCOMMANDS
 
 EXAMPLES
 
-    List the tenants for the current user:
+    List the groups for the current user:
         $ scloud identity list-groups
         [
             "group10",
