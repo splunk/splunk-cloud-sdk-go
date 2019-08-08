@@ -10,8 +10,8 @@ SYNTAX
 SUBCOMMANDS
 
     create-provision-job [-tenant <tenant>] [-apps <list-of-apps>]
-        Create a job to provision a tenant and optionally subscribe the tenant to 
-        one or more apps.
+        Create a job to provision a tenant and optionally create a subscription 
+        between the tenant and one or more apps.
 
         Arguments:
             -tenant <tenant>
@@ -19,41 +19,14 @@ SUBCOMMANDS
                 name is used.
 
             -apps <apps>
-                List of apps to subscribe to.
-
-    create-invite [-email <email>] [-comment <comment>] [-groups <list-of-groups>]
-        Creates an invite to invite a person to the tenant using their email address.
-
-        Arguments:
-            -email <email>
-                Email address of the person receiving the invite.
-
-            -comment <comment>
-                Comment in the invite.
-
-            -groups <groups>
-                Tenant groups that the user will belong to.
-
-    delete-invite <inviteId>
-            Delete the specified invite.
-
-            Arguments:
-                <inviteId>
-                    The invite ID.
+                A list of apps to subscribe to.
 
     get-provision-job <jobId>
-        Display details of the specified job.
+        Display details of the specified provision job.
 
         Arguments:
             <jobId>
-                The job ID.
-
-    get-invite <inviteId>
-            Display details of the specified invite.
-
-            Arguments:
-                <inviteId>
-                    The invite ID.
+                The provision job ID.
 
     get-spec-json
         Display the OpenAPI spec for the Provisioner service in JSON format.
@@ -69,22 +42,10 @@ SUBCOMMANDS
                 The tenant name.
 
     list-provision-jobs
-        List provision jobs created by the user.
+        List provision jobs created by the current user.
 
     list-tenants
         List tenants for the current user.
-
-    list-invites
-            List invites for the current user.
-
-    update-invite <inviteId> [-update-action-type <update-action-type>]
-        Creates an invite to invite a person to the tenant using their email address.
-
-        Arguments:
-            <inviteId>
-                The invite ID to be updated.
-            <update-action-type>
-                Update action type. Valid values are accept, reject or resend. By default it's accept. Only system tenant can accept and reject."
 
 
 EXAMPLES
@@ -110,76 +71,4 @@ EXAMPLES
             "jobID": "1222",
             "status": "created",
             "tenant": "scloudxyz"
-        }
-    List invites for a current user:
-        $ scloud provisioner list-invites
-        {
-            "comment": "test",
-            "createdAt": "2019-07-26T17:51:48.245Z",
-            "createdBy": "xyz@splunkcorp.com",
-            "email": "abc@splunk.com",
-            "errors": [],
-            "expiresAt": "2019-08-09T18:00:00.000Z",
-            "groups": [
-            "testgroup"
-            ],
-            "inviteID": "i5d3b3db4cdbee20007a594af",
-            "status": "invited",
-            "tenant": "testtenant",
-            "updatedAt": "2019-07-26T17:52:24.986Z",
-            "updatedBy": "xyzg@splunkcorp.com"
-        }
-    Get specific invite:
-        $ scloud provisioner get-invite i5d3b3db4cdbee20007a594af
-        {
-            "comment": "test",
-            "createdAt": "2019-07-26T17:51:48.245Z",
-            "createdBy": "abc@splunkcorp.com",
-            "email": "xyz@splunk.com",
-            "errors": [],
-            "expiresAt": "2019-08-09T18:00:00.000Z",
-            "groups": [
-                "testgroup"
-            ],
-            "inviteID": "i5d3b3db4cdbee20007a594af",
-            "status": "invited",
-            "tenant": "testtenant",
-            "updatedAt": "2019-07-26T17:52:24.986Z",
-            "updatedBy": "srv-ssc-mt32intg@splunkcorp.com"
-        }
-    Create invite:
-        $ scloud provisioner create-invite -email xyz@splunk.com -comment "test" -groups "admins"
-        {
-            "comment": "test",
-            "createdAt": "2019-07-26T18:26:43.693Z",
-            "createdBy": "abc@splunkcorp.com",
-            "email": "xyz@splunk.com",
-            "errors": [],
-            "expiresAt": "2019-08-09T18:00:00.000Z",
-            "groups": [
-                "testgroup"
-            ],
-            "inviteID": "i5d3b45e3cdbee20007a594b0",
-            "status": "created",
-            "tenant": "testtenant",
-            "updatedAt": "0001-01-01T00:00:00.000Z",
-            "updatedBy": ""
-        }
-    Update invite:
-        $ scloud provisioner update-invite -update-action-type resend
-        {
-            "comment": "test",
-            "createdAt": "2019-07-26T18:26:43.693Z",
-            "createdBy": "abc@splunkcorp.com",
-            "email": "xyz@splunk.com",
-            "errors": [],
-            "expiresAt": "2019-08-09T18:00:00.000Z",
-            "groups": [
-                "testgroup"
-             ],
-            "inviteID": "i5d3b45e3cdbee20007a594b0",
-            "status": "created",
-            "tenant": "testtenant",
-            "updatedAt": "0001-01-01T00:00:00.000Z",
-            "updatedBy": ""
         }
