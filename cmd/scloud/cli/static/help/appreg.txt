@@ -102,8 +102,12 @@ SUBCOMMANDS
     list-apps
         List apps defined in the current tenant.
 
-    list-subscriptions
+    list-subscriptions [-app-kind <app-kind>]
         List app subscriptions.
+
+        Arguments:
+            -app-kind <app-kind>
+                App kind. Possible values are web, native and service.
 
     rotate-secret <app>
         Rotate the client secret for the specified app.
