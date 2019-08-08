@@ -29,9 +29,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"sync"
 	"text/template"
@@ -108,6 +106,12 @@ type RetryStrategyConfig struct {
 	ConfigurableRetryConfig *ConfigurableRetryConfig
 }
 
+type FormData struct {
+	Key      string
+	Filename string
+	Stream   io.Reader
+}
+
 // GetNumErrorsByResponseCode returns number of attempts for a given response code >= 400
 func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	code := fmt.Sprintf("%d", respCode)
@@ -162,8 +166,6 @@ type RequestParams struct {
 	Body interface{}
 	// Headers are additional headers to add to the request
 	Headers map[string]string
-	// Is request for uploading file
-	IsFormData bool
 }
 
 // BaseService provides the interface between client and services
@@ -338,7 +340,7 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 		c.tokenMux.Unlock()
 	}
 
-	if requestParams.IsFormData {
+	if len(requestParams.Headers) > 0 && requestParams.Headers["Content-Type"] == "multipart/form-data" {
 		request, err = c.makeFormRequest(requestParams)
 		if err != nil {
 			return nil, err
@@ -385,36 +387,15 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 func (c *BaseClient) makeFormRequest(requestParams RequestParams) (*Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	if forms, ok := requestParams.Body.(map[string]string); ok {
-		fieldname := forms["fieldname"]
-		filename := forms[fieldname]
-		file, err := os.Open(filename)
-		if err != nil {
-			return nil, err
-		}
-		defer file.Close()
+	forms, _ := requestParams.Body.(FormData)
 
-		part, err := writer.CreateFormFile(fieldname, filepath.Base(filename))
-		if err != nil {
-			return nil, err
-		}
-		_, err = io.Copy(part, file)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		forms, _ := requestParams.Body.(map[string]interface{})
-		fieldname := forms["fieldname"].(string)
-		stream := forms[fieldname].(io.Reader)
-
-		part, err := writer.CreateFormFile(fieldname, "steam")
-		if err != nil {
-			return nil, err
-		}
-		_, err = io.Copy(part, stream)
-		if err != nil {
-			return nil, err
-		}
+	part, err := writer.CreateFormFile(forms.Key, forms.Filename)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(part, forms.Stream)
+	if err != nil {
+		return nil, err
 	}
 
 	writer.Close()
