@@ -197,7 +197,14 @@ func TestIntegrationUploadFileStream(t *testing.T) {
 	var resp http.Response
 	stream := bufio.NewReader(file)
 
-	err = client.IngestService.UploadStream(stream, &resp)
+	err = client.IngestService.UploadFilesStream(stream, &resp)
 	require.Nil(t, err)
 	require.Equal(t, 201, resp.StatusCode)
+}
+
+func TestIntegrationUploadFileStreamNonexistfile(t *testing.T) {
+	client := getClient(t)
+
+	err := client.IngestService.UploadFiles("nonexit")
+	require.NotNil(t, err)
 }

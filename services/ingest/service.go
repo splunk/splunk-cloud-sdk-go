@@ -8,6 +8,8 @@ package ingest
 import (
 	"io"
 	"net/http"
+	"net/url"
+	"os"
 	"sync"
 	"time"
 
@@ -69,55 +71,63 @@ func (s *Service) NewBatchEventsSender(batchSize int, interval int64, payLoadSiz
 /*
 	UploadFiles - Upload a CSV or text file that contains events.
 	Parameters:
-		upfile
+		filename
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) UploadFiles(upfile string, resp ...*http.Response) error {
+func (s *Service) UploadFiles(filename string, resp ...*http.Response) error {
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ingest/v1beta2/files`, nil)
 
 	if err != nil {
 		return err
 	}
 
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]string{"fieldname": "upfile", "upfile": upfile}, IsFormData: true})
-
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-
+	file, err := os.Open(filename)
 	if err != nil {
+
 		return err
 	}
+	defer file.Close()
 
-	return nil
+	var response *http.Response
+	if len(resp) > 0 && resp[0] != nil {
+		response = resp[0]
+	}
+	return s.uploadFileStream(u, file, filename, response)
 }
 
 /*
-	UploadFiles - Upload stream of io.Reader.
+	UploadFilesStream - Upload stream of io.Reader.
 	Parameters:
 		stream
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) UploadStream(stream io.Reader, resp ...*http.Response) error {
+func (s *Service) UploadFilesStream(stream io.Reader, resp ...*http.Response) error {
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ingest/v1beta2/files`, nil)
 
 	if err != nil {
 		return err
 	}
 
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: map[string]interface{}{"fieldname": "upfile", "upfile": stream}, IsFormData: true})
+	var response *http.Response
+	if len(resp) > 0 && resp[0] != nil {
+		response = resp[0]
+	}
+
+	return s.uploadFileStream(u, stream, "stream", response)
+}
+
+func (s *Service) uploadFileStream(u url.URL, stream io.Reader, filename string, resp *http.Response) error {
+
+	form := services.FormData{Filename: filename, Stream: stream, Key: "upfile"}
+
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
 
 	if response != nil {
 		defer response.Body.Close()
 
 		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
+		if resp != nil {
+			*resp = *response
 		}
 	}
 
