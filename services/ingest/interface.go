@@ -19,6 +19,7 @@
 package ingest
 
 import (
+	"io"
 	"net/http"
 )
 
@@ -27,6 +28,20 @@ type Servicer interface {
 	NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, dataSize int, maxErrorsAllowed int) (*BatchEventsSender, error)
 	// NewBatchEventsSender used to initialize dependencies and set values
 	NewBatchEventsSender(batchSize int, interval int64, payLoadSize int) (*BatchEventsSender, error)
+	/*
+		UploadFiles - Upload a CSV or text file that contains events.
+		Parameters:
+			filename
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UploadFiles(filename string, resp ...*http.Response) error
+	/*
+		UploadFilesStream - Upload stream of io.Reader.
+		Parameters:
+			stream
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UploadFilesStream(stream io.Reader, resp ...*http.Response) error
 	/*
 		PostEvents - Sends events.
 		Parameters:
