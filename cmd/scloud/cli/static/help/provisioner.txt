@@ -9,7 +9,7 @@ SYNTAX
 
 SUBCOMMANDS
 
-    create-provision-job [-tenant <tenant>] [-apps <list-of-apps>]
+    create-provision-job [-tenant <tenant>] [-app <app-name>]
         Create a job to provision a tenant and optionally create a subscription 
         between the tenant and one or more apps.
 
@@ -18,8 +18,8 @@ SUBCOMMANDS
                 The tenant name. If one is not specified, a name based on the user
                 name is used.
 
-            -apps <apps>
-                A list of apps to subscribe to.
+            -app <app-name>
+                The app to subscribe to. Repeat this argument for each app.
 
     get-provision-job <jobId>
         Display details of the specified provision job.
