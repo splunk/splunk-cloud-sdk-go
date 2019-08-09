@@ -80,7 +80,7 @@ func (cmd *ProvisionerCommand) createProvisionJob(argv []string) (interface{}, e
 
 	flags := flag.NewFlagSet("create-provision-job", flag.ExitOnError)
 	flags.StringVar(&tenant, "tenant", "", "Tenant name")
-	flags.Var(&apps, "apps", "List of apps that the tenant is subscribed to")
+	flags.Var(&apps, "app", "One or more apps that the tenant is subscribed to")
 	err := flags.Parse(argv)
 	if err != nil {
 		return nil, err
