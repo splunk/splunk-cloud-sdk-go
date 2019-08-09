@@ -42,7 +42,7 @@ func TestProvisionerCommand(t *testing.T) {
 	}{
 		{
 			name:        "Create provision job",
-			args:        []string{"create-provision-job", "-tenant", tenantName, "-apps", "app1", "-apps", "app2"},
+			args:        []string{"create-provision-job", "-tenant", tenantName, "-app", "app1", "-app", "app2"},
 			xResult:     nil,
 			xMethod:     http.MethodPost,
 			xURLPattern: fmt.Sprintf("%s://%s/system/provisioner/v1beta1/jobs/tenants/provision", test.UnitTestScheme, test.UnitTestHost),
