@@ -287,8 +287,11 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
 		}
 		msg := response.Status
-		if errMsg, found := data["description"]; found {
-			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
+		if data != nil {
+			msg += "\nResponse body: \n"
+			for k, v := range data {
+				msg += fmt.Sprintf("%s:%s \n", k, v)
+			}
 		}
 		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
 	}
@@ -313,14 +316,17 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 	}
 	if response.StatusCode != http.StatusOK {
 		msg := response.Status
-		if errMsg, found := data["description"]; found {
-			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
+		if data != nil {
+			msg += "\nResponse body: \n"
+			for k, v := range data {
+				msg += fmt.Sprintf("%s:%s \n", k, v)
+			}
 		}
 		return "", errors.Wrap(errors.New(msg), "unexpected status response from authn endpoint")
 	}
 	status, err := gets(data, "status")
 	if err != nil {
-		return "", errors.Wrap(err, "Unable to get status data from authn endpoint")
+		return "", errors.Wrap(err, "unable to get status data from authn endpoint")
 	}
 	if status != "SUCCESS" { // eg: LOCKED_OUT
 		return "", errors.Wrap(errors.New(status), "unexpected status data from authn endpoint")
@@ -416,8 +422,11 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
 		}
 		msg := response.Status
-		if errMsg, found := data["description"]; found {
-			msg = fmt.Sprintf("%s %s", response.Status, errMsg)
+		if data != nil {
+			msg += "\nResponse body: \n"
+			for k, v := range data {
+				msg += fmt.Sprintf("%s:%s \n", k, v)
+			}
 		}
 		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
 

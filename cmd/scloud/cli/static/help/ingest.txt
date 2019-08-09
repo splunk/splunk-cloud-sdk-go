@@ -76,6 +76,8 @@ SUBCOMMANDS
             -unit <unit>
                 The default unit to use for all metrics posted by this command.
 
+    upload-file <file-name>
+            Ingest data from a file.
 
 EXAMPLES
 
@@ -84,3 +86,6 @@ EXAMPLES
 
     Send events from a log file, foo.log, to your pipeline (Windows):
         $ more foo.log | scloud ingest post-events -sourcetype foo
+
+    Ingest events from a file
+        $ scloud ingest upload-file events.csv

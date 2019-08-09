@@ -69,6 +69,8 @@ func (cmd *IngestCommand) Dispatch(argv []string) (result interface{}, err error
 		result, err = newPostEventsCommand().postEvents(argv)
 	case "post-metrics":
 		result, err = newPostMetricsCommand().postMetrics(argv)
+	case "upload-file":
+		result = cmd.uploadFile(argv)
 	default:
 		fatal("unknown command: '%s'", arg)
 	}
@@ -83,6 +85,16 @@ func (cmd *IngestCommand) getSpecJSON(args []string) (interface{}, error) {
 func (cmd *IngestCommand) getSpecYaml(args []string) (interface{}, error) {
 	checkEmpty(args)
 	return GetSpecYaml("api", IngestServiceVersion, "ingest", cmd.ingestService.Client)
+}
+
+func (cmd *IngestCommand) uploadFile(args []string) error {
+	fileName := head1(args)
+
+	if _, err := os.Stat(fileName); err != nil {
+		fatal("Error with file : %s, please check if the filename is valid.", err.Error())
+	}
+
+	return newIngestCommand().ingestService.UploadFiles(fileName)
 }
 
 // Read a batch of event or metrics data, not to exceed size threshold.
