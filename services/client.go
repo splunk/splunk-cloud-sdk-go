@@ -389,7 +389,7 @@ func (c *BaseClient) makeFormRequest(requestParams RequestParams) (*Request, err
 	writer := multipart.NewWriter(body)
 	forms, ok := requestParams.Body.(FormData)
 	if !ok {
-		return nil, errors.New("Bad request of form data")
+		return nil, errors.New("bad request of form data")
 	}
 
 	part, err := writer.CreateFormFile(forms.Key, forms.Filename)
