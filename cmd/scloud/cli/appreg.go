@@ -17,9 +17,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"strings"
+
+	"flag"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
 	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
@@ -185,27 +186,33 @@ func (appRegCommand *AppRegistryCommand) listApps(argv []string) (interface{}, e
 }
 
 func (appRegCommand *AppRegistryCommand) listSubscriptions(argv []string) (interface{}, error) {
-	appKind := head1(argv)
-	if appKind != "web" && appKind != "native" && appKind != "service" {
-		msg := fmt.Sprintf("'%v' was passed, use subcommand 'web', 'native', or 'service'", appKind)
-		fatal(msg)
-	}
+	// Optional flags
+	flags := flag.NewFlagSet("list-subscriptions", flag.ExitOnError)
+	var appKind string
 
-	switch appKind {
-	case "web":
-		appModelKind := appregistry.AppResourceKindWeb
-		return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
-	case "native":
-		appModelKind := appregistry.AppResourceKindNative
-		return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
-	case "service":
-		appModelKind := appregistry.AppResourceKindService
-		return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
-	default:
-		msg := fmt.Sprintf("'%v' was passed, use subcommand 'web', 'native', 'service'", appKind)
-		fatal(msg)
+	flags.StringVar(&appKind, "app-kind", "", "Action kind")
+
+	err := flags.Parse(argv) //nolint:errcheck
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New("Kind value is not supported")
+	if appKind != "" {
+		switch appKind {
+		case "web":
+			appModelKind := appregistry.AppResourceKindWeb
+			return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
+		case "native":
+			appModelKind := appregistry.AppResourceKindNative
+			return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
+		case "service":
+			appModelKind := appregistry.AppResourceKindService
+			return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{Kind: &appModelKind})
+		default:
+			msg := fmt.Sprintf("'%v' was passed, use subcommand 'web', 'native', 'service' or default of empty string to list all subscriptions", appKind)
+			fatal(msg)
+		}
+	}
+	return appRegCommand.appRegistryService.ListSubscriptions(&appregistry.ListSubscriptionsQueryParams{})
 }
 
 func (appRegCommand *AppRegistryCommand) rotateSecret(argv []string) (interface{}, error) {
