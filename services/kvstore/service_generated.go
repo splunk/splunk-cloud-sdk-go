@@ -334,10 +334,11 @@ func (s *Service) Ping(resp ...*http.Response) (*PingResponse, error) {
 	Parameters:
 		collection: The name of the collection.
 		key: The key of the record.
+		ifMatch: Record version identifier.
 		body: Record to add to the collection, formatted as a JSON object.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) PutRecord(collection string, key string, body map[string]interface{}, resp ...*http.Response) (*Key, error) {
+func (s *Service) PutRecord(collection string, key string, ifMatch *string, body map[string]interface{}, resp ...*http.Response) (*Key, error) {
 	pp := struct {
 		Collection string
 		Key        string

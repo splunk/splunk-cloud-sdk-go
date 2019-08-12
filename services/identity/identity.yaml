@@ -55,6 +55,13 @@ components:
         items:
           type: string
         type: array
+    inviteId:
+      description: The invite ID.
+      in: query
+      name: inviteID
+      required: false
+      schema:
+        type: string
     member:
       description: The member name.
       in: path
@@ -157,7 +164,6 @@ components:
       required: true
       schema:
         enum:
-        - v1
         - v2beta1
         type: string
     version2beta1:
@@ -198,6 +204,7 @@ components:
       - name
       type: object
     AddRolePermissionBody:
+      maxLength: 1024
       minLength: 4
       type: string
       x-case-insensitive: true
@@ -230,6 +237,9 @@ components:
       type: object
     AuthnCredentialsBody:
       properties:
+        csrfToken:
+          description: CSRF token
+          type: string
         password:
           description: Password
           type: string
@@ -276,6 +286,7 @@ components:
     CreateGroupBody:
       properties:
         name:
+          maxLength: 128
           minLength: 4
           pattern: ^[_a-z][_\.a-z0-9]*$
           type: string
@@ -298,6 +309,7 @@ components:
     CreateRoleBody:
       properties:
         name:
+          maxLength: 128
           minLength: 4
           pattern: ^[_a-z][_\.a-z0-9]*$
           type: string
@@ -334,6 +346,27 @@ components:
           $ref: '#/components/schemas/TenantName'
       required:
       - name
+      type: object
+    CsrfToken:
+      properties:
+        csrf:
+          description: CSRF token
+          type: string
+      type: object
+    DecryptTokenBody:
+      properties:
+        token:
+          type: string
+      required:
+      - token
+      type: object
+    DecryptedToken:
+      description: A decrypted token
+      properties:
+        token:
+          type: string
+      required:
+      - token
       type: object
     Group:
       properties:
@@ -674,7 +707,7 @@ info:
   description: With the Splunk Cloud Identity and Access Control (IAC) Service, you
     can authenticate and authorize Splunk API users.
   title: Identity and Access Control
-  version: v2beta1.7
+  version: v2beta1.9
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1364,11 +1397,6 @@ paths:
               description: Specify how/whether to cache the response, etc.
               schema:
                 type: string
-            Vary:
-              description: Tells the HTTP cache what parts of the request header to
-                use when trying to find the right object.
-              schema:
-                type: string
             X-Internal-Cache-Control:
               description: max-age=<seconds>, specifies the time a token can be cached.
                 This is meant for internal services only.
@@ -1433,4 +1461,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: identity/openapi.yaml
+# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: identity/openapi.yaml

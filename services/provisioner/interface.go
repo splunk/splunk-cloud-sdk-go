@@ -25,7 +25,7 @@ import (
 // Servicer represents the interface for implementing all endpoints for this service
 type Servicer interface {
 	/*
-		CreateInvite - prov service endpoint
+		CreateInvite - provisioner service endpoint
 		Creates an invite to invite a person to the tenant using their email address
 		Parameters:
 			inviteBody
@@ -33,7 +33,7 @@ type Servicer interface {
 	*/
 	CreateInvite(inviteBody InviteBody, resp ...*http.Response) (*InviteInfo, error)
 	/*
-		CreateProvisionJob - prov service endpoint
+		CreateProvisionJob - provisioner service endpoint
 		Creates a new job that provisions a new tenant and subscribes apps to the tenant
 		Parameters:
 			createProvisionJobBody
@@ -41,7 +41,7 @@ type Servicer interface {
 	*/
 	CreateProvisionJob(createProvisionJobBody CreateProvisionJobBody, resp ...*http.Response) (*ProvisionJobInfo, error)
 	/*
-		DeleteInvite - prov service endpoint
+		DeleteInvite - provisioner service endpoint
 		Deletes an invite in the given tenant
 		Parameters:
 			inviteId
@@ -49,7 +49,7 @@ type Servicer interface {
 	*/
 	DeleteInvite(inviteId string, resp ...*http.Response) error
 	/*
-		GetInvite - prov service endpoint
+		GetInvite - provisioner service endpoint
 		Gets an invite in the given tenant
 		Parameters:
 			inviteId
@@ -57,7 +57,7 @@ type Servicer interface {
 	*/
 	GetInvite(inviteId string, resp ...*http.Response) (*InviteInfo, error)
 	/*
-		GetProvisionJob - prov service endpoint
+		GetProvisionJob - provisioner service endpoint
 		Gets details of a specific provision job
 		Parameters:
 			jobId
@@ -65,7 +65,7 @@ type Servicer interface {
 	*/
 	GetProvisionJob(jobId string, resp ...*http.Response) (*ProvisionJobInfo, error)
 	/*
-		GetTenant - prov service endpoint
+		GetTenant - provisioner service endpoint
 		Gets a specific tenant
 		Parameters:
 			tenantName
@@ -73,28 +73,28 @@ type Servicer interface {
 	*/
 	GetTenant(tenantName string, resp ...*http.Response) (*TenantInfo, error)
 	/*
-		ListInvites - prov service endpoint
+		ListInvites - provisioner service endpoint
 		Lists the invites in a given tenant
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListInvites(resp ...*http.Response) (*Invites, error)
 	/*
-		ListProvisionJobs - prov service endpoint
+		ListProvisionJobs - provisioner service endpoint
 		Lists all provision jobs created by the user
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListProvisionJobs(resp ...*http.Response) (*ProvisionJobs, error)
 	/*
-		ListTenants - prov service endpoint
+		ListTenants - provisioner service endpoint
 		Lists all tenants that the user can read
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListTenants(resp ...*http.Response) (*Tenants, error)
 	/*
-		UpdateInvite - prov service endpoint
+		UpdateInvite - provisioner service endpoint
 		Updates an invite in the given tenant
 		Parameters:
 			inviteId

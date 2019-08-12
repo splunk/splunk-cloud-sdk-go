@@ -738,11 +738,42 @@ func (streamsCommand *StreamsCommand) getTemplates(argv []string) (interface{}, 
 		listTemplateQueryParams.PageSize = &args.PageSize
 	}
 	if args.SortDir != "" {
-		listTemplateQueryParams.SortDir = args.SortDir
+		var sortDir streams.ListTemplatessortDir
+
+		switch args.SortDir {
+		case "asc":
+			sortDir = streams.ListTemplatessortDirAsc
+		case "desc":
+			sortDir = streams.ListTemplatessortDirDesc
+		default:
+			msg := fmt.Sprintf("'%v' was passed, use subcommand 'asc' or 'desc' ", args.SortDir)
+			fatal(msg)
+		}
+		listTemplateQueryParams.SortDir = sortDir
 	}
+
 	if args.SortField != "" {
-		listTemplateQueryParams.SortField = args.SortField
+		var sortField streams.ListTemplatessortField
+
+		switch args.SortField {
+		case "id":
+			sortField = streams.ListTemplatessortFieldId
+		case "name":
+			sortField = streams.ListTemplatessortFieldName
+		case "description":
+			sortField = streams.ListTemplatessortFieldDescription
+		case "createUserId":
+			sortField = streams.ListTemplatessortFieldCreateUserId
+		case "createDate":
+			sortField = streams.ListTemplatessortFieldCreateDate
+		default:
+			msg := fmt.Sprintf("'%v' was passed, use subcommand 'id', 'name', 'description', 'createUserId', or 'createDate' ", args.SortField)
+			fatal(msg)
+		}
+
+		listTemplateQueryParams.SortField = sortField
 	}
+
 	return streamsCommand.streamsService.ListTemplates(&listTemplateQueryParams)
 }
 

@@ -286,10 +286,10 @@ SUBCOMMANDS
                 The page size.
 
             -sort-field <field-name>
-                The field to sort by.
+                The field to sort by. Possible values are id, name, description, createUserId, or createDate
 
             -sort-dir asc|desc
-                The sort direction.
+                The sort direction. Possible values are asc, desc
 
     list-latest-pipeline-metrics <pipeline-id>
         Display the latest metrics for a single pipeline.
