@@ -43,6 +43,24 @@ type Servicer interface {
 	*/
 	CreateActionForRuleById(ruleid string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
 	/*
+		CreateAnnotationForDashboardbyId - catalog service endpoint
+		Create a new annotation for a specific dashboard.
+		Parameters:
+			dashboardid: ID of a dashboard.
+			annotationPost: The JSON representation of the annotation to be persisted.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateAnnotationForDashboardbyId(dashboardid string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	/*
+		CreateAnnotationForDashboardsByResourceName - catalog service endpoint
+		Create a new annotation for a specific dataset.
+		Parameters:
+			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
+			annotationPost: The JSON representation of the annotation to be persisted.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	/*
 		CreateAnnotationForDatasetById - catalog service endpoint
 		Create a new annotation for a specific dataset.
 		Parameters:
@@ -191,6 +209,24 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) error
+	/*
+		DeleteAnnotationOfDashboardById - catalog service endpoint
+		Delete a specific annotation of a dashboard.
+		Parameters:
+			dashboardid: ID of a dashboard.
+			annotationid: ID of a annotation.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteAnnotationOfDashboardById(dashboardid string, annotationid string, resp ...*http.Response) error
+	/*
+		DeleteAnnotationOfDashboardByResourceName - catalog service endpoint
+		Delete a specific annotation of a dashboard.
+		Parameters:
+			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
+			annotationid: ID of a annotation.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteAnnotationOfDashboardByResourceName(dashboardresourcename string, annotationid string, resp ...*http.Response) error
 	/*
 		DeleteAnnotationOfDatasetById - catalog service endpoint
 		Delete a specific annotation of a dataset.
@@ -455,6 +491,24 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListActionsForRuleById(ruleid string, query *ListActionsForRuleByIdQueryParams, resp ...*http.Response) ([]Action, error)
+	/*
+		ListAnnotationsForDashboardById - catalog service endpoint
+		Return the set of annotations that are part of a dashboard.
+		Parameters:
+			dashboardid: ID of a dashboard.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListAnnotationsForDashboardById(dashboardid string, query *ListAnnotationsForDashboardByIdQueryParams, resp ...*http.Response) ([]Annotation, error)
+	/*
+		ListAnnotationsForDashboardByResourceName - catalog service endpoint
+		Return the set of annotations that are part of a dashboard.
+		Parameters:
+			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListAnnotationsForDashboardByResourceName(dashboardresourcename string, query *ListAnnotationsForDashboardByResourceNameQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDatasetById - catalog service endpoint
 		Return the set of annotations that are part of a dataset.

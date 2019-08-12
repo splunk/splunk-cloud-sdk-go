@@ -30,16 +30,15 @@ func TestCRUDJob(t *testing.T) {
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
 		Name:        fmt.Sprintf("gointegCollectJob%d", testutils.TimeSec),
+		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
 		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
-		Schedule:    "16 * * * *",
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
-	defer client.CollectService.DeleteJob(*createdJob.Data.Id)
-
 	require.Nil(t, err)
 	require.NotNil(t, createdJob.Data)
+	defer client.CollectService.DeleteJob(*createdJob.Data.Id)
 
 	//get job
 	getJob, err := client.CollectService.GetJob(*createdJob.Data.Id)
@@ -68,9 +67,9 @@ func TestPatchJob(t *testing.T) {
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
 		Name:        fmt.Sprintf("gointegCollectPatchJob%d", testutils.TimeSec),
+		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
 		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
-		Schedule:    "16 * * * *",
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -93,9 +92,9 @@ func TestPatchJobs(t *testing.T) {
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
 		Name:        fmt.Sprintf("gointegCollectPatchJobs%d", testutils.TimeSec),
-		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 5}},
 		Schedule:    "16 * * * *",
+		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
+		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -115,7 +114,7 @@ func TestPatchJobs(t *testing.T) {
 
 	job1, err := client.CollectService.GetJob(jobId)
 	require.Nil(t, err)
-
+	require.NotNil(t, job1.Data.Name)
 	static := job1.Data.ScalePolicy["static"]
 	require.NotNil(t, static)
 
@@ -123,4 +122,5 @@ func TestPatchJobs(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, work)
 	require.Equal(t, (float64)(1), work["workers"])
+
 }

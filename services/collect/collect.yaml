@@ -1,5 +1,60 @@
 components:
   schemas:
+    baseJob:
+      properties:
+        connectorID:
+          description: The ID of the connector used in the job.
+          title: connectorID
+          type: string
+        createUserID:
+          nullable: true
+          readOnly: true
+          title: createUserID
+          type: string
+          x-omitempty: false
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          title: id
+          type: string
+        lastModifiedAt:
+          format: date-time
+          readOnly: true
+          type: string
+        lastUpdateUserID:
+          nullable: true
+          readOnly: true
+          title: lastUpdateUserID
+          type: string
+          x-omitempty: false
+        name:
+          maxLength: 80
+          minLength: 3
+          pattern: ^[a-zA-Z][\w-\.]*$
+          title: name
+          type: string
+        schedule:
+          description: The cron schedule, in UTC time format.
+          title: schedule
+          type: string
+        scheduled:
+          default: true
+          description: Defines whether a job is scheduled or not
+          title: scheduled
+          type: boolean
+        tenant:
+          readOnly: true
+          title: tenant
+          type: string
+      required:
+      - name
+      - connectorID
+      - schedule
+      title: job
+      type: object
     connector:
       properties:
         description:
@@ -92,6 +147,19 @@ components:
             pattern: ^[a-zA-Z][\w-\.]*$
             title: name
             type: string
+          schedule:
+            description: The cron schedule, in UTC time format.
+            title: schedule
+            type: string
+          scheduled:
+            default: true
+            description: Defines whether a job is scheduled or not
+            title: scheduled
+            type: boolean
+          tenant:
+            readOnly: true
+            title: tenant
+            type: string
           parameters:
             description: The configuration of the connector used in the job.
             title: parameters
@@ -110,13 +178,9 @@ components:
                 title: staticScale
                 type: object
             required:
-            - static
+              - static
             title: scalePolicy
             type: object
-          schedule:
-            description: The cron schedule, in UTC time format.
-            title: schedule
-            type: string
         required:
         - name
         - connectorID
@@ -147,15 +211,6 @@ components:
               type: object
             title: eventExtraFields
             type: array
-          scheduled:
-            default: true
-            description: Defines whether a job is scheduled or not
-            title: scheduled
-            type: boolean
-          tenant:
-            readOnly: true
-            title: tenant
-            type: string
         type: object
     jobPatch:
       allOf:
@@ -280,7 +335,7 @@ info:
   description: With the Splunk Cloud Collect service, you can manage how data collection
     jobs ingest event and metric data.
   title: Collect Service
-  version: v1beta1.5
+  version: v1beta1.6
 openapi: 3.0.0
 paths:
   /{tenant}/collect/v1beta1/jobs:
@@ -390,11 +445,12 @@ paths:
           content:
             application/json:
               schema:
-                description: List of jobs.
+                description: List of job summaries i.e. scheduling informations, owner,
+                  updates, connector.
                 properties:
                   data:
                     items:
-                      $ref: '#/components/schemas/job'
+                      $ref: '#/components/schemas/baseJob'
                     title: data
                     type: array
                 title: listJobsResponse
@@ -646,7 +702,7 @@ paths:
                 - data
                 title: singleJobResponse
                 type: object
-          description: Returns a single job.
+          description: Returns a job with all details.
         "400":
           content:
             application/json:
@@ -823,7 +879,7 @@ paths:
                 - data
                 title: singleJobResponse
                 type: object
-          description: Returns a single job.
+          description: Returns a job with all details.
         "401":
           content:
             application/json:
@@ -916,7 +972,7 @@ paths:
                 - data
                 title: singleJobResponse
                 type: object
-          description: Returns a single job.
+          description: Returns a job with all details.
         "400":
           content:
             application/json:
@@ -975,4 +1031,4 @@ paths:
       summary: Modifies a job based on the job ID.
       x-authz-scope: collect.jobs.update
 
-# Retrieved from scp-openapi commit b3828dc2e7ca8bea008c4f5c8265fa50a8b7c267 path: collect/openapi.yaml
+# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: collect/openapi.yaml

@@ -164,7 +164,7 @@ components:
           type: string
         fromName:
           description: Optional text providing a human-friendly name for the sender.
-            Must be less than or equal to 20 characters.
+            Must be less than or equal to 81 characters.
           type: string
         members:
           description: An array of tenant member names, whose profile email addresses
@@ -306,7 +306,7 @@ info:
   description: |
     With the Splunk Cloud Action service, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
   title: Action Service
-  version: v1beta2.6
+  version: v1beta2.7
 openapi: 3.0.0
 paths:
   /{tenant}/action/v1beta2/actions:
@@ -606,4 +606,4 @@ paths:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: action/openapi.yaml
+# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: action/openapi.yaml

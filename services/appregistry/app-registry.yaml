@@ -63,6 +63,7 @@ components:
           items:
             format: uri
             type: string
+          maxItems: 10
           type: array
         setupUrl:
           description: URL to redirect to after a subscription is created.
@@ -843,4 +844,4 @@ paths:
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: app-registry/openapi.yaml
+# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: app-registry/openapi.yaml
