@@ -29,7 +29,6 @@ class TestCustomHostAndPort(unittest.TestCase):
     def test_get_spec_with_certs(self):
         """This should pass but not use the certs and run on https
             default insecure=false
-            default scheme=https
             set ca-cert CERT_FILE
         """
         code, _, _ = test.scloud("set", "ca-cert", CERT_FILE)
@@ -41,7 +40,6 @@ class TestCustomHostAndPort(unittest.TestCase):
     def test_get_spec_with_certs_insecure(self):
             """This should pass but not use the certs and run on https
                 insecure=true
-                default scheme=https
                 set ca-cert CERT_FILE
             """
             code, _, _ = test.scloud("set", "insecure", "true")
@@ -56,23 +54,10 @@ class TestCustomHostAndPort(unittest.TestCase):
     def test_get_spec_with_cert_flags(self):
         """This should pass but not use the certs and run on https
             default insecure=false
-            default scheme=https
             -ca-cert=CERT_FILE
         """
         code, results, err = test.scloud("-ca-cert", CERT_FILE, "search", "get-spec-json")
         self.assertEqual(0, code)
-
-    def test_get_spec_with_cert_flags_host_ip(self):
-        """This should fail but not use the certs and run on https
-            default insecure=false
-            default scheme=https
-            -ca-cert=CERT_FILE
-            -host=52.13.129.113
-
-            $ scloud -host=52.13.129.113 -insecure=false -logtostderr search get-spec-json
-        """
-        code, results, err = test.scloud("-host", "127.0.0.1", "-insecure", "false", "-ca-cert", CERT_FILE, "search", "get-spec-json")
-        self.assertEqual(1, code)
 
 
 if __name__ == "__main__":
