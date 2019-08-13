@@ -33,7 +33,7 @@ tmp/
 cicd/docs/node_modules
 cicd/docs/build
 cicd/docs/package.json
-./docs/
+docs/
 
 # scloud
 bin

@@ -62,5 +62,5 @@ npm add --no-save @splunk/cicd-tools --registry "${ARTIFACTORY_NPM_REGISTRY}"
 ####################################################################################################
 # Publish docs to artifactory with @splunk/cicd-tools/cicd-publish-docs
 ####################################################################################################
-npm cicd-publish-docs --force ../../docs/
+npx cicd-publish-docs --force ../../docs/
 echo "Docs built and packaged into $(dirname "$0")/build"
