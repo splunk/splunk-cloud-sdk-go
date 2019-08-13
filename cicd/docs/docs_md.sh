@@ -20,8 +20,13 @@ DOC_INDEX="
 for PACKAGE in $GO_NON_TEST_NON_EXAMPLE_PACKAGES
 do
     DOC_FILE=$(echo $PACKAGE | sed "s/[\.|\/|-]/_/g").md
-    godocdown $PACKAGE > docs/pkg/$DOC_FILE
+    PKG_LOC=$(echo $PACKAGE | sed "s/github\.com\/splunk\/splunk-cloud-sdk-go/./g")
+    echo "running $GOPATH/bin/godocdown $PKG_LOC > docs/pkg/$DOC_FILE ..."
+    # escape . and / characters for replacing in the next step
+    PACKAGE_ESC=$(echo $PACKAGE | sed 's|\.|\\.|g')
+    $GOPATH/bin/godocdown $PKG_LOC | sed "s|import \"\.\"|import \"$PACKAGE_ESC\"|g" > docs/pkg/$DOC_FILE
     echo "Wrote docs for $PACKAGE to docs/pkg/$DOC_FILE"
+    echo ""
     DOC_INDEX+="* [$PACKAGE](pkg/$DOC_FILE)
 "
 done

@@ -46,7 +46,7 @@ do
         archive_file=${PWD}/${ARCHIVE_DIR}/scloud_${TAG}_${os}_${arch}
         echo "Building ${target_file}";
         # The -s flag strips debug symbols from Linux, -w from DWARF (darwin). This reduces binary size by about half.
-        env GOOS=${os} GOARCH=${arch} go build -ldflags "-s -w" -a -o ${target_file} ${SCLOUD_SRC_PATH}/cli
+        env GOOS=${os} GOARCH=${arch} GO111MODULE=on go build -ldflags "-s -w" -a -o ${target_file} ${SCLOUD_SRC_PATH}/cli
         if [[ 'windows' == ${os} ]]
         then
             pushd ${target_dir}
@@ -65,8 +65,41 @@ do
                 gpg2 --armor --detach-sign ${archive_file}.tar.gz
             fi
         fi
+        echo ""
     done
 done
+
+if [[ "$(uname -m)" == "x86_64" ]] ; then
+    myarch=amd64
+else
+    myarch=386
+fi
+if [[ "$OS" == "Windows_NT" ]] ; then
+	myos=windows
+    program_name='scloud.exe'
+else
+    program_name='scloud'
+	if [[ "$(uname -s)" == "Linux" ]] ; then
+		myos=linux
+	else
+		myos=darwin
+	fi
+fi
+
+myscloud="${TARGET_ROOT_DIR}/${myos}_${myarch}/${program_name}"
+echo "Testing binary for this environment: ${myscloud} ..."
+if ! [[ -f "${myscloud}" ]] ; then
+    echo "File not found: ${myscloud} , exiting ..."
+    exit 1
+fi
+${myscloud} version
+status=$?
+if [[ "${status}" -gt "0" ]] ; then
+    echo "Error running \"${myscloud} version\", exiting ..."
+    exit 1
+fi
+echo "Success."
+echo ""
 
 echo "Package archives created: "
 echo ""
