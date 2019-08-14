@@ -1,5 +1,13 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.0.0-beta.3
+### Non-breaking Changes
+* Services updated to latest version updates
+* GoSDK/Scloud support for ingest via file endpoint
+* GoSDK support for collect service
+* scloud appreg list-subscriptions command does not require kind as a required param
+* update scloud streams list templates command to include sortdir and sort field
+
 ## Version 1.0.0-beta.2
 ### Non-breaking Changes
 * Updated Provisioner service with spec changes for invites
