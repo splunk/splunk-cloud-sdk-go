@@ -1,12 +1,19 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.0.0-beta.3
+### Breaking Changes
+* Removed -host, -port, -scheme flags in favor of -host-url in scloud
 ### Non-breaking Changes
-* Services updated to latest version updates
+* Incorporated updates to services for latest versions
 * GoSDK/Scloud support for ingest via file endpoint
 * GoSDK support for collect service
+* Allow idp client in gosdk to disable TLS cert validation with -insecure
 * scloud appreg list-subscriptions command does not require kind as a required param
-* update scloud streams list templates command to include sortdir and sort field
+* Update scloud streams list templates command to include sort-dir and sort- field
+* Update scloud provisioner create-provision-job command, apps flag to be app instead and still be multivalued
+* Allow auth-urls to be specified in scloud
+### Bug fix
+* Fix issue with auth error handling which prevented errors from IACs token endpoint from being surfaced via sdk
 
 ## Version 1.0.0-beta.2
 ### Non-breaking Changes
