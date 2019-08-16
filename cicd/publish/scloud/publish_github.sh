@@ -23,10 +23,18 @@ if [ -z "${GITHUB_PROJECT}" ] ; then
 fi
 GITHUB_REPO="https://github.com/${GITHUB_ORG}/${GITHUB_PROJECT}"
 
-RELEASE_TAG="${CI_COMMIT_REF_NAME}"
+if [[ "$(uname)" == "Darwin" ]] ; then
+    # MacOS
+    SED_FLG="-E"
+else
+    # Linux
+    SED_FLG="-r"
+fi
+# Get release version from services/client_info.go e.g. v0.9.2
+RELEASE_TAG=v$(cat services/client_info.go | sed ${SED_FLG} -n 's/const Version = "([0-9]+\.[0-9]+\.[0-9]+.*)"/\1/p')
 if [ -n "${OVERRIDE_RELEASE_TAG}" ] ; then
+    echo "\$OVERRIDE_RELEASE_TAG was set so uploading cross-compiled artifacts to ${OVERRIDE_RELEASE_TAG} rather than the default for this tag (${RELEASE_TAG}) ..."
     RELEASE_TAG="${OVERRIDE_RELEASE_TAG}"
-    echo "\$OVERRIDE_RELEASE_TAG was set so uploading cross-compiled artifacts to ${OVERRIDE_RELEASE_TAG} rather than the default for this tag (${CI_COMMIT_REF_NAME}) ..."
 fi
 
 echo "Installing github-release ..."
