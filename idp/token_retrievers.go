@@ -51,6 +51,7 @@ func makeClient(idpHost string, insecure bool) *Client {
 		defaultAuthnPath,
 		defaultAuthorizePath,
 		defaultTokenPath,
+		defaultCsrfTokenPath,
 		insecure)
 }
 

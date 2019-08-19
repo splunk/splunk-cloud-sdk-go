@@ -131,6 +131,7 @@ const (
 	defaultAuthnPath     = "authn"
 	defaultAuthorizePath = "authorize"
 	defaultTokenPath     = "token"
+	defaultCsrfTokenPath = "csrfToken"
 )
 
 // Client captures url and route information for the IdP endpoints
@@ -139,12 +140,13 @@ type Client struct {
 	AuthnPath     string
 	AuthorizePath string
 	TokenPath     string
+	CsrfTokenPath string
 	Insecure      bool
 }
 
 // NewClient Returns a new IdP client object.
 //   providerURL: should be of the form https://example.com or optionally https://example.com:port
-func NewClient(providerURL string, authnPath string, authorizePath string, tokenPath string, insecure bool) *Client {
+func NewClient(providerURL string, authnPath string, authorizePath string, tokenPath string, csrfTokenPath string, insecure bool) *Client {
 	// Add a trailing slash if none
 	if providerURL[len(providerURL)-1:] != "/" {
 		providerURL = providerURL + "/"
@@ -158,11 +160,15 @@ func NewClient(providerURL string, authnPath string, authorizePath string, token
 	if tokenPath == "" {
 		tokenPath = defaultTokenPath
 	}
+	if csrfTokenPath == "" {
+		csrfTokenPath = defaultCsrfTokenPath
+	}
 	return &Client{
 		ProviderHost:  providerURL,
 		AuthnPath:     authnPath,
 		AuthorizePath: authorizePath,
 		TokenPath:     tokenPath,
+		CsrfTokenPath: csrfTokenPath,
 		Insecure:      insecure,
 	}
 }
@@ -225,7 +231,7 @@ func encode(value interface{}) (*strings.Reader, error) {
 	return strings.NewReader(string(data)), nil
 }
 
-func newPost(reqURL string, body interface{}) (*http.Request, error) {
+func newPost(reqURL string, body interface{}, cookies ...*http.Cookie) (*http.Request, error) {
 	reader, err := encode(body)
 	if err != nil {
 		return nil, err
@@ -236,11 +242,18 @@ func newPost(reqURL string, body interface{}) (*http.Request, error) {
 	}
 	request.Header.Add("Accept", "application/json")
 	request.Header.Add("Content-Type", "application/json")
+
+	if cookies != nil {
+		for _, cookie := range cookies {
+			request.Header.Add("Cookie", cookie.String())
+		}
+	}
+
 	return request, nil
 }
 
-func post(reqURL string, body interface{}, insecure bool) (*http.Response, error) {
-	request, err := newPost(reqURL, body)
+func post(reqURL string, body interface{}, insecure bool, cookies ...*http.Cookie) (*http.Response, error) {
+	request, err := newPost(reqURL, body, cookies...)
 	if err != nil {
 		return nil, err
 	}
@@ -298,14 +311,54 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 	return decode(response)
 }
 
+func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
+	response, err := get(c.makeURL(c.CsrfTokenPath), nil, c.Insecure)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
+	}
+	defer response.Body.Close()
+	data, err := load(response.Body)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "failed to parse response body from csrfToken endpoint")
+	}
+
+	if response.StatusCode != http.StatusOK {
+		msg := response.Status
+		if data != nil {
+			msg += "\nResponse body: \n"
+			for k, v := range data {
+				msg += fmt.Sprintf("%s:%s \n", k, v)
+			}
+		}
+		return "", nil, errors.Wrap(errors.New(msg), "unexpected status response from csrfToken endpoint")
+	}
+
+	csrfToken, err := gets(data, "csrf")
+	if err != nil {
+		return "", nil, errors.Wrap(err, "unable to get csrf data from csrfToken endpoint")
+	}
+
+	if response.Cookies() == nil {
+		return "", nil, errors.Wrap(errors.New("missing cookies"), "failed to get successful response from csrfToken endpoint")
+	}
+
+	return csrfToken, response.Cookies(), nil
+}
+
 // GetSessionToken Returns a one-time session token by authenticating using a
 // "primary" endpoint (/authn).
 func (c *Client) GetSessionToken(username, password string) (string, error) {
-	body := map[string]string{
-		"username": username,
-		"password": password}
+	csrfToken, cookies, err := c.GetCsrfToken()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
+	}
 
-	response, err := post(c.makeURL(c.AuthnPath), body, c.Insecure)
+	body := map[string]string{
+		"username":  username,
+		"password":  password,
+		"csrfToken": csrfToken}
+
+	response, err := post(c.makeURL(c.AuthnPath), body, c.Insecure, cookies...)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to get valid response from authn endpoint")
 	}

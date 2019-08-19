@@ -28,12 +28,12 @@ import (
 
 func TestNewClient(t *testing.T) {
 	const providerHost = "https://myhost.net/"
-	client := NewClient(providerHost, "custom/authn", "custom/authz", "custom/token", false)
+	client := NewClient(providerHost, "custom/authn", "custom/authz", "custom/token", "custom/csrfToken", false)
 	assert.Equal(t, client.ProviderHost, providerHost)
 	assert.Equal(t, client.AuthnPath, "custom/authn")
 	assert.Equal(t, client.AuthorizePath, "custom/authz")
 	assert.Equal(t, client.TokenPath, "custom/token")
-	clientEmptyParams := NewClient(providerHost, "", "", "", false)
+	clientEmptyParams := NewClient(providerHost, "", "", "", "", false)
 	assert.Equal(t, clientEmptyParams.ProviderHost, providerHost)
 	assert.Equal(t, clientEmptyParams.AuthnPath, defaultAuthnPath)
 	assert.Equal(t, clientEmptyParams.AuthorizePath, defaultAuthorizePath)
