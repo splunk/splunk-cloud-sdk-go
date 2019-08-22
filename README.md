@@ -4,7 +4,7 @@
 
 The Splunk Cloud software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud services with the Go programming language.
 
-To use Splunk Cloud SDKs, you must be included in the Splunk Investigates Beta Program.
+To use Splunk Cloud SDKs, you must be included in the Splunk Investigate Beta Program.
 Sign up here: https://si.scp.splunk.com/.
 
 # Splunk Cloud CLI
