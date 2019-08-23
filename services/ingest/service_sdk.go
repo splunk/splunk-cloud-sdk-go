@@ -13,14 +13,13 @@ import (
 	"sync"
 	"time"
 
+	"errors"
+
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 //
-import (
-	"errors"
-)
 
 func (s *Service) NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, dataSize int, maxErrorsAllowed int) (*BatchEventsSender, error) {
 	// Rather than return a super general error for both it will block on batchSize first
