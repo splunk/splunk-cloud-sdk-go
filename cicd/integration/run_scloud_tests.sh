@@ -20,12 +20,13 @@ else
 fi
 
 set +e
-go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
-            -covermode=count \
-            -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
-            github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli \
-            -timeout 10m \
-            -run '^(TestScloudBinaryWithCoverage)$'
+gotestsum --format short-verbose \
+          -- -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
+             -covermode=count \
+             -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
+             github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli \
+             -timeout 10m \
+             -run '^(TestScloudBinaryWithCoverage)$'
 result=$?
 
 if [[ -z "${CI_PROJECT_DIR}" ]] ; then

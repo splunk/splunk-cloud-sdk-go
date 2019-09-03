@@ -87,6 +87,8 @@ prereqs:
 	GO111MODULE=off go get github.com/rakyll/statik
 	echo "Installing golangci-lint .."
 	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	@echo "Installing gotestsum ..."
+	@go get gotest.tools/gotestsum
 
 statik:
 	@echo "Generate static assets .."
