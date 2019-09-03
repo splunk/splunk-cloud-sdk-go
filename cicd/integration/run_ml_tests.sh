@@ -32,10 +32,11 @@ else
 fi
 
 set +e
-go test -v -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
-            -covermode=count \
-            -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
-            ./test/not_gated/...
+gotestsum --format short-verbose \
+          -- -coverpkg $COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES \
+             -covermode=count \
+             -coverprofile=$FULL_INTEGRATION_TEST_CODECOV_PATH \
+             ./test/not_gated/...
 result=$?
 
 if [[ -z "${CI_PROJECT_DIR}" ]] ; then

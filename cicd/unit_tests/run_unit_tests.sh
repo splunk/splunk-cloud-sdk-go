@@ -26,7 +26,9 @@ do
     # echo $SANITIZED_PACKAGE_NAME
     # echo $COVERAGE_PACKAGE_OUTPUT_FILE
 
-    go test -v -covermode=count -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE
+    gotestsum --format short-verbose \
+              -- -covermode=count \
+                 -coverprofile=$COVERAGE_PACKAGE_OUTPUT_FILE $PACKAGE
 
     RESULT=$?
     if [ $RESULT -ne 0 ]
