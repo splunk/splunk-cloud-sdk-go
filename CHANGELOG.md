@@ -2,15 +2,15 @@
 
 ## Version 1.0.0-beta.4
 ### Breaking Changes
-*Updated KVStore PutRecord API call to remove Record version identifier
-*Update Catalog Annotations CRUD API calls to use a generic requestBody map[string]interface  in lieu of AnnotationPost for specifying AnnotationProperties
-*Update Login flow to use /csrfToken endpoint - IDP client now accepts a csrfTokenPath as well.
+* Update to KVStore PutRecord API call to remove Record version identifier
+* Update to Catalog Annotations CRUD API calls to use a generic requestBody map[string]interface  in lieu of AnnotationPost for specifying AnnotationProperties
+* Update Login flow to use /csrfToken endpoint - IDP client now accepts a csrfTokenPath as well.
 
 ### Non-breaking Changes
-*Updates corresponding to latest service versions
+* Updates corresponding to latest service versions
 
 ### Bug Fixes
-Response body not closed in the api calls to service
+* Response body not closed in the api calls to service
 
 ## Version 1.0.0-beta.3
 ### Breaking Changes
