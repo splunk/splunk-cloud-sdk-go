@@ -102,6 +102,13 @@ components:
       required: false
       schema:
         type: string
+    responseMode:
+      description: Type of response, one of query, fragment, json
+      in: query
+      name: response_mode
+      required: false
+      schema:
+        type: string
     responseType:
       description: Type of authorization flow
       in: query
@@ -273,7 +280,7 @@ components:
         name:
           maxLength: 36
           minLength: 4
-          pattern: ^[_a-z][_\.a-z0-9]*$
+          pattern: ^[_a-z][_.a-z0-9]*$
           type: string
         principal:
           minLength: 2
@@ -288,7 +295,7 @@ components:
         name:
           maxLength: 128
           minLength: 4
-          pattern: ^[_a-z][_\.a-z0-9]*$
+          pattern: ^[_a-z]([.]?[_a-z0-9])*$
           type: string
       required:
       - name
@@ -311,7 +318,7 @@ components:
         name:
           maxLength: 128
           minLength: 4
-          pattern: ^[_a-z][_\.a-z0-9]*$
+          pattern: ^[_a-z]([.]?[_a-z0-9])*$
           type: string
       required:
       - name
@@ -321,7 +328,7 @@ components:
         app:
           maxLength: 36
           minLength: 4
-          pattern: ^[_a-z][_\.a-z0-9]*$
+          pattern: ^[_a-z][_.a-z0-9]*$
           type: string
         appPermissions:
           items:
@@ -464,6 +471,8 @@ components:
           type: string
         addedBy:
           type: string
+        groupCount:
+          type: integer
         name:
           type: string
         profile:
@@ -475,6 +484,7 @@ components:
       - name
       - addedAt
       - addedBy
+      - groupCount
       type: object
     PermissionSet:
       properties:
@@ -543,6 +553,25 @@ components:
           type: string
         fullName:
           type: string
+      type: object
+    PrincipalTos:
+      properties:
+        hasAccepted:
+          type: boolean
+        principal:
+          type: string
+      required:
+      - principal
+      - hasAccepted
+      type: object
+    RevokePrincipalBody:
+      properties:
+        principal:
+          minLength: 2
+          type: string
+          x-case-insensitive: true
+      required:
+      - principal
       type: object
     Role:
       properties:
@@ -707,7 +736,7 @@ info:
   description: With the Splunk Cloud Identity and Access Control (IAC) Service, you
     can authenticate and authorize Splunk API users.
   title: Identity and Access Control
-  version: v2beta1.9
+  version: v2beta1.10
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1461,4 +1490,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: identity/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: identity/v2beta1/openapi.yaml

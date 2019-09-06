@@ -70,7 +70,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 // Test CreatePipeline streams endpoint
 func TestIntegrationCreatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinea%d", testutils.TimeSec)
 
 	// Create a test pipeline and verify that the pipeline was created
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -105,7 +105,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 // Test ActivatePipeline streams endpoint
 func TestIntegrationActivatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelineb%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -139,7 +139,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 // Test DeactivatePipeline streams endpoint
 func TestIntegrationDeactivatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinec%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -186,7 +186,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 // Test ReactivatePipeline streams endpoint
 func TestIntegrationReactivatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelined%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -231,8 +231,8 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 
 // Test GetPipelinesStatus streams endpoint
 func TestIntegrationGetPipelinesStatus(t *testing.T) {
-	pipelineName1 := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
-	pipelineName2 := fmt.Sprintf("testPipeline02%d", testutils.TimeSec)
+	pipelineName1 := fmt.Sprintf("testPipelineab%d", testutils.TimeSec)
+	pipelineName2 := fmt.Sprintf("testPipelinecd%d", testutils.TimeSec)
 
 	// Create two test pipelines
 	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName1, testPipelineDescription))
@@ -300,7 +300,7 @@ func TestIntegrationMergePipelines(t *testing.T) {
 
 // Test UpdatePipeline streams endpoint
 func TestIntegrationUpdatePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinfe%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -324,7 +324,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 // Test DeletePipeline streams endpoint
 func TestIntegrationDeletePipeline(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelineg%d", testutils.TimeSec)
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
@@ -347,7 +347,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 
 // Test Get Input Schema streams endpoint
 func TestIntegrationGetInputSchema(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelineh%d", testutils.TimeSec)
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
@@ -397,7 +397,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 
 // Test Get Output Schema streams endpoint
 func TestIntegrationGetOutputSchema(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinei%d", testutils.TimeSec)
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
 
@@ -460,7 +460,7 @@ func TestIntegrationGetRegistry(t *testing.T) {
 
 //Test Get Latest pipeline metrics endpoint
 func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinej%d", testutils.TimeSec)
 
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
@@ -510,6 +510,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		time.Sleep(20 * time.Second)
 		cnt++
 	}
+
 }
 
 //Test Latest Preview Session Metrics
@@ -581,7 +582,7 @@ func TestIntegrationCRUEConnections(t *testing.T) {
 
 // Test Validate Upl Response streams endpoint
 func TestIntegrationValidateResponse(t *testing.T) {
-	pipelineName := fmt.Sprintf("testPipeline%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelinek%d", testutils.TimeSec)
 
 	uplPipeline := createTestUplPipeline(t)
 	require.NotEmpty(t, uplPipeline)
@@ -805,7 +806,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 	//assert.NotEmpty(t, (result.Categories)[0].Id)
 	//assert.NotEmpty(t, (result.Types)[0].Type)
 
-	pipelineName := fmt.Sprintf("testPipeline01%d", testutils.TimeSec)
+	pipelineName := fmt.Sprintf("testPipelineef%d", testutils.TimeSec)
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
 	require.Nil(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)

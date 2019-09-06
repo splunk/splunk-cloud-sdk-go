@@ -47,37 +47,37 @@ type Servicer interface {
 		Create a new annotation for a specific dashboard.
 		Parameters:
 			dashboardid: ID of a dashboard.
-			annotationPost: The JSON representation of the annotation to be persisted.
+			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDashboardbyId(dashboardid string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDashboardbyId(dashboardid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDashboardsByResourceName - catalog service endpoint
 		Create a new annotation for a specific dataset.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			annotationPost: The JSON representation of the annotation to be persisted.
+			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetById - catalog service endpoint
 		Create a new annotation for a specific dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
-			annotationPost: The JSON representation of the annotation to be persisted.
+			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDatasetById(datasetid string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDatasetById(datasetid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetByResourceName - catalog service endpoint
 		Create a new annotation for a specific dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			annotationPost: The JSON representation of the annotation to be persisted.
+			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDatasetByResourceName(datasetresourcename string, annotationPost AnnotationPost, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateDashboard - catalog service endpoint
 		Create a new dashboard.

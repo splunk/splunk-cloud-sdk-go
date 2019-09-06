@@ -40,6 +40,13 @@ type Servicer interface {
 	*/
 	CompileDSL(dslCompilationRequest DslCompilationRequest, resp ...*http.Response) (*UplPipeline, error)
 	/*
+		CompileSPL - Compiles SPL2 and returns Streams JSON.
+		Parameters:
+			splCompileRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CompileSPL(splCompileRequest SplCompileRequest, resp ...*http.Response) (*UplPipeline, error)
+	/*
 		CreateConnection - Create a new DSP connection.
 		Parameters:
 			connectionRequest: Request JSON

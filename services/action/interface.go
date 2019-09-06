@@ -46,7 +46,7 @@ type Servicer interface {
 	*/
 	GetAction(actionName string, resp ...*http.Response) (*Action, error)
 	/*
-		GetActionStatus - Returns the status of a triggered action.
+		GetActionStatus - Returns the status of a triggered action.  Available for 4 days after last status change.
 		Parameters:
 			actionName: The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.
 			statusId: The ID of the action status.
@@ -54,7 +54,7 @@ type Servicer interface {
 	*/
 	GetActionStatus(actionName string, statusId string, resp ...*http.Response) (*ActionResult, error)
 	/*
-		GetActionStatusDetails - Returns the status details of the triggered email action.
+		GetActionStatusDetails - Returns the status details of the triggered email action.  Available for 4 days after last status change.
 		Parameters:
 			actionName: The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.
 			statusId: The ID of the action status.
