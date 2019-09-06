@@ -899,6 +899,34 @@ components:
           example: ""
           type: string
       type: object
+    SplCompileRequest:
+      description: ""
+      properties:
+        spl:
+          description: The SPL2 representation of a pipeline or function parameters.
+          example: ""
+          type: string
+        syntax:
+          description: The parse parameters as arguments to this SPL2 command
+          enum:
+          - UPL
+          - DSL
+          - SPL
+          - EVAL
+          - WHERE
+          - TIMECHART
+          - FIELDS
+          - MVEXPAND
+          - REX
+          - BIN
+          - RENAME
+          - LITERAL
+          - UNKNOWN
+          example: ""
+          type: string
+      required:
+      - spl
+      type: object
     TemplatePatchRequest:
       description: ""
       properties:
@@ -976,6 +1004,11 @@ components:
       properties:
         elementType:
           properties: {}
+        optional:
+          type: boolean
+        position:
+          format: int32
+          type: integer
         type:
           type: string
       required:
@@ -2115,6 +2148,47 @@ paths:
       tags:
       - apiv-2-beta-1-pipeline-controller
       x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v2beta1/pipelines/compile-spl:
+    post:
+      deprecated: false
+      operationId: compileSPL
+      parameters:
+      - description: ID of the tenant
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SplCompileRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UplPipeline'
+          description: OK
+        "201":
+          content: {}
+          description: Created
+        "401":
+          content: {}
+          description: Unauthorized
+        "403":
+          content: {}
+          description: Forbidden
+        "404":
+          content: {}
+          description: Not Found
+      summary: Compiles SPL2 and returns Streams JSON.
+      tags:
+      - apiv-2-beta-1-pipeline-controller
+      x-authz-scope: streams.pipelines.update
   /{tenantId}/streams/v2beta1/pipelines/expand:
     post:
       deprecated: false
@@ -2649,20 +2723,11 @@ paths:
         in: query
         name: sortField
         schema:
-          enum:
-          - id
-          - name
-          - description
-          - createUserId
-          - createDate
           type: string
       - description: sortDir
         in: query
         name: sortDir
         schema:
-          enum:
-          - asc
-          - desc
           type: string
       responses:
         "200":
@@ -2903,4 +2968,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: streams/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: streams/v2beta1/openapi.yaml

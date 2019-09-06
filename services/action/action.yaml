@@ -12,7 +12,7 @@ components:
         type: string
     AuthorizationHeaderParam:
       description: The access token, which is obtained from a known identity provider.
-      in: header
+      in: headeråç
       name: Authorization
       required: true
       schema:
@@ -20,7 +20,7 @@ components:
         type: string
     EntryName:
       description: The name of the trigger map entry.
-      in: path
+      in: pathå
       name: entry_name
       required: true
       schema:
@@ -159,12 +159,13 @@ components:
           description: Optional text to send as the text/plain part of the email.
             If this field is not set for an email action, the Action service converts
             the value from the body field to text and sends that as the text/plain
-            part when triggering the action.
+            part when triggering the action. You can use a template in this field.
           example: Hello, this is my test email.
           type: string
         fromName:
           description: Optional text providing a human-friendly name for the sender.
-            Must be less than or equal to 81 characters.
+            Must be less than or equal to 81 characters. You can use a template in
+            this field.
           type: string
         members:
           description: An array of tenant member names, whose profile email addresses
@@ -173,6 +174,7 @@ components:
             type: string
           type: array
         subject:
+          description: The subject of the email. You can use a template in this field.
           type: string
         title:
           description: A human-readable title for the action. Must be less than or
@@ -306,7 +308,7 @@ info:
   description: |
     With the Splunk Cloud Action service, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
   title: Action Service
-  version: v1beta2.7
+  version: v1beta2.9
 openapi: 3.0.0
 paths:
   /{tenant}/action/v1beta2/actions:
@@ -497,7 +499,8 @@ paths:
           headers:
             Location:
               description: The URL of the run status, with the format "{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}".
-                Send a GET request to this URL to check the status.
+                Send a GET request to this URL to check the status, which will be
+                available for 4 days.
               schema:
                 type: string
         "400":
@@ -540,7 +543,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status of a triggered action.
+      summary: Returns the status of a triggered action.  Available for 4 days after
+        last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -573,7 +577,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status details of the triggered email action.
+      summary: Returns the status details of the triggered email action.  Available
+        for 4 days after last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -606,4 +611,4 @@ paths:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: action/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: action/v1beta2/openapi.yaml

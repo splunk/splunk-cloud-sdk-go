@@ -253,6 +253,8 @@ components:
           $ref: '#/components/schemas/AliasActionKind'
       type: object
     Annotation:
+      additionalProperties:
+        type: string
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/MetadataProperties'
@@ -280,6 +282,8 @@ components:
       - properties
       type: object
     AnnotationPOST:
+      additionalProperties:
+        type: string
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/AnnotationTypeResourceName'
@@ -314,6 +318,13 @@ components:
       properties:
         annotationtypeid:
           description: The annotation type ID.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        dashboardid:
+          description: The dashboard ID.
           example: 5bc1a6fefee0d854a4188125
           format: mongo-object-id
           maxLength: 24
@@ -2410,7 +2421,7 @@ info:
   description: With the Metadata Catalog you can create and manage knowledge objects
     such as datasets, fields, rules, actions, dashboards, and workflows.
   title: Metadata Catalog
-  version: v2beta1.3
+  version: v2beta1.4
 openapi: 3.0.0
 paths:
   /{tenant}/catalog/v2beta1/dashboards:
@@ -2433,6 +2444,13 @@ paths:
         schema:
           minimum: 1
           type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
           order is the default.
@@ -2454,6 +2472,8 @@ paths:
           description: A list of dashboards has been returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.dashboards.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2480,6 +2500,8 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The dashboard is already present.
+      x-authz-scope:
+      - catalog.dashboards.create
   /{tenant}/catalog/v2beta1/dashboards/{dashboardid}:
     delete:
       description: Delete the dashboard with the specified ID.
@@ -2491,6 +2513,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The dashboard was not found.
+      x-authz-scope:
+      - catalog.dashboards.delete
+      - catalog.dashboards.read
     get:
       description: Return information about a dashboard with the specified ID.
       operationId: getDashboardById
@@ -2503,6 +2528,8 @@ paths:
           description: Information about a dashboard with the specified ID was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.dashboards.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2528,6 +2555,82 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The dashboard was not found.
+      x-authz-scope:
+      - catalog.dashboards.update
+      - catalog.dashboards.read
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardid}/annotations:
+    get:
+      description: Return the set of annotations that are part of a dashboard.
+      operationId: listAnnotationsForDashboardById
+      parameters:
+      - description: A filter query to apply to the annotations.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Annotation'
+                type: array
+          description: An array of annotations matching the dashboard was returned.
+        "400":
+          description: The filter you have applied is invalid.
+        "401":
+          description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.annotations.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardID'
+    post:
+      description: Create a new annotation for a specific dashboard.
+      operationId: createAnnotationForDashboardbyId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationPOST'
+        description: The JSON representation of the annotation to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: An annotation has been created for the specified dashboard.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The annotation is already present.
+      x-authz-scope:
+      - catalog.annotationtypes.read
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardid}/annotations/{annotationid}:
+    delete:
+      description: Delete a specific annotation of a dashboard.
+      operationId: deleteAnnotationOfDashboardById
+      responses:
+        "204":
+          description: The annotation with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A annotation with the specified ID was not found.
+      x-authz-scope:
+      - catalog.annotations.delete
+      - catalog.annotations.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardID'
+    - $ref: '#/components/parameters/AnnotationID'
   /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}:
     delete:
       description: Delete the dashboard with the specified resource name.
@@ -2539,6 +2642,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The dashboard was not found.
+      x-authz-scope:
+      - catalog.dashboards.delete
+      - catalog.dashboards.read
     get:
       description: Return information about a dashboard with the specified resource
         name.
@@ -2553,6 +2659,8 @@ paths:
             was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.dashboards.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2574,6 +2682,84 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The dashboard was not found.
+      x-authz-scope:
+      - catalog.dashboards.update
+      - catalog.dashboards.read
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}/annotations:
+    get:
+      description: Return the set of annotations that are part of a dashboard.
+      operationId: listAnnotationsForDashboardByResourceName
+      parameters:
+      - description: A filter query to apply to the annotations.
+        in: query
+        name: filter
+        required: false
+        schema:
+          format: spl-predicate-expression
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Annotation'
+                type: array
+          description: An array of annotations matching the dashboard was returned.
+        "400":
+          description: The filter you have applied is invalid.
+        "401":
+          description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.annotations.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardResourceName'
+    post:
+      description: Create a new annotation for a specific dataset.
+      operationId: createAnnotationForDashboardsByResourceName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnotationPOST'
+        description: The JSON representation of the annotation to be persisted.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Annotation'
+          description: An annotation has been created for the specified dashboard.
+        "400":
+          description: The annotation is invalid.
+        "401":
+          description: The operation is unauthorized.
+        "409":
+          description: The action is already present.
+      x-authz-scope:
+      - catalog.annotationtypes.read
+  /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}/annotations/{annotationid}:
+    delete:
+      description: Delete a specific annotation of a dashboard.
+      operationId: deleteAnnotationOfDashboardByResourceName
+      responses:
+        "204":
+          description: The annotation with the specified ID was deleted.
+        "401":
+          description: The operation is unauthorized.
+        "404":
+          description: A annotation with the specified ID was not found.
+      x-authz-scope:
+      - catalog.annotations.delete
+      - catalog.annotations.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/Tenant'
+    - $ref: '#/components/parameters/DashboardResourceName'
+    - $ref: '#/components/parameters/AnnotationID'
   /{tenant}/catalog/v2beta1/datasets:
     get:
       description: Returns a list of all datasets, unless you specify a filter. Use
@@ -2594,6 +2780,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -2616,6 +2809,8 @@ paths:
           description: A list of datasets that match your filter has been returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2644,6 +2839,8 @@ paths:
           description: The dataset is already present.
         "429":
           description: Too many concurrent requests to create datasets.
+      x-authz-scope:
+      - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetid}:
     delete:
       description: Delete a specific dataset. Deleting a dataset also deletes its
@@ -2659,6 +2856,9 @@ paths:
         "405":
           description: The dataset with the specified ID cannot be deleted because
             there are external objects dependent on the dataset.
+      x-authz-scope:
+      - catalog.datasets.delete
+      - catalog.datasets.read
     get:
       description: Return information about the dataset with the specified ID.
       operationId: getDatasetById
@@ -2673,6 +2873,8 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A dataset with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2696,18 +2898,46 @@ paths:
           description: The dataset with the specified ID was updated.
         "404":
           description: The dataset with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations:
     get:
       description: Return the set of annotations that are part of a dataset.
       operationId: listAnnotationsForDatasetById
       parameters:
-      - description: A filter query to apply to the annotations.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -2721,6 +2951,8 @@ paths:
           description: The filter you have applied is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.annotations.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2746,6 +2978,8 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The annotation is already present.
+      x-authz-scope:
+      - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations/{annotationid}:
     delete:
       description: Delete a specific annotation of a dataset.
@@ -2757,6 +2991,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A annotation with the specified ID was not found.
+      x-authz-scope:
+      - catalog.annotations.delete
+      - catalog.annotations.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2782,6 +3019,13 @@ paths:
         schema:
           minimum: 1
           type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
           order is the default.
@@ -2805,6 +3049,8 @@ paths:
           description: The filter is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2832,6 +3078,9 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The field is already present.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/fields/{fieldid}:
     delete:
       description: Delete a field that is part of a specific dataset.
@@ -2843,6 +3092,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The field with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
     get:
       description: Return a field that is part of a specific dataset.
       operationId: getFieldByIdForDatasetById
@@ -2855,6 +3107,8 @@ paths:
           description: A field with the specified ID was retrieved.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2879,6 +3133,9 @@ paths:
           description: A field with the specified ID was updated.
         "404":
           description: The field with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/imported-by:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -2907,6 +3164,8 @@ paths:
           description: The dataset with the specified ID was not found.
         "409":
           description: The dataset cannot be imported because it is already present.
+      x-authz-scope:
+      - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/importedby:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -2935,6 +3194,8 @@ paths:
           description: The dataset with the specified ID was not found.
         "409":
           description: The dataset cannot be imported because it is already present.
+      x-authz-scope:
+      - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}:
     delete:
       description: Delete the dataset with the specified resource name, along with
@@ -2951,6 +3212,9 @@ paths:
         "405":
           description: The dataset with the specified ID cannot be deleted because
             there are external objects dependent on the dataset.
+      x-authz-scope:
+      - catalog.datasets.delete
+      - catalog.datasets.read
     get:
       description: Return the dataset with the specified resource name. For the default
         module, the resource name format is datasetName. Otherwise, the resource name
@@ -2967,6 +3231,8 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A dataset with the specified resource name was not found.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -2992,18 +3258,46 @@ paths:
           description: A dataset with the specified resource name was updated.
         "404":
           description: A dataset with the specified resource name was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations:
     get:
       description: Return the set of annotations that are part of a dataset.
       operationId: listAnnotationsForDatasetByResourceName
       parameters:
-      - description: A filter query to apply to the annotations.
+      - description: A filter to apply to the results list. The filter must be a SPL
+          predicate expression.
         in: query
         name: filter
         required: false
         schema:
           format: spl-predicate-expression
           type: string
+      - description: The maximum number of results to return.
+        in: query
+        name: count
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+      - description: A list of fields to order the results by.  You can specify either
+          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          order is the default.
+        in: query
+        name: orderby
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
       responses:
         "200":
           content:
@@ -3017,6 +3311,8 @@ paths:
           description: The filter you have applied is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.annotations.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3044,6 +3340,8 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The action is already present.
+      x-authz-scope:
+      - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations/{annotationid}:
     delete:
       description: Delete a specific annotation of a dataset.
@@ -3055,6 +3353,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A annotation with the specified ID was not found.
+      x-authz-scope:
+      - catalog.annotations.delete
+      - catalog.annotations.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3080,6 +3381,13 @@ paths:
         schema:
           minimum: 1
           type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
           order is the default.
@@ -3103,6 +3411,8 @@ paths:
           description: The filter is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3130,6 +3440,9 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The field is already present.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/fields/{fieldid}:
     delete:
       description: Delete a field that is part of a specific dataset.
@@ -3141,6 +3454,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The field with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
     get:
       description: Return a field that is part of a specific dataset.
       operationId: getFieldByIdForDataset
@@ -3153,6 +3469,8 @@ paths:
           description: A field with the specified ID was retrieved.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3177,6 +3495,9 @@ paths:
           description: A field with the specified ID was updated.
         "404":
           description: The field with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.update
+      - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/imported-by:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -3205,6 +3526,8 @@ paths:
           description: The dataset with the specified ID was not found.
         "409":
           description: The dataset cannot be imported because it is already present.
+      x-authz-scope:
+      - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/importedby:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -3233,6 +3556,8 @@ paths:
           description: The dataset with the specified ID was not found.
         "409":
           description: The dataset cannot be imported because it is already present.
+      x-authz-scope:
+      - catalog.datasets.create
   /{tenant}/catalog/v2beta1/fields:
     get:
       description: Get a list of all fields in the Catalog.
@@ -3252,6 +3577,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -3274,6 +3606,8 @@ paths:
           description: A list of fields matching the query was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3292,6 +3626,8 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The field with the specified ID was not found.
+      x-authz-scope:
+      - catalog.datasets.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3320,6 +3656,9 @@ paths:
           description: A list of modules matching your filter has been returned.
         "401":
           description: Unauthorized operation.
+      x-authz-scope:
+      - catalog.datasets.read
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3343,6 +3682,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -3462,6 +3808,13 @@ paths:
         schema:
           minimum: 1
           type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
           order is the default.
@@ -3483,6 +3836,8 @@ paths:
           description: A list of rules matching the query filter was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3509,6 +3864,8 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The rule is already present.
+      x-authz-scope:
+      - catalog.rules.create
   /{tenant}/catalog/v2beta1/rules/{ruleid}:
     delete:
       description: Delete a specific rule. Deleting a rule also deleletes any objects
@@ -3523,6 +3880,9 @@ paths:
           description: A rule with the specified ID was not found.
         "405":
           description: The rule cannot be deleted because it has dependencies.
+      x-authz-scope:
+      - catalog.rules.delete
+      - catalog.rules.read
     get:
       description: Get information about a specific rule.
       operationId: getRuleById
@@ -3537,6 +3897,8 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A rule with the specified rule ID was not found.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3560,6 +3922,9 @@ paths:
           description: The rule was updated.
         "404":
           description: A rule matching the specified ID was not found.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleid}/actions:
     get:
       description: Return the set of actions that are part of a rule.
@@ -3579,6 +3944,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -3603,6 +3975,8 @@ paths:
           description: The filter you have applied is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3630,6 +4004,9 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The action is already present.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleid}/actions/{actionid}:
     delete:
       description: Delete an action that is part of a specific rule.
@@ -3641,6 +4018,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The action was not found.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
     get:
       description: Return information about an action that is part of a specific rule.
       operationId: getActionByIdForRuleById
@@ -3653,6 +4033,8 @@ paths:
           description: An action matching the specified rule ID was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3677,6 +4059,9 @@ paths:
           description: The action was updated.
         "404":
           description: The action was not found.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleresourcename}:
     delete:
       description: Delete the rule with the specified resource name and its dependencies.
@@ -3692,6 +4077,9 @@ paths:
         "405":
           description: The rule with the specified resource name cannot be deleted
             because of dependencies.
+      x-authz-scope:
+      - catalog.rules.delete
+      - catalog.rules.read
     get:
       description: Get a rule with a specified resource name.
       operationId: getRule
@@ -3706,6 +4094,8 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: A rule with the specified resource name was not found.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3729,6 +4119,9 @@ paths:
           description: The rule with the specified resource name was updated.
         "404":
           description: The rule with the specified resource was not found.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions:
     get:
       description: Return the list of actions that are part of a specified rule.
@@ -3748,6 +4141,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -3773,6 +4173,8 @@ paths:
           description: The filter query is invalid.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3801,6 +4203,9 @@ paths:
           description: The operation is unauthorized.
         "409":
           description: The action is already present.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions/{actionid}:
     delete:
       description: Delete an action on a rule.
@@ -3812,6 +4217,9 @@ paths:
           description: The operation is unauthorized.
         "404":
           description: The specified action does not exist.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
     get:
       description: Return an action that is part of a specified rule.
       operationId: getActionByIdForRule
@@ -3824,6 +4232,8 @@ paths:
           description: An action matching the specified ID was returned.
         "401":
           description: The operation is unauthorized.
+      x-authz-scope:
+      - catalog.rules.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
@@ -3848,6 +4258,9 @@ paths:
           description: The specified action was updated.
         "404":
           description: The specified action was not found.
+      x-authz-scope:
+      - catalog.rules.update
+      - catalog.rules.read
   /{tenant}/catalog/v2beta1/workflows:
     get:
       description: Return a list of Machine Learning workflow configurations.
@@ -3867,6 +4280,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -3980,6 +4400,13 @@ paths:
         required: false
         schema:
           minimum: 1
+          type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
@@ -4097,6 +4524,13 @@ paths:
         schema:
           minimum: 1
           type: integer
+      - description: The number of results to skip before the first one returned.
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       - description: A list of fields to order the results by.  You can specify either
           ascending or descending order using "<field> asc" or "<field> desc.  Ascending
           order is the default.
@@ -4199,4 +4633,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 4bf219cda6bde8f4ff365bc6f09d15454d0f2cf2 path: catalog/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: catalog/v2beta1/openapi.yaml

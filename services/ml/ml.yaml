@@ -1501,4 +1501,4 @@ tags:
     build and persist models of those workflows, and generate insights on new data.
   name: mlTag
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: ml/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: ml/v2beta1/openapi.yaml

@@ -173,15 +173,14 @@ func TestPutRecords(t *testing.T) {
 	require.Nil(t, err)
 
 	// test replace record
-	var id = "1"
-	key, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], &id, res)
+	key, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], res)
 	require.Nil(t, err)
 	require.NotNil(t, key)
 	assert.Equal(t, (*key).Key, keys[0])
 
 	// test insert record
 	recordID := "recordID"
-	key, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, &id, res)
+	key, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, res)
 	require.Nil(t, err)
 	require.NotNil(t, key)
 	assert.Equal(t, (*key).Key, recordID)

@@ -23,20 +23,21 @@ func TestProvisioner(t *testing.T) {
 	provClient, err := provisioner.NewService(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
-		Tenant: testutils.TestProvisionerTenant,
+		Tenant: testutils.TestTenant,
 	})
 
 	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
 
-	tenant := testutils.TestProvisionerTenant
+	tenant := testutils.TestTenant
 
 	comment := "Go SDK test invite"
 	email := "bounce@simulator.amazonses.com"
+	var resp http.Response
 	invite, err := provClient.CreateInvite(provisioner.InviteBody{
 		Email:   email,
 		Comment: &comment,
 		Groups:  []string{"group1", "group2"},
-	})
+	}, &resp)
 	require.Emptyf(t, err, "error calling provisioner.CreateInvite(): %s", err)
 	assert.Equal(t, tenant, invite.Tenant)
 	assert.Equal(t, comment, invite.Comment)

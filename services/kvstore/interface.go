@@ -107,11 +107,10 @@ type Servicer interface {
 		Parameters:
 			collection: The name of the collection.
 			key: The key of the record.
-			ifMatch: Record version identifier.
 			body: Record to add to the collection, formatted as a JSON object.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	PutRecord(collection string, key string, ifMatch *string, body map[string]interface{}, resp ...*http.Response) (*Key, error)
+	PutRecord(collection string, key string, body map[string]interface{}, resp ...*http.Response) (*Key, error)
 	/*
 		QueryRecords - Returns a list of query records in a collection.
 		Parameters:

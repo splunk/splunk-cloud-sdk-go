@@ -144,7 +144,6 @@ components:
     InviteBody:
       properties:
         comment:
-          maxLength: 250
           type: string
         email:
           format: email
@@ -402,7 +401,7 @@ info:
   description: With the Provisioner Service, you can provision your tenant and manage
     it
   title: Provisioner
-  version: v1beta1.2
+  version: v1beta1.3
 openapi: 3.0.0
 paths:
   /{tenant}/provisioner/v1beta1/invites:
@@ -706,4 +705,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: provisioner/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: provisioner/v1beta1/openapi.yaml

@@ -40,13 +40,14 @@ components:
       schema:
         type: object
       style: form
-    IfMatchHeaderParam:
-      description: Record version identifier.
-      in: header
-      name: If-Match
-      required: false
-      schema:
-        type: string
+    # TODO: in our backlog as "Add support for request header params in code generation"
+    # IfMatchHeaderParam:
+    #   description: Record version identifier.
+    #   in: header
+    #   name: If-Match
+    #   required: false
+    #   schema:
+    #     type: string
     IndexParam:
       description: The name of the index.
       in: path
@@ -389,7 +390,7 @@ info:
     within your Splunk apps, enabling you to manage and maintain the state of the
     application.
   title: KV Store API
-  version: v1beta1.1
+  version: v1beta1.2
 openapi: 3.0.0
 paths:
   /{tenant}/kvstore/v1beta1/collections/{collection}:
@@ -736,8 +737,9 @@ paths:
     - $ref: '#/components/parameters/KeyParam'
     put:
       operationId: putRecord
-      parameters:
-      - $ref: '#/components/parameters/IfMatchHeaderParam'
+      # TODO: in our backlog as "Add support for request header params in code generation"
+      # parameters:
+      # - $ref: '#/components/parameters/IfMatchHeaderParam'
       requestBody:
         $ref: '#/components/requestBodies/insertRecordRecord'
       responses:
@@ -810,4 +812,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 4e902e0b4cfd3442038d66d2d57703f07185f7cc path: kvstore/openapi.yaml
+# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: kvstore/v1beta1/openapi.yaml
