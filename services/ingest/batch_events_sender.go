@@ -35,9 +35,11 @@ type ingestError struct {
 	Events []Event
 }
 
-//Default Payload Size in unit Bytes
 const (
+	//Default Payload Size in unit Bytes
 	payLoadSize = 1040000 // ~1MiB 1048576 bytes
+	// Default Batch Count limit per payload
+	eventCount = 500
 )
 
 // BatchEventsSender sends events in batches or periodically if batch is not full to Splunk Cloud ingest service endpoints
