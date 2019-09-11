@@ -7,6 +7,7 @@
 NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
 
 SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
+SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/scloud_generated
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
@@ -27,10 +28,22 @@ linttest: statik version
 build: statik version
 	GO111MODULE=on go build -v ./...
 	make build_scloud
+	make build_scloud_generated
 
 build_scloud: statik version
 	@echo "Building scloud .."
 	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/cli
+
+build_scloud_generated:init
+	@echo "Building scloud generated.."
+	cd scloud_generated
+	@echo ls
+	@go generate -x ./...
+	GO111MODULE=on go build -v -o bin/scloud_gen $(SCLOUD_GEN_SRC_PATH)
+
+init:
+	GO111MODULE=on go get cd.splunkdev.com/devplat-pr-32/scloud-codegen/...
+
 
 build_cross_compile:
 	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
