@@ -1,6 +1,6 @@
 package search
 
-//go:generate scpgen gen-cmd --name search --package search --output search-gen.go
+////go:generate scpgen gen-cmd --name search --package search --output search-gen.go
 
 import (
 	"github.com/spf13/cobra"

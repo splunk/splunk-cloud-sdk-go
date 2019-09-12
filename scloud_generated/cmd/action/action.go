@@ -1,6 +1,6 @@
 package action
 
-//go:generate scloudgen gen-cmd --name action --package action --output action-gen.go
+////go:generate scloudgen gen-cmd --name action --package action --output action-gen.go
 
 import (
 	"github.com/spf13/cobra"

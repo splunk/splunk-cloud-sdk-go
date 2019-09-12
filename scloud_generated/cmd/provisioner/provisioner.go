@@ -1,6 +1,6 @@
 package provisioner
 
-//go:generate scloudgen gen-cmd --name provisioner --package provisioner --output provisioner-gen.go | gofmt
+////go:generate scloudgen gen-cmd --name provisioner --package provisioner --output provisioner-gen.go | gofmt
 
 import (
 	"github.com/spf13/cobra"

@@ -1,6 +1,6 @@
 package catalog
 
-//go:generate scloudgen gen-cmd --name catalog --package catalog --output catalog-gen.go
+////go:generate scloudgen gen-cmd --name catalog --package catalog --output catalog-gen.go
 
 import (
 	"github.com/spf13/cobra"

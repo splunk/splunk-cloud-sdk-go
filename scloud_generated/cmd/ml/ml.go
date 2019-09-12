@@ -1,6 +1,6 @@
 package ml
 
-//go:generate scloudgen gen-cmd --name ml --package ml --output ml-gen.go | gofmt
+////go:generate scloudgen gen-cmd --name ml --package ml --output ml-gen.go | gofmt
 
 import (
 	"github.com/spf13/cobra"

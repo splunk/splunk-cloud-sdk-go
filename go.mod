@@ -1,7 +1,6 @@
 module github.com/splunk/splunk-cloud-sdk-go
 
 require (
-	cd.splunkdev.com/devplat-pr-32/scloud-codegen v0.0.0-20190911055909-0b847bbf787d
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pelletier/go-toml v1.4.0
