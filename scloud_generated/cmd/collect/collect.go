@@ -1,6 +1,6 @@
 package collect
 
-//go:generate scloudgen gen-cmd --name collect --package collect --output collect-gen.go
+////go:generate scloudgen gen-cmd --name collect --package collect --output collect-gen.go
 
 import (
 	"github.com/spf13/cobra"

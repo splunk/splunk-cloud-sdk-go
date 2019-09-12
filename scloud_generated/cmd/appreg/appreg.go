@@ -1,6 +1,6 @@
 package appreg
 
-//go:generate scloudgen gen-cmd --name app-registry --package appreg --output appreg-gen.go
+////go:generate scloudgen gen-cmd --name app-registry --package appreg --output appreg-gen.go
 
 import (
 	"github.com/spf13/cobra"

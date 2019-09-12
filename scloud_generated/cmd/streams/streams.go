@@ -1,6 +1,6 @@
 package streams
 
-//go:generate scloudgen gen-cmd --name streams --package streams --output streams-gen.go
+////go:generate scloudgen gen-cmd --name streams --package streams --output streams-gen.go
 
 import (
 	"github.com/spf13/cobra"

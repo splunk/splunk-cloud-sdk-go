@@ -1,6 +1,6 @@
 package forwarders
 
-//go:generate scloudgen gen-cmd --name forwarders --package forwarders --output forwarders-gen.go
+////go:generate scloudgen gen-cmd --name forwarders --package forwarders --output forwarders-gen.go
 
 import (
 	"github.com/spf13/cobra"

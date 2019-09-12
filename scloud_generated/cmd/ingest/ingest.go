@@ -1,6 +1,6 @@
 package ingest
 
-//go:generate scloudgen gen-cmd --name ingest --package ingest --output ingest-gen.go
+////go:generate scloudgen gen-cmd --name ingest --package ingest --output ingest-gen.go
 
 import (
 	"github.com/spf13/cobra"

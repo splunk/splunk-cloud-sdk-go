@@ -1,6 +1,6 @@
 package identity
 
-//go:generate scloudgen gen-cmd --name identity --package identity --output identity-gen.go
+////go:generate scloudgen gen-cmd --name identity --package identity --output identity-gen.go
 
 import (
 	"github.com/spf13/cobra"
