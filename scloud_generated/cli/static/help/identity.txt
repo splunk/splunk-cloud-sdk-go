@@ -1,0 +1,246 @@
+Use Splunk Cloud CLI commands with the Identity service to create and manage 
+users, tenants, groups, roles, and permissions.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        identity <subcommand> [params]
+
+
+SUBCOMMANDS
+  
+    add-group-member <group> <member>
+        Add the specified member to the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <member>
+                The member name.
+
+    add-group-role <group> <role>
+        Add the specified role to the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <role>
+                The role name.
+
+    add-member <principal>
+        Add the specified principal to the current tenant.
+
+        Arguments:
+            <principal>
+                The principal name.
+
+    add-role-permission <role> <permission>
+        Add the specified permission to the specified role.
+
+        Arguments:
+            <role>
+                The role name.
+
+            <permission>
+                The permission name. 
+
+    create-group <group>
+        Create a new group.
+
+        Arguments:
+            <group>
+                The group name.
+
+    create-role <role>
+        Create a new role.
+
+        Arguments:
+            <role>
+                The role name.
+
+    delete-group <group>
+        Delete the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+    delete-role <role>
+        Delete the specified role.
+
+        Arguments:
+            <role>
+                The role name.
+
+    get-group <group>
+        Display details of the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+    get-group-member <group> <member>
+        Display details of the specified group member.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <member>
+                The member name.
+
+    get-group-role <group> <role>
+        Display details of the specified group role.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <role>
+                The role name.
+
+    get-member <member>
+        Display details of the specified tenant member.
+
+        Arguments:
+            <member>
+                The member name.
+
+    get-principal <principal>
+        Display details of the specified principal.
+
+        Arguments:
+            <principal>
+                The principal name.
+
+    get-role <role>
+        Display details of the specified role.
+
+        Arguments:
+            <role>
+                The role name.
+
+    get-role-permission <role> <permission>
+        Display details of the specified role permisison.
+
+        Arguments:
+            <role>
+                The role name.
+
+            <permission>
+                The permission name. 
+
+    get-spec-json
+        Display the OpenAPI spec for the Identiy service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Identity service in YAML format.
+
+    list-groups
+        List groups in the current tenant.
+
+    list-group-members <group>
+        List members of the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+    list-group-roles <group>
+        List roles assigned to the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+    list-members
+        List members of the current tenant.
+
+    list-member-groups <member>
+        List groups the specified member belongs to.
+
+        Arguments:
+            <member>
+                The member name.
+
+    list-member-permissions <member>
+        List permissions granted to the specified member.
+
+        Arguments:
+            <member>
+                The member name.
+
+    list-member-roles <member>
+        List roles assigned to the specified member.
+
+        Arguments:
+            <member>
+                The member name.
+
+    list-principals
+        List principals for the current user.
+
+    list-roles
+        List roles assigned to the current tenant.
+
+    list-role-permissions <role>
+        List permissions for the specified role.
+
+        Arguments:
+            <role>
+                The role name.
+
+    remove-group-member <group> <member>
+        Remove the specified member from the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <member>
+                The member name.
+
+    remove-member <member>
+        Remove the specified member from the current tenant.
+
+        Arguments:
+            <member>
+                The member name.
+
+    remove-group-role <group> <role>
+        Remove the specified role from the specified group.
+
+        Arguments:
+            <group>
+                The group name.
+
+            <role>
+                The role name.
+
+    remove-role-permission <role> <permission>
+        Remove the specified permission from the specified role.
+
+        Arguments:
+            <role>
+                The role name.
+
+            <permission>
+                The permission name. 
+
+    validate-token
+        Validate the current access token and get associated metadata.
+
+
+EXAMPLES
+
+    List the groups for the current user:
+        $ scloud identity list-groups
+        [
+            "group10",
+            "group20",
+            "group30",
+            "group40"
+        ]

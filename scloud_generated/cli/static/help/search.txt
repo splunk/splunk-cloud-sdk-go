@@ -1,0 +1,114 @@
+Use Splunk Cloud CLI commands with the Search service to create and manage
+search jobs and retrieve search results.
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        search <subcommand> [params]
+
+
+SUBCOMMANDS
+
+    cancel <job-id>
+        Cancel the specified search job.
+
+        Arguments:
+            <job-id>
+                The search job ID.
+
+    finalize <job-id>
+        Stop the specified search job and provide intermediate results.
+
+        Arguments:
+            <job-id>
+                The search job ID.
+
+    get-spec-json
+        Display the OpenAPI spec for the Search service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Search service in YAML format.
+
+    list-results <job-id> [-count <integer>] [-offset <integer>] [-fields <string>]
+        Display the results computed by the specified search job.
+
+        Arguments:
+            <job-id>
+                The search job ID.
+
+            -count <integer>
+                The maximum number of records to return.
+
+            -offset <integer>
+                The number of records to skip from the start.
+
+            -field <string>
+                Fields to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
+
+    list-jobs [-status running|done|canceled|failed] [-count <integer>]
+        List search jobs.
+
+        Arguments:
+            -status canceled|done|failed|running
+                The job status to filter on.
+            -count <integer>
+                The maximum number of jobs to return.
+
+    wait <job-id>
+        Wait for the specified search job to reach a terminal state, which is 
+        either "done" or "failed".
+
+        Arguments:
+            <job-id>
+                The search job ID.
+
+    <searchquery> -earliest <time> -latest <time> [-wait true|false] 
+    [-sync true|false]
+        Creates a new search job using the specified search query.
+        Any argument that does not match a CLI command is interpreted as a literal search string.
+
+        Arguments:
+            <searchquery>
+                The search query string.
+
+            -earliest <time>
+                The earliest time for the search interval.
+
+            -latest <time>
+                The latest time for the search interval.
+
+            -wait true|false
+                Indicates whether to run the search and wait for the search job
+                to reach a terminal state.
+
+            -sync true|false
+                Indicates whether to run the search, wait for search job to 
+                reach a terminal state, and return results.
+
+
+EXAMPLES
+
+    Create a new search job: 
+        $ scloud search "from index:main" -earliest "-1h@h" -latest now
+        {
+            "query": "from index:main",
+            "extractAllFields": false,
+            "timeFormat": "%FT%T.%Q%:z",
+            "maxTime": 3600,
+            "timeOfSearch": "1537388533",
+            "queryParameters": {
+                "earliest": "-24h@h",
+                "latest": "now"
+            },
+            "sid": "1537388534.4",
+            "status": "running"
+        }
+
+    Wait for the previous job to reach a terminal state: 
+        $ scloud search wait "1537388534.4"
+        "done"
+
+    Get the events retrieved by the previous search: 
+        $ scloud search list-results "1537388534.4"
+        ...

@@ -1,0 +1,74 @@
+Use Splunk Cloud CLI commands with the Forwarders service to create, delete, and
+view certificates used by forwarders. 
+
+
+SYNTAX
+
+    scloud [-u <username>] [-p <password>] [-tenant <tenant>] [-no-prompt] 
+        forwarders <subcommand> [params]
+
+
+SUBCOMMANDS
+   
+    create-certificate <pem-file-path>
+        Create a certificate from a Privacy-Enhanced Mail (PEM) file that contains
+        a public certificate.
+
+        Arguments: 
+            <pem-file-path>
+                Path to the Privacy-Enhanced Mail (PEM) file that contains a 
+                public certificate
+
+    delete-certificate <slot>
+        Delete the certificate at the specified slot. Use the list-certificates 
+        command to view the slot numbers for each certificate.
+
+        Arguments: 
+            <slot>
+                Slot number for the certificate.
+
+    delete-certificates
+        Delete all certificates in the system.
+
+    get-spec-json
+        Display the OpenAPI spec for the Forwarders service in JSON format.
+
+    get-spec-yaml
+        Display the OpenAPI spec for the Forwarders service in YAML format.
+
+    list-certificates
+        Display all certificates in the system.
+
+
+EXAMPLES
+
+    Create a new certificate from a file in the current folder:
+        $ scloud forwarders create-certificate myFile.pem
+        {
+            "content": "-----BEGIN CERTIFICATE-----\nMII...[truncated]...=\n-----END CERTIFICATE-----\n",
+            "hash": "2643684affdb1f8be7977cfeb14475c16eba5265e43e51d0154f0a4e2b357g252",
+            "subject": "CN=www.splunk.com,OU=section,O=Splunk,L=SF,ST=CA,C=US",
+            "issuer": "CN=www.splunk.com,OU=section,O=Splunk,L=SF,ST=CA,C=US",
+            "notBefore": "2018-09-13T02:57:42Z",
+            "notAfter": "2021-06-09T02:57:42Z",
+            "lastUpdate": "2018-09-13T03:15:50.175680871Z",
+            "slot": 1
+        }
+
+    Delete the certificate at slot 1: 
+        $ scloud forwarders delete-certificate 1
+
+    Display all the certificates in the system: 
+        $ scloud forwarders list-certificates
+        [
+            {
+                "content": "-----BEGIN CERTIFICATE-----\nMII...[truncated]...=\n-----END CERTIFICATE-----\n",
+                "hash": "268684af1db1f8be7977cfeb14475c16eba5265e43e51d0154f0a4e2b357b252",
+                "subject": "CN=www.splunk.com,OU=section,O=Splunk,L=SF,ST=CA,C=US",
+                "issuer": "CN=www.splunk.com,OU=section,O=Splunk,L=SF,ST=CA,C=US",
+                "notBefore": "2018-09-13T02:57:42Z",
+                "notAfter": "2021-06-09T02:57:42Z",
+                "lastUpdate": "2018-09-13T03:22:18.971030932Z",
+                "slot": 1
+            }
+        ]
