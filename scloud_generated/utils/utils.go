@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+var sdkclient *sdk.Client
 
 func Pprint(value interface{}) {
 	if value == nil {
@@ -30,23 +31,17 @@ func Pprint(value interface{}) {
 		}
 	}
 }
-func GetClient() (*sdk.Client,error){
-	//client,err:=sdk.NewClient(&services.Config{
-	//	Token:       "[REDACTED]",
-	//	Host:         "staging.scp.splunk.com",
-	//	Tenant:       "testsdks",
-	//})
+func GetClient() (*sdk.Client,error) {
+	if sdkclient == nil {
+		glog.CopyStandardLogTo("INFO")
 
+		load()
 
-	glog.CopyStandardLogTo("INFO")
+		client := apiClient()
+		return client, nil
+	}
 
-	load()
-
-
-	client:=apiClient()
-
-
-	return client, nil
+	return sdkclient, nil
 }
 
 
@@ -59,4 +54,13 @@ func Login(args []string) (*idp.Context, error) {
 
 func Head1(items []string) string {
 	return head1(items)
+}
+
+func Head(items []string) (string, []string) {
+	return head(items)
+}
+
+// Prints an error message and exits.
+func Fatal(msg string, args ...interface{}) {
+	fatal(msg,args)
 }
