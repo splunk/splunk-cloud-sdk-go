@@ -6,12 +6,29 @@ package action
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	)
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
+)
 
 
 // CreateAction -- impl
 func CreateAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called CreateAction\n")
+
+	name := utils.Head1(args)
+	client,err:=utils.GetClient()
+
+	if err!=nil{
+		return err
+	}
+
+	ret,err:=client.ActionService.GetAction(name)
+	if err!=nil{
+		return err
+	}
+
+	utils.Pprint(ret)
+
+
 	return nil
 }
 
@@ -24,6 +41,21 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 // GetAction -- impl
 func GetAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetAction\n")
+
+	name := utils.Head1(args)
+
+	client,err:=utils.GetClient()
+
+	if err!=nil{
+		return err
+	}
+
+	ret,err:=client.ActionService.GetAction(name)
+	if err!=nil{
+		return err
+	}
+
+	utils.Pprint(ret)
 	return nil
 }
 
@@ -48,6 +80,20 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 // ListActions -- impl
 func ListActions(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called ListActions\n")
+
+	client,err:=utils.GetClient()
+
+	if err!=nil{
+		return err
+	}
+
+	ret,err:=client.ActionService.ListActions()
+	if err!=nil{
+		return err
+	}
+
+	 utils.Pprint(ret)
+
 	return nil
 }
 
@@ -62,4 +108,3 @@ func UpdateAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called UpdateAction\n")
 	return nil
 }
-
