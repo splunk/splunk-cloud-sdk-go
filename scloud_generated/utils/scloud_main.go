@@ -264,12 +264,12 @@ func eprint(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, "error: %s\n", msg)
 }
 
-//// Prints error message and usage screen, then exits.
-//func eusage(msg string, args ...interface{}) {
-//	eprint(msg, args...)
-//	usage()
-//	os.Exit(1)
-//}
+// Prints error message and usage screen, then exits.
+func Eusage(msg string, args ...interface{}) {
+	eprint(msg, args...)
+	usage()
+	os.Exit(1)
+}
 
 func etoofew() {
 	fatal("too few arguments")
@@ -484,140 +484,3 @@ func loadConfig() error {
 	}
 	return config.Load(file)
 }
-
-//// Display help text to stdout.
-//func callForHelp(args []string) bool {
-//	if len(args) >= 2 && args[1] == "help" {
-//		fileName := fmt.Sprintf("%s.txt", args[0])
-//		err := help(fileName)
-//		if err != nil {
-//			fatal("%v", err)
-//		}
-//		return true
-//	}
-//	return false
-//}
-
-//func main() {
-//	var err error
-//
-//	args := parseArgs()
-//	if callForHelp(args) {
-//		return
-//	}
-//
-//	buildTime := time.Unix(version.BuildTime, 0)
-//	glog.Infof("Version %s (%s) %s",
-//		version.Version,
-//		version.BuildBranch,
-//		buildTime.Format("2006-01-02 15:04:05"))
-//
-//	if len(args) == 0 {
-//		eusage("missing command")
-//	}
-//
-//	glog.CopyStandardLogTo("INFO")
-//
-//	if err = load(); err != nil {
-//		fatal("internal error: %s", err.Error())
-//	}
-//
-//	arg, args := head(args)
-//
-//	var result interface{}
-//	switch arg {
-//	// authenticate using the selected oauth profile
-//	case "login":
-//		result, err = login(args)
-//
-//	// delete the named setting
-//	case "delete":
-//		key := head1(args)
-//		err := settings.Delete(key)
-//		if err != nil {
-//			fatal("error deleting setting: %s", err.Error())
-//		}
-//		return
-//
-//	// get the named setting
-//	case "get":
-//		key := head1(args)
-//		result = settings.Get(key)
-//
-//	// set the value of the named setting
-//	case "set":
-//		key, value := head2(args)
-//		settings.Set(key, value)
-//		return
-//
-//	// delete all settings
-//	case "delete-settings":
-//		checkEmpty(args)
-//		settings.Clear()
-//		return
-//
-//	// get all settings
-//	case "get-settings":
-//		checkEmpty(args)
-//		result = settings.All()
-//
-//	// reset the context cache
-//	case "delete-context-cache":
-//		checkEmpty(args)
-//		ctxCache.Clear()
-//		return
-//
-//	// print context cache
-//	case "get-context-cache":
-//		checkEmpty(args)
-//		result = getContext()
-//
-//	case "help":
-//		checkEmpty(args)
-//		err = help("scloud.txt")
-//
-//	case "action":
-//		result, err = newActionCommand().Dispatch(args)
-//
-//	case "appreg":
-//		result, err = newAppRegistryCommand().Dispatch(args)
-//
-//	case "catalog":
-//		result, err = newCatalogCommand().Dispatch(args)
-//
-//	case "forwarders":
-//		result, err = newForwardersCommand(apiClient()).Dispatch(args)
-//
-//	case "identity":
-//		result, err = newIdentityCommand().Dispatch(args)
-//
-//	case "ingest":
-//		result, err = newIngestCommand().Dispatch(args)
-//
-//	case "kvstore":
-//		result, err = newKVStoreCommand(apiClient()).Dispatch(args) // TODO: can share one apiClient() for all commands
-//
-//	case "ml":
-//		result, err = newMachineLearningCommand().Dispatch(args)
-//
-//	case "provisioner":
-//		result, err = newProvisionerCommand(apiClient()).Dispatch(args)
-//
-//	case "search":
-//		result, err = newSearchCommand(apiClient()).Dispatch(args)
-//
-//	case "streams":
-//		result, err = newStreamsCommand().Dispatch(args)
-//
-//	case "version":
-//		fmt.Printf("scloud version %s-%s\n", version.Version, version.Commit)
-//
-//	default:
-//		eusage("unknown command: '%s'", arg)
-//	}
-//
-//	if err != nil {
-//		fatal("%v", err)
-//	}
-//	pprint(result)
-//}

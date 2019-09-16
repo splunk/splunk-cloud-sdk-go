@@ -6,6 +6,7 @@ package action
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/impl/action"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
 )
 
@@ -14,20 +15,18 @@ import (
 func CreateAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called CreateAction\n")
 
-	name := utils.Head1(args)
-	client,err:=utils.GetClient()
+	client, err := utils.GetClient()
 
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 
-	ret,err:=client.ActionService.GetAction(name)
-	if err!=nil{
+	ret, err := action.GetAction(client, args)
+	if err != nil {
 		return err
 	}
 
 	utils.Pprint(ret)
-
 
 	return nil
 }
