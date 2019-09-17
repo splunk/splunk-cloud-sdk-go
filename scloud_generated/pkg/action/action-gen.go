@@ -21,7 +21,7 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	ret, err := action.GetAction(client, args)
+	ret, err := action.CreateAction(client, args)
 	if err != nil {
 		return err
 	}
@@ -34,6 +34,20 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 // DeleteAction -- impl
 func DeleteAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called DeleteAction\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.DeleteAction(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
 
@@ -41,38 +55,79 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 func GetAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetAction\n")
 
-	name := utils.Head1(args)
+	client, err := utils.GetClient()
 
-	client,err:=utils.GetClient()
-
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 
-	ret,err:=client.ActionService.GetAction(name)
-	if err!=nil{
+	ret, err := action.GetAction(client, args)
+	if err != nil {
 		return err
 	}
 
 	utils.Pprint(ret)
+
 	return nil
 }
 
 // GetActionStatus -- impl
 func GetActionStatus(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetActionStatus\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.GetActionStatus(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
 
 // GetActionStatusDetails -- impl
 func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetActionStatusDetails\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.GetActionStatusDetails(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
 
 // GetPublicWebhookKeys -- impl
 func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetPublicWebhookKeys\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.GetPublicWebhookKeys(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
 
@@ -80,18 +135,18 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 func ListActions(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called ListActions\n")
 
-	client,err:=utils.GetClient()
+	client, err := utils.GetClient()
 
-	if err!=nil{
+	if err != nil {
 		return err
 	}
 
-	ret,err:=client.ActionService.ListActions()
-	if err!=nil{
+	ret, err := action.ListActions(client, args)
+	if err != nil {
 		return err
 	}
 
-	 utils.Pprint(ret)
+	utils.Pprint(ret)
 
 	return nil
 }
@@ -99,11 +154,40 @@ func ListActions(cmd *cobra.Command, args []string) error {
 // TriggerAction -- impl
 func TriggerAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called TriggerAction\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.TriggerAction(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
 
 // UpdateAction -- impl
 func UpdateAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called UpdateAction\n")
+
+	client, err := utils.GetClient()
+
+	if err != nil {
+		return err
+	}
+
+	ret, err := action.UpdateAction(client, args)
+	if err != nil {
+		return err
+	}
+
+	utils.Pprint(ret)
+
 	return nil
 }
+

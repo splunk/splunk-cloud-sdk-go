@@ -41,7 +41,20 @@ func Head(items []string) (string, []string) {
 	return head(items)
 }
 
+
+func Head2(items []string) (string, string) {
+	return head2(items)
+}
+
 // Prints an error message and exits.
 func Fatal(msg string, args ...interface{}) {
 	fatal(msg,args)
+}
+
+func CheckEmpty(items []string) {
+	 checkEmpty(items)
+}
+
+func GetTenantName() string {
+	return getTenantName()
 }

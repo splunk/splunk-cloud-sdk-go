@@ -17,8 +17,15 @@
 package action
 
 import (
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/services/action"
+	"net/http"
+	"strings"
 )
 
 //const (
@@ -34,7 +41,7 @@ import (
 //}
 //
 //type ActionCommand struct {
-//	actionService *action.Service
+//	actionService *sdk.Client
 //}
 //
 //func newActionCommand() *ActionCommand {
@@ -43,13 +50,13 @@ import (
 //	}
 //}
 //
-//func (cmd *ActionCommand) parse(args []string) []string {
+//func  parse(cmd *sdk.Client,args []string) []string {
 //	flags := flag.NewFlagSet("action command", flag.ExitOnError)
 //	flags.Parse(args) //nolint:errcheck
 //	return flags.Args()
 //}
 //
-//func (cmd *ActionCommand) Dispatch(args []string) (result interface{}, err error) {
+//func  Dispatch(cmd *sdk.Client,args []string) (result interface{}, err error) {
 //	arg, args := utils.Head(args)
 //	args = cmd.parse(args)
 //	switch arg {
@@ -81,197 +88,208 @@ import (
 //	return
 //}
 
-//func (cmd *ActionCommand) createAction(args []string) (interface{}, error) {
-//
-//	// Required args
-//	name, args := utils.Head(args)
-//	kindString, args := head(args)
-//	flags := flag.NewFlagSet("create-action", flag.ExitOnError)
-//
-//	var addressesInput, body, subject, title, webhookPayload, webhookURL string
-//	var addresses []string
-//
-//	flags.StringVar(&title, "title", "", "The action title")
-//
-//	// email action
-//	flags.StringVar(&body, "body", "", "Email action: The email body")
-//	flags.StringVar(&subject, "subject", "", "Email action: The email subject")
-//	flags.StringVar(
-//		&addressesInput,
-//		"addresses",
-//		"",
-//		"Email action: Addresses to send to when the email action is triggered",
-//	)
-//
-//	// webhook action
-//	flags.StringVar(&webhookURL, "webhookURL", "", "Webhook action: WebhookURL to trigger Webhook action")
-//	flags.StringVar(&webhookPayload, "webhookPayload", "", "Webhook action: Payload to send over Webhook action")
-//
-//	if len(addressesInput) > 0 {
-//		addresses = strings.Split(addressesInput, ",")
-//	}
-//
-//	err := flags.Parse(args)
-//
-//	if err != nil {
-//		fatal(err.Error())
-//	}
-//
-//	if strings.ToLower(kindString) == string(action.ActionKindEmail) {
-//		act := action.EmailAction{
-//			Name:      name,
-//			Kind:      action.ActionKindEmail,
-//			Body:      &body,
-//			Subject:   &subject,
-//			Title:     &title,
-//			Addresses: addresses,
-//		}
-//		return cmd.actionService.CreateAction(action.MakeActionFromEmailAction(act))
-//
-//	} else if strings.ToLower(kindString) == string(action.ActionKindWebhook) {
-//		act1 := action.WebhookAction{
-//			Name:           name,
-//			Kind:           action.ActionKindWebhook,
-//			WebhookUrl:     webhookURL,
-//			WebhookPayload: webhookPayload,
-//		}
-//		return cmd.actionService.CreateAction(action.MakeActionFromWebhookAction(act1))
-//	}
-//
-//	return nil, errors.New("Kind value is not supported")
-//}
-//
-//func (cmd *ActionCommand) deleteAction(args []string) error {
-//	name := head1(args)
-//	return cmd.actionService.DeleteAction(name)
-//}
+func CreateAction(cmd *sdk.Client,args []string) (interface{}, error) {
+
+	// Required args
+	name, args := utils.Head(args)
+	kindString, args := utils.Head(args)
+	flags := flag.NewFlagSet("create-action", flag.ExitOnError)
+
+	var addressesInput, body, subject, title, webhookPayload, webhookURL string
+	var addresses []string
+
+	flags.StringVar(&title, "title", "", "The action title")
+
+	// email action
+	flags.StringVar(&body, "body", "", "Email action: The email body")
+	flags.StringVar(&subject, "subject", "", "Email action: The email subject")
+	flags.StringVar(
+		&addressesInput,
+		"addresses",
+		"",
+		"Email action: Addresses to send to when the email action is triggered",
+	)
+
+	// webhook action
+	flags.StringVar(&webhookURL, "webhookURL", "", "Webhook action: WebhookURL to trigger Webhook action")
+	flags.StringVar(&webhookPayload, "webhookPayload", "", "Webhook action: Payload to send over Webhook action")
+
+	if len(addressesInput) > 0 {
+		addresses = strings.Split(addressesInput, ",")
+	}
+
+	err := flags.Parse(args)
+
+	if err != nil {
+		utils.Fatal(err.Error())
+	}
+
+	if strings.ToLower(kindString) == string(action.ActionKindEmail) {
+		act := action.EmailAction{
+			Name:      name,
+			Kind:      action.ActionKindEmail,
+			Body:      &body,
+			Subject:   &subject,
+			Title:     &title,
+			Addresses: addresses,
+		}
+		return cmd.ActionService.CreateAction(action.MakeActionFromEmailAction(act))
+
+	} else if strings.ToLower(kindString) == string(action.ActionKindWebhook) {
+		act1 := action.WebhookAction{
+			Name:           name,
+			Kind:           action.ActionKindWebhook,
+			WebhookUrl:     webhookURL,
+			WebhookPayload: webhookPayload,
+		}
+		return cmd.ActionService.CreateAction(action.MakeActionFromWebhookAction(act1))
+	}
+
+	return nil, errors.New("Kind value is not supported")
+}
+
+func  DeleteAction(cmd *sdk.Client,args []string) (interface{}, error) {
+	name := utils.Head1(args)
+	return nil,cmd.ActionService.DeleteAction(name)
+}
 
 func  GetAction(cmd *sdk.Client, args []string) (interface{}, error) {
 	name := utils.Head1(args)
 	return cmd.ActionService.GetAction(name)
 }
+
+func  GetActionStatus(cmd *sdk.Client,args []string) (interface{}, error) {
+	name, statusID := utils.Head2(args)
+	return cmd.ActionService.GetActionStatus(name, statusID)
+}
+
+func  ListActions(cmd *sdk.Client,args []string) (interface{}, error) {
+	return cmd.ActionService.ListActions()
+}
+
+func  TriggerAction(cmd *sdk.Client,args []string) (interface{}, error) {
+	name, args := utils.Head(args)
+	kindString, args := utils.Head(args)
+
+	notificationPayloadJSON, args := utils.Head(args)
+	utils.CheckEmpty(args)
+
+	var notificationPayload action.RawJsonPayload
+
+	err := json.Unmarshal([]byte(notificationPayloadJSON), &notificationPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	tenant := utils.GetTenantName()
+
+	notification := action.TriggerEvent{
+		Kind:    action.TriggerEventKind(kindString),
+		Tenant:  &tenant,
+		Payload: &notificationPayload,
+	}
+
+	var resp http.Response
+	err = cmd.ActionService.TriggerAction(name, notification, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Header.Get("Location"), cmd.ActionService.TriggerAction(name, notification)
+}
+
+func  UpdateAction(cmd *sdk.Client,args []string) (interface{}, error) {
+	name, args := utils.Head(args)
+
+	flags := flag.NewFlagSet("update-action", flag.ExitOnError)
+
+	act, err := cmd.ActionService.GetAction(name)
+	if err != nil {
+		return nil, err
+	}
+
+	var addressesInput, body, subject, title, webhookPayload, webhookURL string
+	var addresses []string
+
+	flags.StringVar(&title, "title", "", "The action title")
+
+	// email action
+	flags.StringVar(&body, "body", "", "Email action: The email body")
+	flags.StringVar(&subject, "subject", "", "Email action: The email subject")
+	flags.StringVar(
+		&addressesInput,
+		"addresses",
+		"",
+		"Email action: Addresses to send to when the email action is triggered",
+	)
+
+	// webhook action
+	flags.StringVar(&webhookURL, "webhookURL", "", "Webhook action: WebhookURL to trigger Webhook action")
+	flags.StringVar(&webhookPayload, "webhookPayload", "", "Webhook action: Payload to send over Webhook action")
+
+	if len(addressesInput) > 0 {
+		addresses = strings.Split(addressesInput, ",")
+	}
+
+	err = flags.Parse(args)
+
+	if err != nil {
+		utils.Fatal(err.Error())
+	}
+
+	if len(addressesInput) > 0 {
+		addresses = strings.Split(addressesInput, ",")
+	}
+
+	if act.IsEmailAction() {
+
+		au := action.EmailActionMutable{
+			Body:      parseStrInput(body),
+			Subject:   parseStrInput(subject),
+			Title:     parseStrInput(title),
+			Addresses: addresses,
+		}
+		return cmd.ActionService.UpdateAction(name, action.MakeActionMutableFromEmailActionMutable(au))
+
+	}
+
+	if act.IsWebhookAction() {
+		au := action.WebhookActionMutable{
+			Title:          parseStrInput(title),
+			WebhookUrl:     parseStrInput(webhookURL),
+			WebhookPayload: parseStrInput(webhookPayload),
+		}
+
+		return cmd.ActionService.UpdateAction(name, action.MakeActionMutableFromWebhookActionMutable(au))
+	}
+
+	return nil, errors.New("Action kind and updated fields didn't match")
+}
+
+func  GetActionStatusDetails(cmd *sdk.Client,args []string) (interface{}, error) {
+	fmt.Println("Not implemented yet")
+	return nil,nil
+}
+
+func  GetPublicWebhookKeys(cmd *sdk.Client,args []string) (interface{}, error) {
+	fmt.Println("Not implemented yet")
+	return nil,nil
+}
+
 //
-//func (cmd *ActionCommand) getActionStatus(args []string) (interface{}, error) {
-//	name, statusID := head2(args)
-//	return cmd.actionService.GetActionStatus(name, statusID)
+//func  GetSpecJSON(cmd *sdk.Client,args []string) (interface{}, error) {
+//	utils.CheckEmpty(args)
+//	return GetSpecJSON("api", ActionServiceVersion, "action", cmd.ActionService.Client)
 //}
 //
-//func (cmd *ActionCommand) getActions(args []string) (interface{}, error) {
-//	return cmd.actionService.ListActions()
+//func  GetSpecYaml(cmd *sdk.Client,args []string) (interface{}, error) {
+//	utils.CheckEmpty(args)
+//	return GetSpecYaml("api", ActionServiceVersion, "action", cmd.ActionService.Client)
 //}
-//
-//func (cmd *ActionCommand) triggerAction(args []string) (interface{}, error) {
-//	name, args := head(args)
-//	kindString, args := head(args)
-//
-//	notificationPayloadJSON, args := head(args)
-//	checkEmpty(args)
-//
-//	var notificationPayload action.RawJsonPayload
-//
-//	err := json.Unmarshal([]byte(notificationPayloadJSON), &notificationPayload)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	tenant := getTenantName()
-//
-//	notification := action.TriggerEvent{
-//		Kind:    action.TriggerEventKind(kindString),
-//		Tenant:  &tenant,
-//		Payload: &notificationPayload,
-//	}
-//
-//	var resp http.Response
-//	err = cmd.actionService.TriggerAction(name, notification, &resp)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return resp.Header.Get("Location"), cmd.actionService.TriggerAction(name, notification)
-//}
-//
-//func (cmd *ActionCommand) updateAction(args []string) (interface{}, error) {
-//	name, args := head(args)
-//
-//	flags := flag.NewFlagSet("update-action", flag.ExitOnError)
-//
-//	act, err := cmd.actionService.GetAction(name)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var addressesInput, body, subject, title, webhookPayload, webhookURL string
-//	var addresses []string
-//
-//	flags.StringVar(&title, "title", "", "The action title")
-//
-//	// email action
-//	flags.StringVar(&body, "body", "", "Email action: The email body")
-//	flags.StringVar(&subject, "subject", "", "Email action: The email subject")
-//	flags.StringVar(
-//		&addressesInput,
-//		"addresses",
-//		"",
-//		"Email action: Addresses to send to when the email action is triggered",
-//	)
-//
-//	// webhook action
-//	flags.StringVar(&webhookURL, "webhookURL", "", "Webhook action: WebhookURL to trigger Webhook action")
-//	flags.StringVar(&webhookPayload, "webhookPayload", "", "Webhook action: Payload to send over Webhook action")
-//
-//	if len(addressesInput) > 0 {
-//		addresses = strings.Split(addressesInput, ",")
-//	}
-//
-//	err = flags.Parse(args)
-//
-//	if err != nil {
-//		fatal(err.Error())
-//	}
-//
-//	if len(addressesInput) > 0 {
-//		addresses = strings.Split(addressesInput, ",")
-//	}
-//
-//	if act.IsEmailAction() {
-//
-//		au := action.EmailActionMutable{
-//			Body:      cmd.parseStrInput(body),
-//			Subject:   cmd.parseStrInput(subject),
-//			Title:     cmd.parseStrInput(title),
-//			Addresses: addresses,
-//		}
-//		return cmd.actionService.UpdateAction(name, action.MakeActionMutableFromEmailActionMutable(au))
-//
-//	}
-//
-//	if act.IsWebhookAction() {
-//		au := action.WebhookActionMutable{
-//			Title:          cmd.parseStrInput(title),
-//			WebhookUrl:     cmd.parseStrInput(webhookURL),
-//			WebhookPayload: cmd.parseStrInput(webhookPayload),
-//		}
-//
-//		return cmd.actionService.UpdateAction(name, action.MakeActionMutableFromWebhookActionMutable(au))
-//	}
-//
-//	return nil, errors.New("Action kind and updated fields didn't match")
-//}
-//
-//func (cmd *ActionCommand) getSpecJSON(args []string) (interface{}, error) {
-//	checkEmpty(args)
-//	return GetSpecJSON("api", ActionServiceVersion, "action", cmd.actionService.Client)
-//}
-//
-//func (cmd *ActionCommand) getSpecYaml(args []string) (interface{}, error) {
-//	checkEmpty(args)
-//	return GetSpecYaml("api", ActionServiceVersion, "action", cmd.actionService.Client)
-//}
-//
-//func (cmd *ActionCommand) parseStrInput(input string) *string {
-//	if input == "" {
-//		return nil
-//	}
-//	return &input
-//}
+
+func  parseStrInput(input string) *string {
+	if input == "" {
+		return nil
+	}
+	return &input
+}
