@@ -25,6 +25,19 @@ func GetClient() (*sdk.Client,error) {
 	return sdkclient, nil
 }
 
+func GetClientSystemTenant() (*sdk.Client,error) {
+	if sdkclient == nil {
+		glog.CopyStandardLogTo("INFO")
+
+		load()
+
+		client := apiClientWithTenant("system")
+		return client, nil
+	}
+
+	return sdkclient, nil
+}
+
 
 // Authenticate, using the selected app profile.
 func Login(args []string) (*idp.Context, error) {
