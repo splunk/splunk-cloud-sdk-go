@@ -4,7 +4,6 @@
 package action
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/impl/action"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
@@ -13,8 +12,6 @@ import (
 
 // CreateAction -- impl
 func CreateAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAction\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -33,8 +30,6 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 
 // DeleteAction -- impl
 func DeleteAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAction\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -53,8 +48,6 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 
 // GetAction -- impl
 func GetAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetAction\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -73,8 +66,6 @@ func GetAction(cmd *cobra.Command, args []string) error {
 
 // GetActionStatus -- impl
 func GetActionStatus(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionStatus\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -93,8 +84,6 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 
 // GetActionStatusDetails -- impl
 func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionStatusDetails\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -113,8 +102,6 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 
 // GetPublicWebhookKeys -- impl
 func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPublicWebhookKeys\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -133,8 +120,6 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 
 // ListActions -- impl
 func ListActions(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListActions\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -153,8 +138,6 @@ func ListActions(cmd *cobra.Command, args []string) error {
 
 // TriggerAction -- impl
 func TriggerAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called TriggerAction\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
@@ -173,8 +156,6 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 
 // UpdateAction -- impl
 func UpdateAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateAction\n")
-
 	client, err := utils.GetClient()
 
 	if err != nil {
