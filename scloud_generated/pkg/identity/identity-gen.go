@@ -9,12 +9,14 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
 )
 
-
 // AddGroupMember -- impl
 func AddGroupMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -32,8 +34,11 @@ func AddGroupMember(cmd *cobra.Command, args []string) error {
 // AddGroupRole -- impl
 func AddGroupRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -51,8 +56,11 @@ func AddGroupRole(cmd *cobra.Command, args []string) error {
 // AddMember -- impl
 func AddMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -70,8 +78,11 @@ func AddMember(cmd *cobra.Command, args []string) error {
 // AddRolePermission -- impl
 func AddRolePermission(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -89,8 +100,11 @@ func AddRolePermission(cmd *cobra.Command, args []string) error {
 // CreateGroup -- impl
 func CreateGroup(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -108,8 +122,11 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 // CreateRole -- impl
 func CreateRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -127,8 +144,11 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 // DeleteGroup -- impl
 func DeleteGroup(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -146,8 +166,11 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 // DeleteRole -- impl
 func DeleteRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -165,8 +188,11 @@ func DeleteRole(cmd *cobra.Command, args []string) error {
 // GetGroup -- impl
 func GetGroup(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -184,8 +210,11 @@ func GetGroup(cmd *cobra.Command, args []string) error {
 // GetGroupMember -- impl
 func GetGroupMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -203,8 +232,11 @@ func GetGroupMember(cmd *cobra.Command, args []string) error {
 // GetGroupRole -- impl
 func GetGroupRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -222,8 +254,11 @@ func GetGroupRole(cmd *cobra.Command, args []string) error {
 // GetMember -- impl
 func GetMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -241,8 +276,11 @@ func GetMember(cmd *cobra.Command, args []string) error {
 // GetPrincipal -- impl
 func GetPrincipal(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -260,8 +298,11 @@ func GetPrincipal(cmd *cobra.Command, args []string) error {
 // GetRole -- impl
 func GetRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -279,8 +320,11 @@ func GetRole(cmd *cobra.Command, args []string) error {
 // GetRolePermission -- impl
 func GetRolePermission(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -298,8 +342,11 @@ func GetRolePermission(cmd *cobra.Command, args []string) error {
 // ListGroupMembers -- impl
 func ListGroupMembers(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -317,8 +364,11 @@ func ListGroupMembers(cmd *cobra.Command, args []string) error {
 // ListGroupRoles -- impl
 func ListGroupRoles(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -336,8 +386,11 @@ func ListGroupRoles(cmd *cobra.Command, args []string) error {
 // ListGroups -- impl
 func ListGroups(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -355,8 +408,11 @@ func ListGroups(cmd *cobra.Command, args []string) error {
 // ListMemberGroups -- impl
 func ListMemberGroups(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -374,8 +430,11 @@ func ListMemberGroups(cmd *cobra.Command, args []string) error {
 // ListMemberPermissions -- impl
 func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -393,8 +452,11 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 // ListMemberRoles -- impl
 func ListMemberRoles(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -412,8 +474,11 @@ func ListMemberRoles(cmd *cobra.Command, args []string) error {
 // ListMembers -- impl
 func ListMembers(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -431,8 +496,11 @@ func ListMembers(cmd *cobra.Command, args []string) error {
 // ListPrincipals -- impl
 func ListPrincipals(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -450,8 +518,11 @@ func ListPrincipals(cmd *cobra.Command, args []string) error {
 // ListRoleGroups -- impl
 func ListRoleGroups(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -469,8 +540,11 @@ func ListRoleGroups(cmd *cobra.Command, args []string) error {
 // ListRolePermissions -- impl
 func ListRolePermissions(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -488,8 +562,11 @@ func ListRolePermissions(cmd *cobra.Command, args []string) error {
 // ListRoles -- impl
 func ListRoles(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -507,8 +584,11 @@ func ListRoles(cmd *cobra.Command, args []string) error {
 // RemoveGroupMember -- impl
 func RemoveGroupMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -526,8 +606,11 @@ func RemoveGroupMember(cmd *cobra.Command, args []string) error {
 // RemoveGroupRole -- impl
 func RemoveGroupRole(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -545,8 +628,11 @@ func RemoveGroupRole(cmd *cobra.Command, args []string) error {
 // RemoveMember -- impl
 func RemoveMember(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -564,8 +650,11 @@ func RemoveMember(cmd *cobra.Command, args []string) error {
 // RemoveRolePermission -- impl
 func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}
@@ -583,8 +672,11 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 // ValidateToken -- impl
 func ValidateToken(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-	client_system, err := utils.GetClientSystemTenant()
+	if err != nil {
+		return err
+	}
 
+	client_system, err := utils.GetClientSystemTenant()
 	if err != nil {
 		return err
 	}

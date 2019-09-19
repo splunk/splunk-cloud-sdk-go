@@ -9,15 +9,12 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/utils"
 )
 
-
 // CreateAction -- impl
 func CreateAction(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.CreateAction(client, args)
 	if err != nil {
 		return err
@@ -31,11 +28,9 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 // DeleteAction -- impl
 func DeleteAction(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.DeleteAction(client, args)
 	if err != nil {
 		return err
@@ -49,11 +44,9 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 // GetAction -- impl
 func GetAction(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.GetAction(client, args)
 	if err != nil {
 		return err
@@ -67,11 +60,9 @@ func GetAction(cmd *cobra.Command, args []string) error {
 // GetActionStatus -- impl
 func GetActionStatus(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.GetActionStatus(client, args)
 	if err != nil {
 		return err
@@ -85,11 +76,9 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 // GetActionStatusDetails -- impl
 func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.GetActionStatusDetails(client, args)
 	if err != nil {
 		return err
@@ -103,11 +92,9 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 // GetPublicWebhookKeys -- impl
 func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.GetPublicWebhookKeys(client, args)
 	if err != nil {
 		return err
@@ -121,11 +108,9 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 // ListActions -- impl
 func ListActions(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.ListActions(client, args)
 	if err != nil {
 		return err
@@ -139,11 +124,9 @@ func ListActions(cmd *cobra.Command, args []string) error {
 // TriggerAction -- impl
 func TriggerAction(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.TriggerAction(client, args)
 	if err != nil {
 		return err
@@ -157,11 +140,9 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 // UpdateAction -- impl
 func UpdateAction(cmd *cobra.Command, args []string) error {
 	client, err := utils.GetClient()
-
 	if err != nil {
 		return err
 	}
-
 	ret, err := action.UpdateAction(client, args)
 	if err != nil {
 		return err
