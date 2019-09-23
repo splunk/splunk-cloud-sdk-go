@@ -233,169 +233,200 @@ var validateTokenCmd = &cobra.Command{
 func init() {
 	identityCmd.AddCommand(addGroupMemberCmd)
 	var addGroupMemberGroup string
-	addGroupMemberCmd.Flags().StringVar(&addGroupMemberGroup, "group", " ", "The group name.")
+	addGroupMemberCmd.Flags().StringVar(&addGroupMemberGroup, "group", "", "The group name.")
 	addGroupMemberCmd.MarkFlagRequired("group")
 	var addGroupMemberName string
-	addGroupMemberCmd.Flags().StringVar(&addGroupMemberName, "name", " ", "")
+	addGroupMemberCmd.Flags().StringVar(&addGroupMemberName, "name", "", "")
+	addGroupMemberCmd.MarkFlagRequired("name")
 
 
 	identityCmd.AddCommand(addGroupRoleCmd)
 	var addGroupRoleGroup string
-	addGroupRoleCmd.Flags().StringVar(&addGroupRoleGroup, "group", " ", "The group name.")
+	addGroupRoleCmd.Flags().StringVar(&addGroupRoleGroup, "group", "", "The group name.")
 	addGroupRoleCmd.MarkFlagRequired("group")
 	var addGroupRoleName string
-	addGroupRoleCmd.Flags().StringVar(&addGroupRoleName, "name", " ", "")
+	addGroupRoleCmd.Flags().StringVar(&addGroupRoleName, "name", "", "")
+	addGroupRoleCmd.MarkFlagRequired("name")
 
 
 	identityCmd.AddCommand(addMemberCmd)
 	var addMemberName string
-	addMemberCmd.Flags().StringVar(&addMemberName, "name", " ", "")
+	addMemberCmd.Flags().StringVar(&addMemberName, "name", "", "")
+	addMemberCmd.MarkFlagRequired("name")
 
 
 	identityCmd.AddCommand(addRolePermissionCmd)
 	var addRolePermissionRole string
-	addRolePermissionCmd.Flags().StringVar(&addRolePermissionRole, "role", " ", "The role name.")
+	addRolePermissionCmd.Flags().StringVar(&addRolePermissionRole, "role", "", "The role name.")
 	addRolePermissionCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(createGroupCmd)
 	var createGroupName string
-	createGroupCmd.Flags().StringVar(&createGroupName, "name", " ", "")
+	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "")
+	createGroupCmd.MarkFlagRequired("name")
 
 
 	identityCmd.AddCommand(createRoleCmd)
 	var createRoleName string
-	createRoleCmd.Flags().StringVar(&createRoleName, "name", " ", "")
+	createRoleCmd.Flags().StringVar(&createRoleName, "name", "", "")
+	createRoleCmd.MarkFlagRequired("name")
 
 
 	identityCmd.AddCommand(deleteGroupCmd)
 	var deleteGroupGroup string
-	deleteGroupCmd.Flags().StringVar(&deleteGroupGroup, "group", " ", "The group name.")
+	deleteGroupCmd.Flags().StringVar(&deleteGroupGroup, "group", "", "The group name.")
 	deleteGroupCmd.MarkFlagRequired("group")
+
 
 	identityCmd.AddCommand(deleteRoleCmd)
 	var deleteRoleRole string
-	deleteRoleCmd.Flags().StringVar(&deleteRoleRole, "role", " ", "The role name.")
+	deleteRoleCmd.Flags().StringVar(&deleteRoleRole, "role", "", "The role name.")
 	deleteRoleCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(getGroupCmd)
 	var getGroupGroup string
-	getGroupCmd.Flags().StringVar(&getGroupGroup, "group", " ", "The group name.")
+	getGroupCmd.Flags().StringVar(&getGroupGroup, "group", "", "The group name.")
 	getGroupCmd.MarkFlagRequired("group")
+
 
 	identityCmd.AddCommand(getGroupMemberCmd)
 	var getGroupMemberGroup string
-	getGroupMemberCmd.Flags().StringVar(&getGroupMemberGroup, "group", " ", "The group name.")
+	getGroupMemberCmd.Flags().StringVar(&getGroupMemberGroup, "group", "", "The group name.")
 	getGroupMemberCmd.MarkFlagRequired("group")
 	var getGroupMemberMember string
-	getGroupMemberCmd.Flags().StringVar(&getGroupMemberMember, "member", " ", "The member name.")
+	getGroupMemberCmd.Flags().StringVar(&getGroupMemberMember, "member", "", "The member name.")
 	getGroupMemberCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(getGroupRoleCmd)
 	var getGroupRoleGroup string
-	getGroupRoleCmd.Flags().StringVar(&getGroupRoleGroup, "group", " ", "The group name.")
+	getGroupRoleCmd.Flags().StringVar(&getGroupRoleGroup, "group", "", "The group name.")
 	getGroupRoleCmd.MarkFlagRequired("group")
 	var getGroupRoleRole string
-	getGroupRoleCmd.Flags().StringVar(&getGroupRoleRole, "role", " ", "The role name.")
+	getGroupRoleCmd.Flags().StringVar(&getGroupRoleRole, "role", "", "The role name.")
 	getGroupRoleCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(getMemberCmd)
 	var getMemberMember string
-	getMemberCmd.Flags().StringVar(&getMemberMember, "member", " ", "The member name.")
+	getMemberCmd.Flags().StringVar(&getMemberMember, "member", "", "The member name.")
 	getMemberCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(getPrincipalCmd)
 	var getPrincipalPrincipal string
-	getPrincipalCmd.Flags().StringVar(&getPrincipalPrincipal, "principal", " ", "The principal name.")
+	getPrincipalCmd.Flags().StringVar(&getPrincipalPrincipal, "principal", "", "The principal name.")
 	getPrincipalCmd.MarkFlagRequired("principal")
+
 
 	identityCmd.AddCommand(getRoleCmd)
 	var getRoleRole string
-	getRoleCmd.Flags().StringVar(&getRoleRole, "role", " ", "The role name.")
+	getRoleCmd.Flags().StringVar(&getRoleRole, "role", "", "The role name.")
 	getRoleCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(getRolePermissionCmd)
 	var getRolePermissionPermission string
-	getRolePermissionCmd.Flags().StringVar(&getRolePermissionPermission, "permission", " ", "The permission string.")
+	getRolePermissionCmd.Flags().StringVar(&getRolePermissionPermission, "permission", "", "The permission string.")
 	getRolePermissionCmd.MarkFlagRequired("permission")
 	var getRolePermissionRole string
-	getRolePermissionCmd.Flags().StringVar(&getRolePermissionRole, "role", " ", "The role name.")
+	getRolePermissionCmd.Flags().StringVar(&getRolePermissionRole, "role", "", "The role name.")
 	getRolePermissionCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(listGroupMembersCmd)
 	var listGroupMembersGroup string
-	listGroupMembersCmd.Flags().StringVar(&listGroupMembersGroup, "group", " ", "The group name.")
+	listGroupMembersCmd.Flags().StringVar(&listGroupMembersGroup, "group", "", "The group name.")
 	listGroupMembersCmd.MarkFlagRequired("group")
+
 
 	identityCmd.AddCommand(listGroupRolesCmd)
 	var listGroupRolesGroup string
-	listGroupRolesCmd.Flags().StringVar(&listGroupRolesGroup, "group", " ", "The group name.")
+	listGroupRolesCmd.Flags().StringVar(&listGroupRolesGroup, "group", "", "The group name.")
 	listGroupRolesCmd.MarkFlagRequired("group")
+
 
 	identityCmd.AddCommand(listGroupsCmd)
 
+
 	identityCmd.AddCommand(listMemberGroupsCmd)
 	var listMemberGroupsMember string
-	listMemberGroupsCmd.Flags().StringVar(&listMemberGroupsMember, "member", " ", "The member name.")
+	listMemberGroupsCmd.Flags().StringVar(&listMemberGroupsMember, "member", "", "The member name.")
 	listMemberGroupsCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(listMemberPermissionsCmd)
 	var listMemberPermissionsMember string
-	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsMember, "member", " ", "The member name.")
+	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsMember, "member", "", "The member name.")
 	listMemberPermissionsCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(listMemberRolesCmd)
 	var listMemberRolesMember string
-	listMemberRolesCmd.Flags().StringVar(&listMemberRolesMember, "member", " ", "The member name.")
+	listMemberRolesCmd.Flags().StringVar(&listMemberRolesMember, "member", "", "The member name.")
 	listMemberRolesCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(listMembersCmd)
 
+
 	identityCmd.AddCommand(listPrincipalsCmd)
+
 
 	identityCmd.AddCommand(listRoleGroupsCmd)
 	var listRoleGroupsRole string
-	listRoleGroupsCmd.Flags().StringVar(&listRoleGroupsRole, "role", " ", "The role name.")
+	listRoleGroupsCmd.Flags().StringVar(&listRoleGroupsRole, "role", "", "The role name.")
 	listRoleGroupsCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(listRolePermissionsCmd)
 	var listRolePermissionsRole string
-	listRolePermissionsCmd.Flags().StringVar(&listRolePermissionsRole, "role", " ", "The role name.")
+	listRolePermissionsCmd.Flags().StringVar(&listRolePermissionsRole, "role", "", "The role name.")
 	listRolePermissionsCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(listRolesCmd)
 
+
 	identityCmd.AddCommand(removeGroupMemberCmd)
 	var removeGroupMemberGroup string
-	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberGroup, "group", " ", "The group name.")
+	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberGroup, "group", "", "The group name.")
 	removeGroupMemberCmd.MarkFlagRequired("group")
 	var removeGroupMemberMember string
-	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberMember, "member", " ", "The member name.")
+	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberMember, "member", "", "The member name.")
 	removeGroupMemberCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(removeGroupRoleCmd)
 	var removeGroupRoleGroup string
-	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleGroup, "group", " ", "The group name.")
+	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleGroup, "group", "", "The group name.")
 	removeGroupRoleCmd.MarkFlagRequired("group")
 	var removeGroupRoleRole string
-	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleRole, "role", " ", "The role name.")
+	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleRole, "role", "", "The role name.")
 	removeGroupRoleCmd.MarkFlagRequired("role")
+
 
 	identityCmd.AddCommand(removeMemberCmd)
 	var removeMemberMember string
-	removeMemberCmd.Flags().StringVar(&removeMemberMember, "member", " ", "The member name.")
+	removeMemberCmd.Flags().StringVar(&removeMemberMember, "member", "", "The member name.")
 	removeMemberCmd.MarkFlagRequired("member")
+
 
 	identityCmd.AddCommand(removeRolePermissionCmd)
 	var removeRolePermissionPermission string
-	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionPermission, "permission", " ", "The permission string.")
+	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionPermission, "permission", "", "The permission string.")
 	removeRolePermissionCmd.MarkFlagRequired("permission")
 	var removeRolePermissionRole string
-	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionRole, "role", " ", "The role name.")
+	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionRole, "role", "", "The role name.")
 	removeRolePermissionCmd.MarkFlagRequired("role")
 
+
 	identityCmd.AddCommand(validateTokenCmd)
+
 	var validateTokenInclude string
-	validateTokenCmd.Flags().StringVar(&validateTokenInclude, "include", " ", "Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]")
+	validateTokenCmd.Flags().StringVar(&validateTokenInclude, "include", "", "Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]")
 
 
 

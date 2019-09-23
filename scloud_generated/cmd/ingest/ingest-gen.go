@@ -34,9 +34,12 @@ var uploadFilesCmd = &cobra.Command{
 func init() {
 	ingestCmd.AddCommand(postEventsCmd)
 
+
 	ingestCmd.AddCommand(postMetricsCmd)
 
+
 	ingestCmd.AddCommand(uploadFilesCmd)
+
 
 
 }

@@ -300,414 +300,491 @@ var validatePipelineCmd = &cobra.Command{
 func init() {
 	streamsCmd.AddCommand(activatePipelineCmd)
 	var activatePipelineId string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", " ", "id of the pipeline to activate")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", "", "id of the pipeline to activate")
 	activatePipelineCmd.MarkFlagRequired("id")
+
 	var activatePipelineActivateLatestVersion string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineActivateLatestVersion, "activate-latest-version", " ", "Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineActivateLatestVersion, "activate-latest-version", "", "Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.")
 	var activatePipelineAllowNonRestoredState string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineAllowNonRestoredState, "allow-non-restored-state", " ", "Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to activate a pipeline in this state. Defaults to false.")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineAllowNonRestoredState, "allow-non-restored-state", "", "Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to activate a pipeline in this state. Defaults to false.")
 	var activatePipelineSkipRestoreState string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineSkipRestoreState, "skip-restore-state", " ", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineSkipRestoreState, "skip-restore-state", "", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
 
 
 	streamsCmd.AddCommand(compileDSLCmd)
 	var compileDSLDsl string
-	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", " ", "The Streams DSL representation of a pipeline.")
+	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "The Streams DSL representation of a pipeline.")
+	compileDSLCmd.MarkFlagRequired("dsl")
 
 
 	streamsCmd.AddCommand(compileSPLCmd)
 	var compileSPLSpl string
-	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", " ", "The SPL2 representation of a pipeline or function parameters.")
+	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", "", "The SPL2 representation of a pipeline or function parameters.")
+	compileSPLCmd.MarkFlagRequired("spl")
+
 	var compileSPLSyntax string
-	compileSPLCmd.Flags().StringVar(&compileSPLSyntax, "syntax", " ", "The parse parameters as arguments to this SPL2 command")
+	compileSPLCmd.Flags().StringVar(&compileSPLSyntax, "syntax", "", "The parse parameters as arguments to this SPL2 command")
 
 
 	streamsCmd.AddCommand(createConnectionCmd)
 	var createConnectionConnectorId string
-	createConnectionCmd.Flags().StringVar(&createConnectionConnectorId, "connector-id", " ", "The ID of the parent connector.")
+	createConnectionCmd.Flags().StringVar(&createConnectionConnectorId, "connector-id", "", "The ID of the parent connector.")
+	createConnectionCmd.MarkFlagRequired("connector-id")
 	var createConnectionData string
-	createConnectionCmd.Flags().StringVar(&createConnectionData, "data", " ", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	createConnectionCmd.Flags().StringVar(&createConnectionData, "data", "", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	createConnectionCmd.MarkFlagRequired("data")
 	var createConnectionDescription string
-	createConnectionCmd.Flags().StringVar(&createConnectionDescription, "description", " ", "The description of the connection.")
+	createConnectionCmd.Flags().StringVar(&createConnectionDescription, "description", "", "The description of the connection.")
+	createConnectionCmd.MarkFlagRequired("description")
 	var createConnectionName string
-	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", " ", "The name of the connection.")
+	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "The name of the connection.")
+	createConnectionCmd.MarkFlagRequired("name")
 
 
 	streamsCmd.AddCommand(createGroupCmd)
 	var createGroupArguments string
-	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", " ", "The group function arguments list.")
+	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", "", "The group function arguments list.")
+	createGroupCmd.MarkFlagRequired("arguments")
 	var createGroupAst string
-	createGroupCmd.Flags().StringVar(&createGroupAst, "ast", " ", "")
+	createGroupCmd.Flags().StringVar(&createGroupAst, "ast", "", "")
+	createGroupCmd.MarkFlagRequired("ast")
 	var createGroupAttributes string
-	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", " ", "The attributes map for function.")
+	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "The attributes map for function.")
+	createGroupCmd.MarkFlagRequired("attributes")
 	var createGroupCategories string
-	createGroupCmd.Flags().StringVar(&createGroupCategories, "categories", " ", "The categories for this function.")
+	createGroupCmd.Flags().StringVar(&createGroupCategories, "categories", "", "The categories for this function.")
+	createGroupCmd.MarkFlagRequired("categories")
 	var createGroupMappings string
-	createGroupCmd.Flags().StringVar(&createGroupMappings, "mappings", " ", "The group function mappings list.")
+	createGroupCmd.Flags().StringVar(&createGroupMappings, "mappings", "", "The group function mappings list.")
+	createGroupCmd.MarkFlagRequired("mappings")
 	var createGroupName string
-	createGroupCmd.Flags().StringVar(&createGroupName, "name", " ", "The group function name.")
+	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "The group function name.")
+	createGroupCmd.MarkFlagRequired("name")
 	var createGroupOutputType string
-	createGroupCmd.Flags().StringVar(&createGroupOutputType, "output-type", " ", "The data type of the function's output.")
+	createGroupCmd.Flags().StringVar(&createGroupOutputType, "output-type", "", "The data type of the function's output.")
+	createGroupCmd.MarkFlagRequired("output-type")
+
 	var createGroupScalar string
-	createGroupCmd.Flags().StringVar(&createGroupScalar, "scalar", " ", "")
+	createGroupCmd.Flags().StringVar(&createGroupScalar, "scalar", "", "")
 	var createGroupVariadic string
-	createGroupCmd.Flags().StringVar(&createGroupVariadic, "variadic", " ", "")
+	createGroupCmd.Flags().StringVar(&createGroupVariadic, "variadic", "", "")
 
 
 	streamsCmd.AddCommand(createPipelineCmd)
-	var createPipelineBypassValidation string
-	createPipelineCmd.Flags().StringVar(&createPipelineBypassValidation, "bypass-validation", " ", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
-	var createPipelineCreateUserId string
-	createPipelineCmd.Flags().StringVar(&createPipelineCreateUserId, "create-user-id", " ", "The user that created the pipeline. Deprecated.")
 	var createPipelineData string
-	createPipelineCmd.Flags().StringVar(&createPipelineData, "data", " ", "")
-	var createPipelineDescription string
-	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", " ", "The description of the pipeline. Defaults to null.")
+	createPipelineCmd.Flags().StringVar(&createPipelineData, "data", "", "")
+	createPipelineCmd.MarkFlagRequired("data")
 	var createPipelineName string
-	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", " ", "The name of the pipeline.")
+	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", "", "The name of the pipeline.")
+	createPipelineCmd.MarkFlagRequired("name")
+
+	var createPipelineBypassValidation string
+	createPipelineCmd.Flags().StringVar(&createPipelineBypassValidation, "bypass-validation", "", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
+	var createPipelineCreateUserId string
+	createPipelineCmd.Flags().StringVar(&createPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
+	var createPipelineDescription string
+	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 
 
 	streamsCmd.AddCommand(createTemplateCmd)
 	var createTemplateData string
-	createTemplateCmd.Flags().StringVar(&createTemplateData, "data", " ", "")
+	createTemplateCmd.Flags().StringVar(&createTemplateData, "data", "", "")
+	createTemplateCmd.MarkFlagRequired("data")
 	var createTemplateDescription string
-	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", " ", "Template description")
+	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "Template description")
+	createTemplateCmd.MarkFlagRequired("description")
 	var createTemplateName string
-	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", " ", "Template name")
+	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", "", "Template name")
+	createTemplateCmd.MarkFlagRequired("name")
 
 
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 	var deactivatePipelineId string
-	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", " ", "id of the pipeline to deactivate")
+	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "id of the pipeline to deactivate")
 	deactivatePipelineCmd.MarkFlagRequired("id")
+
 	var deactivatePipelineSkipSavepoint string
-	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineSkipSavepoint, "skip-savepoint", " ", "Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.")
+	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineSkipSavepoint, "skip-savepoint", "", "Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.")
 
 
 	streamsCmd.AddCommand(deleteConnectionCmd)
 	var deleteConnectionConnectionId string
-	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", " ", "ID of the connection")
-	deleteConnectionCmd.MarkFlagRequired("connectionId")
+	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "ID of the connection")
+	deleteConnectionCmd.MarkFlagRequired("connection-id")
+
 
 	streamsCmd.AddCommand(deleteGroupCmd)
 	var deleteGroupGroupId string
-	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", " ", "The group function's ID from the function registry")
-	deleteGroupCmd.MarkFlagRequired("groupId")
+	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", "", "The group function's ID from the function registry")
+	deleteGroupCmd.MarkFlagRequired("group-id")
+
 
 	streamsCmd.AddCommand(deletePipelineCmd)
 	var deletePipelineId string
-	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", " ", "id of the pipeline to delete")
+	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "id of the pipeline to delete")
 	deletePipelineCmd.MarkFlagRequired("id")
+
 
 	streamsCmd.AddCommand(deleteTemplateCmd)
 	var deleteTemplateTemplateId string
-	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", " ", "ID of the template to delete")
-	deleteTemplateCmd.MarkFlagRequired("templateId")
+	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "ID of the template to delete")
+	deleteTemplateCmd.MarkFlagRequired("template-id")
+
 
 	streamsCmd.AddCommand(expandGroupCmd)
-	var expandGroupGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupGroupId, "group-id", " ", "The group function's ID from the function registry")
-	expandGroupCmd.MarkFlagRequired("groupId")
 	var expandGroupArguments string
-	expandGroupCmd.Flags().StringVar(&expandGroupArguments, "arguments", " ", "Function arguments for the given id. Overrides default values.")
+	expandGroupCmd.Flags().StringVar(&expandGroupArguments, "arguments", "", "Function arguments for the given id. Overrides default values.")
+	expandGroupCmd.MarkFlagRequired("arguments")
+	var expandGroupGroupId string
+	expandGroupCmd.Flags().StringVar(&expandGroupGroupId, "group-id", "", "The group function's ID from the function registry")
+	expandGroupCmd.MarkFlagRequired("group-id")
 	var expandGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", " ", "The ID associated with your group function in the pipeline Streams JSON")
+	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", "", "The ID associated with your group function in the pipeline Streams JSON")
+	expandGroupCmd.MarkFlagRequired("id")
 
 
 	streamsCmd.AddCommand(expandPipelineCmd)
 	var expandPipelineEdges string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineEdges, "edges", " ", "A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	expandPipelineCmd.Flags().StringVar(&expandPipelineEdges, "edges", "", "A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	expandPipelineCmd.MarkFlagRequired("edges")
 	var expandPipelineNodes string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineNodes, "nodes", " ", "The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	expandPipelineCmd.Flags().StringVar(&expandPipelineNodes, "nodes", "", "The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	expandPipelineCmd.MarkFlagRequired("nodes")
 	var expandPipelineRootNode string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineRootNode, "root-node", " ", "The UUIDs of all sink functions in a given pipeline")
+	expandPipelineCmd.Flags().StringVar(&expandPipelineRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
+	expandPipelineCmd.MarkFlagRequired("root-node")
 
 
 	streamsCmd.AddCommand(getGroupCmd)
 	var getGroupGroupId string
-	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", " ", "The group function's ID from the function registry")
-	getGroupCmd.MarkFlagRequired("groupId")
+	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", "", "The group function's ID from the function registry")
+	getGroupCmd.MarkFlagRequired("group-id")
+
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 	var getInputSchemaNodeUuid string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", " ", "The function ID.")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", "", "The function ID.")
+	getInputSchemaCmd.MarkFlagRequired("node-uuid")
 	var getInputSchemaTargetPortName string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", " ", "The name of the input port.")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "The name of the input port.")
+	getInputSchemaCmd.MarkFlagRequired("target-port-name")
 	var getInputSchemaUplJson string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaUplJson, "upl-json", " ", "")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaUplJson, "upl-json", "", "")
+	getInputSchemaCmd.MarkFlagRequired("upl-json")
 
 
 	streamsCmd.AddCommand(getOutputSchemaCmd)
-	var getOutputSchemaNodeUuid string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", " ", "The function ID. If omitted, returns the output schema for all functions.")
-	var getOutputSchemaSourcePortName string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaSourcePortName, "source-port-name", " ", "The name of the output port. Deprecated.")
 	var getOutputSchemaUplJson string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaUplJson, "upl-json", " ", "")
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaUplJson, "upl-json", "", "")
+	getOutputSchemaCmd.MarkFlagRequired("upl-json")
+
+	var getOutputSchemaNodeUuid string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", "", "The function ID. If omitted, returns the output schema for all functions.")
+	var getOutputSchemaSourcePortName string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaSourcePortName, "source-port-name", "", "The name of the output port. Deprecated.")
 
 
 	streamsCmd.AddCommand(getPipelineCmd)
 	var getPipelineId string
-	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", " ", "id of the pipeline to get")
+	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", "", "id of the pipeline to get")
 	getPipelineCmd.MarkFlagRequired("id")
+
 	var getPipelineVersion string
-	getPipelineCmd.Flags().StringVar(&getPipelineVersion, "version", " ", "version")
+	getPipelineCmd.Flags().StringVar(&getPipelineVersion, "version", "", "version")
 
 
 	streamsCmd.AddCommand(getPipelineLatestMetricsCmd)
 	var getPipelineLatestMetricsId string
-	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", " ", "ID of the pipeline to get metrics for")
+	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "ID of the pipeline to get metrics for")
 	getPipelineLatestMetricsCmd.MarkFlagRequired("id")
 
+
 	streamsCmd.AddCommand(getPipelinesStatusCmd)
+
 	var getPipelinesStatusActivated string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusActivated, "activated", " ", "activated")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusActivated, "activated", "", "activated")
 	var getPipelinesStatusCreateUserId string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusCreateUserId, "create-user-id", " ", "createUserId")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusCreateUserId, "create-user-id", "", "createUserId")
 	var getPipelinesStatusName string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusName, "name", " ", "name")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusName, "name", "", "name")
 	var getPipelinesStatusOffset string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusOffset, "offset", " ", "offset")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusOffset, "offset", "", "offset")
 	var getPipelinesStatusPageSize string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusPageSize, "page-size", " ", "pageSize")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusPageSize, "page-size", "", "pageSize")
 	var getPipelinesStatusSortDir string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortDir, "sort-dir", " ", "sortDir")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortDir, "sort-dir", "", "sortDir")
 	var getPipelinesStatusSortField string
-	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortField, "sort-field", " ", "sortField")
+	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortField, "sort-field", "", "sortField")
 
 
 	streamsCmd.AddCommand(getPreviewDataCmd)
 	var getPreviewDataPreviewSessionId string
-	getPreviewDataCmd.Flags().StringVar(&getPreviewDataPreviewSessionId, "preview-session-id", " ", "ID of the preview session")
-	getPreviewDataCmd.MarkFlagRequired("previewSessionId")
+	getPreviewDataCmd.Flags().StringVar(&getPreviewDataPreviewSessionId, "preview-session-id", "", "ID of the preview session")
+	getPreviewDataCmd.MarkFlagRequired("preview-session-id")
+
 
 	streamsCmd.AddCommand(getPreviewSessionCmd)
 	var getPreviewSessionPreviewSessionId string
-	getPreviewSessionCmd.Flags().StringVar(&getPreviewSessionPreviewSessionId, "preview-session-id", " ", "ID of the preview session")
-	getPreviewSessionCmd.MarkFlagRequired("previewSessionId")
+	getPreviewSessionCmd.Flags().StringVar(&getPreviewSessionPreviewSessionId, "preview-session-id", "", "ID of the preview session")
+	getPreviewSessionCmd.MarkFlagRequired("preview-session-id")
+
 
 	streamsCmd.AddCommand(getPreviewSessionLatestMetricsCmd)
 	var getPreviewSessionLatestMetricsPreviewSessionId string
-	getPreviewSessionLatestMetricsCmd.Flags().StringVar(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", " ", "ID of the preview session")
-	getPreviewSessionLatestMetricsCmd.MarkFlagRequired("previewSessionId")
+	getPreviewSessionLatestMetricsCmd.Flags().StringVar(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", "", "ID of the preview session")
+	getPreviewSessionLatestMetricsCmd.MarkFlagRequired("preview-session-id")
+
 
 	streamsCmd.AddCommand(getRegistryCmd)
+
 	var getRegistryLocal string
-	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", " ", "local")
+	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "", "local")
 
 
 	streamsCmd.AddCommand(getTemplateCmd)
 	var getTemplateTemplateId string
-	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", " ", "ID of the template")
-	getTemplateCmd.MarkFlagRequired("templateId")
+	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", "", "ID of the template")
+	getTemplateCmd.MarkFlagRequired("template-id")
+
 	var getTemplateVersion string
-	getTemplateCmd.Flags().StringVar(&getTemplateVersion, "version", " ", "version of the template")
+	getTemplateCmd.Flags().StringVar(&getTemplateVersion, "version", "", "version of the template")
 
 
 	streamsCmd.AddCommand(listConnectionsCmd)
+
 	var listConnectionsConnectorId string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsConnectorId, "connector-id", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsConnectorId, "connector-id", "", "")
 	var listConnectionsCreateUserId string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsCreateUserId, "create-user-id", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsCreateUserId, "create-user-id", "", "")
 	var listConnectionsFunctionId string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsFunctionId, "function-id", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsFunctionId, "function-id", "", "")
 	var listConnectionsName string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsName, "name", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsName, "name", "", "")
 	var listConnectionsOffset string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsOffset, "offset", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsOffset, "offset", "", "")
 	var listConnectionsPageSize string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsPageSize, "page-size", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsPageSize, "page-size", "", "")
 	var listConnectionsShowSecretNames string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsShowSecretNames, "show-secret-names", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsShowSecretNames, "show-secret-names", "", "")
 	var listConnectionsSortDir string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsSortDir, "sort-dir", " ", "Specify either ascending ('asc') or descending ('desc') sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to 'asc'.")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsSortDir, "sort-dir", "", "Specify either ascending ('asc') or descending ('desc') sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to 'asc'.")
 	var listConnectionsSortField string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsSortField, "sort-field", " ", "")
+	listConnectionsCmd.Flags().StringVar(&listConnectionsSortField, "sort-field", "", "")
 
 
 	streamsCmd.AddCommand(listConnectorsCmd)
 
+
 	streamsCmd.AddCommand(listPipelinesCmd)
+
 	var listPipelinesActivated string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesActivated, "activated", " ", "activated")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesActivated, "activated", "", "activated")
 	var listPipelinesCreateUserId string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesCreateUserId, "create-user-id", " ", "createUserId")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesCreateUserId, "create-user-id", "", "createUserId")
 	var listPipelinesIncludeData string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesIncludeData, "include-data", " ", "includeData")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesIncludeData, "include-data", "", "includeData")
 	var listPipelinesName string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesName, "name", " ", "name")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesName, "name", "", "name")
 	var listPipelinesOffset string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesOffset, "offset", " ", "offset")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesOffset, "offset", "", "offset")
 	var listPipelinesPageSize string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesPageSize, "page-size", " ", "pageSize")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesPageSize, "page-size", "", "pageSize")
 	var listPipelinesSortDir string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesSortDir, "sort-dir", " ", "sortDir")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesSortDir, "sort-dir", "", "sortDir")
 	var listPipelinesSortField string
-	listPipelinesCmd.Flags().StringVar(&listPipelinesSortField, "sort-field", " ", "sortField")
+	listPipelinesCmd.Flags().StringVar(&listPipelinesSortField, "sort-field", "", "sortField")
 
 
 	streamsCmd.AddCommand(listTemplatesCmd)
+
 	var listTemplatesOffset string
-	listTemplatesCmd.Flags().StringVar(&listTemplatesOffset, "offset", " ", "offset")
+	listTemplatesCmd.Flags().StringVar(&listTemplatesOffset, "offset", "", "offset")
 	var listTemplatesPageSize string
-	listTemplatesCmd.Flags().StringVar(&listTemplatesPageSize, "page-size", " ", "pageSize")
+	listTemplatesCmd.Flags().StringVar(&listTemplatesPageSize, "page-size", "", "pageSize")
 	var listTemplatesSortDir string
-	listTemplatesCmd.Flags().StringVar(&listTemplatesSortDir, "sort-dir", " ", "sortDir")
+	listTemplatesCmd.Flags().StringVar(&listTemplatesSortDir, "sort-dir", "", "sortDir")
 	var listTemplatesSortField string
-	listTemplatesCmd.Flags().StringVar(&listTemplatesSortField, "sort-field", " ", "sortField")
+	listTemplatesCmd.Flags().StringVar(&listTemplatesSortField, "sort-field", "", "sortField")
 
 
 	streamsCmd.AddCommand(mergePipelinesCmd)
 	var mergePipelinesInputTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputTree, "input-tree", " ", "")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputTree, "input-tree", "", "")
+	mergePipelinesCmd.MarkFlagRequired("input-tree")
 	var mergePipelinesMainTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesMainTree, "main-tree", " ", "")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesMainTree, "main-tree", "", "")
+	mergePipelinesCmd.MarkFlagRequired("main-tree")
 	var mergePipelinesTargetNode string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", " ", "The function ID of the merge target in the main pipeline.")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "The function ID of the merge target in the main pipeline.")
+	mergePipelinesCmd.MarkFlagRequired("target-node")
 	var mergePipelinesTargetPort string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", " ", "The input port of the merge target in the main pipeline.")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "The input port of the merge target in the main pipeline.")
+	mergePipelinesCmd.MarkFlagRequired("target-port")
 
 
 	streamsCmd.AddCommand(putConnectionCmd)
 	var putConnectionConnectionId string
-	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", " ", "ID of the connection")
-	putConnectionCmd.MarkFlagRequired("connectionId")
+	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "ID of the connection")
+	putConnectionCmd.MarkFlagRequired("connection-id")
 	var putConnectionData string
-	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", " ", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", "", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	putConnectionCmd.MarkFlagRequired("data")
 	var putConnectionDescription string
-	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", " ", "The description of the connection.")
+	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", "", "The description of the connection.")
+	putConnectionCmd.MarkFlagRequired("description")
 	var putConnectionName string
-	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", " ", "The name of the connection.")
+	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "The name of the connection.")
+	putConnectionCmd.MarkFlagRequired("name")
 
 
 	streamsCmd.AddCommand(putGroupCmd)
-	var putGroupGroupId string
-	putGroupCmd.Flags().StringVar(&putGroupGroupId, "group-id", " ", "The group function's ID from the function registry")
-	putGroupCmd.MarkFlagRequired("groupId")
 	var putGroupArguments string
-	putGroupCmd.Flags().StringVar(&putGroupArguments, "arguments", " ", "The group function arguments list.")
+	putGroupCmd.Flags().StringVar(&putGroupArguments, "arguments", "", "The group function arguments list.")
+	putGroupCmd.MarkFlagRequired("arguments")
 	var putGroupAst string
-	putGroupCmd.Flags().StringVar(&putGroupAst, "ast", " ", "")
+	putGroupCmd.Flags().StringVar(&putGroupAst, "ast", "", "")
+	putGroupCmd.MarkFlagRequired("ast")
 	var putGroupAttributes string
-	putGroupCmd.Flags().StringVar(&putGroupAttributes, "attributes", " ", "The attributes map for function.")
+	putGroupCmd.Flags().StringVar(&putGroupAttributes, "attributes", "", "The attributes map for function.")
+	putGroupCmd.MarkFlagRequired("attributes")
 	var putGroupCategories string
-	putGroupCmd.Flags().StringVar(&putGroupCategories, "categories", " ", "The categories for this function.")
+	putGroupCmd.Flags().StringVar(&putGroupCategories, "categories", "", "The categories for this function.")
+	putGroupCmd.MarkFlagRequired("categories")
+	var putGroupGroupId string
+	putGroupCmd.Flags().StringVar(&putGroupGroupId, "group-id", "", "The group function's ID from the function registry")
+	putGroupCmd.MarkFlagRequired("group-id")
 	var putGroupMappings string
-	putGroupCmd.Flags().StringVar(&putGroupMappings, "mappings", " ", "The group function mappings list.")
+	putGroupCmd.Flags().StringVar(&putGroupMappings, "mappings", "", "The group function mappings list.")
+	putGroupCmd.MarkFlagRequired("mappings")
 	var putGroupName string
-	putGroupCmd.Flags().StringVar(&putGroupName, "name", " ", "The group function name.")
+	putGroupCmd.Flags().StringVar(&putGroupName, "name", "", "The group function name.")
+	putGroupCmd.MarkFlagRequired("name")
 	var putGroupOutputType string
-	putGroupCmd.Flags().StringVar(&putGroupOutputType, "output-type", " ", "The data type of the function's output.")
+	putGroupCmd.Flags().StringVar(&putGroupOutputType, "output-type", "", "The data type of the function's output.")
+	putGroupCmd.MarkFlagRequired("output-type")
+
 	var putGroupScalar string
-	putGroupCmd.Flags().StringVar(&putGroupScalar, "scalar", " ", "")
+	putGroupCmd.Flags().StringVar(&putGroupScalar, "scalar", "", "")
 	var putGroupVariadic string
-	putGroupCmd.Flags().StringVar(&putGroupVariadic, "variadic", " ", "")
+	putGroupCmd.Flags().StringVar(&putGroupVariadic, "variadic", "", "")
 
 
 	streamsCmd.AddCommand(putTemplateCmd)
-	var putTemplateTemplateId string
-	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", " ", "ID of the template")
-	putTemplateCmd.MarkFlagRequired("templateId")
 	var putTemplateData string
-	putTemplateCmd.Flags().StringVar(&putTemplateData, "data", " ", "")
+	putTemplateCmd.Flags().StringVar(&putTemplateData, "data", "", "")
+	putTemplateCmd.MarkFlagRequired("data")
 	var putTemplateDescription string
-	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", " ", "Template description")
+	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "Template description")
+	putTemplateCmd.MarkFlagRequired("description")
 	var putTemplateName string
-	putTemplateCmd.Flags().StringVar(&putTemplateName, "name", " ", "Template name")
+	putTemplateCmd.Flags().StringVar(&putTemplateName, "name", "", "Template name")
+	putTemplateCmd.MarkFlagRequired("name")
+	var putTemplateTemplateId string
+	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "ID of the template")
+	putTemplateCmd.MarkFlagRequired("template-id")
 
 
 	streamsCmd.AddCommand(reactivatePipelineCmd)
 	var reactivatePipelineId string
-	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", " ", "Pipeline UUID to reactivate")
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "Pipeline UUID to reactivate")
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
+
 	streamsCmd.AddCommand(startPreviewCmd)
-	var startPreviewRecordsLimit string
-	startPreviewCmd.Flags().StringVar(&startPreviewRecordsLimit, "records-limit", " ", "The maximum number of events per function. Defaults to 100.")
-	var startPreviewRecordsPerPipeline string
-	startPreviewCmd.Flags().StringVar(&startPreviewRecordsPerPipeline, "records-per-pipeline", " ", "The maximum number of events per pipeline. Defaults to 10000.")
-	var startPreviewSessionLifetimeMs string
-	startPreviewCmd.Flags().StringVar(&startPreviewSessionLifetimeMs, "session-lifetime-ms", " ", "The maximum lifetime of a session, in milliseconds. Defaults to 300,000.")
-	var startPreviewStreamingConfigurationId string
-	startPreviewCmd.Flags().StringVar(&startPreviewStreamingConfigurationId, "streaming-configuration-id", " ", "Deprecated. Must be null if set.")
 	var startPreviewUpl string
-	startPreviewCmd.Flags().StringVar(&startPreviewUpl, "upl", " ", "")
+	startPreviewCmd.Flags().StringVar(&startPreviewUpl, "upl", "", "")
+	startPreviewCmd.MarkFlagRequired("upl")
+
+	var startPreviewRecordsLimit string
+	startPreviewCmd.Flags().StringVar(&startPreviewRecordsLimit, "records-limit", "", "The maximum number of events per function. Defaults to 100.")
+	var startPreviewRecordsPerPipeline string
+	startPreviewCmd.Flags().StringVar(&startPreviewRecordsPerPipeline, "records-per-pipeline", "", "The maximum number of events per pipeline. Defaults to 10000.")
+	var startPreviewSessionLifetimeMs string
+	startPreviewCmd.Flags().StringVar(&startPreviewSessionLifetimeMs, "session-lifetime-ms", "", "The maximum lifetime of a session, in milliseconds. Defaults to 300,000.")
+	var startPreviewStreamingConfigurationId string
+	startPreviewCmd.Flags().StringVar(&startPreviewStreamingConfigurationId, "streaming-configuration-id", "", "Deprecated. Must be null if set.")
 	var startPreviewUseNewData string
-	startPreviewCmd.Flags().StringVar(&startPreviewUseNewData, "use-new-data", " ", "Deprecated. Must be true if set.")
+	startPreviewCmd.Flags().StringVar(&startPreviewUseNewData, "use-new-data", "", "Deprecated. Must be true if set.")
 
 
 	streamsCmd.AddCommand(stopPreviewCmd)
 	var stopPreviewPreviewSessionId string
-	stopPreviewCmd.Flags().StringVar(&stopPreviewPreviewSessionId, "preview-session-id", " ", "ID of the preview session")
-	stopPreviewCmd.MarkFlagRequired("previewSessionId")
+	stopPreviewCmd.Flags().StringVar(&stopPreviewPreviewSessionId, "preview-session-id", "", "ID of the preview session")
+	stopPreviewCmd.MarkFlagRequired("preview-session-id")
+
 
 	streamsCmd.AddCommand(updateConnectionCmd)
 	var updateConnectionConnectionId string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", " ", "ID of the connection")
-	updateConnectionCmd.MarkFlagRequired("connectionId")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "ID of the connection")
+	updateConnectionCmd.MarkFlagRequired("connection-id")
+
 	var updateConnectionData string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionData, "data", " ", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionData, "data", "", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
 	var updateConnectionDescription string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionDescription, "description", " ", "The description of the connection.")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionDescription, "description", "", "The description of the connection.")
 	var updateConnectionName string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", " ", "The name of the connection.")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
 
 
 	streamsCmd.AddCommand(updateGroupCmd)
 	var updateGroupGroupId string
-	updateGroupCmd.Flags().StringVar(&updateGroupGroupId, "group-id", " ", "The group function's ID from the function registry")
-	updateGroupCmd.MarkFlagRequired("groupId")
+	updateGroupCmd.Flags().StringVar(&updateGroupGroupId, "group-id", "", "The group function's ID from the function registry")
+	updateGroupCmd.MarkFlagRequired("group-id")
+
 	var updateGroupArguments string
-	updateGroupCmd.Flags().StringVar(&updateGroupArguments, "arguments", " ", "Group function arguments list.")
+	updateGroupCmd.Flags().StringVar(&updateGroupArguments, "arguments", "", "Group function arguments list.")
 	var updateGroupAst string
-	updateGroupCmd.Flags().StringVar(&updateGroupAst, "ast", " ", "")
+	updateGroupCmd.Flags().StringVar(&updateGroupAst, "ast", "", "")
 	var updateGroupAttributes string
-	updateGroupCmd.Flags().StringVar(&updateGroupAttributes, "attributes", " ", "Attributes map for function.")
+	updateGroupCmd.Flags().StringVar(&updateGroupAttributes, "attributes", "", "Attributes map for function.")
 	var updateGroupCategories string
-	updateGroupCmd.Flags().StringVar(&updateGroupCategories, "categories", " ", "Categories for this function.")
+	updateGroupCmd.Flags().StringVar(&updateGroupCategories, "categories", "", "Categories for this function.")
 	var updateGroupMappings string
-	updateGroupCmd.Flags().StringVar(&updateGroupMappings, "mappings", " ", "Group function mappings list.")
+	updateGroupCmd.Flags().StringVar(&updateGroupMappings, "mappings", "", "Group function mappings list.")
 	var updateGroupName string
-	updateGroupCmd.Flags().StringVar(&updateGroupName, "name", " ", "The name for the group function.")
+	updateGroupCmd.Flags().StringVar(&updateGroupName, "name", "", "The name for the group function.")
 	var updateGroupOutputType string
-	updateGroupCmd.Flags().StringVar(&updateGroupOutputType, "output-type", " ", "The data type of the output of your function.")
+	updateGroupCmd.Flags().StringVar(&updateGroupOutputType, "output-type", "", "The data type of the output of your function.")
 	var updateGroupScalar string
-	updateGroupCmd.Flags().StringVar(&updateGroupScalar, "scalar", " ", "")
+	updateGroupCmd.Flags().StringVar(&updateGroupScalar, "scalar", "", "")
 	var updateGroupVariadic string
-	updateGroupCmd.Flags().StringVar(&updateGroupVariadic, "variadic", " ", "")
+	updateGroupCmd.Flags().StringVar(&updateGroupVariadic, "variadic", "", "")
 
 
 	streamsCmd.AddCommand(updatePipelineCmd)
 	var updatePipelineId string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", " ", "id of the pipeline to update")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "id of the pipeline to update")
 	updatePipelineCmd.MarkFlagRequired("id")
+
 	var updatePipelineBypassValidation string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineBypassValidation, "bypass-validation", " ", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineBypassValidation, "bypass-validation", "", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
 	var updatePipelineCreateUserId string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineCreateUserId, "create-user-id", " ", "The user that created the pipeline. Deprecated.")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 	var updatePipelineData string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineData, "data", " ", "")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineData, "data", "", "")
 	var updatePipelineDescription string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", " ", "The description of the pipeline. Defaults to null.")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 	var updatePipelineName string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", " ", "The name of the pipeline.")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", "", "The name of the pipeline.")
 
 
 	streamsCmd.AddCommand(updateTemplateCmd)
 	var updateTemplateTemplateId string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", " ", "ID of the template")
-	updateTemplateCmd.MarkFlagRequired("templateId")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "ID of the template")
+	updateTemplateCmd.MarkFlagRequired("template-id")
+
 	var updateTemplateData string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateData, "data", " ", "")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateData, "data", "", "")
 	var updateTemplateDescription string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateDescription, "description", " ", "Template description")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateDescription, "description", "", "Template description")
 	var updateTemplateName string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", " ", "Template name")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
 
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 	var validatePipelineUpl string
-	validatePipelineCmd.Flags().StringVar(&validatePipelineUpl, "upl", " ", "")
+	validatePipelineCmd.Flags().StringVar(&validatePipelineUpl, "upl", "", "")
+	validatePipelineCmd.MarkFlagRequired("upl")
 
 
 
