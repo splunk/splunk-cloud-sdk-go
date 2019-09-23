@@ -4,6 +4,7 @@
 package action
 
 import (
+	"flag"
 	"fmt"
 	"github.com/spf13/cobra"
 	)
@@ -18,6 +19,8 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 // DeleteAction -- impl
 func DeleteAction(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called DeleteAction\n")
+	flag.Parse()
+	fmt.Printf(flag.Arg(0))
 	return nil
 }
 

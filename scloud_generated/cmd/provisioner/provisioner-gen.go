@@ -82,53 +82,64 @@ var updateInviteCmd = &cobra.Command{
 
 func init() {
 	provisionerCmd.AddCommand(createInviteCmd)
-	var createInviteComment string
-	createInviteCmd.Flags().StringVar(&createInviteComment, "comment", " ", "")
 	var createInviteEmail string
-	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", " ", "")
+	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "")
+	createInviteCmd.MarkFlagRequired("email")
+
+	var createInviteComment string
+	createInviteCmd.Flags().StringVar(&createInviteComment, "comment", "", "")
 	var createInviteGroups string
-	createInviteCmd.Flags().StringVar(&createInviteGroups, "groups", " ", "")
+	createInviteCmd.Flags().StringVar(&createInviteGroups, "groups", "", "")
 
 
 	provisionerCmd.AddCommand(createProvisionJobCmd)
+
 	var createProvisionJobApps string
-	createProvisionJobCmd.Flags().StringVar(&createProvisionJobApps, "apps", " ", "")
+	createProvisionJobCmd.Flags().StringVar(&createProvisionJobApps, "apps", "", "")
 	var createProvisionJobTenant string
-	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", " ", "")
+	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", "", "")
 
 
 	provisionerCmd.AddCommand(deleteInviteCmd)
 	var deleteInviteInviteId string
-	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", " ", "")
-	deleteInviteCmd.MarkFlagRequired("inviteId")
+	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "")
+	deleteInviteCmd.MarkFlagRequired("invite-id")
+
 
 	provisionerCmd.AddCommand(getInviteCmd)
 	var getInviteInviteId string
-	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", " ", "")
-	getInviteCmd.MarkFlagRequired("inviteId")
+	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "")
+	getInviteCmd.MarkFlagRequired("invite-id")
+
 
 	provisionerCmd.AddCommand(getProvisionJobCmd)
 	var getProvisionJobJobId string
-	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", " ", "")
-	getProvisionJobCmd.MarkFlagRequired("jobId")
+	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "")
+	getProvisionJobCmd.MarkFlagRequired("job-id")
+
 
 	provisionerCmd.AddCommand(getTenantCmd)
 	var getTenantTenantName string
-	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", " ", "")
-	getTenantCmd.MarkFlagRequired("tenantName")
+	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "")
+	getTenantCmd.MarkFlagRequired("tenant-name")
+
 
 	provisionerCmd.AddCommand(listInvitesCmd)
 
+
 	provisionerCmd.AddCommand(listProvisionJobsCmd)
+
 
 	provisionerCmd.AddCommand(listTenantsCmd)
 
+
 	provisionerCmd.AddCommand(updateInviteCmd)
-	var updateInviteInviteId string
-	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", " ", "")
-	updateInviteCmd.MarkFlagRequired("inviteId")
 	var updateInviteAction string
-	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", " ", "")
+	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "")
+	updateInviteCmd.MarkFlagRequired("action")
+	var updateInviteInviteId string
+	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "")
+	updateInviteCmd.MarkFlagRequired("invite-id")
 
 
 

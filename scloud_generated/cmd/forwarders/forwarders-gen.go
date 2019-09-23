@@ -40,18 +40,22 @@ var listCertificatesCmd = &cobra.Command{
 
 func init() {
 	forwardersCmd.AddCommand(addCertificateCmd)
+
 	var addCertificatePem string
-	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", " ", "")
+	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "")
 
 
 	forwardersCmd.AddCommand(deleteCertificateCmd)
 	var deleteCertificateSlot string
-	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", " ", "")
+	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", "", "")
 	deleteCertificateCmd.MarkFlagRequired("slot")
+
 
 	forwardersCmd.AddCommand(deleteCertificatesCmd)
 
+
 	forwardersCmd.AddCommand(listCertificatesCmd)
+
 
 
 }
