@@ -213,11 +213,24 @@ func init() {
 	var createWorkflowBuildInput string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildInput, "input", "", "")
 	createWorkflowBuildCmd.MarkFlagRequired("input")
+	var createWorkflowBuildReport string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildReport, "report", "", "")
+	createWorkflowBuildCmd.MarkFlagRequired("report")
+	var createWorkflowBuildSource string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildSource, "source", "", "")
+	createWorkflowBuildCmd.MarkFlagRequired("source")
+	var createWorkflowBuildTasks string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTasks, "tasks", "", "")
+	createWorkflowBuildCmd.MarkFlagRequired("tasks")
 
 	var createWorkflowBuildCreationTime string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildCreationTime, "creation-time", "", "")
+	var createWorkflowBuildDestination string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildDestination, "destination", "", "")
 	var createWorkflowBuildEndTime string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildEndTime, "end-time", "", "")
+	var createWorkflowBuildKind string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildKind, "kind", "", "")
 	var createWorkflowBuildName string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildName, "name", "", "")
 	var createWorkflowBuildOutput string
@@ -251,16 +264,34 @@ func init() {
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentSpec, "spec", "", "")
 	createWorkflowDeploymentCmd.MarkFlagRequired("spec")
 
+	var createWorkflowDeploymentCpuLimit string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuLimit, "cpu-limit", "", "CPU Resource limit for each container in a deployment.")
+	var createWorkflowDeploymentCpuRequest string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuRequest, "cpu-request", "", "CPU Resource limit for serving requests.")
 	var createWorkflowDeploymentCreationTime string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCreationTime, "creation-time", "", "")
 	var createWorkflowDeploymentEndTime string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentEndTime, "end-time", "", "")
+	var createWorkflowDeploymentMemoryLimit string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryLimit, "memory-limit", "", "Memory Resource limit for each container in a deployment.")
+	var createWorkflowDeploymentMemoryRequest string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryRequest, "memory-request", "", "Memory Resource limit for serving requests.")
 	var createWorkflowDeploymentName string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentName, "name", "", "")
+	var createWorkflowDeploymentPipelineSummary string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentPipelineSummary, "pipeline-summary", "", "")
+	var createWorkflowDeploymentReplicas string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentReplicas, "replicas", "", "Create replicated pods in a deployment.")
 	var createWorkflowDeploymentStartTime string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentStartTime, "start-time", "", "")
 	var createWorkflowDeploymentStatus string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentStatus, "status", "", "")
+	var createWorkflowDeploymentTimeoutSecs string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow build times out.")
+	var createWorkflowDeploymentValidationOption string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
+	var createWorkflowDeploymentValidationScore string
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
 	var createWorkflowDeploymentWorkflowBuild string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentWorkflowBuild, "workflow-build", "", "")
 
@@ -293,18 +324,31 @@ func init() {
 	var createWorkflowRunInput string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunInput, "input", "", "")
 	createWorkflowRunCmd.MarkFlagRequired("input")
+	var createWorkflowRunKind string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunKind, "kind", "", "")
+	createWorkflowRunCmd.MarkFlagRequired("kind")
 	var createWorkflowRunOutput string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunOutput, "output", "", "")
 	createWorkflowRunCmd.MarkFlagRequired("output")
+	var createWorkflowRunReport string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunReport, "report", "", "")
+	createWorkflowRunCmd.MarkFlagRequired("report")
+	var createWorkflowRunSource string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunSource, "source", "", "")
+	createWorkflowRunCmd.MarkFlagRequired("source")
 
 	var createWorkflowRunCreationTime string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunCreationTime, "creation-time", "", "")
+	var createWorkflowRunDestination string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunDestination, "destination", "", "")
 	var createWorkflowRunEndTime string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunEndTime, "end-time", "", "")
 	var createWorkflowRunEvaluate string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunEvaluate, "evaluate", "", "Determine whether to evaluate the prediction.")
 	var createWorkflowRunName string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "", "")
+	var createWorkflowRunPipelineSummary string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPipelineSummary, "pipeline-summary", "", "")
 	var createWorkflowRunPredictionScore string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPredictionScore, "prediction-score", "", "")
 	var createWorkflowRunStartTime string
@@ -312,7 +356,11 @@ func init() {
 	var createWorkflowRunStatus string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStatus, "status", "", "")
 	var createWorkflowRunTimeoutSecs string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow run times out.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow build times out.")
+	var createWorkflowRunValidationOption string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
+	var createWorkflowRunValidationScore string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
 	var createWorkflowRunWorkflowBuild string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowBuild, "workflow-build", "", "")
 
@@ -321,28 +369,55 @@ func init() {
 	var createWorkflowStreamDeploymentBuildId string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentBuildId, "build-id", "", "The workflow build ID.")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("build-id")
+	var createWorkflowStreamDeploymentDestination string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentDestination, "destination", "", "")
+	createWorkflowStreamDeploymentCmd.MarkFlagRequired("destination")
 	var createWorkflowStreamDeploymentId string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentId, "id", "", "The workflow ID.")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("id")
 	var createWorkflowStreamDeploymentInput string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentInput, "input", "", "")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("input")
+	var createWorkflowStreamDeploymentKind string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentKind, "kind", "", "")
+	createWorkflowStreamDeploymentCmd.MarkFlagRequired("kind")
 	var createWorkflowStreamDeploymentOutput string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentOutput, "output", "", "")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("output")
+	var createWorkflowStreamDeploymentSource string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentSource, "source", "", "")
+	createWorkflowStreamDeploymentCmd.MarkFlagRequired("source")
 
+	var createWorkflowStreamDeploymentCpuLimit string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuLimit, "cpu-limit", "", "CPU Resource limit for each container in a deployment.")
+	var createWorkflowStreamDeploymentCpuRequest string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuRequest, "cpu-request", "", "CPU Resource limit for serving requests.")
 	var createWorkflowStreamDeploymentCreationTime string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCreationTime, "creation-time", "", "")
 	var createWorkflowStreamDeploymentEndTime string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentEndTime, "end-time", "", "")
+	var createWorkflowStreamDeploymentMemoryLimit string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryLimit, "memory-limit", "", "Memory Resource limit for each container in a deployment.")
+	var createWorkflowStreamDeploymentMemoryRequest string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryRequest, "memory-request", "", "Memory Resource limit for serving requests.")
 	var createWorkflowStreamDeploymentName string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentName, "name", "", "")
+	var createWorkflowStreamDeploymentPipelineSummary string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentPipelineSummary, "pipeline-summary", "", "")
+	var createWorkflowStreamDeploymentReplicas string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentReplicas, "replicas", "", "Create replicated pods in a deployment.")
 	var createWorkflowStreamDeploymentSpec string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentSpec, "spec", "", "")
 	var createWorkflowStreamDeploymentStartTime string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentStartTime, "start-time", "", "")
 	var createWorkflowStreamDeploymentStatus string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentStatus, "status", "", "")
+	var createWorkflowStreamDeploymentTimeoutSecs string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow build times out.")
+	var createWorkflowStreamDeploymentValidationOption string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
+	var createWorkflowStreamDeploymentValidationScore string
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
 	var createWorkflowStreamDeploymentWorkflowBuild string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentWorkflowBuild, "workflow-build", "", "")
 

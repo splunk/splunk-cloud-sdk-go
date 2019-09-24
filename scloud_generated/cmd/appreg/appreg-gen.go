@@ -97,7 +97,7 @@ var updateAppCmd = &cobra.Command{
 func init() {
 	appregCmd.AddCommand(createAppCmd)
 	var createAppKind string
-	createAppCmd.Flags().StringVar(&createAppKind, "kind", "", "")
+	createAppCmd.Flags().StringVar(&createAppKind, "kind", "", "kind can accept values web, native, service, ")
 	createAppCmd.MarkFlagRequired("kind")
 	var createAppName string
 	createAppCmd.Flags().StringVar(&createAppName, "name", "", "App name that is unique within Splunk Cloud Platform.")
@@ -169,7 +169,7 @@ func init() {
 	appregCmd.AddCommand(listSubscriptionsCmd)
 
 	var listSubscriptionsKind string
-	listSubscriptionsCmd.Flags().StringVar(&listSubscriptionsKind, "kind", "", "The kind of application.")
+	listSubscriptionsCmd.Flags().StringVar(&listSubscriptionsKind, "kind", "", "kind can accept values web, native, service, ")
 
 
 	appregCmd.AddCommand(rotateSecretCmd)
