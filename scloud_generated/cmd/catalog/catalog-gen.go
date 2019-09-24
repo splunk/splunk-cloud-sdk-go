@@ -605,12 +605,13 @@ func init() {
 
 
 	catalogCmd.AddCommand(createAnnotationForDashboardbyIDCmd)
+	var createAnnotationForDashboardbyIdAnnotationtypeid string
+	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDashboardbyIDCmd.MarkFlagRequired("annotationtypeid")
 	var createAnnotationForDashboardbyIdDashboardid string
 	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdDashboardid, "dashboardid", "", "ID of a dashboard.")
 	createAnnotationForDashboardbyIDCmd.MarkFlagRequired("dashboardid")
 
-	var createAnnotationForDashboardbyIdAnnotationtypeid string
-	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
 	var createAnnotationForDashboardbyIdAnnotationtyperesourcename string
 	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 	var createAnnotationForDashboardbyIdDatasetid string
@@ -624,12 +625,13 @@ func init() {
 
 
 	catalogCmd.AddCommand(createAnnotationForDashboardsByResourceNameCmd)
+	var createAnnotationForDashboardsByResourceNameAnnotationtypeid string
+	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDashboardsByResourceNameCmd.MarkFlagRequired("annotationtypeid")
 	var createAnnotationForDashboardsByResourceNameDashboardresourcename string
 	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
 	createAnnotationForDashboardsByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
 
-	var createAnnotationForDashboardsByResourceNameAnnotationtypeid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
 	var createAnnotationForDashboardsByResourceNameAnnotationtyperesourcename string
 	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 	var createAnnotationForDashboardsByResourceNameDashboardid string
@@ -645,12 +647,13 @@ func init() {
 
 
 	catalogCmd.AddCommand(createAnnotationForDatasetByIDCmd)
+	var createAnnotationForDatasetByIdAnnotationtypeid string
+	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDatasetByIDCmd.MarkFlagRequired("annotationtypeid")
 	var createAnnotationForDatasetByIdDatasetid string
 	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	createAnnotationForDatasetByIDCmd.MarkFlagRequired("datasetid")
 
-	var createAnnotationForDatasetByIdAnnotationtypeid string
-	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
 	var createAnnotationForDatasetByIdAnnotationtyperesourcename string
 	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 	var createAnnotationForDatasetByIdDashboardid string
@@ -664,12 +667,13 @@ func init() {
 
 
 	catalogCmd.AddCommand(createAnnotationForDatasetByResourceNameCmd)
+	var createAnnotationForDatasetByResourceNameAnnotationtypeid string
+	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDatasetByResourceNameCmd.MarkFlagRequired("annotationtypeid")
 	var createAnnotationForDatasetByResourceNameDatasetresourcename string
 	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	createAnnotationForDatasetByResourceNameCmd.MarkFlagRequired("datasetresourcename")
 
-	var createAnnotationForDatasetByResourceNameAnnotationtypeid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
 	var createAnnotationForDatasetByResourceNameAnnotationtyperesourcename string
 	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 	var createAnnotationForDatasetByResourceNameDashboardid string
@@ -685,17 +689,20 @@ func init() {
 
 
 	catalogCmd.AddCommand(createDashboardCmd)
-
 	var createDashboardDefinition string
 	createDashboardCmd.Flags().StringVar(&createDashboardDefinition, "definition", "", "The JSON dashboard definition.")
+	createDashboardCmd.MarkFlagRequired("definition")
+	var createDashboardModule string
+	createDashboardCmd.Flags().StringVar(&createDashboardModule, "module", "", "The module that contains the dashboard.")
+	createDashboardCmd.MarkFlagRequired("module")
+	var createDashboardName string
+	createDashboardCmd.Flags().StringVar(&createDashboardName, "name", "", "The dashboard name. Dashboard names must be unique within each tenant.")
+	createDashboardCmd.MarkFlagRequired("name")
+
 	var createDashboardId string
 	createDashboardCmd.Flags().StringVar(&createDashboardId, "id", "", "A unique dashboard ID. Random ID used if not provided.")
 	var createDashboardIsactive string
 	createDashboardCmd.Flags().StringVar(&createDashboardIsactive, "isactive", "", "Whether the dashboard is active or not.")
-	var createDashboardModule string
-	createDashboardCmd.Flags().StringVar(&createDashboardModule, "module", "", "The module that contains the dashboard.")
-	var createDashboardName string
-	createDashboardCmd.Flags().StringVar(&createDashboardName, "name", "", "The dashboard name. Dashboard names must be unique within each tenant.")
 	var createDashboardVersion string
 	createDashboardCmd.Flags().StringVar(&createDashboardVersion, "version", "", "The version of the dashboard.")
 
@@ -767,19 +774,20 @@ func init() {
 	var createFieldForDatasetDatasetresourcename string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	createFieldForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var createFieldForDatasetName string
+	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetName, "name", "", "The field name.")
+	createFieldForDatasetCmd.MarkFlagRequired("name")
 
 	var createFieldForDatasetDatatype string
-	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values.")
+	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDatatype, "datatype", "", "datatype can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN, ")
 	var createFieldForDatasetDescription string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDescription, "description", "", "The field description.")
 	var createFieldForDatasetFieldtype string
-	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values.")
+	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetFieldtype, "fieldtype", "", "fieldtype can accept values DIMENSION, MEASURE, UNKNOWN, ")
 	var createFieldForDatasetIndexed string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetIndexed, "indexed", "", "Whether or not the field has been indexed.")
-	var createFieldForDatasetName string
-	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetName, "name", "", "The field name.")
 	var createFieldForDatasetPrevalence string
-	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values.")
+	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetPrevalence, "prevalence", "", "prevalence can accept values ALL, SOME, UNKNOWN, ")
 	var createFieldForDatasetSummary string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetSummary, "summary", "", "The field summary.")
 	var createFieldForDatasetTitle string
@@ -790,19 +798,20 @@ func init() {
 	var createFieldForDatasetByIdDatasetid string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	createFieldForDatasetByIDCmd.MarkFlagRequired("datasetid")
+	var createFieldForDatasetByIdName string
+	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdName, "name", "", "The field name.")
+	createFieldForDatasetByIDCmd.MarkFlagRequired("name")
 
 	var createFieldForDatasetByIdDatatype string
-	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values.")
+	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdDatatype, "datatype", "", "datatype can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN, ")
 	var createFieldForDatasetByIdDescription string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdDescription, "description", "", "The field description.")
 	var createFieldForDatasetByIdFieldtype string
-	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values.")
+	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdFieldtype, "fieldtype", "", "fieldtype can accept values DIMENSION, MEASURE, UNKNOWN, ")
 	var createFieldForDatasetByIdIndexed string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdIndexed, "indexed", "", "Whether or not the field has been indexed.")
-	var createFieldForDatasetByIdName string
-	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdName, "name", "", "The field name.")
 	var createFieldForDatasetByIdPrevalence string
-	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values.")
+	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdPrevalence, "prevalence", "", "prevalence can accept values ALL, SOME, UNKNOWN, ")
 	var createFieldForDatasetByIdSummary string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdSummary, "summary", "", "The field summary.")
 	var createFieldForDatasetByIdTitle string
@@ -810,17 +819,18 @@ func init() {
 
 
 	catalogCmd.AddCommand(createRelationshipCmd)
+	var createRelationshipName string
+	createRelationshipCmd.Flags().StringVar(&createRelationshipName, "name", "", "The relationship name.")
+	createRelationshipCmd.MarkFlagRequired("name")
 
 	var createRelationshipFields string
 	createRelationshipCmd.Flags().StringVar(&createRelationshipFields, "fields", "", "The fields associated with this relationship.")
 	var createRelationshipId string
 	createRelationshipCmd.Flags().StringVar(&createRelationshipId, "id", "", "A unique relationship ID. If not specified, an auto generated ID is created.")
 	var createRelationshipKind string
-	createRelationshipCmd.Flags().StringVar(&createRelationshipKind, "kind", "", "The relationship type. Must be one of the valid values.")
+	createRelationshipCmd.Flags().StringVar(&createRelationshipKind, "kind", "", "kind can accept values ONE, MANY, DEPENDENCY, ")
 	var createRelationshipModule string
 	createRelationshipCmd.Flags().StringVar(&createRelationshipModule, "module", "", "The module that contains the relationship.")
-	var createRelationshipName string
-	createRelationshipCmd.Flags().StringVar(&createRelationshipName, "name", "", "The relationship name.")
 	var createRelationshipSourceid string
 	createRelationshipCmd.Flags().StringVar(&createRelationshipSourceid, "sourceid", "", "A unique source dataset ID. Either the sourceid or sourceresourcename property must be specified.")
 	var createRelationshipSourceresourcename string
@@ -834,17 +844,19 @@ func init() {
 
 
 	catalogCmd.AddCommand(createRuleCmd)
+	var createRuleMatch string
+	createRuleCmd.Flags().StringVar(&createRuleMatch, "match", "", "The rule match type.")
+	createRuleCmd.MarkFlagRequired("match")
+	var createRuleName string
+	createRuleCmd.Flags().StringVar(&createRuleName, "name", "", "The rule name.")
+	createRuleCmd.MarkFlagRequired("name")
 
 	var createRuleActions string
 	createRuleCmd.Flags().StringVar(&createRuleActions, "actions", "", "The actions to be associated with this rule.")
 	var createRuleId string
 	createRuleCmd.Flags().StringVar(&createRuleId, "id", "", "A unique rule ID. The newly created rule object will use this ID value if provided.")
-	var createRuleMatch string
-	createRuleCmd.Flags().StringVar(&createRuleMatch, "match", "", "The rule match type.")
 	var createRuleModule string
 	createRuleCmd.Flags().StringVar(&createRuleModule, "module", "", "The module containing the rule.")
-	var createRuleName string
-	createRuleCmd.Flags().StringVar(&createRuleName, "name", "", "The rule name.")
 	var createRuleVersion string
 	createRuleCmd.Flags().StringVar(&createRuleVersion, "version", "", "The catalog version.")
 
@@ -1484,17 +1496,17 @@ func init() {
 	updateFieldByIDForDatasetCmd.MarkFlagRequired("fieldid")
 
 	var updateFieldByIdForDatasetDatatype string
-	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values.")
+	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetDatatype, "datatype", "", "datatype can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN, ")
 	var updateFieldByIdForDatasetDescription string
 	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetDescription, "description", "", "The field description.")
 	var updateFieldByIdForDatasetFieldtype string
-	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values.")
+	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetFieldtype, "fieldtype", "", "fieldtype can accept values DIMENSION, MEASURE, UNKNOWN, ")
 	var updateFieldByIdForDatasetIndexed string
 	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetIndexed, "indexed", "", "Whether or not the field has been indexed.")
 	var updateFieldByIdForDatasetName string
 	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetName, "name", "", "The field name.")
 	var updateFieldByIdForDatasetPrevalence string
-	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values.")
+	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetPrevalence, "prevalence", "", "prevalence can accept values ALL, SOME, UNKNOWN, ")
 	var updateFieldByIdForDatasetSummary string
 	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetSummary, "summary", "", "The field summary.")
 	var updateFieldByIdForDatasetTitle string
@@ -1510,17 +1522,17 @@ func init() {
 	updateFieldByIDForDatasetByIDCmd.MarkFlagRequired("fieldid")
 
 	var updateFieldByIdForDatasetByIdDatatype string
-	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values.")
+	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDatatype, "datatype", "", "datatype can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN, ")
 	var updateFieldByIdForDatasetByIdDescription string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDescription, "description", "", "The field description.")
 	var updateFieldByIdForDatasetByIdFieldtype string
-	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values.")
+	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdFieldtype, "fieldtype", "", "fieldtype can accept values DIMENSION, MEASURE, UNKNOWN, ")
 	var updateFieldByIdForDatasetByIdIndexed string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdIndexed, "indexed", "", "Whether or not the field has been indexed.")
 	var updateFieldByIdForDatasetByIdName string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdName, "name", "", "The field name.")
 	var updateFieldByIdForDatasetByIdPrevalence string
-	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values.")
+	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdPrevalence, "prevalence", "", "prevalence can accept values ALL, SOME, UNKNOWN, ")
 	var updateFieldByIdForDatasetByIdSummary string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdSummary, "summary", "", "The field summary.")
 	var updateFieldByIdForDatasetByIdTitle string
