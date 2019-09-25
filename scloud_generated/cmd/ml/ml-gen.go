@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/ml"
 )
 
-
 // createWorkflow --
 var createWorkflowCmd = &cobra.Command{
 	Use:   "create-workflow",
@@ -191,7 +190,6 @@ var listWorkflowsCmd = &cobra.Command{
 	RunE:  impl.ListWorkflows,
 }
 
-
 func init() {
 	mlCmd.AddCommand(createWorkflowCmd)
 	var createWorkflowTasks string
@@ -204,7 +202,6 @@ func init() {
 	createWorkflowCmd.Flags().StringVar(&createWorkflowId, "id", "", "")
 	var createWorkflowName string
 	createWorkflowCmd.Flags().StringVar(&createWorkflowName, "name", "", "")
-
 
 	mlCmd.AddCommand(createWorkflowBuildCmd)
 	var createWorkflowBuildId string
@@ -252,7 +249,6 @@ func init() {
 	var createWorkflowBuildWorkflow string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildWorkflow, "workflow", "", "")
 
-
 	mlCmd.AddCommand(createWorkflowDeploymentCmd)
 	var createWorkflowDeploymentBuildId string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentBuildId, "build-id", "", "The workflow build ID.")
@@ -295,7 +291,6 @@ func init() {
 	var createWorkflowDeploymentWorkflowBuild string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentWorkflowBuild, "workflow-build", "", "")
 
-
 	mlCmd.AddCommand(createWorkflowInferenceCmd)
 	var createWorkflowInferenceBuildId string
 	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceBuildId, "build-id", "", "The workflow build ID.")
@@ -312,7 +307,6 @@ func init() {
 
 	var createWorkflowInferenceOutput string
 	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceOutput, "output", "", "")
-
 
 	mlCmd.AddCommand(createWorkflowRunCmd)
 	var createWorkflowRunBuildId string
@@ -363,7 +357,6 @@ func init() {
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
 	var createWorkflowRunWorkflowBuild string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowBuild, "workflow-build", "", "")
-
 
 	mlCmd.AddCommand(createWorkflowStreamDeploymentCmd)
 	var createWorkflowStreamDeploymentBuildId string
@@ -421,12 +414,10 @@ func init() {
 	var createWorkflowStreamDeploymentWorkflowBuild string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentWorkflowBuild, "workflow-build", "", "")
 
-
 	mlCmd.AddCommand(deleteWorkflowCmd)
 	var deleteWorkflowId string
 	deleteWorkflowCmd.Flags().StringVar(&deleteWorkflowId, "id", "", "The workflow ID.")
 	deleteWorkflowCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(deleteWorkflowBuildCmd)
 	var deleteWorkflowBuildBuildId string
@@ -435,7 +426,6 @@ func init() {
 	var deleteWorkflowBuildId string
 	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildId, "id", "", "The workflow ID.")
 	deleteWorkflowBuildCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(deleteWorkflowDeploymentCmd)
 	var deleteWorkflowDeploymentBuildId string
@@ -448,7 +438,6 @@ func init() {
 	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentId, "id", "", "The workflow ID.")
 	deleteWorkflowDeploymentCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(deleteWorkflowRunCmd)
 	var deleteWorkflowRunBuildId string
 	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunBuildId, "build-id", "", "The workflow build ID.")
@@ -459,7 +448,6 @@ func init() {
 	var deleteWorkflowRunRunId string
 	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunRunId, "run-id", "", "The workflow run ID.")
 	deleteWorkflowRunCmd.MarkFlagRequired("run-id")
-
 
 	mlCmd.AddCommand(deleteWorkflowStreamDeploymentCmd)
 	var deleteWorkflowStreamDeploymentBuildId string
@@ -472,12 +460,10 @@ func init() {
 	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "The workflow streaming deployment ID.")
 	deleteWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
-
 	mlCmd.AddCommand(getWorkflowCmd)
 	var getWorkflowId string
 	getWorkflowCmd.Flags().StringVar(&getWorkflowId, "id", "", "The workflow ID.")
 	getWorkflowCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(getWorkflowBuildCmd)
 	var getWorkflowBuildBuildId string
@@ -487,7 +473,6 @@ func init() {
 	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildId, "id", "", "The workflow ID.")
 	getWorkflowBuildCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(getWorkflowBuildErrorCmd)
 	var getWorkflowBuildErrorBuildId string
 	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorBuildId, "build-id", "", "The workflow build ID.")
@@ -496,7 +481,6 @@ func init() {
 	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorId, "id", "", "The workflow ID.")
 	getWorkflowBuildErrorCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(getWorkflowBuildLogCmd)
 	var getWorkflowBuildLogBuildId string
 	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogBuildId, "build-id", "", "The workflow build ID.")
@@ -504,7 +488,6 @@ func init() {
 	var getWorkflowBuildLogId string
 	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogId, "id", "", "The workflow ID.")
 	getWorkflowBuildLogCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(getWorkflowDeploymentCmd)
 	var getWorkflowDeploymentBuildId string
@@ -517,7 +500,6 @@ func init() {
 	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentId, "id", "", "The workflow ID.")
 	getWorkflowDeploymentCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(getWorkflowDeploymentErrorCmd)
 	var getWorkflowDeploymentErrorBuildId string
 	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorBuildId, "build-id", "", "The workflow build ID.")
@@ -528,7 +510,6 @@ func init() {
 	var getWorkflowDeploymentErrorId string
 	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorId, "id", "", "The workflow ID.")
 	getWorkflowDeploymentErrorCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(getWorkflowDeploymentLogCmd)
 	var getWorkflowDeploymentLogBuildId string
@@ -541,7 +522,6 @@ func init() {
 	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogId, "id", "", "The workflow ID.")
 	getWorkflowDeploymentLogCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(getWorkflowRunCmd)
 	var getWorkflowRunBuildId string
 	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunBuildId, "build-id", "", "The workflow build ID.")
@@ -552,7 +532,6 @@ func init() {
 	var getWorkflowRunRunId string
 	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunRunId, "run-id", "", "The workflow run ID.")
 	getWorkflowRunCmd.MarkFlagRequired("run-id")
-
 
 	mlCmd.AddCommand(getWorkflowRunErrorCmd)
 	var getWorkflowRunErrorBuildId string
@@ -565,7 +544,6 @@ func init() {
 	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorRunId, "run-id", "", "The workflow run ID.")
 	getWorkflowRunErrorCmd.MarkFlagRequired("run-id")
 
-
 	mlCmd.AddCommand(getWorkflowRunLogCmd)
 	var getWorkflowRunLogBuildId string
 	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogBuildId, "build-id", "", "The workflow build ID.")
@@ -576,7 +554,6 @@ func init() {
 	var getWorkflowRunLogRunId string
 	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogRunId, "run-id", "", "The workflow run ID.")
 	getWorkflowRunLogCmd.MarkFlagRequired("run-id")
-
 
 	mlCmd.AddCommand(getWorkflowStreamDeploymentCmd)
 	var getWorkflowStreamDeploymentBuildId string
@@ -589,12 +566,10 @@ func init() {
 	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "The workflow streaming deployment ID.")
 	getWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
-
 	mlCmd.AddCommand(listWorkflowBuildsCmd)
 	var listWorkflowBuildsId string
 	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsId, "id", "", "The workflow ID.")
 	listWorkflowBuildsCmd.MarkFlagRequired("id")
-
 
 	mlCmd.AddCommand(listWorkflowDeploymentsCmd)
 	var listWorkflowDeploymentsBuildId string
@@ -604,7 +579,6 @@ func init() {
 	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsId, "id", "", "The workflow ID.")
 	listWorkflowDeploymentsCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(listWorkflowRunsCmd)
 	var listWorkflowRunsBuildId string
 	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsBuildId, "build-id", "", "The workflow build ID.")
@@ -613,9 +587,6 @@ func init() {
 	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsId, "id", "", "The workflow ID.")
 	listWorkflowRunsCmd.MarkFlagRequired("id")
 
-
 	mlCmd.AddCommand(listWorkflowsCmd)
-
-
 
 }

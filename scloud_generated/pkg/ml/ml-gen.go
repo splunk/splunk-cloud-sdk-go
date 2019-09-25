@@ -5,9 +5,9 @@ package ml
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
-
 
 // CreateWorkflow -- impl
 func CreateWorkflow(cmd *cobra.Command, args []string) error {
@@ -164,4 +164,3 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called ListWorkflows\n")
 	return nil
 }
-

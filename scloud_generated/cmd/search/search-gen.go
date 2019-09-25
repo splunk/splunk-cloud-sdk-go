@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/search"
 )
 
-
 // createJob -- Creates a search job.
 var createJobCmd = &cobra.Command{
 	Use:   "create-job",
@@ -72,7 +71,6 @@ var updateJobCmd = &cobra.Command{
 	RunE:  impl.UpdateJob,
 }
 
-
 func init() {
 	searchCmd.AddCommand(createJobCmd)
 	var createJobQuery string
@@ -120,12 +118,10 @@ func init() {
 	var createJobStatus string
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.")
 
-
 	searchCmd.AddCommand(getJobCmd)
 	var getJobSid string
 	getJobCmd.Flags().StringVar(&getJobSid, "sid", "", "The search ID.")
 	getJobCmd.MarkFlagRequired("sid")
-
 
 	searchCmd.AddCommand(listEventsSummaryCmd)
 	var listEventsSummarySid string
@@ -143,7 +139,6 @@ func init() {
 	var listEventsSummaryOffset string
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryOffset, "offset", "", "Index of first item to return.")
 
-
 	searchCmd.AddCommand(listFieldsSummaryCmd)
 	var listFieldsSummarySid string
 	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummarySid, "sid", "", "The search ID.")
@@ -154,14 +149,12 @@ func init() {
 	var listFieldsSummaryLatest string
 	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
-
 	searchCmd.AddCommand(listJobsCmd)
 
 	var listJobsCount string
 	listJobsCmd.Flags().StringVar(&listJobsCount, "count", "", "The maximum number of jobs that you want to return the status entries for.")
 	var listJobsStatus string
 	listJobsCmd.Flags().StringVar(&listJobsStatus, "status", "", "Filter the list of jobs by status. Valid status values are 'running', 'done', 'canceled', or 'failed'.")
-
 
 	searchCmd.AddCommand(listPreviewResultsCmd)
 	var listPreviewResultsSid string
@@ -172,7 +165,6 @@ func init() {
 	listPreviewResultsCmd.Flags().StringVar(&listPreviewResultsCount, "count", "", "The maximum number of entries to return. Set to 0 to return all available entries.")
 	var listPreviewResultsOffset string
 	listPreviewResultsCmd.Flags().StringVar(&listPreviewResultsOffset, "offset", "", "Index of first item to return.")
-
 
 	searchCmd.AddCommand(listResultsCmd)
 	var listResultsSid string
@@ -186,12 +178,10 @@ func init() {
 	var listResultsOffset string
 	listResultsCmd.Flags().StringVar(&listResultsOffset, "offset", "", "Index of first item to return.")
 
-
 	searchCmd.AddCommand(listTimeBucketsCmd)
 	var listTimeBucketsSid string
 	listTimeBucketsCmd.Flags().StringVar(&listTimeBucketsSid, "sid", "", "The search ID.")
 	listTimeBucketsCmd.MarkFlagRequired("sid")
-
 
 	searchCmd.AddCommand(updateJobCmd)
 	var updateJobSid string
@@ -200,7 +190,5 @@ func init() {
 	var updateJobStatus string
 	updateJobCmd.Flags().StringVar(&updateJobStatus, "status", "", "The status to PATCH to an existing search job. The only status values you can PATCH are 'canceled' and 'finalized'. You can PATCH the 'canceled' status only to a search job that is running.")
 	updateJobCmd.MarkFlagRequired("status")
-
-
 
 }

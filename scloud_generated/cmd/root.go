@@ -16,6 +16,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/forwarders"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/identity"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/ingest"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/kvstore"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/login"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/ml"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/provisioner"
@@ -63,6 +64,7 @@ func init() {
 	rootCmd.AddCommand(forwarders.Cmd())
 	rootCmd.AddCommand(identity.Cmd())
 	rootCmd.AddCommand(ingest.Cmd())
+	rootCmd.AddCommand(kvstore.Cmd())
 	rootCmd.AddCommand(login.Cmd())
 	rootCmd.AddCommand(ml.Cmd())
 	rootCmd.AddCommand(provisioner.Cmd())

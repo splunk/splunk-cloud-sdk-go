@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/forwarders"
 )
 
-
 // addCertificate -- Each tenant can have up to five certificates.
 var addCertificateCmd = &cobra.Command{
 	Use:   "add-certificate",
@@ -37,25 +36,19 @@ var listCertificatesCmd = &cobra.Command{
 	RunE:  impl.ListCertificates,
 }
 
-
 func init() {
 	forwardersCmd.AddCommand(addCertificateCmd)
 
 	var addCertificatePem string
 	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "")
 
-
 	forwardersCmd.AddCommand(deleteCertificateCmd)
 	var deleteCertificateSlot string
 	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", "", "")
 	deleteCertificateCmd.MarkFlagRequired("slot")
 
-
 	forwardersCmd.AddCommand(deleteCertificatesCmd)
 
-
 	forwardersCmd.AddCommand(listCertificatesCmd)
-
-
 
 }
