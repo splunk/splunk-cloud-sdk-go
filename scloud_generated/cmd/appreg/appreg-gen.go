@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/appreg"
 )
 
-
 // createApp -- Creates an app.
 var createAppCmd = &cobra.Command{
 	Use:   "create-app",
@@ -93,7 +92,6 @@ var updateAppCmd = &cobra.Command{
 	RunE:  impl.UpdateApp,
 }
 
-
 func init() {
 	appregCmd.AddCommand(createAppCmd)
 	var createAppKind string
@@ -123,60 +121,49 @@ func init() {
 	var createAppWebhookUrl string
 	createAppCmd.Flags().StringVar(&createAppWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
 
-
 	appregCmd.AddCommand(createSubscriptionCmd)
 	var createSubscriptionAppName string
 	createSubscriptionCmd.Flags().StringVar(&createSubscriptionAppName, "app-name", "", "")
 	createSubscriptionCmd.MarkFlagRequired("app-name")
-
 
 	appregCmd.AddCommand(deleteAppCmd)
 	var deleteAppAppName string
 	deleteAppCmd.Flags().StringVar(&deleteAppAppName, "app-name", "", "App name.")
 	deleteAppCmd.MarkFlagRequired("app-name")
 
-
 	appregCmd.AddCommand(deleteSubscriptionCmd)
 	var deleteSubscriptionAppName string
 	deleteSubscriptionCmd.Flags().StringVar(&deleteSubscriptionAppName, "app-name", "", "App name.")
 	deleteSubscriptionCmd.MarkFlagRequired("app-name")
-
 
 	appregCmd.AddCommand(getAppCmd)
 	var getAppAppName string
 	getAppCmd.Flags().StringVar(&getAppAppName, "app-name", "", "App name.")
 	getAppCmd.MarkFlagRequired("app-name")
 
-
 	appregCmd.AddCommand(getKeysCmd)
-
 
 	appregCmd.AddCommand(getSubscriptionCmd)
 	var getSubscriptionAppName string
 	getSubscriptionCmd.Flags().StringVar(&getSubscriptionAppName, "app-name", "", "App name.")
 	getSubscriptionCmd.MarkFlagRequired("app-name")
 
-
 	appregCmd.AddCommand(listAppSubscriptionsCmd)
 	var listAppSubscriptionsAppName string
 	listAppSubscriptionsCmd.Flags().StringVar(&listAppSubscriptionsAppName, "app-name", "", "App name.")
 	listAppSubscriptionsCmd.MarkFlagRequired("app-name")
 
-
 	appregCmd.AddCommand(listAppsCmd)
-
 
 	appregCmd.AddCommand(listSubscriptionsCmd)
 
 	var listSubscriptionsKind string
 	listSubscriptionsCmd.Flags().StringVar(&listSubscriptionsKind, "kind", "", "kind can accept values web, native, service, ")
 
-
 	appregCmd.AddCommand(rotateSecretCmd)
 	var rotateSecretAppName string
 	rotateSecretCmd.Flags().StringVar(&rotateSecretAppName, "app-name", "", "App name.")
 	rotateSecretCmd.MarkFlagRequired("app-name")
-
 
 	appregCmd.AddCommand(updateAppCmd)
 	var updateAppAppName string
@@ -202,7 +189,5 @@ func init() {
 	updateAppCmd.Flags().StringVar(&updateAppUserPermissionsFilter, "user-permissions-filter", "", "Array of permission filter templates that are used to intersect with a user's permissions when using the app.")
 	var updateAppWebhookUrl string
 	updateAppCmd.Flags().StringVar(&updateAppWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
-
-
 
 }

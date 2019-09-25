@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/provisioner"
 )
 
-
 // createInvite -- Creates an invite to invite a person to the tenant using their email address
 var createInviteCmd = &cobra.Command{
 	Use:   "create-invite",
@@ -79,7 +78,6 @@ var updateInviteCmd = &cobra.Command{
 	RunE:  impl.UpdateInvite,
 }
 
-
 func init() {
 	provisionerCmd.AddCommand(createInviteCmd)
 	var createInviteEmail string
@@ -91,7 +89,6 @@ func init() {
 	var createInviteGroups string
 	createInviteCmd.Flags().StringVar(&createInviteGroups, "groups", "", "")
 
-
 	provisionerCmd.AddCommand(createProvisionJobCmd)
 
 	var createProvisionJobApps string
@@ -99,39 +96,31 @@ func init() {
 	var createProvisionJobTenant string
 	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", "", "")
 
-
 	provisionerCmd.AddCommand(deleteInviteCmd)
 	var deleteInviteInviteId string
 	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "")
 	deleteInviteCmd.MarkFlagRequired("invite-id")
-
 
 	provisionerCmd.AddCommand(getInviteCmd)
 	var getInviteInviteId string
 	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "")
 	getInviteCmd.MarkFlagRequired("invite-id")
 
-
 	provisionerCmd.AddCommand(getProvisionJobCmd)
 	var getProvisionJobJobId string
 	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "")
 	getProvisionJobCmd.MarkFlagRequired("job-id")
-
 
 	provisionerCmd.AddCommand(getTenantCmd)
 	var getTenantTenantName string
 	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "")
 	getTenantCmd.MarkFlagRequired("tenant-name")
 
-
 	provisionerCmd.AddCommand(listInvitesCmd)
-
 
 	provisionerCmd.AddCommand(listProvisionJobsCmd)
 
-
 	provisionerCmd.AddCommand(listTenantsCmd)
-
 
 	provisionerCmd.AddCommand(updateInviteCmd)
 	var updateInviteAction string
@@ -140,7 +129,5 @@ func init() {
 	var updateInviteInviteId string
 	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "")
 	updateInviteCmd.MarkFlagRequired("invite-id")
-
-
 
 }

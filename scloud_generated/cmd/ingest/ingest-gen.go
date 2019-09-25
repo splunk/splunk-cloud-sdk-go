@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/ingest"
 )
 
-
 // postEvents --
 var postEventsCmd = &cobra.Command{
 	Use:   "post-events",
@@ -30,16 +29,11 @@ var uploadFilesCmd = &cobra.Command{
 	RunE:  impl.UploadFiles,
 }
 
-
 func init() {
 	ingestCmd.AddCommand(postEventsCmd)
 
-
 	ingestCmd.AddCommand(postMetricsCmd)
 
-
 	ingestCmd.AddCommand(uploadFilesCmd)
-
-
 
 }

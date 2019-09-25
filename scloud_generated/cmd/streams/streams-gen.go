@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/streams"
 )
 
-
 // activatePipeline --
 var activatePipelineCmd = &cobra.Command{
 	Use:   "activate-pipeline",
@@ -296,7 +295,6 @@ var validatePipelineCmd = &cobra.Command{
 	RunE:  impl.ValidatePipeline,
 }
 
-
 func init() {
 	streamsCmd.AddCommand(activatePipelineCmd)
 	var activatePipelineId string
@@ -310,12 +308,10 @@ func init() {
 	var activatePipelineSkipRestoreState string
 	activatePipelineCmd.Flags().StringVar(&activatePipelineSkipRestoreState, "skip-restore-state", "", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
 
-
 	streamsCmd.AddCommand(compileDSLCmd)
 	var compileDSLDsl string
 	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "The Streams DSL representation of a pipeline.")
 	compileDSLCmd.MarkFlagRequired("dsl")
-
 
 	streamsCmd.AddCommand(compileSPLCmd)
 	var compileSPLSpl string
@@ -324,7 +320,6 @@ func init() {
 
 	var compileSPLSyntax string
 	compileSPLCmd.Flags().StringVar(&compileSPLSyntax, "syntax", "", "The parse parameters as arguments to this SPL2 command")
-
 
 	streamsCmd.AddCommand(createConnectionCmd)
 	var createConnectionConnectorId string
@@ -340,14 +335,10 @@ func init() {
 	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
 
-
 	streamsCmd.AddCommand(createGroupCmd)
 	var createGroupArguments string
 	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", "", "The group function arguments list.")
 	createGroupCmd.MarkFlagRequired("arguments")
-	var createGroupAst string
-	createGroupCmd.Flags().StringVar(&createGroupAst, "ast", "", "")
-	createGroupCmd.MarkFlagRequired("ast")
 	var createGroupAttributes string
 	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "The attributes map for function.")
 	createGroupCmd.MarkFlagRequired("attributes")
@@ -378,11 +369,7 @@ func init() {
 	var createGroupVariadic string
 	createGroupCmd.Flags().StringVar(&createGroupVariadic, "variadic", "", "")
 
-
 	streamsCmd.AddCommand(createPipelineCmd)
-	var createPipelineData string
-	createPipelineCmd.Flags().StringVar(&createPipelineData, "data", "", "")
-	createPipelineCmd.MarkFlagRequired("data")
 	var createPipelineEdges string
 	createPipelineCmd.Flags().StringVar(&createPipelineEdges, "edges", "", "A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	createPipelineCmd.MarkFlagRequired("edges")
@@ -403,11 +390,7 @@ func init() {
 	var createPipelineDescription string
 	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 
-
 	streamsCmd.AddCommand(createTemplateCmd)
-	var createTemplateData string
-	createTemplateCmd.Flags().StringVar(&createTemplateData, "data", "", "")
-	createTemplateCmd.MarkFlagRequired("data")
 	var createTemplateDescription string
 	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "Template description")
 	createTemplateCmd.MarkFlagRequired("description")
@@ -424,7 +407,6 @@ func init() {
 	createTemplateCmd.Flags().StringVar(&createTemplateRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
 	createTemplateCmd.MarkFlagRequired("root-node")
 
-
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 	var deactivatePipelineId string
 	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "id of the pipeline to deactivate")
@@ -433,30 +415,25 @@ func init() {
 	var deactivatePipelineSkipSavepoint string
 	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineSkipSavepoint, "skip-savepoint", "", "Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.")
 
-
 	streamsCmd.AddCommand(deleteConnectionCmd)
 	var deleteConnectionConnectionId string
 	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "ID of the connection")
 	deleteConnectionCmd.MarkFlagRequired("connection-id")
-
 
 	streamsCmd.AddCommand(deleteGroupCmd)
 	var deleteGroupGroupId string
 	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", "", "The group function's ID from the function registry")
 	deleteGroupCmd.MarkFlagRequired("group-id")
 
-
 	streamsCmd.AddCommand(deletePipelineCmd)
 	var deletePipelineId string
 	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "id of the pipeline to delete")
 	deletePipelineCmd.MarkFlagRequired("id")
 
-
 	streamsCmd.AddCommand(deleteTemplateCmd)
 	var deleteTemplateTemplateId string
 	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "ID of the template to delete")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
-
 
 	streamsCmd.AddCommand(expandGroupCmd)
 	var expandGroupArguments string
@@ -469,7 +446,6 @@ func init() {
 	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", "", "The ID associated with your group function in the pipeline Streams JSON")
 	expandGroupCmd.MarkFlagRequired("id")
 
-
 	streamsCmd.AddCommand(expandPipelineCmd)
 	var expandPipelineEdges string
 	expandPipelineCmd.Flags().StringVar(&expandPipelineEdges, "edges", "", "A list of links or connections between the output of one pipeline function and the input of another pipeline function")
@@ -481,12 +457,10 @@ func init() {
 	expandPipelineCmd.Flags().StringVar(&expandPipelineRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
 	expandPipelineCmd.MarkFlagRequired("root-node")
 
-
 	streamsCmd.AddCommand(getGroupCmd)
 	var getGroupGroupId string
 	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", "", "The group function's ID from the function registry")
 	getGroupCmd.MarkFlagRequired("group-id")
-
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 	var getInputSchemaEdges string
@@ -504,10 +478,6 @@ func init() {
 	var getInputSchemaTargetPortName string
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "The name of the input port.")
 	getInputSchemaCmd.MarkFlagRequired("target-port-name")
-	var getInputSchemaUplJson string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaUplJson, "upl-json", "", "")
-	getInputSchemaCmd.MarkFlagRequired("upl-json")
-
 
 	streamsCmd.AddCommand(getOutputSchemaCmd)
 	var getOutputSchemaEdges string
@@ -519,15 +489,11 @@ func init() {
 	var getOutputSchemaRootNode string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
 	getOutputSchemaCmd.MarkFlagRequired("root-node")
-	var getOutputSchemaUplJson string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaUplJson, "upl-json", "", "")
-	getOutputSchemaCmd.MarkFlagRequired("upl-json")
 
 	var getOutputSchemaNodeUuid string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", "", "The function ID. If omitted, returns the output schema for all functions.")
 	var getOutputSchemaSourcePortName string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaSourcePortName, "source-port-name", "", "The name of the output port. Deprecated.")
-
 
 	streamsCmd.AddCommand(getPipelineCmd)
 	var getPipelineId string
@@ -537,12 +503,10 @@ func init() {
 	var getPipelineVersion string
 	getPipelineCmd.Flags().StringVar(&getPipelineVersion, "version", "", "version")
 
-
 	streamsCmd.AddCommand(getPipelineLatestMetricsCmd)
 	var getPipelineLatestMetricsId string
 	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "ID of the pipeline to get metrics for")
 	getPipelineLatestMetricsCmd.MarkFlagRequired("id")
-
 
 	streamsCmd.AddCommand(getPipelinesStatusCmd)
 
@@ -561,30 +525,25 @@ func init() {
 	var getPipelinesStatusSortField string
 	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortField, "sort-field", "", "sortField")
 
-
 	streamsCmd.AddCommand(getPreviewDataCmd)
 	var getPreviewDataPreviewSessionId string
 	getPreviewDataCmd.Flags().StringVar(&getPreviewDataPreviewSessionId, "preview-session-id", "", "ID of the preview session")
 	getPreviewDataCmd.MarkFlagRequired("preview-session-id")
-
 
 	streamsCmd.AddCommand(getPreviewSessionCmd)
 	var getPreviewSessionPreviewSessionId string
 	getPreviewSessionCmd.Flags().StringVar(&getPreviewSessionPreviewSessionId, "preview-session-id", "", "ID of the preview session")
 	getPreviewSessionCmd.MarkFlagRequired("preview-session-id")
 
-
 	streamsCmd.AddCommand(getPreviewSessionLatestMetricsCmd)
 	var getPreviewSessionLatestMetricsPreviewSessionId string
 	getPreviewSessionLatestMetricsCmd.Flags().StringVar(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", "", "ID of the preview session")
 	getPreviewSessionLatestMetricsCmd.MarkFlagRequired("preview-session-id")
 
-
 	streamsCmd.AddCommand(getRegistryCmd)
 
 	var getRegistryLocal string
 	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "", "local")
-
 
 	streamsCmd.AddCommand(getTemplateCmd)
 	var getTemplateTemplateId string
@@ -593,7 +552,6 @@ func init() {
 
 	var getTemplateVersion string
 	getTemplateCmd.Flags().StringVar(&getTemplateVersion, "version", "", "version of the template")
-
 
 	streamsCmd.AddCommand(listConnectionsCmd)
 
@@ -616,9 +574,7 @@ func init() {
 	var listConnectionsSortField string
 	listConnectionsCmd.Flags().StringVar(&listConnectionsSortField, "sort-field", "", "")
 
-
 	streamsCmd.AddCommand(listConnectorsCmd)
-
 
 	streamsCmd.AddCommand(listPipelinesCmd)
 
@@ -639,7 +595,6 @@ func init() {
 	var listPipelinesSortField string
 	listPipelinesCmd.Flags().StringVar(&listPipelinesSortField, "sort-field", "", "sortField")
 
-
 	streamsCmd.AddCommand(listTemplatesCmd)
 
 	var listTemplatesOffset string
@@ -651,17 +606,10 @@ func init() {
 	var listTemplatesSortField string
 	listTemplatesCmd.Flags().StringVar(&listTemplatesSortField, "sort-field", "", "sortField")
 
-
 	streamsCmd.AddCommand(mergePipelinesCmd)
 	var mergePipelinesEdges string
 	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdges, "edges", "", "A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	mergePipelinesCmd.MarkFlagRequired("edges")
-	var mergePipelinesInputTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputTree, "input-tree", "", "")
-	mergePipelinesCmd.MarkFlagRequired("input-tree")
-	var mergePipelinesMainTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesMainTree, "main-tree", "", "")
-	mergePipelinesCmd.MarkFlagRequired("main-tree")
 	var mergePipelinesNodes string
 	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodes, "nodes", "", "The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	mergePipelinesCmd.MarkFlagRequired("nodes")
@@ -674,7 +622,6 @@ func init() {
 	var mergePipelinesTargetPort string
 	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "The input port of the merge target in the main pipeline.")
 	mergePipelinesCmd.MarkFlagRequired("target-port")
-
 
 	streamsCmd.AddCommand(putConnectionCmd)
 	var putConnectionConnectionId string
@@ -690,14 +637,10 @@ func init() {
 	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "The name of the connection.")
 	putConnectionCmd.MarkFlagRequired("name")
 
-
 	streamsCmd.AddCommand(putGroupCmd)
 	var putGroupArguments string
 	putGroupCmd.Flags().StringVar(&putGroupArguments, "arguments", "", "The group function arguments list.")
 	putGroupCmd.MarkFlagRequired("arguments")
-	var putGroupAst string
-	putGroupCmd.Flags().StringVar(&putGroupAst, "ast", "", "")
-	putGroupCmd.MarkFlagRequired("ast")
 	var putGroupAttributes string
 	putGroupCmd.Flags().StringVar(&putGroupAttributes, "attributes", "", "The attributes map for function.")
 	putGroupCmd.MarkFlagRequired("attributes")
@@ -731,11 +674,7 @@ func init() {
 	var putGroupVariadic string
 	putGroupCmd.Flags().StringVar(&putGroupVariadic, "variadic", "", "")
 
-
 	streamsCmd.AddCommand(putTemplateCmd)
-	var putTemplateData string
-	putTemplateCmd.Flags().StringVar(&putTemplateData, "data", "", "")
-	putTemplateCmd.MarkFlagRequired("data")
 	var putTemplateDescription string
 	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "Template description")
 	putTemplateCmd.MarkFlagRequired("description")
@@ -755,12 +694,10 @@ func init() {
 	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "ID of the template")
 	putTemplateCmd.MarkFlagRequired("template-id")
 
-
 	streamsCmd.AddCommand(reactivatePipelineCmd)
 	var reactivatePipelineId string
 	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "Pipeline UUID to reactivate")
 	reactivatePipelineCmd.MarkFlagRequired("id")
-
 
 	streamsCmd.AddCommand(startPreviewCmd)
 	var startPreviewEdges string
@@ -772,9 +709,6 @@ func init() {
 	var startPreviewRootNode string
 	startPreviewCmd.Flags().StringVar(&startPreviewRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
 	startPreviewCmd.MarkFlagRequired("root-node")
-	var startPreviewUpl string
-	startPreviewCmd.Flags().StringVar(&startPreviewUpl, "upl", "", "")
-	startPreviewCmd.MarkFlagRequired("upl")
 
 	var startPreviewRecordsLimit string
 	startPreviewCmd.Flags().StringVar(&startPreviewRecordsLimit, "records-limit", "", "The maximum number of events per function. Defaults to 100.")
@@ -787,12 +721,10 @@ func init() {
 	var startPreviewUseNewData string
 	startPreviewCmd.Flags().StringVar(&startPreviewUseNewData, "use-new-data", "", "Deprecated. Must be true if set.")
 
-
 	streamsCmd.AddCommand(stopPreviewCmd)
 	var stopPreviewPreviewSessionId string
 	stopPreviewCmd.Flags().StringVar(&stopPreviewPreviewSessionId, "preview-session-id", "", "ID of the preview session")
 	stopPreviewCmd.MarkFlagRequired("preview-session-id")
-
 
 	streamsCmd.AddCommand(updateConnectionCmd)
 	var updateConnectionConnectionId string
@@ -805,7 +737,6 @@ func init() {
 	updateConnectionCmd.Flags().StringVar(&updateConnectionDescription, "description", "", "The description of the connection.")
 	var updateConnectionName string
 	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
-
 
 	streamsCmd.AddCommand(updateGroupCmd)
 	var updateGroupEdges string
@@ -823,8 +754,6 @@ func init() {
 
 	var updateGroupArguments string
 	updateGroupCmd.Flags().StringVar(&updateGroupArguments, "arguments", "", "Group function arguments list.")
-	var updateGroupAst string
-	updateGroupCmd.Flags().StringVar(&updateGroupAst, "ast", "", "")
 	var updateGroupAttributes string
 	updateGroupCmd.Flags().StringVar(&updateGroupAttributes, "attributes", "", "Attributes map for function.")
 	var updateGroupCategories string
@@ -839,7 +768,6 @@ func init() {
 	updateGroupCmd.Flags().StringVar(&updateGroupScalar, "scalar", "", "")
 	var updateGroupVariadic string
 	updateGroupCmd.Flags().StringVar(&updateGroupVariadic, "variadic", "", "")
-
 
 	streamsCmd.AddCommand(updatePipelineCmd)
 	var updatePipelineEdges string
@@ -859,13 +787,10 @@ func init() {
 	updatePipelineCmd.Flags().StringVar(&updatePipelineBypassValidation, "bypass-validation", "", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
 	var updatePipelineCreateUserId string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
-	var updatePipelineData string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineData, "data", "", "")
 	var updatePipelineDescription string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 	var updatePipelineName string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", "", "The name of the pipeline.")
-
 
 	streamsCmd.AddCommand(updateTemplateCmd)
 	var updateTemplateEdges string
@@ -881,13 +806,10 @@ func init() {
 	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "ID of the template")
 	updateTemplateCmd.MarkFlagRequired("template-id")
 
-	var updateTemplateData string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateData, "data", "", "")
 	var updateTemplateDescription string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateDescription, "description", "", "Template description")
 	var updateTemplateName string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
-
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 	var validatePipelineEdges string
@@ -899,10 +821,5 @@ func init() {
 	var validatePipelineRootNode string
 	validatePipelineCmd.Flags().StringVar(&validatePipelineRootNode, "root-node", "", "The UUIDs of all sink functions in a given pipeline")
 	validatePipelineCmd.MarkFlagRequired("root-node")
-	var validatePipelineUpl string
-	validatePipelineCmd.Flags().StringVar(&validatePipelineUpl, "upl", "", "")
-	validatePipelineCmd.MarkFlagRequired("upl")
-
-
 
 }

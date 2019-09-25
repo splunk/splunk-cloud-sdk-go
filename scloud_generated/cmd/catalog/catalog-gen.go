@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/catalog"
 )
 
-
 // createActionForRule -- Create a new action for a rule associated with a specific resource name.
 var createActionForRuleCmd = &cobra.Command{
 	Use:   "create-action-for-rule",
@@ -590,19 +589,16 @@ var updateWorkflowRunByIDCmd = &cobra.Command{
 	RunE:  impl.UpdateWorkflowRunByID,
 }
 
-
 func init() {
 	catalogCmd.AddCommand(createActionForRuleCmd)
 	var createActionForRuleRuleresourcename string
 	createActionForRuleCmd.Flags().StringVar(&createActionForRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	createActionForRuleCmd.MarkFlagRequired("ruleresourcename")
 
-
 	catalogCmd.AddCommand(createActionForRuleByIDCmd)
 	var createActionForRuleByIdRuleid string
 	createActionForRuleByIDCmd.Flags().StringVar(&createActionForRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	createActionForRuleByIDCmd.MarkFlagRequired("ruleid")
-
 
 	catalogCmd.AddCommand(createAnnotationForDashboardbyIDCmd)
 	var createAnnotationForDashboardbyIdAnnotationtypeid string
@@ -622,7 +618,6 @@ func init() {
 	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
 	var createAnnotationForDashboardbyIdRelationshipid string
 	createAnnotationForDashboardbyIDCmd.Flags().StringVar(&createAnnotationForDashboardbyIdRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
-
 
 	catalogCmd.AddCommand(createAnnotationForDashboardsByResourceNameCmd)
 	var createAnnotationForDashboardsByResourceNameAnnotationtypeid string
@@ -645,7 +640,6 @@ func init() {
 	var createAnnotationForDashboardsByResourceNameRelationshipid string
 	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
 
-
 	catalogCmd.AddCommand(createAnnotationForDatasetByIDCmd)
 	var createAnnotationForDatasetByIdAnnotationtypeid string
 	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
@@ -664,7 +658,6 @@ func init() {
 	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
 	var createAnnotationForDatasetByIdRelationshipid string
 	createAnnotationForDatasetByIDCmd.Flags().StringVar(&createAnnotationForDatasetByIdRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
-
 
 	catalogCmd.AddCommand(createAnnotationForDatasetByResourceNameCmd)
 	var createAnnotationForDatasetByResourceNameAnnotationtypeid string
@@ -687,7 +680,6 @@ func init() {
 	var createAnnotationForDatasetByResourceNameRelationshipid string
 	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
 
-
 	catalogCmd.AddCommand(createDashboardCmd)
 	var createDashboardDefinition string
 	createDashboardCmd.Flags().StringVar(&createDashboardDefinition, "definition", "", "The JSON dashboard definition.")
@@ -706,9 +698,7 @@ func init() {
 	var createDashboardVersion string
 	createDashboardCmd.Flags().StringVar(&createDashboardVersion, "version", "", "The version of the dashboard.")
 
-
 	catalogCmd.AddCommand(createDatasetCmd)
-
 
 	catalogCmd.AddCommand(createDatasetImportCmd)
 	var createDatasetImportDatasetresourcename string
@@ -724,7 +714,6 @@ func init() {
 	var createDatasetImportName string
 	createDatasetImportCmd.Flags().StringVar(&createDatasetImportName, "name", "", "The dataset name.")
 
-
 	catalogCmd.AddCommand(createDatasetImportByIDCmd)
 	var createDatasetImportByIdDatasetid string
 	createDatasetImportByIDCmd.Flags().StringVar(&createDatasetImportByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -738,7 +727,6 @@ func init() {
 
 	var createDatasetImportByIdName string
 	createDatasetImportByIDCmd.Flags().StringVar(&createDatasetImportByIdName, "name", "", "The dataset name.")
-
 
 	catalogCmd.AddCommand(createDatasetImportByIdv1Cmd)
 	var createDatasetImportByIdv1Datasetid string
@@ -754,7 +742,6 @@ func init() {
 	var createDatasetImportByIdv1Name string
 	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Name, "name", "", "The dataset name.")
 
-
 	catalogCmd.AddCommand(createDatasetImportv1Cmd)
 	var createDatasetImportv1Datasetresourcename string
 	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Datasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
@@ -768,7 +755,6 @@ func init() {
 
 	var createDatasetImportv1Name string
 	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Name, "name", "", "The dataset name.")
-
 
 	catalogCmd.AddCommand(createFieldForDatasetCmd)
 	var createFieldForDatasetDatasetresourcename string
@@ -793,7 +779,6 @@ func init() {
 	var createFieldForDatasetTitle string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetTitle, "title", "", "The field title.")
 
-
 	catalogCmd.AddCommand(createFieldForDatasetByIDCmd)
 	var createFieldForDatasetByIdDatasetid string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -816,7 +801,6 @@ func init() {
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdSummary, "summary", "", "The field summary.")
 	var createFieldForDatasetByIdTitle string
 	createFieldForDatasetByIDCmd.Flags().StringVar(&createFieldForDatasetByIdTitle, "title", "", "The field title.")
-
 
 	catalogCmd.AddCommand(createRelationshipCmd)
 	var createRelationshipName string
@@ -842,7 +826,6 @@ func init() {
 	var createRelationshipVersion string
 	createRelationshipCmd.Flags().StringVar(&createRelationshipVersion, "version", "", "The Catalog version.")
 
-
 	catalogCmd.AddCommand(createRuleCmd)
 	var createRuleMatch string
 	createRuleCmd.Flags().StringVar(&createRuleMatch, "match", "", "The rule match type.")
@@ -860,7 +843,6 @@ func init() {
 	var createRuleVersion string
 	createRuleCmd.Flags().StringVar(&createRuleVersion, "version", "", "The catalog version.")
 
-
 	catalogCmd.AddCommand(createWorkflowCmd)
 	var createWorkflowTasks string
 	createWorkflowCmd.Flags().StringVar(&createWorkflowTasks, "tasks", "", "")
@@ -876,7 +858,6 @@ func init() {
 	createWorkflowCmd.Flags().StringVar(&createWorkflowName, "name", "", "The dataset name. Dataset names must be unique within each module.")
 	var createWorkflowVersion string
 	createWorkflowCmd.Flags().StringVar(&createWorkflowVersion, "version", "", "The version of the workflow.")
-
 
 	catalogCmd.AddCommand(createWorkflowBuildCmd)
 	var createWorkflowBuildInputdata string
@@ -916,7 +897,6 @@ func init() {
 	var createWorkflowBuildWorkflowversion string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildWorkflowversion, "workflowversion", "", "The version of the workflow that is associated with the workflow build.")
 
-
 	catalogCmd.AddCommand(createWorkflowRunCmd)
 	var createWorkflowRunInputdata string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunInputdata, "inputdata", "", "The input data of the workflow run for specified workflow build ID.")
@@ -951,7 +931,6 @@ func init() {
 	var createWorkflowRunWorkflowbuildversion string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildversion, "workflowbuildversion", "", "The version of the workflow build that is assocaited with the workflow run.")
 
-
 	catalogCmd.AddCommand(deleteActionByIDForRuleCmd)
 	var deleteActionByIdForRuleActionid string
 	deleteActionByIDForRuleCmd.Flags().StringVar(&deleteActionByIdForRuleActionid, "actionid", "", "ID of an Action.")
@@ -959,7 +938,6 @@ func init() {
 	var deleteActionByIdForRuleRuleresourcename string
 	deleteActionByIDForRuleCmd.Flags().StringVar(&deleteActionByIdForRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	deleteActionByIDForRuleCmd.MarkFlagRequired("ruleresourcename")
-
 
 	catalogCmd.AddCommand(deleteActionByIDForRuleByIDCmd)
 	var deleteActionByIdForRuleByIdActionid string
@@ -969,7 +947,6 @@ func init() {
 	deleteActionByIDForRuleByIDCmd.Flags().StringVar(&deleteActionByIdForRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	deleteActionByIDForRuleByIDCmd.MarkFlagRequired("ruleid")
 
-
 	catalogCmd.AddCommand(deleteAnnotationOfDashboardByIDCmd)
 	var deleteAnnotationOfDashboardByIdAnnotationid string
 	deleteAnnotationOfDashboardByIDCmd.Flags().StringVar(&deleteAnnotationOfDashboardByIdAnnotationid, "annotationid", "", "ID of a annotation.")
@@ -977,7 +954,6 @@ func init() {
 	var deleteAnnotationOfDashboardByIdDashboardid string
 	deleteAnnotationOfDashboardByIDCmd.Flags().StringVar(&deleteAnnotationOfDashboardByIdDashboardid, "dashboardid", "", "ID of a dashboard.")
 	deleteAnnotationOfDashboardByIDCmd.MarkFlagRequired("dashboardid")
-
 
 	catalogCmd.AddCommand(deleteAnnotationOfDashboardByResourceNameCmd)
 	var deleteAnnotationOfDashboardByResourceNameAnnotationid string
@@ -987,7 +963,6 @@ func init() {
 	deleteAnnotationOfDashboardByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
 	deleteAnnotationOfDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
 
-
 	catalogCmd.AddCommand(deleteAnnotationOfDatasetByIDCmd)
 	var deleteAnnotationOfDatasetByIdAnnotationid string
 	deleteAnnotationOfDatasetByIDCmd.Flags().StringVar(&deleteAnnotationOfDatasetByIdAnnotationid, "annotationid", "", "ID of a annotation.")
@@ -995,7 +970,6 @@ func init() {
 	var deleteAnnotationOfDatasetByIdDatasetid string
 	deleteAnnotationOfDatasetByIDCmd.Flags().StringVar(&deleteAnnotationOfDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	deleteAnnotationOfDatasetByIDCmd.MarkFlagRequired("datasetid")
-
 
 	catalogCmd.AddCommand(deleteAnnotationOfDatasetByResourceNameCmd)
 	var deleteAnnotationOfDatasetByResourceNameAnnotationid string
@@ -1005,30 +979,25 @@ func init() {
 	deleteAnnotationOfDatasetByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	deleteAnnotationOfDatasetByResourceNameCmd.MarkFlagRequired("datasetresourcename")
 
-
 	catalogCmd.AddCommand(deleteDashboardByIDCmd)
 	var deleteDashboardByIdDashboardid string
 	deleteDashboardByIDCmd.Flags().StringVar(&deleteDashboardByIdDashboardid, "dashboardid", "", "ID of a dashboard.")
 	deleteDashboardByIDCmd.MarkFlagRequired("dashboardid")
-
 
 	catalogCmd.AddCommand(deleteDashboardByResourceNameCmd)
 	var deleteDashboardByResourceNameDashboardresourcename string
 	deleteDashboardByResourceNameCmd.Flags().StringVar(&deleteDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
 	deleteDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
 
-
 	catalogCmd.AddCommand(deleteDatasetCmd)
 	var deleteDatasetDatasetresourcename string
 	deleteDatasetCmd.Flags().StringVar(&deleteDatasetDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	deleteDatasetCmd.MarkFlagRequired("datasetresourcename")
 
-
 	catalogCmd.AddCommand(deleteDatasetByIDCmd)
 	var deleteDatasetByIdDatasetid string
 	deleteDatasetByIDCmd.Flags().StringVar(&deleteDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	deleteDatasetByIDCmd.MarkFlagRequired("datasetid")
-
 
 	catalogCmd.AddCommand(deleteFieldByIDForDatasetCmd)
 	var deleteFieldByIdForDatasetDatasetresourcename string
@@ -1038,7 +1007,6 @@ func init() {
 	deleteFieldByIDForDatasetCmd.Flags().StringVar(&deleteFieldByIdForDatasetFieldid, "fieldid", "", "ID of a Field.")
 	deleteFieldByIDForDatasetCmd.MarkFlagRequired("fieldid")
 
-
 	catalogCmd.AddCommand(deleteFieldByIDForDatasetByIDCmd)
 	var deleteFieldByIdForDatasetByIdDatasetid string
 	deleteFieldByIDForDatasetByIDCmd.Flags().StringVar(&deleteFieldByIdForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -1047,24 +1015,20 @@ func init() {
 	deleteFieldByIDForDatasetByIDCmd.Flags().StringVar(&deleteFieldByIdForDatasetByIdFieldid, "fieldid", "", "ID of a Field.")
 	deleteFieldByIDForDatasetByIDCmd.MarkFlagRequired("fieldid")
 
-
 	catalogCmd.AddCommand(deleteRelationshipByIDCmd)
 	var deleteRelationshipByIdRelationshipid string
 	deleteRelationshipByIDCmd.Flags().StringVar(&deleteRelationshipByIdRelationshipid, "relationshipid", "", "ID of a relationship.")
 	deleteRelationshipByIDCmd.MarkFlagRequired("relationshipid")
-
 
 	catalogCmd.AddCommand(deleteRuleCmd)
 	var deleteRuleRuleresourcename string
 	deleteRuleCmd.Flags().StringVar(&deleteRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	deleteRuleCmd.MarkFlagRequired("ruleresourcename")
 
-
 	catalogCmd.AddCommand(deleteRuleByIDCmd)
 	var deleteRuleByIdRuleid string
 	deleteRuleByIDCmd.Flags().StringVar(&deleteRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	deleteRuleByIDCmd.MarkFlagRequired("ruleid")
-
 
 	catalogCmd.AddCommand(deleteWorkflowBuildByIDCmd)
 	var deleteWorkflowBuildByIdWorkflowbuildid string
@@ -1074,12 +1038,10 @@ func init() {
 	deleteWorkflowBuildByIDCmd.Flags().StringVar(&deleteWorkflowBuildByIdWorkflowid, "workflowid", "", "ID of a workflow.")
 	deleteWorkflowBuildByIDCmd.MarkFlagRequired("workflowid")
 
-
 	catalogCmd.AddCommand(deleteWorkflowByIDCmd)
 	var deleteWorkflowByIdWorkflowid string
 	deleteWorkflowByIDCmd.Flags().StringVar(&deleteWorkflowByIdWorkflowid, "workflowid", "", "ID of a workflow.")
 	deleteWorkflowByIDCmd.MarkFlagRequired("workflowid")
-
 
 	catalogCmd.AddCommand(deleteWorkflowRunByIDCmd)
 	var deleteWorkflowRunByIdWorkflowbuildid string
@@ -1092,7 +1054,6 @@ func init() {
 	deleteWorkflowRunByIDCmd.Flags().StringVar(&deleteWorkflowRunByIdWorkflowrunid, "workflowrunid", "", "ID of a workflow run.")
 	deleteWorkflowRunByIDCmd.MarkFlagRequired("workflowrunid")
 
-
 	catalogCmd.AddCommand(getActionByIDForRuleCmd)
 	var getActionByIdForRuleActionid string
 	getActionByIDForRuleCmd.Flags().StringVar(&getActionByIdForRuleActionid, "actionid", "", "ID of an Action.")
@@ -1100,7 +1061,6 @@ func init() {
 	var getActionByIdForRuleRuleresourcename string
 	getActionByIDForRuleCmd.Flags().StringVar(&getActionByIdForRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	getActionByIDForRuleCmd.MarkFlagRequired("ruleresourcename")
-
 
 	catalogCmd.AddCommand(getActionByIDForRuleByIDCmd)
 	var getActionByIdForRuleByIdActionid string
@@ -1110,36 +1070,30 @@ func init() {
 	getActionByIDForRuleByIDCmd.Flags().StringVar(&getActionByIdForRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	getActionByIDForRuleByIDCmd.MarkFlagRequired("ruleid")
 
-
 	catalogCmd.AddCommand(getDashboardByIDCmd)
 	var getDashboardByIdDashboardid string
 	getDashboardByIDCmd.Flags().StringVar(&getDashboardByIdDashboardid, "dashboardid", "", "ID of a dashboard.")
 	getDashboardByIDCmd.MarkFlagRequired("dashboardid")
-
 
 	catalogCmd.AddCommand(getDashboardByResourceNameCmd)
 	var getDashboardByResourceNameDashboardresourcename string
 	getDashboardByResourceNameCmd.Flags().StringVar(&getDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
 	getDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
 
-
 	catalogCmd.AddCommand(getDatasetCmd)
 	var getDatasetDatasetresourcename string
 	getDatasetCmd.Flags().StringVar(&getDatasetDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	getDatasetCmd.MarkFlagRequired("datasetresourcename")
-
 
 	catalogCmd.AddCommand(getDatasetByIDCmd)
 	var getDatasetByIdDatasetid string
 	getDatasetByIDCmd.Flags().StringVar(&getDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	getDatasetByIDCmd.MarkFlagRequired("datasetid")
 
-
 	catalogCmd.AddCommand(getFieldByIDCmd)
 	var getFieldByIdFieldid string
 	getFieldByIDCmd.Flags().StringVar(&getFieldByIdFieldid, "fieldid", "", "ID of a Field.")
 	getFieldByIDCmd.MarkFlagRequired("fieldid")
-
 
 	catalogCmd.AddCommand(getFieldByIDForDatasetCmd)
 	var getFieldByIdForDatasetDatasetresourcename string
@@ -1149,7 +1103,6 @@ func init() {
 	getFieldByIDForDatasetCmd.Flags().StringVar(&getFieldByIdForDatasetFieldid, "fieldid", "", "ID of a Field.")
 	getFieldByIDForDatasetCmd.MarkFlagRequired("fieldid")
 
-
 	catalogCmd.AddCommand(getFieldByIDForDatasetByIDCmd)
 	var getFieldByIdForDatasetByIdDatasetid string
 	getFieldByIDForDatasetByIDCmd.Flags().StringVar(&getFieldByIdForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -1158,24 +1111,20 @@ func init() {
 	getFieldByIDForDatasetByIDCmd.Flags().StringVar(&getFieldByIdForDatasetByIdFieldid, "fieldid", "", "ID of a Field.")
 	getFieldByIDForDatasetByIDCmd.MarkFlagRequired("fieldid")
 
-
 	catalogCmd.AddCommand(getRelationshipByIDCmd)
 	var getRelationshipByIdRelationshipid string
 	getRelationshipByIDCmd.Flags().StringVar(&getRelationshipByIdRelationshipid, "relationshipid", "", "ID of a relationship.")
 	getRelationshipByIDCmd.MarkFlagRequired("relationshipid")
-
 
 	catalogCmd.AddCommand(getRuleCmd)
 	var getRuleRuleresourcename string
 	getRuleCmd.Flags().StringVar(&getRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	getRuleCmd.MarkFlagRequired("ruleresourcename")
 
-
 	catalogCmd.AddCommand(getRuleByIDCmd)
 	var getRuleByIdRuleid string
 	getRuleByIDCmd.Flags().StringVar(&getRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	getRuleByIDCmd.MarkFlagRequired("ruleid")
-
 
 	catalogCmd.AddCommand(getWorkflowBuildByIDCmd)
 	var getWorkflowBuildByIdWorkflowbuildid string
@@ -1185,12 +1134,10 @@ func init() {
 	getWorkflowBuildByIDCmd.Flags().StringVar(&getWorkflowBuildByIdWorkflowid, "workflowid", "", "ID of a workflow.")
 	getWorkflowBuildByIDCmd.MarkFlagRequired("workflowid")
 
-
 	catalogCmd.AddCommand(getWorkflowByIDCmd)
 	var getWorkflowByIdWorkflowid string
 	getWorkflowByIDCmd.Flags().StringVar(&getWorkflowByIdWorkflowid, "workflowid", "", "ID of a workflow.")
 	getWorkflowByIDCmd.MarkFlagRequired("workflowid")
-
 
 	catalogCmd.AddCommand(getWorkflowRunByIDCmd)
 	var getWorkflowRunByIdWorkflowbuildid string
@@ -1202,7 +1149,6 @@ func init() {
 	var getWorkflowRunByIdWorkflowrunid string
 	getWorkflowRunByIDCmd.Flags().StringVar(&getWorkflowRunByIdWorkflowrunid, "workflowrunid", "", "ID of a workflow run.")
 	getWorkflowRunByIDCmd.MarkFlagRequired("workflowrunid")
-
 
 	catalogCmd.AddCommand(listActionsForRuleCmd)
 	var listActionsForRuleRuleresourcename string
@@ -1218,7 +1164,6 @@ func init() {
 	var listActionsForRuleOrderby string
 	listActionsForRuleCmd.Flags().StringVar(&listActionsForRuleOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listActionsForRuleByIDCmd)
 	var listActionsForRuleByIdRuleid string
 	listActionsForRuleByIDCmd.Flags().StringVar(&listActionsForRuleByIdRuleid, "ruleid", "", "ID of a Field.")
@@ -1233,7 +1178,6 @@ func init() {
 	var listActionsForRuleByIdOrderby string
 	listActionsForRuleByIDCmd.Flags().StringVar(&listActionsForRuleByIdOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listAnnotationsForDashboardByIDCmd)
 	var listAnnotationsForDashboardByIdDashboardid string
 	listAnnotationsForDashboardByIDCmd.Flags().StringVar(&listAnnotationsForDashboardByIdDashboardid, "dashboardid", "", "ID of a dashboard.")
@@ -1242,7 +1186,6 @@ func init() {
 	var listAnnotationsForDashboardByIdFilter string
 	listAnnotationsForDashboardByIDCmd.Flags().StringVar(&listAnnotationsForDashboardByIdFilter, "filter", "", "A filter query to apply to the annotations.")
 
-
 	catalogCmd.AddCommand(listAnnotationsForDashboardByResourceNameCmd)
 	var listAnnotationsForDashboardByResourceNameDashboardresourcename string
 	listAnnotationsForDashboardByResourceNameCmd.Flags().StringVar(&listAnnotationsForDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
@@ -1250,7 +1193,6 @@ func init() {
 
 	var listAnnotationsForDashboardByResourceNameFilter string
 	listAnnotationsForDashboardByResourceNameCmd.Flags().StringVar(&listAnnotationsForDashboardByResourceNameFilter, "filter", "", "A filter query to apply to the annotations.")
-
 
 	catalogCmd.AddCommand(listAnnotationsForDatasetByIDCmd)
 	var listAnnotationsForDatasetByIdDatasetid string
@@ -1266,7 +1208,6 @@ func init() {
 	var listAnnotationsForDatasetByIdOrderby string
 	listAnnotationsForDatasetByIDCmd.Flags().StringVar(&listAnnotationsForDatasetByIdOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listAnnotationsForDatasetByResourceNameCmd)
 	var listAnnotationsForDatasetByResourceNameDatasetresourcename string
 	listAnnotationsForDatasetByResourceNameCmd.Flags().StringVar(&listAnnotationsForDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
@@ -1281,7 +1222,6 @@ func init() {
 	var listAnnotationsForDatasetByResourceNameOrderby string
 	listAnnotationsForDatasetByResourceNameCmd.Flags().StringVar(&listAnnotationsForDatasetByResourceNameOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listDashboardsCmd)
 
 	var listDashboardsCount string
@@ -1292,7 +1232,6 @@ func init() {
 	listDashboardsCmd.Flags().StringVar(&listDashboardsOffset, "offset", "", "The number of results to skip before the first one returned.")
 	var listDashboardsOrderby string
 	listDashboardsCmd.Flags().StringVar(&listDashboardsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
 
 	catalogCmd.AddCommand(listDatasetsCmd)
 
@@ -1305,7 +1244,6 @@ func init() {
 	var listDatasetsOrderby string
 	listDatasetsCmd.Flags().StringVar(&listDatasetsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listFieldsCmd)
 
 	var listFieldsCount string
@@ -1316,7 +1254,6 @@ func init() {
 	listFieldsCmd.Flags().StringVar(&listFieldsOffset, "offset", "", "The number of results to skip before the first one returned.")
 	var listFieldsOrderby string
 	listFieldsCmd.Flags().StringVar(&listFieldsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
 
 	catalogCmd.AddCommand(listFieldsForDatasetCmd)
 	var listFieldsForDatasetDatasetresourcename string
@@ -1332,7 +1269,6 @@ func init() {
 	var listFieldsForDatasetOrderby string
 	listFieldsForDatasetCmd.Flags().StringVar(&listFieldsForDatasetOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listFieldsForDatasetByIDCmd)
 	var listFieldsForDatasetByIdDatasetid string
 	listFieldsForDatasetByIDCmd.Flags().StringVar(&listFieldsForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -1347,12 +1283,10 @@ func init() {
 	var listFieldsForDatasetByIdOrderby string
 	listFieldsForDatasetByIDCmd.Flags().StringVar(&listFieldsForDatasetByIdOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listModulesCmd)
 
 	var listModulesFilter string
 	listModulesCmd.Flags().StringVar(&listModulesFilter, "filter", "", "A filter to apply to the modules.")
-
 
 	catalogCmd.AddCommand(listRelationshipsCmd)
 
@@ -1365,7 +1299,6 @@ func init() {
 	var listRelationshipsOrderby string
 	listRelationshipsCmd.Flags().StringVar(&listRelationshipsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listRulesCmd)
 
 	var listRulesCount string
@@ -1376,7 +1309,6 @@ func init() {
 	listRulesCmd.Flags().StringVar(&listRulesOffset, "offset", "", "The number of results to skip before the first one returned.")
 	var listRulesOrderby string
 	listRulesCmd.Flags().StringVar(&listRulesOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
 
 	catalogCmd.AddCommand(listWorkflowBuildsCmd)
 	var listWorkflowBuildsWorkflowid string
@@ -1391,7 +1323,6 @@ func init() {
 	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsOffset, "offset", "", "The number of results to skip before the first one returned.")
 	var listWorkflowBuildsOrderby string
 	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
 
 	catalogCmd.AddCommand(listWorkflowRunsCmd)
 	var listWorkflowRunsWorkflowbuildid string
@@ -1410,7 +1341,6 @@ func init() {
 	var listWorkflowRunsOrderby string
 	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(listWorkflowsCmd)
 
 	var listWorkflowsCount string
@@ -1422,7 +1352,6 @@ func init() {
 	var listWorkflowsOrderby string
 	listWorkflowsCmd.Flags().StringVar(&listWorkflowsOrderby, "orderby", "", "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-
 	catalogCmd.AddCommand(updateActionByIDForRuleCmd)
 	var updateActionByIdForRuleActionid string
 	updateActionByIDForRuleCmd.Flags().StringVar(&updateActionByIdForRuleActionid, "actionid", "", "ID of an Action.")
@@ -1431,7 +1360,6 @@ func init() {
 	updateActionByIDForRuleCmd.Flags().StringVar(&updateActionByIdForRuleRuleresourcename, "ruleresourcename", "", "The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
 	updateActionByIDForRuleCmd.MarkFlagRequired("ruleresourcename")
 
-
 	catalogCmd.AddCommand(updateActionByIDForRuleByIDCmd)
 	var updateActionByIdForRuleByIdActionid string
 	updateActionByIDForRuleByIDCmd.Flags().StringVar(&updateActionByIdForRuleByIdActionid, "actionid", "", "ID of an Action.")
@@ -1439,7 +1367,6 @@ func init() {
 	var updateActionByIdForRuleByIdRuleid string
 	updateActionByIDForRuleByIDCmd.Flags().StringVar(&updateActionByIdForRuleByIdRuleid, "ruleid", "", "ID of a Field.")
 	updateActionByIDForRuleByIDCmd.MarkFlagRequired("ruleid")
-
 
 	catalogCmd.AddCommand(updateDashboardByIDCmd)
 	var updateDashboardByIdDashboardid string
@@ -1457,7 +1384,6 @@ func init() {
 	var updateDashboardByIdVersion string
 	updateDashboardByIDCmd.Flags().StringVar(&updateDashboardByIdVersion, "version", "", "The version of the dashboard.")
 
-
 	catalogCmd.AddCommand(updateDashboardByResourceNameCmd)
 	var updateDashboardByResourceNameDashboardresourcename string
 	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "The resource name of a dashvboard. The resource name format is module.dashboardname.")
@@ -1474,18 +1400,15 @@ func init() {
 	var updateDashboardByResourceNameVersion string
 	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameVersion, "version", "", "The version of the dashboard.")
 
-
 	catalogCmd.AddCommand(updateDatasetCmd)
 	var updateDatasetDatasetresourcename string
 	updateDatasetCmd.Flags().StringVar(&updateDatasetDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	updateDatasetCmd.MarkFlagRequired("datasetresourcename")
 
-
 	catalogCmd.AddCommand(updateDatasetByIDCmd)
 	var updateDatasetByIdDatasetid string
 	updateDatasetByIDCmd.Flags().StringVar(&updateDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	updateDatasetByIDCmd.MarkFlagRequired("datasetid")
-
 
 	catalogCmd.AddCommand(updateFieldByIDForDatasetCmd)
 	var updateFieldByIdForDatasetDatasetresourcename string
@@ -1512,7 +1435,6 @@ func init() {
 	var updateFieldByIdForDatasetTitle string
 	updateFieldByIDForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetTitle, "title", "", "The field title.")
 
-
 	catalogCmd.AddCommand(updateFieldByIDForDatasetByIDCmd)
 	var updateFieldByIdForDatasetByIdDatasetid string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
@@ -1538,7 +1460,6 @@ func init() {
 	var updateFieldByIdForDatasetByIdTitle string
 	updateFieldByIDForDatasetByIDCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdTitle, "title", "", "The field title.")
 
-
 	catalogCmd.AddCommand(updateRelationshipByIDCmd)
 	var updateRelationshipByIdRelationshipid string
 	updateRelationshipByIDCmd.Flags().StringVar(&updateRelationshipByIdRelationshipid, "relationshipid", "", "ID of a relationship.")
@@ -1548,7 +1469,6 @@ func init() {
 	updateRelationshipByIDCmd.Flags().StringVar(&updateRelationshipByIdName, "name", "", "The name of the relationship.")
 	var updateRelationshipByIdOwner string
 	updateRelationshipByIDCmd.Flags().StringVar(&updateRelationshipByIdOwner, "owner", "", "The user who is the owner of the relationship.")
-
 
 	catalogCmd.AddCommand(updateRuleCmd)
 	var updateRuleRuleresourcename string
@@ -1566,7 +1486,6 @@ func init() {
 	var updateRuleVersion string
 	updateRuleCmd.Flags().StringVar(&updateRuleVersion, "version", "", "The catalog version.")
 
-
 	catalogCmd.AddCommand(updateRuleByIDCmd)
 	var updateRuleByIdRuleid string
 	updateRuleByIDCmd.Flags().StringVar(&updateRuleByIdRuleid, "ruleid", "", "ID of a Field.")
@@ -1583,7 +1502,6 @@ func init() {
 	var updateRuleByIdVersion string
 	updateRuleByIDCmd.Flags().StringVar(&updateRuleByIdVersion, "version", "", "The catalog version.")
 
-
 	catalogCmd.AddCommand(updateWorkflowBuildByIDCmd)
 	var updateWorkflowBuildByIdWorkflowbuildid string
 	updateWorkflowBuildByIDCmd.Flags().StringVar(&updateWorkflowBuildByIdWorkflowbuildid, "workflowbuildid", "", "ID of a workflow build.")
@@ -1599,7 +1517,6 @@ func init() {
 	var updateWorkflowBuildByIdStatus string
 	updateWorkflowBuildByIDCmd.Flags().StringVar(&updateWorkflowBuildByIdStatus, "status", "", "The status of the workflow build.")
 
-
 	catalogCmd.AddCommand(updateWorkflowByIDCmd)
 	var updateWorkflowByIdWorkflowid string
 	updateWorkflowByIDCmd.Flags().StringVar(&updateWorkflowByIdWorkflowid, "workflowid", "", "ID of a workflow.")
@@ -1609,7 +1526,6 @@ func init() {
 	updateWorkflowByIDCmd.Flags().StringVar(&updateWorkflowByIdDescription, "description", "", "The workflow description.")
 	var updateWorkflowByIdName string
 	updateWorkflowByIDCmd.Flags().StringVar(&updateWorkflowByIdName, "name", "", "The workflow name.")
-
 
 	catalogCmd.AddCommand(updateWorkflowRunByIDCmd)
 	var updateWorkflowRunByIdWorkflowbuildid string
@@ -1628,7 +1544,5 @@ func init() {
 	updateWorkflowRunByIDCmd.Flags().StringVar(&updateWorkflowRunByIdName, "name", "", "The workflow run name.")
 	var updateWorkflowRunByIdStatus string
 	updateWorkflowRunByIDCmd.Flags().StringVar(&updateWorkflowRunByIdStatus, "status", "", "The status of the workflow run.")
-
-
 
 }

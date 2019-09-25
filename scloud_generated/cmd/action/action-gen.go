@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/action"
 )
 
-
 // createAction --
 var createActionCmd = &cobra.Command{
 	Use:   "create-action",
@@ -72,22 +71,18 @@ var updateActionCmd = &cobra.Command{
 	RunE:  impl.UpdateAction,
 }
 
-
 func init() {
 	actionCmd.AddCommand(createActionCmd)
-
 
 	actionCmd.AddCommand(deleteActionCmd)
 	var deleteActionActionName string
 	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	deleteActionCmd.MarkFlagRequired("action-name")
 
-
 	actionCmd.AddCommand(getActionCmd)
 	var getActionActionName string
 	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionCmd.MarkFlagRequired("action-name")
-
 
 	actionCmd.AddCommand(getActionStatusCmd)
 	var getActionStatusActionName string
@@ -97,7 +92,6 @@ func init() {
 	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "The ID of the action status.")
 	getActionStatusCmd.MarkFlagRequired("status-id")
 
-
 	actionCmd.AddCommand(getActionStatusDetailsCmd)
 	var getActionStatusDetailsActionName string
 	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
@@ -106,12 +100,9 @@ func init() {
 	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "The ID of the action status.")
 	getActionStatusDetailsCmd.MarkFlagRequired("status-id")
 
-
 	actionCmd.AddCommand(getPublicWebhookKeysCmd)
 
-
 	actionCmd.AddCommand(listActionsCmd)
-
 
 	actionCmd.AddCommand(triggerActionCmd)
 	var triggerActionActionName string
@@ -139,12 +130,9 @@ func init() {
 	var triggerActionTtlSeconds string
 	triggerActionCmd.Flags().StringVar(&triggerActionTtlSeconds, "ttl-seconds", "", "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
 
-
 	actionCmd.AddCommand(updateActionCmd)
 	var updateActionActionName string
 	updateActionCmd.Flags().StringVar(&updateActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	updateActionCmd.MarkFlagRequired("action-name")
-
-
 
 }
