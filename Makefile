@@ -34,9 +34,9 @@ build_scloud: statik version
 	@echo "Building scloud .."
 	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/cli
 
-build_scloud_generated:
+build_scloud_generated: statik version
 	@echo "Building scloud generated.."
-	go build -v -o bin/scloud_gen $(SCLOUD_GEN_SRC_PATH)/scloud/.
+	GO111MODULE=on go build -v -o bin/scloud_gen $(SCLOUD_GEN_SRC_PATH)/scloud/.
 
 build_cross_compile:
 	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
