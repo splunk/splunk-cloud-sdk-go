@@ -19,7 +19,6 @@ package auth
 import (
 	"bytes"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io"
 	"net/http"
 	"os"
@@ -27,6 +26,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"gopkg.in/yaml.v2"
 
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
