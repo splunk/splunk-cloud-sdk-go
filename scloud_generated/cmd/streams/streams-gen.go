@@ -8,290 +8,290 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/streams"
 )
 
-// activatePipeline --
+// activatePipeline -- Activates an existing pipeline.
 var activatePipelineCmd = &cobra.Command{
 	Use:   "activate-pipeline",
-	Short: "",
+	Short: "Activates an existing pipeline.",
 	RunE:  impl.ActivatePipeline,
 }
 
-// compileDSL --
+// compileDSL -- Compiles the Streams DSL and returns Streams JSON.
 var compileDSLCmd = &cobra.Command{
 	Use:   "compile-dsl",
-	Short: "",
+	Short: "Compiles the Streams DSL and returns Streams JSON.",
 	RunE:  impl.CompileDSL,
 }
 
-// compileSPL --
+// compileSPL -- Compiles SPL2 and returns Streams JSON.
 var compileSPLCmd = &cobra.Command{
 	Use:   "compile-spl",
-	Short: "",
+	Short: "Compiles SPL2 and returns Streams JSON.",
 	RunE:  impl.CompileSPL,
 }
 
-// createConnection --
+// createConnection -- Create a new DSP connection.
 var createConnectionCmd = &cobra.Command{
 	Use:   "create-connection",
-	Short: "",
+	Short: "Create a new DSP connection.",
 	RunE:  impl.CreateConnection,
 }
 
-// createGroup --
+// createGroup -- Create a new group function by combining the Streams JSON of two or more functions.
 var createGroupCmd = &cobra.Command{
 	Use:   "create-group",
-	Short: "",
+	Short: "Create a new group function by combining the Streams JSON of two or more functions.",
 	RunE:  impl.CreateGroup,
 }
 
-// createPipeline --
+// createPipeline -- Creates a pipeline.
 var createPipelineCmd = &cobra.Command{
 	Use:   "create-pipeline",
-	Short: "",
+	Short: "Creates a pipeline.",
 	RunE:  impl.CreatePipeline,
 }
 
-// createTemplate --
+// createTemplate -- Creates a template for a tenant.
 var createTemplateCmd = &cobra.Command{
 	Use:   "create-template",
-	Short: "",
+	Short: "Creates a template for a tenant.",
 	RunE:  impl.CreateTemplate,
 }
 
-// deactivatePipeline --
+// deactivatePipeline -- Deactivates an existing pipeline.
 var deactivatePipelineCmd = &cobra.Command{
 	Use:   "deactivate-pipeline",
-	Short: "",
+	Short: "Deactivates an existing pipeline.",
 	RunE:  impl.DeactivatePipeline,
 }
 
-// deleteConnection --
+// deleteConnection -- Delete all versions of a connection by its id.
 var deleteConnectionCmd = &cobra.Command{
 	Use:   "delete-connection",
-	Short: "",
+	Short: "Delete all versions of a connection by its id.",
 	RunE:  impl.DeleteConnection,
 }
 
-// deleteGroup --
+// deleteGroup -- Removes an existing group.
 var deleteGroupCmd = &cobra.Command{
 	Use:   "delete-group",
-	Short: "",
+	Short: "Removes an existing group.",
 	RunE:  impl.DeleteGroup,
 }
 
-// deletePipeline --
+// deletePipeline -- Removes a pipeline.
 var deletePipelineCmd = &cobra.Command{
 	Use:   "delete-pipeline",
-	Short: "",
+	Short: "Removes a pipeline.",
 	RunE:  impl.DeletePipeline,
 }
 
-// deleteTemplate --
+// deleteTemplate -- Removes a template with a specific ID.
 var deleteTemplateCmd = &cobra.Command{
 	Use:   "delete-template",
-	Short: "",
+	Short: "Removes a template with a specific ID.",
 	RunE:  impl.DeleteTemplate,
 }
 
-// expandGroup --
+// expandGroup -- Creates and returns the expanded version of a group.
 var expandGroupCmd = &cobra.Command{
 	Use:   "expand-group",
-	Short: "",
+	Short: "Creates and returns the expanded version of a group.",
 	RunE:  impl.ExpandGroup,
 }
 
-// expandPipeline --
+// expandPipeline -- Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
 var expandPipelineCmd = &cobra.Command{
 	Use:   "expand-pipeline",
-	Short: "",
+	Short: "Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.",
 	RunE:  impl.ExpandPipeline,
 }
 
-// getGroup --
+// getGroup -- Returns the full Streams JSON of a group.
 var getGroupCmd = &cobra.Command{
 	Use:   "get-group",
-	Short: "",
+	Short: "Returns the full Streams JSON of a group.",
 	RunE:  impl.GetGroup,
 }
 
-// getInputSchema --
+// getInputSchema -- Returns the input schema for a function in a pipeline.
 var getInputSchemaCmd = &cobra.Command{
 	Use:   "get-input-schema",
-	Short: "",
+	Short: "Returns the input schema for a function in a pipeline.",
 	RunE:  impl.GetInputSchema,
 }
 
-// getOutputSchema --
+// getOutputSchema -- Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.
 var getOutputSchemaCmd = &cobra.Command{
 	Use:   "get-output-schema",
-	Short: "",
+	Short: "Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.",
 	RunE:  impl.GetOutputSchema,
 }
 
-// getPipeline --
+// getPipeline -- Returns an individual pipeline by version.
 var getPipelineCmd = &cobra.Command{
 	Use:   "get-pipeline",
-	Short: "",
+	Short: "Returns an individual pipeline by version.",
 	RunE:  impl.GetPipeline,
 }
 
-// getPipelineLatestMetrics --
+// getPipelineLatestMetrics -- Returns the latest metrics for a single pipeline.
 var getPipelineLatestMetricsCmd = &cobra.Command{
 	Use:   "get-pipeline-latest-metrics",
-	Short: "",
+	Short: "Returns the latest metrics for a single pipeline.",
 	RunE:  impl.GetPipelineLatestMetrics,
 }
 
-// getPipelinesStatus --
+// getPipelinesStatus -- Returns the status of pipelines from the underlying streaming system.
 var getPipelinesStatusCmd = &cobra.Command{
 	Use:   "get-pipelines-status",
-	Short: "",
+	Short: "Returns the status of pipelines from the underlying streaming system.",
 	RunE:  impl.GetPipelinesStatus,
 }
 
-// getPreviewData --
+// getPreviewData -- Returns the preview data for a session.
 var getPreviewDataCmd = &cobra.Command{
 	Use:   "get-preview-data",
-	Short: "",
+	Short: "Returns the preview data for a session.",
 	RunE:  impl.GetPreviewData,
 }
 
-// getPreviewSession --
+// getPreviewSession -- Returns information from a preview session.
 var getPreviewSessionCmd = &cobra.Command{
 	Use:   "get-preview-session",
-	Short: "",
+	Short: "Returns information from a preview session.",
 	RunE:  impl.GetPreviewSession,
 }
 
-// getPreviewSessionLatestMetrics --
+// getPreviewSessionLatestMetrics -- Returns the latest metrics for a preview session.
 var getPreviewSessionLatestMetricsCmd = &cobra.Command{
 	Use:   "get-preview-session-latest-metrics",
-	Short: "",
+	Short: "Returns the latest metrics for a preview session.",
 	RunE:  impl.GetPreviewSessionLatestMetrics,
 }
 
-// getRegistry --
+// getRegistry -- Returns all functions in JSON format.
 var getRegistryCmd = &cobra.Command{
 	Use:   "get-registry",
-	Short: "",
+	Short: "Returns all functions in JSON format.",
 	RunE:  impl.GetRegistry,
 }
 
-// getTemplate --
+// getTemplate -- Returns an individual template by version.
 var getTemplateCmd = &cobra.Command{
 	Use:   "get-template",
-	Short: "",
+	Short: "Returns an individual template by version.",
 	RunE:  impl.GetTemplate,
 }
 
-// listConnections --
+// listConnections -- Returns a list of connections (latest versions only) by tenant ID.
 var listConnectionsCmd = &cobra.Command{
 	Use:   "list-connections",
-	Short: "",
+	Short: "Returns a list of connections (latest versions only) by tenant ID.",
 	RunE:  impl.ListConnections,
 }
 
-// listConnectors --
+// listConnectors -- Returns a list of the available connectors.
 var listConnectorsCmd = &cobra.Command{
 	Use:   "list-connectors",
-	Short: "",
+	Short: "Returns a list of the available connectors.",
 	RunE:  impl.ListConnectors,
 }
 
-// listPipelines --
+// listPipelines -- Returns all pipelines.
 var listPipelinesCmd = &cobra.Command{
 	Use:   "list-pipelines",
-	Short: "",
+	Short: "Returns all pipelines.",
 	RunE:  impl.ListPipelines,
 }
 
-// listTemplates --
+// listTemplates -- Returns a list of all templates.
 var listTemplatesCmd = &cobra.Command{
 	Use:   "list-templates",
-	Short: "",
+	Short: "Returns a list of all templates.",
 	RunE:  impl.ListTemplates,
 }
 
-// mergePipelines --
+// mergePipelines -- Combines two Streams JSON programs.
 var mergePipelinesCmd = &cobra.Command{
 	Use:   "merge-pipelines",
-	Short: "",
+	Short: "Combines two Streams JSON programs.",
 	RunE:  impl.MergePipelines,
 }
 
-// putConnection --
+// putConnection -- Modifies an existing DSP connection.
 var putConnectionCmd = &cobra.Command{
 	Use:   "put-connection",
-	Short: "",
+	Short: "Modifies an existing DSP connection.",
 	RunE:  impl.PutConnection,
 }
 
-// putGroup --
+// putGroup -- Update a group function combining the Streams JSON of two or more functions.
 var putGroupCmd = &cobra.Command{
 	Use:   "put-group",
-	Short: "",
+	Short: "Update a group function combining the Streams JSON of two or more functions.",
 	RunE:  impl.PutGroup,
 }
 
-// putTemplate --
+// putTemplate -- Updates an existing template.
 var putTemplateCmd = &cobra.Command{
 	Use:   "put-template",
-	Short: "",
+	Short: "Updates an existing template.",
 	RunE:  impl.PutTemplate,
 }
 
-// reactivatePipeline --
+// reactivatePipeline -- Reactivate a pipeline
 var reactivatePipelineCmd = &cobra.Command{
 	Use:   "reactivate-pipeline",
-	Short: "",
+	Short: "Reactivate a pipeline",
 	RunE:  impl.ReactivatePipeline,
 }
 
-// startPreview --
+// startPreview -- Creates a preview session for a pipeline.
 var startPreviewCmd = &cobra.Command{
 	Use:   "start-preview",
-	Short: "",
+	Short: "Creates a preview session for a pipeline.",
 	RunE:  impl.StartPreview,
 }
 
-// stopPreview --
+// stopPreview -- Stops a preview session.
 var stopPreviewCmd = &cobra.Command{
 	Use:   "stop-preview",
-	Short: "",
+	Short: "Stops a preview session.",
 	RunE:  impl.StopPreview,
 }
 
-// updateConnection --
+// updateConnection -- Partially modifies an existing DSP connection.
 var updateConnectionCmd = &cobra.Command{
 	Use:   "update-connection",
-	Short: "",
+	Short: "Partially modifies an existing DSP connection.",
 	RunE:  impl.UpdateConnection,
 }
 
-// updateGroup --
+// updateGroup -- Modify a group function by combining the Streams JSON of two or more functions.
 var updateGroupCmd = &cobra.Command{
 	Use:   "update-group",
-	Short: "",
+	Short: "Modify a group function by combining the Streams JSON of two or more functions.",
 	RunE:  impl.UpdateGroup,
 }
 
-// updatePipeline --
+// updatePipeline -- Partially modifies an existing pipeline.
 var updatePipelineCmd = &cobra.Command{
 	Use:   "update-pipeline",
-	Short: "",
+	Short: "Partially modifies an existing pipeline.",
 	RunE:  impl.UpdatePipeline,
 }
 
-// updateTemplate --
+// updateTemplate -- Partially modifies an existing template.
 var updateTemplateCmd = &cobra.Command{
 	Use:   "update-template",
-	Short: "",
+	Short: "Partially modifies an existing template.",
 	RunE:  impl.UpdateTemplate,
 }
 
-// validatePipeline --
+// validatePipeline -- Verifies whether the Streams JSON is valid.
 var validatePipelineCmd = &cobra.Command{
 	Use:   "validate-pipeline",
-	Short: "",
+	Short: "Verifies whether the Streams JSON is valid.",
 	RunE:  impl.ValidatePipeline,
 }
 

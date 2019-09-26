@@ -8,24 +8,24 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/ingest"
 )
 
-// postEvents --
+// postEvents -- Sends events.
 var postEventsCmd = &cobra.Command{
 	Use:   "post-events",
-	Short: "",
+	Short: "Sends events.",
 	RunE:  impl.PostEvents,
 }
 
-// postMetrics --
+// postMetrics -- Sends metric events.
 var postMetricsCmd = &cobra.Command{
 	Use:   "post-metrics",
-	Short: "",
+	Short: "Sends metric events.",
 	RunE:  impl.PostMetrics,
 }
 
-// uploadFiles --
+// uploadFiles -- Upload a CSV or text file that contains events.
 var uploadFilesCmd = &cobra.Command{
 	Use:   "upload-files",
-	Short: "",
+	Short: "Upload a CSV or text file that contains events.",
 	RunE:  impl.UploadFiles,
 }
 

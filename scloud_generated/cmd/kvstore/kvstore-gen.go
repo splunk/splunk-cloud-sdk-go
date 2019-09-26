@@ -8,59 +8,59 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/kvstore"
 )
 
-// createIndex --
+// createIndex -- Creates an index on a collection.
 var createIndexCmd = &cobra.Command{
 	Use:   "create-index",
-	Short: "",
+	Short: "Creates an index on a collection.",
 	RunE:  impl.CreateIndex,
 }
 
-// deleteIndex --
+// deleteIndex -- Removes an index from a collection.
 var deleteIndexCmd = &cobra.Command{
 	Use:   "delete-index",
-	Short: "",
+	Short: "Removes an index from a collection.",
 	RunE:  impl.DeleteIndex,
 }
 
-// deleteRecordByKey --
+// deleteRecordByKey -- Deletes a record with a given key.
 var deleteRecordByKeyCmd = &cobra.Command{
 	Use:   "delete-record-by-key",
-	Short: "",
+	Short: "Deletes a record with a given key.",
 	RunE:  impl.DeleteRecordByKey,
 }
 
-// deleteRecords --
+// deleteRecords -- Removes records in a collection that match the query.
 var deleteRecordsCmd = &cobra.Command{
 	Use:   "delete-records",
-	Short: "",
+	Short: "Removes records in a collection that match the query.",
 	RunE:  impl.DeleteRecords,
 }
 
-// getRecordByKey --
+// getRecordByKey -- Returns a record with a given key.
 var getRecordByKeyCmd = &cobra.Command{
 	Use:   "get-record-by-key",
-	Short: "",
+	Short: "Returns a record with a given key.",
 	RunE:  impl.GetRecordByKey,
 }
 
-// insertRecord --
+// insertRecord -- Inserts a record into a collection.
 var insertRecordCmd = &cobra.Command{
 	Use:   "insert-record",
-	Short: "",
+	Short: "Inserts a record into a collection.",
 	RunE:  impl.InsertRecord,
 }
 
-// insertRecords --
+// insertRecords -- Inserts multiple records in a single request.
 var insertRecordsCmd = &cobra.Command{
 	Use:   "insert-records",
-	Short: "",
+	Short: "Inserts multiple records in a single request.",
 	RunE:  impl.InsertRecords,
 }
 
-// listIndexes --
+// listIndexes -- Returns a list of all indexes on a collection.
 var listIndexesCmd = &cobra.Command{
 	Use:   "list-indexes",
-	Short: "",
+	Short: "Returns a list of all indexes on a collection.",
 	RunE:  impl.ListIndexes,
 }
 
@@ -71,24 +71,24 @@ var listRecordsCmd = &cobra.Command{
 	RunE:  impl.ListRecords,
 }
 
-// ping --
+// ping -- Returns the health status from the database.
 var pingCmd = &cobra.Command{
 	Use:   "ping",
-	Short: "",
+	Short: "Returns the health status from the database.",
 	RunE:  impl.Ping,
 }
 
-// putRecord --
+// putRecord -- Updates the record with a given key, either by inserting or replacing the record.
 var putRecordCmd = &cobra.Command{
 	Use:   "put-record",
-	Short: "",
+	Short: "Updates the record with a given key, either by inserting or replacing the record.",
 	RunE:  impl.PutRecord,
 }
 
-// queryRecords --
+// queryRecords -- Returns a list of query records in a collection.
 var queryRecordsCmd = &cobra.Command{
 	Use:   "query-records",
-	Short: "",
+	Short: "Returns a list of query records in a collection.",
 	RunE:  impl.QueryRecords,
 }
 

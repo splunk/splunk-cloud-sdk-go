@@ -907,8 +907,6 @@ func init() {
 	var createWorkflowRunTimeoutsecs string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunTimeoutsecs, "timeoutsecs", "", "The timeout in seconds of the workflow run for specified workflow build ID.")
 	createWorkflowRunCmd.MarkFlagRequired("timeoutsecs")
-	var createWorkflowRunWorkflowbuildid string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildid, "workflowbuildid", "", "ID of a workflow build.")
 	createWorkflowRunCmd.MarkFlagRequired("workflowbuildid")
 	var createWorkflowRunWorkflowid string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowid, "workflowid", "", "ID of a workflow.")
@@ -928,6 +926,8 @@ func init() {
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStarted, "started", "", "The date and time the workflow run started for specified workflow build ID.")
 	var createWorkflowRunStatus string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStatus, "status", "", "The status of the workflow run for specified workflow build ID.")
+	var createWorkflowRunWorkflowbuildid string
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildid, "workflowbuildid", "", "A unique workflow build ID that is associated with the workflow run.")
 	var createWorkflowRunWorkflowbuildversion string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildversion, "workflowbuildversion", "", "The version of the workflow build that is assocaited with the workflow run.")
 
@@ -1085,10 +1085,16 @@ func init() {
 	getDatasetCmd.Flags().StringVar(&getDatasetDatasetresourcename, "datasetresourcename", "", "The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	getDatasetCmd.MarkFlagRequired("datasetresourcename")
 
+	var getDatasetMaxStale string
+	getDatasetCmd.Flags().StringVar(&getDatasetMaxStale, "max-stale", "", "The number of seconds beyond which we will refresh index metadata.")
+
 	catalogCmd.AddCommand(getDatasetByIDCmd)
 	var getDatasetByIdDatasetid string
 	getDatasetByIDCmd.Flags().StringVar(&getDatasetByIdDatasetid, "datasetid", "", "ID of a Dataset.")
 	getDatasetByIDCmd.MarkFlagRequired("datasetid")
+
+	var getDatasetByIdMaxStale string
+	getDatasetByIDCmd.Flags().StringVar(&getDatasetByIdMaxStale, "max-stale", "", "The number of seconds beyond which we will refresh index metadata.")
 
 	catalogCmd.AddCommand(getFieldByIDCmd)
 	var getFieldByIdFieldid string
@@ -1239,6 +1245,8 @@ func init() {
 	listDatasetsCmd.Flags().StringVar(&listDatasetsCount, "count", "", "The maximum number of results to return.")
 	var listDatasetsFilter string
 	listDatasetsCmd.Flags().StringVar(&listDatasetsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
+	var listDatasetsMaxStale string
+	listDatasetsCmd.Flags().StringVar(&listDatasetsMaxStale, "max-stale", "", "The number of seconds beyond which we will refresh index metadata.")
 	var listDatasetsOffset string
 	listDatasetsCmd.Flags().StringVar(&listDatasetsOffset, "offset", "", "The number of results to skip before the first one returned.")
 	var listDatasetsOrderby string

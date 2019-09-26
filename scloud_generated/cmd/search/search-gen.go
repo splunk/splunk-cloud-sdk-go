@@ -116,7 +116,7 @@ func init() {
 	var createJobSid string
 	createJobCmd.Flags().StringVar(&createJobSid, "sid", "", "The ID assigned to the search job.")
 	var createJobStatus string
-	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.")
+	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "status can accept values running, done, canceled, failed, ")
 
 	searchCmd.AddCommand(getJobCmd)
 	var getJobSid string
@@ -154,7 +154,7 @@ func init() {
 	var listJobsCount string
 	listJobsCmd.Flags().StringVar(&listJobsCount, "count", "", "The maximum number of jobs that you want to return the status entries for.")
 	var listJobsStatus string
-	listJobsCmd.Flags().StringVar(&listJobsStatus, "status", "", "Filter the list of jobs by status. Valid status values are 'running', 'done', 'canceled', or 'failed'.")
+	listJobsCmd.Flags().StringVar(&listJobsStatus, "status", "", "status can accept values running, done, canceled, failed, ")
 
 	searchCmd.AddCommand(listPreviewResultsCmd)
 	var listPreviewResultsSid string
