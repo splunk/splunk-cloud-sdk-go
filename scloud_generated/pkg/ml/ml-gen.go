@@ -5,6 +5,7 @@ package ml
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +39,12 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// CreateWorkflowStreamDeployment -- impl
+func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
+	fmt.Printf("called CreateWorkflowStreamDeployment\n")
+	return nil
+}
+
 // DeleteWorkflow -- impl
 func DeleteWorkflow(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called DeleteWorkflow\n")
@@ -59,6 +66,12 @@ func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
 // DeleteWorkflowRun -- impl
 func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called DeleteWorkflowRun\n")
+	return nil
+}
+
+// DeleteWorkflowStreamDeployment -- impl
+func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
+	fmt.Printf("called DeleteWorkflowStreamDeployment\n")
 	return nil
 }
 
@@ -119,6 +132,12 @@ func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
 // GetWorkflowRunLog -- impl
 func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called GetWorkflowRunLog\n")
+	return nil
+}
+
+// GetWorkflowStreamDeployment -- impl
+func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
+	fmt.Printf("called GetWorkflowStreamDeployment\n")
 	return nil
 }
 

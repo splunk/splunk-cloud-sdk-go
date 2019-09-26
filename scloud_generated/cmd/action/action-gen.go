@@ -8,81 +8,129 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/action"
 )
 
-// createAction --
+// createAction -- Creates an action template.
 var createActionCmd = &cobra.Command{
 	Use:   "create-action",
-	Short: "",
+	Short: "Creates an action template.",
 	RunE:  impl.CreateAction,
 }
 
-// deleteAction --
+// deleteAction -- Removes an action template.
 var deleteActionCmd = &cobra.Command{
 	Use:   "delete-action",
-	Short: "",
+	Short: "Removes an action template.",
 	RunE:  impl.DeleteAction,
 }
 
-// getAction --
+// getAction -- Returns a specific action template.
 var getActionCmd = &cobra.Command{
 	Use:   "get-action",
-	Short: "",
+	Short: "Returns a specific action template.",
 	RunE:  impl.GetAction,
 }
 
-// getActionStatus --
+// getActionStatus -- Returns the status of a triggered action.  Available for 4 days after last status change.
 var getActionStatusCmd = &cobra.Command{
 	Use:   "get-action-status",
-	Short: "",
+	Short: "Returns the status of a triggered action.  Available for 4 days after last status change.",
 	RunE:  impl.GetActionStatus,
 }
 
-// getActionStatusDetails --
+// getActionStatusDetails -- Returns the status details of the triggered email action.  Available for 4 days after last status change.
 var getActionStatusDetailsCmd = &cobra.Command{
 	Use:   "get-action-status-details",
-	Short: "",
+	Short: "Returns the status details of the triggered email action.  Available for 4 days after last status change.",
 	RunE:  impl.GetActionStatusDetails,
 }
 
-// getPublicWebhookKeys --
+// getPublicWebhookKeys -- Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
 var getPublicWebhookKeysCmd = &cobra.Command{
 	Use:   "get-public-webhook-keys",
-	Short: "",
+	Short: "Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.",
 	RunE:  impl.GetPublicWebhookKeys,
 }
 
-// listActions --
+// listActions -- Returns the list of action templates.
 var listActionsCmd = &cobra.Command{
 	Use:   "list-actions",
-	Short: "",
+	Short: "Returns the list of action templates.",
 	RunE:  impl.ListActions,
 }
 
-// triggerAction --
+// triggerAction -- Triggers an action.
 var triggerActionCmd = &cobra.Command{
 	Use:   "trigger-action",
-	Short: "",
+	Short: "Triggers an action.",
 	RunE:  impl.TriggerAction,
 }
 
-// updateAction --
+// updateAction -- Modifies an action template.
 var updateActionCmd = &cobra.Command{
 	Use:   "update-action",
-	Short: "",
+	Short: "Modifies an action template.",
 	RunE:  impl.UpdateAction,
 }
 
 func init() {
-
 	actionCmd.AddCommand(createActionCmd)
-	actionCmd.AddCommand(deleteActionCmd)
-	actionCmd.AddCommand(getActionCmd)
-	actionCmd.AddCommand(getActionStatusCmd)
-	actionCmd.AddCommand(getActionStatusDetailsCmd)
-	actionCmd.AddCommand(getPublicWebhookKeysCmd)
-	actionCmd.AddCommand(listActionsCmd)
-	actionCmd.AddCommand(triggerActionCmd)
-	actionCmd.AddCommand(updateActionCmd)
 
-	// subTest1Cmd.Flags().StringP("id", "i", "", "resource identifier")
-	// subTest2Cmd.Flags().StringP("id", "i", "", "resource identifier")
+	actionCmd.AddCommand(deleteActionCmd)
+	var deleteActionActionName string
+	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	deleteActionCmd.MarkFlagRequired("action-name")
+
+	actionCmd.AddCommand(getActionCmd)
+	var getActionActionName string
+	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionCmd.MarkFlagRequired("action-name")
+
+	actionCmd.AddCommand(getActionStatusCmd)
+	var getActionStatusActionName string
+	getActionStatusCmd.Flags().StringVar(&getActionStatusActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionStatusCmd.MarkFlagRequired("action-name")
+	var getActionStatusStatusId string
+	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "The ID of the action status.")
+	getActionStatusCmd.MarkFlagRequired("status-id")
+
+	actionCmd.AddCommand(getActionStatusDetailsCmd)
+	var getActionStatusDetailsActionName string
+	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionStatusDetailsCmd.MarkFlagRequired("action-name")
+	var getActionStatusDetailsStatusId string
+	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "The ID of the action status.")
+	getActionStatusDetailsCmd.MarkFlagRequired("status-id")
+
+	actionCmd.AddCommand(getPublicWebhookKeysCmd)
+
+	actionCmd.AddCommand(listActionsCmd)
+
+	actionCmd.AddCommand(triggerActionCmd)
+	var triggerActionActionName string
+	triggerActionCmd.Flags().StringVar(&triggerActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	triggerActionCmd.MarkFlagRequired("action-name")
+
+	var triggerActionActionMetadata string
+	triggerActionCmd.Flags().StringVar(&triggerActionActionMetadata, "action-metadata", "", "")
+	var triggerActionCreatedAt string
+	triggerActionCmd.Flags().StringVar(&triggerActionCreatedAt, "created-at", "", "string-ified ISO-8601 date/time with zone.")
+	var triggerActionCreatedBy string
+	triggerActionCmd.Flags().StringVar(&triggerActionCreatedBy, "created-by", "", "The principal that generated the trigger event.")
+	var triggerActionId string
+	triggerActionCmd.Flags().StringVar(&triggerActionId, "id", "", "A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.")
+	var triggerActionKind string
+	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "", "kind can accept values trigger, ")
+	var triggerActionTenant string
+	triggerActionCmd.Flags().StringVar(&triggerActionTenant, "tenant", "", "The tenant within which the trigger event was generated.")
+	var triggerActionTriggerCondition string
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerCondition, "trigger-condition", "", "A description of the condition that caused the trigger event.")
+	var triggerActionTriggerName string
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerName, "trigger-name", "", "The name of the trigger for which this event was created.")
+	var triggerActionTtlSeconds string
+	triggerActionCmd.Flags().StringVar(&triggerActionTtlSeconds, "ttl-seconds", "", "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
+
+	actionCmd.AddCommand(updateActionCmd)
+	var updateActionActionName string
+	updateActionCmd.Flags().StringVar(&updateActionActionName, "action-name", "", "The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	updateActionCmd.MarkFlagRequired("action-name")
+
 }
