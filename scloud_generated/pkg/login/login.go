@@ -2,6 +2,7 @@ package login
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 )
