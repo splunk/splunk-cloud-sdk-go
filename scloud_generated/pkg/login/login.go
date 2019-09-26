@@ -15,6 +15,7 @@ func Login(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	//TODO: delete this
 	auth.GetClient()
 
 	return nil
