@@ -15,34 +15,40 @@ var addCertificateCmd = &cobra.Command{
 	RunE:  impl.AddCertificate,
 }
 
-// deleteCertificate --
+// deleteCertificate -- Removes a certificate on a particular slot on a tenant.
 var deleteCertificateCmd = &cobra.Command{
 	Use:   "delete-certificate",
-	Short: "",
+	Short: "Removes a certificate on a particular slot on a tenant.",
 	RunE:  impl.DeleteCertificate,
 }
 
-// deleteCertificates --
+// deleteCertificates -- Removes all certificates on a tenant.
 var deleteCertificatesCmd = &cobra.Command{
 	Use:   "delete-certificates",
-	Short: "",
+	Short: "Removes all certificates on a tenant.",
 	RunE:  impl.DeleteCertificates,
 }
 
-// listCertificates --
+// listCertificates -- Returns a list of all certificates for a tenant.
 var listCertificatesCmd = &cobra.Command{
 	Use:   "list-certificates",
-	Short: "",
+	Short: "Returns a list of all certificates for a tenant.",
 	RunE:  impl.ListCertificates,
 }
 
 func init() {
-
 	forwardersCmd.AddCommand(addCertificateCmd)
+
+	var addCertificatePem string
+	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "")
+
 	forwardersCmd.AddCommand(deleteCertificateCmd)
+	var deleteCertificateSlot string
+	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", "", "")
+	deleteCertificateCmd.MarkFlagRequired("slot")
+
 	forwardersCmd.AddCommand(deleteCertificatesCmd)
+
 	forwardersCmd.AddCommand(listCertificatesCmd)
 
-	// subTest1Cmd.Flags().StringP("id", "i", "", "resource identifier")
-	// subTest2Cmd.Flags().StringP("id", "i", "", "resource identifier")
 }
