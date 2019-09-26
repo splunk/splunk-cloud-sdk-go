@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/httpx"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
@@ -30,16 +29,14 @@ func GetClient() (*sdk.Client, error) {
 
 		sdkclient := apiClient()
 
-		fmt.Println("jly==================")
 		fmt.Println()
 
-		actions, err:=sdkclient.ActionService.ListActions()
-		if err!=nil{
+		actions, err := sdkclient.ActionService.ListActions()
+		if err != nil {
 			fmt.Println(err)
 		}
 
 		pprint(actions)
-
 		return sdkclient, nil
 	}
 
@@ -148,7 +145,7 @@ func newClient(svc *Service) *sdk.Client {
 		Scheme:           scheme,
 		Timeout:          10 * time.Second,
 		ResponseHandlers: []services.ResponseHandler{&retryHandler{}},
-		RoundTripper: util.NewCustomSdkTransport(&httpx.GlogWrapper{}, &http.Transport{
+		RoundTripper: util.NewCustomSdkTransport(&GlogWrapper{}, &http.Transport{
 			TLSClientConfig: tlsConfig,
 			Proxy:           http.ProxyFromEnvironment,
 		})}
@@ -176,7 +173,6 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 
 	return result
 }
-
 
 func pprint(value interface{}) {
 	if value == nil {

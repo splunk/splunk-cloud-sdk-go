@@ -17,10 +17,12 @@
 package auth
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -30,10 +32,13 @@ import (
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pelletier/go-toml"
+	"github.com/rakyll/statik/fs"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/assets"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/fcache"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/fcache"
 	"golang.org/x/crypto/ssh/terminal"
+
+	// Import needed to register files with fs
+	_ "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/statik"
 )
 
 var options struct {
@@ -378,14 +383,13 @@ func loadConfigs() error {
 
 // Load default config asset.
 func loadConfig() error {
-	file, err := assets.Open("default.yaml")
+	//file, err := assets.Open("default.yaml")
+	file, err := open("default.yaml")
 	if err != nil {
 		return fmt.Errorf("err loading default.yaml: %s", err)
 	}
 	return Load(file)
 }
-
-
 
 type Service struct {
 	Host   string `yaml:"host"`
@@ -458,4 +462,28 @@ func GetProfile(name string) (map[string]string, error) {
 
 func Profiles() map[string]map[string]string {
 	return config.Profiles
+}
+
+// Open the named static file asset.
+func open(fileName string) (io.Reader, error) {
+	statikFs, err := fs.New()
+	if err != nil {
+		return nil, fmt.Errorf("assets.go: err calling fs.New() %v", err)
+	}
+	filePath := "/" + fileName
+	httpFs := http.FileSystem(statikFs)
+	b, err := fs.ReadFile(httpFs, filePath)
+	if err != nil {
+		return nil, fmt.Errorf("assets.go: err opening %s %v", filePath, err)
+	}
+	return bytes.NewReader(b), nil
+
+}
+
+// GlogWrapper is used to wrap glog.info() in a Print() function usable by splunk-cloud-sdk-go
+type GlogWrapper struct {
+}
+
+func (gw *GlogWrapper) Print(v ...interface{}) {
+	glog.Info(v...)
 }
