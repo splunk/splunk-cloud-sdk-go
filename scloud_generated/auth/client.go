@@ -1,42 +1,50 @@
-/*
- * Copyright 2019 Splunk, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"): you may
- * not use this file except in compliance with the License. You may obtain
- * a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
-
-package utils
+package auth
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/util"
-
 	"github.com/golang/glog"
-
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/config"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/httpx"
-
-	"crypto/tls"
-
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
-
-	"crypto/x509"
-	"io/ioutil"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
+
+var sdkclient *sdk.Client
+
+func GetClient() (*sdk.Client, error) {
+	if sdkclient == nil {
+		glog.CopyStandardLogTo("INFO")
+
+		loadConfig()
+
+		sdkclient := apiClient()
+
+		fmt.Println("jly==================")
+		fmt.Println()
+
+		actions, err:=sdkclient.ActionService.ListActions()
+		if err!=nil{
+			fmt.Println(err)
+		}
+
+		pprint(actions)
+
+		return sdkclient, nil
+	}
+
+	return sdkclient, nil
+}
 
 const (
 	defaultScheme = "https"
@@ -82,7 +90,7 @@ func (handler retryHandler) HandleResponse(client *services.BaseClient, request 
 }
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
-func newClient(svc *config.Service) *sdk.Client {
+func newClient(svc *Service) *sdk.Client {
 	var hostURL = getHostURL()
 
 	serviceURL, err := url.Parse(hostURL)
@@ -91,7 +99,6 @@ func newClient(svc *config.Service) *sdk.Client {
 		glog.Errorf("%s, is not a valid url", hostURL)
 		return nil
 	}
-
 
 	var scheme string
 	if scheme = serviceURL.Scheme; scheme == "" {
@@ -167,15 +174,26 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	result := newClient(svc)
 	result.SetDefaultTenant(tenant)
 
-
 	return result
 }
 
-// Returns an app service client.
-func appClient() *sdk.Client { //nolint:deadcode
-	env := getEnvironment()
-	svc := &env.AppService
-	result := newClient(svc)
-	result.SetDefaultTenant(getTenantName())
-	return result
+
+func pprint(value interface{}) {
+	if value == nil {
+		return
+	}
+	switch vt := value.(type) {
+	case string:
+		fmt.Print(vt)
+		if !strings.HasSuffix(vt, "\n") {
+			fmt.Println()
+		}
+	default:
+		encoder := json.NewEncoder(os.Stdout)
+		encoder.SetIndent("", "    ")
+		err := encoder.Encode(value)
+		if err != nil {
+			fatal("json pprint error: %s", err.Error())
+		}
+	}
 }

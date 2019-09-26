@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package utils
+package auth
 
 import (
 	"errors"

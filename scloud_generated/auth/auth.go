@@ -14,37 +14,27 @@
  * under the License.
  */
 
-package utils
-
-// Splunk Cloud Platform CLI
-//
-// Usage
-//
-//   ./scloud [options] <command> ...
-
-//go:generate go run gen/gen_version.go
+package auth
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
-	"github.com/pelletier/go-toml"
+	"gopkg.in/yaml.v2"
+	"io"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"syscall"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/assets"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/config"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/fcache"
-
-	"golang.org/x/crypto/ssh/terminal"
-
-	"strconv"
-
+	"github.com/mitchellh/go-homedir"
+	"github.com/pelletier/go-toml"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/assets"
+	//"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/config"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/fcache"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var options struct {
@@ -65,17 +55,6 @@ const SCloudHome = "SCLOUD_HOME"
 
 var ctxCache *fcache.Cache
 var settings *fcache.Cache
-
-type multiFlags []string
-
-func (i *multiFlags) String() string {
-	return strings.Join(*i, ",")
-}
-
-func (i *multiFlags) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
 
 // Returns an absolute path. If the given path is not absolute it looks
 // for the environment variable SCLOUD HOME and is joined with that.
@@ -115,9 +94,9 @@ func getEnvironmentName() string {
 	return envName
 }
 
-func getEnvironment() *config.Environment {
+func getEnvironment() *Environment {
 	name := getEnvironmentName()
-	env, err := config.GetEnvironment(name)
+	env, err := GetEnvironment(name)
 	if err != nil {
 		fatal(err.Error())
 	}
@@ -172,7 +151,7 @@ func getPassword() string {
 // Returns the selected app profile.
 func getProfile() (map[string]string, error) {
 	name := getProfileName()
-	profile, err := config.GetProfile(name)
+	profile, err := GetProfile(name)
 	if err != nil {
 		return nil, err
 	}
@@ -264,13 +243,6 @@ func eprint(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, "error: %s\n", msg)
 }
 
-// Prints error message and usage screen, then exits.
-func Eusage(msg string, args ...interface{}) {
-	eprint(msg, args...)
-	usage()
-	os.Exit(1)
-}
-
 func etoofew() {
 	fatal("too few arguments")
 }
@@ -299,78 +271,6 @@ func parseArgs() []string {
 func checkEmpty(items []string) {
 	if len(items) > 0 {
 		fatal("unexpected arguments: '%s'", strings.Join(items, ", "))
-	}
-}
-
-// [items] => head, [tail]
-func head(items []string) (string, []string) {
-	if items == nil {
-		return "", nil
-	}
-	n := len(items)
-	if n == 0 {
-		return "", nil
-	}
-	h := items[0]
-	if n == 1 {
-		return h, nil
-	}
-	return h, items[1:]
-}
-
-func head1(items []string) string {
-	if len(items) < 1 {
-		etoofew()
-	}
-	h, items := head(items)
-	checkEmpty(items)
-	return h
-}
-
-func head2(items []string) (string, string) {
-	if len(items) < 2 {
-		etoofew()
-	}
-	h1, items := head(items)
-	h2, items := head(items)
-	checkEmpty(items)
-	return h1, h2
-}
-
-// Returns head of vector withougt removing.
-func peek(items []string) string { //nolint:deadcode
-	if items == nil {
-		return ""
-	}
-	n := len(items)
-	if n == 0 {
-		return ""
-	}
-	return items[0]
-}
-
-// "unget" the given argument by pushing back onto front of vector.
-func push(item string, items []string) []string {
-	return append([]string{item}, items...)
-}
-
-func pprint(value interface{}) {
-	if value == nil {
-		return
-	}
-	switch vt := value.(type) {
-	case string:
-		fmt.Print(vt)
-		if !strings.HasSuffix(vt, "\n") {
-			fmt.Println()
-		}
-	default:
-		encoder := json.NewEncoder(os.Stdout)
-		encoder.SetIndent("", "    ")
-		err := encoder.Encode(value)
-		if err != nil {
-			fatal("json pprint error: %s", err.Error())
-		}
 	}
 }
 
@@ -446,10 +346,11 @@ func getToken() string {
 }
 
 // Authenticate, using the selected app profile.
-func login(args []string) (*idp.Context, error) {
+func Login(args []string) (*idp.Context, error) {
+	loadConfigs()
 	checkEmpty(args)
 	name := getProfileName()
-	profile, err := config.GetProfile(name)
+	profile, err := GetProfile(name)
 	if err != nil {
 		return nil, err
 	}
@@ -467,7 +368,7 @@ func login(args []string) (*idp.Context, error) {
 }
 
 // Load config and settings.
-func load() error {
+func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
@@ -482,5 +383,80 @@ func loadConfig() error {
 	if err != nil {
 		return fmt.Errorf("err loading default.yaml: %s", err)
 	}
-	return config.Load(file)
+	return Load(file)
+}
+
+
+
+type Service struct {
+	Host   string `yaml:"host"`
+	Port   string `yaml:"port"`
+	Scheme string `yaml:"scheme"`
+}
+
+type IdpService struct {
+	Host   string `yaml:"host"`
+	Port   string `yaml:"port"`
+	Scheme string `yaml:"scheme"`
+	Server string `yaml:"server"`
+}
+
+type Environment struct {
+	APIService Service    `yaml:"api-service"`
+	AppService Service    `yaml:"app-service"`
+	IdpService IdpService `yaml:"idp-service"`
+	Profile    string     `yaml:"profile"`
+}
+
+type Cfg struct {
+	Profiles     map[string]map[string]string `yaml:"profiles"`
+	Environments map[string]*Environment      `yaml:"environments"`
+}
+
+var config Cfg
+
+func Load(reader io.Reader) error {
+	decoder := yaml.NewDecoder(reader)
+	if err := decoder.Decode(&config); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Load the named config file.
+func LoadFile(fileName string) error {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return err
+	}
+	return Load(file)
+}
+
+func Environments() map[string]*Environment {
+	return config.Environments
+}
+
+func GetEnvironment(name string) (*Environment, error) {
+	env, ok := config.Environments[name]
+	if !ok {
+		return nil, fmt.Errorf("not found: '%s'", name)
+	}
+	return env, nil
+}
+
+// Returns the named application profile.
+func GetProfile(name string) (map[string]string, error) {
+	profile, ok := config.Profiles[name]
+	if !ok {
+		return nil, fmt.Errorf("not found: '%s'", name)
+	}
+	_, ok = profile["kind"] // ensure 'kind' exists
+	if !ok {
+		return nil, fmt.Errorf("missing kind")
+	}
+	return profile, nil
+}
+
+func Profiles() map[string]map[string]string {
+	return config.Profiles
 }
