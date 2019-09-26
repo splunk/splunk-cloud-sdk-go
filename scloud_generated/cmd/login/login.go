@@ -1,8 +1,8 @@
 package login
 
 import (
-	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/login"
 	"github.com/spf13/cobra"
+	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/login"
 )
 
 // Cmd -- used to connection to rootCmd

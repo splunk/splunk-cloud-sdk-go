@@ -68,7 +68,10 @@ func GetClient() (*sdk.Client, error) {
 	if sdkclient == nil {
 		glog.CopyStandardLogTo("INFO")
 
-		loadConfig()
+		err := loadConfig()
+		if err != nil {
+			return nil, err
+		}
 
 		sdkclient := apiClient()
 
