@@ -8,11 +8,9 @@ import (
 
 // Login -- impl
 func Login(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called Login\n")
+	_, err := auth.Login(nil)
 
-	_, err:=auth.Login(nil)
-
-	if err!=nil{
+	if err != nil {
 		fmt.Println(err)
 		return err
 	}
