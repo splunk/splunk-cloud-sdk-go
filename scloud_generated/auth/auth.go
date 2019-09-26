@@ -332,7 +332,10 @@ func getToken() string {
 
 // Authenticate, using the selected app profile.
 func Login(args []string) (*idp.Context, error) {
-	loadConfigs()
+	err := loadConfigs()
+	if err != nil {
+		return nil, err
+	}
 	checkEmpty(args)
 	name := getProfileName()
 	profile, err := GetProfile(name)
