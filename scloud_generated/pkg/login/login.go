@@ -11,14 +11,12 @@ func Login(cmd *cobra.Command, args []string) error {
 	fmt.Printf("called Login\n")
 
 	_, err:=auth.Login(nil)
-	//utils.Login(nil)
 
 	if err!=nil{
 		fmt.Println(err)
 		return err
 	}
 
-	fmt.Println("================jly call getClient=========")
 	auth.GetClient()
 
 	return nil
