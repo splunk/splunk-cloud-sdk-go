@@ -32,7 +32,6 @@ import (
 	"github.com/pelletier/go-toml"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/assets"
-	//"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/config"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cli/fcache"
 	"golang.org/x/crypto/ssh/terminal"
 )
