@@ -8,185 +8,185 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/ml"
 )
 
-// createWorkflow --
+// createWorkflow -- Creates a workflow configuration.
 var createWorkflowCmd = &cobra.Command{
 	Use:   "create-workflow",
-	Short: "",
+	Short: "Creates a workflow configuration.",
 	RunE:  impl.CreateWorkflow,
 }
 
-// createWorkflowBuild --
+// createWorkflowBuild -- Creates a workflow build.
 var createWorkflowBuildCmd = &cobra.Command{
 	Use:   "create-workflow-build",
-	Short: "",
+	Short: "Creates a workflow build.",
 	RunE:  impl.CreateWorkflowBuild,
 }
 
-// createWorkflowDeployment --
+// createWorkflowDeployment -- Creates a workflow deployment.
 var createWorkflowDeploymentCmd = &cobra.Command{
 	Use:   "create-workflow-deployment",
-	Short: "",
+	Short: "Creates a workflow deployment.",
 	RunE:  impl.CreateWorkflowDeployment,
 }
 
-// createWorkflowInference --
+// createWorkflowInference -- Creates a workflow inference request.
 var createWorkflowInferenceCmd = &cobra.Command{
 	Use:   "create-workflow-inference",
-	Short: "",
+	Short: "Creates a workflow inference request.",
 	RunE:  impl.CreateWorkflowInference,
 }
 
-// createWorkflowRun --
+// createWorkflowRun -- Creates a workflow run.
 var createWorkflowRunCmd = &cobra.Command{
 	Use:   "create-workflow-run",
-	Short: "",
+	Short: "Creates a workflow run.",
 	RunE:  impl.CreateWorkflowRun,
 }
 
-// createWorkflowStreamDeployment --
+// createWorkflowStreamDeployment -- Creates a workflow streaming deployment.
 var createWorkflowStreamDeploymentCmd = &cobra.Command{
 	Use:   "create-workflow-stream-deployment",
-	Short: "",
+	Short: "Creates a workflow streaming deployment.",
 	RunE:  impl.CreateWorkflowStreamDeployment,
 }
 
-// deleteWorkflow --
+// deleteWorkflow -- Removes a workflow configuration.
 var deleteWorkflowCmd = &cobra.Command{
 	Use:   "delete-workflow",
-	Short: "",
+	Short: "Removes a workflow configuration.",
 	RunE:  impl.DeleteWorkflow,
 }
 
-// deleteWorkflowBuild --
+// deleteWorkflowBuild -- Removes a workflow build.
 var deleteWorkflowBuildCmd = &cobra.Command{
 	Use:   "delete-workflow-build",
-	Short: "",
+	Short: "Removes a workflow build.",
 	RunE:  impl.DeleteWorkflowBuild,
 }
 
-// deleteWorkflowDeployment --
+// deleteWorkflowDeployment -- Removes a workflow deployment.
 var deleteWorkflowDeploymentCmd = &cobra.Command{
 	Use:   "delete-workflow-deployment",
-	Short: "",
+	Short: "Removes a workflow deployment.",
 	RunE:  impl.DeleteWorkflowDeployment,
 }
 
-// deleteWorkflowRun --
+// deleteWorkflowRun -- Removes a workflow run.
 var deleteWorkflowRunCmd = &cobra.Command{
 	Use:   "delete-workflow-run",
-	Short: "",
+	Short: "Removes a workflow run.",
 	RunE:  impl.DeleteWorkflowRun,
 }
 
-// deleteWorkflowStreamDeployment --
+// deleteWorkflowStreamDeployment -- Removes a workflow streaming deployment.
 var deleteWorkflowStreamDeploymentCmd = &cobra.Command{
 	Use:   "delete-workflow-stream-deployment",
-	Short: "",
+	Short: "Removes a workflow streaming deployment.",
 	RunE:  impl.DeleteWorkflowStreamDeployment,
 }
 
-// getWorkflow --
+// getWorkflow -- Returns a workflow configuration.
 var getWorkflowCmd = &cobra.Command{
 	Use:   "get-workflow",
-	Short: "",
+	Short: "Returns a workflow configuration.",
 	RunE:  impl.GetWorkflow,
 }
 
-// getWorkflowBuild --
+// getWorkflowBuild -- Returns the status of a workflow build.
 var getWorkflowBuildCmd = &cobra.Command{
 	Use:   "get-workflow-build",
-	Short: "",
+	Short: "Returns the status of a workflow build.",
 	RunE:  impl.GetWorkflowBuild,
 }
 
-// getWorkflowBuildError --
+// getWorkflowBuildError -- Returns a list of workflow errors.
 var getWorkflowBuildErrorCmd = &cobra.Command{
 	Use:   "get-workflow-build-error",
-	Short: "",
+	Short: "Returns a list of workflow errors.",
 	RunE:  impl.GetWorkflowBuildError,
 }
 
-// getWorkflowBuildLog --
+// getWorkflowBuildLog -- Returns the logs from a workflow build.
 var getWorkflowBuildLogCmd = &cobra.Command{
 	Use:   "get-workflow-build-log",
-	Short: "",
+	Short: "Returns the logs from a workflow build.",
 	RunE:  impl.GetWorkflowBuildLog,
 }
 
-// getWorkflowDeployment --
+// getWorkflowDeployment -- Returns the status of a workflow deployment.
 var getWorkflowDeploymentCmd = &cobra.Command{
 	Use:   "get-workflow-deployment",
-	Short: "",
+	Short: "Returns the status of a workflow deployment.",
 	RunE:  impl.GetWorkflowDeployment,
 }
 
-// getWorkflowDeploymentError --
+// getWorkflowDeploymentError -- Returns a list of workflow deployment errors.
 var getWorkflowDeploymentErrorCmd = &cobra.Command{
 	Use:   "get-workflow-deployment-error",
-	Short: "",
+	Short: "Returns a list of workflow deployment errors.",
 	RunE:  impl.GetWorkflowDeploymentError,
 }
 
-// getWorkflowDeploymentLog --
+// getWorkflowDeploymentLog -- Returns the logs from a workflow deployment.
 var getWorkflowDeploymentLogCmd = &cobra.Command{
 	Use:   "get-workflow-deployment-log",
-	Short: "",
+	Short: "Returns the logs from a workflow deployment.",
 	RunE:  impl.GetWorkflowDeploymentLog,
 }
 
-// getWorkflowRun --
+// getWorkflowRun -- Returns the status of a workflow run.
 var getWorkflowRunCmd = &cobra.Command{
 	Use:   "get-workflow-run",
-	Short: "",
+	Short: "Returns the status of a workflow run.",
 	RunE:  impl.GetWorkflowRun,
 }
 
-// getWorkflowRunError --
+// getWorkflowRunError -- Returns the errors for a workflow run.
 var getWorkflowRunErrorCmd = &cobra.Command{
 	Use:   "get-workflow-run-error",
-	Short: "",
+	Short: "Returns the errors for a workflow run.",
 	RunE:  impl.GetWorkflowRunError,
 }
 
-// getWorkflowRunLog --
+// getWorkflowRunLog -- Returns the logs for a workflow run.
 var getWorkflowRunLogCmd = &cobra.Command{
 	Use:   "get-workflow-run-log",
-	Short: "",
+	Short: "Returns the logs for a workflow run.",
 	RunE:  impl.GetWorkflowRunLog,
 }
 
-// getWorkflowStreamDeployment --
+// getWorkflowStreamDeployment -- Returns the status of a workflow streaming deployment.
 var getWorkflowStreamDeploymentCmd = &cobra.Command{
 	Use:   "get-workflow-stream-deployment",
-	Short: "",
+	Short: "Returns the status of a workflow streaming deployment.",
 	RunE:  impl.GetWorkflowStreamDeployment,
 }
 
-// listWorkflowBuilds --
+// listWorkflowBuilds -- Returns a list of workflow builds.
 var listWorkflowBuildsCmd = &cobra.Command{
 	Use:   "list-workflow-builds",
-	Short: "",
+	Short: "Returns a list of workflow builds.",
 	RunE:  impl.ListWorkflowBuilds,
 }
 
-// listWorkflowDeployments --
+// listWorkflowDeployments -- Returns a list of workflow deployments.
 var listWorkflowDeploymentsCmd = &cobra.Command{
 	Use:   "list-workflow-deployments",
-	Short: "",
+	Short: "Returns a list of workflow deployments.",
 	RunE:  impl.ListWorkflowDeployments,
 }
 
-// listWorkflowRuns --
+// listWorkflowRuns -- Returns a list of workflow runs.
 var listWorkflowRunsCmd = &cobra.Command{
 	Use:   "list-workflow-runs",
-	Short: "",
+	Short: "Returns a list of workflow runs.",
 	RunE:  impl.ListWorkflowRuns,
 }
 
-// listWorkflows --
+// listWorkflows -- Returns a list of workflow configurations.
 var listWorkflowsCmd = &cobra.Command{
 	Use:   "list-workflows",
-	Short: "",
+	Short: "Returns a list of workflow configurations.",
 	RunE:  impl.ListWorkflows,
 }
 
@@ -207,9 +207,9 @@ func init() {
 	var createWorkflowBuildId string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildId, "id", "", "The workflow ID.")
 	createWorkflowBuildCmd.MarkFlagRequired("id")
-	var createWorkflowBuildInput string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildInput, "input", "", "")
-	createWorkflowBuildCmd.MarkFlagRequired("input")
+	var createWorkflowBuildKind string
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildKind, "kind", "", "")
+	createWorkflowBuildCmd.MarkFlagRequired("kind")
 	var createWorkflowBuildReport string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildReport, "report", "", "")
 	createWorkflowBuildCmd.MarkFlagRequired("report")
@@ -226,12 +226,8 @@ func init() {
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildDestination, "destination", "", "")
 	var createWorkflowBuildEndTime string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildEndTime, "end-time", "", "")
-	var createWorkflowBuildKind string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildKind, "kind", "", "")
 	var createWorkflowBuildName string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildName, "name", "", "")
-	var createWorkflowBuildOutput string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildOutput, "output", "", "")
 	var createWorkflowBuildPipelineSummary string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildPipelineSummary, "pipeline-summary", "", "")
 	var createWorkflowBuildStartTime string
@@ -240,14 +236,10 @@ func init() {
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildStatus, "status", "", "")
 	var createWorkflowBuildTimeoutSecs string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow build times out.")
-	var createWorkflowBuildTrainingScore string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTrainingScore, "training-score", "", "")
 	var createWorkflowBuildValidationOption string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
 	var createWorkflowBuildValidationScore string
 	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
-	var createWorkflowBuildWorkflow string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildWorkflow, "workflow", "", "")
 
 	mlCmd.AddCommand(createWorkflowDeploymentCmd)
 	var createWorkflowDeploymentBuildId string
@@ -256,9 +248,6 @@ func init() {
 	var createWorkflowDeploymentId string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentId, "id", "", "The workflow ID.")
 	createWorkflowDeploymentCmd.MarkFlagRequired("id")
-	var createWorkflowDeploymentSpec string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentSpec, "spec", "", "")
-	createWorkflowDeploymentCmd.MarkFlagRequired("spec")
 
 	var createWorkflowDeploymentCpuLimit string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuLimit, "cpu-limit", "", "CPU Resource limit for each container in a deployment.")
@@ -288,8 +277,6 @@ func init() {
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
 	var createWorkflowDeploymentValidationScore string
 	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
-	var createWorkflowDeploymentWorkflowBuild string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(createWorkflowInferenceCmd)
 	var createWorkflowInferenceBuildId string
@@ -315,15 +302,9 @@ func init() {
 	var createWorkflowRunId string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunId, "id", "", "The workflow ID.")
 	createWorkflowRunCmd.MarkFlagRequired("id")
-	var createWorkflowRunInput string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunInput, "input", "", "")
-	createWorkflowRunCmd.MarkFlagRequired("input")
 	var createWorkflowRunKind string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunKind, "kind", "", "")
 	createWorkflowRunCmd.MarkFlagRequired("kind")
-	var createWorkflowRunOutput string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunOutput, "output", "", "")
-	createWorkflowRunCmd.MarkFlagRequired("output")
 	var createWorkflowRunReport string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunReport, "report", "", "")
 	createWorkflowRunCmd.MarkFlagRequired("report")
@@ -343,20 +324,16 @@ func init() {
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "", "")
 	var createWorkflowRunPipelineSummary string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPipelineSummary, "pipeline-summary", "", "")
-	var createWorkflowRunPredictionScore string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPredictionScore, "prediction-score", "", "")
 	var createWorkflowRunStartTime string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStartTime, "start-time", "", "")
 	var createWorkflowRunStatus string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStatus, "status", "", "")
 	var createWorkflowRunTimeoutSecs string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow build times out.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunTimeoutSecs, "timeout-secs", "", "Number of seconds before a workflow run times out.")
 	var createWorkflowRunValidationOption string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
 	var createWorkflowRunValidationScore string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
-	var createWorkflowRunWorkflowBuild string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(createWorkflowStreamDeploymentCmd)
 	var createWorkflowStreamDeploymentBuildId string
@@ -368,15 +345,9 @@ func init() {
 	var createWorkflowStreamDeploymentId string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentId, "id", "", "The workflow ID.")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("id")
-	var createWorkflowStreamDeploymentInput string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentInput, "input", "", "")
-	createWorkflowStreamDeploymentCmd.MarkFlagRequired("input")
 	var createWorkflowStreamDeploymentKind string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentKind, "kind", "", "")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("kind")
-	var createWorkflowStreamDeploymentOutput string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentOutput, "output", "", "")
-	createWorkflowStreamDeploymentCmd.MarkFlagRequired("output")
 	var createWorkflowStreamDeploymentSource string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentSource, "source", "", "")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("source")
@@ -399,8 +370,6 @@ func init() {
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentPipelineSummary, "pipeline-summary", "", "")
 	var createWorkflowStreamDeploymentReplicas string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentReplicas, "replicas", "", "Create replicated pods in a deployment.")
-	var createWorkflowStreamDeploymentSpec string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentSpec, "spec", "", "")
 	var createWorkflowStreamDeploymentStartTime string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentStartTime, "start-time", "", "")
 	var createWorkflowStreamDeploymentStatus string
@@ -411,8 +380,6 @@ func init() {
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
 	var createWorkflowStreamDeploymentValidationScore string
 	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentValidationScore, "validation-score", "", "The validation score whose type is specified by the user in `validationOption`.")
-	var createWorkflowStreamDeploymentWorkflowBuild string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(deleteWorkflowCmd)
 	var deleteWorkflowId string

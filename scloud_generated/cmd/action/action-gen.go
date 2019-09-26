@@ -8,66 +8,66 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/action"
 )
 
-// createAction --
+// createAction -- Creates an action template.
 var createActionCmd = &cobra.Command{
 	Use:   "create-action",
-	Short: "",
+	Short: "Creates an action template.",
 	RunE:  impl.CreateAction,
 }
 
-// deleteAction --
+// deleteAction -- Removes an action template.
 var deleteActionCmd = &cobra.Command{
 	Use:   "delete-action",
-	Short: "",
+	Short: "Removes an action template.",
 	RunE:  impl.DeleteAction,
 }
 
-// getAction --
+// getAction -- Returns a specific action template.
 var getActionCmd = &cobra.Command{
 	Use:   "get-action",
-	Short: "",
+	Short: "Returns a specific action template.",
 	RunE:  impl.GetAction,
 }
 
-// getActionStatus --
+// getActionStatus -- Returns the status of a triggered action.  Available for 4 days after last status change.
 var getActionStatusCmd = &cobra.Command{
 	Use:   "get-action-status",
-	Short: "",
+	Short: "Returns the status of a triggered action.  Available for 4 days after last status change.",
 	RunE:  impl.GetActionStatus,
 }
 
-// getActionStatusDetails --
+// getActionStatusDetails -- Returns the status details of the triggered email action.  Available for 4 days after last status change.
 var getActionStatusDetailsCmd = &cobra.Command{
 	Use:   "get-action-status-details",
-	Short: "",
+	Short: "Returns the status details of the triggered email action.  Available for 4 days after last status change.",
 	RunE:  impl.GetActionStatusDetails,
 }
 
-// getPublicWebhookKeys --
+// getPublicWebhookKeys -- Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
 var getPublicWebhookKeysCmd = &cobra.Command{
 	Use:   "get-public-webhook-keys",
-	Short: "",
+	Short: "Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.",
 	RunE:  impl.GetPublicWebhookKeys,
 }
 
-// listActions --
+// listActions -- Returns the list of action templates.
 var listActionsCmd = &cobra.Command{
 	Use:   "list-actions",
-	Short: "",
+	Short: "Returns the list of action templates.",
 	RunE:  impl.ListActions,
 }
 
-// triggerAction --
+// triggerAction -- Triggers an action.
 var triggerActionCmd = &cobra.Command{
 	Use:   "trigger-action",
-	Short: "",
+	Short: "Triggers an action.",
 	RunE:  impl.TriggerAction,
 }
 
-// updateAction --
+// updateAction -- Modifies an action template.
 var updateActionCmd = &cobra.Command{
 	Use:   "update-action",
-	Short: "",
+	Short: "Modifies an action template.",
 	RunE:  impl.UpdateAction,
 }
 
@@ -118,9 +118,7 @@ func init() {
 	var triggerActionId string
 	triggerActionCmd.Flags().StringVar(&triggerActionId, "id", "", "A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.")
 	var triggerActionKind string
-	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "", "")
-	var triggerActionPayload string
-	triggerActionCmd.Flags().StringVar(&triggerActionPayload, "payload", "", "")
+	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "", "kind can accept values trigger, ")
 	var triggerActionTenant string
 	triggerActionCmd.Flags().StringVar(&triggerActionTenant, "tenant", "", "The tenant within which the trigger event was generated.")
 	var triggerActionTriggerCondition string
