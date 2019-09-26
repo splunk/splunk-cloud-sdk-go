@@ -41,21 +41,6 @@ func getsd(m map[string]string, k, d string) (string, error) {
 	return s, nil
 }
 
-func Map(ctx *idp.Context) map[string]interface{} {
-	result := map[string]interface{}{
-		"token_type":   ctx.TokenType,
-		"access_token": ctx.AccessToken,
-		"expires_in":   ctx.ExpiresIn,
-		"scope":        ctx.Scope}
-	if ctx.IDToken != "" {
-		result["id_token"] = ctx.IDToken
-	}
-	if ctx.RefreshToken != "" {
-		result["refresh_token"] = ctx.RefreshToken
-	}
-	return result
-}
-
 func FromToml(ctx *idp.Context, t *toml.Tree) error {
 	var ok bool
 	var v interface{}

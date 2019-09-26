@@ -18,7 +18,6 @@ package auth
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io"
@@ -247,28 +246,10 @@ func eprint(msg string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, "error: %s\n", msg)
 }
 
-func etoofew() {
-	fatal("too few arguments")
-}
-
 // Prints an error message and exits.
 func fatal(msg string, args ...interface{}) {
 	eprint(msg, args...)
 	os.Exit(1)
-}
-
-func parseArgs() []string {
-	flag.StringVar(&options.env, "env", "", "environment name")
-	flag.StringVar(&options.username, "u", "", "user name")
-	flag.StringVar(&options.password, "p", "", "password")
-	flag.StringVar(&options.tenant, "tenant", "", "tenant name")
-	flag.StringVar(&options.authURL, "auth-url", "", "auth url")
-	flag.StringVar(&options.hostURL, "host-url", "", "host url")
-	flag.BoolVar(&options.noPrompt, "no-prompt", false, "disable prompting")
-	flag.StringVar(&options.insecure, "insecure", "", "disable tls cert validation")
-	flag.StringVar(&options.certFile, "ca-cert", "", "client certificate file")
-	flag.Parse()
-	return flag.Args()
 }
 
 // Verify that the given list is empty, or fatal.
@@ -341,7 +322,7 @@ func getContext() *idp.Context {
 		fatal(err.Error())
 		return nil
 	}
-	ctxCache.Set(clientID, Map(context))
+	ctxCache.Set(clientID, toMap(context))
 	return context
 }
 
@@ -367,7 +348,7 @@ func Login(args []string) (*idp.Context, error) {
 	if err != nil {
 		return nil, err
 	}
-	ctxCache.Set(clientID, Map(context))
+	ctxCache.Set(clientID, toMap(context))
 	return context, nil
 }
 
@@ -435,10 +416,6 @@ func LoadFile(fileName string) error {
 	return Load(file)
 }
 
-func Environments() map[string]*Environment {
-	return config.Environments
-}
-
 func GetEnvironment(name string) (*Environment, error) {
 	env, ok := config.Environments[name]
 	if !ok {
@@ -460,10 +437,6 @@ func GetProfile(name string) (map[string]string, error) {
 	return profile, nil
 }
 
-func Profiles() map[string]map[string]string {
-	return config.Profiles
-}
-
 // Open the named static file asset.
 func open(fileName string) (io.Reader, error) {
 	statikFs, err := fs.New()
@@ -478,6 +451,21 @@ func open(fileName string) (io.Reader, error) {
 	}
 	return bytes.NewReader(b), nil
 
+}
+
+func toMap(ctx *idp.Context) map[string]interface{} {
+	result := map[string]interface{}{
+		"token_type":   ctx.TokenType,
+		"access_token": ctx.AccessToken,
+		"expires_in":   ctx.ExpiresIn,
+		"scope":        ctx.Scope}
+	if ctx.IDToken != "" {
+		result["id_token"] = ctx.IDToken
+	}
+	if ctx.RefreshToken != "" {
+		result["refresh_token"] = ctx.RefreshToken
+	}
+	return result
 }
 
 // GlogWrapper is used to wrap glog.info() in a Print() function usable by splunk-cloud-sdk-go

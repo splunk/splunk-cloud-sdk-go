@@ -19,30 +19,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
-var sdkclient *sdk.Client
-
-func GetClient() (*sdk.Client, error) {
-	if sdkclient == nil {
-		glog.CopyStandardLogTo("INFO")
-
-		loadConfig()
-
-		sdkclient := apiClient()
-
-		fmt.Println()
-
-		actions, err := sdkclient.ActionService.ListActions()
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		pprint(actions)
-		return sdkclient, nil
-	}
-
-	return sdkclient, nil
-}
-
 const (
 	defaultScheme = "https"
 	defaultPort   = "443"
@@ -53,6 +29,8 @@ const (
 )
 
 type retryHandler struct{}
+
+var sdkclient *sdk.Client
 
 // Implements exponential backoff & retry on 429 and 504 response codes.
 func (handler retryHandler) HandleResponse(client *services.BaseClient, request *services.Request, response *http.Response) (*http.Response, error) {
@@ -84,6 +62,27 @@ func (handler retryHandler) HandleResponse(client *services.BaseClient, request 
 	}
 	request.Body = body
 	return client.Do(request)
+}
+
+func GetClient() (*sdk.Client, error) {
+	if sdkclient == nil {
+		glog.CopyStandardLogTo("INFO")
+
+		loadConfig()
+
+		sdkclient := apiClient()
+
+		//TODO: delete this example
+		actions, err := sdkclient.ActionService.GetAction("crudemail_1568674368563")
+		if err != nil {
+			fmt.Println(err)
+		}
+		pprint(actions)
+
+		return sdkclient, nil
+	}
+
+	return sdkclient, nil
 }
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
@@ -174,6 +173,7 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	return result
 }
 
+//TODO: delete this
 func pprint(value interface{}) {
 	if value == nil {
 		return
