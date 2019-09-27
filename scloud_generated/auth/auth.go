@@ -346,7 +346,7 @@ func Login(args []string) (*idp.Context, error) {
 	clientID := profile["client_id"]
 	glog.CopyStandardLogTo("INFO")
 
-	glog.Infof("Authenticate profile=%s clientID=%s", name, clientID)
+	glog.Infof("Authenticate profile=%s", name)
 	ensureCredentials(profile)
 	context, err := authenticate(profile)
 	if err != nil {
