@@ -88,6 +88,23 @@ func GetClient() (*sdk.Client, error) {
 	return sdkclient, nil
 }
 
+func GetClientSystemTenant() (*sdk.Client, error) {
+	if sdkclient == nil {
+		glog.CopyStandardLogTo("INFO")
+
+		err := loadConfig()
+		if err != nil {
+			return nil, err
+		}
+
+		sdkclient := apiClientWithTenant("system")
+
+		return sdkclient, nil
+	}
+
+	return sdkclient, nil
+}
+
 // Returns a service client ( points to the new SDK Client) based on the given service config.
 func newClient(svc *Service) *sdk.Client {
 	var hostURL = getHostURL()
