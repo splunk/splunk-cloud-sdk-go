@@ -32,7 +32,7 @@ var addMemberCmd = &cobra.Command{
 // addRolePermission -- Adds permissions to a role in a given tenant.
 var addRolePermissionCmd = &cobra.Command{
 	Use:   "add-role-permission",
-	Short: "Adds permissions to a role in a given tenant.",
+	Short: "[not implemented] Adds permissions to a role in a given tenant.",
 	RunE:  impl.AddRolePermission,
 }
 
@@ -224,7 +224,7 @@ var removeRolePermissionCmd = &cobra.Command{
 
 var validateTokenCmd = &cobra.Command{
 	Use:   "validate-token",
-	Short: "Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.",
+	Short: "[not implemented] Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.",
 	RunE:  impl.ValidateToken,
 }
 
@@ -251,6 +251,9 @@ func init() {
 	addMemberCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(addRolePermissionCmd)
+	var addRolePermissionBody string
+	addRolePermissionCmd.Flags().StringVar(&addRolePermissionBody, "body", "", "The request body")
+	addRolePermissionCmd.MarkFlagRequired("body")
 	var addRolePermissionRole string
 	addRolePermissionCmd.Flags().StringVar(&addRolePermissionRole, "role", "", "The role name.")
 	addRolePermissionCmd.MarkFlagRequired("role")
