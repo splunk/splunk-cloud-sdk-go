@@ -7,190 +7,760 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/jsonx"
+	model "github.com/splunk/splunk-cloud-sdk-go/services/identity"
 )
 
-// AddGroupMember -- impl
+// AddGroupMember Adds a member to a given group.
 func AddGroupMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called AddGroupMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	nameFlag := cmd.Flags().Lookup("name")
+	var name string
+	err = flags.ParseFlag(nameFlag, &name)
+	if err != nil {
+		return fmt.Errorf("error parsing name: " + err.Error())
+	}
+
+	// Form the request body
+	body := model.AddGroupMemberBody{
+		Name: name,
+	}
+
+	resp, err := client.IdentityService.AddGroupMember(group, body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// AddGroupRole -- impl
+// AddGroupRole Adds a role to a given group.
 func AddGroupRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called AddGroupRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	nameFlag := cmd.Flags().Lookup("name")
+	var name string
+	err = flags.ParseFlag(nameFlag, &name)
+	if err != nil {
+		return fmt.Errorf("error parsing name: " + err.Error())
+	}
+
+	// Form the request body
+	body := model.AddGroupRoleBody{
+		Name: name,
+	}
+
+	resp, err := client.IdentityService.AddGroupRole(group, body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// AddMember -- impl
+// AddMember Adds a member to a given tenant.
 func AddMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called AddMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	nameFlag := cmd.Flags().Lookup("name")
+	var name string
+	err = flags.ParseFlag(nameFlag, &name)
+	if err != nil {
+		return fmt.Errorf("error parsing name: " + err.Error())
+	}
+
+	// Form the request body
+	body := model.AddMemberBody{
+		Name: name,
+	}
+
+	resp, err := client.IdentityService.AddMember(body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// AddRolePermission -- impl
+// AddRolePermission Adds permissions to a role in a given tenant.
 func AddRolePermission(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called AddRolePermission\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateGroup -- impl
+// CreateGroup Creates a new group in a given tenant.
 func CreateGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateGroup\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	nameFlag := cmd.Flags().Lookup("name")
+	var name string
+	err = flags.ParseFlag(nameFlag, &name)
+	if err != nil {
+		return fmt.Errorf("error parsing name: " + err.Error())
+	}
+
+	// Form the request body
+	body := model.CreateGroupBody{
+		Name: name,
+	}
+
+	resp, err := client.IdentityService.CreateGroup(body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// CreateRole -- impl
+// CreateRole Creates a new authorization role in a given tenant.
 func CreateRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	nameFlag := cmd.Flags().Lookup("name")
+	var name string
+	err = flags.ParseFlag(nameFlag, &name)
+	if err != nil {
+		return fmt.Errorf("error parsing name: " + err.Error())
+	}
+
+	// Form the request body
+	body := model.CreateRoleBody{
+		Name: name,
+	}
+
+	resp, err := client.IdentityService.CreateRole(body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// DeleteGroup -- impl
+// DeleteGroup Deletes a group in a given tenant.
 func DeleteGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteGroup\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+
+	err = client.IdentityService.DeleteGroup(group)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// DeleteRole -- impl
+// DeleteRole Deletes a defined role for a given tenant.
 func DeleteRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	err = client.IdentityService.DeleteRole(role)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// GetGroup -- impl
+// GetGroup Returns information about a given group within a tenant.
 func GetGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetGroup\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetGroup(group)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetGroupMember -- impl
+// GetGroupMember Returns information about a given member within a given group.
 func GetGroupMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetGroupMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetGroupMember(group, member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetGroupRole -- impl
+// GetGroupRole Returns information about a given role within a given group.
 func GetGroupRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetGroupRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetGroupRole(group, role)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetMember -- impl
+// GetMember Returns a member of a given tenant.
 func GetMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetMember(member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetPrincipal -- impl
+// GetPrincipal Returns the details of a principal, including its tenant membership.
 func GetPrincipal(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPrincipal\n")
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	principalFlag := cmd.Flags().Lookup("principal")
+	var principal string
+	err = flags.ParseFlag(principalFlag, &principal)
+	if err != nil {
+		return fmt.Errorf("error parsing principal: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetPrincipal(principal)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetRole -- impl
+// GetRole Returns a role for a given tenant.
 func GetRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetRole(role)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetRolePermission -- impl
+// GetRolePermission Gets a permission for the specified role.
 func GetRolePermission(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRolePermission\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	permissionFlag := cmd.Flags().Lookup("permission")
+	var permission string
+	err = flags.ParseFlag(permissionFlag, &permission)
+	if err != nil {
+		return fmt.Errorf("error parsing permission: " + err.Error())
+	}
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetRolePermission(role, permission)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListGroupMembers -- impl
+// ListGroupMembers Returns a list of the members within a given group.
 func ListGroupMembers(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListGroupMembers\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListGroupMembers(group)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListGroupRoles -- impl
+// ListGroupRoles Returns a list of the roles that are attached to a group within a given tenant.
 func ListGroupRoles(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListGroupRoles\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListGroupRoles(group)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListGroups -- impl
+// ListGroups List the groups that exist in a given tenant.
 func ListGroups(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListGroups\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.IdentityService.ListGroups()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListMemberGroups -- impl
+// ListMemberGroups Returns a list of groups that a member belongs to within a tenant.
 func ListMemberGroups(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListMemberGroups\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListMemberGroups(member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListMemberPermissions -- impl
+// ListMemberPermissions Returns a set of permissions granted to the member within the tenant.
+
 func ListMemberPermissions(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListMemberPermissions\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListMemberPermissions(member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListMemberRoles -- impl
+// ListMemberRoles Returns a set of roles that a given member holds within the tenant.
+
 func ListMemberRoles(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListMemberRoles\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListMemberRoles(member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListMembers -- impl
+// ListMembers Returns a list of members in a given tenant.
 func ListMembers(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListMembers\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.IdentityService.ListMembers()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListPrincipals -- impl
+// ListPrincipals Returns the list of principals that the Identity service knows about.
 func ListPrincipals(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListPrincipals\n")
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.IdentityService.ListPrincipals()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListRoleGroups -- impl
+// ListRoleGroups Gets a list of groups for a role in a given tenant.
 func ListRoleGroups(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRoleGroups\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListRoleGroups(role)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListRolePermissions -- impl
+// ListRolePermissions Gets the permissions for a role in a given tenant.
 func ListRolePermissions(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRolePermissions\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.ListRolePermissions(role)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListRoles -- impl
+// ListRoles Returns all roles for a given tenant.
 func ListRoles(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRoles\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.IdentityService.ListRoles()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// RemoveGroupMember -- impl
+// RemoveGroupMember Removes the member from a given group.
 func RemoveGroupMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called RemoveGroupMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	err = client.IdentityService.RemoveGroupMember(group, member)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// RemoveGroupRole -- impl
+// RemoveGroupRole Removes a role from a given group.
 func RemoveGroupRole(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called RemoveGroupRole\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	groupFlag := cmd.Flags().Lookup("group")
+	var group string
+	err = flags.ParseFlag(groupFlag, &group)
+	if err != nil {
+		return fmt.Errorf("error parsing group: " + err.Error())
+	}
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	err = client.IdentityService.RemoveGroupRole(group, role)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// RemoveMember -- impl
+// RemoveMember Removes a member from a given tenant
 func RemoveMember(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called RemoveMember\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	memberFlag := cmd.Flags().Lookup("member")
+	var member string
+	err = flags.ParseFlag(memberFlag, &member)
+	if err != nil {
+		return fmt.Errorf("error parsing member: " + err.Error())
+	}
+
+	err = client.IdentityService.RemoveMember(member)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// RemoveRolePermission -- impl
+// RemoveRolePermission Removes a permission from the role.
 func RemoveRolePermission(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called RemoveRolePermission\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	permissionFlag := cmd.Flags().Lookup("permission")
+	var permission string
+	err = flags.ParseFlag(permissionFlag, &permission)
+	if err != nil {
+		return fmt.Errorf("error parsing permission: " + err.Error())
+	}
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	err = client.IdentityService.RemoveRolePermission(role, permission)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-// ValidateToken -- impl
+// ValidateToken Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
+
 func ValidateToken(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ValidateToken\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
