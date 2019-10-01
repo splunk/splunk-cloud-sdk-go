@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/viper"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -21,9 +23,16 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/streams"
 )
 
+var confFile string
+var legacyFile string
+
 var (
-	cfgFile string
-	//tenant  string
+	env      string
+	tenant   string
+	userName string
+	authUrl  string
+	hostUrl  string
+	insecure bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -44,15 +53,6 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.scloud.yaml)")
-	rootCmd.PersistentFlags().String("tenant", "", "tenant identifier")
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	rootCmd.AddCommand(action.Cmd())
 	rootCmd.AddCommand(appreg.Cmd())
 	rootCmd.AddCommand(catalog.Cmd())
@@ -67,31 +67,46 @@ func init() {
 	rootCmd.AddCommand(provisioner.Cmd())
 	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(streams.Cmd())
+
+	rootCmd.PersistentFlags().StringVar(&env, "env", "", "target environment")
+	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "tenant identifier")
+	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "email address")
+	rootCmd.PersistentFlags().StringVar(&authUrl, "auth-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().StringVar(&hostUrl, "host-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
+
+	// bind the flags so that they override the config
+	_ = viper.BindPFlag("env", rootCmd.PersistentFlags().Lookup("env"))
+	_ = viper.BindPFlag("tenant", rootCmd.PersistentFlags().Lookup("tenant"))
+	_ = viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
+	_ = viper.BindPFlag("auth-url", rootCmd.PersistentFlags().Lookup("auth-url"))
+	_ = viper.BindPFlag("host-url", rootCmd.PersistentFlags().Lookup("host-url"))
+	_ = viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
 }
 
-// initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	//TODO: all the config is not used as we use old scloud code; we should revisit if decide to switch to viper
-	//if cfgFile != "" {
-	//	// Use config file from the flag.
-	//	viper.SetConfigFile(cfgFile)
-	//} else {
-	//	// Find home directory.
-	//	home, err := homedir.Dir()
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		os.Exit(1)
-	//	}
-	//
-	//	// Search config in home directory with name ".scloud" (without extension).
-	//	viper.AddConfigPath(home)
-	//	viper.SetConfigName(".scloud")
-	//}
-	//
-	//viper.AutomaticEnv() // read in environment variables that match
+	// Find home directory.
+	home, err := homedir.Dir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	//// If a config file is found, read it in.
-	//if err := viper.ReadInConfig(); err == nil {
-	//	fmt.Println("Using config file:", viper.ConfigFileUsed())
-	//}
+	legacyFile = fmt.Sprintf("%s/%s", home, config.LegacyCfgFileName)
+	confFile = fmt.Sprintf("%s/%s", home, config.CfgFileName)
+
+	// Copy .scloud -> .scloud.toml (if it does not exist)
+	if config.FileExists(legacyFile) && !config.FileExists(confFile) {
+		config.Migrate(legacyFile, confFile)
+	}
+
+	// Create a new empty .scloud.toml
+	if !config.FileExists(confFile) {
+		config.Initialize()
+
+	} else {
+		// Use an existing .scloud.toml
+		config.Load(home, confFile)
+	}
+
 }
