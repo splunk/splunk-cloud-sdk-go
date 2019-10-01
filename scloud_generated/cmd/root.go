@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"flag"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
@@ -82,6 +83,8 @@ func init() {
 	_ = viper.BindPFlag("auth-url", rootCmd.PersistentFlags().Lookup("auth-url"))
 	_ = viper.BindPFlag("host-url", rootCmd.PersistentFlags().Lookup("host-url"))
 	_ = viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
+
+	flag.Parse()
 }
 
 func initConfig() {
