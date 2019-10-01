@@ -19,6 +19,7 @@ package auth
 import (
 	"bytes"
 	"fmt"
+	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
@@ -361,7 +362,8 @@ func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
-	settings, _ = fcache.Load(abspath(".scloud"))
+
+	settings, _ = fcache.Load(abspath(viper.ConfigFileUsed()))
 	ctxCache, _ = fcache.Load(abspath(".scloud_context"))
 	return nil
 }
