@@ -132,6 +132,7 @@ func Load(home string, confFile string) {
 	viper.SetConfigFile(confFile)
 	// Read in the new config
 	viper.SetConfigType("toml")
+
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
