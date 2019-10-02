@@ -9,7 +9,7 @@ import (
 
 // Login -- impl
 func Login(cmd *cobra.Command, args []string) error {
-	_, err := auth.Login(nil)
+	_, err := auth.Login(cmd)
 
 	if err != nil {
 		fmt.Println(err)

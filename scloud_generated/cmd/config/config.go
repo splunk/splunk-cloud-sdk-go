@@ -2,11 +2,12 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io/ioutil"
-	"os"
 )
 
 const LegacyCfgFileName = ".scloud"
@@ -21,7 +22,9 @@ type Globals struct {
 	Insecure bool   `toml:"insecure"`
 }
 
-var properties = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
+//var GlobalFlags = map[string]string{"env": "env", "useranme": "username", "tenant": "tenant"}
+
+var GlobalFlags = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
 
 // Cmd -- used to connection to rootCmd
 func Cmd() *cobra.Command {
@@ -86,7 +89,7 @@ var set = &cobra.Command{
 				fmt.Println(err)
 			}
 		} else {
-			fmt.Printf("These are the valid keys that can be set:\n %s\n", properties)
+			fmt.Printf("These are the valid keys that can be set:\n %s\n", GlobalFlags)
 		}
 	},
 }
@@ -153,7 +156,7 @@ func Migrate(source string, target string) {
 }
 
 func isValidProperty(key string) bool {
-	for _, prop := range properties {
+	for _, prop := range GlobalFlags {
 		if key == prop {
 			return true
 		}
