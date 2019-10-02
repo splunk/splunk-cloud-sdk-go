@@ -31,11 +31,10 @@ var (
 	env      string
 	tenant   string
 	userName string
-	authUrl  string
-	hostUrl  string
+	authURL  string
+	hostURL  string
 	insecure bool
 )
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -73,8 +72,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&env, "env", "", "target environment")
 	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "tenant identifier")
 	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "email address")
-	rootCmd.PersistentFlags().StringVar(&authUrl, "auth-url", "", "scheme://host<:port>")
-	rootCmd.PersistentFlags().StringVar(&hostUrl, "host-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
 
 	// bind the flags so that they override the config
