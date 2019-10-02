@@ -19,14 +19,15 @@ package auth
 import (
 	"bytes"
 	"fmt"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 	"syscall"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"gopkg.in/yaml.v2"
 
@@ -36,6 +37,7 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/fcache"
+	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
 	"golang.org/x/crypto/ssh/terminal"
 
 	// Import needed to register files with fs
@@ -139,7 +141,13 @@ func getpass() (string, error) {
 }
 
 // Returns the selected password.
-func getPassword() string {
+func getPassword(cmd *cobra.Command) string {
+	pwd, _ := cmd.Flags().GetString("pwd")
+	if len(pwd) != 0 {
+		fmt.Println(pwd)
+		return pwd
+	}
+
 	if options.password != "" {
 		return options.password
 	}
@@ -221,24 +229,12 @@ func getOptionSettings(option string, setting string) string {
 // Overridden by --insecure flag
 func isInsecure() bool {
 	insecure := false
-	var err error
 	// local settings cache default value
-	if insecureStr, ok := settings.GetString("insecure"); ok {
-		insecure, err = strconv.ParseBool(insecureStr)
-		if err != nil {
-			insecure = false
-		}
+	fmt.Println(settings.All())
+	if insecure, ok := settings.Get("insecure").(bool); ok {
+		return insecure
 	}
-	// --insecure=true passed as global flag
-	if options.insecure != "" {
-		insecure, err = strconv.ParseBool(options.insecure)
-		if err != nil {
-			insecure = false
-		}
-	}
-	if insecure {
-		glog.Warningf("TLS certificate validation is disabled.")
-	}
+
 	return insecure
 }
 
@@ -262,7 +258,7 @@ func checkEmpty(items []string) {
 }
 
 // Ensure that the given app profile contains the required user credentials.
-func ensureCredentials(profile map[string]string) {
+func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 	kind, ok := profile["kind"]
 	if !ok {
 		return
@@ -273,8 +269,9 @@ func ensureCredentials(profile map[string]string) {
 	if _, ok := profile["username"]; !ok {
 		profile["username"] = getUsername()
 	}
+
 	if _, ok := profile["password"]; !ok {
-		profile["password"] = getPassword()
+		profile["password"] = getPassword(cmd)
 	}
 }
 
@@ -302,7 +299,7 @@ func getCurrentContext(clientID string) *idp.Context {
 // and related metadata that correspond to a given app. If a valid cached
 // context exists, return those, otherwise dispatch an authn flow that
 // corresponds to the selected app profile.
-func getContext() *idp.Context {
+func getContext(cmd *cobra.Command) *idp.Context {
 	profile, err := getProfile()
 	if err != nil {
 		fatal(err.Error())
@@ -318,7 +315,7 @@ func getContext() *idp.Context {
 		// todo: re-authenticate if token has expired
 		return context
 	}
-	ensureCredentials(profile)
+	ensureCredentials(profile, cmd)
 	context, err = authenticate(profile)
 	if err != nil {
 		fatal(err.Error())
@@ -329,16 +326,16 @@ func getContext() *idp.Context {
 }
 
 func getToken() string {
-	return getContext().AccessToken
+	return getContext(nil).AccessToken
 }
 
 // Authenticate, using the selected app profile.
-func Login(args []string) (*idp.Context, error) {
+func Login(cmd *cobra.Command) (*idp.Context, error) {
 	err := loadConfigs()
 	if err != nil {
 		return nil, err
 	}
-	checkEmpty(args)
+
 	name := getProfileName()
 	profile, err := GetProfile(name)
 	if err != nil {
@@ -348,7 +345,7 @@ func Login(args []string) (*idp.Context, error) {
 	glog.CopyStandardLogTo("INFO")
 
 	glog.Infof("Authenticate profile=%s", name)
-	ensureCredentials(profile)
+	ensureCredentials(profile, cmd)
 	context, err := authenticate(profile)
 	if err != nil {
 		return nil, err
@@ -362,9 +359,22 @@ func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
-
 	settings, _ = fcache.Load(abspath(viper.ConfigFileUsed()))
 	ctxCache, _ = fcache.Load(abspath(".scloud_context"))
+
+	for _, name := range cf.GlobalFlags {
+		value := viper.Get(name)
+		if value != nil {
+			if k, ok := value.(string); ok {
+				if len(k) != 0 {
+					settings.Set(name, k)
+				}
+			}
+		}
+
+	}
+	fmt.Println(ctxCache)
+
 	return nil
 }
 

@@ -3,11 +3,11 @@ package cmd
 import (
 	"flag"
 	"fmt"
-	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
 	"os"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/action"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appreg"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/catalog"
@@ -35,6 +35,7 @@ var (
 	hostUrl  string
 	insecure bool
 )
+
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -77,14 +78,17 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
 
 	// bind the flags so that they override the config
-	_ = viper.BindPFlag("env", rootCmd.PersistentFlags().Lookup("env"))
-	_ = viper.BindPFlag("tenant", rootCmd.PersistentFlags().Lookup("tenant"))
-	_ = viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
-	_ = viper.BindPFlag("auth-url", rootCmd.PersistentFlags().Lookup("auth-url"))
-	_ = viper.BindPFlag("host-url", rootCmd.PersistentFlags().Lookup("host-url"))
-	_ = viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
+	for _, name := range config.GlobalFlags {
+		checkerr(viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name)))
 
+	}
 	flag.Parse()
+}
+
+func checkerr(err error) {
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func initConfig() {
