@@ -114,7 +114,32 @@ func AddMember(cmd *cobra.Command, args []string) error {
 
 // AddRolePermission Adds permissions to a role in a given tenant.
 func AddRolePermission(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	bodyFlag := cmd.Flags().Lookup("body")
+	var body string
+	err = flags.ParseFlag(bodyFlag, &body)
+	if err != nil {
+		return fmt.Errorf("error parsing body: " + err.Error())
+	}
+	roleFlag := cmd.Flags().Lookup("role")
+	var role string
+	err = flags.ParseFlag(roleFlag, &role)
+	if err != nil {
+		return fmt.Errorf("error parsing role: " + err.Error())
+	}
+
+	resp, err := client.IdentityService.AddRolePermission(role, body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
 }
 
 // CreateGroup Creates a new group in a given tenant.
