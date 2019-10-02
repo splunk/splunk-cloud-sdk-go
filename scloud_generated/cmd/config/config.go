@@ -13,15 +13,6 @@ import (
 const LegacyCfgFileName = ".scloud"
 const CfgFileName = ".scloud.toml"
 
-type Globals struct {
-	Env      string `toml:"env"`
-	Tenant   string `toml:"tenant"`
-	UserName string `toml:"username"`
-	AuthUrl  string `toml:"auth-url"`
-	HostUrl  string `toml:"host-url"`
-	Insecure bool   `toml:"insecure"`
-}
-
 //var GlobalFlags = map[string]string{"env": "env", "useranme": "username", "tenant": "tenant"}
 
 var GlobalFlags = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}

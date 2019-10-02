@@ -23,7 +23,6 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strings"
 	"syscall"
 
 	"github.com/spf13/cobra"
@@ -112,21 +111,16 @@ func getEnvironment() *Environment {
 
 // Returns the selected username.
 func getUsername() string {
-	if options.username != "" {
-		return options.username
-	}
 	if username, ok := settings.GetString("username"); ok {
 		return username
 	}
-	if options.noPrompt {
-		fatal("no username")
-	}
+
 	var username string
 	fmt.Print("Username: ")
 	if _, err := fmt.Scanln(&username); err != nil {
 		fatal(err.Error())
 	}
-	options.username = username
+
 	return username
 }
 
@@ -142,22 +136,17 @@ func getpass() (string, error) {
 
 // Returns the selected password.
 func getPassword(cmd *cobra.Command) string {
-	pwd, _ := cmd.Flags().GetString("pwd")
-	if len(pwd) != 0 {
-		fmt.Println(pwd)
-		return pwd
+	if pwd, err := cmd.Flags().GetString("pwd"); err == nil {
+		if len(pwd) != 0 {
+			return pwd
+		}
 	}
 
-	if options.password != "" {
-		return options.password
-	}
-	if options.noPrompt {
-		fatal("no password")
-	}
 	password, err := getpass()
 	if err != nil {
 		fatal(err.Error())
 	}
+
 	return password
 }
 
@@ -178,14 +167,8 @@ func getProfileName() string {
 
 // Returns the selected tenant name.
 func getTenantName() string {
-	if options.tenant != "" {
-		return options.tenant
-	}
 	if tenant, ok := settings.GetString("tenant"); ok {
 		return tenant
-	}
-	if options.noPrompt {
-		fatal("no tenant")
 	}
 	var tenant string
 	fmt.Print("Tenant: ")
@@ -196,30 +179,20 @@ func getTenantName() string {
 	return tenant
 }
 
-// Returns auth url from passed-in options or local settings.
-// If auth_url is not specified, returns ""
-func getAuthURL() string {
-	return getOptionSettings(options.authURL, "auth-url")
-}
-
 // Returns host url from passed-in options or local settings.
 // If host_url is not specified, returns ""
 func getHostURL() string {
-	return getOptionSettings(options.hostURL, "host-url")
+	if setting, ok := settings.GetString("host-url"); ok {
+		return setting
+	}
+
+	return ""
 }
 
 // Returns scheme from passed-in options or local settings.
 // If ca-cert is not specified, returns ""
 func getCaCert() string {
-	return getOptionSettings(options.certFile, "ca-cert")
-}
-
-// Check the flag options first, fall back on settings
-func getOptionSettings(option string, setting string) string {
-	if option != "" {
-		return option
-	}
-	if setting, ok := settings.GetString(setting); ok {
+	if setting, ok := settings.GetString("ca-cert"); ok {
 		return setting
 	}
 	return ""
@@ -230,7 +203,6 @@ func getOptionSettings(option string, setting string) string {
 func isInsecure() bool {
 	insecure := false
 	// local settings cache default value
-	fmt.Println(settings.All())
 	if insecure, ok := settings.Get("insecure").(bool); ok {
 		return insecure
 	}
@@ -248,13 +220,6 @@ func eprint(msg string, args ...interface{}) {
 func fatal(msg string, args ...interface{}) {
 	eprint(msg, args...)
 	os.Exit(1)
-}
-
-// Verify that the given list is empty, or fatal.
-func checkEmpty(items []string) {
-	if len(items) > 0 {
-		fatal("unexpected arguments: '%s'", strings.Join(items, ", "))
-	}
 }
 
 // Ensure that the given app profile contains the required user credentials.
@@ -373,7 +338,6 @@ func loadConfigs() error {
 		}
 
 	}
-	fmt.Println(ctxCache)
 
 	return nil
 }

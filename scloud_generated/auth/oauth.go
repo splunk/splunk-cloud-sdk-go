@@ -117,7 +117,7 @@ func pkceFlow(profile map[string]string) (*idp.Context, error) {
 	}
 
 	// Override idp_host from config file with -auth_url or auth_url in local settings
-	if authURL,ok := settings.Get("auth-url").(string);ok {
+	if authURL, ok := settings.Get("auth-url").(string); ok {
 		if authURL != "" {
 			idpHost = authURL
 		}
