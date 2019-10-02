@@ -1,4 +1,4 @@
-package appreg
+package appregistry
 
 ////go:generate scloudgen gen-cmd --name app-registry --package appreg --output appreg-gen.go
 
@@ -8,11 +8,11 @@ import (
 
 // Cmd -- used to connection to rootCmd
 func Cmd() *cobra.Command {
-	return appregCmd
+	return appregistryCmd
 }
 
 // catalogCmd represents the catalog command
-var appregCmd = &cobra.Command{
+var appregistryCmd = &cobra.Command{
 	Use:   "appreg",
 	Short: "application registry service",
 }

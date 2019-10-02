@@ -1,3 +1,3 @@
-package appreg
+package appregistry
 
 //go:generate scloudgen gen-impl --name app-registry --package appreg --output appreg-gen.go | gofmt
