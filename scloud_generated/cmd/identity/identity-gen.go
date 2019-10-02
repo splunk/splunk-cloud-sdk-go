@@ -32,7 +32,7 @@ var addMemberCmd = &cobra.Command{
 // addRolePermission -- Adds permissions to a role in a given tenant.
 var addRolePermissionCmd = &cobra.Command{
 	Use:   "add-role-permission",
-	Short: "[not implemented] Adds permissions to a role in a given tenant.",
+	Short: "Adds permissions to a role in a given tenant.",
 	RunE:  impl.AddRolePermission,
 }
 
