@@ -13,8 +13,6 @@ import (
 const LegacyCfgFileName = ".scloud"
 const CfgFileName = ".scloud.toml"
 
-//var GlobalFlags = map[string]string{"env": "env", "useranme": "username", "tenant": "tenant"}
-
 var GlobalFlags = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
 
 // Cmd -- used to connection to rootCmd
@@ -43,7 +41,7 @@ var list = &cobra.Command{
 	Short: "Retrieve all properties from the config.",
 	Run: func(cmd *cobra.Command, args []string) {
 		for k, v := range viper.AllSettings() {
-			fmt.Printf("%s = %s\n", k, v)
+			fmt.Printf("%s = %v\n", k, v)
 		}
 	},
 }

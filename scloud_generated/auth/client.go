@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -75,6 +76,10 @@ func GetClient() (*sdk.Client, error) {
 
 		sdkclient := apiClient()
 
+		if sdkclient == nil {
+			return nil, errors.New("no valid sdk client")
+		}
+
 		//TODO: delete this example
 		actions, err := sdkclient.ActionService.GetAction("crudemail_1568674368563")
 		if err != nil {
@@ -82,7 +87,7 @@ func GetClient() (*sdk.Client, error) {
 		}
 		pprint(actions)
 
-		return sdkclient, nil
+		return sdkclient, err
 	}
 
 	return sdkclient, nil
@@ -107,14 +112,10 @@ func GetClientSystemTenant() (*sdk.Client, error) {
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
 func newClient(svc *Service) *sdk.Client {
+	var serviceURL *url.URL
 	var hostURL = getHostURL()
 
 	serviceURL, err := url.Parse(hostURL)
-
-	if err != nil {
-		glog.Errorf("%s, is not a valid url", hostURL)
-		return nil
-	}
 
 	var scheme string
 	if scheme = serviceURL.Scheme; scheme == "" {
@@ -132,6 +133,7 @@ func newClient(svc *Service) *sdk.Client {
 
 	host := serviceURL.Hostname()
 	if host == "" {
+		fmt.Println("Warning: can't get host-url from config file, using default host")
 		host = svc.Host
 	}
 
@@ -186,9 +188,10 @@ func apiClient() *sdk.Client {
 func apiClientWithTenant(tenant string) *sdk.Client {
 	env := getEnvironment()
 
-	svc := &env.APIService
-	result := newClient(svc)
-	result.SetDefaultTenant(tenant)
+	result := newClient(&env.APIService)
+	if result != nil {
+		result.SetDefaultTenant(tenant)
+	}
 
 	return result
 }

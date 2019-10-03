@@ -25,37 +25,35 @@ import (
 	"path"
 	"syscall"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pelletier/go-toml"
 	"github.com/rakyll/statik/fs"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/fcache"
 	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
 	"golang.org/x/crypto/ssh/terminal"
+	"gopkg.in/yaml.v2"
 
 	// Import needed to register files with fs
 	_ "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/statik"
 )
 
-var options struct {
-	env      string
-	tenant   string
-	username string
-	password string
-	noPrompt bool   // disable prompting for args
-	authURL  string // scheme://host:port
-	hostURL  string // scheme://host:port
-	port     string
-	insecure string // needs to be a string so we can test if the flag is set
-	scheme   string
-	certFile string
-}
+//var options struct {
+//	env      string
+//	tenant   string
+//	username string
+//	password string
+//	noPrompt bool   // disable prompting for args
+//	authURL  string // scheme://host:port
+//	hostURL  string // scheme://host:port
+//	port     string
+//	insecure string // needs to be a string so we can test if the flag is set
+//	scheme   string
+//	certFile string
+//}
 
 const SCloudHome = "SCLOUD_HOME"
 
@@ -86,17 +84,12 @@ func abspath(p string) string {
 
 // Returns the name of the selected environment.
 func getEnvironmentName() string {
-	if options.env != "" {
-		return options.env
-	}
 	if envName, ok := settings.GetString("env"); ok {
 		return envName
 	}
-	if options.noPrompt {
-		fatal("no environment")
-	}
+
+	fmt.Println("Warning: no env is set, use default env")
 	envName := "prod" // default
-	options.env = envName
 	return envName
 }
 
@@ -175,7 +168,7 @@ func getTenantName() string {
 	if _, err := fmt.Scanln(&tenant); err != nil {
 		fatal(err.Error())
 	}
-	options.tenant = tenant
+	//options.tenant = tenant
 	return tenant
 }
 
