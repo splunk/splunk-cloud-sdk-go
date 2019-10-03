@@ -34,6 +34,7 @@ var (
 	authURL  string
 	hostURL  string
 	insecure bool
+	cacert   string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -75,19 +76,17 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
+	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
 
 	// bind the flags so that they override the config
 	for _, name := range config.GlobalFlags {
-		checkerr(viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name)))
+		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+		if err != nil {
+			fmt.Println(err)
+		}
 
 	}
 	flag.Parse()
-}
-
-func checkerr(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
 }
 
 func initConfig() {
@@ -114,5 +113,4 @@ func initConfig() {
 		// Use an existing .scloud.toml
 		config.Load(home, confFile)
 	}
-
 }

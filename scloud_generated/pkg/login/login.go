@@ -19,7 +19,7 @@ func Login(cmd *cobra.Command, args []string) error {
 	//TODO: delete this
 	_, err = auth.GetClient()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error: %s\n", err)
 	}
 
 	return nil
