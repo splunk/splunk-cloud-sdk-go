@@ -41,20 +41,6 @@ import (
 	_ "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/statik"
 )
 
-//var options struct {
-//	env      string
-//	tenant   string
-//	username string
-//	password string
-//	noPrompt bool   // disable prompting for args
-//	authURL  string // scheme://host:port
-//	hostURL  string // scheme://host:port
-//	port     string
-//	insecure string // needs to be a string so we can test if the flag is set
-//	scheme   string
-//	certFile string
-//}
-
 const SCloudHome = "SCLOUD_HOME"
 
 var ctxCache *fcache.Cache
@@ -168,7 +154,7 @@ func getTenantName() string {
 	if _, err := fmt.Scanln(&tenant); err != nil {
 		fatal(err.Error())
 	}
-	//options.tenant = tenant
+
 	return tenant
 }
 
