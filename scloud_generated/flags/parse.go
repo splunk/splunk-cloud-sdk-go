@@ -1,6 +1,7 @@
 package flags
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 
@@ -19,14 +20,21 @@ func ParseFlag(flag *pflag.Flag, out interface{}) error {
 	// Follow the pointer
 	deref := val.Elem()
 	outtype := deref.Type().String()
+	strval := flag.Value.String() // the actual string supplied by the user
 	// Determine the type of out and inject a value into it
-	if outtype == "string" {
+	switch outtype {
+	case "string":
 		sout, ok := out.(*string)
 		if !ok {
 			return fmt.Errorf("flags.ParseFlag: unexpected type assertion failure for type: %s", outtype)
 		}
-		*sout = flag.Value.String()
+		*sout = strval
+		return nil
+	default:
+		err := json.Unmarshal([]byte(strval), out)
+		if err != nil {
+			return fmt.Errorf("flags.ParseFlag: failure to unmarshal to type %s err: %s", outtype, err)
+		}
 		return nil
 	}
-	return fmt.Errorf("flags.ParseFlag: only string is accepted at the moment, found type: %s", outtype)
 }
