@@ -19,16 +19,16 @@ func ParseFlag(flag *pflag.Flag, out interface{}) error {
 	}
 	// Follow the pointer
 	deref := val.Elem()
+	if !deref.CanSet() {
+		return fmt.Errorf("flags.ParseFlag: value must be settable")
+	}
+	kind := deref.Kind()
 	outtype := deref.Type().String()
 	strval := flag.Value.String() // the actual string supplied by the user
 	// Determine the type of out and inject a value into it
-	switch outtype {
-	case "string":
-		sout, ok := out.(*string)
-		if !ok {
-			return fmt.Errorf("flags.ParseFlag: unexpected type assertion failure for type: %s", outtype)
-		}
-		*sout = strval
+	switch kind {
+	case reflect.String:
+		deref.SetString(strval)
 		return nil
 	default:
 		err := json.Unmarshal([]byte(strval), out)

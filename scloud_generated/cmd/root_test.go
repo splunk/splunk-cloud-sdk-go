@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,12 +18,8 @@ func TestMain(m *testing.M) {
 func TestCmd(t *testing.T) {
 	buf := new(bytes.Buffer)
 	rootCmd.SetOutput(buf)
-	rootCmd.SetArgs([]string{
-		"identity",
-		"get-principal",
-		"--principal",
-		"tpavlik@splunk.com",
-	})
+	args := "appreg list-subscriptions --kind service"
+	rootCmd.SetArgs(strings.Split(args, " "))
 	err := rootCmd.Execute()
 	assert.Nil(t, err)
 }
