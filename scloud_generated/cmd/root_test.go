@@ -18,10 +18,7 @@ func TestCmd(t *testing.T) {
 	buf := new(bytes.Buffer)
 	rootCmd.SetOutput(buf)
 	rootCmd.SetArgs([]string{
-		"identity",
-		"get-principal",
-		"--principal",
-		"tpavlik@splunk.com",
+		"help",
 	})
 	err := rootCmd.Execute()
 	assert.Nil(t, err)
