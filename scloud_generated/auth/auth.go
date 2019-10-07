@@ -19,42 +19,27 @@ package auth
 import (
 	"bytes"
 	"fmt"
-	"github.com/spf13/viper"
 	"io"
 	"net/http"
 	"os"
 	"path"
-	"strconv"
-	"strings"
 	"syscall"
-
-	"gopkg.in/yaml.v2"
 
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pelletier/go-toml"
 	"github.com/rakyll/statik/fs"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/fcache"
+	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
 	"golang.org/x/crypto/ssh/terminal"
+	"gopkg.in/yaml.v2"
 
 	// Import needed to register files with fs
 	_ "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/statik"
 )
-
-var options struct {
-	env      string
-	tenant   string
-	username string
-	password string
-	noPrompt bool   // disable prompting for args
-	authURL  string // scheme://host:port
-	hostURL  string // scheme://host:port
-	port     string
-	insecure string // needs to be a string so we can test if the flag is set
-	scheme   string
-	certFile string
-}
 
 const SCloudHome = "SCLOUD_HOME"
 
@@ -85,17 +70,12 @@ func abspath(p string) string {
 
 // Returns the name of the selected environment.
 func getEnvironmentName() string {
-	if options.env != "" {
-		return options.env
-	}
 	if envName, ok := settings.GetString("env"); ok {
 		return envName
 	}
-	if options.noPrompt {
-		fatal("no environment")
-	}
+
+	fmt.Println("Warning: no env is set, use default env")
 	envName := "prod" // default
-	options.env = envName
 	return envName
 }
 
@@ -110,21 +90,16 @@ func getEnvironment() *Environment {
 
 // Returns the selected username.
 func getUsername() string {
-	if options.username != "" {
-		return options.username
-	}
 	if username, ok := settings.GetString("username"); ok {
 		return username
 	}
-	if options.noPrompt {
-		fatal("no username")
-	}
+
 	var username string
 	fmt.Print("Username: ")
 	if _, err := fmt.Scanln(&username); err != nil {
 		fatal(err.Error())
 	}
-	options.username = username
+
 	return username
 }
 
@@ -139,17 +114,18 @@ func getpass() (string, error) {
 }
 
 // Returns the selected password.
-func getPassword() string {
-	if options.password != "" {
-		return options.password
+func getPassword(cmd *cobra.Command) string {
+	if pwd, err := cmd.Flags().GetString("pwd"); err == nil {
+		if len(pwd) != 0 {
+			return pwd
+		}
 	}
-	if options.noPrompt {
-		fatal("no password")
-	}
+
 	password, err := getpass()
 	if err != nil {
 		fatal(err.Error())
 	}
+
 	return password
 }
 
@@ -170,48 +146,32 @@ func getProfileName() string {
 
 // Returns the selected tenant name.
 func getTenantName() string {
-	if options.tenant != "" {
-		return options.tenant
-	}
 	if tenant, ok := settings.GetString("tenant"); ok {
 		return tenant
-	}
-	if options.noPrompt {
-		fatal("no tenant")
 	}
 	var tenant string
 	fmt.Print("Tenant: ")
 	if _, err := fmt.Scanln(&tenant); err != nil {
 		fatal(err.Error())
 	}
-	options.tenant = tenant
-	return tenant
-}
 
-// Returns auth url from passed-in options or local settings.
-// If auth_url is not specified, returns ""
-func getAuthURL() string {
-	return getOptionSettings(options.authURL, "auth-url")
+	return tenant
 }
 
 // Returns host url from passed-in options or local settings.
 // If host_url is not specified, returns ""
 func getHostURL() string {
-	return getOptionSettings(options.hostURL, "host-url")
+	if setting, ok := settings.GetString("host-url"); ok {
+		return setting
+	}
+
+	return ""
 }
 
 // Returns scheme from passed-in options or local settings.
 // If ca-cert is not specified, returns ""
 func getCaCert() string {
-	return getOptionSettings(options.certFile, "ca-cert")
-}
-
-// Check the flag options first, fall back on settings
-func getOptionSettings(option string, setting string) string {
-	if option != "" {
-		return option
-	}
-	if setting, ok := settings.GetString(setting); ok {
+	if setting, ok := settings.GetString("ca-cert"); ok {
 		return setting
 	}
 	return ""
@@ -221,24 +181,11 @@ func getOptionSettings(option string, setting string) string {
 // Overridden by --insecure flag
 func isInsecure() bool {
 	insecure := false
-	var err error
 	// local settings cache default value
-	if insecureStr, ok := settings.GetString("insecure"); ok {
-		insecure, err = strconv.ParseBool(insecureStr)
-		if err != nil {
-			insecure = false
-		}
+	if insecure, ok := settings.Get("insecure").(bool); ok {
+		return insecure
 	}
-	// --insecure=true passed as global flag
-	if options.insecure != "" {
-		insecure, err = strconv.ParseBool(options.insecure)
-		if err != nil {
-			insecure = false
-		}
-	}
-	if insecure {
-		glog.Warningf("TLS certificate validation is disabled.")
-	}
+
 	return insecure
 }
 
@@ -254,15 +201,8 @@ func fatal(msg string, args ...interface{}) {
 	os.Exit(1)
 }
 
-// Verify that the given list is empty, or fatal.
-func checkEmpty(items []string) {
-	if len(items) > 0 {
-		fatal("unexpected arguments: '%s'", strings.Join(items, ", "))
-	}
-}
-
 // Ensure that the given app profile contains the required user credentials.
-func ensureCredentials(profile map[string]string) {
+func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 	kind, ok := profile["kind"]
 	if !ok {
 		return
@@ -273,8 +213,9 @@ func ensureCredentials(profile map[string]string) {
 	if _, ok := profile["username"]; !ok {
 		profile["username"] = getUsername()
 	}
+
 	if _, ok := profile["password"]; !ok {
-		profile["password"] = getPassword()
+		profile["password"] = getPassword(cmd)
 	}
 }
 
@@ -302,7 +243,7 @@ func getCurrentContext(clientID string) *idp.Context {
 // and related metadata that correspond to a given app. If a valid cached
 // context exists, return those, otherwise dispatch an authn flow that
 // corresponds to the selected app profile.
-func getContext() *idp.Context {
+func getContext(cmd *cobra.Command) *idp.Context {
 	profile, err := getProfile()
 	if err != nil {
 		fatal(err.Error())
@@ -318,7 +259,7 @@ func getContext() *idp.Context {
 		// todo: re-authenticate if token has expired
 		return context
 	}
-	ensureCredentials(profile)
+	ensureCredentials(profile, cmd)
 	context, err = authenticate(profile)
 	if err != nil {
 		fatal(err.Error())
@@ -329,16 +270,16 @@ func getContext() *idp.Context {
 }
 
 func getToken() string {
-	return getContext().AccessToken
+	return getContext(nil).AccessToken
 }
 
 // Authenticate, using the selected app profile.
-func Login(args []string) (*idp.Context, error) {
+func Login(cmd *cobra.Command) (*idp.Context, error) {
 	err := loadConfigs()
 	if err != nil {
 		return nil, err
 	}
-	checkEmpty(args)
+
 	name := getProfileName()
 	profile, err := GetProfile(name)
 	if err != nil {
@@ -348,7 +289,7 @@ func Login(args []string) (*idp.Context, error) {
 	glog.CopyStandardLogTo("INFO")
 
 	glog.Infof("Authenticate profile=%s", name)
-	ensureCredentials(profile)
+	ensureCredentials(profile, cmd)
 	context, err := authenticate(profile)
 	if err != nil {
 		return nil, err
@@ -362,9 +303,21 @@ func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
-
 	settings, _ = fcache.Load(abspath(viper.ConfigFileUsed()))
 	ctxCache, _ = fcache.Load(abspath(".scloud_context"))
+
+	for _, name := range cf.GlobalFlags {
+		value := viper.Get(name)
+		if value != nil {
+			if k, ok := value.(string); ok {
+				if len(k) != 0 {
+					settings.Set(name, k)
+				}
+			}
+		}
+
+	}
+
 	return nil
 }
 

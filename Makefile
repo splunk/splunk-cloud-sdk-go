@@ -16,7 +16,7 @@ setup: prereqs download_config statik version
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
 	GO111MODULE=on go mod vendor
-	golangci-lint run ./... --skip-dirs test --enable golint --disable megacheck
+	golangci-lint run ./... --skip-dirs test --skip-files ".*_generated.go"  --skip-files "interface.go" --enable golint --disable megacheck
 	rm -rf vendor/
 
 linttest: statik version
