@@ -35,6 +35,6 @@ func ParseFlag(flag *pflag.Flag, out interface{}) error {
 		if err != nil {
 			return fmt.Errorf("flags.ParseFlag: failure to unmarshal to type %s err: %s", outtype, err)
 		}
-		return nil
 	}
+	return nil
 }
