@@ -6,11 +6,10 @@ import (
 	"os"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
-
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/action"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appregistry"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appreg"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/catalog"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/collect"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
@@ -32,9 +31,10 @@ var (
 	env      string
 	tenant   string
 	userName string
-	authUrl  string
-	hostUrl  string
+	authURL  string
+	hostURL  string
 	insecure bool
+	cacert   string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -56,7 +56,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.AddCommand(action.Cmd())
-	rootCmd.AddCommand(appregistry.Cmd())
+	rootCmd.AddCommand(appreg.Cmd())
 	rootCmd.AddCommand(catalog.Cmd())
 	rootCmd.AddCommand(collect.Cmd())
 	rootCmd.AddCommand(config.Cmd())
@@ -73,18 +73,19 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&env, "env", "", "target environment")
 	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "tenant identifier")
 	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "email address")
-	rootCmd.PersistentFlags().StringVar(&authUrl, "auth-url", "", "scheme://host<:port>")
-	rootCmd.PersistentFlags().StringVar(&hostUrl, "host-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "scheme://host<:port>")
+	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
+	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
 
 	// bind the flags so that they override the config
-	_ = viper.BindPFlag("env", rootCmd.PersistentFlags().Lookup("env"))
-	_ = viper.BindPFlag("tenant", rootCmd.PersistentFlags().Lookup("tenant"))
-	_ = viper.BindPFlag("username", rootCmd.PersistentFlags().Lookup("username"))
-	_ = viper.BindPFlag("auth-url", rootCmd.PersistentFlags().Lookup("auth-url"))
-	_ = viper.BindPFlag("host-url", rootCmd.PersistentFlags().Lookup("host-url"))
-	_ = viper.BindPFlag("insecure", rootCmd.PersistentFlags().Lookup("insecure"))
+	for _, name := range config.GlobalFlags {
+		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+		if err != nil {
+			fmt.Println(err)
+		}
 
+	}
 	flag.Parse()
 }
 
@@ -112,5 +113,4 @@ func initConfig() {
 		// Use an existing .scloud.toml
 		config.Load(home, confFile)
 	}
-
 }

@@ -2,26 +2,18 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io/ioutil"
-	"os"
 )
 
 const LegacyCfgFileName = ".scloud"
 const CfgFileName = ".scloud.toml"
 
-type Globals struct {
-	Env      string `toml:"env"`
-	Tenant   string `toml:"tenant"`
-	UserName string `toml:"username"`
-	AuthUrl  string `toml:"auth-url"`
-	HostUrl  string `toml:"host-url"`
-	Insecure bool   `toml:"insecure"`
-}
-
-var properties = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
+var GlobalFlags = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
 
 // Cmd -- used to connection to rootCmd
 func Cmd() *cobra.Command {
@@ -49,7 +41,7 @@ var list = &cobra.Command{
 	Short: "Retrieve all properties from the config.",
 	Run: func(cmd *cobra.Command, args []string) {
 		for k, v := range viper.AllSettings() {
-			fmt.Printf("%s = %s\n", k, v)
+			fmt.Printf("%s = %v\n", k, v)
 		}
 	},
 }
@@ -86,7 +78,7 @@ var set = &cobra.Command{
 				fmt.Println(err)
 			}
 		} else {
-			fmt.Printf("These are the valid keys that can be set:\n %s\n", properties)
+			fmt.Printf("These are the valid keys that can be set:\n %s\n", GlobalFlags)
 		}
 	},
 }
@@ -153,7 +145,7 @@ func Migrate(source string, target string) {
 }
 
 func isValidProperty(key string) bool {
-	for _, prop := range properties {
+	for _, prop := range GlobalFlags {
 		if key == prop {
 			return true
 		}
