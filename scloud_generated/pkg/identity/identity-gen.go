@@ -22,17 +22,15 @@ func AddGroupMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -57,17 +55,15 @@ func AddGroupRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -92,11 +88,10 @@ func AddMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -121,17 +116,15 @@ func AddRolePermission(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	bodyFlag := cmd.Flags().Lookup("body")
 	var body string
-	err = flags.ParseFlag(bodyFlag, &body)
+	err = flags.ParseFlag(cmd.Flags(), "body", &body)
 	if err != nil {
-		return fmt.Errorf("error parsing body: " + err.Error())
+		return fmt.Errorf(`error parsing "body": ` + err.Error())
 	}
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.AddRolePermission(role, body)
@@ -151,11 +144,10 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -180,11 +172,10 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -209,11 +200,10 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
 
 	err = client.IdentityService.DeleteGroup(group)
@@ -233,11 +223,10 @@ func DeleteRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	err = client.IdentityService.DeleteRole(role)
@@ -257,11 +246,10 @@ func GetGroup(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetGroup(group)
@@ -281,17 +269,15 @@ func GetGroupMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetGroupMember(group, member)
@@ -311,17 +297,15 @@ func GetGroupRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetGroupRole(group, role)
@@ -341,11 +325,10 @@ func GetMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetMember(member)
@@ -366,11 +349,10 @@ func GetPrincipal(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	principalFlag := cmd.Flags().Lookup("principal")
 	var principal string
-	err = flags.ParseFlag(principalFlag, &principal)
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
 	if err != nil {
-		return fmt.Errorf("error parsing principal: " + err.Error())
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetPrincipal(principal)
@@ -390,11 +372,10 @@ func GetRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetRole(role)
@@ -414,17 +395,15 @@ func GetRolePermission(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	permissionFlag := cmd.Flags().Lookup("permission")
 	var permission string
-	err = flags.ParseFlag(permissionFlag, &permission)
+	err = flags.ParseFlag(cmd.Flags(), "permission", &permission)
 	if err != nil {
-		return fmt.Errorf("error parsing permission: " + err.Error())
+		return fmt.Errorf(`error parsing "permission": ` + err.Error())
 	}
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.GetRolePermission(role, permission)
@@ -444,11 +423,10 @@ func ListGroupMembers(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListGroupMembers(group)
@@ -468,11 +446,10 @@ func ListGroupRoles(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListGroupRoles(group)
@@ -508,11 +485,10 @@ func ListMemberGroups(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListMemberGroups(member)
@@ -533,11 +509,10 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListMemberPermissions(member)
@@ -558,11 +533,10 @@ func ListMemberRoles(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListMemberRoles(member)
@@ -615,11 +589,10 @@ func ListRoleGroups(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListRoleGroups(role)
@@ -639,11 +612,10 @@ func ListRolePermissions(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	resp, err := client.IdentityService.ListRolePermissions(role)
@@ -679,17 +651,15 @@ func RemoveGroupMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	err = client.IdentityService.RemoveGroupMember(group, member)
@@ -709,17 +679,15 @@ func RemoveGroupRole(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	groupFlag := cmd.Flags().Lookup("group")
 	var group string
-	err = flags.ParseFlag(groupFlag, &group)
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
 	if err != nil {
-		return fmt.Errorf("error parsing group: " + err.Error())
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	err = client.IdentityService.RemoveGroupRole(group, role)
@@ -739,11 +707,10 @@ func RemoveMember(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	memberFlag := cmd.Flags().Lookup("member")
 	var member string
-	err = flags.ParseFlag(memberFlag, &member)
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
 	if err != nil {
-		return fmt.Errorf("error parsing member: " + err.Error())
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
 	err = client.IdentityService.RemoveMember(member)
@@ -763,17 +730,15 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	permissionFlag := cmd.Flags().Lookup("permission")
 	var permission string
-	err = flags.ParseFlag(permissionFlag, &permission)
+	err = flags.ParseFlag(cmd.Flags(), "permission", &permission)
 	if err != nil {
-		return fmt.Errorf("error parsing permission: " + err.Error())
+		return fmt.Errorf(`error parsing "permission": ` + err.Error())
 	}
-	roleFlag := cmd.Flags().Lookup("role")
 	var role string
-	err = flags.ParseFlag(roleFlag, &role)
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
-		return fmt.Errorf("error parsing role: " + err.Error())
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
 	err = client.IdentityService.RemoveRolePermission(role, permission)
@@ -787,5 +752,26 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 // ValidateToken Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 
 func ValidateToken(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var include []string
+	err = flags.ParseFlag(cmd.Flags(), "include", &include)
+	if err != nil {
+		return fmt.Errorf(`error parsing "include": ` + err.Error())
+	}
+	// Form query params
+	query := model.ValidateTokenQueryParams{}
+	query.Include = include
+
+	resp, err := client.IdentityService.ValidateToken(&query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
 }
