@@ -22,86 +22,75 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appPrincipalPermissionsFlag := cmd.Flags().Lookup("appPrincipalPermissions")
 	var appPrincipalPermissions []string
-	err = flags.ParseFlag(appPrincipalPermissionsFlag, &appPrincipalPermissions)
+	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
 	if err != nil {
-		return fmt.Errorf("error parsing appPrincipalPermissions: " + err.Error())
+		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
 	}
-	descriptionFlag := cmd.Flags().Lookup("description")
-	var description string
-	err = flags.ParseFlag(descriptionFlag, &description)
+	var description *string
+	err = flags.ParseFlag(cmd.Flags(), "description", description)
 	if err != nil {
-		return fmt.Errorf("error parsing description: " + err.Error())
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
-	kindFlag := cmd.Flags().Lookup("kind")
 	var kind model.AppResourceKind
-	err = flags.ParseFlag(kindFlag, &kind)
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
 	if err != nil {
-		return fmt.Errorf("error parsing kind: " + err.Error())
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
-	loginUrlFlag := cmd.Flags().Lookup("loginUrl")
-	var loginUrl string
-	err = flags.ParseFlag(loginUrlFlag, &loginUrl)
+	var loginUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "login-url", loginUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing loginUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
 	}
-	logoUrlFlag := cmd.Flags().Lookup("logoUrl")
-	var logoUrl string
-	err = flags.ParseFlag(logoUrlFlag, &logoUrl)
+	var logoUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", logoUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing logoUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
 	}
-	nameFlag := cmd.Flags().Lookup("name")
 	var name string
-	err = flags.ParseFlag(nameFlag, &name)
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
-		return fmt.Errorf("error parsing name: " + err.Error())
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-	redirectUrlsFlag := cmd.Flags().Lookup("redirectUrls")
 	var redirectUrls []string
-	err = flags.ParseFlag(redirectUrlsFlag, &redirectUrls)
+	err = flags.ParseFlag(cmd.Flags(), "redirect-urls", &redirectUrls)
 	if err != nil {
-		return fmt.Errorf("error parsing redirectUrls: " + err.Error())
+		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
 	}
-	setupUrlFlag := cmd.Flags().Lookup("setupUrl")
-	var setupUrl string
-	err = flags.ParseFlag(setupUrlFlag, &setupUrl)
+	var setupUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", setupUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing setupUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
 	}
-	titleFlag := cmd.Flags().Lookup("title")
 	var title string
-	err = flags.ParseFlag(titleFlag, &title)
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
 	if err != nil {
-		return fmt.Errorf("error parsing title: " + err.Error())
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
 	}
-	userPermissionsFilterFlag := cmd.Flags().Lookup("userPermissionsFilter")
 	var userPermissionsFilter []string
-	err = flags.ParseFlag(userPermissionsFilterFlag, &userPermissionsFilter)
+	err = flags.ParseFlag(cmd.Flags(), "user-permissions-filter", &userPermissionsFilter)
 	if err != nil {
-		return fmt.Errorf("error parsing userPermissionsFilter: " + err.Error())
+		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
 	}
-	webhookUrlFlag := cmd.Flags().Lookup("webhookUrl")
-	var webhookUrl string
-	err = flags.ParseFlag(webhookUrlFlag, &webhookUrl)
+	var webhookUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", webhookUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing webhookUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
 
 	// Form the request body
 	body := model.CreateAppRequest{
 		AppPrincipalPermissions: appPrincipalPermissions,
-		Description:             &description,
+		Description:             description,
 		Kind:                    kind,
-		LoginUrl:                &loginUrl,
-		LogoUrl:                 &logoUrl,
+		LoginUrl:                loginUrl,
+		LogoUrl:                 logoUrl,
 		Name:                    name,
 		RedirectUrls:            redirectUrls,
-		SetupUrl:                &setupUrl,
+		SetupUrl:                setupUrl,
 		Title:                   title,
 		UserPermissionsFilter:   userPermissionsFilter,
-		WebhookUrl:              &webhookUrl,
+		WebhookUrl:              webhookUrl,
 	}
 
 	resp, err := client.AppRegistryService.CreateApp(body)
@@ -121,11 +110,10 @@ func CreateSubscription(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	// Form the request body
@@ -150,11 +138,10 @@ func DeleteApp(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	err = client.AppRegistryService.DeleteApp(appName)
@@ -174,11 +161,10 @@ func DeleteSubscription(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	err = client.AppRegistryService.DeleteSubscription(appName)
@@ -198,11 +184,10 @@ func GetApp(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	resp, err := client.AppRegistryService.GetApp(appName)
@@ -239,11 +224,10 @@ func GetSubscription(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	resp, err := client.AppRegistryService.GetSubscription(appName)
@@ -263,11 +247,10 @@ func ListAppSubscriptions(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	resp, err := client.AppRegistryService.ListAppSubscriptions(appName)
@@ -303,15 +286,14 @@ func ListSubscriptions(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	kindFlag := cmd.Flags().Lookup("kind")
-	var kind model.AppResourceKind
-	err = flags.ParseFlag(kindFlag, &kind)
+	var kind *model.AppResourceKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", kind)
 	if err != nil {
-		return fmt.Errorf("error parsing kind: " + err.Error())
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
 	// Form query params
 	query := model.ListSubscriptionsQueryParams{}
-	query.Kind = &kind
+	query.Kind = kind
 
 	resp, err := client.AppRegistryService.ListSubscriptions(&query)
 	if err != nil {
@@ -330,11 +312,10 @@ func RotateSecret(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
 
 	resp, err := client.AppRegistryService.RotateSecret(appName)
@@ -354,78 +335,68 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	appNameFlag := cmd.Flags().Lookup("appName")
 	var appName string
-	err = flags.ParseFlag(appNameFlag, &appName)
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
-		return fmt.Errorf("error parsing appName: " + err.Error())
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
-	appPrincipalPermissionsFlag := cmd.Flags().Lookup("appPrincipalPermissions")
 	var appPrincipalPermissions []string
-	err = flags.ParseFlag(appPrincipalPermissionsFlag, &appPrincipalPermissions)
+	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
 	if err != nil {
-		return fmt.Errorf("error parsing appPrincipalPermissions: " + err.Error())
+		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
 	}
-	descriptionFlag := cmd.Flags().Lookup("description")
-	var description string
-	err = flags.ParseFlag(descriptionFlag, &description)
+	var description *string
+	err = flags.ParseFlag(cmd.Flags(), "description", description)
 	if err != nil {
-		return fmt.Errorf("error parsing description: " + err.Error())
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
-	loginUrlFlag := cmd.Flags().Lookup("loginUrl")
-	var loginUrl string
-	err = flags.ParseFlag(loginUrlFlag, &loginUrl)
+	var loginUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "login-url", loginUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing loginUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
 	}
-	logoUrlFlag := cmd.Flags().Lookup("logoUrl")
-	var logoUrl string
-	err = flags.ParseFlag(logoUrlFlag, &logoUrl)
+	var logoUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", logoUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing logoUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
 	}
-	redirectUrlsFlag := cmd.Flags().Lookup("redirectUrls")
 	var redirectUrls []string
-	err = flags.ParseFlag(redirectUrlsFlag, &redirectUrls)
+	err = flags.ParseFlag(cmd.Flags(), "redirect-urls", &redirectUrls)
 	if err != nil {
-		return fmt.Errorf("error parsing redirectUrls: " + err.Error())
+		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
 	}
-	setupUrlFlag := cmd.Flags().Lookup("setupUrl")
-	var setupUrl string
-	err = flags.ParseFlag(setupUrlFlag, &setupUrl)
+	var setupUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", setupUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing setupUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
 	}
-	titleFlag := cmd.Flags().Lookup("title")
 	var title string
-	err = flags.ParseFlag(titleFlag, &title)
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
 	if err != nil {
-		return fmt.Errorf("error parsing title: " + err.Error())
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
 	}
-	userPermissionsFilterFlag := cmd.Flags().Lookup("userPermissionsFilter")
 	var userPermissionsFilter []string
-	err = flags.ParseFlag(userPermissionsFilterFlag, &userPermissionsFilter)
+	err = flags.ParseFlag(cmd.Flags(), "user-permissions-filter", &userPermissionsFilter)
 	if err != nil {
-		return fmt.Errorf("error parsing userPermissionsFilter: " + err.Error())
+		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
 	}
-	webhookUrlFlag := cmd.Flags().Lookup("webhookUrl")
-	var webhookUrl string
-	err = flags.ParseFlag(webhookUrlFlag, &webhookUrl)
+	var webhookUrl *string
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", webhookUrl)
 	if err != nil {
-		return fmt.Errorf("error parsing webhookUrl: " + err.Error())
+		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
 
 	// Form the request body
 	body := model.UpdateAppRequest{
 		AppPrincipalPermissions: appPrincipalPermissions,
-		Description:             &description,
-		LoginUrl:                &loginUrl,
-		LogoUrl:                 &logoUrl,
+		Description:             description,
+		LoginUrl:                loginUrl,
+		LogoUrl:                 logoUrl,
 		RedirectUrls:            redirectUrls,
-		SetupUrl:                &setupUrl,
+		SetupUrl:                setupUrl,
 		Title:                   title,
 		UserPermissionsFilter:   userPermissionsFilter,
-		WebhookUrl:              &webhookUrl,
+		WebhookUrl:              webhookUrl,
 	}
 
 	resp, err := client.AppRegistryService.UpdateApp(appName, body)

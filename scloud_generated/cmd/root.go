@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/action"
-	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appreg"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appregistry"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/catalog"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/collect"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
@@ -56,7 +56,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.AddCommand(action.Cmd())
-	rootCmd.AddCommand(appreg.Cmd())
+	rootCmd.AddCommand(appregistry.Cmd())
 	rootCmd.AddCommand(catalog.Cmd())
 	rootCmd.AddCommand(collect.Cmd())
 	rootCmd.AddCommand(config.Cmd())
