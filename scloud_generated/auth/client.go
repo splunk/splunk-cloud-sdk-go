@@ -67,6 +67,7 @@ func (handler retryHandler) HandleResponse(client *services.BaseClient, request 
 
 func GetClient() (*sdk.Client, error) {
 	if sdkclient == nil {
+		loadConfigs()
 		glog.CopyStandardLogTo("INFO")
 
 		err := loadConfig()
