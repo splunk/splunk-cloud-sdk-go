@@ -3,15 +3,12 @@ package auth
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
-	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -67,10 +64,7 @@ func (handler retryHandler) HandleResponse(client *services.BaseClient, request 
 
 func GetClient() (*sdk.Client, error) {
 	if sdkclient == nil {
-		loadConfigs()
-		glog.CopyStandardLogTo("INFO")
-
-		err := loadConfig()
+		err := loadConfigs()
 		if err != nil {
 			return nil, err
 		}
@@ -80,13 +74,6 @@ func GetClient() (*sdk.Client, error) {
 		if sdkclient == nil {
 			return nil, errors.New("no valid sdk client")
 		}
-
-		//TODO: delete this example
-		actions, err := sdkclient.ActionService.GetAction("crudemail_1568674368563")
-		if err != nil {
-			fmt.Println(err)
-		}
-		pprint(actions)
 
 		return sdkclient, err
 	}
@@ -195,25 +182,4 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	}
 
 	return result
-}
-
-//TODO: delete this
-func pprint(value interface{}) {
-	if value == nil {
-		return
-	}
-	switch vt := value.(type) {
-	case string:
-		fmt.Print(vt)
-		if !strings.HasSuffix(vt, "\n") {
-			fmt.Println()
-		}
-	default:
-		encoder := json.NewEncoder(os.Stdout)
-		encoder.SetIndent("", "    ")
-		err := encoder.Encode(value)
-		if err != nil {
-			fatal("json pprint error: %s", err.Error())
-		}
-	}
 }
