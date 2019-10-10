@@ -32,7 +32,15 @@ var uploadFilesCmd = &cobra.Command{
 func init() {
 	ingestCmd.AddCommand(postEventsCmd)
 
+	var postEventsBody string
+	postEventsCmd.Flags().StringVar(&postEventsBody, "body", "", "The request body")
+	postEventsCmd.MarkFlagRequired("body")
+
 	ingestCmd.AddCommand(postMetricsCmd)
+
+	var postMetricsBody string
+	postMetricsCmd.Flags().StringVar(&postMetricsBody, "body", "", "The request body")
+	postMetricsCmd.MarkFlagRequired("body")
 
 	ingestCmd.AddCommand(uploadFilesCmd)
 
