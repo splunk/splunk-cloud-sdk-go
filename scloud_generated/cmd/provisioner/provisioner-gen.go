@@ -8,112 +8,117 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/provisioner"
 )
 
-// createInvite -- Creates an invite to invite a person to the tenant using their email address
+// createInvite -- Creates an invitation for a person to join the tenant using their email address.
 var createInviteCmd = &cobra.Command{
 	Use:   "create-invite",
-	Short: "Creates an invite to invite a person to the tenant using their email address",
+	Short: "Creates an invitation for a person to join the tenant using their email address.",
 	RunE:  impl.CreateInvite,
 }
 
-// createProvisionJob -- Creates a new job that provisions a new tenant and subscribes apps to the tenant
+// createProvisionJob -- Creates a new job that provisions a new tenant and subscribes apps to the tenant.
 var createProvisionJobCmd = &cobra.Command{
 	Use:   "create-provision-job",
-	Short: "Creates a new job that provisions a new tenant and subscribes apps to the tenant",
+	Short: "Creates a new job that provisions a new tenant and subscribes apps to the tenant.",
 	RunE:  impl.CreateProvisionJob,
 }
 
-// deleteInvite -- Deletes an invite in the given tenant
+// deleteInvite -- Removes an invitation in the given tenant.
 var deleteInviteCmd = &cobra.Command{
 	Use:   "delete-invite",
-	Short: "Deletes an invite in the given tenant",
+	Short: "Removes an invitation in the given tenant.",
 	RunE:  impl.DeleteInvite,
 }
 
-// getInvite -- Gets an invite in the given tenant
+// getInvite -- Returns an invitation in the given tenant.
 var getInviteCmd = &cobra.Command{
 	Use:   "get-invite",
-	Short: "Gets an invite in the given tenant",
+	Short: "Returns an invitation in the given tenant.",
 	RunE:  impl.GetInvite,
 }
 
-// getProvisionJob -- Gets details of a specific provision job
+// getProvisionJob -- Returns details of a specific provision job.
 var getProvisionJobCmd = &cobra.Command{
 	Use:   "get-provision-job",
-	Short: "Gets details of a specific provision job",
+	Short: "Returns details of a specific provision job.",
 	RunE:  impl.GetProvisionJob,
 }
 
-// getTenant -- Gets a specific tenant
+// getTenant -- Returns a specific tenant.
 var getTenantCmd = &cobra.Command{
 	Use:   "get-tenant",
-	Short: "Gets a specific tenant",
+	Short: "Returns a specific tenant.",
 	RunE:  impl.GetTenant,
 }
 
-// listInvites -- Lists the invites in a given tenant
+// listInvites -- Returns a list of invitations in a given tenant.
 var listInvitesCmd = &cobra.Command{
 	Use:   "list-invites",
-	Short: "Lists the invites in a given tenant",
+	Short: "Returns a list of invitations in a given tenant.",
 	RunE:  impl.ListInvites,
 }
 
-// listProvisionJobs -- Lists all provision jobs created by the user
+// listProvisionJobs -- Returns a list of all provision jobs created by the user.
 var listProvisionJobsCmd = &cobra.Command{
 	Use:   "list-provision-jobs",
-	Short: "Lists all provision jobs created by the user",
+	Short: "Returns a list of all provision jobs created by the user.",
 	RunE:  impl.ListProvisionJobs,
 }
 
-// listTenants -- Lists all tenants that the user can read
+// listTenants -- Returns all tenants that the user can read.
 var listTenantsCmd = &cobra.Command{
 	Use:   "list-tenants",
-	Short: "Lists all tenants that the user can read",
+	Short: "Returns all tenants that the user can read.",
 	RunE:  impl.ListTenants,
 }
 
-// updateInvite -- Updates an invite in the given tenant
+// updateInvite -- Modifies an invitation in the given tenant.
 var updateInviteCmd = &cobra.Command{
 	Use:   "update-invite",
-	Short: "Updates an invite in the given tenant",
+	Short: "Modifies an invitation in the given tenant.",
 	RunE:  impl.UpdateInvite,
 }
 
 func init() {
 	provisionerCmd.AddCommand(createInviteCmd)
+
 	var createInviteEmail string
-	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "")
+	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "This is a required parameter.")
 	createInviteCmd.MarkFlagRequired("email")
 
 	var createInviteComment string
 	createInviteCmd.Flags().StringVar(&createInviteComment, "comment", "", "")
-	var createInviteGroups string
-	createInviteCmd.Flags().StringVar(&createInviteGroups, "groups", "", "")
+	var createInviteGroups []string
+	createInviteCmd.Flags().StringSliceVar(&createInviteGroups, "groups", nil, "")
 
 	provisionerCmd.AddCommand(createProvisionJobCmd)
 
-	var createProvisionJobApps string
-	createProvisionJobCmd.Flags().StringVar(&createProvisionJobApps, "apps", "", "")
+	var createProvisionJobApps []string
+	createProvisionJobCmd.Flags().StringSliceVar(&createProvisionJobApps, "apps", nil, "")
 	var createProvisionJobTenant string
 	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", "", "")
 
 	provisionerCmd.AddCommand(deleteInviteCmd)
+
 	var deleteInviteInviteId string
-	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "")
+	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "This is a required parameter.")
 	deleteInviteCmd.MarkFlagRequired("invite-id")
 
 	provisionerCmd.AddCommand(getInviteCmd)
+
 	var getInviteInviteId string
-	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "")
+	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "This is a required parameter.")
 	getInviteCmd.MarkFlagRequired("invite-id")
 
 	provisionerCmd.AddCommand(getProvisionJobCmd)
+
 	var getProvisionJobJobId string
-	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "")
+	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "This is a required parameter.")
 	getProvisionJobCmd.MarkFlagRequired("job-id")
 
 	provisionerCmd.AddCommand(getTenantCmd)
+
 	var getTenantTenantName string
-	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "")
+	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "This is a required parameter.")
 	getTenantCmd.MarkFlagRequired("tenant-name")
 
 	provisionerCmd.AddCommand(listInvitesCmd)
@@ -123,11 +128,12 @@ func init() {
 	provisionerCmd.AddCommand(listTenantsCmd)
 
 	provisionerCmd.AddCommand(updateInviteCmd)
+
 	var updateInviteAction string
-	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "")
+	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "This is a required parameter. can accept values accept, reject, resend")
 	updateInviteCmd.MarkFlagRequired("action")
 	var updateInviteInviteId string
-	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "")
+	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "This is a required parameter.")
 	updateInviteCmd.MarkFlagRequired("invite-id")
 
 }

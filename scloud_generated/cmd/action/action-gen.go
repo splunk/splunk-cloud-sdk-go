@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/action"
 )
 
-
 // createAction -- Creates an action template.
 var createActionCmd = &cobra.Command{
 	Use:   "create-action",
@@ -26,15 +25,12 @@ var createActionWebhookActionCmd = &cobra.Command{
 	RunE:  impl.CreateAction,
 }
 
-
-
 // deleteAction -- Removes an action template.
 var deleteActionCmd = &cobra.Command{
 	Use:   "delete-action",
 	Short: "Removes an action template.",
 	RunE:  impl.DeleteAction,
 }
-
 
 // getAction -- Returns a specific action template.
 var getActionCmd = &cobra.Command{
@@ -43,14 +39,12 @@ var getActionCmd = &cobra.Command{
 	RunE:  impl.GetAction,
 }
 
-
 // getActionStatus -- Returns the status of an action that was invoked. The status is available for 4 days after the last status change.
 var getActionStatusCmd = &cobra.Command{
 	Use:   "get-action-status",
 	Short: "Returns the status of an action that was invoked. The status is available for 4 days after the last status change.",
 	RunE:  impl.GetActionStatus,
 }
-
 
 // getActionStatusDetails -- Returns the status details of the invoked email action. The status is available for 4 days after the last status change.
 var getActionStatusDetailsCmd = &cobra.Command{
@@ -59,14 +53,12 @@ var getActionStatusDetailsCmd = &cobra.Command{
 	RunE:  impl.GetActionStatusDetails,
 }
 
-
 // getPublicWebhookKeys -- Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
 var getPublicWebhookKeysCmd = &cobra.Command{
 	Use:   "get-public-webhook-keys",
 	Short: "Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.",
 	RunE:  impl.GetPublicWebhookKeys,
 }
-
 
 // listActions -- Returns the list of action templates.
 var listActionsCmd = &cobra.Command{
@@ -75,14 +67,12 @@ var listActionsCmd = &cobra.Command{
 	RunE:  impl.ListActions,
 }
 
-
 // triggerAction -- Invokes an action.
 var triggerActionCmd = &cobra.Command{
 	Use:   "trigger-action",
 	Short: "Invokes an action.",
 	RunE:  impl.TriggerAction,
 }
-
 
 // updateAction -- Modifies an action template.
 var updateActionCmd = &cobra.Command{
@@ -100,9 +90,6 @@ var updateActionWebhookActionCmd = &cobra.Command{
 	Short: "Modifies an action template.",
 	RunE:  impl.UpdateAction,
 }
-
-
-
 
 func init() {
 	actionCmd.AddCommand(createActionCmd)
@@ -147,7 +134,6 @@ func init() {
 	var createActionEmailActionUpdatedBy string
 	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionUpdatedBy, "updated-by", "", "The principal that updated this action template.")
 
-
 	createActionCmd.AddCommand(createActionWebhookActionCmd)
 	var createActionWebhookActionCreatedAt string
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionCreatedAt, "created-at", "", "The date and time this action template was created (ISO-8601 date/time with zone).")
@@ -180,25 +166,17 @@ func init() {
 	var createActionWebhookActionWebhookUrl string
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookUrl, "webhook-url", "", "Only HTTPS is allowed.")
 
-
-
-
-
 	actionCmd.AddCommand(deleteActionCmd)
 
 	var deleteActionActionName string
 	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	deleteActionCmd.MarkFlagRequired("action-name")
 
-
-
 	actionCmd.AddCommand(getActionCmd)
 
 	var getActionActionName string
 	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionCmd.MarkFlagRequired("action-name")
-
-
 
 	actionCmd.AddCommand(getActionStatusCmd)
 
@@ -209,8 +187,6 @@ func init() {
 	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
 	getActionStatusCmd.MarkFlagRequired("status-id")
 
-
-
 	actionCmd.AddCommand(getActionStatusDetailsCmd)
 
 	var getActionStatusDetailsActionName string
@@ -220,17 +196,9 @@ func init() {
 	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
 	getActionStatusDetailsCmd.MarkFlagRequired("status-id")
 
-
-
 	actionCmd.AddCommand(getPublicWebhookKeysCmd)
 
-
-
-
 	actionCmd.AddCommand(listActionsCmd)
-
-
-
 
 	actionCmd.AddCommand(triggerActionCmd)
 
@@ -239,27 +207,25 @@ func init() {
 	triggerActionCmd.MarkFlagRequired("action-name")
 
 	var triggerActionActionMetadata string
-	triggerActionCmd.Flags().StringVar(&triggerActionActionMetadata, "action-metadata", "",  "")
+	triggerActionCmd.Flags().StringVar(&triggerActionActionMetadata, "action-metadata", "", "")
 	var triggerActionCreatedAt string
-	triggerActionCmd.Flags().StringVar(&triggerActionCreatedAt, "created-at", "",  "string-ified ISO-8601 date/time with zone.")
+	triggerActionCmd.Flags().StringVar(&triggerActionCreatedAt, "created-at", "", "string-ified ISO-8601 date/time with zone.")
 	var triggerActionCreatedBy string
-	triggerActionCmd.Flags().StringVar(&triggerActionCreatedBy, "created-by", "",  "The principal that generated the trigger event.")
+	triggerActionCmd.Flags().StringVar(&triggerActionCreatedBy, "created-by", "", "The principal that generated the trigger event.")
 	var triggerActionId string
-	triggerActionCmd.Flags().StringVar(&triggerActionId, "id", "",  "A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.")
+	triggerActionCmd.Flags().StringVar(&triggerActionId, "id", "", "A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.")
 	var triggerActionKind string
-	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "",  " can accept values trigger")
+	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "", " can accept values trigger")
 	var triggerActionPayload string
-	triggerActionCmd.Flags().StringVar(&triggerActionPayload, "payload", "",  "")
+	triggerActionCmd.Flags().StringVar(&triggerActionPayload, "payload", "", "")
 	var triggerActionTenant string
-	triggerActionCmd.Flags().StringVar(&triggerActionTenant, "tenant", "",  "The tenant within which the trigger event was generated.")
+	triggerActionCmd.Flags().StringVar(&triggerActionTenant, "tenant", "", "The tenant within which the trigger event was generated.")
 	var triggerActionTriggerCondition string
-	triggerActionCmd.Flags().StringVar(&triggerActionTriggerCondition, "trigger-condition", "",  "A description of the condition that caused the trigger event.")
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerCondition, "trigger-condition", "", "A description of the condition that caused the trigger event.")
 	var triggerActionTriggerName string
-	triggerActionCmd.Flags().StringVar(&triggerActionTriggerName, "trigger-name", "",  "The name of the trigger for which this event was created.")
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerName, "trigger-name", "", "The name of the trigger for which this event was created.")
 	var triggerActionTtlSeconds int32
-	triggerActionCmd.Flags().Int32Var(&triggerActionTtlSeconds, "ttl-seconds", 0,  "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
-
-
+	triggerActionCmd.Flags().Int32Var(&triggerActionTtlSeconds, "ttl-seconds", 0, "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
 
 	actionCmd.AddCommand(updateActionCmd)
 	updateActionCmd.AddCommand(updateActionEmailActionCmd)
@@ -288,7 +254,6 @@ func init() {
 	var updateActionEmailActionTitle string
 	updateActionEmailActionCmd.Flags().StringVar(&updateActionEmailActionTitle, "title", "", "A human-readable title for the action. Must be less than or equal to 128 characters.")
 
-
 	updateActionCmd.AddCommand(updateActionWebhookActionCmd)
 	var updateActionWebhookActionActionName string
 	updateActionWebhookActionCmd.Flags().StringVar(&updateActionWebhookActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
@@ -305,10 +270,5 @@ func init() {
 
 	var updateActionWebhookActionWebhookUrl string
 	updateActionWebhookActionCmd.Flags().StringVar(&updateActionWebhookActionWebhookUrl, "webhook-url", "", "Only HTTPS is allowed.")
-
-
-
-
-
 
 }

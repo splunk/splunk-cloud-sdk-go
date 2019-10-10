@@ -43,8 +43,9 @@ func init() {
 	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "")
 
 	forwardersCmd.AddCommand(deleteCertificateCmd)
+
 	var deleteCertificateSlot string
-	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", "", "")
+	deleteCertificateCmd.Flags().StringVar(&deleteCertificateSlot, "slot", "", "This is a required parameter.")
 	deleteCertificateCmd.MarkFlagRequired("slot")
 
 	forwardersCmd.AddCommand(deleteCertificatesCmd)
