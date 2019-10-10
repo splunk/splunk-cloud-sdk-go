@@ -5,6 +5,7 @@ package provisioner
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
@@ -40,8 +41,8 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.InviteBody{
 		Comment: comment,
-		Email: email,
-		Groups: groups,
+		Email:   email,
+		Groups:  groups,
 	}
 
 	resp, err := client.ProvisionerService.CreateInvite(body)
@@ -75,7 +76,7 @@ func CreateProvisionJob(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.CreateProvisionJobBody{
-		Apps: apps,
+		Apps:   apps,
 		Tenant: tenant,
 	}
 
@@ -102,7 +103,6 @@ func DeleteInvite(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
 	}
 
-
 	err = client.ProvisionerService.DeleteInvite(inviteId)
 	if err != nil {
 		return err
@@ -125,7 +125,6 @@ func GetInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
 	}
-
 
 	resp, err := client.ProvisionerService.GetInvite(inviteId)
 	if err != nil {
@@ -151,7 +150,6 @@ func GetProvisionJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
-
 	resp, err := client.ProvisionerService.GetProvisionJob(jobId)
 	if err != nil {
 		return err
@@ -176,7 +174,6 @@ func GetTenant(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "tenant-name": ` + err.Error())
 	}
 
-
 	resp, err := client.ProvisionerService.GetTenant(tenantName)
 	if err != nil {
 		return err
@@ -192,8 +189,6 @@ func ListInvites(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-
 
 	resp, err := client.ProvisionerService.ListInvites()
 	if err != nil {
@@ -212,8 +207,6 @@ func ListProvisionJobs(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-
-
 	resp, err := client.ProvisionerService.ListProvisionJobs()
 	if err != nil {
 		return err
@@ -230,8 +223,6 @@ func ListTenants(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-
 
 	resp, err := client.ProvisionerService.ListTenants()
 	if err != nil {
@@ -273,4 +264,3 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
-
