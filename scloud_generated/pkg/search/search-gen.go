@@ -7,58 +7,445 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/jsonx"
+	model "github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
-// CreateJob -- impl
+// CreateJob Creates a search job.
 func CreateJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateJob\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var allowSideEffects interface{}
+	err = flags.ParseFlag(cmd.Flags(), "allow-side-effects", &allowSideEffects)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-side-effects": ` + err.Error())
+	}
+	var collectEventSummary *bool
+	err = flags.ParseFlag(cmd.Flags(), "collect-event-summary", collectEventSummary)
+	if err != nil {
+		return fmt.Errorf(`error parsing "collect-event-summary": ` + err.Error())
+	}
+	var collectFieldSummary *bool
+	err = flags.ParseFlag(cmd.Flags(), "collect-field-summary", collectFieldSummary)
+	if err != nil {
+		return fmt.Errorf(`error parsing "collect-field-summary": ` + err.Error())
+	}
+	var collectTimeBuckets *bool
+	err = flags.ParseFlag(cmd.Flags(), "collect-time-buckets", collectTimeBuckets)
+	if err != nil {
+		return fmt.Errorf(`error parsing "collect-time-buckets": ` + err.Error())
+	}
+	var completionTime *string
+	err = flags.ParseFlag(cmd.Flags(), "completion-time", completionTime)
+	if err != nil {
+		return fmt.Errorf(`error parsing "completion-time": ` + err.Error())
+	}
+	var dispatchTime *string
+	err = flags.ParseFlag(cmd.Flags(), "dispatch-time", dispatchTime)
+	if err != nil {
+		return fmt.Errorf(`error parsing "dispatch-time": ` + err.Error())
+	}
+	var enablePreview *bool
+	err = flags.ParseFlag(cmd.Flags(), "enable-preview", enablePreview)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enable-preview": ` + err.Error())
+	}
+	var extractAllFields *bool
+	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", extractAllFields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
+	}
+	var maxTime *float32
+	err = flags.ParseFlag(cmd.Flags(), "max-time", maxTime)
+	if err != nil {
+		return fmt.Errorf(`error parsing "max-time": ` + err.Error())
+	}
+	var messages []model.Message
+	err = flags.ParseFlag(cmd.Flags(), "messages", &messages)
+	if err != nil {
+		return fmt.Errorf(`error parsing "messages": ` + err.Error())
+	}
+	var module *string
+	err = flags.ParseFlag(cmd.Flags(), "module", module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var name *string
+	err = flags.ParseFlag(cmd.Flags(), "name", name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var percentComplete *int32
+	err = flags.ParseFlag(cmd.Flags(), "percent-complete", percentComplete)
+	if err != nil {
+		return fmt.Errorf(`error parsing "percent-complete": ` + err.Error())
+	}
+	var previewAvailable *string
+	err = flags.ParseFlag(cmd.Flags(), "preview-available", previewAvailable)
+	if err != nil {
+		return fmt.Errorf(`error parsing "preview-available": ` + err.Error())
+	}
+	var query string
+	err = flags.ParseFlag(cmd.Flags(), "query", &query)
+	if err != nil {
+		return fmt.Errorf(`error parsing "query": ` + err.Error())
+	}
+	var queryParameters *model.QueryParameters
+	err = flags.ParseFlag(cmd.Flags(), "query-parameters", queryParameters)
+	if err != nil {
+		return fmt.Errorf(`error parsing "query-parameters": ` + err.Error())
+	}
+	var resolvedEarliest *string
+	err = flags.ParseFlag(cmd.Flags(), "resolved-earliest", resolvedEarliest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "resolved-earliest": ` + err.Error())
+	}
+	var resolvedLatest *string
+	err = flags.ParseFlag(cmd.Flags(), "resolved-latest", resolvedLatest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "resolved-latest": ` + err.Error())
+	}
+	var resultsAvailable *int32
+	err = flags.ParseFlag(cmd.Flags(), "results-available", resultsAvailable)
+	if err != nil {
+		return fmt.Errorf(`error parsing "results-available": ` + err.Error())
+	}
+	var resultsPreviewAvailable *int32
+	err = flags.ParseFlag(cmd.Flags(), "results-preview-available", resultsPreviewAvailable)
+	if err != nil {
+		return fmt.Errorf(`error parsing "results-preview-available": ` + err.Error())
+	}
+	var sid *string
+	err = flags.ParseFlag(cmd.Flags(), "sid", sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	var status *model.SearchStatus
+	err = flags.ParseFlag(cmd.Flags(), "status", status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+
+	// Form the request body
+	body := model.SearchJob{
+		AllowSideEffects:        allowSideEffects,
+		CollectEventSummary:     collectEventSummary,
+		CollectFieldSummary:     collectFieldSummary,
+		CollectTimeBuckets:      collectTimeBuckets,
+		CompletionTime:          completionTime,
+		DispatchTime:            dispatchTime,
+		EnablePreview:           enablePreview,
+		ExtractAllFields:        extractAllFields,
+		MaxTime:                 maxTime,
+		Messages:                messages,
+		Module:                  module,
+		Name:                    name,
+		PercentComplete:         percentComplete,
+		PreviewAvailable:        previewAvailable,
+		Query:                   query,
+		QueryParameters:         queryParameters,
+		ResolvedEarliest:        resolvedEarliest,
+		ResolvedLatest:          resolvedLatest,
+		ResultsAvailable:        resultsAvailable,
+		ResultsPreviewAvailable: resultsPreviewAvailable,
+		Sid:                     sid,
+		Status:                  status,
+	}
+
+	resp, err := client.SearchService.CreateJob(body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// GetJob -- impl
+// GetJob Return the search job with the specified search ID (SID).
 func GetJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetJob\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+
+	resp, err := client.SearchService.GetJob(sid)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListEventsSummary -- impl
+// ListEventsSummary Return events summary, for search ID (SID) search.
 func ListEventsSummary(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListEventsSummary\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var count *float32
+	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	if err != nil {
+		return fmt.Errorf(`error parsing "count": ` + err.Error())
+	}
+	var earliest string
+	err = flags.ParseFlag(cmd.Flags(), "earliest", &earliest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "earliest": ` + err.Error())
+	}
+	var field string
+	err = flags.ParseFlag(cmd.Flags(), "field", &field)
+	if err != nil {
+		return fmt.Errorf(`error parsing "field": ` + err.Error())
+	}
+	var latest string
+	err = flags.ParseFlag(cmd.Flags(), "latest", &latest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "latest": ` + err.Error())
+	}
+	var offset *float32
+	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	// Form query params
+	query := model.ListEventsSummaryQueryParams{}
+	query.Count = count
+	query.Earliest = earliest
+	query.Field = field
+	query.Latest = latest
+	query.Offset = offset
+
+	resp, err := client.SearchService.ListEventsSummary(sid, &query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListFieldsSummary -- impl
+// ListFieldsSummary Return fields stats summary of the events to-date, for search ID (SID) search.
 func ListFieldsSummary(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListFieldsSummary\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var earliest string
+	err = flags.ParseFlag(cmd.Flags(), "earliest", &earliest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "earliest": ` + err.Error())
+	}
+	var latest string
+	err = flags.ParseFlag(cmd.Flags(), "latest", &latest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "latest": ` + err.Error())
+	}
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	// Form query params
+	query := model.ListFieldsSummaryQueryParams{}
+	query.Earliest = earliest
+	query.Latest = latest
+
+	resp, err := client.SearchService.ListFieldsSummary(sid, &query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListJobs -- impl
+// ListJobs Return the matching list of search jobs.
 func ListJobs(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListJobs\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var count *float32
+	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	if err != nil {
+		return fmt.Errorf(`error parsing "count": ` + err.Error())
+	}
+	var status *model.SearchStatus
+	err = flags.ParseFlag(cmd.Flags(), "status", status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+	// Form query params
+	query := model.ListJobsQueryParams{}
+	query.Count = count
+	query.Status = status
+
+	resp, err := client.SearchService.ListJobs(&query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListPreviewResults -- impl
+// ListPreviewResults Return the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
 func ListPreviewResults(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListPreviewResults\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var count *float32
+	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	if err != nil {
+		return fmt.Errorf(`error parsing "count": ` + err.Error())
+	}
+	var offset *float32
+	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	// Form query params
+	query := model.ListPreviewResultsQueryParams{}
+	query.Count = count
+	query.Offset = offset
+
+	resp, err := client.SearchService.ListPreviewResults(sid, &query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListResults -- impl
+// ListResults Return the search results for the job with the specified search ID (SID).
 func ListResults(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListResults\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var count *float32
+	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	if err != nil {
+		return fmt.Errorf(`error parsing "count": ` + err.Error())
+	}
+	var field string
+	err = flags.ParseFlag(cmd.Flags(), "field", &field)
+	if err != nil {
+		return fmt.Errorf(`error parsing "field": ` + err.Error())
+	}
+	var offset *float32
+	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	// Form query params
+	query := model.ListResultsQueryParams{}
+	query.Count = count
+	query.Field = field
+	query.Offset = offset
+
+	resp, err := client.SearchService.ListResults(sid, &query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// ListTimeBuckets -- impl
+// ListTimeBuckets Return event distribution over time of the untransformed events read to-date, for search ID(SID) search.
 func ListTimeBuckets(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListTimeBuckets\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+
+	resp, err := client.SearchService.ListTimeBuckets(sid)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
-// UpdateJob -- impl
+// UpdateJob Update the search job with the specified search ID (SID) with an action.
 func UpdateJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateJob\n")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	var status model.UpdateJobStatus
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+
+	// Form the request body
+	body := model.UpdateJob{
+		Status: status,
+	}
+
+	resp, err := client.SearchService.UpdateJob(sid, body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
