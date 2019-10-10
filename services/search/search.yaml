@@ -220,6 +220,11 @@ components:
             The time, in GMT, that the search job is dispatched.
           readOnly: true
           type: string
+        enablePreview:
+          default: false
+          description: |
+            Specified whether a search is allowed to collect preview results during the run time.
+          type: boolean
         extractAllFields:
           default: false
           description: |
@@ -251,6 +256,12 @@ components:
             completes.
           readOnly: true
           type: integer
+        previewAvailable:
+          default: false
+          description: Specifies if preview results for the search job are available.
+            The valid status values are 'unknown', 'true', and 'false'.
+          readOnly: true
+          type: string
         query:
           description: The SPL search string.
           format: SPL (v2)
@@ -273,6 +284,12 @@ components:
         resultsAvailable:
           default: 0
           description: The number of results produced so far for the search job.
+          readOnly: true
+          type: integer
+        resultsPreviewAvailable:
+          default: 0
+          description: The number of the preview search results for the job with the
+            specified search ID (SID)
           readOnly: true
           type: integer
         sid:
@@ -407,6 +424,53 @@ components:
       required:
       - status
       type: object
+    listPreviewResultsResponse:
+      description: The structure of the preview search results that is returned for
+        the job with the specified search ID (SID). When search is running, it might
+        return incomplete or truncated search results. The isPreviewStable property
+        indicates whether the returned preview results stucture is stable or not.
+        Truncated preview results occur because the number of requested results exceeds
+        the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+      properties:
+        fields:
+          items:
+            properties:
+              dataSource:
+                type: string
+              groupbyRank:
+                type: string
+              name:
+                type: string
+              splitField:
+                type: string
+              splitValue:
+                type: string
+              splitbySpecial:
+                type: string
+              typeSpecial:
+                type: string
+            required:
+            - name
+            type: object
+          type: array
+        isPreviewStable:
+          type: boolean
+        messages:
+          items:
+            $ref: '#/components/schemas/Message'
+          type: array
+        nextLink:
+          type: string
+        results:
+          items:
+            type: object
+          type: array
+        wait:
+          type: string
+      required:
+      - results
+      - isPreviewStable
+      type: object
   securitySchemes:
     BasicAuth:
       scheme: basic
@@ -417,7 +481,7 @@ info:
     results and events, and request search-related configurations from the Metadata
     Catalog service.
   title: Splunk Search Service
-  version: v2beta1.0
+  version: v2beta1.1
 openapi: 3.0.0
 paths:
   /{tenant}/search/v2beta1/jobs:
@@ -554,6 +618,37 @@ paths:
           description: Invalid sid for getting the search job status or results.
         "500":
           description: Internal service error.
+  /{tenant}/search/v2beta1/jobs/{sid}/results-preview:
+    get:
+      description: Return the preview search results for the job with the specified
+        search ID (SID). Can be used when a job is running to return interim results.
+      operationId: listPreviewResults
+      parameters:
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/count'
+      - $ref: '#/components/parameters/offset'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPreviewResultsResponse'
+          description: Preview search results, if ready, have been returned. If there
+            are additional results, a 'nextLink' URL is provided.
+        "204":
+          description: The preview search results are not ready.
+        "400":
+          description: The request is invalid.
+        "401":
+          description: The request requires authentication.
+        "403":
+          description: The request was not authorized.
+        "404":
+          description: Either an invalid sid (search ID) for the search job status,
+            or preview search results is disabled.
+        "500":
+          description: Internal service error.
   /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/events-summary:
     get:
       description: Return events summary, for search ID (SID) search.
@@ -642,4 +737,4 @@ paths:
         "500":
           description: Internal service error.
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 6ca64a2c2cc39a3823bc044f6dd8d47c545205aa path: search/v2beta1/openapi.yaml
