@@ -17,12 +17,12 @@ var createActionCmd = &cobra.Command{
 var createActionEmailActionCmd = &cobra.Command{
 	Use:   "email-action",
 	Short: "Creates an action template.",
-	RunE:  impl.CreateAction,
+	RunE:  impl.CreateActionEmailAction,
 }
 var createActionWebhookActionCmd = &cobra.Command{
 	Use:   "webhook-action",
 	Short: "Creates an action template.",
-	RunE:  impl.CreateAction,
+	RunE:  impl.CreateActionWebhookAction,
 }
 
 // deleteAction -- Removes an action template.
@@ -83,12 +83,12 @@ var updateActionCmd = &cobra.Command{
 var updateActionEmailActionCmd = &cobra.Command{
 	Use:   "email-action",
 	Short: "Modifies an action template.",
-	RunE:  impl.UpdateAction,
+	RunE:  impl.UpdateActionEmailAction,
 }
 var updateActionWebhookActionCmd = &cobra.Command{
 	Use:   "webhook-action",
 	Short: "Modifies an action template.",
-	RunE:  impl.UpdateAction,
+	RunE:  impl.UpdateActionWebhookAction,
 }
 
 func init() {
