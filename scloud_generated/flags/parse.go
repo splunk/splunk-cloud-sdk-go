@@ -13,17 +13,27 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 	if flag == nil {
 		return fmt.Errorf("flags.ParseFlag: no flag defined, flag was nil")
 	}
-	if !flag.Changed {
-		// If no value set by user, do not parse it here (use Go's default)
-		// TODO: support defaults if specified in the flag
-		return nil
-	}
 	val := reflect.ValueOf(out)
 	if val.Kind() != reflect.Ptr {
 		return fmt.Errorf("flags.ParseFlag: must accept a pointer to value")
 	}
 	// Follow the pointer
 	deref := val.Elem()
+	if !flag.Changed {
+		// If no value set by user set to nil for optional or leave as Go's default for required
+		if deref.Kind() == reflect.Ptr {
+			if !deref.CanSet() {
+				return fmt.Errorf("flags.ParseFlag: value must be settable")
+			}
+			deref.Set(reflect.Zero(deref.Type()))
+		}
+		// TODO: support defaults if specified in the flag
+		return nil
+	}
+	if deref.Kind() == reflect.Ptr {
+		// Optional flags will be a pointer to a pointer, deref again
+		deref = deref.Elem()
+	}
 	if !deref.CanSet() {
 		return fmt.Errorf("flags.ParseFlag: value must be settable")
 	}

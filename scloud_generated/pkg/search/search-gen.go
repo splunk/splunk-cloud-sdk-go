@@ -27,43 +27,39 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "allow-side-effects": ` + err.Error())
 	}
-	var collectEventSummary *bool
-	err = flags.ParseFlag(cmd.Flags(), "collect-event-summary", collectEventSummary)
+	var collectEventSummaryDefault bool
+	collectEventSummary := &collectEventSummaryDefault
+	err = flags.ParseFlag(cmd.Flags(), "collect-event-summary", &collectEventSummary)
 	if err != nil {
 		return fmt.Errorf(`error parsing "collect-event-summary": ` + err.Error())
 	}
-	var collectFieldSummary *bool
-	err = flags.ParseFlag(cmd.Flags(), "collect-field-summary", collectFieldSummary)
+	var collectFieldSummaryDefault bool
+	collectFieldSummary := &collectFieldSummaryDefault
+	err = flags.ParseFlag(cmd.Flags(), "collect-field-summary", &collectFieldSummary)
 	if err != nil {
 		return fmt.Errorf(`error parsing "collect-field-summary": ` + err.Error())
 	}
-	var collectTimeBuckets *bool
-	err = flags.ParseFlag(cmd.Flags(), "collect-time-buckets", collectTimeBuckets)
+	var collectTimeBucketsDefault bool
+	collectTimeBuckets := &collectTimeBucketsDefault
+	err = flags.ParseFlag(cmd.Flags(), "collect-time-buckets", &collectTimeBuckets)
 	if err != nil {
 		return fmt.Errorf(`error parsing "collect-time-buckets": ` + err.Error())
 	}
-	var completionTime *string
-	err = flags.ParseFlag(cmd.Flags(), "completion-time", completionTime)
-	if err != nil {
-		return fmt.Errorf(`error parsing "completion-time": ` + err.Error())
-	}
-	var dispatchTime *string
-	err = flags.ParseFlag(cmd.Flags(), "dispatch-time", dispatchTime)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dispatch-time": ` + err.Error())
-	}
-	var enablePreview *bool
-	err = flags.ParseFlag(cmd.Flags(), "enable-preview", enablePreview)
+	var enablePreviewDefault bool
+	enablePreview := &enablePreviewDefault
+	err = flags.ParseFlag(cmd.Flags(), "enable-preview", &enablePreview)
 	if err != nil {
 		return fmt.Errorf(`error parsing "enable-preview": ` + err.Error())
 	}
-	var extractAllFields *bool
-	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", extractAllFields)
+	var extractAllFieldsDefault bool
+	extractAllFields := &extractAllFieldsDefault
+	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", &extractAllFields)
 	if err != nil {
 		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
 	}
-	var maxTime *float32
-	err = flags.ParseFlag(cmd.Flags(), "max-time", maxTime)
+	var maxTimeDefault float32
+	maxTime := &maxTimeDefault
+	err = flags.ParseFlag(cmd.Flags(), "max-time", &maxTime)
 	if err != nil {
 		return fmt.Errorf(`error parsing "max-time": ` + err.Error())
 	}
@@ -72,91 +68,44 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "messages": ` + err.Error())
 	}
-	var module *string
-	err = flags.ParseFlag(cmd.Flags(), "module", module)
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var name *string
-	err = flags.ParseFlag(cmd.Flags(), "name", name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var percentComplete *int32
-	err = flags.ParseFlag(cmd.Flags(), "percent-complete", percentComplete)
-	if err != nil {
-		return fmt.Errorf(`error parsing "percent-complete": ` + err.Error())
-	}
-	var previewAvailable *string
-	err = flags.ParseFlag(cmd.Flags(), "preview-available", previewAvailable)
-	if err != nil {
-		return fmt.Errorf(`error parsing "preview-available": ` + err.Error())
 	}
 	var query string
 	err = flags.ParseFlag(cmd.Flags(), "query", &query)
 	if err != nil {
 		return fmt.Errorf(`error parsing "query": ` + err.Error())
 	}
-	var queryParameters *model.QueryParameters
-	err = flags.ParseFlag(cmd.Flags(), "query-parameters", queryParameters)
+	var queryParametersDefault model.QueryParameters
+	queryParameters := &queryParametersDefault
+	err = flags.ParseFlag(cmd.Flags(), "query-parameters", &queryParameters)
 	if err != nil {
 		return fmt.Errorf(`error parsing "query-parameters": ` + err.Error())
 	}
-	var resolvedEarliest *string
-	err = flags.ParseFlag(cmd.Flags(), "resolved-earliest", resolvedEarliest)
-	if err != nil {
-		return fmt.Errorf(`error parsing "resolved-earliest": ` + err.Error())
-	}
-	var resolvedLatest *string
-	err = flags.ParseFlag(cmd.Flags(), "resolved-latest", resolvedLatest)
-	if err != nil {
-		return fmt.Errorf(`error parsing "resolved-latest": ` + err.Error())
-	}
-	var resultsAvailable *int32
-	err = flags.ParseFlag(cmd.Flags(), "results-available", resultsAvailable)
-	if err != nil {
-		return fmt.Errorf(`error parsing "results-available": ` + err.Error())
-	}
-	var resultsPreviewAvailable *int32
-	err = flags.ParseFlag(cmd.Flags(), "results-preview-available", resultsPreviewAvailable)
-	if err != nil {
-		return fmt.Errorf(`error parsing "results-preview-available": ` + err.Error())
-	}
-	var sid *string
-	err = flags.ParseFlag(cmd.Flags(), "sid", sid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sid": ` + err.Error())
-	}
-	var status *model.SearchStatus
-	err = flags.ParseFlag(cmd.Flags(), "status", status)
+	var statusDefault model.SearchStatus
+	status := &statusDefault
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
 	}
 
 	// Form the request body
 	body := model.SearchJob{
-		AllowSideEffects:        allowSideEffects,
-		CollectEventSummary:     collectEventSummary,
-		CollectFieldSummary:     collectFieldSummary,
-		CollectTimeBuckets:      collectTimeBuckets,
-		CompletionTime:          completionTime,
-		DispatchTime:            dispatchTime,
-		EnablePreview:           enablePreview,
-		ExtractAllFields:        extractAllFields,
-		MaxTime:                 maxTime,
-		Messages:                messages,
-		Module:                  module,
-		Name:                    name,
-		PercentComplete:         percentComplete,
-		PreviewAvailable:        previewAvailable,
-		Query:                   query,
-		QueryParameters:         queryParameters,
-		ResolvedEarliest:        resolvedEarliest,
-		ResolvedLatest:          resolvedLatest,
-		ResultsAvailable:        resultsAvailable,
-		ResultsPreviewAvailable: resultsPreviewAvailable,
-		Sid:                     sid,
-		Status:                  status,
+		AllowSideEffects:    allowSideEffects,
+		CollectEventSummary: collectEventSummary,
+		CollectFieldSummary: collectFieldSummary,
+		CollectTimeBuckets:  collectTimeBuckets,
+		EnablePreview:       enablePreview,
+		ExtractAllFields:    extractAllFields,
+		MaxTime:             maxTime,
+		Messages:            messages,
+		Module:              module,
+		Query:               query,
+		QueryParameters:     queryParameters,
+		Status:              status,
 	}
 
 	resp, err := client.SearchService.CreateJob(body)
@@ -199,8 +148,9 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var count *float32
-	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	var countDefault float32
+	count := &countDefault
+	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
@@ -219,8 +169,9 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "latest": ` + err.Error())
 	}
-	var offset *float32
-	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	var offsetDefault float32
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
 		return fmt.Errorf(`error parsing "offset": ` + err.Error())
 	}
@@ -291,13 +242,15 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var count *float32
-	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	var countDefault float32
+	count := &countDefault
+	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
-	var status *model.SearchStatus
-	err = flags.ParseFlag(cmd.Flags(), "status", status)
+	var statusDefault model.SearchStatus
+	status := &statusDefault
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
 	}
@@ -323,13 +276,15 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var count *float32
-	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	var countDefault float32
+	count := &countDefault
+	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
-	var offset *float32
-	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	var offsetDefault float32
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
 		return fmt.Errorf(`error parsing "offset": ` + err.Error())
 	}
@@ -360,8 +315,9 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var count *float32
-	err = flags.ParseFlag(cmd.Flags(), "count", count)
+	var countDefault float32
+	count := &countDefault
+	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
@@ -370,8 +326,9 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "field": ` + err.Error())
 	}
-	var offset *float32
-	err = flags.ParseFlag(cmd.Flags(), "offset", offset)
+	var offsetDefault float32
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
 		return fmt.Errorf(`error parsing "offset": ` + err.Error())
 	}
