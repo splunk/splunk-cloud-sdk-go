@@ -32,7 +32,7 @@ func TestCRUDJob(t *testing.T) {
 		Name:        fmt.Sprintf("gointegCollectJob%d", testutils.TimeSec),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
+		ScalePolicy: collect.ScalePolicy{Static:collect.StaticScale{Workers:2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -69,7 +69,7 @@ func TestPatchJob(t *testing.T) {
 		Name:        fmt.Sprintf("gointegCollectPatchJob%d", testutils.TimeSec),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
+		ScalePolicy: collect.ScalePolicy{Static:collect.StaticScale{Workers:2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -89,12 +89,13 @@ func TestPatchJob(t *testing.T) {
 
 func TestPatchJobs(t *testing.T) {
 	client := getSdkClient(t)
+
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
 		Name:        fmt.Sprintf("gointegCollectPatchJobs%d", testutils.TimeSec),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: map[string]interface{}{"static": map[string]interface{}{"workers": 2}},
+		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -115,12 +116,10 @@ func TestPatchJobs(t *testing.T) {
 	job1, err := client.CollectService.GetJob(jobId)
 	require.Nil(t, err)
 	require.NotNil(t, job1.Data.Name)
-	static := job1.Data.ScalePolicy["static"]
+	static := job1.Data.ScalePolicy.Static
 	require.NotNil(t, static)
 
-	work, ok := static.(map[string]interface{})
-	require.True(t, ok)
+	work := static.Workers
 	require.NotNil(t, work)
-	require.Equal(t, (float64)(1), work["workers"])
-
+	require.Equal(t, (float64)(1), work)
 }
