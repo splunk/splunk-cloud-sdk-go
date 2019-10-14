@@ -45,6 +45,12 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "collect-time-buckets": ` + err.Error())
 	}
+	var earliestDefault string
+	earliest := &earliestDefault
+	err = flags.ParseFlag(cmd.Flags(), "earliest", &earliest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "earliest": ` + err.Error())
+	}
 	var enablePreviewDefault bool
 	enablePreview := &enablePreviewDefault
 	err = flags.ParseFlag(cmd.Flags(), "enable-preview", &enablePreview)
@@ -56,6 +62,12 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", &extractAllFields)
 	if err != nil {
 		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
+	}
+	var latestDefault string
+	latest := &latestDefault
+	err = flags.ParseFlag(cmd.Flags(), "latest", &latest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "latest": ` + err.Error())
 	}
 	var maxTimeDefault float32
 	maxTime := &maxTimeDefault
@@ -79,17 +91,22 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "query": ` + err.Error())
 	}
-	var queryParametersDefault model.QueryParameters
-	queryParameters := &queryParametersDefault
-	err = flags.ParseFlag(cmd.Flags(), "query-parameters", &queryParameters)
+	var relativeTimeAnchorDefault string
+	relativeTimeAnchor := &relativeTimeAnchorDefault
+	err = flags.ParseFlag(cmd.Flags(), "relative-time-anchor", &relativeTimeAnchor)
 	if err != nil {
-		return fmt.Errorf(`error parsing "query-parameters": ` + err.Error())
+		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
 	}
 	var statusDefault model.SearchStatus
 	status := &statusDefault
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+	var timezone interface{}
+	err = flags.ParseFlag(cmd.Flags(), "timezone", &timezone)
+	if err != nil {
+		return fmt.Errorf(`error parsing "timezone": ` + err.Error())
 	}
 
 	// Form the request body
@@ -104,8 +121,13 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 		Messages:            messages,
 		Module:              module,
 		Query:               query,
-		QueryParameters:     queryParameters,
-		Status:              status,
+		QueryParameters: &model.QueryParameters{
+			Earliest:           earliest,
+			Latest:             latest,
+			RelativeTimeAnchor: relativeTimeAnchor,
+			Timezone:           timezone,
+		},
+		Status: status,
 	}
 
 	resp, err := client.SearchService.CreateJob(body)
