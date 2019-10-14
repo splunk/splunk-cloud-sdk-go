@@ -1845,12 +1845,26 @@ type IndexDataset struct {
 	Resourcename string `json:"resourcename"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the events in this index.
+	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The latest index time for any of the events in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
 	Title *string `json:"title,omitempty"`
+	// The number of events in the index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// The raw size, in bytes, of the uncompressed data in the indexers.
+	TotalSize *int32 `json:"totalSize,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -1902,6 +1916,25 @@ type IndexDatasetProperties struct {
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32            `json:"frozenTimePeriodInSecs,omitempty"`
 	Kind                   *IndexDatasetKind `json:"kind,omitempty"`
+}
+
+// Properties of index datasets which can only be read through the API.
+type IndexDatasetReadOnlyProperties struct {
+	// The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the events in this index.
+	EarliestIngestTime *string           `json:"earliestIngestTime,omitempty"`
+	Kind               *IndexDatasetKind `json:"kind,omitempty"`
+	// The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The latest index time for any of the events in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// The number of events in the index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// The raw size, in bytes, of the uncompressed data in the indexers.
+	TotalSize *int32 `json:"totalSize,omitempty"`
 }
 
 // A complete job dataset as rendered in POST, PATCH, and GET responses.
@@ -1957,6 +1990,8 @@ type JobDataset struct {
 	HasSideEffects *bool `json:"hasSideEffects,omitempty"`
 	// The maximum number of seconds to run this search before finishing.
 	MaxTime *int32 `json:"maxTime,omitempty"`
+	// The parent's ID of the search job.
+	Parent *string `json:"parent,omitempty"`
 	// An estimate of how complete the search job is.
 	PercentComplete *int32 `json:"percentComplete,omitempty"`
 	// The instantaneous number of results produced by the search job.
@@ -2035,6 +2070,8 @@ type JobDatasetPatch struct {
 	Owner *string `json:"owner,omitempty"`
 	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
 	Parameters map[string]interface{} `json:"parameters,omitempty"`
+	// The parent's ID of the search job.
+	Parent *string `json:"parent,omitempty"`
 	// An estimate of how complete the search job is.
 	PercentComplete *int32 `json:"percentComplete,omitempty"`
 	// The SPL query string for the search job.
@@ -2097,6 +2134,8 @@ type JobDatasetPost struct {
 	MaxTime *int32 `json:"maxTime,omitempty"`
 	// The name of the module to create the new dataset in.
 	Module *string `json:"module,omitempty"`
+	// The parent's ID of the search job.
+	Parent *string `json:"parent,omitempty"`
 	// An estimate of how complete the search job is.
 	PercentComplete *int32 `json:"percentComplete,omitempty"`
 	// The instantaneous number of results produced by the search job.
@@ -2135,6 +2174,8 @@ type JobDatasetProperties struct {
 	MaxTime *int32 `json:"maxTime,omitempty"`
 	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
 	Parameters map[string]interface{} `json:"parameters,omitempty"`
+	// The parent's ID of the search job.
+	Parent *string `json:"parent,omitempty"`
 	// An estimate of how complete the search job is.
 	PercentComplete *int32 `json:"percentComplete,omitempty"`
 	// The SPL query string for the search job.
@@ -2451,12 +2492,26 @@ type MetricDataset struct {
 	Resourcename string `json:"resourcename"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the metric index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
 	Title *string `json:"title,omitempty"`
+	// THe number of measures in the metric index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// For metrics indexes, the totalSize is set to 0.
+	TotalSize *int32 `json:"totalSize,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -2508,6 +2563,25 @@ type MetricDatasetProperties struct {
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32             `json:"frozenTimePeriodInSecs,omitempty"`
 	Kind                   *MetricDatasetKind `json:"kind,omitempty"`
+}
+
+// Properties of metric datasets which can only be read through the API.
+type MetricDatasetReadOnlyProperties struct {
+	// The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	EarliestIngestTime *string            `json:"earliestIngestTime,omitempty"`
+	Kind               *MetricDatasetKind `json:"kind,omitempty"`
+	// The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the metric index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// THe number of measures in the metric index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// For metrics indexes, the totalSize is set to 0.
+	TotalSize *int32 `json:"totalSize,omitempty"`
 }
 
 // The name of a module.

@@ -12,7 +12,7 @@ components:
         type: string
     AuthorizationHeaderParam:
       description: The access token, which is obtained from a known identity provider.
-      in: headeråç
+      in: header
       name: Authorization
       required: true
       schema:
@@ -20,7 +20,7 @@ components:
         type: string
     EntryName:
       description: The name of the trigger map entry.
-      in: pathå
+      in: path
       name: entry_name
       required: true
       schema:
@@ -159,7 +159,7 @@ components:
           description: Optional text to send as the text/plain part of the email.
             If this field is not set for an email action, the Action service converts
             the value from the body field to text and sends that as the text/plain
-            part when triggering the action. You can use a template in this field.
+            part when invoking the action. You can use a template in this field.
           example: Hello, this is my test email.
           type: string
         fromName:
@@ -267,8 +267,6 @@ components:
           format: int32
           minimum: 1
           type: integer
-      required:
-      - kind
       type: object
     TriggerEventKind:
       default: trigger
@@ -296,7 +294,7 @@ components:
           type: object
         webhookPayload:
           description: |
-            The (possibly) templated payload body, which is POSTed to the webhookUrl when triggered.
+            The (possibly) templated payload body, which is POSTed to the webhookUrl when invoked.
           type: string
         webhookUrl:
           description: |
@@ -306,9 +304,9 @@ components:
       type: object
 info:
   description: |
-    With the Splunk Cloud Action service, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
+    With the Action service in Splunk Cloud Services, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
   title: Action Service
-  version: v1beta2.9
+  version: v1beta2.11
 openapi: 3.0.0
 paths:
   /{tenant}/action/v1beta2/actions:
@@ -517,7 +515,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Triggers an action.
+      summary: Invokes an action.
       tags:
       - Actions
       x-authz-scope: action.actions.invoke
@@ -543,8 +541,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status of a triggered action.  Available for 4 days after
-        last status change.
+      summary: Returns the status of an action that was invoked. The status is available
+        for 4 days after the last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -577,8 +575,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status details of the triggered email action.  Available
-        for 4 days after last status change.
+      summary: Returns the status details of the invoked email action. The status
+        is available for 4 days after the last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -611,4 +609,4 @@ paths:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: action/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: action/v1beta2/openapi.yaml
