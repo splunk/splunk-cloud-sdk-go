@@ -920,6 +920,11 @@ components:
           - REX
           - BIN
           - RENAME
+          - STATS
+          - STATS_BY
+          - SELECT
+          - EXPRESSION
+          - FUNCTION
           - LITERAL
           - UNKNOWN
           example: ""
@@ -1178,10 +1183,10 @@ components:
           type: array
       type: object
 info:
-  description: With the Splunk Cloud Data Stream Processing service, you can perform
-    create, read, update, and delete (CRUD) operations on your data pipeline. The
-    Streams API also has metrics and preview session endpoints and gives you full
-    control over your data pipeline
+  description: With the Streams service in Splunk Cloud Services, you can perform
+    create, read, update, and delete (CRUD) operations on your data pipeline.The Streams
+    service in Splunk Cloud Services also has metrics and preview session endpoints
+    and gives you full control over your data pipeline.
   title: Data Stream Processing REST API
   version: v2beta1.2
 openapi: 3.0.1
@@ -2968,4 +2973,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: streams/v2beta1/openapi.yaml

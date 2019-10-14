@@ -8,6 +8,14 @@ components:
       schema:
         pattern: ^Bearer .+
         type: string
+    Entitlement:
+      in: path
+      name: entitlement
+      required: true
+      schema:
+        maxLength: 100
+        minLength: 4
+        type: string
     InviteId:
       in: path
       name: inviteId
@@ -41,11 +49,11 @@ components:
         minLength: 4
         type: string
   requestBodies:
-    UpdateEntitlementsBody:
+    SetEntitlement:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/UpdateEntitlementsBody'
+            $ref: '#/components/schemas/SetEntitlement'
       required: true
   schemas:
     AnyValue: {}
@@ -78,6 +86,31 @@ components:
       - tenant
       - action
       type: object
+    Entitlement:
+      properties:
+        name:
+          type: string
+        sku:
+          maxLength: 100
+          minLength: 2
+          type: string
+        status:
+          $ref: '#/components/schemas/EntitlementStatus'
+        updatedAt:
+          format: date-time
+          type: string
+        updatedBy:
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - name
+      - sku
+      - value
+      - updatedAt
+      - updatedBy
+      - status
+      type: object
     EntitlementLog:
       properties:
         action:
@@ -86,6 +119,8 @@ components:
           type: string
         sku:
           type: string
+        status:
+          $ref: '#/components/schemas/EntitlementStatus'
         updatedAt:
           format: date-time
           type: string
@@ -100,35 +135,23 @@ components:
       - updatedAt
       - updatedBy
       - action
+      - status
       type: object
     EntitlementLogs:
       items:
         $ref: '#/components/schemas/EntitlementLog'
       type: array
-    EntitlementSetting:
-      properties:
-        name:
-          type: string
-        sku:
-          type: string
-        updatedAt:
-          format: date-time
-          type: string
-        updatedBy:
-          type: string
-        value:
-          $ref: '#/components/schemas/AnyValue'
-      required:
-      - name
-      - sku
-      - value
-      - updatedAt
-      - updatedBy
-      type: object
     EntitlementSettings:
       items:
-        $ref: '#/components/schemas/EntitlementSetting'
+        $ref: '#/components/schemas/Entitlement'
       type: array
+    EntitlementStatus:
+      enum:
+      - active
+      - provisioning
+      - failed
+      - deleting
+      type: string
     Error:
       properties:
         code:
@@ -288,6 +311,18 @@ components:
       items:
         $ref: '#/components/schemas/ProvisionJobInfo'
       type: array
+    SetEntitlement:
+      properties:
+        sku:
+          maxLength: 100
+          minLength: 2
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - sku
+      - value
+      type: object
     TenantInfo:
       properties:
         createdAt:
@@ -309,34 +344,6 @@ components:
       items:
         $ref: '#/components/schemas/TenantInfo'
       type: array
-    UpdateEntitlement:
-      properties:
-        name:
-          type: string
-        sku:
-          maxLength: 36
-          minLength: 2
-          type: string
-        value:
-          $ref: '#/components/schemas/AnyValue'
-      required:
-      - name
-      - sku
-      - value
-      type: object
-    UpdateEntitlementsBody:
-      items:
-        $ref: '#/components/schemas/UpdateEntitlement'
-      type: array
-    UpdateEntitlementsResponse:
-      properties:
-        failed:
-          items:
-            type: string
-          type: array
-      required:
-      - failed
-      type: object
     UpdateInviteBody:
       properties:
         action:
@@ -398,15 +405,14 @@ components:
         $ref: '#/components/schemas/UpdateTenantStatusJobInfo'
       type: array
 info:
-  description: With the Provisioner Service, you can provision your tenant and manage
-    it
+  description: With the Provisioner service, you can provision and manage your tenants.
   title: Provisioner
   version: v1beta1.3
 openapi: 3.0.0
 paths:
   /{tenant}/provisioner/v1beta1/invites:
     get:
-      description: Lists the invites in a given tenant
+      description: Returns a list of invitations in a given tenant.
       operationId: listInvites
       responses:
         "200":
@@ -414,15 +420,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Invites'
-          description: Successful operation
+          description: The invitation list was successfully retrieved.
         "400":
-          description: Bad request
+          description: The request isn't valid.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -434,8 +440,8 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
     post:
-      description: Creates an invite to invite a person to the tenant using their
-        email address
+      description: Creates an invitation for a person to join the tenant using their
+        email address.
       operationId: createInvite
       requestBody:
         content:
@@ -449,21 +455,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InviteInfo'
-          description: Successful operation
+          description: The invitation was created successfully.
         "400":
-          description: Bad request
+          description: The request isn't valid.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "409":
-          description: Conflict
+          description: The invitation already exists.
         "422":
-          description: Unprocessable Entity
+          description: The provided fields aren't valid.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -473,23 +479,23 @@ paths:
       x-authz-scope: identity.invites.write
   /{tenant}/provisioner/v1beta1/invites/{inviteId}:
     delete:
-      description: Deletes an invite in the given tenant
+      description: Removes an invitation in the given tenant.
       operationId: deleteInvite
       responses:
         "204":
-          description: No content
+          description: The invitation was removed successfully.
         "400":
-          description: Bad request
+          description: The request isn't valid.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "422":
-          description: Unprocessable Entity
+          description: The provided fields aren't valid.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -498,7 +504,7 @@ paths:
           description: The reason for the error
       x-authz-scope: identity.invites.write
     get:
-      description: Gets an invite in the given tenant
+      description: Returns an invitation in the given tenant.
       operationId: getInvite
       responses:
         "200":
@@ -506,15 +512,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InviteInfo'
-          description: Successful operation
+          description: The invitation was returned successfully.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -527,7 +533,7 @@ paths:
     - $ref: '#/components/parameters/Tenant'
     - $ref: '#/components/parameters/InviteId'
     patch:
-      description: Updates an invite in the given tenant
+      description: Modifies an invitation in the given tenant.
       operationId: updateInvite
       requestBody:
         content:
@@ -541,19 +547,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InviteInfo'
-          description: Successful operation
+          description: The invitation was modified successfully.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "422":
-          description: Unprocessable Entity
+          description: The provided fields aren't valid.
         "423":
-          description: Resource locked
+          description: The resource is locked.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -563,7 +569,7 @@ paths:
       x-authz-scope: identity.invites.write
   /system/provisioner/v1beta1/jobs/tenants/provision:
     get:
-      description: Lists all provision jobs created by the user
+      description: Returns a list of all provision jobs created by the user.
       operationId: listProvisionJobs
       responses:
         "200":
@@ -571,11 +577,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProvisionJobs'
-          description: Successful operation
+          description: The list of provision jobs was returned successfully.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -586,7 +592,7 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeader'
     post:
       description: Creates a new job that provisions a new tenant and subscribes apps
-        to the tenant
+        to the tenant.
       operationId: createProvisionJob
       requestBody:
         content:
@@ -600,19 +606,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProvisionJobInfo'
-          description: Successful operation
+          description: The job was created successfully.
         "400":
-          description: Bad Request
+          description: The request isn't valid.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "409":
-          description: Conflict
+          description: The job already exists.
         "422":
-          description: Unprocessable Entity
+          description: The provided fields aren't valid.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -621,7 +627,7 @@ paths:
           description: The reason for the error
   /system/provisioner/v1beta1/jobs/tenants/provision/{jobId}:
     get:
-      description: Gets details of a specific provision job
+      description: Returns details of a specific provision job.
       operationId: getProvisionJob
       responses:
         "200":
@@ -629,15 +635,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProvisionJobInfo'
-          description: Successful operation
+          description: The details of the provision job was returned successfully.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -649,7 +655,7 @@ paths:
     - $ref: '#/components/parameters/JobId'
   /system/provisioner/v1beta1/tenants:
     get:
-      description: Lists all tenants that the user can read
+      description: Returns all tenants that the user can read.
       operationId: listTenants
       responses:
         "200":
@@ -657,11 +663,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tenants'
-          description: Successful operation
+          description: The list of readable tenants was successfully returned.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -673,7 +679,7 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeader'
   /system/provisioner/v1beta1/tenants/{tenantName}:
     get:
-      description: Gets a specific tenant
+      description: Returns a specific tenant.
       operationId: getTenant
       responses:
         "200":
@@ -681,17 +687,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TenantInfo'
-          description: Successful operation
+          description: The tenant was returned successfully.
         "401":
-          description: Unauthorized operation
+          description: The user isn't authenticated.
         "403":
-          description: Forbidden
+          description: The operation isn't authorized.
         "404":
-          description: Not Found
+          description: The resource wasn't found.
         "422":
-          description: Unprocessable Entity
+          description: The provided fields aren't valid.
         "429":
-          description: Too many requests
+          description: Too many requests were sent.
         default:
           content:
             application/json:
@@ -705,4 +711,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: provisioner/v1beta1/openapi.yaml

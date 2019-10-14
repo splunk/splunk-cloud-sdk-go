@@ -231,6 +231,123 @@ func (m InputDataSource) RawInterface() interface{} {
 	return m.inputDataSource
 }
 
+type InputStream struct {
+	Kind   InputStreamKind   `json:"kind"`
+	Source InputStreamSource `json:"source"`
+}
+
+type InputStreamKind string
+
+// List of InputStreamKind
+const (
+	InputStreamKindKafka InputStreamKind = "Kafka"
+)
+
+// InputStreamSource is KafkaInput, (or interface{} if no matches are found)
+type InputStreamSource struct {
+	inputStreamSource interface{}
+	isRaw             bool
+}
+
+// UnmarshalJSON unmarshals InputStreamSource into KafkaInput, or interface{} if no matches are found
+func (m *InputStreamSource) UnmarshalJSON(b []byte) (err error) {
+	reader := bytes.NewReader(b)
+	d := json.NewDecoder(reader)
+	d.DisallowUnknownFields()
+	// Attempt to unmarshal to each oneOf, if unknown fields then move to next
+	attempt := func(m interface{}) error {
+		_, err = reader.Seek(0, 0)
+		if err != nil {
+			return err
+		}
+		return d.Decode(m)
+	}
+	var testKafkaInput KafkaInput
+	if err = attempt(&testKafkaInput); err == nil {
+		m.inputStreamSource = testKafkaInput
+		return nil
+	}
+	// If no matches, decode model to raw interface
+	var raw interface{}
+	err = attempt(&raw)
+	if err != nil {
+		return err
+	}
+	m.isRaw = true
+	m.inputStreamSource = raw
+	return nil
+}
+
+// MarshalJSON marshals InputStreamSource using InputStreamSource.InputStreamSource
+func (m InputStreamSource) MarshalJSON() ([]byte, error) {
+	return json.Marshal(m.inputStreamSource)
+}
+
+// MakeInputStreamSourceFromKafkaInput creates a new InputStreamSource from an instance of KafkaInput
+func MakeInputStreamSourceFromKafkaInput(f KafkaInput) InputStreamSource {
+	return InputStreamSource{inputStreamSource: f}
+}
+
+// IsKafkaInput checks if the InputStreamSource is a KafkaInput
+func (m InputStreamSource) IsKafkaInput() bool {
+	_, ok := m.inputStreamSource.(KafkaInput)
+	return ok
+}
+
+// KafkaInput returns KafkaInput if IsKafkaInput() is true, nil otherwise
+func (m InputStreamSource) KafkaInput() *KafkaInput {
+	if v, ok := m.inputStreamSource.(KafkaInput); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeInputStreamSourceFromRawInterface creates a new InputStreamSource from a raw interface{}
+func MakeInputStreamSourceFromRawInterface(f interface{}) InputStreamSource {
+	return InputStreamSource{
+		inputStreamSource: f,
+		isRaw:             true,
+	}
+}
+
+// IsRawInterface checks if the InputStreamSource is an interface{} (unknown type)
+func (m InputStreamSource) IsRawInterface() bool {
+	return m.isRaw
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m InputStreamSource) RawInterface() interface{} {
+	if !m.IsRawInterface() {
+		return nil
+	}
+	return m.inputStreamSource
+}
+
+type InputStreamSourceOffsetReset string
+
+// List of InputStreamSourceOffsetReset
+const (
+	InputStreamSourceOffsetResetEarliest InputStreamSourceOffsetReset = "earliest"
+	InputStreamSourceOffsetResetLatest   InputStreamSourceOffsetReset = "latest"
+)
+
+type KafkaInput struct {
+	Topic       string                 `json:"topic"`
+	OffsetReset *KafkaInputOffsetReset `json:"offsetReset,omitempty"`
+}
+
+type KafkaInputOffsetReset string
+
+// List of KafkaInputOffsetReset
+const (
+	KafkaInputOffsetResetEarliest KafkaInputOffsetReset = "earliest"
+	KafkaInputOffsetResetLatest   KafkaInputOffsetReset = "latest"
+)
+
+type KafkaOutput struct {
+	Topic string `json:"topic"`
+}
+
 type OutputData struct {
 	Destination *OutputDataDestination `json:"destination,omitempty"`
 	Kind        *OutputDataKind        `json:"kind,omitempty"`
@@ -321,6 +438,98 @@ func (m OutputDataDestination) RawInterface() interface{} {
 		return nil
 	}
 	return m.outputDataDestination
+}
+
+type OutputStream struct {
+	Destination OutputStreamDestination `json:"destination"`
+	Kind        OutputStreamKind        `json:"kind"`
+}
+
+type OutputStreamKind string
+
+// List of OutputStreamKind
+const (
+	OutputStreamKindKafka OutputStreamKind = "Kafka"
+)
+
+// OutputStreamDestination is KafkaOutput, (or interface{} if no matches are found)
+type OutputStreamDestination struct {
+	outputStreamDestination interface{}
+	isRaw                   bool
+}
+
+// UnmarshalJSON unmarshals OutputStreamDestination into KafkaOutput, or interface{} if no matches are found
+func (m *OutputStreamDestination) UnmarshalJSON(b []byte) (err error) {
+	reader := bytes.NewReader(b)
+	d := json.NewDecoder(reader)
+	d.DisallowUnknownFields()
+	// Attempt to unmarshal to each oneOf, if unknown fields then move to next
+	attempt := func(m interface{}) error {
+		_, err = reader.Seek(0, 0)
+		if err != nil {
+			return err
+		}
+		return d.Decode(m)
+	}
+	var testKafkaOutput KafkaOutput
+	if err = attempt(&testKafkaOutput); err == nil {
+		m.outputStreamDestination = testKafkaOutput
+		return nil
+	}
+	// If no matches, decode model to raw interface
+	var raw interface{}
+	err = attempt(&raw)
+	if err != nil {
+		return err
+	}
+	m.isRaw = true
+	m.outputStreamDestination = raw
+	return nil
+}
+
+// MarshalJSON marshals OutputStreamDestination using OutputStreamDestination.OutputStreamDestination
+func (m OutputStreamDestination) MarshalJSON() ([]byte, error) {
+	return json.Marshal(m.outputStreamDestination)
+}
+
+// MakeOutputStreamDestinationFromKafkaOutput creates a new OutputStreamDestination from an instance of KafkaOutput
+func MakeOutputStreamDestinationFromKafkaOutput(f KafkaOutput) OutputStreamDestination {
+	return OutputStreamDestination{outputStreamDestination: f}
+}
+
+// IsKafkaOutput checks if the OutputStreamDestination is a KafkaOutput
+func (m OutputStreamDestination) IsKafkaOutput() bool {
+	_, ok := m.outputStreamDestination.(KafkaOutput)
+	return ok
+}
+
+// KafkaOutput returns KafkaOutput if IsKafkaOutput() is true, nil otherwise
+func (m OutputStreamDestination) KafkaOutput() *KafkaOutput {
+	if v, ok := m.outputStreamDestination.(KafkaOutput); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeOutputStreamDestinationFromRawInterface creates a new OutputStreamDestination from a raw interface{}
+func MakeOutputStreamDestinationFromRawInterface(f interface{}) OutputStreamDestination {
+	return OutputStreamDestination{
+		outputStreamDestination: f,
+		isRaw:                   true,
+	}
+}
+
+// IsRawInterface checks if the OutputStreamDestination is an interface{} (unknown type)
+func (m OutputStreamDestination) IsRawInterface() bool {
+	return m.isRaw
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m OutputStreamDestination) RawInterface() interface{} {
+	if !m.IsRawInterface() {
+		return nil
+	}
+	return m.outputStreamDestination
 }
 
 // Send data directly via the reqest body as a base-64 encoded CSV string.
@@ -802,6 +1011,29 @@ type WorkflowRunLog struct {
 	RequestId           *string               `json:"requestId,omitempty"`
 	WorkflowManagerLogs []WorkflowManagerLogs `json:"workflowManagerLogs,omitempty"`
 }
+
+type WorkflowStreamDeployment struct {
+	Input         InputStream                     `json:"input"`
+	Output        OutputStream                    `json:"output"`
+	CreationTime  *string                         `json:"creationTime,omitempty"`
+	EndTime       *string                         `json:"endTime,omitempty"`
+	Id            *string                         `json:"id,omitempty"`
+	Name          *string                         `json:"name,omitempty"`
+	Spec          *DeploymentSpec                 `json:"spec,omitempty"`
+	StartTime     *string                         `json:"startTime,omitempty"`
+	Status        *WorkflowStreamDeploymentStatus `json:"status,omitempty"`
+	WorkflowBuild *WorkflowBuild                  `json:"workflowBuild,omitempty"`
+}
+
+type WorkflowStreamDeploymentStatus string
+
+// List of WorkflowStreamDeploymentStatus
+const (
+	WorkflowStreamDeploymentStatusRunning   WorkflowStreamDeploymentStatus = "running"
+	WorkflowStreamDeploymentStatusFailed    WorkflowStreamDeploymentStatus = "failed"
+	WorkflowStreamDeploymentStatusSuccess   WorkflowStreamDeploymentStatus = "success"
+	WorkflowStreamDeploymentStatusScheduled WorkflowStreamDeploymentStatus = "scheduled"
+)
 
 // WorkflowValidationOption is CrossValidation, TrainTestSplit, (or interface{} if no matches are found)
 type WorkflowValidationOption struct {
