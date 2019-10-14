@@ -47,7 +47,9 @@ var (
 
 func genTriggerEvent() action.TriggerEvent {
 	payload := action.RawJsonPayload{"name": "beanbag", "species": "cat"}
-	return action.TriggerEvent{Kind: action.TriggerEventKindTrigger, Payload: &payload}
+	var kind action.TriggerEventKind
+	kind = action.TriggerEventKindTrigger
+	return action.TriggerEvent{Kind: &kind, Payload: &payload}
 }
 
 func genEmailAction() action.Action {
