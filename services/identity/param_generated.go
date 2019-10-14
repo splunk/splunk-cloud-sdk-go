@@ -39,8 +39,8 @@ func (q ValidateTokenQueryParams) SetInclude(v ValidateTokeninclude) ValidateTok
 // ValidateTokeninclude : Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]
 type ValidateTokeninclude []string
 
-// List of ValidateTokeninclude values
-const (
-	ValidateTokenincludeTenant    ValidateTokeninclude = "tenant"
-	ValidateTokenincludePrincipal ValidateTokeninclude = "principal"
-)
+//// List of ValidateTokeninclude values
+//const (
+//	ValidateTokenincludeTenant    ValidateTokeninclude = "tenant"
+//	ValidateTokenincludePrincipal ValidateTokeninclude = "principal"
+//)
