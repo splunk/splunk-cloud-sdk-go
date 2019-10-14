@@ -68,6 +68,15 @@ type Servicer interface {
 	*/
 	CreateWorkflowRun(id string, buildId string, workflowRun WorkflowRun, resp ...*http.Response) (*WorkflowRun, error)
 	/*
+		CreateWorkflowStreamDeployment - Creates a workflow streaming deployment.
+		Parameters:
+			id: The workflow ID.
+			buildId: The workflow build ID.
+			workflowStreamDeployment: Configuration for the workflow streaming deployment.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateWorkflowStreamDeployment(id string, buildId string, workflowStreamDeployment WorkflowStreamDeployment, resp ...*http.Response) (*WorkflowStreamDeployment, error)
+	/*
 		DeleteWorkflow - Removes a workflow configuration.
 		Parameters:
 			id: The workflow ID.
@@ -100,6 +109,15 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteWorkflowRun(id string, buildId string, runId string, resp ...*http.Response) error
+	/*
+		DeleteWorkflowStreamDeployment - Removes a workflow streaming deployment.
+		Parameters:
+			id: The workflow ID.
+			buildId: The workflow build ID.
+			streamDeploymentId: The workflow streaming deployment ID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteWorkflowStreamDeployment(id string, buildId string, streamDeploymentId string, resp ...*http.Response) error
 	/*
 		GetWorkflow - Returns a workflow configuration.
 		Parameters:
@@ -185,6 +203,15 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetWorkflowRunLog(id string, buildId string, runId string, resp ...*http.Response) (*WorkflowRunLog, error)
+	/*
+		GetWorkflowStreamDeployment - Returns the status of a workflow streaming deployment.
+		Parameters:
+			id: The workflow ID.
+			buildId: The workflow build ID.
+			streamDeploymentId: The workflow streaming deployment ID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetWorkflowStreamDeployment(id string, buildId string, streamDeploymentId string, resp ...*http.Response) (*WorkflowStreamDeployment, error)
 	/*
 		ListWorkflowBuilds - Returns a list of workflow builds.
 		Parameters:

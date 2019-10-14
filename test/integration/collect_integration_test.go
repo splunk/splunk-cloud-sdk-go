@@ -32,7 +32,7 @@ func TestCRUDJob(t *testing.T) {
 		Name:        fmt.Sprintf("gointegCollectJob%d", testutils.TimeSec),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: collect.ScalePolicy{Static:collect.StaticScale{Workers:2}},
+		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
@@ -69,7 +69,7 @@ func TestPatchJob(t *testing.T) {
 		Name:        fmt.Sprintf("gointegCollectPatchJob%d", testutils.TimeSec),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
-		ScalePolicy: collect.ScalePolicy{Static:collect.StaticScale{Workers:2}},
+		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)

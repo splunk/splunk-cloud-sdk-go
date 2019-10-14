@@ -385,17 +385,19 @@ type Servicer interface {
 		Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDataset(datasetresourcename string, resp ...*http.Response) (*Dataset, error)
+	GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*Dataset, error)
 	/*
 		GetDatasetById - catalog service endpoint
 		Return information about the dataset with the specified ID.
 		Parameters:
 			datasetid: ID of a Dataset.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDatasetById(datasetid string, resp ...*http.Response) (*Dataset, error)
+	GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*Dataset, error)
 	/*
 		GetFieldById - catalog service endpoint
 		Get a field that corresponds to a specific field ID.
@@ -491,6 +493,14 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListActionsForRuleById(ruleid string, query *ListActionsForRuleByIdQueryParams, resp ...*http.Response) ([]Action, error)
+	/*
+		ListAnnotations - catalog service endpoint
+		Return the set of annotations across all objects.
+		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListAnnotations(query *ListAnnotationsQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDashboardById - catalog service endpoint
 		Return the set of annotations that are part of a dashboard.
