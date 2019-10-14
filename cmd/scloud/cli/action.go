@@ -181,8 +181,11 @@ func (cmd *ActionCommand) triggerAction(args []string) (interface{}, error) {
 
 	tenant := getTenantName()
 
+	var ks action.TriggerEventKind
+	ks = action.TriggerEventKind(kindString)
+
 	notification := action.TriggerEvent{
-		Kind:    action.TriggerEventKind(kindString),
+		Kind:    &ks,
 		Tenant:  &tenant,
 		Payload: &notificationPayload,
 	}

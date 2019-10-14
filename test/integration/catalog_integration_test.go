@@ -426,11 +426,11 @@ func TestGetDatasetByID(t *testing.T) {
 	require.NotNil(t, ds.LookupDataset())
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
-	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id)
+	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id, nil)
 	require.Nil(t, err)
 	require.NotNil(t, ds1.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds1.LookupDataset().Name)
-	ds2, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Module + "." + ds.LookupDataset().Name)
+	ds2, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Module+"."+ds.LookupDataset().Name, nil)
 	require.Nil(t, err)
 	require.NotNil(t, ds2.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds2.LookupDataset().Name)
@@ -438,7 +438,7 @@ func TestGetDatasetByID(t *testing.T) {
 
 // Test GetDataset for 404 DatasetInfo not found error
 func TestGetDatasetByIDDatasetNotFoundError(t *testing.T) {
-	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist")
+	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist", nil)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
