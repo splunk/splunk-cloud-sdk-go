@@ -25,8 +25,25 @@ import (
 
 // Servicer represents the interface for implementing all endpoints for this service
 type Servicer interface {
+	/*
+	   	NewBatchEventsSenderWithMaxAllowedError initializes a BatchEventsSender to collect events and send them as a single
+	           batched request when a maximum event batch size, time interval, or maximum payload size is reached. It also
+	           validates the user input for BatchEventSender.
+	   	Parameters:
+	   		batchSize: maximum number of events to reach before sending the batch, default maximum is 500
+	   		interval: milliseconds to wait before sending the batch if other conditions have not been met
+	   		dataSize: bytes that the overall payload should not exceed before sending, default maximum is 1040000 ~1MiB
+	   		maxErrorsAllowed: number of errors after which the BatchEventsSender will stop
+	*/
 	NewBatchEventsSenderWithMaxAllowedError(batchSize int, interval int64, dataSize int, maxErrorsAllowed int) (*BatchEventsSender, error)
-	// NewBatchEventsSender used to initialize dependencies and set values
+	/*
+	   	NewBatchEventsSender initializes a BatchEventsSender to collect events and send them as a single batched
+	           request when a maximum event batch size, time interval, or maximum payload size is reached.
+	   	Parameters:
+	   		batchSize: maximum number of events to reach before sending the batch, default maximum is 500
+	   		interval: milliseconds to wait before sending the batch if other conditions have not been met
+	   		payLoadSize: bytes that the overall payload should not exceed before sending, default maximum is 1040000 ~1MiB
+	*/
 	NewBatchEventsSender(batchSize int, interval int64, payLoadSize int) (*BatchEventsSender, error)
 	/*
 		UploadFiles - Upload a CSV or text file that contains events.

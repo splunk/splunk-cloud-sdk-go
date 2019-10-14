@@ -26,7 +26,7 @@ import (
 type Servicer interface {
 	/*
 		CreateInvite - provisioner service endpoint
-		Creates an invite to invite a person to the tenant using their email address
+		Creates an invitation for a person to join the tenant using their email address.
 		Parameters:
 			inviteBody
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -34,7 +34,7 @@ type Servicer interface {
 	CreateInvite(inviteBody InviteBody, resp ...*http.Response) (*InviteInfo, error)
 	/*
 		CreateProvisionJob - provisioner service endpoint
-		Creates a new job that provisions a new tenant and subscribes apps to the tenant
+		Creates a new job that provisions a new tenant and subscribes apps to the tenant.
 		Parameters:
 			createProvisionJobBody
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -42,7 +42,7 @@ type Servicer interface {
 	CreateProvisionJob(createProvisionJobBody CreateProvisionJobBody, resp ...*http.Response) (*ProvisionJobInfo, error)
 	/*
 		DeleteInvite - provisioner service endpoint
-		Deletes an invite in the given tenant
+		Removes an invitation in the given tenant.
 		Parameters:
 			inviteId
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -50,7 +50,7 @@ type Servicer interface {
 	DeleteInvite(inviteId string, resp ...*http.Response) error
 	/*
 		GetInvite - provisioner service endpoint
-		Gets an invite in the given tenant
+		Returns an invitation in the given tenant.
 		Parameters:
 			inviteId
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -58,7 +58,7 @@ type Servicer interface {
 	GetInvite(inviteId string, resp ...*http.Response) (*InviteInfo, error)
 	/*
 		GetProvisionJob - provisioner service endpoint
-		Gets details of a specific provision job
+		Returns details of a specific provision job.
 		Parameters:
 			jobId
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -66,7 +66,7 @@ type Servicer interface {
 	GetProvisionJob(jobId string, resp ...*http.Response) (*ProvisionJobInfo, error)
 	/*
 		GetTenant - provisioner service endpoint
-		Gets a specific tenant
+		Returns a specific tenant.
 		Parameters:
 			tenantName
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -74,28 +74,28 @@ type Servicer interface {
 	GetTenant(tenantName string, resp ...*http.Response) (*TenantInfo, error)
 	/*
 		ListInvites - provisioner service endpoint
-		Lists the invites in a given tenant
+		Returns a list of invitations in a given tenant.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListInvites(resp ...*http.Response) (*Invites, error)
 	/*
 		ListProvisionJobs - provisioner service endpoint
-		Lists all provision jobs created by the user
+		Returns a list of all provision jobs created by the user.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListProvisionJobs(resp ...*http.Response) (*ProvisionJobs, error)
 	/*
 		ListTenants - provisioner service endpoint
-		Lists all tenants that the user can read
+		Returns all tenants that the user can read.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListTenants(resp ...*http.Response) (*Tenants, error)
 	/*
 		UpdateInvite - provisioner service endpoint
-		Updates an invite in the given tenant
+		Modifies an invitation in the given tenant.
 		Parameters:
 			inviteId
 			updateInviteBody

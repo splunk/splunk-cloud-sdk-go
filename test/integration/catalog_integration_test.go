@@ -632,7 +632,7 @@ func TestDeleteDataset(t *testing.T) {
 	err = client.CatalogService.DeleteDataset(ds.ViewDataset().Id)
 	require.Nil(t, err)
 
-	_, err = client.CatalogService.GetDataset(ds.ViewDataset().Id,nil)
+	_, err = client.CatalogService.GetDataset(ds.ViewDataset().Id, nil)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)

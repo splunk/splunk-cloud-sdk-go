@@ -206,7 +206,7 @@ type Servicer interface {
 	ListMembers(resp ...*http.Response) ([]string, error)
 	/*
 		ListPrincipals - identity service endpoint
-		Returns the list of principals known to IAC.
+		Returns the list of principals that the Identity service knows about.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
