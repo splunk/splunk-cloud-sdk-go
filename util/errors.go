@@ -46,21 +46,21 @@ func (he *HTTPError) Error() string {
 // ParseHTTPStatusCodeInResponse returns http response and HTTPError struct based on response status code
 func ParseHTTPStatusCodeInResponse(response *http.Response) (*http.Response, error) {
 	if response != nil && (response.StatusCode < 200 || response.StatusCode >= 400) {
-		httpErr := &HTTPError{
+		httpErr := HTTPError{
 			HTTPStatusCode: response.StatusCode,
 			HTTPStatus:     response.Status,
 		}
 		if response.Body != nil {
 			body, err := ioutil.ReadAll(response.Body)
 			if err != nil {
-				return response, httpErr
+				return response, &httpErr
 			}
 			err = json.Unmarshal(body, &httpErr)
 			if err != nil {
-				return nil, httpErr
+				return nil, &httpErr
 			}
 		}
-		return response, httpErr
+		return response, &httpErr
 	}
 	return response, nil
 }
