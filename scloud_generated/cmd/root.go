@@ -35,6 +35,8 @@ var (
 	hostURL  string
 	insecure bool
 	cacert   string
+	logtostderr bool
+	alsologtostderr bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -77,6 +79,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
 	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
+	rootCmd.PersistentFlags().BoolVar(&logtostderr, "logtostderr", false, "log to standard error instead of files")
+	rootCmd.PersistentFlags().BoolVar(&alsologtostderr, "alsologtostderr", false, "log to standard error as well as files")
 
 	// bind the flags so that they override the config
 	for _, name := range config.GlobalFlags {
