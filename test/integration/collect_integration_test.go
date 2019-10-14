@@ -121,5 +121,5 @@ func TestPatchJobs(t *testing.T) {
 
 	work := static.Workers
 	require.NotNil(t, work)
-	require.Equal(t, (float64)(1), work)
+	require.Equal(t, int32(1), work)
 }

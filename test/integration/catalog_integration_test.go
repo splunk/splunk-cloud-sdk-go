@@ -216,7 +216,6 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 	} else if dataset.IsMetricDataset() {
 		assert.NotEmpty(t, dataset.MetricDataset().Id)
 	} else if dataset.IsKvCollectionDataset() {
-
 		assert.NotEmpty(t, dataset.KvCollectionDataset().Id)
 	} else if dataset.IsRawInterface() { //handle unknown kinds
 		rawDataset := dataset.RawInterface()
@@ -225,6 +224,7 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 
 	} else {
 		// If catalog dataset does not either a known or an unknown kind
+		fmt.Println(dataset)
 		assert.Fail(t, "Invalid catalog dataset", "Invalid catalog dataset")
 	}
 }
