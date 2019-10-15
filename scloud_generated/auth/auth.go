@@ -70,6 +70,10 @@ func abspath(p string) string {
 
 // Returns the name of the selected environment.
 func getEnvironmentName() string {
+	err := loadConfigs()
+	if err != nil {
+		fatal(err.Error())
+	}
 	if envName, ok := settings.GetString("env"); ok {
 		return envName
 	}
