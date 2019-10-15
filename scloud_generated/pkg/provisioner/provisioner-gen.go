@@ -22,8 +22,9 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var comment *string
-	err = flags.ParseFlag(cmd.Flags(), "comment", comment)
+	var commentDefault string
+	comment := &commentDefault
+	err = flags.ParseFlag(cmd.Flags(), "comment", &comment)
 	if err != nil {
 		return fmt.Errorf(`error parsing "comment": ` + err.Error())
 	}
@@ -68,8 +69,9 @@ func CreateProvisionJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "apps": ` + err.Error())
 	}
-	var tenant *string
-	err = flags.ParseFlag(cmd.Flags(), "tenant", tenant)
+	var tenantDefault string
+	tenant := &tenantDefault
+	err = flags.ParseFlag(cmd.Flags(), "tenant", &tenant)
 	if err != nil {
 		return fmt.Errorf(`error parsing "tenant": ` + err.Error())
 	}
@@ -241,7 +243,7 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var action string
+	var action model.UpdateInviteBodyAction
 	err = flags.ParseFlag(cmd.Flags(), "action", &action)
 	if err != nil {
 		return fmt.Errorf(`error parsing "action": ` + err.Error())
@@ -254,7 +256,7 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.UpdateInviteBody{
-		//Action: action,
+		Action: action,
 	}
 
 	resp, err := client.ProvisionerService.UpdateInvite(inviteId, body)
