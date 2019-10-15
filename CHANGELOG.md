@@ -1,5 +1,21 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 2.0.0
+### Breaking Changes
+* The  `TriggerEvent model` in action service is changed from required to optional field
+
+* The `catalog.GetDataset()` and `catalog.GetDatasetById()` are changed to require a new query parameter arguments 
+
+* The  `ScalePolicy` model in collect service has changed its type from `map[string]interface{}` to `*ScalePolicy`
+
+* The property  `include` in `ValidateTokenQueryParams` model in identity service has changed type from []string to new type of `ValidateTokeninclude`
+
+### Non-breaking Changes
+* Add `delete-certificate` cmd in Scloud 
+* Add `ListAnnotations()` api in catalog service
+* Add `CreateWorkflowStreamDeployment()`, `DeleteWorkflowStreamDeployment()`, `GetWorkflowStreamDeployment()`  in ml service
+* Add `ListPreviewResults()` in search service
+
 ## Version 1.0.0-beta.4
 ### Breaking Changes
 * Update to KVStore PutRecord API call to remove Record version identifier
