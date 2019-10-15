@@ -86,40 +86,26 @@ func init() {
 	createJobCmd.Flags().BoolVar(&createJobCollectFieldSummary, "collect-field-summary", false, "Specified whether a search is allowed to collect Fields summary during the run time.")
 	var createJobCollectTimeBuckets bool
 	createJobCmd.Flags().BoolVar(&createJobCollectTimeBuckets, "collect-time-buckets", false, "Specified whether a search is allowed to collect Timeline Buckets summary during the run time.")
-	var createJobCompletionTime string
-	createJobCmd.Flags().StringVar(&createJobCompletionTime, "completion-time", "", "The time, in GMT, that the search job is finished. Empty if the search job has not completed.")
-	var createJobDispatchTime string
-	createJobCmd.Flags().StringVar(&createJobDispatchTime, "dispatch-time", "", "The time, in GMT, that the search job is dispatched.")
+	var createJobEarliest string
+	createJobCmd.Flags().StringVar(&createJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 	var createJobEnablePreview bool
 	createJobCmd.Flags().BoolVar(&createJobEnablePreview, "enable-preview", false, "Specified whether a search is allowed to collect preview results during the run time.")
 	var createJobExtractAllFields bool
 	createJobCmd.Flags().BoolVar(&createJobExtractAllFields, "extract-all-fields", false, "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.")
+	var createJobLatest string
+	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 	var createJobMaxTime float32
 	createJobCmd.Flags().Float32Var(&createJobMaxTime, "max-time", 0.0, "The number of seconds to run the search before finalizing the search. The maximum value is 21600 seconds (6 hours).")
 	var createJobMessages string
 	createJobCmd.Flags().StringVar(&createJobMessages, "messages", "", "")
 	var createJobModule string
 	createJobCmd.Flags().StringVar(&createJobModule, "module", "", "The module to run the search in. The default module is used if a module is not specified.")
-	var createJobName string
-	createJobCmd.Flags().StringVar(&createJobName, "name", "", "The name of the created search job.")
-	var createJobPercentComplete int32
-	createJobCmd.Flags().Int32Var(&createJobPercentComplete, "percent-complete", 0, "An estimate of the percent of time remaining before the job completes.")
-	var createJobPreviewAvailable string
-	createJobCmd.Flags().StringVar(&createJobPreviewAvailable, "preview-available", "", "Specifies if preview results for the search job are available. The valid status values are 'unknown', 'true', and 'false'.")
-	var createJobQueryParameters string
-	createJobCmd.Flags().StringVar(&createJobQueryParameters, "query-parameters", "", "json string representing ")
-	var createJobResolvedEarliest string
-	createJobCmd.Flags().StringVar(&createJobResolvedEarliest, "resolved-earliest", "", "The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.")
-	var createJobResolvedLatest string
-	createJobCmd.Flags().StringVar(&createJobResolvedLatest, "resolved-latest", "", "The latest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.")
-	var createJobResultsAvailable int32
-	createJobCmd.Flags().Int32Var(&createJobResultsAvailable, "results-available", 0, "The number of results produced so far for the search job.")
-	var createJobResultsPreviewAvailable int32
-	createJobCmd.Flags().Int32Var(&createJobResultsPreviewAvailable, "results-preview-available", 0, "The number of the preview search results for the job with the specified search ID (SID)")
-	var createJobSid string
-	createJobCmd.Flags().StringVar(&createJobSid, "sid", "", "The ID assigned to the search job.")
+	var createJobRelativeTimeAnchor string
+	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
 	var createJobStatus string
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
+	var createJobTimezone string
+	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
 
 	searchCmd.AddCommand(getJobCmd)
 
