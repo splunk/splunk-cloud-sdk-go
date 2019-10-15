@@ -27,8 +27,9 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
 	}
-	var description *string
-	err = flags.ParseFlag(cmd.Flags(), "description", description)
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
 		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
@@ -37,13 +38,15 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
-	var loginUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "login-url", loginUrl)
+	var loginUrlDefault string
+	loginUrl := &loginUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "login-url", &loginUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
 	}
-	var logoUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "logo-url", logoUrl)
+	var logoUrlDefault string
+	logoUrl := &logoUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", &logoUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
 	}
@@ -57,8 +60,9 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
 	}
-	var setupUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "setup-url", setupUrl)
+	var setupUrlDefault string
+	setupUrl := &setupUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", &setupUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
 	}
@@ -72,8 +76,9 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
 	}
-	var webhookUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "webhook-url", webhookUrl)
+	var webhookUrlDefault string
+	webhookUrl := &webhookUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", &webhookUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
@@ -286,8 +291,9 @@ func ListSubscriptions(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-	var kind *model.AppResourceKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", kind)
+	var kindDefault model.AppResourceKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
 	if err != nil {
 		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
@@ -345,18 +351,21 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
 	}
-	var description *string
-	err = flags.ParseFlag(cmd.Flags(), "description", description)
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
 		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
-	var loginUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "login-url", loginUrl)
+	var loginUrlDefault string
+	loginUrl := &loginUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "login-url", &loginUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
 	}
-	var logoUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "logo-url", logoUrl)
+	var logoUrlDefault string
+	logoUrl := &logoUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", &logoUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
 	}
@@ -365,8 +374,9 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
 	}
-	var setupUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "setup-url", setupUrl)
+	var setupUrlDefault string
+	setupUrl := &setupUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", &setupUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
 	}
@@ -380,8 +390,9 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
 	}
-	var webhookUrl *string
-	err = flags.ParseFlag(cmd.Flags(), "webhook-url", webhookUrl)
+	var webhookUrlDefault string
+	webhookUrl := &webhookUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", &webhookUrl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
