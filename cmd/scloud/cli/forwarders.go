@@ -87,9 +87,9 @@ func (cmd *ForwardersCommand) createCertificate(args []string) (interface{}, err
 	return cmd.forwardersService.AddCertificate(forwarders.Certificate{Pem: &str})
 }
 
-func (self *ForwardersCommand) deleteCertificate(args []string) error {
+func (cmd *ForwardersCommand) deleteCertificate(args []string) error {
 	slot := head1(args)
-	return self.forwardersService.DeleteCertificate(slot)
+	return cmd.forwardersService.DeleteCertificate(slot)
 }
 
 func (cmd *ForwardersCommand) deleteCertificates(args []string) error {
