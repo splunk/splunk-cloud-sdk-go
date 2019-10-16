@@ -7,250 +7,213 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	//"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
+	//"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
+	//"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/jsonx"
+	//model "github.com/splunk/splunk-cloud-sdk-go/services/streams"
 )
 
-// ActivatePipeline -- impl
+// ActivatePipeline Activates an existing pipeline.
 func ActivatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ActivatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CompileDSL -- impl
+// CompileDSL Compiles the Streams DSL and returns Streams JSON.
 func CompileDSL(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CompileDSL\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CompileSPL -- impl
+// CompileSPL Compiles SPL2 and returns Streams JSON.
 func CompileSPL(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CompileSPL\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateConnection -- impl
+// CreateConnection Create a new DSP connection.
 func CreateConnection(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateConnection\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateGroup -- impl
+// CreateGroup Create a new group function by combining the Streams JSON of two or more functions.
 func CreateGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreatePipeline -- impl
+// CreatePipeline Creates a pipeline.
 func CreatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateTemplate -- impl
+// CreateTemplate Creates a template for a tenant.
 func CreateTemplate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateTemplate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeactivatePipeline -- impl
+// DeactivatePipeline Deactivates an existing pipeline.
 func DeactivatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeactivatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteConnection -- impl
+// DeleteConnection Delete all versions of a connection by its id.
 func DeleteConnection(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteConnection\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteGroup -- impl
+// DeleteGroup Removes an existing group.
 func DeleteGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeletePipeline -- impl
+// DeletePipeline Removes a pipeline.
 func DeletePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeletePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteTemplate -- impl
+// DeleteTemplate Removes a template with a specific ID.
 func DeleteTemplate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteTemplate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ExpandGroup -- impl
+// ExpandGroup Creates and returns the expanded version of a group.
 func ExpandGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ExpandGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ExpandPipeline -- impl
+// ExpandPipeline Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
 func ExpandPipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ExpandPipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetGroup -- impl
+// GetGroup Returns the full Streams JSON of a group.
 func GetGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetInputSchema -- impl
+// GetInputSchema Returns the input schema for a function in a pipeline.
 func GetInputSchema(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetInputSchema\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetOutputSchema -- impl
+// GetOutputSchema Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.
 func GetOutputSchema(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetOutputSchema\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPipeline -- impl
+// GetPipeline Returns an individual pipeline by version.
 func GetPipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPipelineLatestMetrics -- impl
+// GetPipelineLatestMetrics Returns the latest metrics for a single pipeline.
 func GetPipelineLatestMetrics(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPipelineLatestMetrics\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPipelinesStatus -- impl
+// GetPipelinesStatus Returns the status of pipelines from the underlying streaming system.
 func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPipelinesStatus\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPreviewData -- impl
+// GetPreviewData Returns the preview data for a session.
 func GetPreviewData(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPreviewData\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPreviewSession -- impl
+// GetPreviewSession Returns information from a preview session.
 func GetPreviewSession(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPreviewSession\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPreviewSessionLatestMetrics -- impl
+// GetPreviewSessionLatestMetrics Returns the latest metrics for a preview session.
 func GetPreviewSessionLatestMetrics(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPreviewSessionLatestMetrics\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetRegistry -- impl
+// GetRegistry Returns all functions in JSON format.
 func GetRegistry(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRegistry\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetTemplate -- impl
+// GetTemplate Returns an individual template by version.
 func GetTemplate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetTemplate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListConnections -- impl
+// ListConnections Returns a list of connections (latest versions only) by tenant ID.
 func ListConnections(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListConnections\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListConnectors -- impl
+// ListConnectors Returns a list of the available connectors.
 func ListConnectors(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListConnectors\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListPipelines -- impl
+// ListPipelines Returns all pipelines.
 func ListPipelines(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListPipelines\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListTemplates -- impl
+// ListTemplates Returns a list of all templates.
 func ListTemplates(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListTemplates\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// MergePipelines -- impl
+// MergePipelines Combines two Streams JSON programs.
 func MergePipelines(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called MergePipelines\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PutConnection -- impl
+// PutConnection Modifies an existing DSP connection.
 func PutConnection(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PutConnection\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PutGroup -- impl
+// PutGroup Update a group function combining the Streams JSON of two or more functions.
 func PutGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PutGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PutTemplate -- impl
+// PutTemplate Updates an existing template.
 func PutTemplate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PutTemplate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ReactivatePipeline -- impl
+// ReactivatePipeline Reactivate a pipeline
 func ReactivatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ReactivatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// StartPreview -- impl
+// StartPreview Creates a preview session for a pipeline.
 func StartPreview(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called StartPreview\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// StopPreview -- impl
+// StopPreview Stops a preview session.
 func StopPreview(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called StopPreview\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateConnection -- impl
+// UpdateConnection Partially modifies an existing DSP connection.
 func UpdateConnection(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateConnection\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateGroup -- impl
+// UpdateGroup Modify a group function by combining the Streams JSON of two or more functions.
 func UpdateGroup(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateGroup\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdatePipeline -- impl
+// UpdatePipeline Partially modifies an existing pipeline.
 func UpdatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateTemplate -- impl
+// UpdateTemplate Partially modifies an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateTemplate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ValidatePipeline -- impl
+// ValidatePipeline Verifies whether the Streams JSON is valid.
 func ValidatePipeline(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ValidatePipeline\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }

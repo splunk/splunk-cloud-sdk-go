@@ -4,64 +4,72 @@
 package action
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/spf13/cobra"
 )
 
-// CreateAction -- impl
+// CreateAction Creates an action template.
 func CreateAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAction\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteAction -- impl
+// CreateActionEmailAction Creates an action template.
+func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionWebhookAction Creates an action template.
+func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// DeleteAction Removes an action template.
 func DeleteAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAction\n")
-	flag.Parse()
-	fmt.Printf(flag.Arg(0))
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetAction -- impl
+// GetAction Returns a specific action template.
 func GetAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetAction\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetActionStatus -- impl
+// GetActionStatus Returns the status of an action that was invoked. The status is available for 4 days after the last status change.
 func GetActionStatus(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionStatus\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetActionStatusDetails -- impl
+// GetActionStatusDetails Returns the status details of the invoked email action. The status is available for 4 days after the last status change.
 func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionStatusDetails\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetPublicWebhookKeys -- impl
+// GetPublicWebhookKeys Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
 func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetPublicWebhookKeys\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListActions -- impl
+// ListActions Returns the list of action templates.
 func ListActions(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListActions\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// TriggerAction -- impl
+// TriggerAction Invokes an action.
 func TriggerAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called TriggerAction\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateAction -- impl
+// UpdateAction Modifies an action template.
 func UpdateAction(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateAction\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionEmailAction Modifies an action template.
+func UpdateActionEmailAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionWebhookAction Modifies an action template.
+func UpdateActionWebhookAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
 }

@@ -11,84 +11,84 @@ import (
 // createIndex -- Creates an index on a collection.
 var createIndexCmd = &cobra.Command{
 	Use:   "create-index",
-	Short: "Creates an index on a collection.",
+	Short: "[not implemented] Creates an index on a collection.",
 	RunE:  impl.CreateIndex,
 }
 
 // deleteIndex -- Removes an index from a collection.
 var deleteIndexCmd = &cobra.Command{
 	Use:   "delete-index",
-	Short: "Removes an index from a collection.",
+	Short: "[not implemented] Removes an index from a collection.",
 	RunE:  impl.DeleteIndex,
 }
 
 // deleteRecordByKey -- Deletes a record with a given key.
 var deleteRecordByKeyCmd = &cobra.Command{
 	Use:   "delete-record-by-key",
-	Short: "Deletes a record with a given key.",
+	Short: "[not implemented] Deletes a record with a given key.",
 	RunE:  impl.DeleteRecordByKey,
 }
 
 // deleteRecords -- Removes records in a collection that match the query.
 var deleteRecordsCmd = &cobra.Command{
 	Use:   "delete-records",
-	Short: "Removes records in a collection that match the query.",
+	Short: "[not implemented] Removes records in a collection that match the query.",
 	RunE:  impl.DeleteRecords,
 }
 
 // getRecordByKey -- Returns a record with a given key.
 var getRecordByKeyCmd = &cobra.Command{
 	Use:   "get-record-by-key",
-	Short: "Returns a record with a given key.",
+	Short: "[not implemented] Returns a record with a given key.",
 	RunE:  impl.GetRecordByKey,
 }
 
 // insertRecord -- Inserts a record into a collection.
 var insertRecordCmd = &cobra.Command{
 	Use:   "insert-record",
-	Short: "Inserts a record into a collection.",
+	Short: "[not implemented] Inserts a record into a collection.",
 	RunE:  impl.InsertRecord,
 }
 
 // insertRecords -- Inserts multiple records in a single request.
 var insertRecordsCmd = &cobra.Command{
 	Use:   "insert-records",
-	Short: "Inserts multiple records in a single request.",
+	Short: "[not implemented] Inserts multiple records in a single request.",
 	RunE:  impl.InsertRecords,
 }
 
 // listIndexes -- Returns a list of all indexes on a collection.
 var listIndexesCmd = &cobra.Command{
 	Use:   "list-indexes",
-	Short: "Returns a list of all indexes on a collection.",
+	Short: "[not implemented] Returns a list of all indexes on a collection.",
 	RunE:  impl.ListIndexes,
 }
 
 // listRecords -- Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
 var listRecordsCmd = &cobra.Command{
 	Use:   "list-records",
-	Short: "Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.",
+	Short: "[not implemented] Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.",
 	RunE:  impl.ListRecords,
 }
 
 // ping -- Returns the health status from the database.
 var pingCmd = &cobra.Command{
 	Use:   "ping",
-	Short: "Returns the health status from the database.",
+	Short: "[not implemented] Returns the health status from the database.",
 	RunE:  impl.Ping,
 }
 
 // putRecord -- Updates the record with a given key, either by inserting or replacing the record.
 var putRecordCmd = &cobra.Command{
 	Use:   "put-record",
-	Short: "Updates the record with a given key, either by inserting or replacing the record.",
+	Short: "[not implemented] Updates the record with a given key, either by inserting or replacing the record.",
 	RunE:  impl.PutRecord,
 }
 
 // queryRecords -- Returns a list of query records in a collection.
 var queryRecordsCmd = &cobra.Command{
 	Use:   "query-records",
-	Short: "Returns a list of query records in a collection.",
+	Short: "[not implemented] Returns a list of query records in a collection.",
 	RunE:  impl.QueryRecords,
 }
 
@@ -99,10 +99,10 @@ func init() {
 	createIndexCmd.Flags().StringVar(&createIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	createIndexCmd.MarkFlagRequired("collection")
 	var createIndexFields string
-	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "This is a required parameter.")
+	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "3This is a required parameter.This is a required parameter.")
 	createIndexCmd.MarkFlagRequired("fields")
 	var createIndexName string
-	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "This is a required parameter.The name of the index.")
+	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "3This is a required parameter.This is a required parameter.The name of the index.")
 	createIndexCmd.MarkFlagRequired("name")
 
 	kvstoreCmd.AddCommand(deleteIndexCmd)

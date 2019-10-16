@@ -9,44 +9,37 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CreateJob -- impl
+// CreateJob This API returns `403` if the number of collect workers is over a certain limit.
 func CreateJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateJob\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteJob -- impl
+// DeleteJob Removes a job based on the job ID.
 func DeleteJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteJob\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteJobs -- impl
+// DeleteJobs Removes all jobs on a tenant.
 func DeleteJobs(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteJobs\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetJob -- impl
+// GetJob Returns a job based on the job ID.
 func GetJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetJob\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListJobs -- impl
+// ListJobs Returns a list of all jobs that belong to a tenant.
 func ListJobs(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListJobs\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PatchJob -- impl
+// PatchJob This API returns `403` if the number of collect workers is over a certain limit.
 func PatchJob(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PatchJob\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PatchJobs -- impl
+// PatchJobs This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.
 func PatchJobs(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PatchJobs\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }

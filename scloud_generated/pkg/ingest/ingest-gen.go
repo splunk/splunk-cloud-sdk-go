@@ -9,20 +9,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// PostEvents -- impl
+// PostEvents Sends events.
 func PostEvents(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PostEvents\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PostMetrics -- impl
+// PostMetrics Sends metric events.
 func PostMetrics(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PostMetrics\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UploadFiles -- impl
+// UploadFiles Upload a CSV or text file that contains events.
 func UploadFiles(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UploadFiles\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
