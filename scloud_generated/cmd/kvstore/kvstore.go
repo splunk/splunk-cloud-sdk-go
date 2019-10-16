@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // catalogCmd represents the catalog command
 var kvstoreCmd = &cobra.Command{
 	Use:   "kvstore",
-	Short: "kvstore service",
+	Short: "kvstore service - NOT IMPLEMENTED",
 }

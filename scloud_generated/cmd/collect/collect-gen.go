@@ -11,62 +11,150 @@ import (
 // createJob -- This API returns `403` if the number of collect workers is over a certain limit.
 var createJobCmd = &cobra.Command{
 	Use:   "create-job",
-	Short: "This API returns `403` if the number of collect workers is over a certain limit.",
+	Short: "[not implemented] This API returns `403` if the number of collect workers is over a certain limit.",
 	RunE:  impl.CreateJob,
 }
 
-// deleteJob --
+// deleteJob -- Removes a job based on the job ID.
 var deleteJobCmd = &cobra.Command{
 	Use:   "delete-job",
-	Short: "",
+	Short: "[not implemented] Removes a job based on the job ID.",
 	RunE:  impl.DeleteJob,
 }
 
-// deleteJobs --
+// deleteJobs -- Removes all jobs on a tenant.
 var deleteJobsCmd = &cobra.Command{
 	Use:   "delete-jobs",
-	Short: "",
+	Short: "[not implemented] Removes all jobs on a tenant.",
 	RunE:  impl.DeleteJobs,
 }
 
-// getJob --
+// getJob -- Returns a job based on the job ID.
 var getJobCmd = &cobra.Command{
 	Use:   "get-job",
-	Short: "",
+	Short: "[not implemented] Returns a job based on the job ID.",
 	RunE:  impl.GetJob,
 }
 
-// listJobs --
+// listJobs -- Returns a list of all jobs that belong to a tenant.
 var listJobsCmd = &cobra.Command{
 	Use:   "list-jobs",
-	Short: "",
+	Short: "[not implemented] Returns a list of all jobs that belong to a tenant.",
 	RunE:  impl.ListJobs,
 }
 
 // patchJob -- This API returns `403` if the number of collect workers is over a certain limit.
 var patchJobCmd = &cobra.Command{
 	Use:   "patch-job",
-	Short: "This API returns `403` if the number of collect workers is over a certain limit.",
+	Short: "[not implemented] This API returns `403` if the number of collect workers is over a certain limit.",
 	RunE:  impl.PatchJob,
 }
 
 // patchJobs -- This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.
 var patchJobsCmd = &cobra.Command{
 	Use:   "patch-jobs",
-	Short: "This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.",
+	Short: "[not implemented] This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.",
 	RunE:  impl.PatchJobs,
 }
 
 func init() {
-
 	collectCmd.AddCommand(createJobCmd)
+
+	var createJobAuthorization string
+	createJobCmd.Flags().StringVar(&createJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	createJobCmd.MarkFlagRequired("authorization")
+	var createJobConnectorID string
+	createJobCmd.Flags().StringVar(&createJobConnectorID, "connector-id", "", "3This is a required parameter.This is a required parameter.The ID of the connector used in the job.")
+	createJobCmd.MarkFlagRequired("connector-id")
+	var createJobName string
+	createJobCmd.Flags().StringVar(&createJobName, "name", "", "3This is a required parameter.This is a required parameter.")
+	createJobCmd.MarkFlagRequired("name")
+	var createJobParameters string
+	createJobCmd.Flags().StringVar(&createJobParameters, "parameters", "", "3This is a required parameter.This is a required parameter.The configuration of the connector used in the job.")
+	createJobCmd.MarkFlagRequired("parameters")
+	var createJobScalePolicy string
+	createJobCmd.Flags().StringVar(&createJobScalePolicy, "scale-policy", "", "3This is a required parameter.This is a required parameter.")
+	createJobCmd.MarkFlagRequired("scale-policy")
+	var createJobSchedule string
+	createJobCmd.Flags().StringVar(&createJobSchedule, "schedule", "", "3This is a required parameter.This is a required parameter.The cron schedule, in UTC time format.")
+	createJobCmd.MarkFlagRequired("schedule")
+
+	var createJobEventExtraFields string
+	createJobCmd.Flags().StringVar(&createJobEventExtraFields, "event-extra-fields", "", "")
+	var createJobScheduled bool
+	createJobCmd.Flags().BoolVar(&createJobScheduled, "scheduled", false, "Defines whether a job is scheduled or not")
+
 	collectCmd.AddCommand(deleteJobCmd)
+
+	var deleteJobAuthorization string
+	deleteJobCmd.Flags().StringVar(&deleteJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	deleteJobCmd.MarkFlagRequired("authorization")
+	var deleteJobJobId string
+	deleteJobCmd.Flags().StringVar(&deleteJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	deleteJobCmd.MarkFlagRequired("job-id")
+
 	collectCmd.AddCommand(deleteJobsCmd)
+
+	var deleteJobsAuthorization string
+	deleteJobsCmd.Flags().StringVar(&deleteJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	deleteJobsCmd.MarkFlagRequired("authorization")
+
 	collectCmd.AddCommand(getJobCmd)
+
+	var getJobAuthorization string
+	getJobCmd.Flags().StringVar(&getJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	getJobCmd.MarkFlagRequired("authorization")
+	var getJobJobId string
+	getJobCmd.Flags().StringVar(&getJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	getJobCmd.MarkFlagRequired("job-id")
+
 	collectCmd.AddCommand(listJobsCmd)
+
+	var listJobsAuthorization string
+	listJobsCmd.Flags().StringVar(&listJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	listJobsCmd.MarkFlagRequired("authorization")
+
+	var listJobsConnectorID string
+	listJobsCmd.Flags().StringVar(&listJobsConnectorID, "connector-id", "", "Specifies the connector ID used to filter jobs. A tailing wildcard is supported for the connector ID tag. If no wildcard is used then an exact match is used.")
+
 	collectCmd.AddCommand(patchJobCmd)
+
+	var patchJobAuthorization string
+	patchJobCmd.Flags().StringVar(&patchJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	patchJobCmd.MarkFlagRequired("authorization")
+	var patchJobJobId string
+	patchJobCmd.Flags().StringVar(&patchJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	patchJobCmd.MarkFlagRequired("job-id")
+
+	var patchJobConnectorID string
+	patchJobCmd.Flags().StringVar(&patchJobConnectorID, "connector-id", "", "The ID of the connector used in the job.")
+	var patchJobEventExtraFields string
+	patchJobCmd.Flags().StringVar(&patchJobEventExtraFields, "event-extra-fields", "", "")
+	var patchJobName string
+	patchJobCmd.Flags().StringVar(&patchJobName, "name", "", "The job name")
+	var patchJobParameters string
+	patchJobCmd.Flags().StringVar(&patchJobParameters, "parameters", "", "The configuration of the connector used in the job.")
+	var patchJobScalePolicy string
+	patchJobCmd.Flags().StringVar(&patchJobScalePolicy, "scale-policy", "", "")
+	var patchJobSchedule string
+	patchJobCmd.Flags().StringVar(&patchJobSchedule, "schedule", "", "The cron schedule, in UTC time format.")
+	var patchJobScheduled bool
+	patchJobCmd.Flags().BoolVar(&patchJobScheduled, "scheduled", false, "Defines wheather a job is scheduled or not")
+
 	collectCmd.AddCommand(patchJobsCmd)
 
-	// subTest1Cmd.Flags().StringP("id", "i", "", "resource identifier")
-	// subTest2Cmd.Flags().StringP("id", "i", "", "resource identifier")
+	var patchJobsAuthorization string
+	patchJobsCmd.Flags().StringVar(&patchJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	patchJobsCmd.MarkFlagRequired("authorization")
+
+	var patchJobsConnectorID string
+	patchJobsCmd.Flags().StringVar(&patchJobsConnectorID, "connector-id", "", "Specifies the connector ID used to filter jobs. A tailing wildcard is supported for the connector ID tag. If no wildcard is used then an exact match is used.")
+
+	var patchJobsEventExtraFields string
+	patchJobsCmd.Flags().StringVar(&patchJobsEventExtraFields, "event-extra-fields", "", "")
+	var patchJobsJobIDs []string
+	patchJobsCmd.Flags().StringSliceVar(&patchJobsJobIDs, "job-i-ds", nil, "The job ID list.")
+	var patchJobsScalePolicy string
+	patchJobsCmd.Flags().StringVar(&patchJobsScalePolicy, "scale-policy", "", "")
+
 }

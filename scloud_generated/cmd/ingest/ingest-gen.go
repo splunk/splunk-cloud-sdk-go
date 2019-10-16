@@ -11,21 +11,21 @@ import (
 // postEvents -- Sends events.
 var postEventsCmd = &cobra.Command{
 	Use:   "post-events",
-	Short: "Sends events.",
+	Short: "[not implemented] Sends events.",
 	RunE:  impl.PostEvents,
 }
 
 // postMetrics -- Sends metric events.
 var postMetricsCmd = &cobra.Command{
 	Use:   "post-metrics",
-	Short: "Sends metric events.",
+	Short: "[not implemented] Sends metric events.",
 	RunE:  impl.PostMetrics,
 }
 
 // uploadFiles -- Upload a CSV or text file that contains events.
 var uploadFilesCmd = &cobra.Command{
 	Use:   "upload-files",
-	Short: "Upload a CSV or text file that contains events.",
+	Short: "[not implemented] Upload a CSV or text file that contains events.",
 	RunE:  impl.UploadFiles,
 }
 

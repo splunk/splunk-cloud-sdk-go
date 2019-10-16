@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // collectCmd represents the catalog command
 var collectCmd = &cobra.Command{
 	Use:   "collect",
-	Short: "collect service",
+	Short: "collect service - NOT IMPLEMENTED",
 }

@@ -9,158 +9,132 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CreateWorkflow -- impl
+// CreateWorkflow Creates a workflow configuration.
 func CreateWorkflow(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflow\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowBuild -- impl
+// CreateWorkflowBuild Creates a workflow build.
 func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowBuild\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowDeployment -- impl
+// CreateWorkflowDeployment Creates a workflow deployment.
 func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowInference -- impl
+// CreateWorkflowInference Creates a workflow inference request.
 func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowInference\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowRun -- impl
+// CreateWorkflowRun Creates a workflow run.
 func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowRun\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowStreamDeployment -- impl
+// CreateWorkflowStreamDeployment Creates a workflow streaming deployment.
 func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowStreamDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflow -- impl
+// DeleteWorkflow Removes a workflow configuration.
 func DeleteWorkflow(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflow\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowBuild -- impl
+// DeleteWorkflowBuild Removes a workflow build.
 func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowBuild\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowDeployment -- impl
+// DeleteWorkflowDeployment Removes a workflow deployment.
 func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowRun -- impl
+// DeleteWorkflowRun Removes a workflow run.
 func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowRun\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowStreamDeployment -- impl
+// DeleteWorkflowStreamDeployment Removes a workflow streaming deployment.
 func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowStreamDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflow -- impl
+// GetWorkflow Returns a workflow configuration.
 func GetWorkflow(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflow\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowBuild -- impl
+// GetWorkflowBuild Returns the status of a workflow build.
 func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowBuild\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowBuildError -- impl
+// GetWorkflowBuildError Returns a list of workflow errors.
 func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowBuildError\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowBuildLog -- impl
+// GetWorkflowBuildLog Returns the logs from a workflow build.
 func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowBuildLog\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowDeployment -- impl
+// GetWorkflowDeployment Returns the status of a workflow deployment.
 func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowDeploymentError -- impl
+// GetWorkflowDeploymentError Returns a list of workflow deployment errors.
 func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowDeploymentError\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowDeploymentLog -- impl
+// GetWorkflowDeploymentLog Returns the logs from a workflow deployment.
 func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowDeploymentLog\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowRun -- impl
+// GetWorkflowRun Returns the status of a workflow run.
 func GetWorkflowRun(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowRun\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowRunError -- impl
+// GetWorkflowRunError Returns the errors for a workflow run.
 func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowRunError\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowRunLog -- impl
+// GetWorkflowRunLog Returns the logs for a workflow run.
 func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowRunLog\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowStreamDeployment -- impl
+// GetWorkflowStreamDeployment Returns the status of a workflow streaming deployment.
 func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowStreamDeployment\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflowBuilds -- impl
+// ListWorkflowBuilds Returns a list of workflow builds.
 func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflowBuilds\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflowDeployments -- impl
+// ListWorkflowDeployments Returns a list of workflow deployments.
 func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflowDeployments\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflowRuns -- impl
+// ListWorkflowRuns Returns a list of workflow runs.
 func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflowRuns\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflows -- impl
+// ListWorkflows Returns a list of workflow configurations.
 func ListWorkflows(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflows\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }

@@ -9,500 +9,627 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CreateActionForRule -- impl
+// CreateActionForRule Create a new action for a rule associated with a specific resource name.
 func CreateActionForRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateActionForRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateActionForRuleByID -- impl
+// CreateActionForRuleAliasAction Create a new action for a rule associated with a specific resource name.
+func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleAutoKVAction Create a new action for a rule associated with a specific resource name.
+func CreateActionForRuleAutoKVAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleByID Create a new action for a specific rule.
 func CreateActionForRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateActionForRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDashboardbyID -- impl
+// CreateActionForRuleByIDAliasAction Create a new action for a specific rule.
+func CreateActionForRuleByIDAliasAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleByIDAutoKVAction Create a new action for a specific rule.
+func CreateActionForRuleByIDAutoKVAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleByIDEvalAction Create a new action for a specific rule.
+func CreateActionForRuleByIDEvalAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleByIDLookupAction Create a new action for a specific rule.
+func CreateActionForRuleByIDLookupAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleByIDRegexAction Create a new action for a specific rule.
+func CreateActionForRuleByIDRegexAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleEvalAction Create a new action for a rule associated with a specific resource name.
+func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleLookupAction Create a new action for a rule associated with a specific resource name.
+func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateActionForRuleRegexAction Create a new action for a rule associated with a specific resource name.
+func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateAnnotationForDashboardbyID Create a new annotation for a specific dashboard.
 func CreateAnnotationForDashboardbyID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAnnotationForDashboardbyID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDashboardsByResourceName -- impl
+// CreateAnnotationForDashboardsByResourceName Create a new annotation for a specific dataset.
 func CreateAnnotationForDashboardsByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAnnotationForDashboardsByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDatasetByID -- impl
+// CreateAnnotationForDatasetByID Create a new annotation for a specific dataset.
 func CreateAnnotationForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAnnotationForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDatasetByResourceName -- impl
+// CreateAnnotationForDatasetByResourceName Create a new annotation for a specific dataset.
 func CreateAnnotationForDatasetByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateAnnotationForDatasetByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDashboard -- impl
+// CreateDashboard Create a new dashboard.
 func CreateDashboard(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDashboard\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDataset -- impl
+// CreateDataset Create a new dataset.
 func CreateDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDatasetImport -- impl
+// CreateDatasetImport Create a new dataset import.
 func CreateDatasetImport(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDatasetImport\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDatasetImportByID -- impl
+// CreateDatasetImportByID Create a new dataset import.
 func CreateDatasetImportByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDatasetImportByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDatasetImportByIdv1 -- impl
+// CreateDatasetImportByIdv1 Create a new dataset import.
 func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDatasetImportByIdv1\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDatasetImportv1 -- impl
+// CreateDatasetImportDataset Create a new dataset.
+func CreateDatasetImportDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetImportv1 Create a new dataset import.
 func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateDatasetImportv1\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateFieldForDataset -- impl
+// CreateDatasetIndexDataset Create a new dataset.
+func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetJobDataset Create a new dataset.
+func CreateDatasetJobDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetKVCollectionDataset Create a new dataset.
+func CreateDatasetKVCollectionDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetLookupDataset Create a new dataset.
+func CreateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetMetricDataset Create a new dataset.
+func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateDatasetViewDataset Create a new dataset.
+func CreateDatasetViewDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// CreateFieldForDataset Create a new field on a specific dataset.
 func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateFieldForDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateFieldForDatasetByID -- impl
+// CreateFieldForDatasetByID Add a new field to a dataset.
 func CreateFieldForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateFieldForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateRelationship -- impl
+// CreateRelationship Create a new relationship.
 func CreateRelationship(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateRelationship\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateRule -- impl
+// CreateRule Create a new rule.
 func CreateRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflow -- impl
+// CreateWorkflow Create a new workflow configuration.
 func CreateWorkflow(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflow\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowBuild -- impl
+// CreateWorkflowBuild Create a new workflow build.
 func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowBuild\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateWorkflowRun -- impl
+// CreateWorkflowRun Create a new workflow run for the specified workflow build ID.
 func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateWorkflowRun\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteActionByIDForRule -- impl
+// DeleteActionByIDForRule Delete an action on a rule.
 func DeleteActionByIDForRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteActionByIDForRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteActionByIDForRuleByID -- impl
+// DeleteActionByIDForRuleByID Delete an action that is part of a specific rule.
 func DeleteActionByIDForRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteActionByIDForRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteAnnotationOfDashboardByID -- impl
+// DeleteAnnotationOfDashboardByID Delete a specific annotation of a dashboard.
 func DeleteAnnotationOfDashboardByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAnnotationOfDashboardByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteAnnotationOfDashboardByResourceName -- impl
+// DeleteAnnotationOfDashboardByResourceName Delete a specific annotation of a dashboard.
 func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAnnotationOfDashboardByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteAnnotationOfDatasetByID -- impl
+// DeleteAnnotationOfDatasetByID Delete a specific annotation of a dataset.
 func DeleteAnnotationOfDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAnnotationOfDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteAnnotationOfDatasetByResourceName -- impl
+// DeleteAnnotationOfDatasetByResourceName Delete a specific annotation of a dataset.
 func DeleteAnnotationOfDatasetByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteAnnotationOfDatasetByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteDashboardByID -- impl
+// DeleteDashboardByID Delete the dashboard with the specified ID.
 func DeleteDashboardByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteDashboardByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteDashboardByResourceName -- impl
+// DeleteDashboardByResourceName Delete the dashboard with the specified resource name.
 func DeleteDashboardByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteDashboardByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteDataset -- impl
+// DeleteDataset Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func DeleteDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteDatasetByID -- impl
+// DeleteDatasetByID Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.
 func DeleteDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteFieldByIDForDataset -- impl
+// DeleteFieldByIDForDataset Delete a field that is part of a specific dataset.
 func DeleteFieldByIDForDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteFieldByIDForDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteFieldByIDForDatasetByID -- impl
+// DeleteFieldByIDForDatasetByID Delete a field that is part of a specific dataset.
 func DeleteFieldByIDForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteFieldByIDForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteRelationshipByID -- impl
+// DeleteRelationshipByID Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.
 func DeleteRelationshipByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRelationshipByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteRule -- impl
+// DeleteRule Delete the rule with the specified resource name and its dependencies.
 func DeleteRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteRuleByID -- impl
+// DeleteRuleByID Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 func DeleteRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowBuildByID -- impl
+// DeleteWorkflowBuildByID Delete the workflow build with the specified workflow build ID.
 func DeleteWorkflowBuildByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowBuildByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowByID -- impl
+// DeleteWorkflowByID Delete the workflow with the specified workflow ID.
 func DeleteWorkflowByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteWorkflowRunByID -- impl
+// DeleteWorkflowRunByID Delete the workflow run with the specified workflow run ID.
 func DeleteWorkflowRunByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteWorkflowRunByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetActionByIDForRule -- impl
+// GetActionByIDForRule Return an action that is part of a specified rule.
 func GetActionByIDForRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionByIDForRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetActionByIDForRuleByID -- impl
+// GetActionByIDForRuleByID Return information about an action that is part of a specific rule.
 func GetActionByIDForRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetActionByIDForRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetDashboardByID -- impl
+// GetDashboardByID Return information about a dashboard with the specified ID.
 func GetDashboardByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetDashboardByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetDashboardByResourceName -- impl
+// GetDashboardByResourceName Return information about a dashboard with the specified resource name.
 func GetDashboardByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetDashboardByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetDataset -- impl
+// GetDataset Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func GetDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetDatasetByID -- impl
+// GetDatasetByID Return information about the dataset with the specified ID.
 func GetDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetFieldByID -- impl
+// GetFieldByID Get a field that corresponds to a specific field ID.
 func GetFieldByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetFieldByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetFieldByIDForDataset -- impl
+// GetFieldByIDForDataset Return a field that is part of a specific dataset.
 func GetFieldByIDForDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetFieldByIDForDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetFieldByIDForDatasetByID -- impl
+// GetFieldByIDForDatasetByID Return a field that is part of a specific dataset.
 func GetFieldByIDForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetFieldByIDForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetRelationshipByID -- impl
+// GetRelationshipByID Get a specific relationship.
 func GetRelationshipByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRelationshipByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetRule -- impl
+// GetRule Get a rule with a specified resource name.
 func GetRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetRuleByID -- impl
+// GetRuleByID Get information about a specific rule.
 func GetRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowBuildByID -- impl
+// GetWorkflowBuildByID Return information about the workflow build with the specified workflow build ID.
 func GetWorkflowBuildByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowBuildByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowByID -- impl
+// GetWorkflowByID Return information about a workflow with the specified workflow ID.
 func GetWorkflowByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetWorkflowRunByID -- impl
+// GetWorkflowRunByID Return information about the workflow run with the specified workflow build ID.
 func GetWorkflowRunByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetWorkflowRunByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListActionsForRule -- impl
+// ListActionsForRule Return the list of actions that are part of a specified rule.
 func ListActionsForRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListActionsForRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListActionsForRuleByID -- impl
+// ListActionsForRuleByID Return the set of actions that are part of a rule.
 func ListActionsForRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListActionsForRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListAnnotationsForDashboardByID -- impl
+// ListAnnotations Return the set of annotations across all objects.
+func ListAnnotations(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// ListAnnotationsForDashboardByID Return the set of annotations that are part of a dashboard.
 func ListAnnotationsForDashboardByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListAnnotationsForDashboardByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListAnnotationsForDashboardByResourceName -- impl
+// ListAnnotationsForDashboardByResourceName Return the set of annotations that are part of a dashboard.
 func ListAnnotationsForDashboardByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListAnnotationsForDashboardByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListAnnotationsForDatasetByID -- impl
+// ListAnnotationsForDatasetByID Return the set of annotations that are part of a dataset.
 func ListAnnotationsForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListAnnotationsForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListAnnotationsForDatasetByResourceName -- impl
+// ListAnnotationsForDatasetByResourceName Return the set of annotations that are part of a dataset.
 func ListAnnotationsForDatasetByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListAnnotationsForDatasetByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListDashboards -- impl
+// ListDashboards Return a list of Dashboards.
 func ListDashboards(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListDashboards\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListDatasets -- impl
+// ListDatasets Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
 func ListDatasets(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListDatasets\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListFields -- impl
+// ListFields Get a list of all fields in the Catalog.
 func ListFields(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListFields\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListFieldsForDataset -- impl
+// ListFieldsForDataset Return the list of fields that are part of a specified dataset.
 func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListFieldsForDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListFieldsForDatasetByID -- impl
+// ListFieldsForDatasetByID Return the set of fields for the specified dataset.
 func ListFieldsForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListFieldsForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListModules -- impl
+// ListModules Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.
 func ListModules(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListModules\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListRelationships -- impl
+// ListRelationships Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.
 func ListRelationships(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRelationships\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListRules -- impl
+// ListRules Return a list of rules that match a filter query if it is given, otherwise return all rules.
 func ListRules(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRules\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflowBuilds -- impl
+// ListWorkflowBuilds Return a list of Machine Learning workflow builds.
 func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflowBuilds\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflowRuns -- impl
+// ListWorkflowRuns Return a list of Machine Learning workflow runs for specified workflow build ID.
 func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflowRuns\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListWorkflows -- impl
+// ListWorkflows Return a list of Machine Learning workflow configurations.
 func ListWorkflows(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListWorkflows\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateActionByIDForRule -- impl
+// UpdateActionByIDForRule Update the Action with the specified id for the specified Rule
 func UpdateActionByIDForRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateActionByIDForRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateActionByIDForRuleByID -- impl
+// UpdateActionByIDForRuleAliasAction Update the Action with the specified id for the specified Rule
+func UpdateActionByIDForRuleAliasAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleAutoKVAction Update the Action with the specified id for the specified Rule
+func UpdateActionByIDForRuleAutoKVAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleByID Update an action for a specific rule.
 func UpdateActionByIDForRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateActionByIDForRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateDashboardByID -- impl
+// UpdateActionByIDForRuleByIDAliasAction Update an action for a specific rule.
+func UpdateActionByIDForRuleByIDAliasAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleByIDAutoKVAction Update an action for a specific rule.
+func UpdateActionByIDForRuleByIDAutoKVAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleByIDEvalAction Update an action for a specific rule.
+func UpdateActionByIDForRuleByIDEvalAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleByIDLookupAction Update an action for a specific rule.
+func UpdateActionByIDForRuleByIDLookupAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleByIDRegexAction Update an action for a specific rule.
+func UpdateActionByIDForRuleByIDRegexAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleEvalAction Update the Action with the specified id for the specified Rule
+func UpdateActionByIDForRuleEvalAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleLookupAction Update the Action with the specified id for the specified Rule
+func UpdateActionByIDForRuleLookupAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateActionByIDForRuleRegexAction Update the Action with the specified id for the specified Rule
+func UpdateActionByIDForRuleRegexAction(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDashboardByID Update the dashboard with the specified ID.
 func UpdateDashboardByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateDashboardByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateDashboardByResourceName -- impl
+// UpdateDashboardByResourceName Update the dashboard with the specified resource name.
 func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateDashboardByResourceName\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateDataset -- impl
+// UpdateDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateDatasetByID -- impl
+// UpdateDatasetByID Update a specific dataset.
 func UpdateDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateFieldByIDForDataset -- impl
+// UpdateDatasetByIDImportDataset Update a specific dataset.
+func UpdateDatasetByIDImportDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDIndexDataset Update a specific dataset.
+func UpdateDatasetByIDIndexDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDJobDataset Update a specific dataset.
+func UpdateDatasetByIDJobDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDKVCollectionDataset Update a specific dataset.
+func UpdateDatasetByIDKVCollectionDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDLookupDataset Update a specific dataset.
+func UpdateDatasetByIDLookupDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDMetricDataset Update a specific dataset.
+func UpdateDatasetByIDMetricDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetByIDViewDataset Update a specific dataset.
+func UpdateDatasetByIDViewDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetImportDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetIndexDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetJobDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetJobDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetKVCollectionDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetKVCollectionDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetLookupDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetMetricDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateDatasetViewDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
+}
+
+// UpdateFieldByIDForDataset Update a field with a specified ID for a specified dataset.
 func UpdateFieldByIDForDataset(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateFieldByIDForDataset\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateFieldByIDForDatasetByID -- impl
+// UpdateFieldByIDForDatasetByID Update a field for a specific dataset.
 func UpdateFieldByIDForDatasetByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateFieldByIDForDatasetByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateRelationshipByID -- impl
+// UpdateRelationshipByID Update a specific relationship.
 func UpdateRelationshipByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateRelationshipByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateRule -- impl
+// UpdateRule Update the Rule with the specified resourcename
 func UpdateRule(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateRule\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateRuleByID -- impl
+// UpdateRuleByID Update a specific rule.
 func UpdateRuleByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateRuleByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateWorkflowBuildByID -- impl
+// UpdateWorkflowBuildByID Update the workflow build with the specified workflow build ID.
 func UpdateWorkflowBuildByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateWorkflowBuildByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateWorkflowByID -- impl
+// UpdateWorkflowByID Update the workflow with the specified workflow ID.
 func UpdateWorkflowByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateWorkflowByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// UpdateWorkflowRunByID -- impl
+// UpdateWorkflowRunByID Update the workflow run with the specified workflow run ID.
 func UpdateWorkflowRunByID(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called UpdateWorkflowRunByID\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }

@@ -9,26 +9,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// AddCertificate -- impl
+// AddCertificate Each tenant can have up to five certificates.
 func AddCertificate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called AddCertificate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteCertificate -- impl
+// DeleteCertificate Removes a certificate on a particular slot on a tenant.
 func DeleteCertificate(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteCertificate\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteCertificates -- impl
+// DeleteCertificates Removes all certificates on a tenant.
 func DeleteCertificates(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteCertificates\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListCertificates -- impl
+// ListCertificates Returns a list of all certificates for a tenant.
 func ListCertificates(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListCertificates\n")
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }

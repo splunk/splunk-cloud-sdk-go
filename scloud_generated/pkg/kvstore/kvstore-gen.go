@@ -9,86 +9,62 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CreateIndex -- impl
+// CreateIndex Creates an index on a collection.
 func CreateIndex(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called CreateIndex\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteIndex -- impl
+// DeleteIndex Removes an index from a collection.
 func DeleteIndex(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteIndex\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteRecordByKey -- impl
+// DeleteRecordByKey Deletes a record with a given key.
 func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRecordByKey\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// DeleteRecords -- impl
+// DeleteRecords Removes records in a collection that match the query.
 func DeleteRecords(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called DeleteRecords\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// GetRecordByKey -- impl
+// GetRecordByKey Returns a record with a given key.
 func GetRecordByKey(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called GetRecordByKey\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// InsertRecord -- impl
+// InsertRecord Inserts a record into a collection.
 func InsertRecord(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called InsertRecord\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// InsertRecords -- impl
+// InsertRecords Inserts multiple records in a single request.
 func InsertRecords(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called InsertRecords\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListIndexes -- impl
+// ListIndexes Returns a list of all indexes on a collection.
 func ListIndexes(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListIndexes\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// ListRecords -- impl
+// ListRecords Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
 func ListRecords(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called ListRecords\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// Ping -- impl
+// Ping Returns the health status from the database.
 func Ping(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called Ping\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// PutRecord -- impl
+// PutRecord Updates the record with a given key, either by inserting or replacing the record.
 func PutRecord(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called PutRecord\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// QueryRecords -- impl
+// QueryRecords Returns a list of query records in a collection.
 func QueryRecords(cmd *cobra.Command, args []string) error {
-	fmt.Printf("called QueryRecords\n")
-
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
