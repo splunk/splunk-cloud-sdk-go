@@ -1,8 +1,8 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 2.0.1
-### Breaking Changes
-*  The type of requestBody param in catalog.CreateAnnotationForDashboardbyId() and catalog.CreateAnnotationForDashboardsByResourceName() is changed from map[string]string to map[string]interface{}
+### NON-breaking Changes
+*  Update README.md
 
 ## Version 2.0.0
 ### Breaking Changes
