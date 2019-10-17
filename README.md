@@ -1,20 +1,20 @@
-# Splunk Cloud SDK for Go
+# Splunk Cloud Services SDK for Go
 [![Go Report Card](https://goreportcard.com/badge/github.com/splunk/splunk-cloud-sdk-go)](https://goreportcard.com/report/github.com/splunk/splunk-cloud-sdk-go) 
 [![GoDoc](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go?status.svg)](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go)
 
-The Splunk Cloud software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud services with the Go programming language.
+The Splunk Cloud Services software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud Services with the Go programming language.
 
-To use Splunk Cloud SDKs, you must be included in the Splunk Investigate Beta Program.
+To use Splunk Cloud Services SDKs, you must be included in the Splunk Investigate Beta Program.
 Sign up here: https://si.scp.splunk.com/.
 
-# Splunk Cloud CLI
+# Splunk Cloud Services CLI
 
-Splunk Cloud CLI, `scloud`, is a command-line tool for developers using Splunk Developer Cloud to make API calls in the Splunk Cloud Platform.
+Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services.
 
-For more information about Splunk Cloud CLI [see the README](cmd/scloud/README.md).
+For more information about Splunk Cloud Services CLI [see the README](cmd/scloud/README.md).
 
 ## Terms of Service (TOS)
-[Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-pre-release-terms-of-service.html)
+[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
 
 ## Get started
@@ -67,7 +67,7 @@ Initialize your project using Go modules for dependency support. Your project ca
             Tenant: os.Getenv("TENANT"),
         })
         exitOnErr(err)
-        // Validate access to the platform and tenant
+        // Validate access to Splunk Cloud Services and tenant
         query := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
         info, err := client.IdentityService.ValidateToken(&query)
         exitOnErr(err)
@@ -95,7 +95,7 @@ Initialize your project using Go modules for dependency support. Your project ca
 
 4. Set your access token and tenant.
 
-    -  Retrieve your access token from the [Splunk Developer Cloud Portal](https://sdc.splunkbeta.com/settings).
+    -  Retrieve your access token from the [Splunk Developer Portal](https://developer.splunk.com/scs/settings).
 
     -  List your tenants using the following REST command, replacing `<accessToken>` with your access token:
 
@@ -122,13 +122,13 @@ Initialize your project using Go modules for dependency support. Your project ca
     ```
 
 ## Documentation
-For general documentation, see the [Splunk Developer Cloud Portal](https://sdc.splunkbeta.com/).
+For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
 
-For reference documentation, see the [Splunk Cloud SDK for Go API Reference](https://sdc.splunkbeta.com/reference/sdk/splunk-cloud-sdk-go).
+For reference documentation, see the [Splunk Cloud Services SDK for Go API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-go).
 
 ## Contributing
 
 Do not directly edit any source file with `_generated` in the name because that file was generated from service specifications.
 
 ## Contact
-If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _sdcbeta@splunk.com_.
+If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.
