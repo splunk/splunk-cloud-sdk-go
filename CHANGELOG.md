@@ -2,7 +2,7 @@
 
 ## Version 2.0.1
 ### Breaking Changes
-*  The type for requestBody input param in catalog.CreateAnnotationForDashboardbyId() and catalog.CreateAnnotationForDashboardsByResourceName() has changed from map[string]string to map[string]interface{}
+*  The type of requestBody param in catalog.CreateAnnotationForDashboardbyId() and catalog.CreateAnnotationForDashboardsByResourceName() is changed from map[string]string to map[string]interface{}
 
 ## Version 2.0.0
 ### Breaking Changes
