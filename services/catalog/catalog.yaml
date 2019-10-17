@@ -253,8 +253,7 @@ components:
           $ref: '#/components/schemas/AliasActionKind'
       type: object
     Annotation:
-      additionalProperties:
-        type: string
+      additionalProperties: true
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/MetadataProperties'
@@ -282,8 +281,7 @@ components:
       - properties
       type: object
     AnnotationPOST:
-      additionalProperties:
-        type: string
+      additionalProperties: true
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/AnnotationTypeResourceName'
@@ -4853,4 +4851,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 6d81d235ffc4038a0320d47790e99687eceffaac path: catalog/v2beta1/openapi.yaml
