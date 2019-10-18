@@ -1,6 +1,11 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 2.0.1
+## Version 2.0.1
+### NON-breaking Changes
+*  Update README.md
+
+## Version 2.0.1
 ### NON-breaking Changes
 *  Update README.md
 
