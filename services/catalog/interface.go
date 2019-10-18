@@ -50,7 +50,7 @@ type Servicer interface {
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDashboardbyId(dashboardid string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDashboardbyId(dashboardid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDashboardsByResourceName - catalog service endpoint
 		Create a new annotation for a specific dataset.
@@ -59,7 +59,7 @@ type Servicer interface {
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetById - catalog service endpoint
 		Create a new annotation for a specific dataset.
@@ -68,7 +68,7 @@ type Servicer interface {
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDatasetById(datasetid string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDatasetById(datasetid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetByResourceName - catalog service endpoint
 		Create a new annotation for a specific dataset.
@@ -77,7 +77,7 @@ type Servicer interface {
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateDashboard - catalog service endpoint
 		Create a new dashboard.
