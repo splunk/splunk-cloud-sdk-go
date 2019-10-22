@@ -2,9 +2,9 @@
 
 Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services. The Splunk Cloud Services CLI uses the Splunk Cloud Services SDK for Go for many API calls and is a great way to explore the available functionality.
 
-## Terms of Service
+## Terms of Service (TOS)
 
-[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
+Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
 
 ## Install the Splunk Cloud Services CLI tool
 

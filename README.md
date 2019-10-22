@@ -14,8 +14,8 @@ Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to ma
 For more information about Splunk Cloud Services CLI [see the README](cmd/scloud/README.md).
 
 ## Terms of Service (TOS)
-[Splunk Cloud Services Terms of Service](https://auth.scp.splunk.com/tos)
 
+Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
 
 ## Get started
 
