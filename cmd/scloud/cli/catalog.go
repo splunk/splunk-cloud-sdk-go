@@ -26,7 +26,7 @@ import (
 
 	"net/url"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/catalog"
 )
 
 //

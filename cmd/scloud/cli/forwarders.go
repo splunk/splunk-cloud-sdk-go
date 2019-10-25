@@ -20,11 +20,11 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
 
 	"io/ioutil"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/forwarders"
 )
 
 const (

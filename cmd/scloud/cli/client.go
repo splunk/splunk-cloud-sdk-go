@@ -22,17 +22,17 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 
 	"github.com/golang/glog"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/config"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/httpx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/config"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/httpx"
 
 	"crypto/tls"
 
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
 
 	"crypto/x509"
 	"io/ioutil"

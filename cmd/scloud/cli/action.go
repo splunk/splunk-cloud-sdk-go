@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/action"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/action"
 )
 
 const (

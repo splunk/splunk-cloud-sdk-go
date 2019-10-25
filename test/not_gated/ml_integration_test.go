@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
-	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ingest"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ml"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/v2/test/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

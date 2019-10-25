@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

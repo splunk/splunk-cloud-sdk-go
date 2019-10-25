@@ -19,8 +19,8 @@ package main
 import (
 	"flag"
 
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services/provisioner"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/provisioner"
 )
 
 const (

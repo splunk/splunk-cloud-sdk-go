@@ -1,19 +1,19 @@
 package sdk
 
 import (
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/services/action"
-	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
-	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
-	"github.com/splunk/splunk-cloud-sdk-go/services/collect"
-	"github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
-	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
-	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
-	"github.com/splunk/splunk-cloud-sdk-go/services/provisioner"
-	"github.com/splunk/splunk-cloud-sdk-go/services/search"
-	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/action"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/appregistry"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/catalog"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/collect"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/forwarders"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/identity"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ingest"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/kvstore"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ml"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/provisioner"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/search"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/streams"
 )
 
 // Client to communicate with Splunk Cloud service endpoints

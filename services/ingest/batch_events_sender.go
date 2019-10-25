@@ -23,7 +23,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 )
 
 //UserErrHandler defines the type of user callback function for batchEventSender

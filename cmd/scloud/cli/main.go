@@ -38,16 +38,16 @@ import (
 	"github.com/pelletier/go-toml"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/assets"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/config"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/fcache"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/assets"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/config"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/fcache"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/version"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/version"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"strconv"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
 )
 
 var options struct {

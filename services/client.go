@@ -35,8 +35,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 )
 
 //go:generate go run ../util/gen_interface.go -svc=action -p=action -sf=service_generated.go -sf=service_sdk.go

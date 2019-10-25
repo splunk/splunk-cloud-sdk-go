@@ -22,8 +22,8 @@ import (
 
 	"flag"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
-	"github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/argx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/appregistry"
 )
 
 const (

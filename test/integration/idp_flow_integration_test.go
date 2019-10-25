@@ -19,16 +19,16 @@ package integration
 import (
 	"os"
 
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
 
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/services/identity"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
-	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/identity"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ingest"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/v2/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

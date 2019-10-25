@@ -26,8 +26,8 @@ package catalog
 import (
 	"net/http"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 )
 
 const serviceCluster = "api"

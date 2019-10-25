@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/httpx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/httpx"
 )
 
 const (

@@ -22,14 +22,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
 
 	"bufio"
 	"fmt"
 	"io"
 	"os"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/kvstore"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/kvstore"
 )
 
 const (

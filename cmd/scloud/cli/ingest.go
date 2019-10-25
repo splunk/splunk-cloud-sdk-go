@@ -25,8 +25,8 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
-	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/argx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ingest"
 )
 
 const (

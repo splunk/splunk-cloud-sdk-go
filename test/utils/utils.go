@@ -21,9 +21,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
 )
 
 // TimeSec denotes the current timestamp

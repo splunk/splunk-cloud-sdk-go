@@ -23,8 +23,8 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
-	"github.com/splunk/splunk-cloud-sdk-go/services/streams"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/argx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/streams"
 )
 
 const (

@@ -21,7 +21,7 @@ import (
 	"net/http"
 	"testing"
 
-	test "github.com/splunk/splunk-cloud-sdk-go/test/scloud"
+	test "github.com/splunk/splunk-cloud-sdk-go/v2/test/scloud"
 
 	"net/url"
 

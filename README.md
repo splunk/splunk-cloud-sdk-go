@@ -1,5 +1,5 @@
 # Splunk Cloud Services SDK for Go
-[![Go Report Card](https://goreportcard.com/badge/github.com/splunk/splunk-cloud-sdk-go)](https://goreportcard.com/report/github.com/splunk/splunk-cloud-sdk-go) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/splunk/splunk-cloud-sdk-go)](https://goreportcard.com/report/github.com/splunk/splunk-cloud-sdk-go)
 [![GoDoc](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go?status.svg)](https://godoc.org/github.com/splunk/splunk-cloud-sdk-go)
 
 The Splunk Cloud Services software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud Services with the Go programming language.
@@ -54,9 +54,9 @@ Initialize your project using Go modules for dependency support. Your project ca
         "fmt"
         "os"
 
-        "github.com/splunk/splunk-cloud-sdk-go/sdk"
-        "github.com/splunk/splunk-cloud-sdk-go/services"
-        "github.com/splunk/splunk-cloud-sdk-go/services/identity"
+        "github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+        "github.com/splunk/splunk-cloud-sdk-go/v2/services"
+        "github.com/splunk/splunk-cloud-sdk-go/v2/services/identity"
     )
 
     func main() {

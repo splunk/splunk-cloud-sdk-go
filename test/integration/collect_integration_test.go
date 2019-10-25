@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/collect"
-	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/collect"
+	testutils "github.com/splunk/splunk-cloud-sdk-go/v2/test/utils"
 	"github.com/stretchr/testify/require"
 )
 

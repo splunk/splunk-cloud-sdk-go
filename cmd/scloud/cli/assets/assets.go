@@ -27,7 +27,7 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	// Import needed to register files with fs
-	_ "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/statik"
+	_ "github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/statik"
 )
 
 // Open the named static file asset.

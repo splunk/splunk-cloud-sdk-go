@@ -21,7 +21,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services/ml"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/ml"
 )
 
 const (

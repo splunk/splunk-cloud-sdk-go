@@ -19,7 +19,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/assets"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/cli/assets"
 )
 
 // Deprecated: Print the named help file. Usages should be replaced with getHelp(), see kvstore & forwarders as examples

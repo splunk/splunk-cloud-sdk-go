@@ -17,7 +17,7 @@
 package main
 
 import (
-	sdkIdentity "github.com/splunk/splunk-cloud-sdk-go/services/identity"
+	sdkIdentity "github.com/splunk/splunk-cloud-sdk-go/v2/services/identity"
 )
 
 const (

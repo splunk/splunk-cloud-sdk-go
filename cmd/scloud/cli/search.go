@@ -24,9 +24,9 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
-	"github.com/splunk/splunk-cloud-sdk-go/sdk"
-	"github.com/splunk/splunk-cloud-sdk-go/services/search"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/cmd/scloud/argx"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/sdk"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services/search"
 )
 
 type SearchCommand struct {

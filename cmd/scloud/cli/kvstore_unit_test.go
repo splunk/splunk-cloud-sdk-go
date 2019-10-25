@@ -22,7 +22,7 @@ import (
 	"net/url"
 	"testing"
 
-	test "github.com/splunk/splunk-cloud-sdk-go/test/scloud"
+	test "github.com/splunk/splunk-cloud-sdk-go/v2/test/scloud"
 
 	"github.com/stretchr/testify/assert"
 )

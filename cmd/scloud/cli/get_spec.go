@@ -19,8 +19,8 @@ package main
 import (
 	"io/ioutil"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/services"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 )
 
 func GetSpecJSON(svcCluster, svcVersion, svcName string, client *services.BaseClient) (interface{}, error) {

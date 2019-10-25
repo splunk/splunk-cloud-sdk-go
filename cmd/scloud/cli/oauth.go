@@ -21,7 +21,7 @@ import (
 	"fmt"
 
 	"github.com/pelletier/go-toml"
-	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/idp"
 )
 
 // Returns the value corresponding to the given key, from the given map.

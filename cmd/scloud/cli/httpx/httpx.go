@@ -22,7 +22,7 @@ import (
 	"fmt"
 
 	"github.com/golang/glog"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 
 	"io"
 	"io/ioutil"

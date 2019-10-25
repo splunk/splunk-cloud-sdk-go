@@ -1,4 +1,4 @@
-module github.com/splunk/splunk-cloud-sdk-go
+module github.com/splunk/splunk-cloud-sdk-go/v2
 
 require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b

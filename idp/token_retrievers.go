@@ -18,7 +18,7 @@ package idp
 
 import (
 	"github.com/pkg/errors"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/splunk-cloud-sdk-go/v2/util"
 )
 
 const (
