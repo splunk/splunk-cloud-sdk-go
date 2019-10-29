@@ -17,6 +17,7 @@
 package ingest
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math"
@@ -241,43 +242,13 @@ func (b *BatchEventsSender) sendEventInBatches(events []Event) {
 }
 
 func (b *BatchEventsSender) readEvent(event Event) (int, error) {
-	var eventbody = event.Body
-
-	bodystring, ok := eventbody.(string)
-	if ok {
-		return len(bodystring), nil
-
-	}
-	bodyNum, ok := eventbody.(int64)
-	if ok {
-		return len(string(bodyNum)), nil
-	}
-
-	bodyNum1, ok := eventbody.(int32)
-	if ok {
-		return len(string(bodyNum1)), nil
-	}
-
-	bodyNum2, ok := eventbody.(int)
-	if ok {
-		return len(string(bodyNum2)), nil
-	}
-
-	bodyMap, ok := eventbody.(map[string]interface{})
-	if ok {
-		for _, bodyval := range bodyMap {
-
-			return len(bodyval.(string)), nil
-		}
-	}
-
-	_, ok = eventbody.(bool)
-	if ok {
-		return 1, nil
+	bytes, err := json.Marshal(event.Body)
+	if err == nil {
+		return len(bytes), nil
 	}
 
 	// return the max value so that all previous events can be flushed
-	return math.MaxInt32, errors.New("can't read event, the event type is not supported")
+	return math.MaxInt32, errors.New("can't read event:" + err.Error())
 }
 
 // ResetQueue sets b.EventsQueue to empty, but keep memory allocated for underlying array
