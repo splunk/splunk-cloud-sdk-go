@@ -345,7 +345,7 @@ func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test ListDatasets
@@ -413,7 +413,7 @@ func TestListDatasetsAll(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, ds.ViewDataset().Id)
 
-	query := catalog.ListDatasetsQueryParams{}.SetFilter(`kind=="kvcollection"`).SetOrderby([]string{"id Descending"}).SetCount(1)
+	query := catalog.ListDatasetsQueryParams{}.SetFilter(`kind=="view"`).SetFilter(`id=="` + ds.ViewDataset().Id + "\"").SetOrderby([]string{"id Descending"}).SetCount(1)
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
 	assert.Nil(t, err)
 	assert.NotZero(t, len(datasets))
@@ -724,7 +724,7 @@ func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test GetRules
