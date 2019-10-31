@@ -2,30 +2,19 @@
 
 ## Version 1.0.0
 ### Breaking Changes
-* Change the release version to 1.0.0
-### Bug Fixes
-* Fix event size calculation in batch_event_sender
-
-## Version 2.0.1
-### NON-breaking Changes
-*  Update README.md
-
-
-## Version 2.0.0
-### Breaking Changes
-* The  `TriggerEvent model` in action service is changed from required to optional field
-
+* The `TriggerEvent model` in action service is changed from required to optional field
 * The `catalog.GetDataset()` and `catalog.GetDatasetById()` are changed to require a new query parameter arguments 
-
-* The  `ScalePolicy` model in collect service has changed its type from `map[string]interface{}` to `*ScalePolicy`
-
-* The property  `include` in `ValidateTokenQueryParams` model in identity service has changed type from []string to new type of `ValidateTokeninclude`
+* The `ScalePolicy` model in collect service has changed its type from `map[string]interface{}` to `*ScalePolicy`
+* The property `include` in `ValidateTokenQueryParams` model in identity service has changed type from []string to new type of `ValidateTokeninclude`
 
 ### Non-breaking Changes
 * Add `delete-certificate` cmd in Scloud 
 * Add `ListAnnotations()` api in catalog service
 * Add `CreateWorkflowStreamDeployment()`, `DeleteWorkflowStreamDeployment()`, `GetWorkflowStreamDeployment()`  in ml service
 * Add `ListPreviewResults()` in search service
+
+### Bug Fixes
+* Fix event size calculation in batch_event_sender
 
 ## Version 1.0.0-beta.4
 ### Breaking Changes
