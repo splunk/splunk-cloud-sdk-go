@@ -1,5 +1,11 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.0.0
+### Breaking Changes
+* Change the release version to 1.0.0
+### Bug Fixes
+* Fix event size calculation in batch_event_sender
+
 ## Version 2.0.1
 ### NON-breaking Changes
 *  Update README.md
