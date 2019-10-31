@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/assets"
 )
@@ -33,7 +34,7 @@ func help(fileName string) error {
 
 // Get contents of the named help file.
 func getHelp(fileName string) (string, error) {
-	filePath := fmt.Sprintf("help/%s", fileName) // TODO: replace with os-agnostic path formation
+	filePath := filepath.Join("help", fileName)
 	b, err := assets.Read(filePath)
 	if err != nil {
 		return "", err
