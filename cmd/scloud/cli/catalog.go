@@ -124,7 +124,10 @@ func (cmd *CatalogCommand) Dispatch(args []string) (result interface{}, err erro
 	case "get-spec-yaml":
 		result, err = cmd.getSpecYaml(args)
 	case "help":
-		err = help("catalog.txt")
+		result, err := getHelp("catalog.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "update-dataset":
 		result, err = cmd.updateDataset(args)
 	case "update-field":

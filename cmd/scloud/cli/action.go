@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -75,7 +76,10 @@ func (cmd *ActionCommand) Dispatch(args []string) (result interface{}, err error
 	case "get-spec-yaml":
 		result, err = cmd.getSpecYaml(args)
 	case "help":
-		err = help("action.txt")
+		result, err := getHelp("action.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "trigger-action":
 		result, err = cmd.triggerAction(args)
 	case "update-action":

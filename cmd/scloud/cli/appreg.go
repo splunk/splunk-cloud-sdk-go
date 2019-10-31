@@ -66,7 +66,10 @@ func (appRegCommand *AppRegistryCommand) Dispatch(argv []string) (result interfa
 	case "get-subscription":
 		result, err = appRegCommand.getSubscription(argv)
 	case "help":
-		err = help("appreg.txt")
+		result, err := getHelp("appreg.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "list-apps":
 		result, err = appRegCommand.listApps(argv)
 	case "list-subscriptions":

@@ -17,6 +17,8 @@
 package main
 
 import (
+	"fmt"
+
 	sdkIdentity "github.com/splunk/splunk-cloud-sdk-go/services/identity"
 )
 
@@ -77,7 +79,10 @@ func (cmd *IdentityCommand) Dispatch(argv []string) (result interface{}, err err
 	case "get-spec-yaml":
 		result, err = cmd.getSpecYaml(argv)
 	case "help":
-		err = help("identity.txt")
+		result, err := getHelp("identity.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "list-groups":
 		result, err = listGroups(argv)
 	case "list-group-members":

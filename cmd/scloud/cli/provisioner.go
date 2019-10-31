@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services/provisioner"
@@ -55,7 +56,10 @@ func (cmd *ProvisionerCommand) Dispatch(argv []string) (result interface{}, err 
 	case "get-invite":
 		result, err = cmd.getInvite(argv)
 	case "help":
-		err = help("provisioner.txt")
+		result, err := getHelp("provisioner.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "list-provision-jobs":
 		result, err = cmd.listProvisionJobs(argv)
 	case "list-tenants":

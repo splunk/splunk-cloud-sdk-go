@@ -85,7 +85,10 @@ func (streamsCommand *StreamsCommand) Dispatch(argv []string) (result interface{
 	case "get-spec-yaml":
 		result, err = streamsCommand.getSpecYaml(argv)
 	case "help":
-		err = help("streams.txt")
+		result, err := getHelp("streams.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "merge-pipelines":
 		result, err = streamsCommand.mergePipelines(argv)
 	case "reactivate-pipeline":

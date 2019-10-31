@@ -18,6 +18,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -60,7 +61,10 @@ func (cmd *MachineLearningCommand) Dispatch(args []string) (result interface{}, 
 	case "delete-workflow-run":
 		err = cmd.deleteWorkflowBuildRun(args)
 	case "help":
-		err = help("ml.txt")
+		result, err := getHelp("ml.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "get-spec-json":
 		result, err = cmd.getSpecJSON(args)
 	case "get-spec-yaml":

@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"time"
 
@@ -59,7 +60,10 @@ func (cmd *SearchCommand) Dispatch(argv []string) (result interface{}, err error
 	case "get-spec-yaml":
 		result, err = cmd.getSpecYaml(argv)
 	case "help":
-		err = help("search.txt")
+		result, err := getHelp("search.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "list-jobs":
 		result, err = cmd.listJobs(argv)
 	case "wait":

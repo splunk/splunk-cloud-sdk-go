@@ -490,10 +490,11 @@ func loadConfig() error {
 func callForHelp(args []string) bool {
 	if len(args) >= 2 && args[1] == "help" {
 		fileName := fmt.Sprintf("%s.txt", args[0])
-		err := help(fileName)
+		result, err := getHelp(fileName)
 		if err != nil {
 			fatal("%v", err)
 		}
+		fmt.Println(result)
 		return true
 	}
 	return false
@@ -575,7 +576,10 @@ func main() {
 
 	case "help":
 		checkEmpty(args)
-		err = help("scloud.txt")
+		result, err := getHelp("scloud.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 
 	case "action":
 		result, err = newActionCommand().Dispatch(args)

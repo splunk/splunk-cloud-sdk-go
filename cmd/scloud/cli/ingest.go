@@ -19,6 +19,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -64,7 +65,10 @@ func (cmd *IngestCommand) Dispatch(argv []string) (result interface{}, err error
 	case "get-spec-yaml":
 		result, err = cmd.getSpecYaml(argv)
 	case "help":
-		err = help("ingest.txt")
+		result, err := getHelp("ingest.txt")
+		if err == nil {
+			fmt.Println(result)
+		}
 	case "post-events":
 		result, err = newPostEventsCommand().postEvents(argv)
 	case "post-metrics":
