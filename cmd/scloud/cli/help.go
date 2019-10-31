@@ -22,15 +22,6 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/assets"
 )
 
-// Deprecated: Print the named help file. Usages should be replaced with getHelp(), see kvstore & forwarders as examples
-func help(fileName string) error {
-	ret, err := getHelp(fileName)
-	if err == nil {
-		fmt.Println(ret)
-	}
-	return err
-}
-
 // Get contents of the named help file.
 func getHelp(fileName string) (string, error) {
 	filePath := fmt.Sprintf("help/%s", fileName) // TODO: replace with os-agnostic path formation
