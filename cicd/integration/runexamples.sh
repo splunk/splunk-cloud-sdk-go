@@ -38,4 +38,6 @@ else
     go run -v  ./examples/logging/logging.go -logfile example.log || exit 1
     echo "example.log output:"
     (ls example.log && cat example.log| sed -e "s/Authorization: Bearer .*/Authorization: Bearer <REDACTED>/g") || exit 1
+    echo "Running mock ..."
+    go run -v ./examples/mock/mock.go || exit 1
 fi
