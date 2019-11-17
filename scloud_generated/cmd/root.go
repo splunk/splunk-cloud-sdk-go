@@ -28,14 +28,14 @@ var confFile string
 var legacyFile string
 
 var (
-	env             string
-	tenant          string
-	userName        string
-	authURL         string
-	hostURL         string
-	insecure        bool
-	cacert          string
-	logtostderr     bool
+	env      string
+	tenant   string
+	userName string
+	authURL  string
+	hostURL  string
+	insecure bool
+	cacert   string
+	logtostderr bool
 	alsologtostderr bool
 )
 
