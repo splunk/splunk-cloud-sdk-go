@@ -5,6 +5,7 @@ package streams
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
@@ -49,7 +50,7 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	body := model.ActivatePipelineRequest{
 		ActivateLatestVersion: activateLatestVersion,
 		AllowNonRestoredState: allowNonRestoredState,
-		SkipRestoreState: skipRestoreState,
+		SkipRestoreState:      skipRestoreState,
 	}
 
 	resp, err := client.StreamsService.ActivatePipeline(id, body)
@@ -109,10 +110,9 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "syntax": ` + err.Error())
 	}
 
-
 	// Form the request body
 	body := model.SplCompileRequest{
-		Spl: spl,
+		Spl:    spl,
 		Syntax: syntax,
 	}
 
@@ -157,9 +157,9 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.ConnectionRequest{
 		ConnectorId: connectorId,
-		Data: data,
+		Data:        data,
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.CreateConnection(body)
@@ -241,17 +241,17 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	body := model.GroupRequest{
 		Arguments: arguments,
 		Ast: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Attributes: attributes,
 		Categories: categories,
-		Mappings: mappings,
-		Name: name,
+		Mappings:   mappings,
+		Name:       name,
 		OutputType: outputType,
-		Scalar: scalar,
-		Variadic: variadic,
+		Scalar:     scalar,
+		Variadic:   variadic,
 	}
 
 	resp, err := client.StreamsService.CreateGroup(body)
@@ -308,12 +308,12 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	body := model.PipelineRequest{
 		BypassValidation: bypassValidation,
 		Data: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.CreatePipeline(body)
@@ -362,12 +362,12 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.TemplateRequest{
 		Data: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.CreateTemplate(body)
@@ -427,7 +427,6 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
 
-
 	err = client.StreamsService.DeleteConnection(connectionId)
 	if err != nil {
 		return err
@@ -450,7 +449,6 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
 	}
-
 
 	err = client.StreamsService.DeleteGroup(groupId)
 	if err != nil {
@@ -475,7 +473,6 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
-
 	resp, err := client.StreamsService.DeletePipeline(id)
 	if err != nil {
 		return err
@@ -498,7 +495,6 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
-
 
 	err = client.StreamsService.DeleteTemplate(templateId)
 	if err != nil {
@@ -536,7 +532,7 @@ func ExpandGroup(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.GroupExpandRequest{
 		Arguments: arguments,
-		Id: id,
+		Id:        id,
 	}
 
 	resp, err := client.StreamsService.ExpandGroup(groupId, body)
@@ -574,8 +570,8 @@ func ExpandPipeline(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.UplPipeline{
-		Edges: edges,
-		Nodes: nodes,
+		Edges:    edges,
+		Nodes:    nodes,
 		RootNode: rootNode,
 	}
 
@@ -601,7 +597,6 @@ func GetGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.GetGroup(groupId)
 	if err != nil {
@@ -648,11 +643,11 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.GetInputSchemaRequest{
-		NodeUuid: nodeUuid,
+		NodeUuid:       nodeUuid,
 		TargetPortName: targetPortName,
 		UplJson: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 	}
@@ -704,11 +699,11 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.GetOutputSchemaRequest{
-		NodeUuid: nodeUuid,
+		NodeUuid:       nodeUuid,
 		SourcePortName: sourcePortName,
 		UplJson: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 	}
@@ -744,7 +739,6 @@ func GetPipeline(cmd *cobra.Command, args []string) error {
 	query := model.GetPipelineQueryParams{}
 	query.Version = version
 
-
 	resp, err := client.StreamsService.GetPipeline(id, &query)
 	if err != nil {
 		return err
@@ -767,7 +761,6 @@ func GetPipelineLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.GetPipelineLatestMetrics(id)
 	if err != nil {
@@ -834,7 +827,6 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 	query.SortDir = sortDir
 	query.SortField = sortField
 
-
 	resp, err := client.StreamsService.GetPipelinesStatus(&query)
 	if err != nil {
 		return err
@@ -857,7 +849,6 @@ func GetPreviewData(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.GetPreviewData(previewSessionId)
 	if err != nil {
@@ -882,7 +873,6 @@ func GetPreviewSession(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
 
-
 	resp, err := client.StreamsService.GetPreviewSession(previewSessionId)
 	if err != nil {
 		return err
@@ -905,7 +895,6 @@ func GetPreviewSessionLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.GetPreviewSessionLatestMetrics(previewSessionId)
 	if err != nil {
@@ -933,7 +922,6 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 	// Form query params
 	query := model.GetRegistryQueryParams{}
 	query.Local = local
-
 
 	resp, err := client.StreamsService.GetRegistry(&query)
 	if err != nil {
@@ -966,7 +954,6 @@ func GetTemplate(cmd *cobra.Command, args []string) error {
 	// Form query params
 	query := model.GetTemplateQueryParams{}
 	query.Version = version
-
 
 	resp, err := client.StreamsService.GetTemplate(templateId, &query)
 	if err != nil {
@@ -1044,7 +1031,6 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	query.SortDir = sortDir
 	query.SortField = sortField
 
-
 	resp, err := client.StreamsService.ListConnections(&query)
 	if err != nil {
 		return err
@@ -1060,8 +1046,6 @@ func ListConnectors(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
-
 
 	resp, err := client.StreamsService.ListConnectors()
 	if err != nil {
@@ -1135,7 +1119,6 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	query.SortDir = sortDir
 	query.SortField = sortField
 
-
 	resp, err := client.StreamsService.ListPipelines(&query)
 	if err != nil {
 		return err
@@ -1181,7 +1164,6 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	query.PageSize = pageSize
 	query.SortDir = sortDir
 	query.SortField = sortField
-
 
 	resp, err := client.StreamsService.ListTemplates(&query)
 	if err != nil {
@@ -1244,13 +1226,13 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.PipelinesMergeRequest{
 		InputTree: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		MainTree: model.UplPipeline{
-			Edges: edgesMainTree,
-			Nodes: nodesMainTree,
+			Edges:    edgesMainTree,
+			Nodes:    nodesMainTree,
 			RootNode: rootNodeMainTree,
 		},
 		TargetNode: targetNode,
@@ -1297,9 +1279,9 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.ConnectionPutRequest{
-		Data: data,
+		Data:        data,
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.PutConnection(connectionId, body)
@@ -1386,17 +1368,17 @@ func PutGroup(cmd *cobra.Command, args []string) error {
 	body := model.GroupPutRequest{
 		Arguments: arguments,
 		Ast: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Attributes: attributes,
 		Categories: categories,
-		Mappings: mappings,
-		Name: name,
+		Mappings:   mappings,
+		Name:       name,
 		OutputType: outputType,
-		Scalar: scalar,
-		Variadic: variadic,
+		Scalar:     scalar,
+		Variadic:   variadic,
 	}
 
 	resp, err := client.StreamsService.PutGroup(groupId, body)
@@ -1450,12 +1432,12 @@ func PutTemplate(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.TemplatePutRequest{
 		Data: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.PutTemplate(templateId, body)
@@ -1480,7 +1462,6 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.ReactivatePipeline(id)
 	if err != nil {
@@ -1547,13 +1528,13 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.PreviewSessionStartRequest{
-		RecordsLimit: recordsLimit,
-		RecordsPerPipeline: recordsPerPipeline,
-		SessionLifetimeMs: sessionLifetimeMs,
+		RecordsLimit:             recordsLimit,
+		RecordsPerPipeline:       recordsPerPipeline,
+		SessionLifetimeMs:        sessionLifetimeMs,
 		StreamingConfigurationId: streamingConfigurationId,
 		Upl: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		UseNewData: useNewData,
@@ -1581,7 +1562,6 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
-
 
 	resp, err := client.StreamsService.StopPreview(previewSessionId)
 	if err != nil {
@@ -1625,9 +1605,9 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	body := model.ConnectionPatchRequest{
-		Data: data,
+		Data:        data,
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.UpdateConnection(connectionId, body)
@@ -1716,17 +1696,17 @@ func UpdateGroup(cmd *cobra.Command, args []string) error {
 	body := model.GroupPatchRequest{
 		Arguments: arguments,
 		Ast: &model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Attributes: attributes,
 		Categories: categories,
-		Mappings: mappings,
-		Name: name,
+		Mappings:   mappings,
+		Name:       name,
 		OutputType: outputType,
-		Scalar: scalar,
-		Variadic: variadic,
+		Scalar:     scalar,
+		Variadic:   variadic,
 	}
 
 	resp, err := client.StreamsService.UpdateGroup(groupId, body)
@@ -1794,14 +1774,14 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.PipelinePatchRequest{
 		BypassValidation: bypassValidation,
-		CreateUserId: createUserId,
+		CreateUserId:     createUserId,
 		Data: &model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.UpdatePipeline(id, body)
@@ -1857,12 +1837,12 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.TemplatePatchRequest{
 		Data: &model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 		Description: description,
-		Name: name,
+		Name:        name,
 	}
 
 	resp, err := client.StreamsService.UpdateTemplate(templateId, body)
@@ -1901,8 +1881,8 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	body := model.ValidateRequest{
 		Upl: model.UplPipeline{
-			Edges: edges,
-			Nodes: nodes,
+			Edges:    edges,
+			Nodes:    nodes,
 			RootNode: rootNode,
 		},
 	}
@@ -1914,4 +1894,3 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
-
