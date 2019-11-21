@@ -41,7 +41,7 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "scloud",
+	Use:   "scloud_gen",
 	Short: "Splunk Cloud Platform CLI",
 }
 
