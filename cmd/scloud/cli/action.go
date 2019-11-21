@@ -172,7 +172,7 @@ func (cmd *ActionCommand) triggerAction(args []string) (interface{}, error) {
 	notificationPayloadJSON, args := head(args)
 	checkEmpty(args)
 
-	var notificationPayload action.RawJsonPayload
+	var notificationPayload action.RawJSONPayload
 
 	err := json.Unmarshal([]byte(notificationPayloadJSON), &notificationPayload)
 	if err != nil {
@@ -181,8 +181,9 @@ func (cmd *ActionCommand) triggerAction(args []string) (interface{}, error) {
 
 	tenant := getTenantName()
 
+	kind:=action.TriggerEventKind(kindString)
 	notification := action.TriggerEvent{
-		Kind:    action.TriggerEventKind(kindString),
+		Kind:    &kind,
 		Tenant:  &tenant,
 		Payload: &notificationPayload,
 	}
