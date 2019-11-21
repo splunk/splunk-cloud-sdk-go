@@ -220,6 +220,43 @@ func (s *Service) CreateWorkflowRun(id string, buildId string, workflowRun Workf
 }
 
 /*
+	CreateWorkflowStreamDeployment - Creates a workflow streaming deployment.
+	Parameters:
+		id: The workflow ID.
+		buildId: The workflow build ID.
+		workflowStreamDeployment: Configuration for the workflow streaming deployment.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateWorkflowStreamDeployment(id string, buildId string, workflowStreamDeployment WorkflowStreamDeployment, resp ...*http.Response) (*WorkflowStreamDeployment, error) {
+	pp := struct {
+		Id      string
+		BuildId string
+	}{
+		Id:      id,
+		BuildId: buildId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ml/v2beta1/workflows/{{.Id}}/builds/{{.BuildId}}/stream-deployments`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: workflowStreamDeployment})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb WorkflowStreamDeployment
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	DeleteWorkflow - Removes a workflow configuration.
 	Parameters:
 		id: The workflow ID.
@@ -331,6 +368,40 @@ func (s *Service) DeleteWorkflowRun(id string, buildId string, runId string, res
 		RunId:   runId,
 	}
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ml/v2beta1/workflows/{{.Id}}/builds/{{.BuildId}}/runs/{{.RunId}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
+	DeleteWorkflowStreamDeployment - Removes a workflow streaming deployment.
+	Parameters:
+		id: The workflow ID.
+		buildId: The workflow build ID.
+		streamDeploymentId: The workflow streaming deployment ID.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteWorkflowStreamDeployment(id string, buildId string, streamDeploymentId string, resp ...*http.Response) error {
+	pp := struct {
+		Id                 string
+		BuildId            string
+		StreamDeploymentId string
+	}{
+		Id:                 id,
+		BuildId:            buildId,
+		StreamDeploymentId: streamDeploymentId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ml/v2beta1/workflows/{{.Id}}/builds/{{.BuildId}}/stream-deployments/{{.StreamDeploymentId}}`, pp)
 	if err != nil {
 		return err
 	}
@@ -717,6 +788,45 @@ func (s *Service) GetWorkflowRunLog(id string, buildId string, runId string, res
 		return nil, err
 	}
 	var rb WorkflowRunLog
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetWorkflowStreamDeployment - Returns the status of a workflow streaming deployment.
+	Parameters:
+		id: The workflow ID.
+		buildId: The workflow build ID.
+		streamDeploymentId: The workflow streaming deployment ID.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetWorkflowStreamDeployment(id string, buildId string, streamDeploymentId string, resp ...*http.Response) (*WorkflowStreamDeployment, error) {
+	pp := struct {
+		Id                 string
+		BuildId            string
+		StreamDeploymentId string
+	}{
+		Id:                 id,
+		BuildId:            buildId,
+		StreamDeploymentId: streamDeploymentId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/ml/v2beta1/workflows/{{.Id}}/builds/{{.BuildId}}/stream-deployments/{{.StreamDeploymentId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb WorkflowStreamDeployment
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

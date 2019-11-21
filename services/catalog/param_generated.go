@@ -23,6 +23,32 @@
 
 package catalog
 
+// GetDatasetQueryParams represents valid query parameters for the GetDataset operation
+// For convenience GetDatasetQueryParams can be formed in a single statement, for example:
+//     `v := GetDatasetQueryParams{}.SetMaxstale(...)`
+type GetDatasetQueryParams struct {
+	// Maxstale : The number of seconds beyond which we will refresh index metadata.
+	Maxstale *int32 `key:"maxstale"`
+}
+
+func (q GetDatasetQueryParams) SetMaxstale(v int32) GetDatasetQueryParams {
+	q.Maxstale = &v
+	return q
+}
+
+// GetDatasetByIdQueryParams represents valid query parameters for the GetDatasetById operation
+// For convenience GetDatasetByIdQueryParams can be formed in a single statement, for example:
+//     `v := GetDatasetByIdQueryParams{}.SetMaxstale(...)`
+type GetDatasetByIdQueryParams struct {
+	// Maxstale : The number of seconds beyond which we will refresh index metadata.
+	Maxstale *int32 `key:"maxstale"`
+}
+
+func (q GetDatasetByIdQueryParams) SetMaxstale(v int32) GetDatasetByIdQueryParams {
+	q.Maxstale = &v
+	return q
+}
+
 // ListActionsForRuleQueryParams represents valid query parameters for the ListActionsForRule operation
 // For convenience ListActionsForRuleQueryParams can be formed in a single statement, for example:
 //     `v := ListActionsForRuleQueryParams{}.SetCount(...).SetFilter(...).SetOffset(...).SetOrderby(...)`
@@ -87,6 +113,40 @@ func (q ListActionsForRuleByIdQueryParams) SetOffset(v int32) ListActionsForRule
 }
 
 func (q ListActionsForRuleByIdQueryParams) SetOrderby(v []string) ListActionsForRuleByIdQueryParams {
+	q.Orderby = v
+	return q
+}
+
+// ListAnnotationsQueryParams represents valid query parameters for the ListAnnotations operation
+// For convenience ListAnnotationsQueryParams can be formed in a single statement, for example:
+//     `v := ListAnnotationsQueryParams{}.SetCount(...).SetFilter(...).SetOffset(...).SetOrderby(...)`
+type ListAnnotationsQueryParams struct {
+	// Count : The maximum number of results to return.
+	Count *int32 `key:"count"`
+	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
+	Filter string `key:"filter"`
+	// Offset : The number of results to skip before the first one returned.
+	Offset *int32 `key:"offset"`
+	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
+	Orderby []string `key:"orderby"`
+}
+
+func (q ListAnnotationsQueryParams) SetCount(v int32) ListAnnotationsQueryParams {
+	q.Count = &v
+	return q
+}
+
+func (q ListAnnotationsQueryParams) SetFilter(v string) ListAnnotationsQueryParams {
+	q.Filter = v
+	return q
+}
+
+func (q ListAnnotationsQueryParams) SetOffset(v int32) ListAnnotationsQueryParams {
+	q.Offset = &v
+	return q
+}
+
+func (q ListAnnotationsQueryParams) SetOrderby(v []string) ListAnnotationsQueryParams {
 	q.Orderby = v
 	return q
 }
@@ -221,12 +281,14 @@ func (q ListDashboardsQueryParams) SetOrderby(v []string) ListDashboardsQueryPar
 
 // ListDatasetsQueryParams represents valid query parameters for the ListDatasets operation
 // For convenience ListDatasetsQueryParams can be formed in a single statement, for example:
-//     `v := ListDatasetsQueryParams{}.SetCount(...).SetFilter(...).SetOffset(...).SetOrderby(...)`
+//     `v := ListDatasetsQueryParams{}.SetCount(...).SetFilter(...).SetMaxstale(...).SetOffset(...).SetOrderby(...)`
 type ListDatasetsQueryParams struct {
 	// Count : The maximum number of results to return.
 	Count *int32 `key:"count"`
 	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
 	Filter string `key:"filter"`
+	// Maxstale : The number of seconds beyond which we will refresh index metadata.
+	Maxstale *int32 `key:"maxstale"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`
 	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
@@ -240,6 +302,11 @@ func (q ListDatasetsQueryParams) SetCount(v int32) ListDatasetsQueryParams {
 
 func (q ListDatasetsQueryParams) SetFilter(v string) ListDatasetsQueryParams {
 	q.Filter = v
+	return q
+}
+
+func (q ListDatasetsQueryParams) SetMaxstale(v int32) ListDatasetsQueryParams {
+	q.Maxstale = &v
 	return q
 }
 

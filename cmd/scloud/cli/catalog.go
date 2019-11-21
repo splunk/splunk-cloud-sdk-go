@@ -386,7 +386,7 @@ func (cmd *CatalogCommand) getModules(args []string) (interface{}, error) {
 
 func (cmd *CatalogCommand) getDataset(args []string) (interface{}, error) {
 	datasetName := head1(args)
-	return cmd.catalogService.GetDataset(datasetName)
+	return cmd.catalogService.GetDataset(datasetName, nil)
 }
 
 func (cmd *CatalogCommand) getDatasets(args []string) (interface{}, error) {
@@ -584,7 +584,7 @@ func (cmd *CatalogCommand) updateDataset(args []string) (interface{}, error) {
 		externalKind = catalog.LookupDatasetExternalKindKvcollection
 	}
 
-	dataset, err := cmd.catalogService.GetDataset(name)
+	dataset, err := cmd.catalogService.GetDataset(name, nil)
 
 	if dataset.IsLookupDataset() {
 		catalogLookupDatasetPatch := catalog.LookupDatasetPatch{CaseSensitiveMatch: &sharedDatasetFlags.CaseSensitiveMatch, ExternalKind: &externalKind, ExternalName: &sharedDatasetFlags.ExternalName, Module: &module, Name: &name, Filter: &sharedDatasetFlags.Filter}

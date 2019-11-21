@@ -55,6 +55,8 @@ func (cmd *ForwardersCommand) Dispatch(args []string) (result interface{}, err e
 		eusage("too few arguments")
 	case "create-certificate":
 		result, err = cmd.createCertificate(args)
+	case "delete-certificate":
+		err = cmd.deleteCertificate(args)
 	case "delete-certificates":
 		err = cmd.deleteCertificates(args)
 	case "list-certificates":
@@ -83,6 +85,11 @@ func (cmd *ForwardersCommand) createCertificate(args []string) (interface{}, err
 	str := string(fileBytes)
 
 	return cmd.forwardersService.AddCertificate(forwarders.Certificate{Pem: &str})
+}
+
+func (cmd *ForwardersCommand) deleteCertificate(args []string) error {
+	slot := head1(args)
+	return cmd.forwardersService.DeleteCertificate(slot)
 }
 
 func (cmd *ForwardersCommand) deleteCertificates(args []string) error {

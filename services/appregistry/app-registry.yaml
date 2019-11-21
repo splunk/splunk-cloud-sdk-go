@@ -240,8 +240,8 @@ components:
       scheme: bearer
       type: http
 info:
-  description: With the Splunk Cloud App Registry service, you can create, update,
-    and manage apps built with Splunk Developer Cloud.
+  description: With the App Registry service in Splunk Cloud Services, you can create,
+    update, and manage your apps.
   title: App Registry
   version: v1beta2.0
 openapi: 3.0.0
@@ -844,4 +844,4 @@ paths:
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: app-registry/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: app-registry/v1beta2/openapi.yaml

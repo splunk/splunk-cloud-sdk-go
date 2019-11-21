@@ -235,7 +235,7 @@ func TestBatchEventsSenderPayloadSizeNoImpact(t *testing.T) {
 	event5 := ingest.Event{Host: &host4, Body: body4}
 	done := make(chan bool, 1)
 
-	collector, err := client.IngestService.NewBatchEventsSender(3, 1000, 1000)
+	collector, err := client.IngestService.NewBatchEventsSender(3, 1000, 2000)
 	require.Emptyf(t, err, "Error creating NewBatchEventsSender: %s", err)
 	collector.Run()
 	go blocking(done, 5)
