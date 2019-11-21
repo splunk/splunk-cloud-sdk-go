@@ -172,7 +172,7 @@ func (cmd *ActionCommand) triggerAction(args []string) (interface{}, error) {
 	notificationPayloadJSON, args := head(args)
 	checkEmpty(args)
 
-	var notificationPayload action.RawJSONPayload
+	var notificationPayload action.RawJsonPayload
 
 	err := json.Unmarshal([]byte(notificationPayloadJSON), &notificationPayload)
 	if err != nil {

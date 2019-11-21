@@ -319,7 +319,7 @@ type PublicWebhookKey struct {
 	Key string `json:"key"`
 }
 
-type RawJSONPayload map[string]interface{}
+type RawJsonPayload map[string]interface{}
 
 type ServiceError struct {
 	Code     string                 `json:"code"`
@@ -347,7 +347,7 @@ type TriggerEvent struct {
 	// A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.
 	Id      *string           `json:"id,omitempty"`
 	Kind    *TriggerEventKind `json:"kind,omitempty"`
-	Payload *RawJSONPayload   `json:"payload,omitempty"`
+	Payload *RawJsonPayload   `json:"payload,omitempty"`
 	// The tenant within which the trigger event was generated.
 	Tenant *string `json:"tenant,omitempty"`
 	// A description of the condition that caused the trigger event.

@@ -331,7 +331,7 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "members": ` + err.Error())
 	}
-	var payloadDefault model.RawJSONPayload
+	var payloadDefault model.RawJsonPayload
 	payload := &payloadDefault
 	err = flags.ParseFlag(cmd.Flags(), "payload", &payload)
 	if err != nil {
