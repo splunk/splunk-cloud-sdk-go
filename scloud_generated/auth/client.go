@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -121,7 +120,7 @@ func newClient(svc *Service) *sdk.Client {
 
 	host := serviceURL.Hostname()
 	if host == "" {
-		fmt.Println("Warning: can't get host-url from config file, using default host")
+		glog.Warningf("No host-url specified in config file, using default host")
 		host = svc.Host
 	}
 

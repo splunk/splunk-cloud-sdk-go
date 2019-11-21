@@ -70,6 +70,15 @@ type Servicer interface {
 	*/
 	ListJobs(query *ListJobsQueryParams, resp ...*http.Response) ([]SearchJob, error)
 	/*
+		ListPreviewResults - search service endpoint
+		Return the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
+		Parameters:
+			sid: The search ID.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListPreviewResults(sid string, query *ListPreviewResultsQueryParams, resp ...*http.Response) (*ListPreviewResultsResponse, error)
+	/*
 		ListResults - search service endpoint
 		Return the search results for the job with the specified search ID (SID).
 		Parameters:

@@ -76,3 +76,45 @@ func TestBatchEventsSenderState(t *testing.T) {
 	assert.Equal(t, 5, collector.BatchSize)
 	assert.Equal(t, 20, collector.PayLoadBytes)
 }
+
+func TestReadEvent(t *testing.T) {
+	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
+	require.Nil(t, err, "error creating ingest service client")
+
+	collector, err := client.NewBatchEventsSender(5, 1000, 20)
+	assert.Nil(t, err)
+
+	var event Event
+	event = Event{Body: 1}
+	size, err := collector.readEvent(event)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, size)
+
+	event = Event{Body: true}
+	size, err = collector.readEvent(event)
+	assert.Nil(t, err)
+	assert.Equal(t, 4, size)
+
+	str := "str"
+	event = Event{Body: str}
+	size, err = collector.readEvent(event)
+	assert.Nil(t, err)
+	assert.Equal(t, 5, size)
+
+	event = Event{Body: `[1,"h"]`}
+	size, err = collector.readEvent(event)
+	assert.Nil(t, err)
+	assert.Equal(t, 11, size)
+
+	jsonstr := `{"age": 27,
+		"address": {
+		"streetAddress": "21 2nd Street",
+			"city": "New York",
+			"state": "NY",
+			"postalCode": "10021-3100",
+	}`
+	event = Event{Body: jsonstr}
+	size, err = collector.readEvent(event)
+	assert.Nil(t, err)
+	assert.Equal(t, 179, size)
+}

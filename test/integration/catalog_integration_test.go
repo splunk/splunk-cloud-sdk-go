@@ -216,7 +216,6 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 	} else if dataset.IsMetricDataset() {
 		assert.NotEmpty(t, dataset.MetricDataset().Id)
 	} else if dataset.IsKvCollectionDataset() {
-
 		assert.NotEmpty(t, dataset.KvCollectionDataset().Id)
 	} else if dataset.IsRawInterface() { //handle unknown kinds
 		rawDataset := dataset.RawInterface()
@@ -225,6 +224,7 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 
 	} else {
 		// If catalog dataset does not either a known or an unknown kind
+		fmt.Println(dataset)
 		assert.Fail(t, "Invalid catalog dataset", "Invalid catalog dataset")
 	}
 }
@@ -345,7 +345,7 @@ func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test ListDatasets
@@ -413,7 +413,7 @@ func TestListDatasetsAll(t *testing.T) {
 	require.Nil(t, err)
 	defer cleanupDataset(t, ds.ViewDataset().Id)
 
-	query := catalog.ListDatasetsQueryParams{}.SetFilter(`kind=="kvcollection"`).SetOrderby([]string{"id Descending"}).SetCount(1)
+	query := catalog.ListDatasetsQueryParams{}.SetFilter(`kind=="view"`).SetFilter(`id=="` + ds.ViewDataset().Id + "\"").SetOrderby([]string{"id Descending"}).SetCount(1)
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
 	assert.Nil(t, err)
 	assert.NotZero(t, len(datasets))
@@ -426,11 +426,11 @@ func TestGetDatasetByID(t *testing.T) {
 	require.NotNil(t, ds.LookupDataset())
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
-	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id)
+	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id, nil)
 	require.Nil(t, err)
 	require.NotNil(t, ds1.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds1.LookupDataset().Name)
-	ds2, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Module + "." + ds.LookupDataset().Name)
+	ds2, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Module+"."+ds.LookupDataset().Name, nil)
 	require.Nil(t, err)
 	require.NotNil(t, ds2.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds2.LookupDataset().Name)
@@ -438,7 +438,7 @@ func TestGetDatasetByID(t *testing.T) {
 
 // Test GetDataset for 404 DatasetInfo not found error
 func TestGetDatasetByIDDatasetNotFoundError(t *testing.T) {
-	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist")
+	_, err := getSdkClient(t).CatalogService.GetDataset("idonotexist", nil)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -632,7 +632,7 @@ func TestDeleteDataset(t *testing.T) {
 	err = client.CatalogService.DeleteDataset(ds.ViewDataset().Id)
 	require.Nil(t, err)
 
-	_, err = client.CatalogService.GetDataset(ds.ViewDataset().Id)
+	_, err = client.CatalogService.GetDataset(ds.ViewDataset().Id, nil)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -724,7 +724,7 @@ func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Error validating request", httpErr.Message)
+	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test GetRules
