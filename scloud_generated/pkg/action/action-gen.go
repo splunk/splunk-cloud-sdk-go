@@ -5,6 +5,7 @@ package action
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
@@ -21,7 +22,6 @@ func CreateAction(cmd *cobra.Command, args []string) error {
 
 // CreateActionEmailAction Creates an action template.
 func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -82,15 +82,15 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.EmailAction{
-		Addresses: addresses,
-		Body: body,
+		Addresses:     addresses,
+		Body:          body,
 		BodyPlainText: bodyPlainText,
-		FromName: fromName,
-		Kind: kind,
-		Members: members,
-		Name: name,
-		Subject: subject,
-		Title: title,
+		FromName:      fromName,
+		Kind:          kind,
+		Members:       members,
+		Name:          name,
+		Subject:       subject,
+		Title:         title,
 	}
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromEmailAction(generated_request_body))
 	if err != nil {
@@ -103,7 +103,6 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 
 // CreateActionWebhookAction Creates an action template.
 func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -145,12 +144,12 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.WebhookAction{
-		Kind: kind,
-		Name: name,
-		Title: title,
+		Kind:           kind,
+		Name:           name,
+		Title:          title,
 		WebhookHeaders: webhookHeaders,
 		WebhookPayload: webhookPayload,
-		WebhookUrl: webhookUrl,
+		WebhookUrl:     webhookUrl,
 	}
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromWebhookAction(generated_request_body))
 	if err != nil {
@@ -163,7 +162,6 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 
 // DeleteAction Removes an action template.
 func DeleteAction(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -189,7 +187,6 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 // GetAction Returns a specific action template.
 func GetAction(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -213,7 +210,6 @@ func GetAction(cmd *cobra.Command, args []string) error {
 
 // GetActionStatus Returns the status of an action that was invoked. The status is available for 4 days after the last status change.
 func GetActionStatus(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -244,7 +240,6 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 // GetActionStatusDetails Returns the status details of the invoked email action. The status is available for 4 days after the last status change.
 func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -274,13 +269,11 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 // GetPublicWebhookKeys Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
 func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClientSystemTenant()
 
 	if err != nil {
 		return err
 	}
-
 
 	resp, err := client.ActionService.GetPublicWebhookKeys()
 	if err != nil {
@@ -294,12 +287,10 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 // ListActions Returns the list of action templates.
 func ListActions(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-
 
 	resp, err := client.ActionService.ListActions()
 	if err != nil {
@@ -312,7 +303,6 @@ func ListActions(cmd *cobra.Command, args []string) error {
 
 // TriggerAction Invokes an action.
 func TriggerAction(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -370,13 +360,13 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.TriggerEvent{
 		ActionMetadata: &model.TriggerEventActionMetadata{
 			Addresses: addresses,
-			Members: members,
+			Members:   members,
 		},
-		Kind: kind,
-		Payload: payload,
+		Kind:             kind,
+		Payload:          payload,
 		TriggerCondition: triggerCondition,
-		TriggerName: triggerName,
-		TtlSeconds: ttlSeconds,
+		TriggerName:      triggerName,
+		TtlSeconds:       ttlSeconds,
 	}
 	err = client.ActionService.TriggerAction(action_name, generated_request_body)
 	if err != nil {
@@ -396,7 +386,6 @@ func UpdateAction(cmd *cobra.Command, args []string) error {
 
 // UpdateActionEmailActionMutable Modifies an action template.
 func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -452,15 +441,15 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.EmailActionMutable{
-		Addresses: addresses,
-		Body: body,
+		Addresses:     addresses,
+		Body:          body,
 		BodyPlainText: bodyPlainText,
-		FromName: fromName,
-		Members: members,
-		Subject: subject,
-		Title: title,
+		FromName:      fromName,
+		Members:       members,
+		Subject:       subject,
+		Title:         title,
 	}
-	resp, err := client.ActionService.UpdateAction(action_name,model.MakeActionMutableFromEmailActionMutable(generated_request_body))
+	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromEmailActionMutable(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -471,7 +460,6 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 
 // UpdateActionWebhookActionMutable Modifies an action template.
 func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -510,12 +498,12 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.WebhookActionMutable{
-		Title: title,
+		Title:          title,
 		WebhookHeaders: webhookHeaders,
 		WebhookPayload: webhookPayload,
-		WebhookUrl: webhookUrl,
+		WebhookUrl:     webhookUrl,
 	}
-	resp, err := client.ActionService.UpdateAction(action_name,model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
+	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -523,4 +511,3 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 	return nil
 
 }
-

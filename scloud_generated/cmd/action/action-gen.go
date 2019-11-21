@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/action"
 )
 
-
 // createAction -- Creates an action template.
 var createActionCmd = &cobra.Command{
 	Use:   "create-action",
@@ -100,7 +99,6 @@ var updateActionWebhookActionMutableCmd = &cobra.Command{
 	RunE:  impl.UpdateActionWebhookActionMutable,
 }
 
-
 func init() {
 	actionCmd.AddCommand(createActionCmd)
 
@@ -134,7 +132,6 @@ func init() {
 	var createActionEmailActionTitle string
 	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionTitle, "title", "", "A human-readable title for the action. Must be less than or equal to 128 characters.")
 
-
 	createActionCmd.AddCommand(createActionWebhookActionCmd)
 	var createActionWebhookActionKind string
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionKind, "kind", "", "This is a required parameter. can accept values webhook, email")
@@ -158,20 +155,9 @@ func init() {
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookUrl, "webhook-url", "", "This is a required parameter.Only HTTPS is allowed.")
 	createActionWebhookActionCmd.MarkFlagRequired("webhookUrl")
 
-
-
-
-
-
 	actionCmd.AddCommand(createActionEmailActionCmd)
 
-
-
-
 	actionCmd.AddCommand(createActionWebhookActionCmd)
-
-
-
 
 	actionCmd.AddCommand(deleteActionCmd)
 
@@ -179,15 +165,11 @@ func init() {
 	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	deleteActionCmd.MarkFlagRequired("action-name")
 
-
-
 	actionCmd.AddCommand(getActionCmd)
 
 	var getActionActionName string
 	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionCmd.MarkFlagRequired("action-name")
-
-
 
 	actionCmd.AddCommand(getActionStatusCmd)
 
@@ -198,8 +180,6 @@ func init() {
 	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
 	getActionStatusCmd.MarkFlagRequired("status-id")
 
-
-
 	actionCmd.AddCommand(getActionStatusDetailsCmd)
 
 	var getActionStatusDetailsActionName string
@@ -209,17 +189,9 @@ func init() {
 	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
 	getActionStatusDetailsCmd.MarkFlagRequired("status-id")
 
-
-
 	actionCmd.AddCommand(getPublicWebhookKeysCmd)
 
-
-
-
 	actionCmd.AddCommand(listActionsCmd)
-
-
-
 
 	actionCmd.AddCommand(triggerActionCmd)
 
@@ -228,21 +200,19 @@ func init() {
 	triggerActionCmd.MarkFlagRequired("action-name")
 
 	var triggerActionAddresses []string
-	triggerActionCmd.Flags().StringSliceVar(&triggerActionAddresses, "addresses", nil,  "An array of email addresses to include as recipients. Requires a special permission set for use. Please DO NOT include actual bouncing emails in automated testing.")
+	triggerActionCmd.Flags().StringSliceVar(&triggerActionAddresses, "addresses", nil, "An array of email addresses to include as recipients. Requires a special permission set for use. Please DO NOT include actual bouncing emails in automated testing.")
 	var triggerActionKind string
-	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "",  " can accept values trigger")
+	triggerActionCmd.Flags().StringVar(&triggerActionKind, "kind", "", " can accept values trigger")
 	var triggerActionMembers []string
-	triggerActionCmd.Flags().StringSliceVar(&triggerActionMembers, "members", nil,  "An array of tenant member names, whose profile email addresses will be included as recipients.")
+	triggerActionCmd.Flags().StringSliceVar(&triggerActionMembers, "members", nil, "An array of tenant member names, whose profile email addresses will be included as recipients.")
 	var triggerActionPayload string
-	triggerActionCmd.Flags().StringVar(&triggerActionPayload, "payload", "",  "")
+	triggerActionCmd.Flags().StringVar(&triggerActionPayload, "payload", "", "")
 	var triggerActionTriggerCondition string
-	triggerActionCmd.Flags().StringVar(&triggerActionTriggerCondition, "trigger-condition", "",  "A description of the condition that caused the trigger event.")
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerCondition, "trigger-condition", "", "A description of the condition that caused the trigger event.")
 	var triggerActionTriggerName string
-	triggerActionCmd.Flags().StringVar(&triggerActionTriggerName, "trigger-name", "",  "The name of the trigger for which this event was created.")
+	triggerActionCmd.Flags().StringVar(&triggerActionTriggerName, "trigger-name", "", "The name of the trigger for which this event was created.")
 	var triggerActionTtlSeconds int32
-	triggerActionCmd.Flags().Int32Var(&triggerActionTtlSeconds, "ttl-seconds", 0,  "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
-
-
+	triggerActionCmd.Flags().Int32Var(&triggerActionTtlSeconds, "ttl-seconds", 0, "A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.")
 
 	actionCmd.AddCommand(updateActionCmd)
 
@@ -268,7 +238,6 @@ func init() {
 	var updateActionEmailActionMutableTitle string
 	updateActionEmailActionMutableCmd.Flags().StringVar(&updateActionEmailActionMutableTitle, "title", "", "A human-readable title for the action. Must be less than or equal to 128 characters.")
 
-
 	updateActionCmd.AddCommand(updateActionWebhookActionMutableCmd)
 	var updateActionWebhookActionMutableTitle string
 	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableTitle, "title", "", "A human-readable title for the action. Must be less than 128 characters.")
@@ -282,26 +251,16 @@ func init() {
 	var updateActionWebhookActionMutableWebhookUrl string
 	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableWebhookUrl, "webhook-url", "", "Only HTTPS is allowed.")
 
-
-
-
-
-
 	actionCmd.AddCommand(updateActionEmailActionMutableCmd)
 
 	var updateActionEmailActionMutableActionName string
 	updateActionEmailActionMutableCmd.Flags().StringVar(&updateActionEmailActionMutableActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	updateActionEmailActionMutableCmd.MarkFlagRequired("action-name")
 
-
-
 	actionCmd.AddCommand(updateActionWebhookActionMutableCmd)
 
 	var updateActionWebhookActionMutableActionName string
 	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	updateActionWebhookActionMutableCmd.MarkFlagRequired("action-name")
-
-
-
 
 }
