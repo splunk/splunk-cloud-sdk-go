@@ -53,8 +53,14 @@ components:
       required: false
       schema:
         items:
+          enum:
+          - tenant
+          - principal
           type: string
+        maxItems: 2
+        minItems: 0
         type: array
+        uniqueItems: true
     inviteId:
       description: The invite ID.
       in: query
@@ -62,6 +68,14 @@ components:
       required: false
       schema:
         type: string
+    key:
+      description: The API key name.
+      in: path
+      name: key
+      required: true
+      schema:
+        type: string
+      x-case-insensitive: true
     member:
       description: The member name.
       in: path
@@ -71,6 +85,16 @@ components:
         minLength: 2
         type: string
       x-case-insensitive: true
+    memberKind:
+      description: 'Kind of member, one of: [user, service_account]'
+      in: query
+      name: kind
+      required: false
+      schema:
+        enum:
+        - user
+        - service_account
+        type: string
     nonce:
       description: Nonce to prevent replay attacks
       in: query
@@ -172,6 +196,16 @@ components:
       schema:
         enum:
         - v2beta1
+        - v2alpha1
+        type: string
+    version2alpha1:
+      description: Service API version 2 alpha 1.
+      in: path
+      name: version2alpha1
+      required: true
+      schema:
+        enum:
+        - v2alpha1
         type: string
     version2beta1:
       description: Service API version 2 beta 1.
@@ -183,6 +217,18 @@ components:
         - v2beta1
         type: string
   schemas:
+    AddGroupMemberAsAnAdminBody:
+      properties:
+        group:
+          type: string
+        member:
+          minLength: 2
+          type: string
+          x-case-insensitive: true
+      required:
+      - group
+      - member
+      type: object
     AddGroupMemberBody:
       properties:
         name:
@@ -257,6 +303,17 @@ components:
       - username
       - password
       type: object
+    ChangeKeyBody:
+      properties:
+        permissions:
+          items:
+            minLength: 4
+            type: string
+            x-case-insensitive: true
+          type: array
+      required:
+      - permissions
+      type: object
     ChangeSubscriptionBody:
       properties:
         appPermissions:
@@ -299,6 +356,27 @@ components:
           type: string
       required:
       - name
+      type: object
+    CreateKeyBody:
+      properties:
+        expiresAt:
+          format: date-time
+          type: string
+        name:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z][_.a-z0-9]*$
+          type: string
+        permissions:
+          items:
+            minLength: 4
+            type: string
+            x-case-insensitive: true
+          type: array
+      required:
+      - name
+      - permissions
+      - expiresAt
       type: object
     CreatePrincipalBody:
       description: Payload when creating a principal
@@ -462,6 +540,60 @@ components:
             $ref: '#/components/schemas/Jwk'
           type: array
       type: object
+    Key:
+      properties:
+        clientId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        permissions:
+          items:
+            type: string
+          type: array
+        rotatedAt:
+          format: date-time
+          type: string
+        tenant:
+          type: string
+      type: object
+    KeySecret:
+      properties:
+        clientId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        permissions:
+          items:
+            type: string
+          type: array
+        rotatedAt:
+          format: date-time
+          type: string
+        tenant:
+          type: string
+        token:
+          type: string
+      type: object
     Member:
       description: Represents a member that belongs to a tenant.
       properties:
@@ -504,6 +636,7 @@ components:
     PermissionSetKind:
       enum:
       - principal
+      - api_key
       - subscription
       type: string
     PermissionSetList:
@@ -610,6 +743,40 @@ components:
       - addedAt
       - addedBy
       type: object
+    ServiceAccount:
+      properties:
+        defaultpermissions:
+          items:
+            type: string
+          type: array
+        name:
+          type: string
+        permissions:
+          items:
+            type: string
+          type: array
+        principal:
+          type: string
+      type: object
+    ServiceAccountPeer:
+      properties:
+        name:
+          type: string
+        permissions:
+          items:
+            type: string
+          type: array
+        tenant:
+          type: string
+      type: object
+    ServiceAccountPeers:
+      items:
+        $ref: '#/components/schemas/ServiceAccountPeer'
+      type: array
+    ServiceAccounts:
+      items:
+        $ref: '#/components/schemas/ServiceAccount'
+      type: array
     Subscription:
       description: Represents an app subscribed to a tenant
       properties:
@@ -715,6 +882,11 @@ components:
       properties:
         clientId:
           type: string
+        kind:
+          enum:
+          - principal
+          - api_key
+          type: string
         name:
           maxLength: 36
           minLength: 4
@@ -726,6 +898,7 @@ components:
       required:
       - name
       - clientId
+      - kind
       type: object
   securitySchemes:
     Bearer:
@@ -733,10 +906,10 @@ components:
       name: Authorization
       type: apiKey
 info:
-  description: With the Splunk Cloud Identity and Access Control (IAC) Service, you
-    can authenticate and authorize Splunk API users.
-  title: Identity and Access Control
-  version: v2beta1.10
+  description: With the Identity service in Splunk Cloud Services, you can authenticate
+    and authorize Splunk Cloud Services users.
+  title: Identity
+  version: v2beta1.13
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -791,6 +964,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.groups
   /{tenant}/identity/v2beta1/groups/{group}:
     delete:
       description: Deletes a group in a given tenant.
@@ -809,6 +983,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.groups
     get:
       description: Returns information about a given group within a tenant.
       operationId: getGroup
@@ -886,6 +1061,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.group-members
   /{tenant}/identity/v2beta1/groups/{group}/members/{member}:
     delete:
       description: Removes the member from a given group.
@@ -904,6 +1080,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.group-members
     get:
       description: Returns information about a given member within a given group.
       operationId: getGroupMember
@@ -984,6 +1161,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.group-roles
   /{tenant}/identity/v2beta1/groups/{group}/roles/{role}:
     delete:
       description: Removes a role from a given group.
@@ -1002,6 +1180,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.groups.write
+      x-trigger-name: splunk.identity.group-roles
     get:
       description: Returns information about a given role within a given group.
       operationId: getGroupRole
@@ -1077,6 +1256,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.members.write
+      x-trigger-name: splunk.identity.members
   /{tenant}/identity/v2beta1/members/{member}:
     delete:
       description: Removes a member from a given tenant
@@ -1095,6 +1275,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.members.write
+      x-trigger-name: splunk.identity.members
     get:
       description: Returns a member of a given tenant.
       operationId: getMember
@@ -1248,6 +1429,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
+      x-trigger-name: splunk.identity.roles
   /{tenant}/identity/v2beta1/roles/{role}:
     delete:
       description: Deletes a defined role for a given tenant.
@@ -1266,6 +1448,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
+      x-trigger-name: splunk.identity.roles
     get:
       description: Returns a role for a given tenant.
       operationId: getRole
@@ -1366,6 +1549,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
+      x-trigger-name: splunk.identity.role-permissions
   /{tenant}/identity/v2beta1/roles/{role}/permissions/{permission}:
     delete:
       description: Removes a permission from the role.
@@ -1384,6 +1568,7 @@ paths:
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
+      x-trigger-name: splunk.identity.role-permissions
     get:
       description: Gets a permission for the specified role.
       operationId: getRolePermission
@@ -1445,7 +1630,8 @@ paths:
     - $ref: '#/components/parameters/tenant'
   /system/identity/v2beta1/principals:
     get:
-      description: Returns the list of principals known to IAC.
+      description: Returns the list of principals that the Identity service knows
+        about.
       operationId: listPrincipals
       responses:
         "200":
@@ -1490,4 +1676,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: identity/v2beta1/openapi.yaml

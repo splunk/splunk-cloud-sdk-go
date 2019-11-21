@@ -1,14 +1,16 @@
-# Splunk Cloud CLI
+# Splunk Cloud Services CLI
 
-Splunk Cloud CLI, `scloud`, is a command-line tool for developers using Splunk Developer Cloud to make API calls in the Splunk Cloud Platform. The Splunk Cloud CLI uses the Splunk Cloud SDK for Go for many API calls and is a great way to explore the available functionality.
+Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services. The Splunk Cloud Services CLI uses the Splunk Cloud Services SDK for Go for many API calls and is a great way to explore the available functionality.
 
-## Terms of Service
+## Terms of Service (TOS)
 
-[Splunk Cloud Terms of Service](https://www.splunk.com/en_us/legal/terms/splunk-cloud-pre-release-terms-of-service.html)
+Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
 
-## Download and install the Splunk Cloud CLI tool
+## Install the Splunk Cloud Services CLI tool
 
-1. Download the Splunk Cloud CLI package for your operating system from the **/releases** directory in this repository.
+### Download from GitHub
+
+1. Download the Splunk Cloud Services CLI package for your operating system from the **/releases** directory in this repository.
 
 2. Extract the package file to a home directory on your computer. 
 
@@ -20,13 +22,33 @@ Splunk Cloud CLI, `scloud`, is a command-line tool for developers using Splunk D
 
 3. Accept the Terms of Service by logging in to [Splunk Investigate](https://si.scp.splunk.com/).
 
-## Run Splunk Cloud CLI
 
-To access the Splunk Cloud CLI, you need: 
-* A user account with Splunk Developer Cloud
+### Install from Homebrew (macOS, Linux)
+
+If you have Homebrew installed, install the Splunk Cloud Services CLI by doing the following: 
+
+1. Register the Splunk Homebrew Tap. At the command line, enter: 
+
+   ```
+   brew tap splunk/tap
+   ```
+
+2. Install the Splunk Cloud Services CLI package: 
+
+   ```
+   brew install scloud
+   ```
+
+3. Accept the Terms of Service by logging in to [Splunk Investigate](https://si.scp.splunk.com/).
+
+
+## Run Splunk Cloud Services CLI
+
+To access the Splunk Cloud Services CLI, you need: 
+* A user account with Splunk Cloud Services
 * A shell prompt, command prompt, or PowerShell session
 
-Then, use `scloud <command>` at the command line to perform almost any operation in SDC.
+Then, use `scloud <command>` at the command line to perform almost any operation in Splunk Cloud Services.
 
 Here are some commands to get started: 
 
@@ -38,10 +60,10 @@ Here are some commands to get started:
 | Save your user name in settings  | `scloud set username <username>`     |
 | Save a tenant name in settings   | `scloud set tenant <tenantname>`     |
 | Display saved settings           | `scloud get-settings`                |
-| List your tenants                | `scloud identity list-tenants`       |
+| List your tenants                | `scloud provisioner list-tenants`    |
 
 ## Documentation
-For more about using `scloud`, see [Splunk Cloud CLI](https://sdc.splunkbeta.com/docs/overview/sdctools/tools_scloud) on the Splunk Developer Cloud Portal.
+For more about using `scloud`, see [Splunk Cloud Services CLI](https://developer.splunk.com/scs/docs/overview/tools/tools_scloud) on the Splunk Developer Portal.
 
 ## Contact
-If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _sdcbeta@splunk.com_.
+If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

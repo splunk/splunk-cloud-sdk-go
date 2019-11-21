@@ -247,6 +247,27 @@ func TestDeleteRecord(t *testing.T) {
 	assert.Equal(t, len(retrievedRecords), 2)
 }
 
+func TestListRecords(t *testing.T) {
+	// Create the test collection
+	kvid, kvCollection := makeCollectionName(t, "kvdrec")
+	defer cleanupDataset(t, kvid)
+
+	// Create records
+	createTestRecord(t, kvCollection)
+
+	// Filter based on a known kv pair
+	filter := map[string]interface{}{"size": "tiny"}
+	queryParams := kvstore.ListRecordsQueryParams{Filters: filter}
+	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, &queryParams)
+
+	require.Nil(t, err)
+	assert.NotEmpty(t, records)
+	for _, r := range records {
+		// assert that the records we return have the kvpair we expect: size=tiny
+		assert.Equal(t, "tiny", r["size"])
+	}
+}
+
 // Create test record
 func createTestRecord(t *testing.T, kvCollection string) []string {
 	var integrationTestRecord = `[
