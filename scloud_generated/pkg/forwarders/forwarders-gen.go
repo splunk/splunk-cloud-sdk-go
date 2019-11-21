@@ -5,26 +5,93 @@ package forwarders
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
+	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/jsonx"
+	model "github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 )
 
 // AddCertificate Each tenant can have up to five certificates.
 func AddCertificate(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var pemDefault string
+	pem := &pemDefault
+	err = flags.ParseFlag(cmd.Flags(), "pem", &pem)
+	if err != nil {
+		return fmt.Errorf(`error parsing "pem": ` + err.Error())
+	}
+
+	// Form the request body
+	body := model.Certificate{
+		Pem: pem,
+	}
+
+	resp, err := client.ForwardersService.AddCertificate(body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
 }
 
 // DeleteCertificate Removes a certificate on a particular slot on a tenant.
 func DeleteCertificate(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Parse all flags
+	var slot string
+	err = flags.ParseFlag(cmd.Flags(), "slot", &slot)
+	if err != nil {
+		return fmt.Errorf(`error parsing "slot": ` + err.Error())
+	}
+
+	err = client.ForwardersService.DeleteCertificate(slot)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // DeleteCertificates Removes all certificates on a tenant.
 func DeleteCertificates(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	err = client.ForwardersService.DeleteCertificates()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ListCertificates Returns a list of all certificates for a tenant.
 func ListCertificates(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.ForwardersService.ListCertificates()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
 }

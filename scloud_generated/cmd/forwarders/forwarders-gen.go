@@ -11,28 +11,28 @@ import (
 // addCertificate -- Each tenant can have up to five certificates.
 var addCertificateCmd = &cobra.Command{
 	Use:   "add-certificate",
-	Short: "[not implemented] Each tenant can have up to five certificates.",
+	Short: "Each tenant can have up to five certificates.",
 	RunE:  impl.AddCertificate,
 }
 
 // deleteCertificate -- Removes a certificate on a particular slot on a tenant.
 var deleteCertificateCmd = &cobra.Command{
 	Use:   "delete-certificate",
-	Short: "[not implemented] Removes a certificate on a particular slot on a tenant.",
+	Short: "Removes a certificate on a particular slot on a tenant.",
 	RunE:  impl.DeleteCertificate,
 }
 
 // deleteCertificates -- Removes all certificates on a tenant.
 var deleteCertificatesCmd = &cobra.Command{
 	Use:   "delete-certificates",
-	Short: "[not implemented] Removes all certificates on a tenant.",
+	Short: "Removes all certificates on a tenant.",
 	RunE:  impl.DeleteCertificates,
 }
 
 // listCertificates -- Returns a list of all certificates for a tenant.
 var listCertificatesCmd = &cobra.Command{
 	Use:   "list-certificates",
-	Short: "[not implemented] Returns a list of all certificates for a tenant.",
+	Short: "Returns a list of all certificates for a tenant.",
 	RunE:  impl.ListCertificates,
 }
 

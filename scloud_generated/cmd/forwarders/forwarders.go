@@ -13,5 +13,5 @@ func Cmd() *cobra.Command {
 
 var forwardersCmd = &cobra.Command{
 	Use:   "forwarders",
-	Short: "forwarders service - NOT IMPLEMENTED",
+	Short: "forwarders service",
 }
