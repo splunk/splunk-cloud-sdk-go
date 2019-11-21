@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // streamsCmd represents the search command
 var streamsCmd = &cobra.Command{
 	Use:   "streams",
-	Short: "streams service - NOT IMPLEMENTED",
+	Short: "streams service",
 }
