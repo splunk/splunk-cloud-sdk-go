@@ -113,6 +113,7 @@ type Struct struct {
 	Name string `key:"name"`
 }
 
+// URLParams with defaults: exploded objects and unexploded arrays
 type URLParams struct {
 	Arr        []string               `key:"arr"`
 	ArrEnum    []Enum                 `key:"arrenums"`
@@ -126,6 +127,14 @@ type URLParams struct {
 	OptStr     *string  `key:"ostr"`
 	OptInt     *int     `key:"ointeger"`
 	OptFloat   *float32 `key:"oflt"`
+}
+
+type URLParamsUnexploded struct {
+	Arr        []string               `key:"arr" explode:"false"`
+	ArrEnum    []Enum                 `key:"arrenums" explode:"false"`
+	Struct     Struct                 `key:"strct" explode:"false"`
+	Map        map[string]interface{} `key:"map" explode:"false"`
+	MapStrings map[string]string      `explode:"false"`
 }
 
 type URLParamsExploded struct {
@@ -153,6 +162,36 @@ func TestParseUrlParamsConstRecursiveAndArray(t *testing.T) {
 	values := ParseURLParams(o)
 	assert.Equal(t, "ele1,ele2,ele3", values.Get("arr"))
 	assert.Equal(t, "mi,do,do", values.Get("arrenums"))
+	assert.Equal(t, "33", values.Get("id"))
+	assert.Equal(t, "anonymous", values.Get("name"))
+	assert.Equal(t, "aa", values.Get("a"))
+	assert.Equal(t, "bb", values.Get("b"))
+	assert.Equal(t, "cc", values.Get("c"))
+	assert.Equal(t, "5", values.Get("five"))
+	assert.Equal(t, "bar", values.Get("foo"))
+	assert.Equal(t, "re", values.Get("enum"))
+	assert.Equal(t, "stuff", values.Get("str"))
+	assert.Equal(t, "55", values.Get("integer"))
+	assert.Equal(t, "66.666", values.Get("flt"))
+	assert.Equal(t, "", values.Get("ostr"))
+	assert.Equal(t, "45", values.Get("ointeger"))
+	assert.Equal(t, "", values.Get("oflt"))
+	// Assert the encoded params replacing %2C with comma for readability
+	enc := strings.Replace(values.Encode(), "%2C", ",", -1)
+	assert.Equal(t, "a=aa&arr=ele1,ele2,ele3&arrenums=mi,do,do&b=bb&c=cc&enum=re&five=5&flt=66.666&foo=bar&id=33&integer=55&name=anonymous&ointeger=45&str=stuff", enc)
+}
+
+func TestParseURLParamsUnexploded(t *testing.T) {
+	o := URLParamsUnexploded{
+		Arr:        []string{"ele1", "ele2", "ele3"},
+		ArrEnum:    []Enum{Mi, Do, Do},
+		Struct:     Struct{ID: 33, Name: "anonymous"},
+		Map:        map[string]interface{}{"foo": "bar", "five": 5},
+		MapStrings: map[string]string{"a": "aa", "b": "bb", "c": "cc"},
+	}
+	values := ParseURLParams(o)
+	assert.Equal(t, "ele1,ele2,ele3", values.Get("arr"))
+	assert.Equal(t, "mi,do,do", values.Get("arrenums"))
 	assert.Equal(t, "id,33,name,anonymous", values.Get("strct"))
 	// For maps the key ordering can change so simple assert that kv pairs are contained within the string
 	m := values.Get("map")
@@ -164,19 +203,13 @@ func TestParseUrlParamsConstRecursiveAndArray(t *testing.T) {
 	assert.Contains(t, ms, "a,aa")
 	assert.Contains(t, ms, "b,bb")
 	assert.Contains(t, ms, "c,cc")
-	assert.Equal(t, "re", values.Get("enum"))
-	assert.Equal(t, "stuff", values.Get("str"))
-	assert.Equal(t, "55", values.Get("integer"))
-	assert.Equal(t, "66.666", values.Get("flt"))
-	assert.Equal(t, "", values.Get("ostr"))
-	assert.Equal(t, "45", values.Get("ointeger"))
-	assert.Equal(t, "", values.Get("oflt"))
+
 	// Assert the encoded params replacing %2C with comma for readability
 	enc := strings.Replace(values.Encode(), "%2C", ",", -1)
-	assert.Equal(t, fmt.Sprintf("MapStrings=%s&arr=ele1,ele2,ele3&arrenums=mi,do,do&enum=re&flt=66.666&integer=55&map=%s&ointeger=45&str=stuff&strct=id,33,name,anonymous", ms, m), enc)
+	assert.Equal(t, fmt.Sprintf("MapStrings=%s&arr=ele1,ele2,ele3&arrenums=mi,do,do&map=%s&strct=id,33,name,anonymous", ms, m), enc)
 }
 
-func TestParseUrlParamsExploded(t *testing.T) {
+func TestParseURLParamsExploded(t *testing.T) {
 	o := URLParamsExploded{
 		Arr:        []string{"ele1", "ele2", "ele3"},
 		ArrEnum:    []Enum{Mi, Do, Do},
@@ -200,7 +233,9 @@ func TestParseUrlParamsExploded(t *testing.T) {
 	assert.Equal(t, "cc", values.Get("c"))
 	assert.Equal(t, "5", values.Get("five"))
 	assert.Equal(t, "bar", values.Get("foo"))
-	assert.Equal(t, "a=aa&arr=ele1&arr=ele2&arr=ele3&arrenums=mi&arrenums=do&arrenums=do&b=bb&c=cc&five=5&foo=bar&id=33&name=anonymous", values.Encode())
+	// Assert the encoded params replacing %2C with comma for readability
+	enc := strings.Replace(values.Encode(), "%2C", ",", -1)
+	assert.Equal(t, "a=aa&arr=ele1&arr=ele2&arr=ele3&arrenums=mi&arrenums=do&arrenums=do&b=bb&c=cc&five=5&foo=bar&id=33&name=anonymous", enc)
 }
 
 func TestParseTemplatedPath(t *testing.T) {

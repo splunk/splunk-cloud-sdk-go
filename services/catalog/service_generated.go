@@ -1383,15 +1383,17 @@ func (s *Service) GetDashboardByResourceName(dashboardresourcename string, resp 
 	Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetDataset(datasetresourcename string, resp ...*http.Response) (*Dataset, error) {
+func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*Dataset, error) {
+	values := util.ParseURLParams(query)
 	pp := struct {
 		Datasetresourcename string
 	}{
 		Datasetresourcename: datasetresourcename,
 	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/catalog/v2beta1/datasets/{{.Datasetresourcename}}`, pp)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/catalog/v2beta1/datasets/{{.Datasetresourcename}}`, pp)
 	if err != nil {
 		return nil, err
 	}
@@ -1417,15 +1419,17 @@ func (s *Service) GetDataset(datasetresourcename string, resp ...*http.Response)
 	Return information about the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetDatasetById(datasetid string, resp ...*http.Response) (*Dataset, error) {
+func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*Dataset, error) {
+	values := util.ParseURLParams(query)
 	pp := struct {
 		Datasetid string
 	}{
 		Datasetid: datasetid,
 	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/catalog/v2beta1/datasets/{{.Datasetid}}`, pp)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/catalog/v2beta1/datasets/{{.Datasetid}}`, pp)
 	if err != nil {
 		return nil, err
 	}
@@ -1835,6 +1839,36 @@ func (s *Service) ListActionsForRuleById(ruleid string, query *ListActionsForRul
 		return nil, err
 	}
 	var rb []Action
+	err = util.ParseResponse(&rb, response)
+	return rb, err
+}
+
+/*
+	ListAnnotations - catalog service endpoint
+	Return the set of annotations across all objects.
+	Parameters:
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListAnnotations(query *ListAnnotationsQueryParams, resp ...*http.Response) ([]Annotation, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/catalog/v2beta1/annotations`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb []Annotation
 	err = util.ParseResponse(&rb, response)
 	return rb, err
 }

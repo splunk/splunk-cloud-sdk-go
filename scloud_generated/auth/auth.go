@@ -42,6 +42,7 @@ import (
 )
 
 const SCloudHome = "SCLOUD_HOME"
+const DefaultEnv = "prod"
 
 var ctxCache *fcache.Cache
 var settings *fcache.Cache
@@ -74,13 +75,11 @@ func getEnvironmentName() string {
 	if err != nil {
 		fatal(err.Error())
 	}
-	if envName, ok := settings.GetString("env"); ok {
+	if envName, ok := settings.GetString("env"); ok && envName != "" {
 		return envName
 	}
 
-	fmt.Println("Warning: no env is set, use default env")
-	envName := "prod" // default
-	return envName
+	return DefaultEnv // default
 }
 
 func getEnvironment() *Environment {
@@ -382,7 +381,7 @@ func LoadFile(fileName string) error {
 func GetEnvironment(name string) (*Environment, error) {
 	env, ok := config.Environments[name]
 	if !ok {
-		return nil, fmt.Errorf("not found: '%s'", name)
+		return nil, fmt.Errorf("auth.GetEnvironment key not found: '%s'", name)
 	}
 	return env, nil
 }
@@ -391,7 +390,7 @@ func GetEnvironment(name string) (*Environment, error) {
 func GetProfile(name string) (map[string]string, error) {
 	profile, ok := config.Profiles[name]
 	if !ok {
-		return nil, fmt.Errorf("not found: '%s'", name)
+		return nil, fmt.Errorf("auth.GetProfile key not found: '%s'", name)
 	}
 	_, ok = profile["kind"] // ensure 'kind' exists
 	if !ok {

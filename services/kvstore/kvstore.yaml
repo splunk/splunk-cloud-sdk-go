@@ -386,9 +386,9 @@ components:
           type: string
       type: object
 info:
-  description: With the Splunk Cloud KV store service, you can save and retrieve data
-    within your Splunk apps, enabling you to manage and maintain the state of the
-    application.
+  description: With the Splunk Cloud KV store service in Splunk Cloud Services, you
+    can save and retrieve data within your Splunk Cloud apps, enabling you to manage
+    and maintain state in your application.
   title: KV Store API
   version: v1beta1.2
 openapi: 3.0.0
@@ -812,4 +812,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 78a292c87627531df44a659672364ffb5ad78fa7 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: kvstore/v1beta1/openapi.yaml

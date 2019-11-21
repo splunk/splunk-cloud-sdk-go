@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strconv"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -107,6 +109,13 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 			}
 			deref.Set(reflect.ValueOf(slval))
 			return nil
+		case reflect.Int64:
+			slval, err := GetInt64Slice(name, flags)
+			if err != nil {
+				return fmt.Errorf(`flags.ParseFlag: error retrieving flag flags.GetInt64Slice("%s") err: %s`, name, err)
+			}
+			deref.Set(reflect.ValueOf(slval))
+			return nil
 		case reflect.Bool:
 			slval, err := flags.GetBoolSlice(name)
 			if err != nil {
@@ -126,4 +135,48 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 		return fmt.Errorf("flags.ParseFlag: failure to unmarshal to type %s err: %s", outtype, err)
 	}
 	return nil
+}
+
+// GetIntSlice return the []int64 value of a flag with the given name
+func GetInt64Slice(name string, flags *pflag.FlagSet) ([]int64, error) {
+	flag := flags.Lookup(name)
+	if flag == nil {
+		err := fmt.Errorf("flag accessed but not defined: %s", name)
+		return nil, err
+	}
+
+	if flag.Value.Type() != "intSlice" {
+		err := fmt.Errorf("trying to get %s value of flag of type %s", "intSlice", flag.Value.Type())
+		return nil, err
+	}
+	sval := flag.Value.String()
+	result, err := int64SliceConv(sval)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		return []int64{}, err
+	}
+	return result.([]int64), nil
+}
+
+func int64SliceConv(val string) (interface{}, error) {
+	val = strings.Trim(val, "[]")
+	// Empty string would cause a slice with one (empty) entry
+	if len(val) == 0 {
+		return []int{}, nil
+	}
+	ss := strings.Split(val, ",")
+	out := make([]int64, len(ss))
+	for i, d := range ss {
+		var err error
+		j, err := strconv.Atoi(d)
+		out[i] = int64(j)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+	return out, nil
 }
