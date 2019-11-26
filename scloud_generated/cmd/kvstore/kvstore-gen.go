@@ -8,89 +8,91 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/kvstore"
 )
 
+
 // createIndex -- Creates an index on a collection.
 var createIndexCmd = &cobra.Command{
 	Use:   "create-index",
-	Short: "[not implemented] Creates an index on a collection.",
+	Short: "Creates an index on a collection.",
 	RunE:  impl.CreateIndex,
 }
 
 // deleteIndex -- Removes an index from a collection.
 var deleteIndexCmd = &cobra.Command{
 	Use:   "delete-index",
-	Short: "[not implemented] Removes an index from a collection.",
+	Short: "Removes an index from a collection.",
 	RunE:  impl.DeleteIndex,
 }
 
 // deleteRecordByKey -- Deletes a record with a given key.
 var deleteRecordByKeyCmd = &cobra.Command{
 	Use:   "delete-record-by-key",
-	Short: "[not implemented] Deletes a record with a given key.",
+	Short: "Deletes a record with a given key.",
 	RunE:  impl.DeleteRecordByKey,
 }
 
 // deleteRecords -- Removes records in a collection that match the query.
 var deleteRecordsCmd = &cobra.Command{
 	Use:   "delete-records",
-	Short: "[not implemented] Removes records in a collection that match the query.",
+	Short: "Removes records in a collection that match the query.",
 	RunE:  impl.DeleteRecords,
 }
 
 // getRecordByKey -- Returns a record with a given key.
 var getRecordByKeyCmd = &cobra.Command{
 	Use:   "get-record-by-key",
-	Short: "[not implemented] Returns a record with a given key.",
+	Short: "Returns a record with a given key.",
 	RunE:  impl.GetRecordByKey,
 }
 
 // insertRecord -- Inserts a record into a collection.
 var insertRecordCmd = &cobra.Command{
 	Use:   "insert-record",
-	Short: "[not implemented] Inserts a record into a collection.",
+	Short: "Inserts a record into a collection.",
 	RunE:  impl.InsertRecord,
 }
 
 // insertRecords -- Inserts multiple records in a single request.
 var insertRecordsCmd = &cobra.Command{
 	Use:   "insert-records",
-	Short: "[not implemented] Inserts multiple records in a single request.",
+	Short: "Inserts multiple records in a single request.",
 	RunE:  impl.InsertRecords,
 }
 
 // listIndexes -- Returns a list of all indexes on a collection.
 var listIndexesCmd = &cobra.Command{
 	Use:   "list-indexes",
-	Short: "[not implemented] Returns a list of all indexes on a collection.",
+	Short: "Returns a list of all indexes on a collection.",
 	RunE:  impl.ListIndexes,
 }
 
 // listRecords -- Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
 var listRecordsCmd = &cobra.Command{
 	Use:   "list-records",
-	Short: "[not implemented] Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.",
+	Short: "Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.",
 	RunE:  impl.ListRecords,
 }
 
 // ping -- Returns the health status from the database.
 var pingCmd = &cobra.Command{
 	Use:   "ping",
-	Short: "[not implemented] Returns the health status from the database.",
+	Short: "Returns the health status from the database.",
 	RunE:  impl.Ping,
 }
 
 // putRecord -- Updates the record with a given key, either by inserting or replacing the record.
 var putRecordCmd = &cobra.Command{
 	Use:   "put-record",
-	Short: "[not implemented] Updates the record with a given key, either by inserting or replacing the record.",
+	Short: "Updates the record with a given key, either by inserting or replacing the record.",
 	RunE:  impl.PutRecord,
 }
 
 // queryRecords -- Returns a list of query records in a collection.
 var queryRecordsCmd = &cobra.Command{
 	Use:   "query-records",
-	Short: "[not implemented] Returns a list of query records in a collection.",
+	Short: "Returns a list of query records in a collection.",
 	RunE:  impl.QueryRecords,
 }
+
 
 func init() {
 	kvstoreCmd.AddCommand(createIndexCmd)
@@ -99,11 +101,13 @@ func init() {
 	createIndexCmd.Flags().StringVar(&createIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	createIndexCmd.MarkFlagRequired("collection")
 	var createIndexFields string
-	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "3This is a required parameter.This is a required parameter.")
+	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "This is a required parameter.This is a required parameter.")
 	createIndexCmd.MarkFlagRequired("fields")
 	var createIndexName string
-	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "3This is a required parameter.This is a required parameter.The name of the index.")
+	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "This is a required parameter.This is a required parameter.The name of the index.")
 	createIndexCmd.MarkFlagRequired("name")
+
+
 
 	kvstoreCmd.AddCommand(deleteIndexCmd)
 
@@ -114,6 +118,8 @@ func init() {
 	deleteIndexCmd.Flags().StringVar(&deleteIndexIndex, "index", "", "This is a required parameter.The name of the index.")
 	deleteIndexCmd.MarkFlagRequired("index")
 
+
+
 	kvstoreCmd.AddCommand(deleteRecordByKeyCmd)
 
 	var deleteRecordByKeyCollection string
@@ -123,6 +129,8 @@ func init() {
 	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
 	deleteRecordByKeyCmd.MarkFlagRequired("key")
 
+
+
 	kvstoreCmd.AddCommand(deleteRecordsCmd)
 
 	var deleteRecordsCollection string
@@ -130,7 +138,9 @@ func init() {
 	deleteRecordsCmd.MarkFlagRequired("collection")
 
 	var deleteRecordsQuery string
-	deleteRecordsCmd.Flags().StringVar(&deleteRecordsQuery, "query", "", "Query JSON expression.")
+	deleteRecordsCmd.Flags().StringVar(&deleteRecordsQuery, "query", "",  "Query JSON expression.")
+
+
 
 	kvstoreCmd.AddCommand(getRecordByKeyCmd)
 
@@ -141,6 +151,8 @@ func init() {
 	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
 	getRecordByKeyCmd.MarkFlagRequired("key")
 
+
+
 	kvstoreCmd.AddCommand(insertRecordCmd)
 
 	var insertRecordBody string
@@ -149,6 +161,8 @@ func init() {
 	var insertRecordCollection string
 	insertRecordCmd.Flags().StringVar(&insertRecordCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	insertRecordCmd.MarkFlagRequired("collection")
+
+
 
 	kvstoreCmd.AddCommand(insertRecordsCmd)
 
@@ -159,11 +173,15 @@ func init() {
 	insertRecordsCmd.Flags().StringVar(&insertRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	insertRecordsCmd.MarkFlagRequired("collection")
 
+
+
 	kvstoreCmd.AddCommand(listIndexesCmd)
 
 	var listIndexesCollection string
 	listIndexesCmd.Flags().StringVar(&listIndexesCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	listIndexesCmd.MarkFlagRequired("collection")
+
+
 
 	kvstoreCmd.AddCommand(listRecordsCmd)
 
@@ -172,17 +190,22 @@ func init() {
 	listRecordsCmd.MarkFlagRequired("collection")
 
 	var listRecordsCount int32
-	listRecordsCmd.Flags().Int32Var(&listRecordsCount, "count", 0, "Maximum number of records to return.")
+	listRecordsCmd.Flags().Int32Var(&listRecordsCount, "count", 0,  "Maximum number of records to return.")
 	var listRecordsFields []string
-	listRecordsCmd.Flags().StringSliceVar(&listRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+	listRecordsCmd.Flags().StringSliceVar(&listRecordsFields, "fields", nil,  "Comma-separated list of fields to include or exclude.")
 	var listRecordsFilters string
-	listRecordsCmd.Flags().StringVar(&listRecordsFilters, "filters", "", "")
+	listRecordsCmd.Flags().StringVar(&listRecordsFilters, "filters", "",  "")
 	var listRecordsOffset int32
-	listRecordsCmd.Flags().Int32Var(&listRecordsOffset, "offset", 0, "Number of records to skip from the start.")
+	listRecordsCmd.Flags().Int32Var(&listRecordsOffset, "offset", 0,  "Number of records to skip from the start.")
 	var listRecordsOrderby []string
-	listRecordsCmd.Flags().StringSliceVar(&listRecordsOrderby, "orderby", nil, "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
+	listRecordsCmd.Flags().StringSliceVar(&listRecordsOrderby, "orderby", nil,  "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
+
+
 
 	kvstoreCmd.AddCommand(pingCmd)
+
+
+
 
 	kvstoreCmd.AddCommand(putRecordCmd)
 
@@ -197,7 +220,9 @@ func init() {
 	putRecordCmd.MarkFlagRequired("key")
 
 	var putRecordIfMatch string
-	putRecordCmd.Flags().StringVar(&putRecordIfMatch, "if-match", "", "Record version identifier.")
+	putRecordCmd.Flags().StringVar(&putRecordIfMatch, "if-match", "",  "Record version identifier.")
+
+
 
 	kvstoreCmd.AddCommand(queryRecordsCmd)
 
@@ -206,14 +231,17 @@ func init() {
 	queryRecordsCmd.MarkFlagRequired("collection")
 
 	var queryRecordsCount int32
-	queryRecordsCmd.Flags().Int32Var(&queryRecordsCount, "count", 0, "Maximum number of records to return.")
+	queryRecordsCmd.Flags().Int32Var(&queryRecordsCount, "count", 0,  "Maximum number of records to return.")
 	var queryRecordsFields []string
-	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil,  "Comma-separated list of fields to include or exclude.")
 	var queryRecordsOffset int32
-	queryRecordsCmd.Flags().Int32Var(&queryRecordsOffset, "offset", 0, "Number of records to skip from the start.")
+	queryRecordsCmd.Flags().Int32Var(&queryRecordsOffset, "offset", 0,  "Number of records to skip from the start.")
 	var queryRecordsOrderby []string
-	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsOrderby, "orderby", nil, "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
+	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsOrderby, "orderby", nil,  "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
 	var queryRecordsQuery string
-	queryRecordsCmd.Flags().StringVar(&queryRecordsQuery, "query", "", "Query JSON expression.")
+	queryRecordsCmd.Flags().StringVar(&queryRecordsQuery, "query", "",  "Query JSON expression.")
+
+
+
 
 }
