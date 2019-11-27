@@ -124,6 +124,11 @@ func Load(home string, confFile string) {
 	viper.SetConfigFile(confFile)
 	// Read in the new config
 	viper.SetConfigType("toml")
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func Migrate(source string, target string) {
