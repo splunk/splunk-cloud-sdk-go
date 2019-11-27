@@ -5,6 +5,7 @@ package kvstore
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
@@ -14,7 +15,6 @@ import (
 
 // CreateIndex Creates an index on a collection.
 func CreateIndex(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -41,7 +41,7 @@ func CreateIndex(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.IndexDefinition{
 		Fields: fields,
-		Name: name,
+		Name:   name,
 	}
 	resp, err := client.KVStoreService.CreateIndex(collection, generated_request_body)
 	if err != nil {
@@ -54,7 +54,6 @@ func CreateIndex(cmd *cobra.Command, args []string) error {
 
 // DeleteIndex Removes an index from a collection.
 func DeleteIndex(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -85,7 +84,6 @@ func DeleteIndex(cmd *cobra.Command, args []string) error {
 // DeleteRecordByKey Deletes a record with a given key.
 func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -114,7 +112,6 @@ func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
 
 // DeleteRecords Removes records in a collection that match the query.
 func DeleteRecords(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -148,7 +145,6 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 // GetRecordByKey Returns a record with a given key.
 func GetRecordByKey(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -177,7 +173,6 @@ func GetRecordByKey(cmd *cobra.Command, args []string) error {
 
 // InsertRecord Inserts a record into a collection.
 func InsertRecord(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -208,7 +203,6 @@ func InsertRecord(cmd *cobra.Command, args []string) error {
 // InsertRecords Inserts multiple records in a single request.
 func InsertRecords(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -238,7 +232,6 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 // ListIndexes Returns a list of all indexes on a collection.
 func ListIndexes(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -262,7 +255,6 @@ func ListIndexes(cmd *cobra.Command, args []string) error {
 
 // ListRecords Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
 func ListRecords(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -322,12 +314,10 @@ func ListRecords(cmd *cobra.Command, args []string) error {
 // Ping Returns the health status from the database.
 func Ping(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-
 
 	resp, err := client.KVStoreService.Ping()
 	if err != nil {
@@ -341,16 +331,15 @@ func Ping(cmd *cobra.Command, args []string) error {
 // PutRecord Updates the record with a given key, either by inserting or replacing the record.
 func PutRecord(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
 
 	// Parse all flags
-	var If_MatchDefault string
-	If_Match := &If_MatchDefault
-	err = flags.ParseFlag(cmd.Flags(), "if-match", &If_Match)
+	//var If-MatchDefault string
+	//If-Match := &If-MatchDefault
+	//err = flags.ParseFlag(cmd.Flags(), "if-match", &If-Match)
 	if err != nil {
 		return fmt.Errorf(`error parsing "if-match": ` + err.Error())
 	}
@@ -381,7 +370,6 @@ func PutRecord(cmd *cobra.Command, args []string) error {
 
 // QueryRecords Returns a list of query records in a collection.
 func QueryRecords(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -437,4 +425,3 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	return nil
 
 }
-
