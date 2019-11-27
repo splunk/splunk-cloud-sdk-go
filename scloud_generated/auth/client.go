@@ -5,7 +5,6 @@ import (
 	"crypto/x509"
 	"errors"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"time"
@@ -21,80 +20,40 @@ const (
 	defaultPort   = "443"
 )
 
-const (
-	maxRetryCount = 6
-)
-
-type retryHandler struct{}
-
-var sdkclient *sdk.Client
-
-// Implements exponential backoff & retry on 429 and 504 response codes.
-func (handler retryHandler) HandleResponse(client *services.BaseClient, request *services.Request, response *http.Response) (*http.Response, error) {
-	var msg string
-
-	switch response.StatusCode {
-	case http.StatusTooManyRequests:
-		msg = "Too many requests"
-	case http.StatusGatewayTimeout:
-		msg = "Gateway timeout"
-	default:
-		return response, nil
-	}
-
-	if request.NumAttempts > maxRetryCount {
-		glog.Errorf("%s, giving up", msg)
-		return response, nil
-	}
-
-	millis := ((1 << request.NumAttempts) * 500) + rand.Intn(250)
-	backoff := time.Duration(millis) * time.Millisecond
-	glog.Warningf("%s, backoff/retry (%v) ..", msg, backoff)
-	time.Sleep(backoff)
-
-	// reinitialize body, otherwise it will be empty (!?)
-	body, err := request.GetBody()
-	if err != nil {
-		return nil, err
-	}
-	request.Body = body
-	return client.Do(request)
-}
+var sdkClient *sdk.Client
 
 func GetClient() (*sdk.Client, error) {
-	if sdkclient == nil {
+	if sdkClient == nil {
 		err := loadConfigs()
 		if err != nil {
 			return nil, err
 		}
 
-		sdkclient := apiClient()
+		sdkClient = apiClient()
 
-		if sdkclient == nil {
+		if sdkClient == nil {
 			return nil, errors.New("no valid sdk client")
 		}
 
-		return sdkclient, err
+		return sdkClient, err
 	}
 
-	return sdkclient, nil
+	return sdkClient, nil
 }
 
 func GetClientSystemTenant() (*sdk.Client, error) {
-	if sdkclient == nil {
-		glog.CopyStandardLogTo("INFO")
-
+	if sdkClient == nil {
 		err := loadConfig()
 		if err != nil {
 			return nil, err
 		}
 
-		sdkclient := apiClientWithTenant("system")
+		sdkClient = apiClientWithTenant("system")
 
-		return sdkclient, nil
+		return sdkClient, nil
 	}
 
-	return sdkclient, nil
+	return sdkClient, nil
 }
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
@@ -152,7 +111,7 @@ func newClient(svc *Service) *sdk.Client {
 		OverrideHost:     hostPort,
 		Scheme:           scheme,
 		Timeout:          10 * time.Second,
-		ResponseHandlers: []services.ResponseHandler{&retryHandler{}},
+		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
 		RoundTripper: util.NewCustomSdkTransport(&GlogWrapper{}, &http.Transport{
 			TLSClientConfig: tlsConfig,
 			Proxy:           http.ProxyFromEnvironment,

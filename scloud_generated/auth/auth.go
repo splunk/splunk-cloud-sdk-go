@@ -33,7 +33,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth/fcache"
-	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
 
@@ -309,29 +308,21 @@ func loadConfigs() error {
 	settings, _ = fcache.Load(abspath(viper.ConfigFileUsed()))
 	ctxCache, _ = fcache.Load(abspath(".scloud_context"))
 
-	for _, name := range cf.GlobalFlags {
-		value := viper.Get(name)
-		if value != nil {
-			if k, ok := value.(string); ok {
-				if len(k) != 0 {
-					settings.Set(name, k)
-				}
-			}
-		}
-
-	}
-
 	return nil
 }
 
 // Load default config asset.
 func loadConfig() error {
-	//file, err := assets.Open("default.yaml")
 	file, err := open("default.yaml")
 	if err != nil {
 		return fmt.Errorf("err loading default.yaml: %s", err)
 	}
-	return Load(file)
+
+	decoder := yaml.NewDecoder(file)
+	if err := decoder.Decode(&config); err != nil {
+		return err
+	}
+	return nil
 }
 
 type Service struct {
@@ -360,23 +351,6 @@ type Cfg struct {
 }
 
 var config Cfg
-
-func Load(reader io.Reader) error {
-	decoder := yaml.NewDecoder(reader)
-	if err := decoder.Decode(&config); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Load the named config file.
-func LoadFile(fileName string) error {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return err
-	}
-	return Load(file)
-}
 
 func GetEnvironment(name string) (*Environment, error) {
 	env, ok := config.Environments[name]

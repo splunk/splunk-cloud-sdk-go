@@ -1,7 +1,7 @@
 package cmd
 
 const (
-	appName = "scloud"
+	appName = "scloud_gen"
 )
 
 // version infomation block set via ldflags
