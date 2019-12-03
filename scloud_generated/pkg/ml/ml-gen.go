@@ -5,6 +5,7 @@ package ml
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/flags"
@@ -14,7 +15,6 @@ import (
 
 // CreateWorkflow Creates a workflow configuration.
 func CreateWorkflow(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -36,7 +36,7 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.Workflow{
-		Name: name,
+		Name:  name,
 		Tasks: tasks,
 	}
 	resp, err := client.MachineLearningService.CreateWorkflow(generated_request_body)
@@ -50,7 +50,6 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 
 // CreateWorkflowBuild Creates a workflow build.
 func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -112,14 +111,14 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.WorkflowBuild{
-		Input: input,
-		Name: name,
-		Output: output,
-		TimeoutSecs: timeoutSecs,
-		TrainingScore: trainingScore,
+		Input:            input,
+		Name:             name,
+		Output:           output,
+		TimeoutSecs:      timeoutSecs,
+		TrainingScore:    trainingScore,
 		ValidationOption: validationOption,
 		Workflow: &model.Workflow{
-			Name: nameWorkflow,
+			Name:  nameWorkflow,
 			Tasks: tasks,
 		},
 	}
@@ -134,7 +133,6 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 
 // CreateWorkflowDeployment Creates a workflow deployment.
 func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -210,15 +208,15 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.WorkflowDeployment{
 		EndTime: endTime,
-		Name: name,
+		Name:    name,
 		Spec: model.DeploymentSpec{
-			CpuLimit: cpuLimit,
-			CpuRequest: cpuRequest,
-			MemoryLimit: memoryLimit,
+			CpuLimit:      cpuLimit,
+			CpuRequest:    cpuRequest,
+			MemoryLimit:   memoryLimit,
 			MemoryRequest: memoryRequest,
-			Replicas: replicas,
+			Replicas:      replicas,
 		},
-		StartTime: startTime,
+		StartTime:     startTime,
 		WorkflowBuild: workflowBuild,
 	}
 	resp, err := client.MachineLearningService.CreateWorkflowDeployment(id, buildId, generated_request_body)
@@ -232,7 +230,6 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 
 // CreateWorkflowInference Creates a workflow inference request.
 func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -276,7 +273,6 @@ func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
 
 // CreateWorkflowRun Creates a workflow run.
 func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -337,13 +333,13 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.WorkflowRun{
-		Evaluate: evaluate,
-		Input: input,
-		Name: name,
-		Output: output,
+		Evaluate:        evaluate,
+		Input:           input,
+		Name:            name,
+		Output:          output,
 		PredictionScore: predictionScore,
-		TimeoutSecs: timeoutSecs,
-		WorkflowBuild: workflowBuild,
+		TimeoutSecs:     timeoutSecs,
+		WorkflowBuild:   workflowBuild,
 	}
 	resp, err := client.MachineLearningService.CreateWorkflowRun(id, buildId, generated_request_body)
 	if err != nil {
@@ -356,7 +352,6 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 
 // CreateWorkflowStreamDeployment Creates a workflow streaming deployment.
 func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -429,15 +424,15 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.WorkflowStreamDeployment{
-		Input: input,
-		Name: name,
+		Input:  input,
+		Name:   name,
 		Output: output,
 		Spec: &model.DeploymentSpec{
-			CpuLimit: cpuLimit,
-			CpuRequest: cpuRequest,
-			MemoryLimit: memoryLimit,
+			CpuLimit:      cpuLimit,
+			CpuRequest:    cpuRequest,
+			MemoryLimit:   memoryLimit,
 			MemoryRequest: memoryRequest,
-			Replicas: replicas,
+			Replicas:      replicas,
 		},
 		WorkflowBuild: workflowBuild,
 	}
@@ -452,7 +447,6 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 
 // DeleteWorkflow Removes a workflow configuration.
 func DeleteWorkflow(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -477,7 +471,6 @@ func DeleteWorkflow(cmd *cobra.Command, args []string) error {
 
 // DeleteWorkflowBuild Removes a workflow build.
 func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -507,7 +500,6 @@ func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
 
 // DeleteWorkflowDeployment Removes a workflow deployment.
 func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -543,7 +535,6 @@ func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
 // DeleteWorkflowRun Removes a workflow run.
 func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -577,7 +568,6 @@ func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 
 // DeleteWorkflowStreamDeployment Removes a workflow streaming deployment.
 func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -613,7 +603,6 @@ func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 // GetWorkflow Returns a workflow configuration.
 func GetWorkflow(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -637,7 +626,6 @@ func GetWorkflow(cmd *cobra.Command, args []string) error {
 
 // GetWorkflowBuild Returns the status of a workflow build.
 func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -668,7 +656,6 @@ func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
 // GetWorkflowBuildError Returns a list of workflow errors.
 func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -698,7 +685,6 @@ func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
 // GetWorkflowBuildLog Returns the logs from a workflow build.
 func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -727,7 +713,6 @@ func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
 
 // GetWorkflowDeployment Returns the status of a workflow deployment.
 func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -763,7 +748,6 @@ func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
 // GetWorkflowDeploymentError Returns a list of workflow deployment errors.
 func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -797,7 +781,6 @@ func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
 
 // GetWorkflowDeploymentLog Returns the logs from a workflow deployment.
 func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -833,7 +816,6 @@ func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
 // GetWorkflowRun Returns the status of a workflow run.
 func GetWorkflowRun(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -867,7 +849,6 @@ func GetWorkflowRun(cmd *cobra.Command, args []string) error {
 
 // GetWorkflowRunError Returns the errors for a workflow run.
 func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -903,7 +884,6 @@ func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
 // GetWorkflowRunLog Returns the logs for a workflow run.
 func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -937,7 +917,6 @@ func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 
 // GetWorkflowStreamDeployment Returns the status of a workflow streaming deployment.
 func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -973,7 +952,6 @@ func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 // ListWorkflowBuilds Returns a list of workflow builds.
 func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -997,7 +975,6 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 
 // ListWorkflowDeployments Returns a list of workflow deployments.
 func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -1028,7 +1005,6 @@ func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
 // ListWorkflowRuns Returns a list of workflow runs.
 func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
@@ -1058,12 +1034,10 @@ func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 // ListWorkflows Returns a list of workflow configurations.
 func ListWorkflows(cmd *cobra.Command, args []string) error {
 
-
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-
 
 	resp, err := client.MachineLearningService.ListWorkflows()
 	if err != nil {
@@ -1073,4 +1047,3 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	return nil
 
 }
-

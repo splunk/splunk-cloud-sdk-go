@@ -8,7 +8,6 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/pkg/ml"
 )
 
-
 // createWorkflow -- Creates a workflow configuration.
 var createWorkflowCmd = &cobra.Command{
 	Use:   "create-workflow",
@@ -191,7 +190,6 @@ var listWorkflowsCmd = &cobra.Command{
 	RunE:  impl.ListWorkflows,
 }
 
-
 func init() {
 	mlCmd.AddCommand(createWorkflowCmd)
 
@@ -200,9 +198,7 @@ func init() {
 	createWorkflowCmd.MarkFlagRequired("tasks")
 
 	var createWorkflowName string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowName, "name", "",  "")
-
-
+	createWorkflowCmd.Flags().StringVar(&createWorkflowName, "name", "", "")
 
 	mlCmd.AddCommand(createWorkflowBuildCmd)
 
@@ -217,19 +213,17 @@ func init() {
 	createWorkflowBuildCmd.MarkFlagRequired("tasks")
 
 	var createWorkflowBuildName string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildName, "name", "",  "")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildName, "name", "", "")
 	var createWorkflowBuildNameWorkflow string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildNameWorkflow, "name-workflow", "",  "")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildNameWorkflow, "name-workflow", "", "")
 	var createWorkflowBuildOutput string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildOutput, "output", "",  "")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildOutput, "output", "", "")
 	var createWorkflowBuildTimeoutSecs int32
-	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildTimeoutSecs, "timeout-secs", 0,  "Number of seconds before a workflow build times out.")
+	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildTimeoutSecs, "timeout-secs", 0, "Number of seconds before a workflow build times out.")
 	var createWorkflowBuildTrainingScore string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTrainingScore, "training-score", "",  "")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTrainingScore, "training-score", "", "")
 	var createWorkflowBuildValidationOption string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildValidationOption, "validation-option", "",  "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
-
-
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildValidationOption, "validation-option", "", "Represents which type of validation to use in the workflow along with any parameters if specified. If this is not included, no validation is done (all data is used for training). Default parameter values are used if no `option` is specified.")
 
 	mlCmd.AddCommand(createWorkflowDeploymentCmd)
 
@@ -241,25 +235,23 @@ func init() {
 	createWorkflowDeploymentCmd.MarkFlagRequired("id")
 
 	var createWorkflowDeploymentCpuLimit string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuLimit, "cpu-limit", "",  "CPU Resource limit for each container in a deployment.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuLimit, "cpu-limit", "", "CPU Resource limit for each container in a deployment.")
 	var createWorkflowDeploymentCpuRequest string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuRequest, "cpu-request", "",  "CPU Resource limit for serving requests.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentCpuRequest, "cpu-request", "", "CPU Resource limit for serving requests.")
 	var createWorkflowDeploymentEndTime string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentEndTime, "end-time", "",  "")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentEndTime, "end-time", "", "")
 	var createWorkflowDeploymentMemoryLimit string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryLimit, "memory-limit", "",  "Memory Resource limit for each container in a deployment.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryLimit, "memory-limit", "", "Memory Resource limit for each container in a deployment.")
 	var createWorkflowDeploymentMemoryRequest string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryRequest, "memory-request", "",  "Memory Resource limit for serving requests.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentMemoryRequest, "memory-request", "", "Memory Resource limit for serving requests.")
 	var createWorkflowDeploymentName string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentName, "name", "",  "")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentName, "name", "", "")
 	var createWorkflowDeploymentReplicas int32
-	createWorkflowDeploymentCmd.Flags().Int32Var(&createWorkflowDeploymentReplicas, "replicas", 0,  "Create replicated pods in a deployment.")
+	createWorkflowDeploymentCmd.Flags().Int32Var(&createWorkflowDeploymentReplicas, "replicas", 0, "Create replicated pods in a deployment.")
 	var createWorkflowDeploymentStartTime string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentStartTime, "start-time", "",  "")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentStartTime, "start-time", "", "")
 	var createWorkflowDeploymentWorkflowBuild string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentWorkflowBuild, "workflow-build", "",  "")
-
-
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(createWorkflowInferenceCmd)
 
@@ -275,8 +267,6 @@ func init() {
 	var createWorkflowInferenceInput string
 	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceInput, "input", "", "This is a required parameter.This is a required parameter.")
 	createWorkflowInferenceCmd.MarkFlagRequired("input")
-
-
 
 	mlCmd.AddCommand(createWorkflowRunCmd)
 
@@ -294,17 +284,15 @@ func init() {
 	createWorkflowRunCmd.MarkFlagRequired("output")
 
 	var createWorkflowRunEvaluate bool
-	createWorkflowRunCmd.Flags().BoolVar(&createWorkflowRunEvaluate, "evaluate", false,  "Determine whether to evaluate the prediction.")
+	createWorkflowRunCmd.Flags().BoolVar(&createWorkflowRunEvaluate, "evaluate", false, "Determine whether to evaluate the prediction.")
 	var createWorkflowRunName string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "",  "")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "", "")
 	var createWorkflowRunPredictionScore string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPredictionScore, "prediction-score", "",  "")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunPredictionScore, "prediction-score", "", "")
 	var createWorkflowRunTimeoutSecs int32
-	createWorkflowRunCmd.Flags().Int32Var(&createWorkflowRunTimeoutSecs, "timeout-secs", 0,  "Number of seconds before a workflow run times out.")
+	createWorkflowRunCmd.Flags().Int32Var(&createWorkflowRunTimeoutSecs, "timeout-secs", 0, "Number of seconds before a workflow run times out.")
 	var createWorkflowRunWorkflowBuild string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowBuild, "workflow-build", "",  "")
-
-
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(createWorkflowStreamDeploymentCmd)
 
@@ -322,29 +310,25 @@ func init() {
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("output")
 
 	var createWorkflowStreamDeploymentCpuLimit string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuLimit, "cpu-limit", "",  "CPU Resource limit for each container in a deployment.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuLimit, "cpu-limit", "", "CPU Resource limit for each container in a deployment.")
 	var createWorkflowStreamDeploymentCpuRequest string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuRequest, "cpu-request", "",  "CPU Resource limit for serving requests.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentCpuRequest, "cpu-request", "", "CPU Resource limit for serving requests.")
 	var createWorkflowStreamDeploymentMemoryLimit string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryLimit, "memory-limit", "",  "Memory Resource limit for each container in a deployment.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryLimit, "memory-limit", "", "Memory Resource limit for each container in a deployment.")
 	var createWorkflowStreamDeploymentMemoryRequest string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryRequest, "memory-request", "",  "Memory Resource limit for serving requests.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentMemoryRequest, "memory-request", "", "Memory Resource limit for serving requests.")
 	var createWorkflowStreamDeploymentName string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentName, "name", "",  "")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentName, "name", "", "")
 	var createWorkflowStreamDeploymentReplicas int32
-	createWorkflowStreamDeploymentCmd.Flags().Int32Var(&createWorkflowStreamDeploymentReplicas, "replicas", 0,  "Create replicated pods in a deployment.")
+	createWorkflowStreamDeploymentCmd.Flags().Int32Var(&createWorkflowStreamDeploymentReplicas, "replicas", 0, "Create replicated pods in a deployment.")
 	var createWorkflowStreamDeploymentWorkflowBuild string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentWorkflowBuild, "workflow-build", "",  "")
-
-
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentWorkflowBuild, "workflow-build", "", "")
 
 	mlCmd.AddCommand(deleteWorkflowCmd)
 
 	var deleteWorkflowId string
 	deleteWorkflowCmd.Flags().StringVar(&deleteWorkflowId, "id", "", "This is a required parameter.The workflow ID.")
 	deleteWorkflowCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(deleteWorkflowBuildCmd)
 
@@ -354,8 +338,6 @@ func init() {
 	var deleteWorkflowBuildId string
 	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildId, "id", "", "This is a required parameter.The workflow ID.")
 	deleteWorkflowBuildCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(deleteWorkflowDeploymentCmd)
 
@@ -369,8 +351,6 @@ func init() {
 	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
 	deleteWorkflowDeploymentCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(deleteWorkflowRunCmd)
 
 	var deleteWorkflowRunBuildId string
@@ -382,8 +362,6 @@ func init() {
 	var deleteWorkflowRunRunId string
 	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
 	deleteWorkflowRunCmd.MarkFlagRequired("run-id")
-
-
 
 	mlCmd.AddCommand(deleteWorkflowStreamDeploymentCmd)
 
@@ -397,15 +375,11 @@ func init() {
 	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter.The workflow streaming deployment ID.")
 	deleteWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
-
-
 	mlCmd.AddCommand(getWorkflowCmd)
 
 	var getWorkflowId string
 	getWorkflowCmd.Flags().StringVar(&getWorkflowId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(getWorkflowBuildCmd)
 
@@ -416,8 +390,6 @@ func init() {
 	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowBuildCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(getWorkflowBuildErrorCmd)
 
 	var getWorkflowBuildErrorBuildId string
@@ -427,8 +399,6 @@ func init() {
 	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowBuildErrorCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(getWorkflowBuildLogCmd)
 
 	var getWorkflowBuildLogBuildId string
@@ -437,8 +407,6 @@ func init() {
 	var getWorkflowBuildLogId string
 	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowBuildLogCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(getWorkflowDeploymentCmd)
 
@@ -452,8 +420,6 @@ func init() {
 	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowDeploymentCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(getWorkflowDeploymentErrorCmd)
 
 	var getWorkflowDeploymentErrorBuildId string
@@ -465,8 +431,6 @@ func init() {
 	var getWorkflowDeploymentErrorId string
 	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowDeploymentErrorCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(getWorkflowDeploymentLogCmd)
 
@@ -480,8 +444,6 @@ func init() {
 	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogId, "id", "", "This is a required parameter.The workflow ID.")
 	getWorkflowDeploymentLogCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(getWorkflowRunCmd)
 
 	var getWorkflowRunBuildId string
@@ -493,8 +455,6 @@ func init() {
 	var getWorkflowRunRunId string
 	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
 	getWorkflowRunCmd.MarkFlagRequired("run-id")
-
-
 
 	mlCmd.AddCommand(getWorkflowRunErrorCmd)
 
@@ -508,8 +468,6 @@ func init() {
 	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
 	getWorkflowRunErrorCmd.MarkFlagRequired("run-id")
 
-
-
 	mlCmd.AddCommand(getWorkflowRunLogCmd)
 
 	var getWorkflowRunLogBuildId string
@@ -521,8 +479,6 @@ func init() {
 	var getWorkflowRunLogRunId string
 	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
 	getWorkflowRunLogCmd.MarkFlagRequired("run-id")
-
-
 
 	mlCmd.AddCommand(getWorkflowStreamDeploymentCmd)
 
@@ -536,15 +492,11 @@ func init() {
 	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter.The workflow streaming deployment ID.")
 	getWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
-
-
 	mlCmd.AddCommand(listWorkflowBuildsCmd)
 
 	var listWorkflowBuildsId string
 	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsId, "id", "", "This is a required parameter.The workflow ID.")
 	listWorkflowBuildsCmd.MarkFlagRequired("id")
-
-
 
 	mlCmd.AddCommand(listWorkflowDeploymentsCmd)
 
@@ -555,8 +507,6 @@ func init() {
 	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsId, "id", "", "This is a required parameter.The workflow ID.")
 	listWorkflowDeploymentsCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(listWorkflowRunsCmd)
 
 	var listWorkflowRunsBuildId string
@@ -566,12 +516,6 @@ func init() {
 	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsId, "id", "", "This is a required parameter.The workflow ID.")
 	listWorkflowRunsCmd.MarkFlagRequired("id")
 
-
-
 	mlCmd.AddCommand(listWorkflowsCmd)
-
-
-
-
 
 }
