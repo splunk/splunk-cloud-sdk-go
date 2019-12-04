@@ -1516,7 +1516,7 @@ func TestCRUDAnnotations(t *testing.T) {
 	const DefaultAnnotationTypeId = "00000000000000000000008b"
 	// Create
 
-	m := map[string]interface{}{"annotationtypeid": DefaultAnnotationTypeId}
+	m := map[string]string{"annotationtypeid": DefaultAnnotationTypeId}
 	an1, err := client.CatalogService.CreateAnnotationForDatasetById(lds.Id, m)
 
 	var annotationId string

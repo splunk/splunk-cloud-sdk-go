@@ -156,7 +156,7 @@ func (s *Service) CreateAnnotationForDashboardbyId(dashboardid string, requestBo
 		requestBody: The JSON representation of the annotation to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error) {
+func (s *Service) CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error) {
 	pp := struct {
 		Dashboardresourcename string
 	}{
@@ -191,7 +191,7 @@ func (s *Service) CreateAnnotationForDashboardsByResourceName(dashboardresourcen
 		requestBody: The JSON representation of the annotation to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateAnnotationForDatasetById(datasetid string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error) {
+func (s *Service) CreateAnnotationForDatasetById(datasetid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error) {
 	pp := struct {
 		Datasetid string
 	}{
@@ -226,7 +226,7 @@ func (s *Service) CreateAnnotationForDatasetById(datasetid string, requestBody m
 		requestBody: The JSON representation of the annotation to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]interface{}, resp ...*http.Response) (*Annotation, error) {
+func (s *Service) CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error) {
 	pp := struct {
 		Datasetresourcename string
 	}{
