@@ -831,7 +831,10 @@ components:
           type: string
       type: object
 info:
-  title: Machine Learning Service (ML API)
+  description: Use the Machine Learning service in Splunk Cloud Services to deliver
+    resource intensive machine learning workloads. The Machine Learning service covers
+    model experimentation, training, inference, validation, scoring, and serving.
+  title: Machine Learning
   version: v2beta1.1
 openapi: 3.0.0
 paths:
@@ -1753,8 +1756,6 @@ paths:
       schema:
         type: string
 tags:
-- description: With the Splunk Cloud Machine Learning service, you can create ML workflows,
-    build and persist models of those workflows, and generate insights on new data.
-  name: mlTag
+- name: mlTag
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: ml/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: ml/v2beta1/openapi.yaml

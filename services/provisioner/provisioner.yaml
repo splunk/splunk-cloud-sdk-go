@@ -405,9 +405,10 @@ components:
         $ref: '#/components/schemas/UpdateTenantStatusJobInfo'
       type: array
 info:
-  description: With the Provisioner service, you can provision and manage your tenants.
+  description: With the Provisioner service in Splunk Cloud Services, you can provision
+    and manage tenants.
   title: Provisioner
-  version: v1beta1.3
+  version: v1beta1.4
 openapi: 3.0.0
 paths:
   /{tenant}/provisioner/v1beta1/invites:
@@ -711,4 +712,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: provisioner/v1beta1/openapi.yaml

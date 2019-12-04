@@ -899,4 +899,4 @@ paths:
           $ref: '#/components/responses/500'
       summary: Modifies a job based on the job ID.
       x-authz-scope: collect.jobs.update
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: collect/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: collect/v1beta1/openapi.yaml

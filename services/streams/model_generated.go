@@ -340,12 +340,12 @@ type PipelineReactivateResponsePipelineReactivationStatus string
 
 // List of PipelineReactivateResponsePipelineReactivationStatus
 const (
-	PipelineReactivateResponsePipelineReactivationStatusActivated                          PipelineReactivateResponsePipelineReactivationStatus = "activated"
-	PipelineReactivateResponsePipelineReactivationStatusAlreadyActivatedWithCurrentVersion PipelineReactivateResponsePipelineReactivationStatus = "alreadyActivatedWithCurrentVersion"
-	PipelineReactivateResponsePipelineReactivationStatusCurrentVersionInvalid              PipelineReactivateResponsePipelineReactivationStatus = "currentVersionInvalid"
-	PipelineReactivateResponsePipelineReactivationStatusFailedToDeactivateCurrentVersion   PipelineReactivateResponsePipelineReactivationStatus = "failedToDeactivateCurrentVersion"
-	PipelineReactivateResponsePipelineReactivationStatusRolledBack                         PipelineReactivateResponsePipelineReactivationStatus = "rolledBack"
-	PipelineReactivateResponsePipelineReactivationStatusRolledBackError                    PipelineReactivateResponsePipelineReactivationStatus = "rolledBackError"
+	PipelineReactivateResponsePipelineReactivationStatusActivated                        PipelineReactivateResponsePipelineReactivationStatus = "activated"
+	PipelineReactivateResponsePipelineReactivationStatusCurrentVersionInvalid            PipelineReactivateResponsePipelineReactivationStatus = "currentVersionInvalid"
+	PipelineReactivateResponsePipelineReactivationStatusFailedToDeactivateCurrentVersion PipelineReactivateResponsePipelineReactivationStatus = "failedToDeactivateCurrentVersion"
+	PipelineReactivateResponsePipelineReactivationStatusNotActivated                     PipelineReactivateResponsePipelineReactivationStatus = "notActivated"
+	PipelineReactivateResponsePipelineReactivationStatusRolledBack                       PipelineReactivateResponsePipelineReactivationStatus = "rolledBack"
+	PipelineReactivateResponsePipelineReactivationStatusRolledBackError                  PipelineReactivateResponsePipelineReactivationStatus = "rolledBackError"
 )
 
 type PipelineRequest struct {
@@ -354,8 +354,6 @@ type PipelineRequest struct {
 	Name string `json:"name"`
 	// Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.
 	BypassValidation *bool `json:"bypassValidation,omitempty"`
-	// The user that created the pipeline. Deprecated.
-	CreateUserId *string `json:"createUserId,omitempty"`
 	// The description of the pipeline. Defaults to null.
 	Description *string `json:"description,omitempty"`
 }

@@ -676,9 +676,9 @@ components:
         pipelineReactivationStatus:
           enum:
           - activated
-          - alreadyActivatedWithCurrentVersion
           - currentVersionInvalid
           - failedToDeactivateCurrentVersion
+          - notActivated
           - rolledBack
           - rolledBackError
           type: string
@@ -691,10 +691,6 @@ components:
             The pipeline still needs to be validated before activation. Defaults to
             false.
           type: boolean
-        createUserId:
-          description: The user that created the pipeline. Deprecated.
-          example: ""
-          type: string
         data:
           $ref: '#/components/schemas/UplPipeline'
         description:
@@ -2758,7 +2754,7 @@ paths:
       deprecated: false
       operationId: createTemplate
       parameters:
-      - description: ID of the te/nant
+      - description: ID of the tenant
         in: path
         name: tenantId
         required: true
@@ -2973,4 +2969,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: streams/v2beta1/openapi.yaml

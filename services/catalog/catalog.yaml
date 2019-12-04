@@ -253,8 +253,7 @@ components:
           $ref: '#/components/schemas/AliasActionKind'
       type: object
     Annotation:
-      additionalProperties:
-        type: string
+      additionalProperties: true
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/MetadataProperties'
@@ -282,8 +281,7 @@ components:
       - properties
       type: object
     AnnotationPOST:
-      additionalProperties:
-        type: string
+      additionalProperties: true
       allOf:
       - $ref: '#/components/schemas/AnnotationsProperties'
       - $ref: '#/components/schemas/AnnotationTypeResourceName'
@@ -2483,9 +2481,10 @@ components:
       - timeoutsecs
       type: object
 info:
-  description: With the Metadata Catalog you can create and manage knowledge objects
-    such as datasets, fields, rules, actions, dashboards, and workflows.
-  title: Metadata Catalog
+  description: With the Metadata Catalog in Splunk Cloud Services you can create and
+    manage knowledge objects such as datasets, fields, rules, actions, dashboards,
+    and workflows.
+  title: Metadata Catalog service
   version: v2beta1.4
 openapi: 3.0.0
 paths:
@@ -4853,4 +4852,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: catalog/v2beta1/openapi.yaml
