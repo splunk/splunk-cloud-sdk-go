@@ -423,7 +423,7 @@ func (m OutputDataDestination) Events() *Events {
 func MakeOutputDataDestinationFromRawInterface(f interface{}) OutputDataDestination {
 	return OutputDataDestination{
 		outputDataDestination: f,
-		isRaw: true,
+		isRaw:                 true,
 	}
 }
 
@@ -515,7 +515,7 @@ func (m OutputStreamDestination) KafkaOutput() *KafkaOutput {
 func MakeOutputStreamDestinationFromRawInterface(f interface{}) OutputStreamDestination {
 	return OutputStreamDestination{
 		outputStreamDestination: f,
-		isRaw: true,
+		isRaw:                   true,
 	}
 }
 
@@ -1122,7 +1122,7 @@ func (m WorkflowValidationOption) TrainTestSplit() *TrainTestSplit {
 func MakeWorkflowValidationOptionFromRawInterface(f interface{}) WorkflowValidationOption {
 	return WorkflowValidationOption{
 		workflowValidationOption: f,
-		isRaw: true,
+		isRaw:                    true,
 	}
 }
 
@@ -1226,7 +1226,7 @@ func (m WorkflowValidationScore) TrainTestScore() *TrainTestScore {
 func MakeWorkflowValidationScoreFromRawInterface(f interface{}) WorkflowValidationScore {
 	return WorkflowValidationScore{
 		workflowValidationScore: f,
-		isRaw: true,
+		isRaw:                   true,
 	}
 }
 
