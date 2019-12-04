@@ -248,6 +248,7 @@ components:
           type: string
         name:
           description: The name of the created search job.
+          maxLength: 100
           readOnly: true
           type: string
         percentComplete:
@@ -271,6 +272,11 @@ components:
           - $ref: '#/components/schemas/QueryParameters'
           description: Represents parameters on the search job such as 'earliest'
             and 'latest'.
+        requiredFreshness:
+          default: 0
+          description: |
+            Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.
+          type: number
         resolvedEarliest:
           description: |
             The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
@@ -476,11 +482,11 @@ components:
       scheme: basic
       type: http
 info:
-  description: Use the Search service to dispatch, review, and manage searches and
-    search jobs. You can also finalize or cancel running search jobs, retrieve search
-    results and events, and request search-related configurations from the Metadata
-    Catalog service.
-  title: Splunk Search Service
+  description: Use the Search service in Splunk Cloud Services to dispatch, review,
+    and manage searches and search jobs. You can finalize or cancel jobs, retrieve
+    search results, and request search-related configurations from the Metadata Catalog
+    service in Splunk Cloud Services.
+  title: Splunk Search service
   version: v2beta1.1
 openapi: 3.0.0
 paths:
@@ -737,4 +743,4 @@ paths:
         "500":
           description: Internal service error.
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: search/v2beta1/openapi.yaml
