@@ -13,5 +13,5 @@ func Cmd() *cobra.Command {
 
 var ingestCmd = &cobra.Command{
 	Use:   "ingest",
-	Short: "ingest service - NOT IMPLEMENTED",
+	Short: "ingest service",
 }
