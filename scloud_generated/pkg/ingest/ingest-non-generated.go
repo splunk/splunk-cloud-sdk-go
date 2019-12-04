@@ -258,6 +258,9 @@ func loadMetrics(value string) ([]model.Metric, error) {
 
 func postBatchJSON(batch []string, args model.MetricEvent) (*model.HttpResponse, error) {
 	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
 	events := make([]model.MetricEvent, len(batch))
 	for i, item := range batch {
 		body, err := loadMetrics(item)
