@@ -226,7 +226,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEmpty(t, reactivatePipelineResponse)
 	assert.Equal(t, *pipeline.Id, *reactivatePipelineResponse.PipelineId)
-	assert.Equal(t, streams.PipelineReactivateResponsePipelineReactivationStatusNotActivated, *reactivatePipelineResponse.PipelineReactivationStatus)
+	assert.Equal(t, streams.PipelineReactivateResponsePipelineReactivationStatusActivated, *reactivatePipelineResponse.PipelineReactivationStatus)
 }
 
 // Test GetPipelinesStatus streams endpoint
