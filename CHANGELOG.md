@@ -1,5 +1,10 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.0.1
+### Breaking Changes
+* `CreateUserId` in PipelineRequest model in Stream service has been removed
+* SearchJob model in Search service has a new field `RequiredFreshness`
+
 ## Version 1.0.0
 ### Breaking Changes
 * The `TriggerEvent model` in action service is changed from required to optional field
