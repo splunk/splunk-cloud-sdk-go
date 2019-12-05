@@ -3,6 +3,8 @@
 ## Version 1.0.1
 ### Breaking Changes
 * `CreateUserId` in PipelineRequest model in Stream service has been removed
+
+### Non-breaking Changes
 * SearchJob model in Search service has a new field `RequiredFreshness`
 
 ## Version 1.0.0
