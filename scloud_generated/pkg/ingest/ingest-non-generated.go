@@ -151,7 +151,7 @@ func PostMetricsOverride(args []model.MetricEvent) (*model.HttpResponse, error) 
 // Post the given batch of inputs.
 func makeEventBatch(batch []string, args model.Event, format string) ([]model.Event, error) {
 	var err error
-	var events = make([]model.Event, len(batch))
+	var events []model.Event
 
 	switch format {
 	case "event":
