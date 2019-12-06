@@ -37,6 +37,8 @@ func PostEventsOverride(args []model.Event, format string) (*model.HttpResponse,
 		eps := float64(total) / delta.Seconds()
 		glog.Infof("Posted %d events (%v), %.2f events/sec", total, delta, eps)
 	}()
+	//TODO: Do we still continue to log rps, eps data
+	//Tracking Jira https://jira.splunk.com/browse/SCP-21347
 
 	rps := 0.0 // requests/second
 	eps := 0.0 // events/second
@@ -273,6 +275,11 @@ func postBatchJSON(batch []string, args model.MetricEvent) (*model.HttpResponse,
 	httpResponse, err := client.IngestService.PostMetrics(events)
 	return httpResponse, err
 }
+
+//ToDo: Batching logic has been ported over as is from the old SCloud.
+//This needs to be revisited to see if we want to remove all batching or put in some batching implementation
+//to incorporate the correct batching threshold limits as in the GOSDK Batchevent sender.
+//Tracking Jira https://jira.splunk.com/browse/SCP-21347
 
 // Read a batch of event or metrics data, not to exceed size threshold.
 // Note, this is an attempt to ensure we fit under the 1M kinesis limit, but
