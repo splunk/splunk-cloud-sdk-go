@@ -74,8 +74,8 @@ func toURLValues(keyName string, value reflect.Value, explode string, style Open
 		// At the moment only style: "form" is supported, which is the default for query parameters
 		return values
 	}
-	// If pointer, follow the pointer
-	if value.Kind() == reflect.Ptr {
+	// If pointer or interface, follow the pointer
+	if value.Kind() == reflect.Ptr || value.Kind() == reflect.Interface {
 		if value.IsNil() {
 			return values
 		}
@@ -156,7 +156,7 @@ func toURLValues(keyName string, value reflect.Value, explode string, style Open
 			for uk, vslice := range uvals {
 				for _, v := range vslice {
 					if explode != "false" {
-						values.Set(uk, v)
+						values.Add(uk, v)
 					} else {
 						keyvals = append(keyvals, uk)
 						keyvals = append(keyvals, v)
