@@ -2,10 +2,11 @@ package ingest
 
 import (
 	"bufio"
-	model "github.com/splunk/splunk-cloud-sdk-go/services/ingest"
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	model "github.com/splunk/splunk-cloud-sdk-go/services/ingest"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/stretchr/testify/require"
 )
@@ -36,7 +37,7 @@ func TestReadBatchEmptyFile(t *testing.T) {
 }
 
 func TestPostBatchRaw(t *testing.T) {
-	batch := []string {"first event", "second event"}
+	batch := []string{"first event", "second event"}
 
 	host := "hoststr"
 	source := "sourcestr"
@@ -58,7 +59,7 @@ func TestPostBatchRaw(t *testing.T) {
 }
 
 func TestPostBatchJSON(t *testing.T) {
-	batch := []string {"[\"first event\"]", "[\"second event\"]"}
+	batch := []string{"[\"first event\"]", "[\"second event\"]"}
 
 	host := "hoststr"
 	source := "sourcestr"
