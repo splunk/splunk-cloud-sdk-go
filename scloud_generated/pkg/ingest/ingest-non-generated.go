@@ -174,20 +174,20 @@ func postBatchEvent(batch []string, args model.Event) ([]model.Event, error) {
 		if err := json.Unmarshal([]byte(item), event); err != nil {
 			return nil, err
 		}
-		var empty = ""
-		if args.Host != &empty {
+
+		if *args.Host != "" {
 			event.Host = args.Host
 		}
-		if args.Source != &empty {
+		if *args.Source != "" {
 			event.Source = args.Source
 		}
-		if args.Sourcetype != &empty {
+		if *args.Sourcetype != "" {
 			event.Sourcetype = args.Sourcetype
 		}
 		if args.Attributes != nil {
 			event.Attributes = args.Attributes
 		}
-		if args.Id != &empty {
+		if *args.Id != "" {
 			event.Id = args.Id
 		}
 		if args.Timestamp != nil {
