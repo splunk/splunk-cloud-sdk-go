@@ -71,6 +71,7 @@ type AppResource struct {
 	Name string `json:"name"`
 }
 
+// AppResourceKind :
 type AppResourceKind string
 
 // List of AppResourceKind

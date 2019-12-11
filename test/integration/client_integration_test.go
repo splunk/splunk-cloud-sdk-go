@@ -70,7 +70,7 @@ func TestSDKClientInit(t *testing.T) {
 		Tenant: testutils.TestTenant,
 	})
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	info, err := client.IdentityService.ValidateToken(&input)
 	assert.Emptyf(t, err, "error calling client.IdentityService.Validate(): %s", err)
 	assert.NotNil(t, info)
@@ -197,7 +197,7 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	LoggerOutput = LoggerOutput[:0]
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	_, err = identityClient.ValidateToken(&input)
 	assert.Equal(t, 4, len(LoggerOutput))
 	assert.Contains(t, LoggerOutput[1], fmt.Sprintf("GET /%s/identity/v2beta1/validate?include=principal%stenant HTTP/1.1", testutils.TestTenant, "%2C"))
@@ -213,7 +213,7 @@ func TestRoundTripperWithInvalidClient(t *testing.T) {
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	LoggerOutput = LoggerOutput[:0]
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	_, err = identityClient.ValidateToken(&input)
 	assert.NotNil(t, err)
 	assert.Equal(t, 3, len(LoggerOutput))

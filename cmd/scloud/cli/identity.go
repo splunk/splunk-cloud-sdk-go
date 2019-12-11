@@ -268,7 +268,7 @@ func removeRolePermission(argv []string) error {
 }
 
 func validateToken(argv []string) (interface{}, error) {
-	tokenParams := sdkIdentity.ValidateTokenQueryParams{Include: []string{}}
+	tokenParams := sdkIdentity.ValidateTokenQueryParams{Include: []sdkIdentity.ValidateTokenincludeEnum{}}
 	return identity().ValidateToken(&tokenParams)
 }
 

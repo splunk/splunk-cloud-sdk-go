@@ -94,6 +94,7 @@ type Principal struct {
 	Profile   *PrincipalProfile `json:"profile,omitempty"`
 }
 
+// PrincipalKind :
 type PrincipalKind string
 
 // List of PrincipalKind
@@ -132,6 +133,7 @@ type Tenant struct {
 
 type TenantName string
 
+// TenantStatus :
 type TenantStatus string
 
 // List of TenantStatus
