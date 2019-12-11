@@ -37,7 +37,7 @@ func TestIdentityClientInit(t *testing.T) {
 		Tenant: testutils.TestTenant,
 	})
 	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	info, err := identityClient.ValidateToken(&input)
 	assert.Emptyf(t, err, "error calling identityClient.Validate(): %s", err)
 	assert.NotNil(t, info)
@@ -314,7 +314,7 @@ func TestPrincipals(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	client := getClient(t)
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	res, err := client.IdentityService.ValidateToken(&input)
 	require.Nil(t, err)
 	assert.Equal(t, testutils.TestUsername, res.Name)

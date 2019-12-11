@@ -293,6 +293,10 @@ components:
         description:
           description: Authentication description
           type: string
+        requestId:
+          description: Request ID
+          maxLength: 36
+          type: string
         sessionToken:
           description: Session token
           type: string
@@ -451,6 +455,8 @@ components:
       type: object
     CreateTenantBody:
       properties:
+        createdBy:
+          type: string
         name:
           $ref: '#/components/schemas/TenantName'
       required:
@@ -460,6 +466,10 @@ components:
       properties:
         csrf:
           description: CSRF token
+          type: string
+        requestId:
+          description: Request ID
+          maxLength: 36
           type: string
       type: object
     DecryptTokenBody:
@@ -854,6 +864,26 @@ components:
       - status
       - createdAt
       - createdBy
+      type: object
+    TenantAsAdmin:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        name:
+          $ref: '#/components/schemas/TenantName'
+        proxiedBy:
+          type: string
+        status:
+          $ref: '#/components/schemas/TenantStatus'
+      required:
+      - name
+      - status
+      - createdAt
+      - createdBy
+      - proxiedBy
       type: object
     TenantName:
       maxLength: 36
@@ -1700,4 +1730,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 1c4b60b97229cab171981c763edf0b1545afad4f path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit a017b07c1da64085f13242e778822aa341e826fa path: identity/v2beta1/openapi.yaml

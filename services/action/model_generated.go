@@ -134,6 +134,7 @@ type ActionImmutable struct {
 	UpdatedBy *string `json:"updatedBy,omitempty"`
 }
 
+// ActionKind :
 type ActionKind string
 
 // List of ActionKind
@@ -328,6 +329,7 @@ type ServiceError struct {
 	MoreInfo *string                `json:"moreInfo,omitempty"`
 }
 
+// StatusState :
 type StatusState string
 
 // List of StatusState
@@ -365,6 +367,7 @@ type TriggerEventActionMetadata struct {
 	Members []string `json:"members,omitempty"`
 }
 
+// TriggerEventKind :
 type TriggerEventKind string
 
 // List of TriggerEventKind
