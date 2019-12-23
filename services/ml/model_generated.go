@@ -927,10 +927,11 @@ type WorkflowDeploymentStatus string
 
 // List of WorkflowDeploymentStatus
 const (
-	WorkflowDeploymentStatusRunning   WorkflowDeploymentStatus = "running"
-	WorkflowDeploymentStatusFailed    WorkflowDeploymentStatus = "failed"
-	WorkflowDeploymentStatusSuccess   WorkflowDeploymentStatus = "success"
-	WorkflowDeploymentStatusScheduled WorkflowDeploymentStatus = "scheduled"
+	WorkflowDeploymentStatusRunning      WorkflowDeploymentStatus = "running"
+	WorkflowDeploymentStatusFailed       WorkflowDeploymentStatus = "failed"
+	WorkflowDeploymentStatusSuccess      WorkflowDeploymentStatus = "success"
+	WorkflowDeploymentStatusScheduled    WorkflowDeploymentStatus = "scheduled"
+	WorkflowDeploymentStatusInitializing WorkflowDeploymentStatus = "initializing"
 )
 
 type WorkflowDeploymentError struct {
@@ -1029,10 +1030,11 @@ type WorkflowStreamDeploymentStatus string
 
 // List of WorkflowStreamDeploymentStatus
 const (
-	WorkflowStreamDeploymentStatusRunning   WorkflowStreamDeploymentStatus = "running"
-	WorkflowStreamDeploymentStatusFailed    WorkflowStreamDeploymentStatus = "failed"
-	WorkflowStreamDeploymentStatusSuccess   WorkflowStreamDeploymentStatus = "success"
-	WorkflowStreamDeploymentStatusScheduled WorkflowStreamDeploymentStatus = "scheduled"
+	WorkflowStreamDeploymentStatusRunning      WorkflowStreamDeploymentStatus = "running"
+	WorkflowStreamDeploymentStatusFailed       WorkflowStreamDeploymentStatus = "failed"
+	WorkflowStreamDeploymentStatusSuccess      WorkflowStreamDeploymentStatus = "success"
+	WorkflowStreamDeploymentStatusScheduled    WorkflowStreamDeploymentStatus = "scheduled"
+	WorkflowStreamDeploymentStatusInitializing WorkflowStreamDeploymentStatus = "initializing"
 )
 
 // WorkflowValidationOption is CrossValidation, TrainTestSplit, (or interface{} if no matches are found)
