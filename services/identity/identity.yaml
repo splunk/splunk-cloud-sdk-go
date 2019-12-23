@@ -558,11 +558,11 @@ components:
           type: string
         e:
           type: string
-        "false":
-          type: string
         kid:
           type: string
         kty:
+          type: string
+        "n":
           type: string
         use:
           type: string
@@ -925,6 +925,22 @@ components:
           description: Must be Bearer type
           type: string
       type: object
+    UpdateTenantBody:
+      properties:
+        createdBy:
+          type: string
+        status:
+          enum:
+          - provisioning
+          - ready
+          - suspending
+          - suspended
+          - resuming
+          - deleting
+          - tombstoned
+          - failed
+          type: string
+      type: object
     UpdateTenantStateBody:
       properties:
         state:
@@ -963,7 +979,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v2beta1.16
+  version: v2beta1.17
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1730,4 +1746,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit a017b07c1da64085f13242e778822aa341e826fa path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 49538c89ff873a85da1e25cbb918db5edfca548a path: identity/v2beta1/openapi.yaml

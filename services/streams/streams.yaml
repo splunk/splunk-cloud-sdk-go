@@ -809,14 +809,6 @@ components:
             $ref: '#/components/schemas/ObjectNode'
           type: array
       type: object
-    PreviewNodeData:
-      description: ""
-      properties:
-        nodes:
-          additionalProperties:
-            $ref: '#/components/schemas/PreviewNode'
-          type: object
-      type: object
     PreviewSessionStartRequest:
       description: ""
       properties:
@@ -870,16 +862,6 @@ components:
           format: int64
           type: integer
         recordsPerPipeline:
-          format: int32
-          type: integer
-      type: object
-    PreviewStoreResponse:
-      description: ""
-      properties:
-        recordsDropped:
-          format: int32
-          type: integer
-        recordsStored:
           format: int32
           type: integer
       type: object
@@ -1184,7 +1166,7 @@ info:
     service in Splunk Cloud Services also has metrics and preview session endpoints
     and gives you full control over your data pipeline.
   title: Data Stream Processing REST API
-  version: v2beta1.2
+  version: v2beta1.3
 openapi: 3.0.1
 paths:
   /{tenantId}/streams/v2beta1/connections:
@@ -2969,4 +2951,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit a017b07c1da64085f13242e778822aa341e826fa path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 49538c89ff873a85da1e25cbb918db5edfca548a path: streams/v2beta1/openapi.yaml
