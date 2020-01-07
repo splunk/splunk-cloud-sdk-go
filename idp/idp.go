@@ -279,6 +279,15 @@ func (c *Client) makeURL(path string) string {
 	return fmt.Sprintf("%s%s", c.ProviderHost, path)
 }
 
+func getCookie(cookies []*http.Cookie, name string) *http.Cookie {
+	for _, cookie := range cookies {
+		if cookie.Name == name {
+			return cookie
+		}
+	}
+	return nil
+}
+
 // ClientFlow will authenticate using the "client credentials" flow.
 func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, error) {
 	form := url.Values{
@@ -317,32 +326,17 @@ func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
 		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
 	}
 	defer response.Body.Close()
-	data, err := load(response.Body)
-	if err != nil {
-		return "", nil, errors.Wrap(err, "failed to parse response body from csrfToken endpoint")
-	}
 
 	if response.StatusCode != http.StatusOK {
-		msg := response.Status
-		if data != nil {
-			msg += "\nResponse body: \n"
-			for k, v := range data {
-				msg += fmt.Sprintf("%s:%s \n", k, v)
-			}
-		}
-		return "", nil, errors.Wrap(errors.New(msg), "unexpected status response from csrfToken endpoint")
+		return "", nil, errors.Wrap(errors.New(response.Status), "unexpected status response from csrfToken endpoint")
 	}
 
-	csrfToken, err := gets(data, "csrf")
-	if err != nil {
-		return "", nil, errors.Wrap(err, "unable to get csrf data from csrfToken endpoint")
-	}
-
-	if response.Cookies() == nil {
+	csrfTokenCookie := getCookie(response.Cookies(), "csrf")
+	if csrfTokenCookie == nil {
 		return "", nil, errors.Wrap(errors.New("missing cookies"), "failed to get successful response from csrfToken endpoint")
 	}
 
-	return csrfToken, response.Cookies(), nil
+	return csrfTokenCookie.Value, response.Cookies(), nil
 }
 
 // GetSessionToken Returns a one-time session token by authenticating using a
