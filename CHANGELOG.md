@@ -1,5 +1,9 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.1.1
+### Non-breaking Changes
+* Update PKCE auth flow to read the CSRF token from the response cookie returned from the /csrfToken endpoint to mitigate security bug SCP-16944
+
 ## Version 1.1.0
 ### Breaking Changes
 * The type for model of ValidateTokeninclude in Identity service is changed from []string to []ValidateTokenincludeEnum 
