@@ -2951,4 +2951,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 49538c89ff873a85da1e25cbb918db5edfca548a path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit be624d2f60855c3e54656de7dfe2b0decf01cc68 path: streams/v2beta1/openapi.yaml
