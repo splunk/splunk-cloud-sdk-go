@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Splunk, Inc.
+ * Copyright © 2020 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *
- * Metadata Catalog service
+ * Metadata Catalog
  *
  * With the Metadata Catalog in Splunk Cloud Services you can create and manage knowledge objects such as datasets, fields, rules, actions, dashboards, and workflows.
  *

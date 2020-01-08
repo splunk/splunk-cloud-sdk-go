@@ -2486,7 +2486,7 @@ info:
   description: With the Metadata Catalog in Splunk Cloud Services you can create and
     manage knowledge objects such as datasets, fields, rules, actions, dashboards,
     and workflows.
-  title: Metadata Catalog service
+  title: Metadata Catalog
   version: v2beta1.4
 openapi: 3.0.0
 paths:
@@ -4854,4 +4854,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 49538c89ff873a85da1e25cbb918db5edfca548a path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit be624d2f60855c3e54656de7dfe2b0decf01cc68 path: catalog/v2beta1/openapi.yaml
