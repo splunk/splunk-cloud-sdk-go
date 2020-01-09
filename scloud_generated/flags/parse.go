@@ -21,15 +21,12 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 	}
 	// Follow the pointer
 	deref := val.Elem()
-	if !flag.Changed {
-		// If no value set by user set to nil for optional or leave as Go's default for required
-		if deref.Kind() == reflect.Ptr {
-			if !deref.CanSet() {
-				return fmt.Errorf("flags.ParseFlag: value must be settable")
-			}
-			deref.Set(reflect.Zero(deref.Type()))
+	if !flag.Changed && deref.Kind() == reflect.Ptr {
+		// If no value set by user set to nil for optional flags (pointers)
+		if !deref.CanSet() {
+			return fmt.Errorf("flags.ParseFlag: value must be settable")
 		}
-		// TODO: support defaults if specified in the flag
+		deref.Set(reflect.Zero(deref.Type()))
 		return nil
 	}
 	if deref.Kind() == reflect.Ptr {
@@ -51,9 +48,13 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 		deref.SetString(strval)
 		return nil
 	case reflect.Bool:
-		bval, err := flags.GetBool(name)
+		sbval, err := flags.GetString(name)
 		if err != nil {
 			return fmt.Errorf(`flags.ParseFlag: error retrieving flag flags.GetBool("%s") err: %s`, name, err)
+		}
+		bval, err := strconv.ParseBool(sbval)
+		if err != nil {
+			return fmt.Errorf(`flags.ParseFlag: error converting --%s flag to bool using strconv.ParseBool("%s") err: %s`, name, sbval, err)
 		}
 		deref.SetBool(bval)
 		return nil
@@ -110,9 +111,9 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 			deref.Set(reflect.ValueOf(slval))
 			return nil
 		case reflect.Int64:
-			slval, err := GetInt64Slice(name, flags)
+			slval, err := getInt64Slice(name, flags)
 			if err != nil {
-				return fmt.Errorf(`flags.ParseFlag: error retrieving flag flags.GetInt64Slice("%s") err: %s`, name, err)
+				return fmt.Errorf(`flags.ParseFlag: error retrieving flag getInt64Slice("%s", flags) err: %s`, name, err)
 			}
 			deref.Set(reflect.ValueOf(slval))
 			return nil
@@ -138,7 +139,7 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 }
 
 // GetIntSlice return the []int64 value of a flag with the given name
-func GetInt64Slice(name string, flags *pflag.FlagSet) ([]int64, error) {
+func getInt64Slice(name string, flags *pflag.FlagSet) ([]int64, error) {
 	flag := flags.Lookup(name)
 	if flag == nil {
 		err := fmt.Errorf("flag accessed but not defined: %s", name)
