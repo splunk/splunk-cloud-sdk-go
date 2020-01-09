@@ -13,13 +13,6 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/action"
 )
 
-// CreateAction Creates an action template.
-func CreateAction(cmd *cobra.Command, args []string) error {
-
-	return nil
-
-}
-
 // CreateActionEmailAction Creates an action template.
 func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 
@@ -27,8 +20,8 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var addresses []string
 	err = flags.ParseFlag(cmd.Flags(), "addresses", &addresses)
 	if err != nil {
@@ -79,9 +72,9 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "title": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.EmailAction{
+
 		Addresses:     addresses,
 		Body:          body,
 		BodyPlainText: bodyPlainText,
@@ -92,13 +85,13 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 		Subject:       subject,
 		Title:         title,
 	}
+
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromEmailAction(generated_request_body))
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateActionWebhookAction Creates an action template.
@@ -108,8 +101,8 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var kind model.ActionKind
 	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
 	if err != nil {
@@ -141,9 +134,9 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WebhookAction{
+
 		Kind:           kind,
 		Name:           name,
 		Title:          title,
@@ -151,13 +144,13 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 		WebhookPayload: webhookPayload,
 		WebhookUrl:     webhookUrl,
 	}
+
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromWebhookAction(generated_request_body))
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // DeleteAction Removes an action template.
@@ -167,8 +160,8 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -181,7 +174,6 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // GetAction Returns a specific action template.
@@ -191,8 +183,8 @@ func GetAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -205,7 +197,6 @@ func GetAction(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetActionStatus Returns the status of an action that was invoked. The status is available for 4 days after the last status change.
@@ -215,8 +206,8 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -234,7 +225,6 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetActionStatusDetails Returns the status details of the invoked email action. The status is available for 4 days after the last status change.
@@ -244,8 +234,8 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -263,7 +253,6 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetPublicWebhookKeys Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
@@ -281,7 +270,6 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListActions Returns the list of action templates.
@@ -298,7 +286,6 @@ func ListActions(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // TriggerAction Invokes an action.
@@ -308,8 +295,8 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -355,9 +342,9 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ttl-seconds": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.TriggerEvent{
+
 		ActionMetadata: &model.TriggerEventActionMetadata{
 			Addresses: addresses,
 			Members:   members,
@@ -368,20 +355,13 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 		TriggerName:      triggerName,
 		TtlSeconds:       ttlSeconds,
 	}
+
 	err = client.ActionService.TriggerAction(action_name, generated_request_body)
 	if err != nil {
 		return err
 	}
 
 	return nil
-
-}
-
-// UpdateAction Modifies an action template.
-func UpdateAction(cmd *cobra.Command, args []string) error {
-
-	return nil
-
 }
 
 // UpdateActionEmailActionMutable Modifies an action template.
@@ -391,8 +371,8 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -438,9 +418,9 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "title": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.EmailActionMutable{
+
 		Addresses:     addresses,
 		Body:          body,
 		BodyPlainText: bodyPlainText,
@@ -449,13 +429,13 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 		Subject:       subject,
 		Title:         title,
 	}
+
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromEmailActionMutable(generated_request_body))
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // UpdateActionWebhookActionMutable Modifies an action template.
@@ -465,8 +445,8 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action_name string
 	err = flags.ParseFlag(cmd.Flags(), "action-name", &action_name)
 	if err != nil {
@@ -495,19 +475,19 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WebhookActionMutable{
+
 		Title:          title,
 		WebhookHeaders: webhookHeaders,
 		WebhookPayload: webhookPayload,
 		WebhookUrl:     webhookUrl,
 	}
+
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
