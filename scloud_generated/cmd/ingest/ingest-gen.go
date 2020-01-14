@@ -85,9 +85,6 @@ func init() {
 	var postMetricsTimestamp int64
 	postMetricsCmd.Flags().Int64Var(&postMetricsTimestamp, "timestamp", 0, "Epoch time in milliseconds.")
 
-	var postMetricsTypeParam string
-	postMetricsCmd.Flags().StringVar(&postMetricsTypeParam, "type-param", "", "Type of metric. Default is g for gauge.")
-
 	ingestCmd.AddCommand(uploadFilesCmd)
 
 	var uploadFilesFileName string

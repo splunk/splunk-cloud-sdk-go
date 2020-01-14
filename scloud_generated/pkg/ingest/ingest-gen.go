@@ -24,72 +24,58 @@ func PostEvents(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "attributes": ` + err.Error())
 	}
-
 	var format string
 	err = flags.ParseFlag(cmd.Flags(), "format", &format)
 	if err != nil {
 		return fmt.Errorf(`error parsing "format": ` + err.Error())
 	}
-
 	var hostDefault string
 	host := &hostDefault
 	err = flags.ParseFlag(cmd.Flags(), "host", &host)
 	if err != nil {
 		return fmt.Errorf(`error parsing "host": ` + err.Error())
 	}
-
 	var idDefault string
 	id := &idDefault
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-
 	var nanosDefault int32
 	nanos := &nanosDefault
 	err = flags.ParseFlag(cmd.Flags(), "nanos", &nanos)
 	if err != nil {
 		return fmt.Errorf(`error parsing "nanos": ` + err.Error())
 	}
-
 	var sourceDefault string
 	source := &sourceDefault
 	err = flags.ParseFlag(cmd.Flags(), "source", &source)
 	if err != nil {
 		return fmt.Errorf(`error parsing "source": ` + err.Error())
 	}
-
 	var sourcetypeDefault string
 	sourcetype := &sourcetypeDefault
 	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
 	if err != nil {
 		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
 	}
-
 	var timestampDefault int64
 	timestamp := &timestampDefault
 	err = flags.ParseFlag(cmd.Flags(), "timestamp", &timestamp)
 	if err != nil {
 		return fmt.Errorf(`error parsing "timestamp": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := []model.Event{
 		{
-
 			Attributes: attributes,
 
-			Host: host,
-
-			Id: id,
-
-			Nanos: nanos,
-
-			Source: source,
-
+			Host:       host,
+			Id:         id,
+			Nanos:      nanos,
+			Source:     source,
 			Sourcetype: sourcetype,
-
-			Timestamp: timestamp,
+			Timestamp:  timestamp,
 		},
 	}
 
@@ -100,7 +86,6 @@ func PostEvents(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // PostMetrics Sends metric events.
@@ -115,91 +100,69 @@ func PostMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "default-dimensions": ` + err.Error())
 	}
-
 	var defaultTypeDefault string
 	defaultType := &defaultTypeDefault
 	err = flags.ParseFlag(cmd.Flags(), "default-type", &defaultType)
 	if err != nil {
 		return fmt.Errorf(`error parsing "default-type": ` + err.Error())
 	}
-
 	var defaultUnitDefault string
 	defaultUnit := &defaultUnitDefault
 	err = flags.ParseFlag(cmd.Flags(), "default-unit", &defaultUnit)
 	if err != nil {
 		return fmt.Errorf(`error parsing "default-unit": ` + err.Error())
 	}
-
 	var hostDefault string
 	host := &hostDefault
 	err = flags.ParseFlag(cmd.Flags(), "host", &host)
 	if err != nil {
 		return fmt.Errorf(`error parsing "host": ` + err.Error())
 	}
-
 	var idDefault string
 	id := &idDefault
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-
 	var nanosDefault int32
 	nanos := &nanosDefault
 	err = flags.ParseFlag(cmd.Flags(), "nanos", &nanos)
 	if err != nil {
 		return fmt.Errorf(`error parsing "nanos": ` + err.Error())
 	}
-
 	var sourceDefault string
 	source := &sourceDefault
 	err = flags.ParseFlag(cmd.Flags(), "source", &source)
 	if err != nil {
 		return fmt.Errorf(`error parsing "source": ` + err.Error())
 	}
-
 	var sourcetypeDefault string
 	sourcetype := &sourcetypeDefault
 	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
 	if err != nil {
 		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
 	}
-
 	var timestampDefault int64
 	timestamp := &timestampDefault
 	err = flags.ParseFlag(cmd.Flags(), "timestamp", &timestamp)
 	if err != nil {
 		return fmt.Errorf(`error parsing "timestamp": ` + err.Error())
 	}
-
-	var typeParamDefault string
-	typeParam := &typeParamDefault
-	err = flags.ParseFlag(cmd.Flags(), "type-param", &typeParam)
-	if err != nil {
-		return fmt.Errorf(`error parsing "type-param": ` + err.Error())
-	}
-
 	// Form the request body
 	generated_request_body := []model.MetricEvent{
 		{
-
 			Attributes: &model.MetricAttribute{
 				DefaultDimensions: defaultDimensions,
 				DefaultType:       defaultType,
 				DefaultUnit:       defaultUnit,
 			},
 
-			Host: host,
-
-			Id: id,
-
-			Nanos: nanos,
-
-			Source: source,
-
+			Host:       host,
+			Id:         id,
+			Nanos:      nanos,
+			Source:     source,
 			Sourcetype: sourcetype,
-
-			Timestamp: timestamp,
+			Timestamp:  timestamp,
 		},
 	}
 
@@ -210,7 +173,6 @@ func PostMetrics(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // UploadFiles Upload a CSV or text file that contains events.
@@ -233,5 +195,4 @@ func UploadFiles(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
