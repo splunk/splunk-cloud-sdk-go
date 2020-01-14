@@ -81,7 +81,7 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 		Dsl: dsl,
 	}
 
-	resp, err := client.StreamsService.CompileDsl(generated_request_body)
+	resp, err := client.StreamsService.CompileDSL(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 		Syntax: syntax,
 	}
 
-	resp, err := client.StreamsService.CompileSpl(generated_request_body)
+	resp, err := client.StreamsService.CompileSPL(generated_request_body)
 	if err != nil {
 		return err
 	}
