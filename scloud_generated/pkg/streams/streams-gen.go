@@ -20,8 +20,8 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var activateLatestVersionDefault bool
 	activateLatestVersion := &activateLatestVersionDefault
 	err = flags.ParseFlag(cmd.Flags(), "activate-latest-version", &activateLatestVersion)
@@ -45,15 +45,15 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "skip-restore-state": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.ActivatePipelineRequest{
+	generated_request_body := model.ActivatePipelineRequest{
+
 		ActivateLatestVersion: activateLatestVersion,
 		AllowNonRestoredState: allowNonRestoredState,
 		SkipRestoreState:      skipRestoreState,
 	}
 
-	resp, err := client.StreamsService.ActivatePipeline(id, body)
+	resp, err := client.StreamsService.ActivatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -68,20 +68,20 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var dsl string
 	err = flags.ParseFlag(cmd.Flags(), "dsl", &dsl)
 	if err != nil {
 		return fmt.Errorf(`error parsing "dsl": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.DslCompilationRequest{
+	generated_request_body := model.DslCompilationRequest{
+
 		Dsl: dsl,
 	}
 
-	resp, err := client.StreamsService.CompileDSL(body)
+	resp, err := client.StreamsService.CompileDsl(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -96,8 +96,8 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var spl string
 	err = flags.ParseFlag(cmd.Flags(), "spl", &spl)
 	if err != nil {
@@ -109,14 +109,14 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "syntax": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.SplCompileRequest{
+	generated_request_body := model.SplCompileRequest{
+
 		Spl:    spl,
 		Syntax: syntax,
 	}
 
-	resp, err := client.StreamsService.CompileSPL(body)
+	resp, err := client.StreamsService.CompileSpl(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -131,8 +131,8 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var connectorId string
 	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
 	if err != nil {
@@ -153,16 +153,16 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.ConnectionRequest{
+	generated_request_body := model.ConnectionRequest{
+
 		ConnectorId: connectorId,
 		Data:        data,
 		Description: description,
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.CreateConnection(body)
+	resp, err := client.StreamsService.CreateConnection(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -177,8 +177,8 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var arguments []model.GroupArgumentsNode
 	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
 	if err != nil {
@@ -236,9 +236,9 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "variadic": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GroupRequest{
+	generated_request_body := model.GroupRequest{
+
 		Arguments: arguments,
 		Ast: model.UplPipeline{
 			Edges:    edges,
@@ -254,7 +254,7 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 		Variadic:   variadic,
 	}
 
-	resp, err := client.StreamsService.CreateGroup(body)
+	resp, err := client.StreamsService.CreateGroup(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -269,8 +269,8 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var bypassValidationDefault bool
 	bypassValidation := &bypassValidationDefault
 	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
@@ -303,9 +303,9 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.PipelineRequest{
+	generated_request_body := model.PipelineRequest{
+
 		BypassValidation: bypassValidation,
 		Data: model.UplPipeline{
 			Edges:    edges,
@@ -316,7 +316,7 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.CreatePipeline(body)
+	resp, err := client.StreamsService.CreatePipeline(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -331,8 +331,8 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var description string
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
@@ -358,9 +358,9 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.TemplateRequest{
+	generated_request_body := model.TemplateRequest{
+
 		Data: model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
@@ -370,7 +370,7 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.CreateTemplate(body)
+	resp, err := client.StreamsService.CreateTemplate(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -385,8 +385,8 @@ func DeactivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -398,13 +398,13 @@ func DeactivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "skip-savepoint": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.DeactivatePipelineRequest{
+	generated_request_body := model.DeactivatePipelineRequest{
+
 		SkipSavepoint: skipSavepoint,
 	}
 
-	resp, err := client.StreamsService.DeactivatePipeline(id, body)
+	resp, err := client.StreamsService.DeactivatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -419,8 +419,8 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var connectionId string
 	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
 	if err != nil {
@@ -442,8 +442,8 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var groupId string
 	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
 	if err != nil {
@@ -465,8 +465,8 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -488,8 +488,8 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
 	if err != nil {
@@ -511,8 +511,8 @@ func ExpandGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var arguments map[string]interface{}
 	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
 	if err != nil {
@@ -528,14 +528,14 @@ func ExpandGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GroupExpandRequest{
+	generated_request_body := model.GroupExpandRequest{
+
 		Arguments: arguments,
 		Id:        id,
 	}
 
-	resp, err := client.StreamsService.ExpandGroup(groupId, body)
+	resp, err := client.StreamsService.ExpandGroup(groupId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -550,8 +550,8 @@ func ExpandPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -567,15 +567,15 @@ func ExpandPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.UplPipeline{
+	generated_request_body := model.UplPipeline{
+
 		Edges:    edges,
 		Nodes:    nodes,
 		RootNode: rootNode,
 	}
 
-	resp, err := client.StreamsService.ExpandPipeline(body)
+	resp, err := client.StreamsService.ExpandPipeline(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -590,8 +590,8 @@ func GetGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var groupId string
 	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
 	if err != nil {
@@ -613,8 +613,8 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -640,9 +640,9 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "target-port-name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GetInputSchemaRequest{
+	generated_request_body := model.GetInputSchemaRequest{
+
 		NodeUuid:       nodeUuid,
 		TargetPortName: targetPortName,
 		UplJson: model.UplPipeline{
@@ -652,7 +652,7 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	resp, err := client.StreamsService.GetInputSchema(body)
+	resp, err := client.StreamsService.GetInputSchema(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -667,8 +667,8 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -696,9 +696,9 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "source-port-name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GetOutputSchemaRequest{
+	generated_request_body := model.GetOutputSchemaRequest{
+
 		NodeUuid:       nodeUuid,
 		SourcePortName: sourcePortName,
 		UplJson: model.UplPipeline{
@@ -708,7 +708,7 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	resp, err := client.StreamsService.GetOutputSchema(body)
+	resp, err := client.StreamsService.GetOutputSchema(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -723,8 +723,8 @@ func GetPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -736,10 +736,10 @@ func GetPipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "version": ` + err.Error())
 	}
 	// Form query params
-	query := model.GetPipelineQueryParams{}
-	query.Version = version
+	generated_query := model.GetPipelineQueryParams{}
+	generated_query.Version = version
 
-	resp, err := client.StreamsService.GetPipeline(id, &query)
+	resp, err := client.StreamsService.GetPipeline(id, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -754,8 +754,8 @@ func GetPipelineLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -777,8 +777,8 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var activatedDefault bool
 	activated := &activatedDefault
 	err = flags.ParseFlag(cmd.Flags(), "activated", &activated)
@@ -818,16 +818,16 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
 	}
 	// Form query params
-	query := model.GetPipelinesStatusQueryParams{}
-	query.Activated = activated
-	query.CreateUserId = createUserId
-	query.Name = name
-	query.Offset = offset
-	query.PageSize = pageSize
-	query.SortDir = sortDir
-	query.SortField = sortField
+	generated_query := model.GetPipelinesStatusQueryParams{}
+	generated_query.Activated = activated
+	generated_query.CreateUserId = createUserId
+	generated_query.Name = name
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
 
-	resp, err := client.StreamsService.GetPipelinesStatus(&query)
+	resp, err := client.StreamsService.GetPipelinesStatus(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -842,8 +842,8 @@ func GetPreviewData(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var previewSessionId int64
 	err = flags.ParseFlag(cmd.Flags(), "preview-session-id", &previewSessionId)
 	if err != nil {
@@ -865,8 +865,8 @@ func GetPreviewSession(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var previewSessionId int64
 	err = flags.ParseFlag(cmd.Flags(), "preview-session-id", &previewSessionId)
 	if err != nil {
@@ -888,8 +888,8 @@ func GetPreviewSessionLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var previewSessionId int64
 	err = flags.ParseFlag(cmd.Flags(), "preview-session-id", &previewSessionId)
 	if err != nil {
@@ -911,8 +911,8 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var localDefault bool
 	local := &localDefault
 	err = flags.ParseFlag(cmd.Flags(), "local", &local)
@@ -920,10 +920,10 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "local": ` + err.Error())
 	}
 	// Form query params
-	query := model.GetRegistryQueryParams{}
-	query.Local = local
+	generated_query := model.GetRegistryQueryParams{}
+	generated_query.Local = local
 
-	resp, err := client.StreamsService.GetRegistry(&query)
+	resp, err := client.StreamsService.GetRegistry(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -938,8 +938,8 @@ func GetTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
 	if err != nil {
@@ -952,10 +952,10 @@ func GetTemplate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "version": ` + err.Error())
 	}
 	// Form query params
-	query := model.GetTemplateQueryParams{}
-	query.Version = version
+	generated_query := model.GetTemplateQueryParams{}
+	generated_query.Version = version
 
-	resp, err := client.StreamsService.GetTemplate(templateId, &query)
+	resp, err := client.StreamsService.GetTemplate(templateId, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -970,8 +970,8 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var connectorId string
 	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
 	if err != nil {
@@ -1020,18 +1020,18 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListConnectionsQueryParams{}
-	query.ConnectorId = connectorId
-	query.CreateUserId = createUserId
-	query.FunctionId = functionId
-	query.Name = name
-	query.Offset = offset
-	query.PageSize = pageSize
-	query.ShowSecretNames = showSecretNames
-	query.SortDir = sortDir
-	query.SortField = sortField
+	generated_query := model.ListConnectionsQueryParams{}
+	generated_query.ConnectorId = connectorId
+	generated_query.CreateUserId = createUserId
+	generated_query.FunctionId = functionId
+	generated_query.Name = name
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.ShowSecretNames = showSecretNames
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
 
-	resp, err := client.StreamsService.ListConnections(&query)
+	resp, err := client.StreamsService.ListConnections(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1062,8 +1062,8 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var activatedDefault bool
 	activated := &activatedDefault
 	err = flags.ParseFlag(cmd.Flags(), "activated", &activated)
@@ -1109,17 +1109,17 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListPipelinesQueryParams{}
-	query.Activated = activated
-	query.CreateUserId = createUserId
-	query.IncludeData = includeData
-	query.Name = name
-	query.Offset = offset
-	query.PageSize = pageSize
-	query.SortDir = sortDir
-	query.SortField = sortField
+	generated_query := model.ListPipelinesQueryParams{}
+	generated_query.Activated = activated
+	generated_query.CreateUserId = createUserId
+	generated_query.IncludeData = includeData
+	generated_query.Name = name
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
 
-	resp, err := client.StreamsService.ListPipelines(&query)
+	resp, err := client.StreamsService.ListPipelines(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1134,8 +1134,8 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var offsetDefault int32
 	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
@@ -1159,13 +1159,13 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListTemplatesQueryParams{}
-	query.Offset = offset
-	query.PageSize = pageSize
-	query.SortDir = sortDir
-	query.SortField = sortField
+	generated_query := model.ListTemplatesQueryParams{}
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
 
-	resp, err := client.StreamsService.ListTemplates(&query)
+	resp, err := client.StreamsService.ListTemplates(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1180,8 +1180,8 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -1222,9 +1222,9 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "target-port": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.PipelinesMergeRequest{
+	generated_request_body := model.PipelinesMergeRequest{
+
 		InputTree: model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
@@ -1239,7 +1239,7 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 		TargetPort: targetPort,
 	}
 
-	resp, err := client.StreamsService.MergePipelines(body)
+	resp, err := client.StreamsService.MergePipelines(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1254,8 +1254,8 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var connectionId string
 	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
 	if err != nil {
@@ -1276,15 +1276,15 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.ConnectionPutRequest{
+	generated_request_body := model.ConnectionPutRequest{
+
 		Data:        data,
 		Description: description,
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.PutConnection(connectionId, body)
+	resp, err := client.StreamsService.PutConnection(connectionId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1299,8 +1299,8 @@ func PutGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var arguments []model.GroupArgumentsNode
 	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
 	if err != nil {
@@ -1363,9 +1363,9 @@ func PutGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "variadic": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GroupPutRequest{
+	generated_request_body := model.GroupPutRequest{
+
 		Arguments: arguments,
 		Ast: model.UplPipeline{
 			Edges:    edges,
@@ -1381,7 +1381,7 @@ func PutGroup(cmd *cobra.Command, args []string) error {
 		Variadic:   variadic,
 	}
 
-	resp, err := client.StreamsService.PutGroup(groupId, body)
+	resp, err := client.StreamsService.PutGroup(groupId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1396,8 +1396,8 @@ func PutTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var description string
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
@@ -1428,9 +1428,9 @@ func PutTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.TemplatePutRequest{
+	generated_request_body := model.TemplatePutRequest{
+
 		Data: model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
@@ -1440,7 +1440,7 @@ func PutTemplate(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.PutTemplate(templateId, body)
+	resp, err := client.StreamsService.PutTemplate(templateId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1455,8 +1455,8 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -1478,8 +1478,8 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -1525,9 +1525,9 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "use-new-data": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.PreviewSessionStartRequest{
+	generated_request_body := model.PreviewSessionStartRequest{
+
 		RecordsLimit:             recordsLimit,
 		RecordsPerPipeline:       recordsPerPipeline,
 		SessionLifetimeMs:        sessionLifetimeMs,
@@ -1540,7 +1540,7 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 		UseNewData: useNewData,
 	}
 
-	resp, err := client.StreamsService.StartPreview(body)
+	resp, err := client.StreamsService.StartPreview(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1555,8 +1555,8 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var previewSessionId int64
 	err = flags.ParseFlag(cmd.Flags(), "preview-session-id", &previewSessionId)
 	if err != nil {
@@ -1578,8 +1578,8 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var connectionId string
 	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
 	if err != nil {
@@ -1602,15 +1602,15 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.ConnectionPatchRequest{
+	generated_request_body := model.ConnectionPatchRequest{
+
 		Data:        data,
 		Description: description,
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.UpdateConnection(connectionId, body)
+	resp, err := client.StreamsService.UpdateConnection(connectionId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1625,8 +1625,8 @@ func UpdateGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var arguments []model.GroupArgumentsNode
 	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
 	if err != nil {
@@ -1691,9 +1691,9 @@ func UpdateGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "variadic": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.GroupPatchRequest{
+	generated_request_body := model.GroupPatchRequest{
+
 		Arguments: arguments,
 		Ast: &model.UplPipeline{
 			Edges:    edges,
@@ -1709,7 +1709,7 @@ func UpdateGroup(cmd *cobra.Command, args []string) error {
 		Variadic:   variadic,
 	}
 
-	resp, err := client.StreamsService.UpdateGroup(groupId, body)
+	resp, err := client.StreamsService.UpdateGroup(groupId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1724,8 +1724,8 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var bypassValidationDefault bool
 	bypassValidation := &bypassValidationDefault
 	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
@@ -1770,9 +1770,9 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.PipelinePatchRequest{
+	generated_request_body := model.PipelinePatchRequest{
+
 		BypassValidation: bypassValidation,
 		CreateUserId:     createUserId,
 		Data: &model.UplPipeline{
@@ -1784,7 +1784,7 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.UpdatePipeline(id, body)
+	resp, err := client.StreamsService.UpdatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1799,8 +1799,8 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1833,9 +1833,9 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.TemplatePatchRequest{
+	generated_request_body := model.TemplatePatchRequest{
+
 		Data: &model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
@@ -1845,7 +1845,7 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
-	resp, err := client.StreamsService.UpdateTemplate(templateId, body)
+	resp, err := client.StreamsService.UpdateTemplate(templateId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1860,8 +1860,8 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var edges []model.UplEdge
 	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
 	if err != nil {
@@ -1877,9 +1877,9 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.ValidateRequest{
+	generated_request_body := model.ValidateRequest{
+
 		Upl: model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
@@ -1887,7 +1887,7 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	resp, err := client.StreamsService.ValidatePipeline(body)
+	resp, err := client.StreamsService.ValidatePipeline(generated_request_body)
 	if err != nil {
 		return err
 	}
