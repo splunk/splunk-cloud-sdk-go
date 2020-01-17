@@ -7,7 +7,7 @@
 NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
 
 SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
-SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd
+SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
