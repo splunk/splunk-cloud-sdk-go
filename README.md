@@ -92,8 +92,11 @@ Initialize your project using Go modules for dependency support. Your project ca
 
 4. Set your access token and tenant.
 
-    -  Retrieve your access token from the [Splunk Developer Portal](https://dev.splunk.com/scs/settings).
-
+    -  Retrieve your access token from the [Splunk Developer Portal](https://dev.splunk.com/scs/).
+       -  Log in at the top of the page. 
+       -  Open the [Reference](https://dev.splunk.com/scs/reference).
+       -  Navigate to any REST API. For example, go to [Provisioner GET /system/provisioner/v1beta1/tenants](https://api.scp.splunk.com/system/provisioner/v1beta1/tenants).
+       -  Click **Console**, then next to Authorization Token click **Show**, and then click **Copy to Clipboard** to copy your token.
     -  List your tenants using the following REST command, replacing `<accessToken>` with your access token:
 
         ```curl
