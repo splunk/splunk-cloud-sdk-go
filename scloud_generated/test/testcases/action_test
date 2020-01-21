@@ -1,0 +1,2 @@
+action,list-actions
+action,get-action,--action-name,act1

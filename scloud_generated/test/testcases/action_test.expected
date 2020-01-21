@@ -1,0 +1,10 @@
+#testcase: action,list-actions
+enable testhook-dryrun
+REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions
+REQUEST BODY:<nil>
+
+#testcase: action,get-action,--action-name,act1
+enable testhook-dryrun
+REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/act1
+REQUEST BODY:<nil>
+

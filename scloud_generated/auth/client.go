@@ -4,12 +4,15 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"time"
 
 	"github.com/golang/glog"
+	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
@@ -106,16 +109,31 @@ func newClient(svc *Service) *sdk.Client {
 		tlsConfig.RootCAs = rootCAs
 	}
 
+	var roundTripper http.RoundTripper
+
+	roundTripper = util.NewCustomSdkTransport(&GlogWrapper{}, &http.Transport{
+		TLSClientConfig: tlsConfig,
+		Proxy:           http.ProxyFromEnvironment,
+	})
+
+	testdryrun, _ := cf.GlobalFlags["testhookdryrun"].(bool)
+	if testdryrun {
+		roundTripper = createTesthookLogger(true)
+	} else {
+		testhook, _ := cf.GlobalFlags["testhook"].(bool)
+		if testhook {
+			roundTripper = createTesthookLogger(false)
+		}
+	}
+
 	clientConfig := &services.Config{
 		Token:            getToken(),
 		OverrideHost:     hostPort,
 		Scheme:           scheme,
 		Timeout:          10 * time.Second,
 		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
-		RoundTripper: util.NewCustomSdkTransport(&GlogWrapper{}, &http.Transport{
-			TLSClientConfig: tlsConfig,
-			Proxy:           http.ProxyFromEnvironment,
-		})}
+		RoundTripper:     roundTripper,
+	}
 
 	result, err := sdk.NewClient(clientConfig)
 	if err != nil {
@@ -140,4 +158,59 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	}
 
 	return result
+}
+
+type verboseOutputter struct {
+	transport        http.RoundTripper
+	cancelBeforeSend bool
+}
+
+func createVerboseOutputter() http.RoundTripper {
+	return &verboseOutputter{transport: http.DefaultTransport}
+}
+
+func createDryrunOutputter() http.RoundTripper {
+	return &verboseOutputter{cancelBeforeSend: true}
+
+}
+
+// RoundTrip implements http.RoundTripper
+func (out *verboseOutputter) RoundTrip(request *http.Request) (*http.Response, error) {
+	dump, _ := httputil.DumpRequest(request, true)
+	fmt.Printf("REQUEST:\n%s\n\n", dump)
+	if out.cancelBeforeSend {
+		return nil, errors.New("request cancelled")
+	}
+
+	response, err := out.transport.RoundTrip(request)
+	fmt.Printf("\nRESPONSE:\n%#v\n", response)
+	return response, err
+}
+
+type testhooklogger struct {
+	transport        http.RoundTripper
+	cancelBeforeSend bool
+}
+
+func createTesthookLogger(cancelBeforeSend bool) http.RoundTripper {
+	return &testhooklogger{transport: &http.Transport{}, cancelBeforeSend: cancelBeforeSend}
+}
+
+// RoundTrip implements http.RoundTripper when using testhook flag
+func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, error) {
+	fmt.Printf("REQUEST URL:%v\n", request.URL)
+	fmt.Printf("REQUEST BODY:%v\n", request.Body)
+
+	if out.cancelBeforeSend {
+		return nil, errors.New("For testrun, request was canceled")
+	}
+
+	response, err := out.transport.RoundTrip(request)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("\nRESPONSE:\n%#v\n", response)
+
+	return response, err
 }

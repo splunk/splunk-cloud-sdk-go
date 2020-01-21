@@ -5,6 +5,7 @@ package action
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/auth"
@@ -88,6 +89,9 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromEmailAction(generated_request_body))
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -147,6 +151,9 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromWebhookAction(generated_request_body))
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -170,6 +177,9 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 
 	err = client.ActionService.DeleteAction(action_name)
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 
@@ -193,6 +203,9 @@ func GetAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetAction(action_name)
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -221,6 +234,9 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetActionStatus(action_name, status_id)
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -249,6 +265,9 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetActionStatusDetails(action_name, status_id)
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -266,6 +285,9 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetPublicWebhookKeys()
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -282,6 +304,9 @@ func ListActions(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.ListActions()
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -358,6 +383,9 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 
 	err = client.ActionService.TriggerAction(action_name, generated_request_body)
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 
@@ -432,6 +460,9 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromEmailActionMutable(generated_request_body))
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
@@ -486,6 +517,9 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
 	if err != nil {
+		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
+			return nil
+		}
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
