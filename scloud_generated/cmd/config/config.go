@@ -13,7 +13,16 @@ import (
 const LegacyCfgFileName = ".scloud"
 const CfgFileName = ".scloud.toml"
 
-var GlobalFlags = []string{"env", "tenant", "username", "auth-url", "host-url", "insecure"}
+var GlobalFlags = map[string]interface{}{
+	"env":            "",
+	"tenant":         "",
+	"username":       "",
+	"auth-url":       "",
+	"host-url":       "",
+	"insecure":       false,
+	"testhookdryrun": false,
+	"testhook":       false,
+}
 
 // Cmd -- used to connection to rootCmd
 func Cmd() *cobra.Command {

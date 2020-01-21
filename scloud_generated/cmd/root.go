@@ -7,7 +7,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/spf13/pflag"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/action"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/appregistry"
 	"github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/catalog"
@@ -37,6 +37,8 @@ var (
 	cacert          string
 	logtostderr     bool
 	alsologtostderr bool
+	testhook_dryrun bool
+	testhook        bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -79,18 +81,16 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
 	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
-	rootCmd.PersistentFlags().BoolVar(&logtostderr, "logtostderr", false, "log to standard error instead of files")
-	rootCmd.PersistentFlags().BoolVar(&alsologtostderr, "alsologtostderr", false, "log to standard error as well as files")
 
-	// bind the flags so that they override the config
-	for _, name := range config.GlobalFlags {
-		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
-		if err != nil {
-			fmt.Println(err)
-		}
+	// add hidden test flags
+	rootCmd.PersistentFlags().BoolVar(&testhook_dryrun, "testhook-dryrun", false, "a string flag")
+	rootCmd.PersistentFlags().MarkHidden("testhook-dryrun")
 
-	}
-	flag.Parse()
+	rootCmd.PersistentFlags().BoolVar(&testhook, "testhook", false, "a string flag")
+	rootCmd.PersistentFlags().MarkHidden("testhook")
+
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	flag.CommandLine.Parse([]string{})
 }
 
 func initConfig() {
@@ -116,5 +116,15 @@ func initConfig() {
 	} else {
 		// Use an existing .scloud.toml
 		config.Load(home, confFile)
+	}
+
+	if testhook_dryrun {
+		config.GlobalFlags["testhookdryrun"] = true
+		fmt.Println("enable testhook-dryrun")
+	}
+
+	if testhook {
+		config.GlobalFlags["testhook"] = true
+		fmt.Println("enable testhook")
 	}
 }
