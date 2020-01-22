@@ -37,7 +37,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	ret := ""
 
 	arg := testarg
-	scloud := "../../bin/scloud_gen"
+	scloud := "../../../bin/scloud_gen"
 
 	// read in testcases line by line
 	file, err := os.Open(filepath)

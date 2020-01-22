@@ -3,11 +3,11 @@ package test
 import (
 	"testing"
 
-	test_util "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/test/utils"
+	test_engine "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/test/utils"
 )
 
 func TestCli_action(t *testing.T) {
-	test_util.RunTest("testcases/action_test", t)
+	test_engine.RunTest("testcases/action_test", t)
 }
 
 //func TestCli_identit(t *testing.T) {

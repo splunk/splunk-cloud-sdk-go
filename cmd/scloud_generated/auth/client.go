@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	cf "github.com/splunk/splunk-cloud-sdk-go/scloud_generated/cmd/config"
+	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/config"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
