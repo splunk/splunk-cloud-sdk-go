@@ -98,9 +98,11 @@ func init() {
 	var createIndexCollection string
 	createIndexCmd.Flags().StringVar(&createIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	createIndexCmd.MarkFlagRequired("collection")
+
 	var createIndexFields string
 	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "This is a required parameter.This is a required parameter.")
 	createIndexCmd.MarkFlagRequired("fields")
+
 	var createIndexName string
 	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "This is a required parameter.This is a required parameter.The name of the index.")
 	createIndexCmd.MarkFlagRequired("name")
@@ -110,6 +112,7 @@ func init() {
 	var deleteIndexCollection string
 	deleteIndexCmd.Flags().StringVar(&deleteIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	deleteIndexCmd.MarkFlagRequired("collection")
+
 	var deleteIndexIndex string
 	deleteIndexCmd.Flags().StringVar(&deleteIndexIndex, "index", "", "This is a required parameter.The name of the index.")
 	deleteIndexCmd.MarkFlagRequired("index")
@@ -119,6 +122,7 @@ func init() {
 	var deleteRecordByKeyCollection string
 	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	deleteRecordByKeyCmd.MarkFlagRequired("collection")
+
 	var deleteRecordByKeyKey string
 	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
 	deleteRecordByKeyCmd.MarkFlagRequired("key")
@@ -137,6 +141,7 @@ func init() {
 	var getRecordByKeyCollection string
 	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	getRecordByKeyCmd.MarkFlagRequired("collection")
+
 	var getRecordByKeyKey string
 	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
 	getRecordByKeyCmd.MarkFlagRequired("key")
@@ -146,6 +151,7 @@ func init() {
 	var insertRecordBody string
 	insertRecordCmd.Flags().StringVar(&insertRecordBody, "body", "", "The request body")
 	insertRecordCmd.MarkFlagRequired("body")
+
 	var insertRecordCollection string
 	insertRecordCmd.Flags().StringVar(&insertRecordCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	insertRecordCmd.MarkFlagRequired("collection")
@@ -155,6 +161,7 @@ func init() {
 	var insertRecordsBody string
 	insertRecordsCmd.Flags().StringVar(&insertRecordsBody, "body", "", "The request body")
 	insertRecordsCmd.MarkFlagRequired("body")
+
 	var insertRecordsCollection string
 	insertRecordsCmd.Flags().StringVar(&insertRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	insertRecordsCmd.MarkFlagRequired("collection")
@@ -173,12 +180,16 @@ func init() {
 
 	var listRecordsCount int32
 	listRecordsCmd.Flags().Int32Var(&listRecordsCount, "count", 0, "Maximum number of records to return.")
+
 	var listRecordsFields []string
 	listRecordsCmd.Flags().StringSliceVar(&listRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+
 	var listRecordsFilters string
 	listRecordsCmd.Flags().StringVar(&listRecordsFilters, "filters", "", "")
+
 	var listRecordsOffset int32
 	listRecordsCmd.Flags().Int32Var(&listRecordsOffset, "offset", 0, "Number of records to skip from the start.")
+
 	var listRecordsOrderby []string
 	listRecordsCmd.Flags().StringSliceVar(&listRecordsOrderby, "orderby", nil, "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
 
@@ -189,15 +200,14 @@ func init() {
 	var putRecordBody string
 	putRecordCmd.Flags().StringVar(&putRecordBody, "body", "", "The request body")
 	putRecordCmd.MarkFlagRequired("body")
+
 	var putRecordCollection string
 	putRecordCmd.Flags().StringVar(&putRecordCollection, "collection", "", "This is a required parameter.The name of the collection.")
 	putRecordCmd.MarkFlagRequired("collection")
+
 	var putRecordKey string
 	putRecordCmd.Flags().StringVar(&putRecordKey, "key", "", "This is a required parameter.The key of the record.")
 	putRecordCmd.MarkFlagRequired("key")
-
-	var putRecordIfMatch string
-	putRecordCmd.Flags().StringVar(&putRecordIfMatch, "if-match", "", "Record version identifier.")
 
 	kvstoreCmd.AddCommand(queryRecordsCmd)
 
@@ -207,12 +217,16 @@ func init() {
 
 	var queryRecordsCount int32
 	queryRecordsCmd.Flags().Int32Var(&queryRecordsCount, "count", 0, "Maximum number of records to return.")
+
 	var queryRecordsFields []string
 	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+
 	var queryRecordsOffset int32
 	queryRecordsCmd.Flags().Int32Var(&queryRecordsOffset, "offset", 0, "Number of records to skip from the start.")
+
 	var queryRecordsOrderby []string
 	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsOrderby, "orderby", nil, "Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.")
+
 	var queryRecordsQuery string
 	queryRecordsCmd.Flags().StringVar(&queryRecordsQuery, "query", "", "Query JSON expression.")
 

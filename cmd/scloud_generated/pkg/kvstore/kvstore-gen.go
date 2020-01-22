@@ -20,8 +20,8 @@ func CreateIndex(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -37,19 +37,19 @@ func CreateIndex(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.IndexDefinition{
+
 		Fields: fields,
 		Name:   name,
 	}
+
 	resp, err := client.KVStoreService.CreateIndex(collection, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // DeleteIndex Removes an index from a collection.
@@ -59,8 +59,8 @@ func DeleteIndex(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -78,7 +78,6 @@ func DeleteIndex(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteRecordByKey Deletes a record with a given key.
@@ -88,8 +87,8 @@ func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -107,7 +106,6 @@ func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteRecords Removes records in a collection that match the query.
@@ -117,8 +115,8 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -139,7 +137,6 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // GetRecordByKey Returns a record with a given key.
@@ -149,8 +146,8 @@ func GetRecordByKey(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -168,7 +165,6 @@ func GetRecordByKey(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // InsertRecord Inserts a record into a collection.
@@ -178,8 +174,8 @@ func InsertRecord(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var body map[string]interface{}
 	err = flags.ParseFlag(cmd.Flags(), "body", &body)
 	if err != nil {
@@ -197,7 +193,6 @@ func InsertRecord(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // InsertRecords Inserts multiple records in a single request.
@@ -207,8 +202,8 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var body []map[string]interface{}
 	err = flags.ParseFlag(cmd.Flags(), "body", &body)
 	if err != nil {
@@ -226,7 +221,6 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListIndexes Returns a list of all indexes on a collection.
@@ -236,8 +230,8 @@ func ListIndexes(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -250,7 +244,6 @@ func ListIndexes(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListRecords Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
@@ -260,8 +253,8 @@ func ListRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -308,7 +301,6 @@ func ListRecords(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // Ping Returns the health status from the database.
@@ -325,7 +317,6 @@ func Ping(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // PutRecord Updates the record with a given key, either by inserting or replacing the record.
@@ -335,14 +326,8 @@ func PutRecord(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
-	//var If-MatchDefault string
-	//If-Match := &If-MatchDefault
-	//err = flags.ParseFlag(cmd.Flags(), "if-match", &If-Match)
-	if err != nil {
-		return fmt.Errorf(`error parsing "if-match": ` + err.Error())
-	}
+
 	var body map[string]interface{}
 	err = flags.ParseFlag(cmd.Flags(), "body", &body)
 	if err != nil {
@@ -365,7 +350,6 @@ func PutRecord(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // QueryRecords Returns a list of query records in a collection.
@@ -375,8 +359,8 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var collection string
 	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
 	if err != nil {
@@ -423,5 +407,4 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }

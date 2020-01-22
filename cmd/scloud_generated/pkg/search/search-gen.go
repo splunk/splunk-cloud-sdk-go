@@ -13,6 +13,7 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
+// TODO: https://jira.splunk.com/browse/SCP-22510
 // CreateJob Creates a search job.
 func CreateJob(cmd *cobra.Command, args []string) error {
 
@@ -20,8 +21,8 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var allowSideEffects interface{}
 	err = flags.ParseFlag(cmd.Flags(), "allow-side-effects", &allowSideEffects)
 	if err != nil {
@@ -97,6 +98,12 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
 	}
+	var requiredFreshnessDefault float32
+	requiredFreshness := &requiredFreshnessDefault
+	err = flags.ParseFlag(cmd.Flags(), "required-freshness", &requiredFreshness)
+	if err != nil {
+		return fmt.Errorf(`error parsing "required-freshness": ` + err.Error())
+	}
 	var statusDefault model.SearchStatus
 	status := &statusDefault
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
@@ -108,9 +115,9 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "timezone": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.SearchJob{
+	generated_request_body := model.SearchJob{
+
 		AllowSideEffects:    allowSideEffects,
 		CollectEventSummary: collectEventSummary,
 		CollectFieldSummary: collectFieldSummary,
@@ -127,10 +134,11 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 			RelativeTimeAnchor: relativeTimeAnchor,
 			Timezone:           timezone,
 		},
+		// RequiredFreshness: requiredFreshness,
 		Status: status,
 	}
 
-	resp, err := client.SearchService.CreateJob(body)
+	resp, err := client.SearchService.CreateJob(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -145,8 +153,8 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var sid string
 	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
 	if err != nil {
@@ -168,8 +176,8 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var countDefault float32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
@@ -203,14 +211,14 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListEventsSummaryQueryParams{}
-	query.Count = count
-	query.Earliest = earliest
-	query.Field = field
-	query.Latest = latest
-	query.Offset = offset
+	generated_query := model.ListEventsSummaryQueryParams{}
+	generated_query.Count = count
+	generated_query.Earliest = earliest
+	generated_query.Field = field
+	generated_query.Latest = latest
+	generated_query.Offset = offset
 
-	resp, err := client.SearchService.ListEventsSummary(sid, &query)
+	resp, err := client.SearchService.ListEventsSummary(sid, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -225,8 +233,8 @@ func ListFieldsSummary(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var earliest string
 	err = flags.ParseFlag(cmd.Flags(), "earliest", &earliest)
 	if err != nil {
@@ -243,11 +251,11 @@ func ListFieldsSummary(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListFieldsSummaryQueryParams{}
-	query.Earliest = earliest
-	query.Latest = latest
+	generated_query := model.ListFieldsSummaryQueryParams{}
+	generated_query.Earliest = earliest
+	generated_query.Latest = latest
 
-	resp, err := client.SearchService.ListFieldsSummary(sid, &query)
+	resp, err := client.SearchService.ListFieldsSummary(sid, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -262,8 +270,8 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var countDefault float32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
@@ -277,11 +285,11 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListJobsQueryParams{}
-	query.Count = count
-	query.Status = status
+	generated_query := model.ListJobsQueryParams{}
+	generated_query.Count = count
+	generated_query.Status = status
 
-	resp, err := client.SearchService.ListJobs(&query)
+	resp, err := client.SearchService.ListJobs(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -296,8 +304,8 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var countDefault float32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
@@ -316,11 +324,11 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListPreviewResultsQueryParams{}
-	query.Count = count
-	query.Offset = offset
+	generated_query := model.ListPreviewResultsQueryParams{}
+	generated_query.Count = count
+	generated_query.Offset = offset
 
-	resp, err := client.SearchService.ListPreviewResults(sid, &query)
+	resp, err := client.SearchService.ListPreviewResults(sid, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -335,8 +343,8 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var countDefault float32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
@@ -360,12 +368,12 @@ func ListResults(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListResultsQueryParams{}
-	query.Count = count
-	query.Field = field
-	query.Offset = offset
+	generated_query := model.ListResultsQueryParams{}
+	generated_query.Count = count
+	generated_query.Field = field
+	generated_query.Offset = offset
 
-	resp, err := client.SearchService.ListResults(sid, &query)
+	resp, err := client.SearchService.ListResults(sid, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -380,8 +388,8 @@ func ListTimeBuckets(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var sid string
 	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
 	if err != nil {
@@ -403,8 +411,8 @@ func UpdateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var sid string
 	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
 	if err != nil {
@@ -415,13 +423,13 @@ func UpdateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.UpdateJob{
+	generated_request_body := model.UpdateJob{
+
 		Status: status,
 	}
 
-	resp, err := client.SearchService.UpdateJob(sid, body)
+	resp, err := client.SearchService.UpdateJob(sid, generated_request_body)
 	if err != nil {
 		return err
 	}
