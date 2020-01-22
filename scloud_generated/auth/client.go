@@ -159,11 +159,6 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	return result
 }
 
-type verboseOutputter struct {
-	transport        http.RoundTripper
-	cancelBeforeSend bool
-}
-
 type testhooklogger struct {
 	transport        http.RoundTripper
 	cancelBeforeSend bool
