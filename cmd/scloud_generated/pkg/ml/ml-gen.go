@@ -20,8 +20,8 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var nameDefault string
 	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
@@ -33,19 +33,19 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "tasks": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.Workflow{
+
 		Name:  name,
 		Tasks: tasks,
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflow(generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateWorkflowBuild Creates a workflow build.
@@ -55,8 +55,8 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -108,9 +108,9 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "validation-option": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WorkflowBuild{
+
 		Input:            input,
 		Name:             name,
 		Output:           output,
@@ -122,13 +122,13 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 			Tasks: tasks,
 		},
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflowBuild(id, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateWorkflowDeployment Creates a workflow deployment.
@@ -138,8 +138,8 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -204,9 +204,9 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflow-build": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WorkflowDeployment{
+
 		EndTime: endTime,
 		Name:    name,
 		Spec: model.DeploymentSpec{
@@ -219,13 +219,13 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 		StartTime:     startTime,
 		WorkflowBuild: workflowBuild,
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflowDeployment(id, buildId, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateWorkflowInference Creates a workflow inference request.
@@ -235,8 +235,8 @@ func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -257,18 +257,18 @@ func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WorkflowInference{
+
 		Input: input,
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflowInference(id, buildId, deploymentId, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateWorkflowRun Creates a workflow run.
@@ -278,8 +278,8 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -330,9 +330,9 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflow-build": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WorkflowRun{
+
 		Evaluate:        evaluate,
 		Input:           input,
 		Name:            name,
@@ -341,13 +341,13 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 		TimeoutSecs:     timeoutSecs,
 		WorkflowBuild:   workflowBuild,
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflowRun(id, buildId, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // CreateWorkflowStreamDeployment Creates a workflow streaming deployment.
@@ -357,8 +357,8 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -421,9 +421,9 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflow-build": ` + err.Error())
 	}
-
 	// Form the request body
 	generated_request_body := model.WorkflowStreamDeployment{
+
 		Input:  input,
 		Name:   name,
 		Output: output,
@@ -436,13 +436,13 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 		},
 		WorkflowBuild: workflowBuild,
 	}
+
 	resp, err := client.MachineLearningService.CreateWorkflowStreamDeployment(id, buildId, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // DeleteWorkflow Removes a workflow configuration.
@@ -452,8 +452,8 @@ func DeleteWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -466,7 +466,6 @@ func DeleteWorkflow(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteWorkflowBuild Removes a workflow build.
@@ -476,8 +475,8 @@ func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -495,7 +494,6 @@ func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteWorkflowDeployment Removes a workflow deployment.
@@ -505,8 +503,8 @@ func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -529,7 +527,6 @@ func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteWorkflowRun Removes a workflow run.
@@ -539,8 +536,8 @@ func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -563,7 +560,6 @@ func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // DeleteWorkflowStreamDeployment Removes a workflow streaming deployment.
@@ -573,8 +569,8 @@ func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -597,7 +593,6 @@ func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-
 }
 
 // GetWorkflow Returns a workflow configuration.
@@ -607,8 +602,8 @@ func GetWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -621,7 +616,6 @@ func GetWorkflow(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowBuild Returns the status of a workflow build.
@@ -631,8 +625,8 @@ func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -650,7 +644,6 @@ func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowBuildError Returns a list of workflow errors.
@@ -660,8 +653,8 @@ func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -679,7 +672,6 @@ func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowBuildLog Returns the logs from a workflow build.
@@ -689,8 +681,8 @@ func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -708,7 +700,6 @@ func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowDeployment Returns the status of a workflow deployment.
@@ -718,8 +709,8 @@ func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -742,7 +733,6 @@ func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowDeploymentError Returns a list of workflow deployment errors.
@@ -752,8 +742,8 @@ func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -776,7 +766,6 @@ func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowDeploymentLog Returns the logs from a workflow deployment.
@@ -786,8 +775,8 @@ func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -810,7 +799,6 @@ func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowRun Returns the status of a workflow run.
@@ -820,8 +808,8 @@ func GetWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -844,7 +832,6 @@ func GetWorkflowRun(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowRunError Returns the errors for a workflow run.
@@ -854,8 +841,8 @@ func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -878,7 +865,6 @@ func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowRunLog Returns the logs for a workflow run.
@@ -888,8 +874,8 @@ func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -912,7 +898,6 @@ func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // GetWorkflowStreamDeployment Returns the status of a workflow streaming deployment.
@@ -922,8 +907,8 @@ func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -946,7 +931,6 @@ func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListWorkflowBuilds Returns a list of workflow builds.
@@ -956,8 +940,8 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -970,7 +954,6 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListWorkflowDeployments Returns a list of workflow deployments.
@@ -980,8 +963,8 @@ func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -999,7 +982,6 @@ func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListWorkflowRuns Returns a list of workflow runs.
@@ -1009,8 +991,8 @@ func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var buildId string
 	err = flags.ParseFlag(cmd.Flags(), "build-id", &buildId)
 	if err != nil {
@@ -1028,7 +1010,6 @@ func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }
 
 // ListWorkflows Returns a list of workflow configurations.
@@ -1045,5 +1026,4 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-
 }

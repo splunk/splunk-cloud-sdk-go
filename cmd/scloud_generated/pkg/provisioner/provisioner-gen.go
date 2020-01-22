@@ -20,8 +20,8 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var commentDefault string
 	comment := &commentDefault
 	err = flags.ParseFlag(cmd.Flags(), "comment", &comment)
@@ -38,15 +38,15 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "groups": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.InviteBody{
+	generated_request_body := model.InviteBody{
+
 		Comment: comment,
 		Email:   email,
 		Groups:  groups,
 	}
 
-	resp, err := client.ProvisionerService.CreateInvite(body)
+	resp, err := client.ProvisionerService.CreateInvite(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -62,8 +62,8 @@ func CreateProvisionJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var apps []string
 	err = flags.ParseFlag(cmd.Flags(), "apps", &apps)
 	if err != nil {
@@ -75,14 +75,14 @@ func CreateProvisionJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "tenant": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.CreateProvisionJobBody{
+	generated_request_body := model.CreateProvisionJobBody{
+
 		Apps:   apps,
 		Tenant: tenant,
 	}
 
-	resp, err := client.ProvisionerService.CreateProvisionJob(body)
+	resp, err := client.ProvisionerService.CreateProvisionJob(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -97,8 +97,8 @@ func DeleteInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var inviteId string
 	err = flags.ParseFlag(cmd.Flags(), "invite-id", &inviteId)
 	if err != nil {
@@ -120,8 +120,8 @@ func GetInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var inviteId string
 	err = flags.ParseFlag(cmd.Flags(), "invite-id", &inviteId)
 	if err != nil {
@@ -144,8 +144,8 @@ func GetProvisionJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var jobId string
 	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
 	if err != nil {
@@ -168,8 +168,8 @@ func GetTenant(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var tenantName string
 	err = flags.ParseFlag(cmd.Flags(), "tenant-name", &tenantName)
 	if err != nil {
@@ -241,8 +241,8 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var action model.UpdateInviteBodyAction
 	err = flags.ParseFlag(cmd.Flags(), "action", &action)
 	if err != nil {
@@ -253,13 +253,13 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.UpdateInviteBody{
+	generated_request_body := model.UpdateInviteBody{
+
 		Action: action,
 	}
 
-	resp, err := client.ProvisionerService.UpdateInvite(inviteId, body)
+	resp, err := client.ProvisionerService.UpdateInvite(inviteId, generated_request_body)
 	if err != nil {
 		return err
 	}

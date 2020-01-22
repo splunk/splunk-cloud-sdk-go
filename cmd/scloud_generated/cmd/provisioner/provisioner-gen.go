@@ -82,11 +82,12 @@ func init() {
 	provisionerCmd.AddCommand(createInviteCmd)
 
 	var createInviteEmail string
-	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "This is a required parameter.")
+	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "This is a required parameter.This is a required parameter.")
 	createInviteCmd.MarkFlagRequired("email")
 
 	var createInviteComment string
 	createInviteCmd.Flags().StringVar(&createInviteComment, "comment", "", "")
+
 	var createInviteGroups []string
 	createInviteCmd.Flags().StringSliceVar(&createInviteGroups, "groups", nil, "")
 
@@ -94,6 +95,7 @@ func init() {
 
 	var createProvisionJobApps []string
 	createProvisionJobCmd.Flags().StringSliceVar(&createProvisionJobApps, "apps", nil, "")
+
 	var createProvisionJobTenant string
 	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", "", "")
 
@@ -130,8 +132,9 @@ func init() {
 	provisionerCmd.AddCommand(updateInviteCmd)
 
 	var updateInviteAction string
-	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "This is a required parameter. can accept values accept, reject, resend")
+	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "This is a required parameter.This is a required parameter. can accept values accept, reject, resend")
 	updateInviteCmd.MarkFlagRequired("action")
+
 	var updateInviteInviteId string
 	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "This is a required parameter.")
 	updateInviteCmd.MarkFlagRequired("invite-id")

@@ -234,8 +234,9 @@ func init() {
 	var addGroupMemberGroup string
 	addGroupMemberCmd.Flags().StringVar(&addGroupMemberGroup, "group", "", "This is a required parameter.The group name.")
 	addGroupMemberCmd.MarkFlagRequired("group")
+
 	var addGroupMemberName string
-	addGroupMemberCmd.Flags().StringVar(&addGroupMemberName, "name", "", "This is a required parameter.")
+	addGroupMemberCmd.Flags().StringVar(&addGroupMemberName, "name", "", "This is a required parameter.This is a required parameter.")
 	addGroupMemberCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(addGroupRoleCmd)
@@ -243,14 +244,15 @@ func init() {
 	var addGroupRoleGroup string
 	addGroupRoleCmd.Flags().StringVar(&addGroupRoleGroup, "group", "", "This is a required parameter.The group name.")
 	addGroupRoleCmd.MarkFlagRequired("group")
+
 	var addGroupRoleName string
-	addGroupRoleCmd.Flags().StringVar(&addGroupRoleName, "name", "", "This is a required parameter.")
+	addGroupRoleCmd.Flags().StringVar(&addGroupRoleName, "name", "", "This is a required parameter.This is a required parameter.")
 	addGroupRoleCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(addMemberCmd)
 
 	var addMemberName string
-	addMemberCmd.Flags().StringVar(&addMemberName, "name", "", "This is a required parameter.")
+	addMemberCmd.Flags().StringVar(&addMemberName, "name", "", "This is a required parameter.This is a required parameter.")
 	addMemberCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(addRolePermissionCmd)
@@ -258,6 +260,7 @@ func init() {
 	var addRolePermissionBody string
 	addRolePermissionCmd.Flags().StringVar(&addRolePermissionBody, "body", "", "The request body")
 	addRolePermissionCmd.MarkFlagRequired("body")
+
 	var addRolePermissionRole string
 	addRolePermissionCmd.Flags().StringVar(&addRolePermissionRole, "role", "", "This is a required parameter.The role name.")
 	addRolePermissionCmd.MarkFlagRequired("role")
@@ -265,13 +268,13 @@ func init() {
 	identityCmd.AddCommand(createGroupCmd)
 
 	var createGroupName string
-	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter.")
+	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter.This is a required parameter.")
 	createGroupCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(createRoleCmd)
 
 	var createRoleName string
-	createRoleCmd.Flags().StringVar(&createRoleName, "name", "", "This is a required parameter.")
+	createRoleCmd.Flags().StringVar(&createRoleName, "name", "", "This is a required parameter.This is a required parameter.")
 	createRoleCmd.MarkFlagRequired("name")
 
 	identityCmd.AddCommand(deleteGroupCmd)
@@ -297,6 +300,7 @@ func init() {
 	var getGroupMemberGroup string
 	getGroupMemberCmd.Flags().StringVar(&getGroupMemberGroup, "group", "", "This is a required parameter.The group name.")
 	getGroupMemberCmd.MarkFlagRequired("group")
+
 	var getGroupMemberMember string
 	getGroupMemberCmd.Flags().StringVar(&getGroupMemberMember, "member", "", "This is a required parameter.The member name.")
 	getGroupMemberCmd.MarkFlagRequired("member")
@@ -306,6 +310,7 @@ func init() {
 	var getGroupRoleGroup string
 	getGroupRoleCmd.Flags().StringVar(&getGroupRoleGroup, "group", "", "This is a required parameter.The group name.")
 	getGroupRoleCmd.MarkFlagRequired("group")
+
 	var getGroupRoleRole string
 	getGroupRoleCmd.Flags().StringVar(&getGroupRoleRole, "role", "", "This is a required parameter.The role name.")
 	getGroupRoleCmd.MarkFlagRequired("role")
@@ -333,6 +338,7 @@ func init() {
 	var getRolePermissionPermission string
 	getRolePermissionCmd.Flags().StringVar(&getRolePermissionPermission, "permission", "", "This is a required parameter.The permission string.")
 	getRolePermissionCmd.MarkFlagRequired("permission")
+
 	var getRolePermissionRole string
 	getRolePermissionCmd.Flags().StringVar(&getRolePermissionRole, "role", "", "This is a required parameter.The role name.")
 	getRolePermissionCmd.MarkFlagRequired("role")
@@ -392,6 +398,7 @@ func init() {
 	var removeGroupMemberGroup string
 	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberGroup, "group", "", "This is a required parameter.The group name.")
 	removeGroupMemberCmd.MarkFlagRequired("group")
+
 	var removeGroupMemberMember string
 	removeGroupMemberCmd.Flags().StringVar(&removeGroupMemberMember, "member", "", "This is a required parameter.The member name.")
 	removeGroupMemberCmd.MarkFlagRequired("member")
@@ -401,6 +408,7 @@ func init() {
 	var removeGroupRoleGroup string
 	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleGroup, "group", "", "This is a required parameter.The group name.")
 	removeGroupRoleCmd.MarkFlagRequired("group")
+
 	var removeGroupRoleRole string
 	removeGroupRoleCmd.Flags().StringVar(&removeGroupRoleRole, "role", "", "This is a required parameter.The role name.")
 	removeGroupRoleCmd.MarkFlagRequired("role")
@@ -416,6 +424,7 @@ func init() {
 	var removeRolePermissionPermission string
 	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionPermission, "permission", "", "This is a required parameter.The permission string.")
 	removeRolePermissionCmd.MarkFlagRequired("permission")
+
 	var removeRolePermissionRole string
 	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionRole, "role", "", "This is a required parameter.The role name.")
 	removeRolePermissionCmd.MarkFlagRequired("role")

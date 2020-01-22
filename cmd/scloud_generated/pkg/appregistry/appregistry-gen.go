@@ -20,8 +20,8 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appPrincipalPermissions []string
 	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
 	if err != nil {
@@ -82,9 +82,9 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.CreateAppRequest{
+	generated_request_body := model.CreateAppRequest{
+
 		AppPrincipalPermissions: appPrincipalPermissions,
 		Description:             description,
 		Kind:                    kind,
@@ -98,7 +98,7 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 		WebhookUrl:              webhookUrl,
 	}
 
-	resp, err := client.AppRegistryService.CreateApp(body)
+	resp, err := client.AppRegistryService.CreateApp(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -113,20 +113,20 @@ func CreateSubscription(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
 		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.AppName{
+	generated_request_body := model.AppName{
+
 		AppName: appName,
 	}
 
-	err = client.AppRegistryService.CreateSubscription(body)
+	err = client.AppRegistryService.CreateSubscription(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -141,8 +141,8 @@ func DeleteApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -164,8 +164,8 @@ func DeleteSubscription(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -187,8 +187,8 @@ func GetApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -227,8 +227,8 @@ func GetSubscription(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -250,8 +250,8 @@ func ListAppSubscriptions(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -289,8 +289,8 @@ func ListSubscriptions(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var kindDefault model.AppResourceKind
 	kind := &kindDefault
 	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
@@ -298,10 +298,10 @@ func ListSubscriptions(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
 	// Form query params
-	query := model.ListSubscriptionsQueryParams{}
-	query.Kind = kind
+	generated_query := model.ListSubscriptionsQueryParams{}
+	generated_query.Kind = kind
 
-	resp, err := client.AppRegistryService.ListSubscriptions(&query)
+	resp, err := client.AppRegistryService.ListSubscriptions(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -316,8 +316,8 @@ func RotateSecret(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -339,8 +339,8 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var appName string
 	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
 	if err != nil {
@@ -396,9 +396,9 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.UpdateAppRequest{
+	generated_request_body := model.UpdateAppRequest{
+
 		AppPrincipalPermissions: appPrincipalPermissions,
 		Description:             description,
 		LoginUrl:                loginUrl,
@@ -410,7 +410,7 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 		WebhookUrl:              webhookUrl,
 	}
 
-	resp, err := client.AppRegistryService.UpdateApp(appName, body)
+	resp, err := client.AppRegistryService.UpdateApp(appName, generated_request_body)
 	if err != nil {
 		return err
 	}

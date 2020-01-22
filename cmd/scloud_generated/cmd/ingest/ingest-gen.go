@@ -42,13 +42,13 @@ func init() {
 	postEventsCmd.Flags().StringVar(&postEventsHost, "host", "", "The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.")
 
 	var postEventsId string
-	postEventsCmd.Flags().StringVar(&postEventsId, "id", "", "An optional ID that uniquely identifies the event data. It is used to deduplicate the data if same data is set multiple times.If ID is not specified, it will be assigned by the system.")
+	postEventsCmd.Flags().StringVar(&postEventsId, "id", "", "An optional ID that uniquely identifies the event data. It is used to deduplicate the data if same data is set multiple times. If ID is not specified, it will be assigned by the system.")
 
 	var postEventsNanos int32
 	postEventsCmd.Flags().Int32Var(&postEventsNanos, "nanos", 0, "Optional nanoseconds part of the timestamp.")
 
 	var postEventsSource string
-	postEventsCmd.Flags().StringVar(&postEventsSource, "source", "", "The source value to assign to the event data. For example, if you are sending data from an app that you are developing,set this key to the name of the app.")
+	postEventsCmd.Flags().StringVar(&postEventsSource, "source", "", "The source value to assign to the event data. For example, if you are sending data from an app that you are developing, set this key to the name of the app.")
 
 	var postEventsSourcetype string
 	postEventsCmd.Flags().StringVar(&postEventsSourcetype, "sourcetype", "", "The sourcetype value assigned to the event data.")
@@ -71,13 +71,13 @@ func init() {
 	postMetricsCmd.Flags().StringVar(&postMetricsHost, "host", "", "The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.")
 
 	var postMetricsId string
-	postMetricsCmd.Flags().StringVar(&postMetricsId, "id", "", "An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times.If ID is not specified, it will be assigned by the system.")
+	postMetricsCmd.Flags().StringVar(&postMetricsId, "id", "", "An optional ID that uniquely identifies the metric data. It is used to deduplicate the data if same data is set multiple times. If ID is not specified, it will be assigned by the system.")
 
 	var postMetricsNanos int32
 	postMetricsCmd.Flags().Int32Var(&postMetricsNanos, "nanos", 0, "Optional nanoseconds part of the timestamp.")
 
 	var postMetricsSource string
-	postMetricsCmd.Flags().StringVar(&postMetricsSource, "source", "", "The source value to assign to the event data. For example, if you are sending data from an app that you are developing,set this key to the name of the app.")
+	postMetricsCmd.Flags().StringVar(&postMetricsSource, "source", "", "The source value to assign to the event data. For example, if you are sending data from an app that you are developing, set this key to the name of the app.")
 
 	var postMetricsSourcetype string
 	postMetricsCmd.Flags().StringVar(&postMetricsSourcetype, "sourcetype", "", "The sourcetype value assigned to the event data.")

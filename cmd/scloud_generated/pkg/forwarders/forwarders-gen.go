@@ -20,21 +20,21 @@ func AddCertificate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var pemDefault string
 	pem := &pemDefault
 	err = flags.ParseFlag(cmd.Flags(), "pem", &pem)
 	if err != nil {
 		return fmt.Errorf(`error parsing "pem": ` + err.Error())
 	}
-
 	// Form the request body
-	body := model.Certificate{
+	generated_request_body := model.Certificate{
+
 		Pem: pem,
 	}
 
-	resp, err := client.ForwardersService.AddCertificate(body)
+	resp, err := client.ForwardersService.AddCertificate(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -49,8 +49,8 @@ func DeleteCertificate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
 	// Parse all flags
+
 	var slot string
 	err = flags.ParseFlag(cmd.Flags(), "slot", &slot)
 	if err != nil {

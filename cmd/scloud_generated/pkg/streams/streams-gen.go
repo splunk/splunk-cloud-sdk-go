@@ -61,6 +61,7 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// TODO: https://jira.splunk.com/browse/SCP-22510
 // CompileDSL Compiles the Streams DSL and returns Streams JSON.
 func CompileDSL(cmd *cobra.Command, args []string) error {
 
@@ -89,6 +90,7 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// TODO: https://jira.splunk.com/browse/SCP-22510
 // CompileSPL Compiles SPL2 and returns Streams JSON.
 func CompileSPL(cmd *cobra.Command, args []string) error {
 
