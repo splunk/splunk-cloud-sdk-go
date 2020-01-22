@@ -131,6 +131,11 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 	if err != nil {
 		return fmt.Errorf(`flags.ParseFlag: error retrieving flag flags.GetString("%s") err: %s`, name, err)
 	}
+
+	if strings.HasPrefix(outtype, "map[") && strval == "" {
+		return nil
+	}
+
 	err = json.Unmarshal([]byte(strval), out)
 	if err != nil {
 		return fmt.Errorf("flags.ParseFlag: failure to unmarshal to type %s err: %s", outtype, err)
