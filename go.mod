@@ -13,5 +13,5 @@ require (
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
 	gopkg.in/yaml.v2 v2.2.2
-	gotest.tools/gotestsum v0.3.5 // indirect
+	gotest.tools/gotestsum v0.4.0 // indirect
 )
