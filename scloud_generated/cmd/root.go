@@ -28,17 +28,15 @@ var confFile string
 var legacyFile string
 
 var (
-	env             string
-	tenant          string
-	userName        string
-	authURL         string
-	hostURL         string
-	insecure        bool
-	cacert          string
-	logtostderr     bool
-	alsologtostderr bool
-	testhook_dryrun bool
-	testhook        bool
+	env            string
+	tenant         string
+	userName       string
+	authURL        string
+	hostURL        string
+	insecure       bool
+	cacert         string
+	testhookDryrun bool
+	testhook       bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -83,14 +81,23 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
 
 	// add hidden test flags
-	rootCmd.PersistentFlags().BoolVar(&testhook_dryrun, "testhook-dryrun", false, "a string flag")
-	rootCmd.PersistentFlags().MarkHidden("testhook-dryrun")
+	rootCmd.PersistentFlags().BoolVar(&testhookDryrun, "testhook-dryrun", false, "a string flag")
+	err := rootCmd.PersistentFlags().MarkHidden("testhook-dryrun")
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	rootCmd.PersistentFlags().BoolVar(&testhook, "testhook", false, "a string flag")
-	rootCmd.PersistentFlags().MarkHidden("testhook")
+	err = rootCmd.PersistentFlags().MarkHidden("testhook")
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
-	flag.CommandLine.Parse([]string{})
+	err = flag.CommandLine.Parse([]string{})
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func initConfig() {
@@ -118,7 +125,7 @@ func initConfig() {
 		config.Load(home, confFile)
 	}
 
-	if testhook_dryrun {
+	if testhookDryrun {
 		config.GlobalFlags["testhookdryrun"] = true
 		fmt.Println("enable testhook-dryrun")
 	}
