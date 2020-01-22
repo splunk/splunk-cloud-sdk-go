@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"time"
 
@@ -163,28 +162,6 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 type verboseOutputter struct {
 	transport        http.RoundTripper
 	cancelBeforeSend bool
-}
-
-func createVerboseOutputter() http.RoundTripper {
-	return &verboseOutputter{transport: http.DefaultTransport}
-}
-
-func createDryrunOutputter() http.RoundTripper {
-	return &verboseOutputter{cancelBeforeSend: true}
-
-}
-
-// RoundTrip implements http.RoundTripper
-func (out *verboseOutputter) RoundTrip(request *http.Request) (*http.Response, error) {
-	dump, _ := httputil.DumpRequest(request, true)
-	fmt.Printf("REQUEST:\n%s\n\n", dump)
-	if out.cancelBeforeSend {
-		return nil, errors.New("request cancelled")
-	}
-
-	response, err := out.transport.RoundTrip(request)
-	fmt.Printf("\nRESPONSE:\n%#v\n", response)
-	return response, err
 }
 
 type testhooklogger struct {
