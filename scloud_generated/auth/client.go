@@ -182,7 +182,7 @@ func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, err
 		fmt.Println(err)
 	}
 
-	fmt.Printf("\nRESPONSE:\n%#v\n", response)
+	fmt.Printf("\nRESPONSE:\n%v\n", response)
 
 	return response, err
 }
