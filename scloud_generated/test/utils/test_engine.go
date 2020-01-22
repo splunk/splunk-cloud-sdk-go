@@ -58,21 +58,28 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 		}
 
 		line = strings.TrimSuffix(line, "\n")
-		line = strings.TrimPrefix(line, " ")
-		line = strings.TrimSuffix(line, " ")
+		line = strings.Trim(line, " ")
 
 		if len(line) == 0 || strings.HasPrefix(line, "#") {
 			continue
 		}
 
-		args := strings.Split(line, ",")
+		args := strings.Split(line, " ")
+		for index, ele := range args {
+			args[index] = strings.Trim(ele, " ")
+		}
+
 		args = append([]string{arg}, args...)
 		cmd := exec.Command(scloud, args...)
 		res, err := executeCliCommand(cmd)
 
 		if testarg == "--testhook" {
 			if err != nil {
-				fmt.Printf("-- Execute \"%s\" Failed: %s\n", line, err.Error())
+				resstr := ""
+				if len(res) > 0 {
+					resstr = ", response:" + res
+				}
+				fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resstr)
 			} else {
 				fmt.Printf("-- Execute \"%s\" Succeed\n", line)
 			}

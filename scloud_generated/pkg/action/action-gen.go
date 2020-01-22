@@ -381,13 +381,15 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 		TtlSeconds:       ttlSeconds,
 	}
 
-	err = client.ActionService.TriggerAction(action_name, generated_request_body)
+	resp, err := client.ActionService.TriggerActionWithStatus(action_name, generated_request_body)
 	if err != nil {
 		if strings.HasSuffix(err.Error(), "For testrun, request was canceled") {
 			return nil
 		}
 		return err
 	}
+
+	jsonx.Pprint(cmd, resp)
 
 	return nil
 }
