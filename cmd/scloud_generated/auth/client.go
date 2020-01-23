@@ -174,7 +174,8 @@ func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, err
 	fmt.Printf("REQUEST BODY:%v\n", request.Body)
 
 	if out.cancelBeforeSend {
-		return nil, errors.New("For testrun, request was canceled")
+		fmt.Println(ScloudTesExecCancledError{}.Error())
+		return nil, ScloudTesExecCancledError{}
 	}
 
 	response, err := out.transport.RoundTrip(request)
@@ -185,4 +186,25 @@ func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, err
 	fmt.Printf("\nRESPONSE:\n%v\n", response)
 
 	return response, err
+}
+
+type ScloudTesExecCancledError struct {
+}
+
+func (ste ScloudTesExecCancledError) Error() string {
+	return "For test run, request was canceled"
+}
+
+func CheckScloudTesExecCancledError(err error) error {
+	if err != nil {
+		urlerr, ok := err.(*url.Error)
+		if ok {
+			_, ok := urlerr.Err.(ScloudTesExecCancledError)
+			if ok {
+				return nil
+			}
+		}
+
+	}
+	return err
 }
