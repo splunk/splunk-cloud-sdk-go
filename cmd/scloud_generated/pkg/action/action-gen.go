@@ -88,7 +88,7 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromEmailAction(generated_request_body))
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -147,7 +147,7 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromWebhookAction(generated_request_body))
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -170,7 +170,7 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 
 	err = client.ActionService.DeleteAction(action_name)
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 
 	return nil
@@ -193,7 +193,7 @@ func GetAction(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetAction(action_name)
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -221,7 +221,7 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetActionStatus(action_name, status_id)
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -249,7 +249,7 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetActionStatusDetails(action_name, status_id)
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -266,7 +266,7 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.GetPublicWebhookKeys()
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -282,7 +282,7 @@ func ListActions(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.ListActions()
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -358,7 +358,7 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 
 	err = client.ActionService.TriggerAction(action_name, generated_request_body)
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 
 	return nil
@@ -432,7 +432,7 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromEmailActionMutable(generated_request_body))
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
@@ -486,7 +486,7 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
 	if err != nil {
-		return auth.CheckScloudTesExecCancledError(err)
+		return auth.FilterOutScloudTesExecCancledError(err)
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil

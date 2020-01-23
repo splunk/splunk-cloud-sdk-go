@@ -195,7 +195,8 @@ func (ste ScloudTesExecCancledError) Error() string {
 	return "For test run, request was canceled"
 }
 
-func CheckScloudTesExecCancledError(err error) error {
+// Filter out ScloudTesExecCancledError
+func FilterOutScloudTesExecCancledError(err error) error {
 	if err != nil {
 		urlerr, ok := err.(*url.Error)
 		if ok {
@@ -204,7 +205,7 @@ func CheckScloudTesExecCancledError(err error) error {
 				return nil
 			}
 		}
-
 	}
+
 	return err
 }
