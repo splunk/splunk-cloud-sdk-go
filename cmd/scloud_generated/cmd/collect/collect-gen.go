@@ -61,27 +61,27 @@ func init() {
 	collectCmd.AddCommand(createJobCmd)
 
 	var createJobAuthorization string
-	createJobCmd.Flags().StringVar(&createJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	createJobCmd.Flags().StringVar(&createJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	createJobCmd.MarkFlagRequired("authorization")
 
 	var createJobConnectorID string
-	createJobCmd.Flags().StringVar(&createJobConnectorID, "connector-ID", "", "This is a required parameter.This is a required parameter.The ID of the connector used in the job.")
+	createJobCmd.Flags().StringVar(&createJobConnectorID, "connector-ID", "", "This is a required parameter. The ID of the connector used in the job.")
 	createJobCmd.MarkFlagRequired("connector-ID")
 
 	var createJobName string
-	createJobCmd.Flags().StringVar(&createJobName, "name", "", "This is a required parameter.This is a required parameter.")
+	createJobCmd.Flags().StringVar(&createJobName, "name", "", "This is a required parameter. ")
 	createJobCmd.MarkFlagRequired("name")
 
 	var createJobParameters string
-	createJobCmd.Flags().StringVar(&createJobParameters, "parameters", "", "This is a required parameter.This is a required parameter.The configuration of the connector used in the job.")
+	createJobCmd.Flags().StringVar(&createJobParameters, "parameters", "", "This is a required parameter. The configuration of the connector used in the job.")
 	createJobCmd.MarkFlagRequired("parameters")
 
 	var createJobScalePolicy string
-	createJobCmd.Flags().StringVar(&createJobScalePolicy, "scale-policy", "", "This is a required parameter.This is a required parameter.")
+	createJobCmd.Flags().StringVar(&createJobScalePolicy, "scale-policy", "", "This is a required parameter. ")
 	createJobCmd.MarkFlagRequired("scale-policy")
 
 	var createJobSchedule string
-	createJobCmd.Flags().StringVar(&createJobSchedule, "schedule", "", "This is a required parameter.This is a required parameter.The cron schedule, in UTC time format.")
+	createJobCmd.Flags().StringVar(&createJobSchedule, "schedule", "", "This is a required parameter. The cron schedule, in UTC time format.")
 	createJobCmd.MarkFlagRequired("schedule")
 
 	var createJobEventExtraFields string
@@ -93,33 +93,33 @@ func init() {
 	collectCmd.AddCommand(deleteJobCmd)
 
 	var deleteJobAuthorization string
-	deleteJobCmd.Flags().StringVar(&deleteJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	deleteJobCmd.Flags().StringVar(&deleteJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	deleteJobCmd.MarkFlagRequired("authorization")
 
 	var deleteJobJobId string
-	deleteJobCmd.Flags().StringVar(&deleteJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	deleteJobCmd.Flags().StringVar(&deleteJobJobId, "job-id", "", "This is a required parameter. The job ID.")
 	deleteJobCmd.MarkFlagRequired("job-id")
 
 	collectCmd.AddCommand(deleteJobsCmd)
 
 	var deleteJobsAuthorization string
-	deleteJobsCmd.Flags().StringVar(&deleteJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	deleteJobsCmd.Flags().StringVar(&deleteJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	deleteJobsCmd.MarkFlagRequired("authorization")
 
 	collectCmd.AddCommand(getJobCmd)
 
 	var getJobAuthorization string
-	getJobCmd.Flags().StringVar(&getJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	getJobCmd.Flags().StringVar(&getJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	getJobCmd.MarkFlagRequired("authorization")
 
 	var getJobJobId string
-	getJobCmd.Flags().StringVar(&getJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	getJobCmd.Flags().StringVar(&getJobJobId, "job-id", "", "This is a required parameter. The job ID.")
 	getJobCmd.MarkFlagRequired("job-id")
 
 	collectCmd.AddCommand(listJobsCmd)
 
 	var listJobsAuthorization string
-	listJobsCmd.Flags().StringVar(&listJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	listJobsCmd.Flags().StringVar(&listJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	listJobsCmd.MarkFlagRequired("authorization")
 
 	var listJobsConnectorId string
@@ -128,11 +128,11 @@ func init() {
 	collectCmd.AddCommand(patchJobCmd)
 
 	var patchJobAuthorization string
-	patchJobCmd.Flags().StringVar(&patchJobAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	patchJobCmd.Flags().StringVar(&patchJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	patchJobCmd.MarkFlagRequired("authorization")
 
 	var patchJobJobId string
-	patchJobCmd.Flags().StringVar(&patchJobJobId, "job-id", "", "This is a required parameter.The job ID.")
+	patchJobCmd.Flags().StringVar(&patchJobJobId, "job-id", "", "This is a required parameter. The job ID.")
 	patchJobCmd.MarkFlagRequired("job-id")
 
 	var patchJobConnectorID string
@@ -159,7 +159,7 @@ func init() {
 	collectCmd.AddCommand(patchJobsCmd)
 
 	var patchJobsAuthorization string
-	patchJobsCmd.Flags().StringVar(&patchJobsAuthorization, "authorization", "", "This is a required parameter.The access token provided by the user (obtained from a known identity provider).")
+	patchJobsCmd.Flags().StringVar(&patchJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
 	patchJobsCmd.MarkFlagRequired("authorization")
 
 	var patchJobsConnectorID string

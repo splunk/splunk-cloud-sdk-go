@@ -96,41 +96,41 @@ func init() {
 	kvstoreCmd.AddCommand(createIndexCmd)
 
 	var createIndexCollection string
-	createIndexCmd.Flags().StringVar(&createIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	createIndexCmd.Flags().StringVar(&createIndexCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	createIndexCmd.MarkFlagRequired("collection")
 
 	var createIndexFields string
-	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "This is a required parameter.This is a required parameter.")
+	createIndexCmd.Flags().StringVar(&createIndexFields, "fields", "", "This is a required parameter. ")
 	createIndexCmd.MarkFlagRequired("fields")
 
 	var createIndexName string
-	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "This is a required parameter.This is a required parameter.The name of the index.")
+	createIndexCmd.Flags().StringVar(&createIndexName, "name", "", "This is a required parameter. The name of the index.")
 	createIndexCmd.MarkFlagRequired("name")
 
 	kvstoreCmd.AddCommand(deleteIndexCmd)
 
 	var deleteIndexCollection string
-	deleteIndexCmd.Flags().StringVar(&deleteIndexCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	deleteIndexCmd.Flags().StringVar(&deleteIndexCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	deleteIndexCmd.MarkFlagRequired("collection")
 
 	var deleteIndexIndex string
-	deleteIndexCmd.Flags().StringVar(&deleteIndexIndex, "index", "", "This is a required parameter.The name of the index.")
+	deleteIndexCmd.Flags().StringVar(&deleteIndexIndex, "index", "", "This is a required parameter. The name of the index.")
 	deleteIndexCmd.MarkFlagRequired("index")
 
 	kvstoreCmd.AddCommand(deleteRecordByKeyCmd)
 
 	var deleteRecordByKeyCollection string
-	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	deleteRecordByKeyCmd.MarkFlagRequired("collection")
 
 	var deleteRecordByKeyKey string
-	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
+	deleteRecordByKeyCmd.Flags().StringVar(&deleteRecordByKeyKey, "key", "", "This is a required parameter. The key of the record.")
 	deleteRecordByKeyCmd.MarkFlagRequired("key")
 
 	kvstoreCmd.AddCommand(deleteRecordsCmd)
 
 	var deleteRecordsCollection string
-	deleteRecordsCmd.Flags().StringVar(&deleteRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	deleteRecordsCmd.Flags().StringVar(&deleteRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	deleteRecordsCmd.MarkFlagRequired("collection")
 
 	var deleteRecordsQuery string
@@ -139,11 +139,11 @@ func init() {
 	kvstoreCmd.AddCommand(getRecordByKeyCmd)
 
 	var getRecordByKeyCollection string
-	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	getRecordByKeyCmd.MarkFlagRequired("collection")
 
 	var getRecordByKeyKey string
-	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyKey, "key", "", "This is a required parameter.The key of the record.")
+	getRecordByKeyCmd.Flags().StringVar(&getRecordByKeyKey, "key", "", "This is a required parameter. The key of the record.")
 	getRecordByKeyCmd.MarkFlagRequired("key")
 
 	kvstoreCmd.AddCommand(insertRecordCmd)
@@ -153,7 +153,7 @@ func init() {
 	insertRecordCmd.MarkFlagRequired("body")
 
 	var insertRecordCollection string
-	insertRecordCmd.Flags().StringVar(&insertRecordCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	insertRecordCmd.Flags().StringVar(&insertRecordCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	insertRecordCmd.MarkFlagRequired("collection")
 
 	kvstoreCmd.AddCommand(insertRecordsCmd)
@@ -163,19 +163,19 @@ func init() {
 	insertRecordsCmd.MarkFlagRequired("body")
 
 	var insertRecordsCollection string
-	insertRecordsCmd.Flags().StringVar(&insertRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	insertRecordsCmd.Flags().StringVar(&insertRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	insertRecordsCmd.MarkFlagRequired("collection")
 
 	kvstoreCmd.AddCommand(listIndexesCmd)
 
 	var listIndexesCollection string
-	listIndexesCmd.Flags().StringVar(&listIndexesCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	listIndexesCmd.Flags().StringVar(&listIndexesCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	listIndexesCmd.MarkFlagRequired("collection")
 
 	kvstoreCmd.AddCommand(listRecordsCmd)
 
 	var listRecordsCollection string
-	listRecordsCmd.Flags().StringVar(&listRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	listRecordsCmd.Flags().StringVar(&listRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	listRecordsCmd.MarkFlagRequired("collection")
 
 	var listRecordsCount int32
@@ -202,17 +202,17 @@ func init() {
 	putRecordCmd.MarkFlagRequired("body")
 
 	var putRecordCollection string
-	putRecordCmd.Flags().StringVar(&putRecordCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	putRecordCmd.Flags().StringVar(&putRecordCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	putRecordCmd.MarkFlagRequired("collection")
 
 	var putRecordKey string
-	putRecordCmd.Flags().StringVar(&putRecordKey, "key", "", "This is a required parameter.The key of the record.")
+	putRecordCmd.Flags().StringVar(&putRecordKey, "key", "", "This is a required parameter. The key of the record.")
 	putRecordCmd.MarkFlagRequired("key")
 
 	kvstoreCmd.AddCommand(queryRecordsCmd)
 
 	var queryRecordsCollection string
-	queryRecordsCmd.Flags().StringVar(&queryRecordsCollection, "collection", "", "This is a required parameter.The name of the collection.")
+	queryRecordsCmd.Flags().StringVar(&queryRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	queryRecordsCmd.MarkFlagRequired("collection")
 
 	var queryRecordsCount int32
