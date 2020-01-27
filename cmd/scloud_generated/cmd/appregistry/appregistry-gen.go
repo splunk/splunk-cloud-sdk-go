@@ -96,15 +96,15 @@ func init() {
 	appregistryCmd.AddCommand(createAppCmd)
 
 	var createAppKind string
-	createAppCmd.Flags().StringVar(&createAppKind, "kind", "", "This is a required parameter.This is a required parameter. can accept values web, native, service")
+	createAppCmd.Flags().StringVar(&createAppKind, "kind", "", "This is a required parameter.  can accept values web, native, service")
 	createAppCmd.MarkFlagRequired("kind")
 
 	var createAppName string
-	createAppCmd.Flags().StringVar(&createAppName, "name", "", "This is a required parameter.This is a required parameter.App name that is unique within Splunk Cloud Platform.")
+	createAppCmd.Flags().StringVar(&createAppName, "name", "", "This is a required parameter. App name that is unique within Splunk Cloud Platform.")
 	createAppCmd.MarkFlagRequired("name")
 
 	var createAppTitle string
-	createAppCmd.Flags().StringVar(&createAppTitle, "title", "", "This is a required parameter.This is a required parameter.Human-readable title for the app.")
+	createAppCmd.Flags().StringVar(&createAppTitle, "title", "", "This is a required parameter. Human-readable title for the app.")
 	createAppCmd.MarkFlagRequired("title")
 
 	var createAppAppPrincipalPermissions []string
@@ -134,25 +134,25 @@ func init() {
 	appregistryCmd.AddCommand(createSubscriptionCmd)
 
 	var createSubscriptionAppName string
-	createSubscriptionCmd.Flags().StringVar(&createSubscriptionAppName, "app-name", "", "This is a required parameter.This is a required parameter.")
+	createSubscriptionCmd.Flags().StringVar(&createSubscriptionAppName, "app-name", "", "This is a required parameter. ")
 	createSubscriptionCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(deleteAppCmd)
 
 	var deleteAppAppName string
-	deleteAppCmd.Flags().StringVar(&deleteAppAppName, "app-name", "", "This is a required parameter.App name.")
+	deleteAppCmd.Flags().StringVar(&deleteAppAppName, "app-name", "", "This is a required parameter. App name.")
 	deleteAppCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(deleteSubscriptionCmd)
 
 	var deleteSubscriptionAppName string
-	deleteSubscriptionCmd.Flags().StringVar(&deleteSubscriptionAppName, "app-name", "", "This is a required parameter.App name.")
+	deleteSubscriptionCmd.Flags().StringVar(&deleteSubscriptionAppName, "app-name", "", "This is a required parameter. App name.")
 	deleteSubscriptionCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(getAppCmd)
 
 	var getAppAppName string
-	getAppCmd.Flags().StringVar(&getAppAppName, "app-name", "", "This is a required parameter.App name.")
+	getAppCmd.Flags().StringVar(&getAppAppName, "app-name", "", "This is a required parameter. App name.")
 	getAppCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(getKeysCmd)
@@ -160,13 +160,13 @@ func init() {
 	appregistryCmd.AddCommand(getSubscriptionCmd)
 
 	var getSubscriptionAppName string
-	getSubscriptionCmd.Flags().StringVar(&getSubscriptionAppName, "app-name", "", "This is a required parameter.App name.")
+	getSubscriptionCmd.Flags().StringVar(&getSubscriptionAppName, "app-name", "", "This is a required parameter. App name.")
 	getSubscriptionCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(listAppSubscriptionsCmd)
 
 	var listAppSubscriptionsAppName string
-	listAppSubscriptionsCmd.Flags().StringVar(&listAppSubscriptionsAppName, "app-name", "", "This is a required parameter.App name.")
+	listAppSubscriptionsCmd.Flags().StringVar(&listAppSubscriptionsAppName, "app-name", "", "This is a required parameter. App name.")
 	listAppSubscriptionsCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(listAppsCmd)
@@ -179,17 +179,17 @@ func init() {
 	appregistryCmd.AddCommand(rotateSecretCmd)
 
 	var rotateSecretAppName string
-	rotateSecretCmd.Flags().StringVar(&rotateSecretAppName, "app-name", "", "This is a required parameter.App name.")
+	rotateSecretCmd.Flags().StringVar(&rotateSecretAppName, "app-name", "", "This is a required parameter. App name.")
 	rotateSecretCmd.MarkFlagRequired("app-name")
 
 	appregistryCmd.AddCommand(updateAppCmd)
 
 	var updateAppAppName string
-	updateAppCmd.Flags().StringVar(&updateAppAppName, "app-name", "", "This is a required parameter.App name.")
+	updateAppCmd.Flags().StringVar(&updateAppAppName, "app-name", "", "This is a required parameter. App name.")
 	updateAppCmd.MarkFlagRequired("app-name")
 
 	var updateAppTitle string
-	updateAppCmd.Flags().StringVar(&updateAppTitle, "title", "", "This is a required parameter.This is a required parameter.Human-readable title for the app.")
+	updateAppCmd.Flags().StringVar(&updateAppTitle, "title", "", "This is a required parameter. Human-readable title for the app.")
 	updateAppCmd.MarkFlagRequired("title")
 
 	var updateAppAppPrincipalPermissions []string

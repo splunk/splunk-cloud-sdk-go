@@ -194,7 +194,7 @@ func init() {
 	mlCmd.AddCommand(createWorkflowCmd)
 
 	var createWorkflowTasks string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowTasks, "tasks", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowCmd.Flags().StringVar(&createWorkflowTasks, "tasks", "", "This is a required parameter. ")
 	createWorkflowCmd.MarkFlagRequired("tasks")
 
 	var createWorkflowName string
@@ -203,15 +203,15 @@ func init() {
 	mlCmd.AddCommand(createWorkflowBuildCmd)
 
 	var createWorkflowBuildId string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildId, "id", "", "This is a required parameter.The workflow ID.")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildId, "id", "", "This is a required parameter. The workflow ID.")
 	createWorkflowBuildCmd.MarkFlagRequired("id")
 
 	var createWorkflowBuildInput string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildInput, "input", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildInput, "input", "", "This is a required parameter. ")
 	createWorkflowBuildCmd.MarkFlagRequired("input")
 
 	var createWorkflowBuildTasks string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTasks, "tasks", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildTasks, "tasks", "", "This is a required parameter. ")
 	createWorkflowBuildCmd.MarkFlagRequired("tasks")
 
 	var createWorkflowBuildName string
@@ -235,11 +235,11 @@ func init() {
 	mlCmd.AddCommand(createWorkflowDeploymentCmd)
 
 	var createWorkflowDeploymentBuildId string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	createWorkflowDeploymentCmd.MarkFlagRequired("build-id")
 
 	var createWorkflowDeploymentId string
-	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	createWorkflowDeploymentCmd.Flags().StringVar(&createWorkflowDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	createWorkflowDeploymentCmd.MarkFlagRequired("id")
 
 	var createWorkflowDeploymentCpuLimit string
@@ -272,37 +272,37 @@ func init() {
 	mlCmd.AddCommand(createWorkflowInferenceCmd)
 
 	var createWorkflowInferenceBuildId string
-	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	createWorkflowInferenceCmd.MarkFlagRequired("build-id")
 
 	var createWorkflowInferenceDeploymentId string
-	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceDeploymentId, "deployment-id", "", "This is a required parameter.The workflow deployment ID.")
+	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceDeploymentId, "deployment-id", "", "This is a required parameter. The workflow deployment ID.")
 	createWorkflowInferenceCmd.MarkFlagRequired("deployment-id")
 
 	var createWorkflowInferenceId string
-	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceId, "id", "", "This is a required parameter.The workflow ID.")
+	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceId, "id", "", "This is a required parameter. The workflow ID.")
 	createWorkflowInferenceCmd.MarkFlagRequired("id")
 
 	var createWorkflowInferenceInput string
-	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceInput, "input", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowInferenceCmd.Flags().StringVar(&createWorkflowInferenceInput, "input", "", "This is a required parameter. ")
 	createWorkflowInferenceCmd.MarkFlagRequired("input")
 
 	mlCmd.AddCommand(createWorkflowRunCmd)
 
 	var createWorkflowRunBuildId string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	createWorkflowRunCmd.MarkFlagRequired("build-id")
 
 	var createWorkflowRunId string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunId, "id", "", "This is a required parameter.The workflow ID.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunId, "id", "", "This is a required parameter. The workflow ID.")
 	createWorkflowRunCmd.MarkFlagRequired("id")
 
 	var createWorkflowRunInput string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunInput, "input", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunInput, "input", "", "This is a required parameter. ")
 	createWorkflowRunCmd.MarkFlagRequired("input")
 
 	var createWorkflowRunOutput string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunOutput, "output", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunOutput, "output", "", "This is a required parameter. ")
 	createWorkflowRunCmd.MarkFlagRequired("output")
 
 	var createWorkflowRunEvaluate string
@@ -323,19 +323,19 @@ func init() {
 	mlCmd.AddCommand(createWorkflowStreamDeploymentCmd)
 
 	var createWorkflowStreamDeploymentBuildId string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("build-id")
 
 	var createWorkflowStreamDeploymentId string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("id")
 
 	var createWorkflowStreamDeploymentInput string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentInput, "input", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentInput, "input", "", "This is a required parameter. ")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("input")
 
 	var createWorkflowStreamDeploymentOutput string
-	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentOutput, "output", "", "This is a required parameter.This is a required parameter.")
+	createWorkflowStreamDeploymentCmd.Flags().StringVar(&createWorkflowStreamDeploymentOutput, "output", "", "This is a required parameter. ")
 	createWorkflowStreamDeploymentCmd.MarkFlagRequired("output")
 
 	var createWorkflowStreamDeploymentCpuLimit string
@@ -362,219 +362,219 @@ func init() {
 	mlCmd.AddCommand(deleteWorkflowCmd)
 
 	var deleteWorkflowId string
-	deleteWorkflowCmd.Flags().StringVar(&deleteWorkflowId, "id", "", "This is a required parameter.The workflow ID.")
+	deleteWorkflowCmd.Flags().StringVar(&deleteWorkflowId, "id", "", "This is a required parameter. The workflow ID.")
 	deleteWorkflowCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(deleteWorkflowBuildCmd)
 
 	var deleteWorkflowBuildBuildId string
-	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	deleteWorkflowBuildCmd.MarkFlagRequired("build-id")
 
 	var deleteWorkflowBuildId string
-	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildId, "id", "", "This is a required parameter.The workflow ID.")
+	deleteWorkflowBuildCmd.Flags().StringVar(&deleteWorkflowBuildId, "id", "", "This is a required parameter. The workflow ID.")
 	deleteWorkflowBuildCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(deleteWorkflowDeploymentCmd)
 
 	var deleteWorkflowDeploymentBuildId string
-	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	deleteWorkflowDeploymentCmd.MarkFlagRequired("build-id")
 
 	var deleteWorkflowDeploymentDeploymentId string
-	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentDeploymentId, "deployment-id", "", "This is a required parameter.The workflow deployment ID.")
+	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentDeploymentId, "deployment-id", "", "This is a required parameter. The workflow deployment ID.")
 	deleteWorkflowDeploymentCmd.MarkFlagRequired("deployment-id")
 
 	var deleteWorkflowDeploymentId string
-	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	deleteWorkflowDeploymentCmd.Flags().StringVar(&deleteWorkflowDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	deleteWorkflowDeploymentCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(deleteWorkflowRunCmd)
 
 	var deleteWorkflowRunBuildId string
-	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	deleteWorkflowRunCmd.MarkFlagRequired("build-id")
 
 	var deleteWorkflowRunId string
-	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunId, "id", "", "This is a required parameter.The workflow ID.")
+	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunId, "id", "", "This is a required parameter. The workflow ID.")
 	deleteWorkflowRunCmd.MarkFlagRequired("id")
 
 	var deleteWorkflowRunRunId string
-	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
+	deleteWorkflowRunCmd.Flags().StringVar(&deleteWorkflowRunRunId, "run-id", "", "This is a required parameter. The workflow run ID.")
 	deleteWorkflowRunCmd.MarkFlagRequired("run-id")
 
 	mlCmd.AddCommand(deleteWorkflowStreamDeploymentCmd)
 
 	var deleteWorkflowStreamDeploymentBuildId string
-	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	deleteWorkflowStreamDeploymentCmd.MarkFlagRequired("build-id")
 
 	var deleteWorkflowStreamDeploymentId string
-	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	deleteWorkflowStreamDeploymentCmd.MarkFlagRequired("id")
 
 	var deleteWorkflowStreamDeploymentStreamDeploymentId string
-	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter.The workflow streaming deployment ID.")
+	deleteWorkflowStreamDeploymentCmd.Flags().StringVar(&deleteWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter. The workflow streaming deployment ID.")
 	deleteWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
 	mlCmd.AddCommand(getWorkflowCmd)
 
 	var getWorkflowId string
-	getWorkflowCmd.Flags().StringVar(&getWorkflowId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowCmd.Flags().StringVar(&getWorkflowId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowBuildCmd)
 
 	var getWorkflowBuildBuildId string
-	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowBuildCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowBuildId string
-	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowBuildCmd.Flags().StringVar(&getWorkflowBuildId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowBuildCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowBuildErrorCmd)
 
 	var getWorkflowBuildErrorBuildId string
-	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowBuildErrorCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowBuildErrorId string
-	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowBuildErrorCmd.Flags().StringVar(&getWorkflowBuildErrorId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowBuildErrorCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowBuildLogCmd)
 
 	var getWorkflowBuildLogBuildId string
-	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowBuildLogCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowBuildLogId string
-	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowBuildLogCmd.Flags().StringVar(&getWorkflowBuildLogId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowBuildLogCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowDeploymentCmd)
 
 	var getWorkflowDeploymentBuildId string
-	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowDeploymentCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowDeploymentDeploymentId string
-	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentDeploymentId, "deployment-id", "", "This is a required parameter.The workflow deployment ID.")
+	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentDeploymentId, "deployment-id", "", "This is a required parameter. The workflow deployment ID.")
 	getWorkflowDeploymentCmd.MarkFlagRequired("deployment-id")
 
 	var getWorkflowDeploymentId string
-	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowDeploymentCmd.Flags().StringVar(&getWorkflowDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowDeploymentCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowDeploymentErrorCmd)
 
 	var getWorkflowDeploymentErrorBuildId string
-	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowDeploymentErrorCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowDeploymentErrorDeploymentId string
-	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorDeploymentId, "deployment-id", "", "This is a required parameter.The workflow deployment ID.")
+	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorDeploymentId, "deployment-id", "", "This is a required parameter. The workflow deployment ID.")
 	getWorkflowDeploymentErrorCmd.MarkFlagRequired("deployment-id")
 
 	var getWorkflowDeploymentErrorId string
-	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowDeploymentErrorCmd.Flags().StringVar(&getWorkflowDeploymentErrorId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowDeploymentErrorCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowDeploymentLogCmd)
 
 	var getWorkflowDeploymentLogBuildId string
-	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowDeploymentLogCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowDeploymentLogDeploymentId string
-	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogDeploymentId, "deployment-id", "", "This is a required parameter.The workflow deployment ID.")
+	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogDeploymentId, "deployment-id", "", "This is a required parameter. The workflow deployment ID.")
 	getWorkflowDeploymentLogCmd.MarkFlagRequired("deployment-id")
 
 	var getWorkflowDeploymentLogId string
-	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowDeploymentLogCmd.Flags().StringVar(&getWorkflowDeploymentLogId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowDeploymentLogCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(getWorkflowRunCmd)
 
 	var getWorkflowRunBuildId string
-	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowRunCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowRunId string
-	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowRunCmd.MarkFlagRequired("id")
 
 	var getWorkflowRunRunId string
-	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
+	getWorkflowRunCmd.Flags().StringVar(&getWorkflowRunRunId, "run-id", "", "This is a required parameter. The workflow run ID.")
 	getWorkflowRunCmd.MarkFlagRequired("run-id")
 
 	mlCmd.AddCommand(getWorkflowRunErrorCmd)
 
 	var getWorkflowRunErrorBuildId string
-	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowRunErrorCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowRunErrorId string
-	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowRunErrorCmd.MarkFlagRequired("id")
 
 	var getWorkflowRunErrorRunId string
-	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
+	getWorkflowRunErrorCmd.Flags().StringVar(&getWorkflowRunErrorRunId, "run-id", "", "This is a required parameter. The workflow run ID.")
 	getWorkflowRunErrorCmd.MarkFlagRequired("run-id")
 
 	mlCmd.AddCommand(getWorkflowRunLogCmd)
 
 	var getWorkflowRunLogBuildId string
-	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowRunLogCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowRunLogId string
-	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowRunLogCmd.MarkFlagRequired("id")
 
 	var getWorkflowRunLogRunId string
-	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogRunId, "run-id", "", "This is a required parameter.The workflow run ID.")
+	getWorkflowRunLogCmd.Flags().StringVar(&getWorkflowRunLogRunId, "run-id", "", "This is a required parameter. The workflow run ID.")
 	getWorkflowRunLogCmd.MarkFlagRequired("run-id")
 
 	mlCmd.AddCommand(getWorkflowStreamDeploymentCmd)
 
 	var getWorkflowStreamDeploymentBuildId string
-	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	getWorkflowStreamDeploymentCmd.MarkFlagRequired("build-id")
 
 	var getWorkflowStreamDeploymentId string
-	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentId, "id", "", "This is a required parameter.The workflow ID.")
+	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentId, "id", "", "This is a required parameter. The workflow ID.")
 	getWorkflowStreamDeploymentCmd.MarkFlagRequired("id")
 
 	var getWorkflowStreamDeploymentStreamDeploymentId string
-	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter.The workflow streaming deployment ID.")
+	getWorkflowStreamDeploymentCmd.Flags().StringVar(&getWorkflowStreamDeploymentStreamDeploymentId, "stream-deployment-id", "", "This is a required parameter. The workflow streaming deployment ID.")
 	getWorkflowStreamDeploymentCmd.MarkFlagRequired("stream-deployment-id")
 
 	mlCmd.AddCommand(listWorkflowBuildsCmd)
 
 	var listWorkflowBuildsId string
-	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsId, "id", "", "This is a required parameter.The workflow ID.")
+	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsId, "id", "", "This is a required parameter. The workflow ID.")
 	listWorkflowBuildsCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(listWorkflowDeploymentsCmd)
 
 	var listWorkflowDeploymentsBuildId string
-	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	listWorkflowDeploymentsCmd.MarkFlagRequired("build-id")
 
 	var listWorkflowDeploymentsId string
-	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsId, "id", "", "This is a required parameter.The workflow ID.")
+	listWorkflowDeploymentsCmd.Flags().StringVar(&listWorkflowDeploymentsId, "id", "", "This is a required parameter. The workflow ID.")
 	listWorkflowDeploymentsCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(listWorkflowRunsCmd)
 
 	var listWorkflowRunsBuildId string
-	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsBuildId, "build-id", "", "This is a required parameter.The workflow build ID.")
+	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsBuildId, "build-id", "", "This is a required parameter. The workflow build ID.")
 	listWorkflowRunsCmd.MarkFlagRequired("build-id")
 
 	var listWorkflowRunsId string
-	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsId, "id", "", "This is a required parameter.The workflow ID.")
+	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsId, "id", "", "This is a required parameter. The workflow ID.")
 	listWorkflowRunsCmd.MarkFlagRequired("id")
 
 	mlCmd.AddCommand(listWorkflowsCmd)

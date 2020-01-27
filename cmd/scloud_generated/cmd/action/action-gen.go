@@ -101,14 +101,14 @@ func init() {
 	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionFromName, "from-name", "", "Optional text providing a human-friendly name for the sender. Must be less than or equal to 81 characters. You can use a template in this field.")
 
 	var createActionEmailActionKind string
-	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionKind, "kind", "", "This is a required parameter. can accept values webhook, email")
+	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionKind, "kind", "", "This is a required parameter.  can accept values webhook, email")
 	createActionEmailActionCmd.MarkFlagRequired("kind")
 
 	var createActionEmailActionMembers []string
 	createActionEmailActionCmd.Flags().StringSliceVar(&createActionEmailActionMembers, "members", nil, "An array of tenant member names, whose profile email addresses will be included as recipients.")
 
 	var createActionEmailActionName string
-	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionName, "name", "", "This is a required parameter.The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionName, "name", "", "This is a required parameter. The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	createActionEmailActionCmd.MarkFlagRequired("name")
 
 	var createActionEmailActionSubject string
@@ -119,11 +119,11 @@ func init() {
 
 	actionCmd.AddCommand(createActionWebhookActionCmd)
 	var createActionWebhookActionKind string
-	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionKind, "kind", "", "This is a required parameter. can accept values webhook, email")
+	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionKind, "kind", "", "This is a required parameter.  can accept values webhook, email")
 	createActionWebhookActionCmd.MarkFlagRequired("kind")
 
 	var createActionWebhookActionName string
-	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionName, "name", "", "This is a required parameter.The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionName, "name", "", "This is a required parameter. The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	createActionWebhookActionCmd.MarkFlagRequired("name")
 
 	var createActionWebhookActionTitle string
@@ -133,43 +133,43 @@ func init() {
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookHeaders, "webhook-headers", "", "")
 
 	var createActionWebhookActionWebhookPayload string
-	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookPayload, "webhook-payload", "", "This is a required parameter.The (possibly) templated payload body, which is POSTed to the webhookUrl when invoked.")
+	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookPayload, "webhook-payload", "", "This is a required parameter. The (possibly) templated payload body, which is POSTed to the webhookUrl when invoked.")
 	createActionWebhookActionCmd.MarkFlagRequired("webhookPayload")
 
 	var createActionWebhookActionWebhookUrl string
-	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookUrl, "webhook-url", "", "This is a required parameter.Only HTTPS is allowed.")
+	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionWebhookUrl, "webhook-url", "", "This is a required parameter. Only HTTPS is allowed.")
 	createActionWebhookActionCmd.MarkFlagRequired("webhookUrl")
 
 	actionCmd.AddCommand(deleteActionCmd)
 
 	var deleteActionActionName string
-	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	deleteActionCmd.Flags().StringVar(&deleteActionActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	deleteActionCmd.MarkFlagRequired("action-name")
 
 	actionCmd.AddCommand(getActionCmd)
 
 	var getActionActionName string
-	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionCmd.Flags().StringVar(&getActionActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionCmd.MarkFlagRequired("action-name")
 
 	actionCmd.AddCommand(getActionStatusCmd)
 
 	var getActionStatusActionName string
-	getActionStatusCmd.Flags().StringVar(&getActionStatusActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionStatusCmd.Flags().StringVar(&getActionStatusActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionStatusCmd.MarkFlagRequired("action-name")
 
 	var getActionStatusStatusId string
-	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
+	getActionStatusCmd.Flags().StringVar(&getActionStatusStatusId, "status-id", "", "This is a required parameter. The ID of the action status.")
 	getActionStatusCmd.MarkFlagRequired("status-id")
 
 	actionCmd.AddCommand(getActionStatusDetailsCmd)
 
 	var getActionStatusDetailsActionName string
-	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	getActionStatusDetailsCmd.MarkFlagRequired("action-name")
 
 	var getActionStatusDetailsStatusId string
-	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "This is a required parameter.The ID of the action status.")
+	getActionStatusDetailsCmd.Flags().StringVar(&getActionStatusDetailsStatusId, "status-id", "", "This is a required parameter. The ID of the action status.")
 	getActionStatusDetailsCmd.MarkFlagRequired("status-id")
 
 	actionCmd.AddCommand(getPublicWebhookKeysCmd)
@@ -179,7 +179,7 @@ func init() {
 	actionCmd.AddCommand(triggerActionCmd)
 
 	var triggerActionActionName string
-	triggerActionCmd.Flags().StringVar(&triggerActionActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	triggerActionCmd.Flags().StringVar(&triggerActionActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	triggerActionCmd.MarkFlagRequired("action-name")
 
 	var triggerActionAddresses []string
@@ -239,11 +239,11 @@ func init() {
 	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableWebhookUrl, "webhook-url", "", "Only HTTPS is allowed.")
 
 	var updateActionEmailActionMutableActionName string
-	updateActionEmailActionMutableCmd.Flags().StringVar(&updateActionEmailActionMutableActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	updateActionEmailActionMutableCmd.Flags().StringVar(&updateActionEmailActionMutableActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	updateActionEmailActionMutableCmd.MarkFlagRequired("action-name")
 
 	var updateActionWebhookActionMutableActionName string
-	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableActionName, "action-name", "", "This is a required parameter.The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
+	updateActionWebhookActionMutableCmd.Flags().StringVar(&updateActionWebhookActionMutableActionName, "action-name", "", "This is a required parameter. The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")
 	updateActionWebhookActionMutableCmd.MarkFlagRequired("action-name")
 
 }
