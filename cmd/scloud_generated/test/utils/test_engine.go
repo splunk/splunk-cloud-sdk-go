@@ -73,19 +73,23 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 		cmd := exec.Command(scloud, args...)
 		res, err := executeCliCommand(cmd)
 
+		scloudTestOutput, err := ioutil.ReadFile(".scloudTestOutput")
+
 		if testarg == "--testhook" {
 			if err != nil {
-				resstr := ""
+				resStr := ""
 				if len(res) > 0 {
-					resstr = ", response:" + res
+					resStr = ", response:" + res
 				}
-				fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resstr)
+				fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resStr)
 			} else {
 				fmt.Printf("-- Execute \"%s\" Succeed\n", line)
 			}
 		}
 
-		ret = ret + "#testcase: " + line + "\n" + res + "\n"
+
+
+		ret = ret + "#testcase: " + line + "\n" + string(scloudTestOutput) + "\n"
 
 		if err != nil {
 			errs = append(errs, err.Error())

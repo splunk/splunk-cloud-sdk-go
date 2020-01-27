@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/golang/glog"
@@ -159,19 +160,34 @@ func apiClientWithTenant(tenant string) *sdk.Client {
 	return result
 }
 
-type testhooklogger struct {
+type testhookLogger struct {
 	transport        http.RoundTripper
 	cancelBeforeSend bool
 }
 
 func createTesthookLogger(cancelBeforeSend bool) http.RoundTripper {
-	return &testhooklogger{transport: &http.Transport{}, cancelBeforeSend: cancelBeforeSend}
+	return &testhookLogger{transport: &http.Transport{}, cancelBeforeSend: cancelBeforeSend}
 }
 
 // RoundTrip implements http.RoundTripper when using testhook flag
-func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, error) {
+func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, error) {
 	fmt.Printf("REQUEST URL:%v\n", request.URL)
 	fmt.Printf("REQUEST BODY:%v\n", request.Body)
+
+	//write to stream file for scloud test
+	scloudTestCache := ".scloudTestOutput"
+	f, err := os.Create(scloudTestCache)
+	defer f.Close()
+	_, err = f.WriteString(fmt.Sprintf("REQUEST URL:%v\n", request.URL))
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	_, err = f.WriteString(fmt.Sprintf("REQUEST BODY:%v\n", request.Body))
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
 
 	if out.cancelBeforeSend {
 		fmt.Println(ScloudTesExecCancledError{}.Error())
@@ -184,6 +200,12 @@ func (out *testhooklogger) RoundTrip(request *http.Request) (*http.Response, err
 	}
 
 	fmt.Printf("\nRESPONSE:\n%v\n", response)
+	_, err = f.WriteString(fmt.Sprintf("\nRESPONSE:\n%v\n", response))
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
 
 	return response, err
 }
@@ -193,19 +215,4 @@ type ScloudTesExecCancledError struct {
 
 func (ste ScloudTesExecCancledError) Error() string {
 	return "For test run, request was canceled"
-}
-
-// Filter out ScloudTesExecCancledError
-func FilterOutScloudTesExecCancledError(err error) error {
-	if err != nil {
-		urlerr, ok := err.(*url.Error)
-		if ok {
-			_, ok := urlerr.Err.(ScloudTesExecCancledError)
-			if ok {
-				return nil
-			}
-		}
-	}
-
-	return err
 }
