@@ -1,66 +1,44 @@
 #testcase: action create-action-email-action --kind email --name scloud_test_action_test --members kk@splunk.com --members aa@splunk.com
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions
+REQUEST URL:action/v1beta2/actions
 REQUEST BODY:{{"kind":"email","name":"scloud_test_action_test","members":["kk@splunk.com","aa@splunk.com"]}}
-For testrun, request was canceled
 
 #testcase: action update-action-email-action-mutable --action-name scloud_test_action_test --subject "newsubject"
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test
 REQUEST BODY:{{"subject":"\"newsubject\""}}
-For testrun, request was canceled
 
 #testcase: action get-action --action-name scloud_test_action_test
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test
 REQUEST BODY:<nil>
-For testrun, request was canceled
 
 #testcase: action get-public-webhook-keys
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/system/action/v1beta2/webhook/keys
+REQUEST URL:action/v1beta2/webhook/keys
 REQUEST BODY:<nil>
-For testrun, request was canceled
 
 #testcase: action create-action-webhook-action --kind webhook --name scloud_test_action_test_wh --title newtitle --webhook-payload "{{ .name }} is a {{ .species }}" --webhook-url "https://webhook.site/test"
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions
+REQUEST URL:action/v1beta2/actions
 REQUEST BODY:{{"kind":"webhook","name":"scloud_test_action_test_wh","webhookPayload":"\"{{","webhookUrl":"\"https://webhook.site/test\"","title":"newtitle"}}
-For testrun, request was canceled
 
 #testcase: action update-action-webhook-action-mutable --action-name scloud_test_action_test_wh --title "newtitle"
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test_wh
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh
 REQUEST BODY:{{"title":"\"newtitle\""}}
-For testrun, request was canceled
 
 #testcase: action trigger-action --action-name scloud_test_action_test_wh
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test_wh
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh
 REQUEST BODY:{{"actionMetadata":{}}}
-For testrun, request was canceled
 
 #testcase: action get-action-status --action-name scloud_test_action_test --status-id 1e77d173-dfc9-43df-a7f9-ea053aed6f3a
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test/status/1e77d173-dfc9-43df-a7f9-ea053aed6f3a
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test/status/1e77d173-dfc9-43df-a7f9-ea053aed6f3a
 REQUEST BODY:<nil>
-For testrun, request was canceled
 
 #testcase: action  list-actions
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions
+REQUEST URL:action/v1beta2/actions
 REQUEST BODY:<nil>
-For testrun, request was canceled
 
 #testcase: action delete-action --action-name scloud_test_action_test
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test
 REQUEST BODY:<nil>
-For testrun, request was canceled
 
 #testcase: action delete-action --action-name scloud_test_action_test_wh
-enable testhook-dryrun
-REQUEST URL:https://api.staging.scp.splunk.com:443/scloud/action/v1beta2/actions/scloud_test_action_test_wh
+REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh
 REQUEST BODY:<nil>
-For testrun, request was canceled
 

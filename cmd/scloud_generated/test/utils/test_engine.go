@@ -87,8 +87,6 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 			}
 		}
 
-
-
 		ret = ret + "#testcase: " + line + "\n" + string(scloudTestOutput) + "\n"
 
 		if err != nil {

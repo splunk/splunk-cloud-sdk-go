@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang/glog"
@@ -171,14 +172,22 @@ func createTesthookLogger(cancelBeforeSend bool) http.RoundTripper {
 
 // RoundTrip implements http.RoundTripper when using testhook flag
 func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, error) {
-	fmt.Printf("REQUEST URL:%v\n", request.URL)
+	requestURLParts := strings.Split(strings.Trim(request.URL.String(), " "), "/")
+	requestURL := strings.Join(requestURLParts[4:], "/")
+
+	fmt.Printf("REQUEST URL:%v\n", requestURL)
 	fmt.Printf("REQUEST BODY:%v\n", request.Body)
 
 	//write to stream file for scloud test
 	scloudTestCache := ".scloudTestOutput"
 	f, err := os.Create(scloudTestCache)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
 	defer f.Close()
-	_, err = f.WriteString(fmt.Sprintf("REQUEST URL:%v\n", request.URL))
+
+	_, err = f.WriteString(fmt.Sprintf("REQUEST URL:%v\n", requestURL))
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -214,5 +223,5 @@ type ScloudTesExecCancledError struct {
 }
 
 func (ste ScloudTesExecCancledError) Error() string {
-	return "For test run, request was canceled"
+	return "Test mode enabled - request not sent"
 }
