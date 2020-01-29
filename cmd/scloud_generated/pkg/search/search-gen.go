@@ -13,7 +13,6 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
-// TODO: https://jira.splunk.com/browse/SCP-22510
 // CreateJob Creates a search job.
 func CreateJob(cmd *cobra.Command, args []string) error {
 
@@ -98,12 +97,6 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
 	}
-	var requiredFreshnessDefault float32
-	requiredFreshness := &requiredFreshnessDefault
-	err = flags.ParseFlag(cmd.Flags(), "required-freshness", &requiredFreshness)
-	if err != nil {
-		return fmt.Errorf(`error parsing "required-freshness": ` + err.Error())
-	}
 	var statusDefault model.SearchStatus
 	status := &statusDefault
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
@@ -134,7 +127,6 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 			RelativeTimeAnchor: relativeTimeAnchor,
 			Timezone:           timezone,
 		},
-		// RequiredFreshness: requiredFreshness,
 		Status: status,
 	}
 

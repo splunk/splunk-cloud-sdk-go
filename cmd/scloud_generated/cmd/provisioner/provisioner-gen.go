@@ -82,7 +82,7 @@ func init() {
 	provisionerCmd.AddCommand(createInviteCmd)
 
 	var createInviteEmail string
-	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "This is a required parameter.This is a required parameter.")
+	createInviteCmd.Flags().StringVar(&createInviteEmail, "email", "", "This is a required parameter. ")
 	createInviteCmd.MarkFlagRequired("email")
 
 	var createInviteComment string
@@ -102,25 +102,25 @@ func init() {
 	provisionerCmd.AddCommand(deleteInviteCmd)
 
 	var deleteInviteInviteId string
-	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "This is a required parameter.")
+	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "This is a required parameter. ")
 	deleteInviteCmd.MarkFlagRequired("invite-id")
 
 	provisionerCmd.AddCommand(getInviteCmd)
 
 	var getInviteInviteId string
-	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "This is a required parameter.")
+	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "This is a required parameter. ")
 	getInviteCmd.MarkFlagRequired("invite-id")
 
 	provisionerCmd.AddCommand(getProvisionJobCmd)
 
 	var getProvisionJobJobId string
-	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "This is a required parameter.")
+	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "This is a required parameter. ")
 	getProvisionJobCmd.MarkFlagRequired("job-id")
 
 	provisionerCmd.AddCommand(getTenantCmd)
 
 	var getTenantTenantName string
-	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "This is a required parameter.")
+	getTenantCmd.Flags().StringVar(&getTenantTenantName, "tenant-name", "", "This is a required parameter. ")
 	getTenantCmd.MarkFlagRequired("tenant-name")
 
 	provisionerCmd.AddCommand(listInvitesCmd)
@@ -132,11 +132,11 @@ func init() {
 	provisionerCmd.AddCommand(updateInviteCmd)
 
 	var updateInviteAction string
-	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "This is a required parameter.This is a required parameter. can accept values accept, reject, resend")
+	updateInviteCmd.Flags().StringVar(&updateInviteAction, "action", "", "This is a required parameter.  can accept values accept, reject, resend")
 	updateInviteCmd.MarkFlagRequired("action")
 
 	var updateInviteInviteId string
-	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "This is a required parameter.")
+	updateInviteCmd.Flags().StringVar(&updateInviteInviteId, "invite-id", "", "This is a required parameter. ")
 	updateInviteCmd.MarkFlagRequired("invite-id")
 
 }

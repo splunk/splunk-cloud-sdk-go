@@ -61,7 +61,6 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// TODO: https://jira.splunk.com/browse/SCP-22510
 // CompileDSL Compiles the Streams DSL and returns Streams JSON.
 func CompileDSL(cmd *cobra.Command, args []string) error {
 
@@ -90,7 +89,6 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// TODO: https://jira.splunk.com/browse/SCP-22510
 // CompileSPL Compiles SPL2 and returns Streams JSON.
 func CompileSPL(cmd *cobra.Command, args []string) error {
 
@@ -279,6 +277,12 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
+	var createUserIdDefault string
+	createUserId := &createUserIdDefault
+	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
+	}
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -309,6 +313,7 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.PipelineRequest{
 
 		BypassValidation: bypassValidation,
+		CreateUserId:     createUserId,
 		Data: model.UplPipeline{
 			Edges:    edges,
 			Nodes:    nodes,
