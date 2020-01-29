@@ -11,7 +11,7 @@ SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/
 CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
 SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
 
-setup: prereqs download_config statik version
+setup: prereqs download_config statik version scloudgen_version
 
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
@@ -19,13 +19,13 @@ lint: linttest
 	golangci-lint run ./... --skip-dirs test --skip-files ".*_generated.go"  --skip-files "interface.go" --enable golint --disable megacheck
 	rm -rf vendor/
 
-linttest: statik version
+linttest: statik version scloudgen_version
 	# vendor/ needed for golangci-lint to work at the moment
 	GO111MODULE=on go mod vendor
 	golangci-lint run test/... --disable-all
 	rm -rf vendor/
 
-build: statik version
+build: statik version scloudgen_version
 	GO111MODULE=on go build -v ./...
 	make build_scloud
 	make build_scloud_generated
@@ -34,9 +34,10 @@ build_scloud: statik version
 	@echo "Building scloud .."
 	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/cli
 
-build_scloud_generated: statik version
+build_scloud_generated: scloudgen_version
 	@echo "Building scloud generated.."
 	GO111MODULE=on go build -v -o bin/scloud_gen $(SCLOUD_GEN_SRC_PATH)/scloud/.
+	./cicd/scripts/build_cross_compile_scloud_gen.sh
 
 build_cross_compile:
 	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
@@ -50,7 +51,11 @@ format_check:
 	test -z $(shell GO111MODULE=on gofmt -l $(NON_VENDOR_GO_FILES))
 	test -z $(shell GO111MODULE=on goimports -l $(NON_VENDOR_GO_FILES))
 
-vet: statik version
+scloudgen_version:
+	@echo "Generate version.go .."
+	cd $(CURDIR)/cmd/scloud_generated/cmd/scloud && go generate
+
+vet: statik version scloudgen_version
 	GO111MODULE=on go vet ./...
 
 login: build_scloud

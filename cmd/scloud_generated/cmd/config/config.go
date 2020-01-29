@@ -65,7 +65,7 @@ var set = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		confFile := fmt.Sprintf("%s/%s", home, CfgFileName)
+		confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 		if !FileExists(confFile) {
 			Initialize()
 		}
@@ -100,7 +100,7 @@ var reset = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		}
-		confFile := fmt.Sprintf("%s/%s", home, CfgFileName)
+		confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 		if FileExists(confFile) {
 			fmt.Printf("Deleting config file: %s.\n", CfgFileName)
 			err = os.Remove(confFile)
@@ -118,7 +118,7 @@ func Initialize() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	confFile := fmt.Sprintf("%s/%s", home, CfgFileName)
+	confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 	err = ioutil.WriteFile(confFile, []byte{}, 0755)
 	if err != nil {
 		fmt.Printf("Unable to write a new config file: %v", err)

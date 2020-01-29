@@ -75,7 +75,7 @@ func init() {
 	searchCmd.AddCommand(createJobCmd)
 
 	var createJobQuery string
-	createJobCmd.Flags().StringVar(&createJobQuery, "query", "", "This is a required parameter.This is a required parameter.The SPL search string.")
+	createJobCmd.Flags().StringVar(&createJobQuery, "query", "", "This is a required parameter. The SPL search string.")
 	createJobCmd.MarkFlagRequired("query")
 
 	var createJobAllowSideEffects string
@@ -114,9 +114,6 @@ func init() {
 	var createJobRelativeTimeAnchor string
 	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
 
-	var createJobRequiredFreshness float32
-	createJobCmd.Flags().Float32Var(&createJobRequiredFreshness, "required-freshness", 0.0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.")
-
 	var createJobStatus string
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
 
@@ -126,13 +123,13 @@ func init() {
 	searchCmd.AddCommand(getJobCmd)
 
 	var getJobSid string
-	getJobCmd.Flags().StringVar(&getJobSid, "sid", "", "This is a required parameter.The search ID.")
+	getJobCmd.Flags().StringVar(&getJobSid, "sid", "", "This is a required parameter. The search ID.")
 	getJobCmd.MarkFlagRequired("sid")
 
 	searchCmd.AddCommand(listEventsSummaryCmd)
 
 	var listEventsSummarySid string
-	listEventsSummaryCmd.Flags().StringVar(&listEventsSummarySid, "sid", "", "This is a required parameter.The search ID.")
+	listEventsSummaryCmd.Flags().StringVar(&listEventsSummarySid, "sid", "", "This is a required parameter. The search ID.")
 	listEventsSummaryCmd.MarkFlagRequired("sid")
 
 	var listEventsSummaryCount float32
@@ -153,7 +150,7 @@ func init() {
 	searchCmd.AddCommand(listFieldsSummaryCmd)
 
 	var listFieldsSummarySid string
-	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummarySid, "sid", "", "This is a required parameter.The search ID.")
+	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummarySid, "sid", "", "This is a required parameter. The search ID.")
 	listFieldsSummaryCmd.MarkFlagRequired("sid")
 
 	var listFieldsSummaryEarliest string
@@ -173,7 +170,7 @@ func init() {
 	searchCmd.AddCommand(listPreviewResultsCmd)
 
 	var listPreviewResultsSid string
-	listPreviewResultsCmd.Flags().StringVar(&listPreviewResultsSid, "sid", "", "This is a required parameter.The search ID.")
+	listPreviewResultsCmd.Flags().StringVar(&listPreviewResultsSid, "sid", "", "This is a required parameter. The search ID.")
 	listPreviewResultsCmd.MarkFlagRequired("sid")
 
 	var listPreviewResultsCount float32
@@ -185,7 +182,7 @@ func init() {
 	searchCmd.AddCommand(listResultsCmd)
 
 	var listResultsSid string
-	listResultsCmd.Flags().StringVar(&listResultsSid, "sid", "", "This is a required parameter.The search ID.")
+	listResultsCmd.Flags().StringVar(&listResultsSid, "sid", "", "This is a required parameter. The search ID.")
 	listResultsCmd.MarkFlagRequired("sid")
 
 	var listResultsCount float32
@@ -200,17 +197,17 @@ func init() {
 	searchCmd.AddCommand(listTimeBucketsCmd)
 
 	var listTimeBucketsSid string
-	listTimeBucketsCmd.Flags().StringVar(&listTimeBucketsSid, "sid", "", "This is a required parameter.The search ID.")
+	listTimeBucketsCmd.Flags().StringVar(&listTimeBucketsSid, "sid", "", "This is a required parameter. The search ID.")
 	listTimeBucketsCmd.MarkFlagRequired("sid")
 
 	searchCmd.AddCommand(updateJobCmd)
 
 	var updateJobSid string
-	updateJobCmd.Flags().StringVar(&updateJobSid, "sid", "", "This is a required parameter.The search ID.")
+	updateJobCmd.Flags().StringVar(&updateJobSid, "sid", "", "This is a required parameter. The search ID.")
 	updateJobCmd.MarkFlagRequired("sid")
 
 	var updateJobStatus string
-	updateJobCmd.Flags().StringVar(&updateJobStatus, "status", "", "This is a required parameter.This is a required parameter.The status to PATCH to an existing search job. The only status values you can PATCH are 'canceled' and 'finalized'. You can PATCH the 'canceled' status only to a search job that is running. can accept values canceled, finalized")
+	updateJobCmd.Flags().StringVar(&updateJobStatus, "status", "", "This is a required parameter. The status to PATCH to an existing search job. The only status values you can PATCH are 'canceled' and 'finalized'. You can PATCH the 'canceled' status only to a search job that is running. can accept values canceled, finalized")
 	updateJobCmd.MarkFlagRequired("status")
 
 }

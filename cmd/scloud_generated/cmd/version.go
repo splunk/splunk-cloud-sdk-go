@@ -2,10 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"runtime"
 
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/scloud/version"
 )
 
 // versionCmd represents the version command
@@ -20,22 +19,7 @@ func init() {
 }
 
 func execVersionCmd(cmd *cobra.Command, args []string) error {
-	versionString := semVersion
-	if versionString == "" {
-		versionString = "0.0.0"
-	}
-	commitString := commitHash
-	if commitHash == "" {
-		commitString = "develop"
-	}
 
-	fmt.Fprintf(os.Stdout, "%s - v%s#%s.%s.%s.%s\n",
-		appName,
-		versionString,
-		commitString,
-		runtime.GOOS,
-		runtime.GOARCH,
-		buildDate,
-	)
+	fmt.Printf("scloud version %s-%s\n", version.Version, version.Commit)
 	return nil
 }

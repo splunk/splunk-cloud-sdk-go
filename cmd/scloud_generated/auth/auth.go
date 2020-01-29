@@ -23,14 +23,16 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"syscall"
+
+	"github.com/spf13/viper"
 
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pelletier/go-toml"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth/fcache"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"golang.org/x/crypto/ssh/terminal"
@@ -51,7 +53,7 @@ var settings *fcache.Cache
 // If the environment variable is not defined, the path is joined with
 // the path to the home dir
 func abspath(p string) string {
-	if path.IsAbs(p) {
+	if filepath.IsAbs(p) {
 		return p
 	}
 	scloudHome, ok := os.LookupEnv(SCloudHome)

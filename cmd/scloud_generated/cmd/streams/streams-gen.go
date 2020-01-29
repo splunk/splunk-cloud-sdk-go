@@ -299,7 +299,7 @@ func init() {
 	streamsCmd.AddCommand(activatePipelineCmd)
 
 	var activatePipelineId string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", "", "This is a required parameter.id of the pipeline to activate")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", "", "This is a required parameter. id of the pipeline to activate")
 	activatePipelineCmd.MarkFlagRequired("id")
 
 	var activatePipelineActivateLatestVersion string
@@ -314,13 +314,13 @@ func init() {
 	streamsCmd.AddCommand(compileDSLCmd)
 
 	var compileDSLDsl string
-	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "This is a required parameter.This is a required parameter.The Streams DSL representation of a pipeline.")
+	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "This is a required parameter. The Streams DSL representation of a pipeline.")
 	compileDSLCmd.MarkFlagRequired("dsl")
 
 	streamsCmd.AddCommand(compileSPLCmd)
 
 	var compileSPLSpl string
-	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", "", "This is a required parameter.This is a required parameter.The SPL2 representation of a pipeline or function parameters.")
+	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", "", "This is a required parameter. The SPL2 representation of a pipeline or function parameters.")
 	compileSPLCmd.MarkFlagRequired("spl")
 
 	var compileSPLSyntax string
@@ -329,57 +329,57 @@ func init() {
 	streamsCmd.AddCommand(createConnectionCmd)
 
 	var createConnectionConnectorId string
-	createConnectionCmd.Flags().StringVar(&createConnectionConnectorId, "connector-id", "", "This is a required parameter.This is a required parameter.The ID of the parent connector.")
+	createConnectionCmd.Flags().StringVar(&createConnectionConnectorId, "connector-id", "", "This is a required parameter. The ID of the parent connector.")
 	createConnectionCmd.MarkFlagRequired("connector-id")
 
 	var createConnectionData string
-	createConnectionCmd.Flags().StringVar(&createConnectionData, "data", "", "This is a required parameter.This is a required parameter.The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	createConnectionCmd.Flags().StringVar(&createConnectionData, "data", "", "This is a required parameter. The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
 	createConnectionCmd.MarkFlagRequired("data")
 
 	var createConnectionDescription string
-	createConnectionCmd.Flags().StringVar(&createConnectionDescription, "description", "", "This is a required parameter.This is a required parameter.The description of the connection.")
+	createConnectionCmd.Flags().StringVar(&createConnectionDescription, "description", "", "This is a required parameter. The description of the connection.")
 	createConnectionCmd.MarkFlagRequired("description")
 
 	var createConnectionName string
-	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter.This is a required parameter.The name of the connection.")
+	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
 
 	streamsCmd.AddCommand(createGroupCmd)
 
 	var createGroupArguments string
-	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", "", "This is a required parameter.This is a required parameter.The group function arguments list.")
+	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", "", "This is a required parameter. The group function arguments list.")
 	createGroupCmd.MarkFlagRequired("arguments")
 
 	var createGroupAttributes string
-	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "This is a required parameter.This is a required parameter.The attributes map for function.")
+	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "This is a required parameter. The attributes map for function.")
 	createGroupCmd.MarkFlagRequired("attributes")
 
 	var createGroupCategories []int
-	createGroupCmd.Flags().IntSliceVar(&createGroupCategories, "categories", nil, "This is a required parameter.This is a required parameter.The categories for this function.")
+	createGroupCmd.Flags().IntSliceVar(&createGroupCategories, "categories", nil, "This is a required parameter. The categories for this function.")
 	createGroupCmd.MarkFlagRequired("categories")
 
 	var createGroupEdges string
-	createGroupCmd.Flags().StringVar(&createGroupEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	createGroupCmd.Flags().StringVar(&createGroupEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	createGroupCmd.MarkFlagRequired("edges")
 
 	var createGroupMappings string
-	createGroupCmd.Flags().StringVar(&createGroupMappings, "mappings", "", "This is a required parameter.This is a required parameter.The group function mappings list.")
+	createGroupCmd.Flags().StringVar(&createGroupMappings, "mappings", "", "This is a required parameter. The group function mappings list.")
 	createGroupCmd.MarkFlagRequired("mappings")
 
 	var createGroupName string
-	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter.This is a required parameter.The group function name.")
+	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter. The group function name.")
 	createGroupCmd.MarkFlagRequired("name")
 
 	var createGroupNodes string
-	createGroupCmd.Flags().StringVar(&createGroupNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	createGroupCmd.Flags().StringVar(&createGroupNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	createGroupCmd.MarkFlagRequired("nodes")
 
 	var createGroupOutputType string
-	createGroupCmd.Flags().StringVar(&createGroupOutputType, "output-type", "", "This is a required parameter.This is a required parameter.The data type of the function's output.")
+	createGroupCmd.Flags().StringVar(&createGroupOutputType, "output-type", "", "This is a required parameter. The data type of the function's output.")
 	createGroupCmd.MarkFlagRequired("output-type")
 
 	var createGroupRootNode []string
-	createGroupCmd.Flags().StringSliceVar(&createGroupRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	createGroupCmd.Flags().StringSliceVar(&createGroupRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	createGroupCmd.MarkFlagRequired("root-node")
 
 	var createGroupScalar string
@@ -391,23 +391,26 @@ func init() {
 	streamsCmd.AddCommand(createPipelineCmd)
 
 	var createPipelineEdges string
-	createPipelineCmd.Flags().StringVar(&createPipelineEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	createPipelineCmd.Flags().StringVar(&createPipelineEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	createPipelineCmd.MarkFlagRequired("edges")
 
 	var createPipelineName string
-	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", "", "This is a required parameter.This is a required parameter.The name of the pipeline.")
+	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", "", "This is a required parameter. The name of the pipeline.")
 	createPipelineCmd.MarkFlagRequired("name")
 
 	var createPipelineNodes string
-	createPipelineCmd.Flags().StringVar(&createPipelineNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	createPipelineCmd.Flags().StringVar(&createPipelineNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	createPipelineCmd.MarkFlagRequired("nodes")
 
 	var createPipelineRootNode []string
-	createPipelineCmd.Flags().StringSliceVar(&createPipelineRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	createPipelineCmd.Flags().StringSliceVar(&createPipelineRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	createPipelineCmd.MarkFlagRequired("root-node")
 
 	var createPipelineBypassValidation string
 	createPipelineCmd.Flags().StringVar(&createPipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
+
+	var createPipelineCreateUserId string
+	createPipelineCmd.Flags().StringVar(&createPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 
 	var createPipelineDescription string
 	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
@@ -415,29 +418,29 @@ func init() {
 	streamsCmd.AddCommand(createTemplateCmd)
 
 	var createTemplateDescription string
-	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "This is a required parameter.This is a required parameter.Template description")
+	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "This is a required parameter. Template description")
 	createTemplateCmd.MarkFlagRequired("description")
 
 	var createTemplateEdges string
-	createTemplateCmd.Flags().StringVar(&createTemplateEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	createTemplateCmd.Flags().StringVar(&createTemplateEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	createTemplateCmd.MarkFlagRequired("edges")
 
 	var createTemplateName string
-	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", "", "This is a required parameter.This is a required parameter.Template name")
+	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", "", "This is a required parameter. Template name")
 	createTemplateCmd.MarkFlagRequired("name")
 
 	var createTemplateNodes string
-	createTemplateCmd.Flags().StringVar(&createTemplateNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	createTemplateCmd.Flags().StringVar(&createTemplateNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	createTemplateCmd.MarkFlagRequired("nodes")
 
 	var createTemplateRootNode []string
-	createTemplateCmd.Flags().StringSliceVar(&createTemplateRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	createTemplateCmd.Flags().StringSliceVar(&createTemplateRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	createTemplateCmd.MarkFlagRequired("root-node")
 
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 
 	var deactivatePipelineId string
-	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "This is a required parameter.id of the pipeline to deactivate")
+	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "This is a required parameter. id of the pipeline to deactivate")
 	deactivatePipelineCmd.MarkFlagRequired("id")
 
 	var deactivatePipelineSkipSavepoint string
@@ -446,95 +449,95 @@ func init() {
 	streamsCmd.AddCommand(deleteConnectionCmd)
 
 	var deleteConnectionConnectionId string
-	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter.ID of the connection")
+	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
 	deleteConnectionCmd.MarkFlagRequired("connection-id")
 
 	streamsCmd.AddCommand(deleteGroupCmd)
 
 	var deleteGroupGroupId string
-	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", "", "This is a required parameter.The group function's ID from the function registry")
+	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
 	deleteGroupCmd.MarkFlagRequired("group-id")
 
 	streamsCmd.AddCommand(deletePipelineCmd)
 
 	var deletePipelineId string
-	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter.id of the pipeline to delete")
+	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter. id of the pipeline to delete")
 	deletePipelineCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(deleteTemplateCmd)
 
 	var deleteTemplateTemplateId string
-	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter.ID of the template to delete")
+	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template to delete")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
 
 	streamsCmd.AddCommand(expandGroupCmd)
 
 	var expandGroupArguments string
-	expandGroupCmd.Flags().StringVar(&expandGroupArguments, "arguments", "", "This is a required parameter.This is a required parameter.Function arguments for the given id. Overrides default values.")
+	expandGroupCmd.Flags().StringVar(&expandGroupArguments, "arguments", "", "This is a required parameter. Function arguments for the given id. Overrides default values.")
 	expandGroupCmd.MarkFlagRequired("arguments")
 
 	var expandGroupGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupGroupId, "group-id", "", "This is a required parameter.The group function's ID from the function registry")
+	expandGroupCmd.Flags().StringVar(&expandGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
 	expandGroupCmd.MarkFlagRequired("group-id")
 
 	var expandGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", "", "This is a required parameter.This is a required parameter.The ID associated with your group function in the pipeline Streams JSON")
+	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", "", "This is a required parameter. The ID associated with your group function in the pipeline Streams JSON")
 	expandGroupCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(expandPipelineCmd)
 
 	var expandPipelineEdges string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	expandPipelineCmd.Flags().StringVar(&expandPipelineEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	expandPipelineCmd.MarkFlagRequired("edges")
 
 	var expandPipelineNodes string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	expandPipelineCmd.Flags().StringVar(&expandPipelineNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	expandPipelineCmd.MarkFlagRequired("nodes")
 
 	var expandPipelineRootNode []string
-	expandPipelineCmd.Flags().StringSliceVar(&expandPipelineRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	expandPipelineCmd.Flags().StringSliceVar(&expandPipelineRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	expandPipelineCmd.MarkFlagRequired("root-node")
 
 	streamsCmd.AddCommand(getGroupCmd)
 
 	var getGroupGroupId string
-	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", "", "This is a required parameter.The group function's ID from the function registry")
+	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
 	getGroupCmd.MarkFlagRequired("group-id")
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 
 	var getInputSchemaEdges string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	getInputSchemaCmd.MarkFlagRequired("edges")
 
 	var getInputSchemaNodeUuid string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", "", "This is a required parameter.This is a required parameter.The function ID.")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", "", "This is a required parameter. The function ID.")
 	getInputSchemaCmd.MarkFlagRequired("node-uuid")
 
 	var getInputSchemaNodes string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	getInputSchemaCmd.MarkFlagRequired("nodes")
 
 	var getInputSchemaRootNode []string
-	getInputSchemaCmd.Flags().StringSliceVar(&getInputSchemaRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	getInputSchemaCmd.Flags().StringSliceVar(&getInputSchemaRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	getInputSchemaCmd.MarkFlagRequired("root-node")
 
 	var getInputSchemaTargetPortName string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter.This is a required parameter.The name of the input port.")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter. The name of the input port.")
 	getInputSchemaCmd.MarkFlagRequired("target-port-name")
 
 	streamsCmd.AddCommand(getOutputSchemaCmd)
 
 	var getOutputSchemaEdges string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	getOutputSchemaCmd.MarkFlagRequired("edges")
 
 	var getOutputSchemaNodes string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	getOutputSchemaCmd.MarkFlagRequired("nodes")
 
 	var getOutputSchemaRootNode []string
-	getOutputSchemaCmd.Flags().StringSliceVar(&getOutputSchemaRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	getOutputSchemaCmd.Flags().StringSliceVar(&getOutputSchemaRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	getOutputSchemaCmd.MarkFlagRequired("root-node")
 
 	var getOutputSchemaNodeUuid string
@@ -546,7 +549,7 @@ func init() {
 	streamsCmd.AddCommand(getPipelineCmd)
 
 	var getPipelineId string
-	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", "", "This is a required parameter.id of the pipeline to get")
+	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", "", "This is a required parameter. id of the pipeline to get")
 	getPipelineCmd.MarkFlagRequired("id")
 
 	var getPipelineVersion string
@@ -555,7 +558,7 @@ func init() {
 	streamsCmd.AddCommand(getPipelineLatestMetricsCmd)
 
 	var getPipelineLatestMetricsId string
-	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "This is a required parameter.ID of the pipeline to get metrics for")
+	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "This is a required parameter. ID of the pipeline to get metrics for")
 	getPipelineLatestMetricsCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(getPipelinesStatusCmd)
@@ -584,19 +587,19 @@ func init() {
 	streamsCmd.AddCommand(getPreviewDataCmd)
 
 	var getPreviewDataPreviewSessionId int64
-	getPreviewDataCmd.Flags().Int64Var(&getPreviewDataPreviewSessionId, "preview-session-id", 0, "This is a required parameter.ID of the preview session")
+	getPreviewDataCmd.Flags().Int64Var(&getPreviewDataPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
 	getPreviewDataCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getPreviewSessionCmd)
 
 	var getPreviewSessionPreviewSessionId int64
-	getPreviewSessionCmd.Flags().Int64Var(&getPreviewSessionPreviewSessionId, "preview-session-id", 0, "This is a required parameter.ID of the preview session")
+	getPreviewSessionCmd.Flags().Int64Var(&getPreviewSessionPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
 	getPreviewSessionCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getPreviewSessionLatestMetricsCmd)
 
 	var getPreviewSessionLatestMetricsPreviewSessionId int64
-	getPreviewSessionLatestMetricsCmd.Flags().Int64Var(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", 0, "This is a required parameter.ID of the preview session")
+	getPreviewSessionLatestMetricsCmd.Flags().Int64Var(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
 	getPreviewSessionLatestMetricsCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getRegistryCmd)
@@ -607,7 +610,7 @@ func init() {
 	streamsCmd.AddCommand(getTemplateCmd)
 
 	var getTemplateTemplateId string
-	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", "", "This is a required parameter.ID of the template")
+	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	getTemplateCmd.MarkFlagRequired("template-id")
 
 	var getTemplateVersion int64
@@ -687,95 +690,95 @@ func init() {
 	streamsCmd.AddCommand(mergePipelinesCmd)
 
 	var mergePipelinesEdges string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	mergePipelinesCmd.MarkFlagRequired("edges")
 
 	var mergePipelinesEdgesMainTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdgesMainTree, "edges-main-tree", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdgesMainTree, "edges-main-tree", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	mergePipelinesCmd.MarkFlagRequired("edges-main-tree")
 
 	var mergePipelinesNodes string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	mergePipelinesCmd.MarkFlagRequired("nodes")
 
 	var mergePipelinesNodesMainTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodesMainTree, "nodes-main-tree", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodesMainTree, "nodes-main-tree", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	mergePipelinesCmd.MarkFlagRequired("nodes-main-tree")
 
 	var mergePipelinesRootNode []string
-	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	mergePipelinesCmd.MarkFlagRequired("root-node")
 
 	var mergePipelinesRootNodeMainTree []string
-	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNodeMainTree, "root-node-main-tree", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNodeMainTree, "root-node-main-tree", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	mergePipelinesCmd.MarkFlagRequired("root-node-main-tree")
 
 	var mergePipelinesTargetNode string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "This is a required parameter.This is a required parameter.The function ID of the merge target in the main pipeline.")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "This is a required parameter. The function ID of the merge target in the main pipeline.")
 	mergePipelinesCmd.MarkFlagRequired("target-node")
 
 	var mergePipelinesTargetPort string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "This is a required parameter.This is a required parameter.The input port of the merge target in the main pipeline.")
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "This is a required parameter. The input port of the merge target in the main pipeline.")
 	mergePipelinesCmd.MarkFlagRequired("target-port")
 
 	streamsCmd.AddCommand(putConnectionCmd)
 
 	var putConnectionConnectionId string
-	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter.ID of the connection")
+	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
 	putConnectionCmd.MarkFlagRequired("connection-id")
 
 	var putConnectionData string
-	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", "", "This is a required parameter.This is a required parameter.The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", "", "This is a required parameter. The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
 	putConnectionCmd.MarkFlagRequired("data")
 
 	var putConnectionDescription string
-	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", "", "This is a required parameter.This is a required parameter.The description of the connection.")
+	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", "", "This is a required parameter. The description of the connection.")
 	putConnectionCmd.MarkFlagRequired("description")
 
 	var putConnectionName string
-	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "This is a required parameter.This is a required parameter.The name of the connection.")
+	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	putConnectionCmd.MarkFlagRequired("name")
 
 	streamsCmd.AddCommand(putGroupCmd)
 
 	var putGroupArguments string
-	putGroupCmd.Flags().StringVar(&putGroupArguments, "arguments", "", "This is a required parameter.This is a required parameter.The group function arguments list.")
+	putGroupCmd.Flags().StringVar(&putGroupArguments, "arguments", "", "This is a required parameter. The group function arguments list.")
 	putGroupCmd.MarkFlagRequired("arguments")
 
 	var putGroupAttributes string
-	putGroupCmd.Flags().StringVar(&putGroupAttributes, "attributes", "", "This is a required parameter.This is a required parameter.The attributes map for function.")
+	putGroupCmd.Flags().StringVar(&putGroupAttributes, "attributes", "", "This is a required parameter. The attributes map for function.")
 	putGroupCmd.MarkFlagRequired("attributes")
 
 	var putGroupCategories []int
-	putGroupCmd.Flags().IntSliceVar(&putGroupCategories, "categories", nil, "This is a required parameter.This is a required parameter.The categories for this function.")
+	putGroupCmd.Flags().IntSliceVar(&putGroupCategories, "categories", nil, "This is a required parameter. The categories for this function.")
 	putGroupCmd.MarkFlagRequired("categories")
 
 	var putGroupEdges string
-	putGroupCmd.Flags().StringVar(&putGroupEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	putGroupCmd.Flags().StringVar(&putGroupEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	putGroupCmd.MarkFlagRequired("edges")
 
 	var putGroupGroupId string
-	putGroupCmd.Flags().StringVar(&putGroupGroupId, "group-id", "", "This is a required parameter.The group function's ID from the function registry")
+	putGroupCmd.Flags().StringVar(&putGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
 	putGroupCmd.MarkFlagRequired("group-id")
 
 	var putGroupMappings string
-	putGroupCmd.Flags().StringVar(&putGroupMappings, "mappings", "", "This is a required parameter.This is a required parameter.The group function mappings list.")
+	putGroupCmd.Flags().StringVar(&putGroupMappings, "mappings", "", "This is a required parameter. The group function mappings list.")
 	putGroupCmd.MarkFlagRequired("mappings")
 
 	var putGroupName string
-	putGroupCmd.Flags().StringVar(&putGroupName, "name", "", "This is a required parameter.This is a required parameter.The group function name.")
+	putGroupCmd.Flags().StringVar(&putGroupName, "name", "", "This is a required parameter. The group function name.")
 	putGroupCmd.MarkFlagRequired("name")
 
 	var putGroupNodes string
-	putGroupCmd.Flags().StringVar(&putGroupNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	putGroupCmd.Flags().StringVar(&putGroupNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	putGroupCmd.MarkFlagRequired("nodes")
 
 	var putGroupOutputType string
-	putGroupCmd.Flags().StringVar(&putGroupOutputType, "output-type", "", "This is a required parameter.This is a required parameter.The data type of the function's output.")
+	putGroupCmd.Flags().StringVar(&putGroupOutputType, "output-type", "", "This is a required parameter. The data type of the function's output.")
 	putGroupCmd.MarkFlagRequired("output-type")
 
 	var putGroupRootNode []string
-	putGroupCmd.Flags().StringSliceVar(&putGroupRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	putGroupCmd.Flags().StringSliceVar(&putGroupRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	putGroupCmd.MarkFlagRequired("root-node")
 
 	var putGroupScalar string
@@ -787,47 +790,47 @@ func init() {
 	streamsCmd.AddCommand(putTemplateCmd)
 
 	var putTemplateDescription string
-	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "This is a required parameter.This is a required parameter.Template description")
+	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "This is a required parameter. Template description")
 	putTemplateCmd.MarkFlagRequired("description")
 
 	var putTemplateEdges string
-	putTemplateCmd.Flags().StringVar(&putTemplateEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	putTemplateCmd.Flags().StringVar(&putTemplateEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	putTemplateCmd.MarkFlagRequired("edges")
 
 	var putTemplateName string
-	putTemplateCmd.Flags().StringVar(&putTemplateName, "name", "", "This is a required parameter.This is a required parameter.Template name")
+	putTemplateCmd.Flags().StringVar(&putTemplateName, "name", "", "This is a required parameter. Template name")
 	putTemplateCmd.MarkFlagRequired("name")
 
 	var putTemplateNodes string
-	putTemplateCmd.Flags().StringVar(&putTemplateNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	putTemplateCmd.Flags().StringVar(&putTemplateNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	putTemplateCmd.MarkFlagRequired("nodes")
 
 	var putTemplateRootNode []string
-	putTemplateCmd.Flags().StringSliceVar(&putTemplateRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	putTemplateCmd.Flags().StringSliceVar(&putTemplateRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	putTemplateCmd.MarkFlagRequired("root-node")
 
 	var putTemplateTemplateId string
-	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "This is a required parameter.ID of the template")
+	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	putTemplateCmd.MarkFlagRequired("template-id")
 
 	streamsCmd.AddCommand(reactivatePipelineCmd)
 
 	var reactivatePipelineId string
-	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter.Pipeline UUID to reactivate")
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter. Pipeline UUID to reactivate")
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(startPreviewCmd)
 
 	var startPreviewEdges string
-	startPreviewCmd.Flags().StringVar(&startPreviewEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	startPreviewCmd.Flags().StringVar(&startPreviewEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	startPreviewCmd.MarkFlagRequired("edges")
 
 	var startPreviewNodes string
-	startPreviewCmd.Flags().StringVar(&startPreviewNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	startPreviewCmd.Flags().StringVar(&startPreviewNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	startPreviewCmd.MarkFlagRequired("nodes")
 
 	var startPreviewRootNode []string
-	startPreviewCmd.Flags().StringSliceVar(&startPreviewRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	startPreviewCmd.Flags().StringSliceVar(&startPreviewRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	startPreviewCmd.MarkFlagRequired("root-node")
 
 	var startPreviewRecordsLimit int32
@@ -848,13 +851,13 @@ func init() {
 	streamsCmd.AddCommand(stopPreviewCmd)
 
 	var stopPreviewPreviewSessionId int64
-	stopPreviewCmd.Flags().Int64Var(&stopPreviewPreviewSessionId, "preview-session-id", 0, "This is a required parameter.ID of the preview session")
+	stopPreviewCmd.Flags().Int64Var(&stopPreviewPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
 	stopPreviewCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(updateConnectionCmd)
 
 	var updateConnectionConnectionId string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter.ID of the connection")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
 	updateConnectionCmd.MarkFlagRequired("connection-id")
 
 	var updateConnectionData string
@@ -869,19 +872,19 @@ func init() {
 	streamsCmd.AddCommand(updateGroupCmd)
 
 	var updateGroupEdges string
-	updateGroupCmd.Flags().StringVar(&updateGroupEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	updateGroupCmd.Flags().StringVar(&updateGroupEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	updateGroupCmd.MarkFlagRequired("edges")
 
 	var updateGroupGroupId string
-	updateGroupCmd.Flags().StringVar(&updateGroupGroupId, "group-id", "", "This is a required parameter.The group function's ID from the function registry")
+	updateGroupCmd.Flags().StringVar(&updateGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
 	updateGroupCmd.MarkFlagRequired("group-id")
 
 	var updateGroupNodes string
-	updateGroupCmd.Flags().StringVar(&updateGroupNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	updateGroupCmd.Flags().StringVar(&updateGroupNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	updateGroupCmd.MarkFlagRequired("nodes")
 
 	var updateGroupRootNode []string
-	updateGroupCmd.Flags().StringSliceVar(&updateGroupRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	updateGroupCmd.Flags().StringSliceVar(&updateGroupRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	updateGroupCmd.MarkFlagRequired("root-node")
 
 	var updateGroupArguments string
@@ -911,19 +914,19 @@ func init() {
 	streamsCmd.AddCommand(updatePipelineCmd)
 
 	var updatePipelineEdges string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	updatePipelineCmd.MarkFlagRequired("edges")
 
 	var updatePipelineId string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "This is a required parameter.id of the pipeline to update")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "This is a required parameter. id of the pipeline to update")
 	updatePipelineCmd.MarkFlagRequired("id")
 
 	var updatePipelineNodes string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	updatePipelineCmd.MarkFlagRequired("nodes")
 
 	var updatePipelineRootNode []string
-	updatePipelineCmd.Flags().StringSliceVar(&updatePipelineRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	updatePipelineCmd.Flags().StringSliceVar(&updatePipelineRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	updatePipelineCmd.MarkFlagRequired("root-node")
 
 	var updatePipelineBypassValidation string
@@ -941,19 +944,19 @@ func init() {
 	streamsCmd.AddCommand(updateTemplateCmd)
 
 	var updateTemplateEdges string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	updateTemplateCmd.MarkFlagRequired("edges")
 
 	var updateTemplateNodes string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	updateTemplateCmd.MarkFlagRequired("nodes")
 
 	var updateTemplateRootNode []string
-	updateTemplateCmd.Flags().StringSliceVar(&updateTemplateRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	updateTemplateCmd.Flags().StringSliceVar(&updateTemplateRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	updateTemplateCmd.MarkFlagRequired("root-node")
 
 	var updateTemplateTemplateId string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter.ID of the template")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	updateTemplateCmd.MarkFlagRequired("template-id")
 
 	var updateTemplateDescription string
@@ -965,15 +968,15 @@ func init() {
 	streamsCmd.AddCommand(validatePipelineCmd)
 
 	var validatePipelineEdges string
-	validatePipelineCmd.Flags().StringVar(&validatePipelineEdges, "edges", "", "This is a required parameter.This is a required parameter.A list of links or connections between the output of one pipeline function and the input of another pipeline function")
+	validatePipelineCmd.Flags().StringVar(&validatePipelineEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
 	validatePipelineCmd.MarkFlagRequired("edges")
 
 	var validatePipelineNodes string
-	validatePipelineCmd.Flags().StringVar(&validatePipelineNodes, "nodes", "", "This is a required parameter.This is a required parameter.The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
+	validatePipelineCmd.Flags().StringVar(&validatePipelineNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
 	validatePipelineCmd.MarkFlagRequired("nodes")
 
 	var validatePipelineRootNode []string
-	validatePipelineCmd.Flags().StringSliceVar(&validatePipelineRootNode, "root-node", nil, "This is a required parameter.This is a required parameter.The UUIDs of all sink functions in a given pipeline")
+	validatePipelineCmd.Flags().StringSliceVar(&validatePipelineRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
 	validatePipelineCmd.MarkFlagRequired("root-node")
 
 }
