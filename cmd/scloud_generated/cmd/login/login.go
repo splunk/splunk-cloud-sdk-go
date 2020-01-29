@@ -21,4 +21,5 @@ func init() {
 
 	loginCmd.Flags().StringP("uid", "u", "", "user name")
 	loginCmd.Flags().StringP("pwd", "p", "", "password")
+	loginCmd.Flags().BoolP("verbose", "", false, "show login context")
 }
