@@ -1,0 +1,30 @@
+streams compile-dsl --dsl "events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"
+streams create-pipeline --name scloudteststreampipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
+streams validate-pipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\":{},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\":{},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
+
+streams list-pipelines
+streams get-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+
+streams get-pipelines-status
+streams activate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+streams deactivate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+
+streams update-pipeline  --name scloudteststreampipeline  --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --description "aaaa" --id "d57d3656-49d2-4173-be94-1ddf8543ecfb"
+
+streams expand-pipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
+
+streams list-connectors
+streams list-connections
+
+streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+
+
+streams create-connection --connector-id "879837b0-cabf-4bc2-8589-fcc4dad753e7" --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
+streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --name "newname"
+streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --name "newname"  --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "new desc"
+streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
+
+
+
+
+
