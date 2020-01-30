@@ -14,6 +14,6 @@ func Test_record_action(t *testing.T) {
 	test_engine.Record_test_result("testcases/action_test", testhook_arg, t)
 }
 
-//func Test_record_identity(t *testing.T) {
-//	test_util.Record_test_result("testcases/identity_test", t)
-//}
+func Test_record_identity(t *testing.T) {
+	test_engine.Record_test_result("testcases/streams_test", testhook_arg, t)
+}
