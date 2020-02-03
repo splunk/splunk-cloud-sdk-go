@@ -354,8 +354,8 @@ func init() {
 	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "This is a required parameter. The attributes map for function.")
 	createGroupCmd.MarkFlagRequired("attributes")
 
-	var createGroupCategories []int
-	createGroupCmd.Flags().IntSliceVar(&createGroupCategories, "categories", nil, "This is a required parameter. The categories for this function.")
+	var createGroupCategories string
+	createGroupCmd.Flags().StringVar(&createGroupCategories, "categories", "", "This is a required parameter. The categories for this function.")
 	createGroupCmd.MarkFlagRequired("categories")
 
 	var createGroupEdges string
