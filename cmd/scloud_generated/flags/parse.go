@@ -151,10 +151,10 @@ func getInt64Slice(name string, flags *pflag.FlagSet) ([]int64, error) {
 		return nil, err
 	}
 
-	//if flag.Value.Type() != "intSlice" {
-	//	err := fmt.Errorf("trying to get %s value of flag of type %s", "intSlice", flag.Value.Type())
-	//	return nil, err
-	//}
+	if flag.Value.Type() != "intSlice" {
+		err := fmt.Errorf("trying to get %s value of flag of type %s", "intSlice", flag.Value.Type())
+		return nil, err
+	}
 	sval := flag.Value.String()
 	result, err := int64SliceConv(sval)
 	if err != nil {
@@ -164,19 +164,10 @@ func getInt64Slice(name string, flags *pflag.FlagSet) ([]int64, error) {
 	if err != nil {
 		return []int64{}, err
 	}
-
-	if result == nil {
-		return nil, nil
-	}
-
 	return result.([]int64), nil
 }
 
 func int64SliceConv(val string) (interface{}, error) {
-	if val == "" {
-		return nil, nil
-	}
-
 	val = strings.Trim(val, "[]")
 	// Empty string would cause a slice with one (empty) entry
 	if len(val) == 0 {
