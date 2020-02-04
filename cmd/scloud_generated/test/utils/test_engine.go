@@ -12,6 +12,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,7 +39,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	ret := ""
 
 	arg := testarg
-	scloud := "../../../bin/scloud_gen"
+	scloud := "/Users/ljiang/gitlab/splunk-cloud-sdk-go/bin/scloud_gen"
 
 	// read in testcases line by line
 	file, err := os.Open(filepath)
@@ -69,25 +71,35 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 			args[index] = strings.Trim(ele, " ")
 		}
 
+		os.Remove(auth.Abspath(".scloudTestOutput"))
+		scloudTestOutput := ""
 		args = append([]string{arg}, args...)
 		cmd := exec.Command(scloud, args...)
 		res, err := executeCliCommand(cmd)
+		if !strings.Contains(res, auth.ScloudTestDone) {
+			scloudTestOutput = res
+		} else {
+			outcache, err := ioutil.ReadFile(auth.Abspath(".scloudTestOutput"))
+			scloudTestOutput = string(outcache)
 
-		scloudTestOutput, err := ioutil.ReadFile(".scloudTestOutput")
+			if scloudTestOutput == "" {
+				fmt.Println("nothing to read?????")
+			}
 
-		if testarg == "--testhook" {
-			if err != nil {
-				resStr := ""
-				if len(res) > 0 {
-					resStr = ", response:" + res
+			if testarg == "--testhook" {
+				if err != nil {
+					resStr := ""
+					if len(res) > 0 {
+						resStr = ", response:" + res
+					}
+					fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resStr)
+				} else {
+					fmt.Printf("-- Execute \"%s\" Succeed\n", line)
 				}
-				fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resStr)
-			} else {
-				fmt.Printf("-- Execute \"%s\" Succeed\n", line)
 			}
 		}
 
-		ret = ret + "#testcase: " + line + "\n" + string(scloudTestOutput) + "\n"
+		ret = ret + "#testcase: " + line + "\n" + scloudTestOutput + "\n"
 
 		if err != nil {
 			errs = append(errs, err.Error())

@@ -52,7 +52,7 @@ var settings *fcache.Cache
 // for the environment variable SCLOUD HOME and is joined with that.
 // If the environment variable is not defined, the path is joined with
 // the path to the home dir
-func abspath(p string) string {
+func Abspath(p string) string {
 	if filepath.IsAbs(p) {
 		return p
 	}
@@ -307,8 +307,8 @@ func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
-	settings, _ = fcache.Load(abspath(viper.ConfigFileUsed()))
-	ctxCache, _ = fcache.Load(abspath(".scloud_context"))
+	settings, _ = fcache.Load(Abspath(viper.ConfigFileUsed()))
+	ctxCache, _ = fcache.Load(Abspath(".scloud_context"))
 
 	return nil
 }
