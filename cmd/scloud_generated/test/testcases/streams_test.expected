@@ -66,6 +66,18 @@ error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]i
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST BODY:<nil>
 
+#testcase: streams get-registry --local false
+REQUEST URL:streams/v2beta1/pipelines/registry?local=false
+REQUEST BODY:<nil>
+
+#testcase: streams list-templates
+REQUEST URL:streams/v2beta1/templates
+REQUEST BODY:<nil>
+
+#testcase: streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
+REQUEST URL:streams/v2beta1/templates/%22a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4%22
+REQUEST BODY:<nil>
+
 #testcase: streams create-group --categories 0 --arguments "[{\"GroupArg\": \"time\", \"Type\": \"long\", \"Position\": 0}]" --attributes {} --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]"  --mappings "[]" --name "newgroup"  --nodes "[{\"attributes\": {},\"id\": \"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\": \"read-splunk-firehose\",\"resolvedId\": \"read-splunk-firehose\"},{\"attributes\": {},\"dataset\": \"dataset:main\",\"id\": \"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\": \"module:index\",\"op\": \"write-index\",\"resolvedId\": \"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}] " --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --output-type ""
 enable testhook-dryrun
 error parsing "arguments": flags.ParseFlag: failure to unmarshal to type []streams.GroupArgumentsNode err: unexpected end of JSON input
