@@ -20,8 +20,9 @@ import (
 )
 
 const (
-	defaultScheme = "https"
-	defaultPort   = "443"
+	defaultScheme  = "https"
+	defaultPort    = "443"
+	ScloudTestDone = "Test Command is done\n"
 )
 
 var sdkClient *sdk.Client
@@ -179,7 +180,9 @@ func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, err
 	fmt.Printf("REQUEST BODY:%v\n", request.Body)
 
 	//write to stream file for scloud test
-	scloudTestCache := ".scloudTestOutput"
+	scloudTestCache := Abspath(".scloudTestOutput")
+	os.Remove(scloudTestCache)
+
 	f, err := os.Create(scloudTestCache)
 	if err != nil {
 		fmt.Println(err)
@@ -200,6 +203,7 @@ func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, err
 
 	if out.cancelBeforeSend {
 		fmt.Println(ScloudTesExecCancledError{}.Error())
+		fmt.Println(ScloudTestDone)
 		return nil, ScloudTesExecCancledError{}
 	}
 
@@ -210,12 +214,12 @@ func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, err
 
 	fmt.Printf("\nRESPONSE:\n%v\n", response)
 	_, err = f.WriteString(fmt.Sprintf("\nRESPONSE:\n%v\n", response))
-
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
+	fmt.Println(ScloudTestDone)
 	return response, err
 }
 
