@@ -39,7 +39,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	ret := ""
 
 	arg := testarg
-	scloud := "/Users/ljiang/gitlab/splunk-cloud-sdk-go/bin/scloud_gen"
+	scloud := "../../../bin/scloud_gen"
 
 	// read in testcases line by line
 	file, err := os.Open(filepath)
@@ -81,10 +81,6 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 		} else {
 			outcache, err := ioutil.ReadFile(auth.Abspath(".scloudTestOutput"))
 			scloudTestOutput = string(outcache)
-
-			if scloudTestOutput == "" {
-				fmt.Println("nothing to read?????")
-			}
 
 			if testarg == "--testhook" {
 				if err != nil {
