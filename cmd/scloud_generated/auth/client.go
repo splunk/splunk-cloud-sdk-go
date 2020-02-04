@@ -22,6 +22,7 @@ import (
 const (
 	defaultScheme  = "https"
 	defaultPort    = "443"
+	// use ScloudTestDone to indicate the scloud test command is done when using testhook-dryrun flag
 	ScloudTestDone = "Test Command is done\n"
 )
 
