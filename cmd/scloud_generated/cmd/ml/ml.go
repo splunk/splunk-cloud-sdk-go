@@ -13,5 +13,5 @@ func Cmd() *cobra.Command {
 
 var mlCmd = &cobra.Command{
 	Use:   "ml",
-	Short: "ml service",
+	Short: "Machine Learning service",
 }

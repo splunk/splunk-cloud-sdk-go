@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "search service",
+	Short: "Search service",
 }
