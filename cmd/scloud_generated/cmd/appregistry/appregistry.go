@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // catalogCmd represents the catalog command
 var appregistryCmd = &cobra.Command{
 	Use:   "appreg",
-	Short: "application registry service",
+	Short: "App Registry service",
 }
