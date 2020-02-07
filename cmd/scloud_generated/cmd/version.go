@@ -10,7 +10,7 @@ import (
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "version info",
+	Short: "Version of Splunk Cloud Services CLI",
 	RunE:  execVersionCmd,
 }
 

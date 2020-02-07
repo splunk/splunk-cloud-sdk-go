@@ -42,7 +42,7 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "scloud_gen",
-	Short: "Splunk Cloud Platform CLI",
+	Short: "Splunk Cloud Services CLI",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -72,13 +72,13 @@ func init() {
 	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(streams.Cmd())
 
-	rootCmd.PersistentFlags().StringVar(&env, "env", "", "target environment")
-	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "tenant identifier")
-	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "email address")
-	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "scheme://host<:port>")
-	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "scheme://host<:port>")
-	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "disable TLS cert validation")
-	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "cacert file")
+	rootCmd.PersistentFlags().StringVar(&env, "env", "", "The target environment")
+	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "The tenant name")
+	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "The username")
+	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "The auth URL (scheme://host<:port>)")
+	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "The host URL (scheme://host<:port>)")
+	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "Whether to skip TLS cert validation")
+	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "The public cert file")
 
 	// add hidden test flags
 	rootCmd.PersistentFlags().BoolVar(&testhookDryrun, "testhook-dryrun", false, "a string flag")

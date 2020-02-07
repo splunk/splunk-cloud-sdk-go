@@ -13,13 +13,13 @@ func Cmd() *cobra.Command {
 // loginCmd represents the catalog command
 var loginCmd = &cobra.Command{
 	Use:   "login",
-	Short: "login service",
+	Short: "Log in to Splunk Cloud Services",
 	RunE:  impl.Login,
 }
 
 func init() {
 
-	loginCmd.Flags().StringP("uid", "u", "", "user name")
-	loginCmd.Flags().StringP("pwd", "p", "", "password")
-	loginCmd.Flags().BoolP("verbose", "", false, "show login context")
+	loginCmd.Flags().StringP("uid", "u", "", "Your username")
+	loginCmd.Flags().StringP("pwd", "p", "", "Your password")
+	loginCmd.Flags().BoolP("verbose", "", false, "Whether to display your access token")
 }
