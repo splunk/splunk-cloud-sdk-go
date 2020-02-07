@@ -14,5 +14,5 @@ func Cmd() *cobra.Command {
 // catalogCmd represents the catalog command
 var actionCmd = &cobra.Command{
 	Use:   "action",
-	Short: "action service",
+	Short: "Action service",
 }

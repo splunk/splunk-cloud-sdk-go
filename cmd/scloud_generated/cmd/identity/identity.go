@@ -13,5 +13,5 @@ func Cmd() *cobra.Command {
 
 var identityCmd = &cobra.Command{
 	Use:   "identity",
-	Short: "identity service",
+	Short: "Identity service",
 }

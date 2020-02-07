@@ -32,12 +32,12 @@ func Cmd() *cobra.Command {
 // configCmd represents the config command
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Store global flags in your local settings configuration.",
+	Short: "Save settings in a local configuration file",
 }
 
 var get = &cobra.Command{
 	Use:   "get",
-	Short: "Retrieve a setting for the given flag.",
+	Short: "Retrieve the value of a given setting (key)",
 	Run: func(cmd *cobra.Command, args []string) {
 		key, _ := cmd.Flags().GetString("key")
 		fmt.Println(viper.GetString(key))
@@ -47,7 +47,7 @@ var get = &cobra.Command{
 // Note: delete this, or read the file directly?
 var list = &cobra.Command{
 	Use:   "list",
-	Short: "Retrieve all properties from the config.",
+	Short: "Retrieve all configuration settings",
 	Run: func(cmd *cobra.Command, args []string) {
 		for k, v := range viper.AllSettings() {
 			fmt.Printf("%s = %v\n", k, v)
@@ -57,7 +57,7 @@ var list = &cobra.Command{
 
 var set = &cobra.Command{
 	Use:   "set",
-	Short: "Cache a value for the given flag in the config.",
+	Short: "Save a value for a given setting (key)",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Note: need to check again because it could have been deleted
 		home, err := homedir.Dir()
@@ -87,14 +87,14 @@ var set = &cobra.Command{
 				fmt.Println(err)
 			}
 		} else {
-			fmt.Printf("These are the valid keys that can be set:\n %s\n", GlobalFlags)
+			fmt.Printf("Here are the settings you can save:\n %s\n", GlobalFlags)
 		}
 	},
 }
 
 var reset = &cobra.Command{
 	Use:   "reset",
-	Short: "Restore config file, fall back on default flag settings, or legacy $HOME/.scloud file",
+	Short: "Delete the saved settings from the local configuration file",
 	Run: func(cmd *cobra.Command, args []string) {
 		home, err := homedir.Dir()
 		if err != nil {
@@ -102,7 +102,7 @@ var reset = &cobra.Command{
 		}
 		confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 		if FileExists(confFile) {
-			fmt.Printf("Deleting config file: %s.\n", CfgFileName)
+			fmt.Printf("Deleting configuration file: %s.\n", CfgFileName)
 			err = os.Remove(confFile)
 			if err != nil {
 				fmt.Println(err)
@@ -121,7 +121,7 @@ func Initialize() {
 	confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 	err = ioutil.WriteFile(confFile, []byte{}, 0755)
 	if err != nil {
-		fmt.Printf("Unable to write a new config file: %v", err)
+		fmt.Printf("Unable to write a new configuration file: %v", err)
 	}
 	// Search config in home directory with name ".scloud" (without extension).
 	Load(home, confFile)
@@ -180,11 +180,11 @@ func init() {
 	configCmd.AddCommand(set)
 	configCmd.AddCommand(reset)
 
-	get.Flags().StringP("key", "k", "", "The key stored in the settings.")
+	get.Flags().StringP("key", "k", "", "The setting name.")
 	_ = get.MarkFlagRequired("key")
 
-	set.Flags().StringP("key", "k", "", "The key stored in the settings.")
-	set.Flags().StringP("value", "v", "", "The value stored in the settings.")
+	set.Flags().StringP("key", "k", "", "The setting name.")
+	set.Flags().StringP("value", "v", "", "The setting value.")
 	_ = set.MarkFlagRequired("key")
 	_ = set.MarkFlagRequired("value")
 }

@@ -13,5 +13,5 @@ func Cmd() *cobra.Command {
 
 var provisionerCmd = &cobra.Command{
 	Use:   "provisioner",
-	Short: "provisioner service",
+	Short: "Provisioner service",
 }
