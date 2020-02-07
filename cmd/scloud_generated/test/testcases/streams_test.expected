@@ -2,14 +2,6 @@
 REQUEST URL:streams/v2beta1/pipelines/compile-dsl
 REQUEST BODY:{{"dsl":"\"events"}}
 
-#testcase: streams create-pipeline --name scloudteststreampipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
-enable testhook-dryrun
-error parsing "edges": flags.ParseFlag: failure to unmarshal to type []streams.UplEdge err: json: cannot unmarshal string into Go value of type []streams.UplEdge
-
-#testcase: streams validate-pipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\":{},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\":{},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
-enable testhook-dryrun
-error parsing "edges": flags.ParseFlag: failure to unmarshal to type []streams.UplEdge err: json: cannot unmarshal string into Go value of type []streams.UplEdge
-
 #testcase: streams list-pipelines
 REQUEST URL:streams/v2beta1/pipelines
 REQUEST BODY:<nil>
@@ -29,14 +21,6 @@ REQUEST BODY:{{}}
 #testcase: streams deactivate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 REQUEST URL:streams/v2beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075/deactivate
 REQUEST BODY:{{}}
-
-#testcase: streams update-pipeline  --name scloudteststreampipeline  --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --description "aaaa" --id "d57d3656-49d2-4173-be94-1ddf8543ecfb"
-enable testhook-dryrun
-error parsing "edges": flags.ParseFlag: failure to unmarshal to type []streams.UplEdge err: json: cannot unmarshal string into Go value of type []streams.UplEdge
-
-#testcase: streams expand-pipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\": {},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\": {},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
-enable testhook-dryrun
-error parsing "edges": flags.ParseFlag: failure to unmarshal to type []streams.UplEdge err: json: cannot unmarshal string into Go value of type []streams.UplEdge
 
 #testcase: streams list-connectors
 REQUEST URL:streams/v2beta1/connectors
@@ -58,10 +42,6 @@ error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]i
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST BODY:{{"name":"\"newname\""}}
 
-#testcase: streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --name "newname"  --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "new desc"
-enable testhook-dryrun
-error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]interface {} err: unexpected end of JSON input
-
 #testcase: streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST BODY:<nil>
@@ -77,16 +57,4 @@ REQUEST BODY:<nil>
 #testcase: streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
 REQUEST URL:streams/v2beta1/templates/%22a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4%22
 REQUEST BODY:<nil>
-
-#testcase: streams create-group --categories 0 --arguments "[{\"GroupArg\": \"time\", \"Type\": \"long\", \"Position\": 0}]" --attributes {} --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]"  --mappings "[]" --name "newgroup"  --nodes "[{\"attributes\": {},\"id\": \"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\": \"read-splunk-firehose\",\"resolvedId\": \"read-splunk-firehose\"},{\"attributes\": {},\"dataset\": \"dataset:main\",\"id\": \"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\": \"module:index\",\"op\": \"write-index\",\"resolvedId\": \"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}] " --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --output-type ""
-enable testhook-dryrun
-error parsing "arguments": flags.ParseFlag: failure to unmarshal to type []streams.GroupArgumentsNode err: unexpected end of JSON input
-
-#testcase: streams create-group --categories "" --arguments "[{\"GroupArg\": \"time\", \"Type\": \"long\", \"Position\": 0}]" --attributes {} --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]"  --mappings "[]" --name "newgroup"  --nodes "[{\"attributes\": {},\"id\": \"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\": \"read-splunk-firehose\",\"resolvedId\": \"read-splunk-firehose\"},{\"attributes\": {},\"dataset\": \"dataset:main\",\"id\": \"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\": \"module:index\",\"op\": \"write-index\",\"resolvedId\": \"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}] " --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --output-type ""
-enable testhook-dryrun
-error parsing "arguments": flags.ParseFlag: failure to unmarshal to type []streams.GroupArgumentsNode err: unexpected end of JSON input
-
-#testcase: streams create-group --categories "0,1,2" --arguments "[{\"GroupArg\": \"time\", \"Type\": \"long\", \"Position\": 0}]" --attributes {} --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]"  --mappings "[]" --name "newgroup"  --nodes "[{\"attributes\": {},\"id\": \"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\": \"read-splunk-firehose\",\"resolvedId\": \"read-splunk-firehose\"},{\"attributes\": {},\"dataset\": \"dataset:main\",\"id\": \"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\": \"module:index\",\"op\": \"write-index\",\"resolvedId\": \"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}] " --root-node "6f14bd4d-e299-4677-b5db-441b40acd501" --output-type ""
-enable testhook-dryrun
-error parsing "arguments": flags.ParseFlag: failure to unmarshal to type []streams.GroupArgumentsNode err: unexpected end of JSON input
 
