@@ -1,0 +1,9 @@
+ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --format raw < test_ingest_event_raw.log
+ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --format json < test_ingest_event_json.log
+ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --attributes {"scloud_test_ingest_attribute":{"scloud_test_ingest_key":"scloud_test_ingest_value"}} --format event < test_ingest_event_json.log
+
+ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-dimensions {"scloud_test_metric_dimension_default_key":"scloud_test_metric_dimension_default_value"} < test_ingest_metric_json.log
+ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-type scloud_test_metric_type_default --default-unit scloud_test_metric_unit_default < test_ingest_metric_json.log
+
+ingest upload-files --file-name test_ingest_event_raw.log
+
