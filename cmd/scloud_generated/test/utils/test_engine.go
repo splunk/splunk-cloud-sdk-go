@@ -15,11 +15,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func executeCliCommand(cmd *exec.Cmd) (string, error) {
-	var out bytes.Buffer
+var scloud = "../../../bin/scloud_gen"
+
+func executeCliCommand(cmd *exec.Cmd) (string, error, string) {
+	var out, stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	cmd.Stdout = &out
 	err := cmd.Run()
-	return out.String(), err
+
+	return out.String(), err, stderr.String()
 }
 
 func getTestcaseResultFilePath(input string) string {
@@ -37,7 +41,6 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	ret := ""
 
 	arg := testarg
-	scloud := "../../../bin/scloud_gen"
 
 	// read in testcases line by line
 	file, err := os.Open(filepath)
@@ -71,7 +74,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 
 		args = append([]string{arg}, args...)
 		cmd := exec.Command(scloud, args...)
-		res, err := executeCliCommand(cmd)
+		res, err, _ := executeCliCommand(cmd)
 
 		scloudTestOutput, err := ioutil.ReadFile(".scloudTestOutput")
 
@@ -101,6 +104,31 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	return ret, nil
 }
 
+//Set config and Login
+func setConfigurationAndLogin() (string, error) {
+
+	//Config set username, env, tenant and login
+	confArgs := []string{"config set --key username --value " + Username,
+		"config set --key env --value " + Env1,
+		"config set --key tenant --value " + TestTenant,
+		"login --pwd " + Password,
+	}
+
+	for _, arg := range confArgs {
+		args := strings.Split(arg, " ")
+		for index, ele := range args {
+			args[index] = strings.Trim(ele, " ")
+		}
+		comnd := exec.Command(scloud, args...)
+		res, err, _ := executeCliCommand(comnd)
+		if res != "" {
+			//error that config set or login didnt work and terminate tests
+			return res, err
+		}
+	}
+	return "", nil
+}
+
 func RunTest(filepath string, t *testing.T) {
 	arg := "--testhook-dryrun"
 	results, _ := getTestCasesAndExecuteCliCommands(filepath, arg)
@@ -128,4 +156,30 @@ func Record_test_result(filepath string, testhook_arg string, t *testing.T) {
 	fmt.Printf("wrote %d bytes\n", count)
 
 	assert.Nil(t, err)
+}
+
+//Execute a global flag test case
+func Execute_cmd_with_global_flags(command string, searchString string, t *testing.T) bool {
+
+	stderr := ""
+
+	//Set a default env, tenant and username to begin with and login
+	res, err := setConfigurationAndLogin()
+	assert.Empty(t, res)
+	assert.Nil(t, err)
+
+	args := strings.Split(command, " ")
+	for index, ele := range args {
+		args[index] = strings.Trim(ele, " ")
+	}
+
+	comnd := exec.Command(scloud, args...)
+	//execute testcase
+	res, err, stderr = executeCliCommand(comnd)
+	//Validate if response output contains either expected results or an an expected error string
+	if strings.Contains(res, searchString) == false && strings.Contains(stderr, searchString) == false {
+		return false
+	}
+
+	return true
 }
