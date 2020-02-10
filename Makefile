@@ -95,7 +95,7 @@ prereqs:
 	echo "Installing goimports .."
 	GO111MODULE=off go get golang.org/x/tools/cmd/goimports
 	echo "Installing statik .."
-	GO111MODULE=off go get github.com/rakyll/statik
+	GO111MODULE=on go get github.com/rakyll/statik
 	echo "Installing golangci-lint .."
 	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	@echo "Installing gotestsum ..."

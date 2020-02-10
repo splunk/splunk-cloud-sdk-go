@@ -30,7 +30,6 @@ var legacyFile string
 var (
 	env            string
 	tenant         string
-	userName       string
 	authURL        string
 	hostURL        string
 	insecure       bool
@@ -72,13 +71,12 @@ func init() {
 	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(streams.Cmd())
 
-	rootCmd.PersistentFlags().StringVar(&env, "env", "", "The target environment")
-	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "The tenant name")
-	rootCmd.PersistentFlags().StringVar(&userName, "username", "", "The username")
-	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "The auth URL (scheme://host<:port>)")
-	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "The host URL (scheme://host<:port>)")
-	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "Whether to skip TLS cert validation")
-	rootCmd.PersistentFlags().StringVar(&cacert, "cacert", "", "The public cert file")
+	rootCmd.PersistentFlags().StringVar(&env, "env", "", "Set the target environment")
+	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "Set the tenant to use for operations against platform services")
+	rootCmd.PersistentFlags().StringVar(&authURL, "auth-url", "", "Set an auth URL to override the public SDC auth URL (https://<host>:<port>)")
+	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "Set a host URL to override the public SDC host (https://<host>:<port>)")
+	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "Specify whether to skip TLS validation. The default is \"false\" to enable TLS certificate validation")
+	rootCmd.PersistentFlags().StringVar(&cacert, "ca-cert", "", "Set the public cert file to use for a local host using HTTPS with TLScertificate validation enabled")
 
 	// add hidden test flags
 	rootCmd.PersistentFlags().BoolVar(&testhookDryrun, "testhook-dryrun", false, "a string flag")
@@ -134,4 +132,17 @@ func initConfig() {
 		config.GlobalFlags["testhook"] = true
 		fmt.Println("enable testhook")
 	}
+
+	config.GlobalFlags["env"] = env
+
+	config.GlobalFlags["tenant"] = tenant
+
+	config.GlobalFlags["host-url"] = hostURL
+
+	config.GlobalFlags["auth-url"] = authURL
+
+	config.GlobalFlags["insecure"] = insecure
+
+	config.GlobalFlags["ca-cert"] = cacert
+
 }
