@@ -19,6 +19,7 @@ var GlobalFlags = map[string]interface{}{
 	"username":       "",
 	"auth-url":       "",
 	"host-url":       "",
+	"ca-cert":        "",
 	"insecure":       false,
 	"testhookdryrun": false,
 	"testhook":       false,
@@ -155,7 +156,7 @@ func Migrate(source string, target string) {
 }
 
 func isValidProperty(key string) bool {
-	for _, prop := range GlobalFlags {
+	for prop := range GlobalFlags {
 		if key == prop {
 			return true
 		}
@@ -183,8 +184,9 @@ func init() {
 	get.Flags().StringP("key", "k", "", "The setting name.")
 	_ = get.MarkFlagRequired("key")
 
-	set.Flags().StringP("key", "k", "", "The setting name.")
-	set.Flags().StringP("value", "v", "", "The setting value.")
+	set.Flags().StringP("key", "k", "", "The key stored in the settings.")
+	set.Flags().StringP("value", "p", "", "The value stored in the settings.")
+
 	_ = set.MarkFlagRequired("key")
 	_ = set.MarkFlagRequired("value")
 }

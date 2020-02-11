@@ -26,6 +26,8 @@ import (
 	"path/filepath"
 	"syscall"
 
+	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/config"
+
 	"github.com/spf13/viper"
 
 	"github.com/golang/glog"
@@ -84,12 +86,19 @@ func getEnvironmentName() string {
 }
 
 func getEnvironment() *Environment {
-	name := getEnvironmentName()
-	env, err := GetEnvironment(name)
+	var name, env string
+	env, _ = cf.GlobalFlags["env"].(string)
+
+	if env != "" {
+		name = env
+	} else {
+		name = getEnvironmentName()
+	}
+	envName, err := GetEnvironment(name)
 	if err != nil {
 		fatal(err.Error())
 	}
-	return env
+	return envName
 }
 
 // Returns the selected username.
@@ -150,10 +159,16 @@ func getProfileName() string {
 
 // Returns the selected tenant name.
 func getTenantName() string {
+	var tenant string
+
+	tenant, _ = cf.GlobalFlags["tenant"].(string)
+	if tenant != "" {
+		return tenant
+	}
 	if tenant, ok := settings.GetString("tenant"); ok {
 		return tenant
 	}
-	var tenant string
+
 	fmt.Print("Tenant: ")
 	if _, err := fmt.Scanln(&tenant); err != nil {
 		fatal(err.Error())
@@ -165,6 +180,10 @@ func getTenantName() string {
 // Returns host url from passed-in options or local settings.
 // If host_url is not specified, returns ""
 func getHostURL() string {
+	hostURL, _ := cf.GlobalFlags["host-url"].(string)
+	if hostURL != "" {
+		return hostURL
+	}
 	if setting, ok := settings.GetString("host-url"); ok {
 		return setting
 	}
@@ -175,6 +194,10 @@ func getHostURL() string {
 // Returns scheme from passed-in options or local settings.
 // If ca-cert is not specified, returns ""
 func getCaCert() string {
+	cacert, _ := cf.GlobalFlags["ca-cert"].(string)
+	if cacert != "" {
+		return cacert
+	}
 	if setting, ok := settings.GetString("ca-cert"); ok {
 		return setting
 	}
@@ -185,6 +208,10 @@ func getCaCert() string {
 // Overridden by --insecure flag
 func isInsecure() bool {
 	insecure := false
+	insecure, _ = cf.GlobalFlags["insecure"].(bool)
+	if insecure != false {
+		return insecure
+	}
 	// local settings cache default value
 	if insecure, ok := settings.Get("insecure").(bool); ok {
 		return insecure
@@ -357,7 +384,7 @@ var config Cfg
 func GetEnvironment(name string) (*Environment, error) {
 	env, ok := config.Environments[name]
 	if !ok {
-		return nil, fmt.Errorf("auth.GetEnvironment key not found: '%s'", name)
+		return nil, fmt.Errorf("Environment specified does not exist: '%s'", name)
 	}
 	return env, nil
 }

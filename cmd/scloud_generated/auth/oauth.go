@@ -20,6 +20,8 @@ import (
 	"errors"
 	"fmt"
 
+	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/config"
+
 	"github.com/pelletier/go-toml"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 )
@@ -117,12 +119,16 @@ func pkceFlow(profile map[string]string) (*idp.Context, error) {
 	}
 
 	// Override idp_host from config file with -auth_url or auth_url in local settings
-	if authURL, ok := settings.Get("auth-url").(string); ok {
-		if authURL != "" {
-			idpHost = authURL
+	authURL, _ := cf.GlobalFlags["auth-url"].(string)
+	if authURL != "" {
+		idpHost = authURL
+	} else {
+		if authURL, ok := settings.Get("auth-url").(string); ok {
+			if authURL != "" {
+				idpHost = authURL
+			}
 		}
 	}
-
 	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost)
 
 	// Allow on-prem to use insecure to bypass TLS Verification
