@@ -66,7 +66,6 @@ func GetClientSystemTenant() (*sdk.Client, error) {
 func newClient(svc *Service) *sdk.Client {
 	var serviceURL *url.URL
 	var hostURL = getHostURL()
-
 	serviceURL, err := url.Parse(hostURL)
 
 	var scheme string
