@@ -13,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -90,7 +89,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 			setCommandStdin(cmd, stdinFileName)
 		}
 
-		res, err := executeCliCommand(cmd)
+		res, err, _ := executeCliCommand(cmd)
 		if !strings.Contains(res, auth.ScloudTestDone) {
 			scloudTestOutput = res
 		} else {
