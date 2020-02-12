@@ -390,30 +390,8 @@ func init() {
 
 	streamsCmd.AddCommand(createPipelineCmd)
 
-	var createPipelineEdges string
-	createPipelineCmd.Flags().StringVar(&createPipelineEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	createPipelineCmd.MarkFlagRequired("edges")
-
-	var createPipelineName string
-	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", "", "This is a required parameter. The name of the pipeline.")
-	createPipelineCmd.MarkFlagRequired("name")
-
-	var createPipelineNodes string
-	createPipelineCmd.Flags().StringVar(&createPipelineNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	createPipelineCmd.MarkFlagRequired("nodes")
-
-	var createPipelineRootNode []string
-	createPipelineCmd.Flags().StringSliceVar(&createPipelineRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	createPipelineCmd.MarkFlagRequired("root-node")
-
-	var createPipelineBypassValidation string
-	createPipelineCmd.Flags().StringVar(&createPipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
-
-	var createPipelineCreateUserId string
-	createPipelineCmd.Flags().StringVar(&createPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
-
-	var createPipelineDescription string
-	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
+	var createPipelineInputDatafile string
+	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(createTemplateCmd)
 
