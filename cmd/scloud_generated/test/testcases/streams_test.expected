@@ -2,6 +2,10 @@
 REQUEST URL:streams/v2beta1/pipelines/compile-dsl
 REQUEST BODY:{{"dsl":"\"events"}}
 
+#testcase: streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
+REQUEST URL:streams/v2beta1/pipelines
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"attributes":{},"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"6f14bd4d-e299-4677-b5db-441b40acd501","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["6f14bd4d-e299-4677-b5db-441b40acd501"]},"name":"passthrough","bypassValidation":true,"createUserId":"test@splunk.com","description":"A passthrough pipeline"}}
+
 #testcase: streams list-pipelines
 REQUEST URL:streams/v2beta1/pipelines
 REQUEST BODY:<nil>
