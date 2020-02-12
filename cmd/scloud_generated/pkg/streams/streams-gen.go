@@ -265,65 +265,18 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 // CreatePipeline Creates a pipeline.
 func CreatePipeline(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var bypassValidationDefault bool
-	bypassValidation := &bypassValidationDefault
-	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
-	}
-	var createUserIdDefault string
-	createUserId := &createUserIdDefault
-	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PipelineRequest{
-
-		BypassValidation: bypassValidation,
-		CreateUserId:     createUserId,
-		Data: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Description: description,
-		Name:        name,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.CreatePipeline(generated_request_body)
+	resp, err := CreatePipelineOverride(inputDatafile)
+
 	if err != nil {
 		return err
 	}
