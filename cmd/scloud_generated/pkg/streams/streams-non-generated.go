@@ -312,3 +312,103 @@ func MergePipelinesOverride(filename string) (*model.UplPipeline, error) {
 	}
 	return resp, nil
 }
+
+// PutConnectionOverride Creates a pipeline.
+func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.ConnectionPutRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.PutConnection(id, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// PutConnectionOverride Creates a pipeline.
+func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.GroupRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.CreateGroup(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// PutConnectionOverride Creates a pipeline.
+func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.GetOutputSchemaRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.GetOutputSchema(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// PutConnectionOverride Creates a pipeline.
+func GetInputSchemaOverride(filename string) (*model.UplType, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.GetInputSchemaRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.GetInputSchema(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

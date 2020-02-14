@@ -10,6 +10,18 @@ REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03
 REQUEST URL:streams/v2beta1/pipelines/merge
 REQUEST BODY:{{"inputTree":{"edges":null,"nodes":null,"rootNode":null},"mainTree":{"edges":null,"nodes":null,"rootNode":null},"targetNode":"","targetPort":""}}
 
+#testcase: streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.txt
+REQUEST URL:streams/v2beta1/pipelines/validate
+REQUEST BODY:{{"upl":{"edges":null,"nodes":null,"rootNode":null}}}
+
+#testcase: streams update-pipeline  --id "417fb4ad-d264-4920-8028-7d4cba20528f" --input-datafile testcases/test_stream_update_pipeline.txt
+REQUEST URL:streams/v2beta1/pipelines/%22417fb4ad-d264-4920-8028-7d4cba20528f%22
+REQUEST BODY:{{"bypassValidation":true,"createUserId":"test@splunk.com","data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"attributes":{},"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"6f14bd4d-e299-4677-b5db-441b40acd501","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["6f14bd4d-e299-4677-b5db-441b40acd501"]},"description":"A passthrough pipeline","name":"passthrough"}}
+
+#testcase: streams expand-pipeline --input-datafile testcases/test_stream_expand_pipeline.txt
+REQUEST URL:streams/v2beta1/pipelines/expand
+REQUEST BODY:{{"edges":null,"nodes":null,"rootNode":null}}
+
 #testcase: streams list-pipelines
 REQUEST URL:streams/v2beta1/pipelines
 REQUEST BODY:<nil>
@@ -30,16 +42,16 @@ REQUEST BODY:{{}}
 REQUEST URL:streams/v2beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075/deactivate
 REQUEST BODY:{{}}
 
+#testcase: streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+REQUEST URL:streams/v2beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075
+REQUEST BODY:<nil>
+
 #testcase: streams list-connectors
 REQUEST URL:streams/v2beta1/connectors
 REQUEST BODY:<nil>
 
 #testcase: streams list-connections
 REQUEST URL:streams/v2beta1/connections
-REQUEST BODY:<nil>
-
-#testcase: streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
-REQUEST URL:streams/v2beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075
 REQUEST BODY:<nil>
 
 #testcase: streams create-connection --connector-id "879837b0-cabf-4bc2-8589-fcc4dad753e7" --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
@@ -49,6 +61,10 @@ error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]i
 #testcase: streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --name "newname"
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST BODY:{{"name":"\"newname\""}}
+
+#testcase: streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_put_connection.txt
+REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
+REQUEST BODY:{{"data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"A new connection","name":"newname"}}
 
 #testcase: streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
@@ -69,4 +85,16 @@ REQUEST BODY:<nil>
 #testcase: streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
 REQUEST URL:streams/v2beta1/templates/%22a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4%22
 REQUEST BODY:<nil>
+
+#testcase: streams create-group --input-datafile testcases/test_stream_create_group.txt
+REQUEST URL:streams/v2beta1/groups
+REQUEST BODY:{{"arguments":null,"ast":{"edges":null,"nodes":null,"rootNode":null},"attributes":null,"categories":null,"mappings":null,"name":"passthrough","outputType":""}}
+
+#testcase: streams get-input-schema --input-datafile testcases/test_stream_get_input_schema.txt
+REQUEST URL:streams/v2beta1/pipelines/input-schema
+REQUEST BODY:{{"nodeUuid":"","targetPortName":"","uplJson":{"edges":null,"nodes":null,"rootNode":null}}}
+
+#testcase: streams get-output-schema --input-datafile testcases/test_stream_get_output_schema.txt
+REQUEST URL:streams/v2beta1/pipelines/output-schema
+REQUEST BODY:{{"uplJson":{"edges":null,"nodes":null,"rootNode":null}}}
 

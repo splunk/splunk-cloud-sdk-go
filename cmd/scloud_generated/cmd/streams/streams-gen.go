@@ -345,47 +345,8 @@ func init() {
 
 	streamsCmd.AddCommand(createGroupCmd)
 
-	var createGroupArguments string
-	createGroupCmd.Flags().StringVar(&createGroupArguments, "arguments", "", "This is a required parameter. The group function arguments list.")
-	createGroupCmd.MarkFlagRequired("arguments")
-
-	var createGroupAttributes string
-	createGroupCmd.Flags().StringVar(&createGroupAttributes, "attributes", "", "This is a required parameter. The attributes map for function.")
-	createGroupCmd.MarkFlagRequired("attributes")
-
-	var createGroupCategories []int
-	createGroupCmd.Flags().IntSliceVar(&createGroupCategories, "categories", nil, "This is a required parameter. The categories for this function.")
-	createGroupCmd.MarkFlagRequired("categories")
-
-	var createGroupEdges string
-	createGroupCmd.Flags().StringVar(&createGroupEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	createGroupCmd.MarkFlagRequired("edges")
-
-	var createGroupMappings string
-	createGroupCmd.Flags().StringVar(&createGroupMappings, "mappings", "", "This is a required parameter. The group function mappings list.")
-	createGroupCmd.MarkFlagRequired("mappings")
-
-	var createGroupName string
-	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter. The group function name.")
-	createGroupCmd.MarkFlagRequired("name")
-
-	var createGroupNodes string
-	createGroupCmd.Flags().StringVar(&createGroupNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	createGroupCmd.MarkFlagRequired("nodes")
-
-	var createGroupOutputType string
-	createGroupCmd.Flags().StringVar(&createGroupOutputType, "output-type", "", "This is a required parameter. The data type of the function's output.")
-	createGroupCmd.MarkFlagRequired("output-type")
-
-	var createGroupRootNode []string
-	createGroupCmd.Flags().StringSliceVar(&createGroupRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	createGroupCmd.MarkFlagRequired("root-node")
-
-	var createGroupScalar string
-	createGroupCmd.Flags().StringVar(&createGroupScalar, "scalar", "false", "")
-
-	var createGroupVariadic string
-	createGroupCmd.Flags().StringVar(&createGroupVariadic, "variadic", "false", "")
+	var createGroupInputDatafile string
+	createGroupCmd.Flags().StringVar(&createGroupInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(createPipelineCmd)
 
@@ -457,45 +418,13 @@ func init() {
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 
-	var getInputSchemaEdges string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	getInputSchemaCmd.MarkFlagRequired("edges")
-
-	var getInputSchemaNodeUuid string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", "", "This is a required parameter. The function ID.")
-	getInputSchemaCmd.MarkFlagRequired("node-uuid")
-
-	var getInputSchemaNodes string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	getInputSchemaCmd.MarkFlagRequired("nodes")
-
-	var getInputSchemaRootNode []string
-	getInputSchemaCmd.Flags().StringSliceVar(&getInputSchemaRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	getInputSchemaCmd.MarkFlagRequired("root-node")
-
-	var getInputSchemaTargetPortName string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter. The name of the input port.")
-	getInputSchemaCmd.MarkFlagRequired("target-port-name")
+	var getInputSchemaInputDatafile string
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(getOutputSchemaCmd)
 
-	var getOutputSchemaEdges string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	getOutputSchemaCmd.MarkFlagRequired("edges")
-
-	var getOutputSchemaNodes string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	getOutputSchemaCmd.MarkFlagRequired("nodes")
-
-	var getOutputSchemaRootNode []string
-	getOutputSchemaCmd.Flags().StringSliceVar(&getOutputSchemaRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	getOutputSchemaCmd.MarkFlagRequired("root-node")
-
-	var getOutputSchemaNodeUuid string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", "", "The function ID. If omitted, returns the output schema for all functions.")
-
-	var getOutputSchemaSourcePortName string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaSourcePortName, "source-port-name", "", "The name of the output port. Deprecated.")
+	var getOutputSchemaInputDatafile string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(getPipelineCmd)
 
@@ -649,17 +578,8 @@ func init() {
 	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
 	putConnectionCmd.MarkFlagRequired("connection-id")
 
-	var putConnectionData string
-	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", "", "This is a required parameter. The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
-	putConnectionCmd.MarkFlagRequired("data")
-
-	var putConnectionDescription string
-	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", "", "This is a required parameter. The description of the connection.")
-	putConnectionCmd.MarkFlagRequired("description")
-
-	var putConnectionName string
-	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "This is a required parameter. The name of the connection.")
-	putConnectionCmd.MarkFlagRequired("name")
+	var putConnectionInputDatafile string
+	putConnectionCmd.Flags().StringVar(&putConnectionInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(putGroupCmd)
 
