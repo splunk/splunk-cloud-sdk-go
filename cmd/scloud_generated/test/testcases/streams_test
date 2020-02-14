@@ -1,5 +1,7 @@
-streams compile-dsl --dsl "events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"
+#streams compile-dsl --dsl "events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"
+streams compile-dsl --input-datafile testcases/test_stream_compileDSL.txt
 streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
+streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.txt
 #streams validate-pipeline --edges "[{\"sourceNode\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"sourcePort\":\"output\",\"targetNode\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"targetPort\":\"input\"}]" --nodes "[{\"attributes\":{},\"id\":\"e3f9eb13-a847-4717-9f83-89c815b03d01\",\"op\":\"read-splunk-firehose\",\"resolvedId\":\"read-splunk-firehose\"},{\"attributes\":{},\"dataset\":\"dataset:main\",\"id\":\"6f14bd4d-e299-4677-b5db-441b40acd501\",\"module\":\"module:index\",\"op\":\"write-index\",\"resolvedId\":\"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e\"}]" --root-node "6f14bd4d-e299-4677-b5db-441b40acd501"
 
 streams list-pipelines
@@ -26,6 +28,7 @@ streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 
 streams get-registry --local false
 
+streams create-template --input-datafile testcases/test_stream_create_template.txt
 streams list-templates
 streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
 

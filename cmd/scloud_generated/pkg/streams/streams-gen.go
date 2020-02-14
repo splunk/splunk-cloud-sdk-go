@@ -279,50 +279,17 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 // CreateTemplate Creates a template for a tenant.
 func CreateTemplate(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var description string
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.TemplateRequest{
-
-		Data: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Description: description,
-		Name:        name,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.CreateTemplate(generated_request_body)
+	resp, err := CreateTemplateOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1109,70 +1076,17 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 // MergePipelines Combines two Streams JSON programs.
 func MergePipelines(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var edgesMainTree []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges-main-tree", &edgesMainTree)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges-main-tree": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var nodesMainTree []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes-main-tree", &nodesMainTree)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes-main-tree": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	var rootNodeMainTree []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node-main-tree", &rootNodeMainTree)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node-main-tree": ` + err.Error())
-	}
-	var targetNode string
-	err = flags.ParseFlag(cmd.Flags(), "target-node", &targetNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "target-node": ` + err.Error())
-	}
-	var targetPort string
-	err = flags.ParseFlag(cmd.Flags(), "target-port", &targetPort)
-	if err != nil {
-		return fmt.Errorf(`error parsing "target-port": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PipelinesMergeRequest{
-
-		InputTree: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		MainTree: model.UplPipeline{
-			Edges:    edgesMainTree,
-			Nodes:    nodesMainTree,
-			RootNode: rootNodeMainTree,
-		},
-		TargetNode: targetNode,
-		TargetPort: targetPort,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.MergePipelines(generated_request_body)
+	resp, err := MergePipelinesOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
