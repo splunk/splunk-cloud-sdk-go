@@ -25,7 +25,14 @@ import (
 // Servicer represents the interface for implementing all endpoints for this service
 type Servicer interface {
 	/*
-		CreateJob - Creates a job
+		CreateExecution - Creates an execution for a scheduled job based on the job ID.
+		Parameters:
+			jobId: The job ID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateExecution(jobId string, resp ...*http.Response) (*SingleExecutionResponse, error)
+	/*
+		CreateJob - Creates a job.
 		This API returns &#x60;403&#x60; if the number of collect workers is over a certain limit.
 		Parameters:
 			job: The API request schema for the job.
@@ -46,6 +53,14 @@ type Servicer interface {
 	*/
 	DeleteJobs(resp ...*http.Response) (*DeleteJobsResponse, error)
 	/*
+		GetExecution - Returns the execution details based on the execution ID and job ID.
+		Parameters:
+			jobId: The job ID.
+			executionUid: The execution UID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetExecution(jobId string, executionUid string, resp ...*http.Response) (*SingleExecutionResponse, error)
+	/*
 		GetJob - Returns a job based on the job ID.
 		Parameters:
 			jobId: The job ID.
@@ -59,6 +74,15 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListJobs(query *ListJobsQueryParams, resp ...*http.Response) (*ListJobsResponse, error)
+	/*
+		PatchExecution - Modifies an execution based on the job ID.
+		Parameters:
+			jobId: The job ID.
+			executionUid: The execution UID.
+			executionPatch: The API request schema for patching an execution.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	PatchExecution(jobId string, executionUid string, executionPatch ExecutionPatch, resp ...*http.Response) error
 	/*
 		PatchJob - Modifies a job based on the job ID.
 		This API returns &#x60;403&#x60; if the number of collect workers is over a certain limit.
