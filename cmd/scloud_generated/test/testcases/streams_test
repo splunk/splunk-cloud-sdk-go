@@ -13,7 +13,6 @@ streams activate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 streams deactivate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 
-
 streams list-connectors
 streams list-connections
 

@@ -68,6 +68,11 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
+	var dsl string
+	err = flags.ParseFlag(cmd.Flags(), "dsl", &dsl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "dsl": ` + err.Error())
+	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
@@ -85,12 +90,15 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 // CompileSPL Compiles SPL2 and returns Streams JSON.
 func CompileSPL(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	if err != nil {
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+	}
 	var spl string
 	err = flags.ParseFlag(cmd.Flags(), "spl", &spl)
 	if err != nil {
@@ -102,14 +110,8 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "syntax": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.SplCompileRequest{
 
-		Spl:    spl,
-		Syntax: syntax,
-	}
-
-	resp, err := client.StreamsService.CompileSPL(generated_request_body)
+	resp, err := CompileSPLOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1068,36 +1070,6 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
-	var recordsLimitDefault int32
-	recordsLimit := &recordsLimitDefault
-	err = flags.ParseFlag(cmd.Flags(), "records-limit", &recordsLimit)
-	if err != nil {
-		return fmt.Errorf(`error parsing "records-limit": ` + err.Error())
-	}
-	var recordsPerPipelineDefault int32
-	recordsPerPipeline := &recordsPerPipelineDefault
-	err = flags.ParseFlag(cmd.Flags(), "records-per-pipeline", &recordsPerPipeline)
-	if err != nil {
-		return fmt.Errorf(`error parsing "records-per-pipeline": ` + err.Error())
-	}
-	var sessionLifetimeMsDefault int64
-	sessionLifetimeMs := &sessionLifetimeMsDefault
-	err = flags.ParseFlag(cmd.Flags(), "session-lifetime-ms", &sessionLifetimeMs)
-	if err != nil {
-		return fmt.Errorf(`error parsing "session-lifetime-ms": ` + err.Error())
-	}
-	var streamingConfigurationIdDefault int64
-	streamingConfigurationId := &streamingConfigurationIdDefault
-	err = flags.ParseFlag(cmd.Flags(), "streaming-configuration-id", &streamingConfigurationId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "streaming-configuration-id": ` + err.Error())
-	}
-	var useNewDataDefault bool
-	useNewData := &useNewDataDefault
-	err = flags.ParseFlag(cmd.Flags(), "use-new-data", &useNewData)
-	if err != nil {
-		return fmt.Errorf(`error parsing "use-new-data": ` + err.Error())
-	}
 
 	resp, err := StartPreviewOverride(inputDatafile)
 	if err != nil {
@@ -1133,10 +1105,8 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 // UpdateConnection Partially modifies an existing DSP connection.
 func UpdateConnection(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
 	var connectionId string
@@ -1144,32 +1114,13 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
-	var data map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "data", &data)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "data": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.ConnectionPatchRequest{
-
-		Data:        data,
-		Description: description,
-		Name:        name,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.UpdateConnection(connectionId, generated_request_body)
+	resp, err := UpdateConnectionOverride(connectionId, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1236,22 +1187,10 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)

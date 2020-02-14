@@ -263,6 +263,31 @@ func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
+// CompileSPLOverride Creates a pipeline.
+func CompileSPLOverride(filename string) (*model.UplPipeline, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.SplCompileRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.CompileSPL(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // CreateTemplateOverride Creates a pipeline.
 func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
@@ -407,6 +432,31 @@ func GetInputSchemaOverride(filename string) (*model.UplType, error) {
 	}
 
 	resp, err := client.StreamsService.GetInputSchema(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// UpdateConnectionOverride Creates a pipeline.
+func UpdateConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.ConnectionPatchRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.UpdateConnection(id, data)
 	if err != nil {
 		return nil, err
 	}
