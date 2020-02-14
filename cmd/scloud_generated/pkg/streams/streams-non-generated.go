@@ -35,3 +35,230 @@ func CreatePipelineOverride(filename string) (*model.PipelineResponse, error) {
 	}
 	return resp, nil
 }
+
+// ExpandPipelineOverride Creates a pipeline.
+func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.UplPipeline
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.ExpandPipeline(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// GetGroupOverride Creates a pipeline.
+func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.GroupPutRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.PutGroup(groupId, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+
+}
+
+// PutTemplateOverride Creates a pipeline.
+func PutTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.TemplatePutRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.PutTemplate(templateId, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+
+}
+
+// StartPreviewOverride Creates a pipeline.
+func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.PreviewSessionStartRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.StartPreview(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// UpdateGroupOverride Creates a pipeline.
+func UpdateGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.GroupPatchRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.UpdateGroup(groupId, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// UpdatePipelineOverride Creates a pipeline.
+func UpdatePipelineOverride(id string, filename string) (*model.PipelineResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.PipelinePatchRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.UpdatePipeline(id, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// UpdateTemplateOverride Creates a pipeline.
+func UpdateTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.TemplatePatchRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.UpdateTemplate(templateId, data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// ValidatePipelineOverride Creates a pipeline.
+func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.ValidateRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.ValidatePipeline(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// CompileDSLOverride Creates a pipeline.
+func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.DslCompilationRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.CompileDSL(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
