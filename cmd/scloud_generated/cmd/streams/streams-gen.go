@@ -313,6 +313,10 @@ func init() {
 
 	streamsCmd.AddCommand(compileDSLCmd)
 
+	var compileDSLDsl string
+	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "This is a required parameter. The Streams DSL representation of a pipeline.")
+	compileDSLCmd.MarkFlagRequired("dsl")
+
 	var compileDSLInputDatafile string
 	compileDSLCmd.Flags().StringVar(&compileDSLInputDatafile, "input-datafile", "", "The input data file.")
 
@@ -321,6 +325,9 @@ func init() {
 	var compileSPLSpl string
 	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", "", "This is a required parameter. The SPL2 representation of a pipeline or function parameters.")
 	compileSPLCmd.MarkFlagRequired("spl")
+
+	var compileSPLInputDatafile string
+	compileSPLCmd.Flags().StringVar(&compileSPLInputDatafile, "input-datafile", "", "The input data file.")
 
 	var compileSPLSyntax string
 	compileSPLCmd.Flags().StringVar(&compileSPLSyntax, "syntax", "", "The parse parameters as arguments to this SPL2 command can accept values UPL, DSL, SPL, EVAL, WHERE, TIMECHART, FIELDS, MVEXPAND, REX, BIN, RENAME, STATS, STATS_BY, SELECT, EXPRESSION, FUNCTION, LITERAL, UNKNOWN")
@@ -610,21 +617,6 @@ func init() {
 	var startPreviewInputDatafile string
 	startPreviewCmd.Flags().StringVar(&startPreviewInputDatafile, "input-datafile", "", "The input data file.")
 
-	var startPreviewRecordsLimit int32
-	startPreviewCmd.Flags().Int32Var(&startPreviewRecordsLimit, "records-limit", 0, "The maximum number of events per function. Defaults to 100.")
-
-	var startPreviewRecordsPerPipeline int32
-	startPreviewCmd.Flags().Int32Var(&startPreviewRecordsPerPipeline, "records-per-pipeline", 0, "The maximum number of events per pipeline. Defaults to 10000.")
-
-	var startPreviewSessionLifetimeMs int64
-	startPreviewCmd.Flags().Int64Var(&startPreviewSessionLifetimeMs, "session-lifetime-ms", 0, "The maximum lifetime of a session, in milliseconds. Defaults to 300,000.")
-
-	var startPreviewStreamingConfigurationId int64
-	startPreviewCmd.Flags().Int64Var(&startPreviewStreamingConfigurationId, "streaming-configuration-id", 0, "Deprecated. Must be null if set.")
-
-	var startPreviewUseNewData string
-	startPreviewCmd.Flags().StringVar(&startPreviewUseNewData, "use-new-data", "false", "Deprecated. Must be true if set.")
-
 	streamsCmd.AddCommand(stopPreviewCmd)
 
 	var stopPreviewPreviewSessionId int64
@@ -637,14 +629,8 @@ func init() {
 	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
 	updateConnectionCmd.MarkFlagRequired("connection-id")
 
-	var updateConnectionData string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionData, "data", "", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
-
-	var updateConnectionDescription string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionDescription, "description", "", "The description of the connection.")
-
-	var updateConnectionName string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
+	var updateConnectionInputDatafile string
+	updateConnectionCmd.Flags().StringVar(&updateConnectionInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(updateGroupCmd)
 
@@ -670,14 +656,8 @@ func init() {
 	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	updateTemplateCmd.MarkFlagRequired("template-id")
 
-	var updateTemplateDescription string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateDescription, "description", "", "Template description")
-
 	var updateTemplateInputDatafile string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateInputDatafile, "input-datafile", "", "The input data file.")
-
-	var updateTemplateName string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 
