@@ -143,6 +143,7 @@ const (
 	TenantStatusReady        TenantStatus = "ready"
 	TenantStatusDeleting     TenantStatus = "deleting"
 	TenantStatusDeleted      TenantStatus = "deleted"
+	TenantStatusTombstoned   TenantStatus = "tombstoned"
 	TenantStatusSuspended    TenantStatus = "suspended"
 )
 

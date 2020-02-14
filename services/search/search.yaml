@@ -9,6 +9,14 @@ components:
       schema:
         pattern: ^Bearer .+
         type: string
+    Count:
+      description: |
+        The maximum number of jobs that you want to return the status entries for.
+      in: query
+      name: count
+      schema:
+        default: 1000
+        type: number
     Earliest:
       description: |
         The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
@@ -30,14 +38,13 @@ components:
       name: latest
       schema:
         type: string
-    StatusCount:
+    SidFilter:
       description: |
-        The maximum number of jobs that you want to return the status entries for.
+        Filter the list of jobs by sid. Valid format is  `sid IN ({comma separated list of SIDs in quotes})`. A maximum of 50 SIDs can be specified in one query.
       in: query
-      name: count
+      name: filter
       schema:
-        default: 1000
-        type: number
+        type: string
     StatusFilter:
       description: |
         Filter the list of jobs by status. Valid status values are 'running', 'done', 'canceled', or 'failed'.
@@ -114,7 +121,7 @@ components:
       type: object
     ListSearchResultsResponse:
       description: |
-        The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+        The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of results.
       properties:
         fields:
           items:
@@ -233,8 +240,8 @@ components:
         maxTime:
           default: 3600
           description: |
-            The number of seconds to run the search before finalizing the search. The maximum value is 21600 seconds (6 hours).
-          maximum: 21600
+            The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).
+          maximum: 3600
           minimum: 1
           type: number
         messages:
@@ -265,7 +272,7 @@ components:
           type: string
         query:
           description: The SPL search string.
-          format: SPL (v2)
+          format: SPL2
           type: string
         queryParameters:
           allOf:
@@ -431,12 +438,13 @@ components:
       - status
       type: object
     listPreviewResultsResponse:
-      description: The structure of the preview search results that is returned for
-        the job with the specified search ID (SID). When search is running, it might
-        return incomplete or truncated search results. The isPreviewStable property
-        indicates whether the returned preview results stucture is stable or not.
-        Truncated preview results occur because the number of requested results exceeds
-        the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+      description: The structure of the response body for the preview search results
+        that is returned for the job with the specified search ID (SID). When search
+        is running, it might return incomplete or truncated search results. The isPreviewStable
+        property indicates whether the returned preview results stucture is stable
+        or not. Truncated preview results occur because the number of requested results
+        exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page
+        of results.
       properties:
         fields:
           items:
@@ -495,8 +503,9 @@ paths:
       description: Return the matching list of search jobs.
       operationId: listJobs
       parameters:
-      - $ref: '#/components/parameters/StatusCount'
+      - $ref: '#/components/parameters/Count'
       - $ref: '#/components/parameters/StatusFilter'
+      - $ref: '#/components/parameters/SidFilter'
       responses:
         "200":
           content:
@@ -505,15 +514,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/SearchJob'
                 type: array
-          description: The list of search jobs that match your filter has been returned.
+          description: The list of search jobs was returned successfully.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -531,19 +540,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchJob'
-          description: The search job was created.
+          description: The search job was created successfully.
         "400":
-          description: The request was invalid.
+          description: The request isn’t valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "412":
-          description: The precondition for the request was not met.
+          description: The precondition check failed. The search query contains commands,
+            thru or into, that have side effects. However, the 'allowSideEffects'
+            query parameter is set to false.
         "429":
-          description: Too many requests.
+          description: Too many requests were sent. The limit for the maximum number
+            of concurrent searches was reached.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}:
     get:
       description: Return the search job with the specified search ID (SID).
@@ -555,17 +567,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/SearchJob'
           description: The search job information for the specified search ID (SID)
-            was returned.
+            was returned successfully.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Invalid sid for getting the search job status or results.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/tenant'
@@ -585,15 +597,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchJob'
-          description: The action was applied to the search job.
+          description: The search job status was modified successfully.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}/results:
     get:
       description: Return the search results for the job with the specified search
@@ -611,19 +625,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListSearchResultsResponse'
-          description: The request for search results has completed. Any results that
-            are ready have been returned. If there are additional results, a 'nextLink'
-            URL is provided.
+          description: The list of search results was returned successfully. Any results
+            that are ready have been returned. If there are additional results, a
+            'nextLink' URL is provided.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Invalid sid for getting the search job status or results.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}/results-preview:
     get:
       description: Return the preview search results for the job with the specified
@@ -640,21 +654,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/listPreviewResultsResponse'
-          description: Preview search results, if ready, have been returned. If there
-            are additional results, a 'nextLink' URL is provided.
+          description: The results preview was returned successfully. If there are
+            additional results, a 'nextLink' URL is provided.
         "204":
-          description: The preview search results are not ready.
+          description: The results preview was returned successfully, but there is
+            no response content.
         "400":
-          description: The request is invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Either an invalid sid (search ID) for the search job status,
-            or preview search results is disabled.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/events-summary:
     get:
       description: Return events summary, for search ID (SID) search.
@@ -673,19 +687,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListSearchResultsResponse'
-          description: The request for events summary has completed.
+          description: The events summary was returned successfully.
         "204":
-          description: The content was not ready.
+          description: The events summary was returned successfully, but there is
+            no response content.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Invalid sid for getting the search job status or results.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/fields-summary:
     get:
       description: Return fields stats summary of the events to-date, for search ID
@@ -702,19 +717,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FieldsSummary'
-          description: The request for fields summary has completed.
+          description: The fields summary was returned successfully.
         "204":
-          description: The content was not ready.
+          description: The fields summary was returned successfully, but there is
+            no response content.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Invalid sid for getting the search job status or results.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/time-buckets:
     get:
       description: Return event distribution over time of the untransformed events
@@ -729,18 +745,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimeBucketsSummary'
-          description: The request for timeline buckets summary has completed.
+          description: The timeline buckets were returned successfully.
         "204":
-          description: The content was not ready.
+          description: The timeline buckets were returned successfully, but there
+            is no response content.
         "400":
-          description: The request was invalid.
+          description: The request isn't valid.
         "401":
-          description: The request requires authentication.
+          description: The user isn’t authenticated.
         "403":
-          description: The request was not authorized.
+          description: The operation isn't authorized.
         "404":
-          description: Invalid sid for getting the search job status or results.
+          description: The resource wasn't found.
         "500":
-          description: Internal service error.
+          description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit be624d2f60855c3e54656de7dfe2b0decf01cc68 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: search/v2beta1/openapi.yaml
