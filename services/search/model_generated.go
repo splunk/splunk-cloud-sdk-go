@@ -37,7 +37,7 @@ type FieldsSummary struct {
 	LatestTime *string `json:"latestTime,omitempty"`
 }
 
-// The structure of the preview search results that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. The isPreviewStable property indicates whether the returned preview results stucture is stable or not. Truncated preview results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+// The structure of the response body for the preview search results that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. The isPreviewStable property indicates whether the returned preview results stucture is stable or not. Truncated preview results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
 type ListPreviewResultsResponse struct {
 	IsPreviewStable bool                              `json:"isPreviewStable"`
 	Results         []map[string]interface{}          `json:"results"`
@@ -47,7 +47,7 @@ type ListPreviewResultsResponse struct {
 	Wait            *string                           `json:"wait,omitempty"`
 }
 
-// The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+// The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of results.
 type ListSearchResultsResponse struct {
 	Results  []map[string]interface{}          `json:"results"`
 	Fields   []ListSearchResultsResponseFields `json:"fields,omitempty"`
@@ -114,7 +114,7 @@ type SearchJob struct {
 	EnablePreview *bool `json:"enablePreview,omitempty"`
 	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
-	// The number of seconds to run the search before finalizing the search. The maximum value is 21600 seconds (6 hours).
+	// The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).
 	MaxTime  *float32  `json:"maxTime,omitempty"`
 	Messages []Message `json:"messages,omitempty"`
 	// The module to run the search in. The default module is used if a module is not specified.

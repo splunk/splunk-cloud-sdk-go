@@ -86,16 +86,23 @@ func (q ListFieldsSummaryQueryParams) SetLatest(v string) ListFieldsSummaryQuery
 
 // ListJobsQueryParams represents valid query parameters for the ListJobs operation
 // For convenience ListJobsQueryParams can be formed in a single statement, for example:
-//     `v := ListJobsQueryParams{}.SetCount(...).SetStatus(...)`
+//     `v := ListJobsQueryParams{}.SetCount(...).SetFilter(...).SetStatus(...)`
 type ListJobsQueryParams struct {
 	// Count : The maximum number of jobs that you want to return the status entries for.
 	Count *float32 `key:"count"`
+	// Filter : Filter the list of jobs by sid. Valid format is  &#x60;sid IN ({comma separated list of SIDs in quotes})&#x60;. A maximum of 50 SIDs can be specified in one query.
+	Filter string `key:"filter"`
 	// Status : Filter the list of jobs by status. Valid status values are &#39;running&#39;, &#39;done&#39;, &#39;canceled&#39;, or &#39;failed&#39;.
 	Status *SearchStatus `key:"status"`
 }
 
 func (q ListJobsQueryParams) SetCount(v float32) ListJobsQueryParams {
 	q.Count = &v
+	return q
+}
+
+func (q ListJobsQueryParams) SetFilter(v string) ListJobsQueryParams {
+	q.Filter = v
 	return q
 }
 
