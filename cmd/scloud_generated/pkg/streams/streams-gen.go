@@ -64,24 +64,17 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 // CompileDSL Compiles the Streams DSL and returns Streams JSON.
 func CompileDSL(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var dsl string
-	err = flags.ParseFlag(cmd.Flags(), "dsl", &dsl)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dsl": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DslCompilationRequest{
-
-		Dsl: dsl,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.CompileDSL(generated_request_body)
+	resp, err := CompileDSLOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -276,7 +269,6 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := CreatePipelineOverride(inputDatafile)
-
 	if err != nil {
 		return err
 	}
@@ -506,36 +498,17 @@ func ExpandGroup(cmd *cobra.Command, args []string) error {
 // ExpandPipeline Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
 func ExpandPipeline(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.UplPipeline{
-
-		Edges:    edges,
-		Nodes:    nodes,
-		RootNode: rootNode,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.ExpandPipeline(generated_request_body)
+	resp, err := ExpandPipelineOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1255,93 +1228,22 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 // PutGroup Update a group function combining the Streams JSON of two or more functions.
 func PutGroup(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var arguments []model.GroupArgumentsNode
-	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
-	if err != nil {
-		return fmt.Errorf(`error parsing "arguments": ` + err.Error())
-	}
-	var attributes map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "attributes", &attributes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "attributes": ` + err.Error())
-	}
-	var categories []int64
-	err = flags.ParseFlag(cmd.Flags(), "categories", &categories)
-	if err != nil {
-		return fmt.Errorf(`error parsing "categories": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
 	var groupId string
 	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
 	}
-	var mappings []model.GroupFunctionArgsMappingNode
-	err = flags.ParseFlag(cmd.Flags(), "mappings", &mappings)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "mappings": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var outputType string
-	err = flags.ParseFlag(cmd.Flags(), "output-type", &outputType)
-	if err != nil {
-		return fmt.Errorf(`error parsing "output-type": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	var scalarDefault bool
-	scalar := &scalarDefault
-	err = flags.ParseFlag(cmd.Flags(), "scalar", &scalar)
-	if err != nil {
-		return fmt.Errorf(`error parsing "scalar": ` + err.Error())
-	}
-	var variadicDefault bool
-	variadic := &variadicDefault
-	err = flags.ParseFlag(cmd.Flags(), "variadic", &variadic)
-	if err != nil {
-		return fmt.Errorf(`error parsing "variadic": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.GroupPutRequest{
-
-		Arguments: arguments,
-		Ast: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Attributes: attributes,
-		Categories: categories,
-		Mappings:   mappings,
-		Name:       name,
-		OutputType: outputType,
-		Scalar:     scalar,
-		Variadic:   variadic,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.PutGroup(groupId, generated_request_body)
+	resp, err := PutGroupOverride(groupId, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1352,55 +1254,22 @@ func PutGroup(cmd *cobra.Command, args []string) error {
 // PutTemplate Updates an existing template.
 func PutTemplate(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var description string
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.TemplatePutRequest{
 
-		Data: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Description: description,
-		Name:        name,
-	}
-
-	resp, err := client.StreamsService.PutTemplate(templateId, generated_request_body)
+	resp, err := PutTemplateOverride(templateId, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1434,21 +1303,14 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 // StartPreview Creates a preview session for a pipeline.
 func StartPreview(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 	var recordsLimitDefault int32
 	recordsLimit := &recordsLimitDefault
@@ -1461,11 +1323,6 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	err = flags.ParseFlag(cmd.Flags(), "records-per-pipeline", &recordsPerPipeline)
 	if err != nil {
 		return fmt.Errorf(`error parsing "records-per-pipeline": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
 	}
 	var sessionLifetimeMsDefault int64
 	sessionLifetimeMs := &sessionLifetimeMsDefault
@@ -1485,22 +1342,8 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "use-new-data": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.PreviewSessionStartRequest{
 
-		RecordsLimit:             recordsLimit,
-		RecordsPerPipeline:       recordsPerPipeline,
-		SessionLifetimeMs:        sessionLifetimeMs,
-		StreamingConfigurationId: streamingConfigurationId,
-		Upl: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		UseNewData: useNewData,
-	}
-
-	resp, err := client.StreamsService.StartPreview(generated_request_body)
+	resp, err := StartPreviewOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1581,95 +1424,22 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 // UpdateGroup Modify a group function by combining the Streams JSON of two or more functions.
 func UpdateGroup(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var arguments []model.GroupArgumentsNode
-	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
-	if err != nil {
-		return fmt.Errorf(`error parsing "arguments": ` + err.Error())
-	}
-	var attributes map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "attributes", &attributes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "attributes": ` + err.Error())
-	}
-	var categories []int64
-	err = flags.ParseFlag(cmd.Flags(), "categories", &categories)
-	if err != nil {
-		return fmt.Errorf(`error parsing "categories": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
 	var groupId string
 	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
 	}
-	var mappings []model.GroupFunctionArgsMappingNode
-	err = flags.ParseFlag(cmd.Flags(), "mappings", &mappings)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "mappings": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var outputTypeDefault string
-	outputType := &outputTypeDefault
-	err = flags.ParseFlag(cmd.Flags(), "output-type", &outputType)
-	if err != nil {
-		return fmt.Errorf(`error parsing "output-type": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	var scalarDefault bool
-	scalar := &scalarDefault
-	err = flags.ParseFlag(cmd.Flags(), "scalar", &scalar)
-	if err != nil {
-		return fmt.Errorf(`error parsing "scalar": ` + err.Error())
-	}
-	var variadicDefault bool
-	variadic := &variadicDefault
-	err = flags.ParseFlag(cmd.Flags(), "variadic", &variadic)
-	if err != nil {
-		return fmt.Errorf(`error parsing "variadic": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.GroupPatchRequest{
-
-		Arguments: arguments,
-		Ast: &model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Attributes: attributes,
-		Categories: categories,
-		Mappings:   mappings,
-		Name:       name,
-		OutputType: outputType,
-		Scalar:     scalar,
-		Variadic:   variadic,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.UpdateGroup(groupId, generated_request_body)
+	resp, err := UpdateGroupOverride(groupId, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1680,71 +1450,22 @@ func UpdateGroup(cmd *cobra.Command, args []string) error {
 // UpdatePipeline Partially modifies an existing pipeline.
 func UpdatePipeline(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var bypassValidationDefault bool
-	bypassValidation := &bypassValidationDefault
-	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
-	if err != nil {
-		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
-	}
-	var createUserIdDefault string
-	createUserId := &createUserIdDefault
-	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
-	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PipelinePatchRequest{
-
-		BypassValidation: bypassValidation,
-		CreateUserId:     createUserId,
-		Data: &model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Description: description,
-		Name:        name,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.UpdatePipeline(id, generated_request_body)
+	resp, err := UpdatePipelineOverride(id, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1755,10 +1476,8 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 // UpdateTemplate Partially modifies an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
 	var descriptionDefault string
@@ -1767,10 +1486,10 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 	var nameDefault string
 	name := &nameDefault
@@ -1778,34 +1497,13 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.TemplatePatchRequest{
 
-		Data: &model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
-		Description: description,
-		Name:        name,
-	}
-
-	resp, err := client.StreamsService.UpdateTemplate(templateId, generated_request_body)
+	resp, err := UpdateTemplateOverride(templateId, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1816,38 +1514,17 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 // ValidatePipeline Verifies whether the Streams JSON is valid.
 func ValidatePipeline(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var edges []model.UplEdge
-	err = flags.ParseFlag(cmd.Flags(), "edges", &edges)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "edges": ` + err.Error())
-	}
-	var nodes []model.UplNode
-	err = flags.ParseFlag(cmd.Flags(), "nodes", &nodes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "nodes": ` + err.Error())
-	}
-	var rootNode []string
-	err = flags.ParseFlag(cmd.Flags(), "root-node", &rootNode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "root-node": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.ValidateRequest{
-
-		Upl: model.UplPipeline{
-			Edges:    edges,
-			Nodes:    nodes,
-			RootNode: rootNode,
-		},
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.ValidatePipeline(generated_request_body)
+	resp, err := ValidatePipelineOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
