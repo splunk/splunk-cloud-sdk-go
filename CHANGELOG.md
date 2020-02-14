@@ -1,5 +1,13 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.2.1
+### Breaking Changes
+*Appregistry models UpdateAppRequest, CreateAppRequest, AppResponseCreateUpdate,AppResponseGetList have been refactored from single model encompassing app related properties to discriminator based app kind specific models - NativeApp, Webapp, ServiceApp models
+### Non-breaking Changes
+*Collect service has support for new endpoints - CreateExecution, GetExecution, PatchExecution for scheduled jobs
+*Identity service has New Enum value for TenantStatus - tombstones
+*Search service has additional Filter parameter in ListJobsQueryParams
+
 ## Version 1.1.1
 ### Non-breaking Changes
 * Update PKCE auth flow to read the CSRF token from the response cookie returned from the /csrfToken endpoint to mitigate security bug SCP-16944
