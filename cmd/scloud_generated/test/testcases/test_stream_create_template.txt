@@ -1,0 +1,36 @@
+ {
+            "createDate": 1550652271940,
+            "createUserId": "test@splunk.com",
+            "data": {
+                "edges": [
+                    {
+                        "attributes": null,
+                        "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "sourcePort": "output",
+                        "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "targetPort": "input"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "attributes": {},
+                        "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                        "op": "read-splunk-firehose"
+                    },
+                    {
+                        "attributes": {},
+                        "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                        "op": "write-splunk-index"
+                    }
+                ],
+                "root-node": [
+                    "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
+                ],
+                "version": 3
+            },
+            "description": "testTemplate description",
+            "name": "testTemplate",
+            "ownerTenantId": "testtenant",
+            "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
+            "version": 1
+        }

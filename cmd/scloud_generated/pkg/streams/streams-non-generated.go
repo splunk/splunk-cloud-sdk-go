@@ -262,3 +262,53 @@ func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
 	}
 	return resp, nil
 }
+
+// CreateTemplateOverride Creates a pipeline.
+func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.TemplateRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.CreateTemplate(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// MergePipelinesOverride Creates a pipeline.
+func MergePipelinesOverride(filename string) (*model.UplPipeline, error) {
+	client, err := auth.GetClient()
+	if err != nil {
+		return nil, err
+	}
+
+	byets, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data model.PipelinesMergeRequest
+	err = json.Unmarshal(byets, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.MergePipelines(data)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

@@ -1,10 +1,14 @@
-#testcase: streams compile-dsl --dsl "events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"
+#testcase: streams compile-dsl --input-datafile testcases/test_stream_compileDSL.txt
 REQUEST URL:streams/v2beta1/pipelines/compile-dsl
-REQUEST BODY:{{"dsl":"\"events"}}
+REQUEST BODY:{{"dsl":"events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"}}
 
 #testcase: streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
 REQUEST URL:streams/v2beta1/pipelines
 REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"attributes":{},"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"6f14bd4d-e299-4677-b5db-441b40acd501","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["6f14bd4d-e299-4677-b5db-441b40acd501"]},"name":"passthrough","bypassValidation":true,"createUserId":"test@splunk.com","description":"A passthrough pipeline"}}
+
+#testcase: streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.txt
+REQUEST URL:streams/v2beta1/pipelines/merge
+REQUEST BODY:{{"inputTree":{"edges":null,"nodes":null,"rootNode":null},"mainTree":{"edges":null,"nodes":null,"rootNode":null},"targetNode":"","targetPort":""}}
 
 #testcase: streams list-pipelines
 REQUEST URL:streams/v2beta1/pipelines
@@ -53,6 +57,10 @@ REQUEST BODY:<nil>
 #testcase: streams get-registry --local false
 REQUEST URL:streams/v2beta1/pipelines/registry?local=false
 REQUEST BODY:<nil>
+
+#testcase: streams create-template --input-datafile testcases/test_stream_create_template.txt
+REQUEST URL:streams/v2beta1/templates
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"09fb131c-676b-49f7-a72f-28a0f6aa9bdb","sourcePort":"output","targetNode":"188a56ab-0a8a-4af0-8cfc-68fd57d1b683","targetPort":"input"}],"nodes":[{"attributes":{},"id":"09fb131c-676b-49f7-a72f-28a0f6aa9bdb","op":"read-splunk-firehose"},{"attributes":{},"id":"188a56ab-0a8a-4af0-8cfc-68fd57d1b683","op":"write-splunk-index"}],"rootNode":null},"description":"testTemplate description","name":"testTemplate"}}
 
 #testcase: streams list-templates
 REQUEST URL:streams/v2beta1/templates

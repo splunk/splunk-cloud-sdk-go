@@ -394,25 +394,8 @@ func init() {
 
 	streamsCmd.AddCommand(createTemplateCmd)
 
-	var createTemplateDescription string
-	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "This is a required parameter. Template description")
-	createTemplateCmd.MarkFlagRequired("description")
-
-	var createTemplateEdges string
-	createTemplateCmd.Flags().StringVar(&createTemplateEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	createTemplateCmd.MarkFlagRequired("edges")
-
-	var createTemplateName string
-	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", "", "This is a required parameter. Template name")
-	createTemplateCmd.MarkFlagRequired("name")
-
-	var createTemplateNodes string
-	createTemplateCmd.Flags().StringVar(&createTemplateNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	createTemplateCmd.MarkFlagRequired("nodes")
-
-	var createTemplateRootNode []string
-	createTemplateCmd.Flags().StringSliceVar(&createTemplateRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	createTemplateCmd.MarkFlagRequired("root-node")
+	var createTemplateInputDatafile string
+	createTemplateCmd.Flags().StringVar(&createTemplateInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 
@@ -657,37 +640,8 @@ func init() {
 
 	streamsCmd.AddCommand(mergePipelinesCmd)
 
-	var mergePipelinesEdges string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdges, "edges", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	mergePipelinesCmd.MarkFlagRequired("edges")
-
-	var mergePipelinesEdgesInputTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesEdgesInputTree, "edges-input-tree", "", "This is a required parameter. A list of links or connections between the output of one pipeline function and the input of another pipeline function")
-	mergePipelinesCmd.MarkFlagRequired("edges-input-tree")
-
-	var mergePipelinesNodes string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodes, "nodes", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	mergePipelinesCmd.MarkFlagRequired("nodes")
-
-	var mergePipelinesNodesInputTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesNodesInputTree, "nodes-input-tree", "", "This is a required parameter. The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties")
-	mergePipelinesCmd.MarkFlagRequired("nodes-input-tree")
-
-	var mergePipelinesRootNode []string
-	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNode, "root-node", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	mergePipelinesCmd.MarkFlagRequired("root-node")
-
-	var mergePipelinesRootNodeInputTree []string
-	mergePipelinesCmd.Flags().StringSliceVar(&mergePipelinesRootNodeInputTree, "root-node-input-tree", nil, "This is a required parameter. The UUIDs of all sink functions in a given pipeline")
-	mergePipelinesCmd.MarkFlagRequired("root-node-input-tree")
-
-	var mergePipelinesTargetNode string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "This is a required parameter. The function ID of the merge target in the main pipeline.")
-	mergePipelinesCmd.MarkFlagRequired("target-node")
-
-	var mergePipelinesTargetPort string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "This is a required parameter. The input port of the merge target in the main pipeline.")
-	mergePipelinesCmd.MarkFlagRequired("target-port")
+	var mergePipelinesInputDatafile string
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(putConnectionCmd)
 

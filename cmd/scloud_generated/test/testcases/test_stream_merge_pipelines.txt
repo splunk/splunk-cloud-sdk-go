@@ -1,0 +1,48 @@
+ {
+             "edges": [
+                 {
+                     "sourceNode": "826296c2-cdef-4ec4-a9d8-02eb30c20950",
+                     "sourcePort": "output",
+                     "targetNode": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "targetPort": "input"
+                 },
+                 {
+                     "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                     "sourcePort": "output",
+                     "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "targetPort": "input"
+                 },
+                 {
+                     "sourceNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "sourcePort": "output",
+                     "targetNode": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "targetPort": "input"
+                 }
+             ],
+             "nodes": [
+                 {
+                     "attributes": {},
+                     "id": "826296c2-cdef-4ec4-a9d8-02eb30c20950",
+                     "op": "read-splunk-firehose"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "d94acae8-f69c-4540-ab55-85b890ca8d68",
+                     "op": "write-splunk-index"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
+                     "op": "read-splunk-firehose"
+                 },
+                 {
+                     "attributes": {},
+                     "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
+                     "op": "write-splunk-index"
+                 }
+             ],
+             "root-node": [
+                 "d94acae8-f69c-4540-ab55-85b890ca8d68"
+             ],
+             "version": 3
+         }

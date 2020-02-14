@@ -1,0 +1,3 @@
+{"dsl":
+"events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"
+}
