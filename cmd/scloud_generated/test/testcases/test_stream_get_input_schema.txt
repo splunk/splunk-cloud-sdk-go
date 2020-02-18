@@ -1,35 +1,33 @@
 {
-  "createUserId": "test@splunk.com",
-  "data": {
+  "nodeUuid": "3682041e-1814-4bd7-8e60-5c889b822585",
+  "targetPortName": "input",
+  "uplJson": {
     "edges": [
       {
-        "sourceNode": "e3f9eb13-a847-4717-9f83-89c815b03d01",
+        "sourceNode": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
         "sourcePort": "output",
-        "targetNode": "6f14bd4d-e299-4677-b5db-441b40acd501",
+        "targetNode": "3682041e-1814-4bd7-8e60-5c889b822585",
         "targetPort": "input"
       }
     ],
     "nodes": [
       {
         "attributes": {},
-        "id": "e3f9eb13-a847-4717-9f83-89c815b03d01",
+        "id": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
         "op": "read-splunk-firehose",
         "resolvedId": "read-splunk-firehose"
       },
       {
         "attributes": {},
         "dataset": "dataset:main",
-        "id": "6f14bd4d-e299-4677-b5db-441b40acd501",
+        "id": "3682041e-1814-4bd7-8e60-5c889b822585",
         "module": "module:index",
         "op": "write-index",
         "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
       }
     ],
-    "rootNode": ["6f14bd4d-e299-4677-b5db-441b40acd501"]
-  },
-
-  "description": "A passthrough pipeline",
-  "name": "passthrough",
-  "bypassValidation": true
-
+    "rootNode": [
+      "3682041e-1814-4bd7-8e60-5c889b822585"
+    ]
+  }
 }

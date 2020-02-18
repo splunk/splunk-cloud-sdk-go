@@ -1,36 +1,33 @@
- {
-            "createDate": 1550652271940,
-            "createUserId": "test@splunk.com",
-            "data": {
-                "edges": [
-                    {
-                        "attributes": null,
-                        "sourceNode": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
-                        "sourcePort": "output",
-                        "targetNode": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
-                        "targetPort": "input"
-                    }
-                ],
-                "nodes": [
-                    {
-                        "attributes": {},
-                        "id": "09fb131c-676b-49f7-a72f-28a0f6aa9bdb",
-                        "op": "read-splunk-firehose"
-                    },
-                    {
-                        "attributes": {},
-                        "id": "188a56ab-0a8a-4af0-8cfc-68fd57d1b683",
-                        "op": "write-splunk-index"
-                    }
-                ],
-                "root-node": [
-                    "188a56ab-0a8a-4af0-8cfc-68fd57d1b683"
-                ],
-                "version": 3
-            },
-            "description": "testTemplate description",
-            "name": "testTemplate",
-            "ownerTenantId": "testtenant",
-            "templateId": "417fb4ad-d264-4920-8028-7d4cba20528f",
-            "version": 1
-        }
+{
+  "data": {
+    "edges": [
+      {
+        "sourceNode": "fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4",
+        "sourcePort": "output",
+        "targetNode": "6854c231-23ea-49ae-8471-ba84d4e3548f",
+        "targetPort": "input"
+      }
+    ],
+    "nodes": [
+      {
+        "attributes": {},
+        "id": "fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4",
+        "op": "read-splunk-firehose",
+        "resolvedId": "read-splunk-firehose"
+      },
+      {
+        "attributes": {},
+        "dataset": "dataset:main",
+        "id": "6854c231-23ea-49ae-8471-ba84d4e3548f",
+        "module": "module:index",
+        "op": "write-index",
+        "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
+      }
+    ],
+    "rootNode": [
+      "6854c231-23ea-49ae-8471-ba84d4e3548f"
+    ]
+  },
+  "description": "integration test template",
+  "name": "testTemplate1582068227"
+}

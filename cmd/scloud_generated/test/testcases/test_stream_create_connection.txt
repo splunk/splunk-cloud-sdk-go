@@ -1,0 +1,9 @@
+{
+  "connectorId": "879837b0-cabf-4bc2-8589-fcc4dad753e7",
+  "data": {
+    "splunk-url": "https://hostname.port",
+    "token": "mytoken"
+  },
+  "description": "",
+  "name": "testConnection1582068774"
+}
