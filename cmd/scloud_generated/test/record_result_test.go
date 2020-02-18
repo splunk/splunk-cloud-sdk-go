@@ -14,6 +14,10 @@ func Test_record_action(t *testing.T) {
 	test_engine.Record_test_result("testcases/action_test", testhook_arg, t)
 }
 
+func Test_record_appreg(t *testing.T) {
+	test_engine.Record_test_result("testcases/appreg_test", testhook_arg, t)
+}
+
 func Test_record_streams(t *testing.T) {
 	test_engine.Record_test_result("testcases/streams_test", testhook_arg, t)
 }

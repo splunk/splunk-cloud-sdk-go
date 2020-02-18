@@ -1,0 +1,48 @@
+#testcase: appreg create-app --name scloud_test_appreg_name --kind web --title scloud_test_appreg_title --description scloud_test_appreg_description --redirect-urls https://scloud.test.appreg.redirect1.url.com,https://scloud.test.appreg.redirect2.url.com --login-url https://scloud.test.appreg.login.url.com --logo-url https://scloud.test.appreg.logo.url.com --setup-url https://scloud.test.appreg.setup.url.com --webhook-url https://scloud.test.appreg.webhook.url.com --user-permissions-filter scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2,scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4 --app-principal-permissions scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2,scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4
+REQUEST URL:app-registry/v1beta2/apps
+REQUEST BODY:{{"kind":"web","name":"scloud_test_appreg_name","title":"scloud_test_appreg_title","appPrincipalPermissions":["scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2","scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4"],"description":"scloud_test_appreg_description","loginUrl":"https://scloud.test.appreg.login.url.com","logoUrl":"https://scloud.test.appreg.logo.url.com","redirectUrls":["https://scloud.test.appreg.redirect1.url.com","https://scloud.test.appreg.redirect2.url.com"],"setupUrl":"https://scloud.test.appreg.setup.url.com","userPermissionsFilter":["scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2","scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4"],"webhookUrl":"https://scloud.test.appreg.webhook.url.com"}}
+
+#testcase: appreg update-app --app-name scloud_test_appreg_name --title scloud_test_appreg_title_updated --description scloud_test_appreg_description_updated --redirect-urls https://scloud.test.appreg.redirect.updated.url.com,https://scloud.test.appreg.redirect2.updated.url.com --login-url https://scloud.test.appreg.login.updated.url.com --logo-url https://scloud.test.appreg.logo.updated.url.com --setup-url https://scloud.test.appreg.setup.updated.url.com --webhook-url https://scloud.test.appreg.webhook.updated.url.com --user-permissions-filter scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2,scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4 --app-principal-permissions scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2,scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4
+REQUEST URL:app-registry/v1beta2/apps/scloud_test_appreg_name
+REQUEST BODY:{{"title":"scloud_test_appreg_title_updated","appPrincipalPermissions":["scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2","scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4"],"description":"scloud_test_appreg_description_updated","loginUrl":"https://scloud.test.appreg.login.updated.url.com","logoUrl":"https://scloud.test.appreg.logo.updated.url.com","redirectUrls":["https://scloud.test.appreg.redirect.updated.url.com","https://scloud.test.appreg.redirect2.updated.url.com"],"setupUrl":"https://scloud.test.appreg.setup.updated.url.com","userPermissionsFilter":["scloud_test_appreg_resource1:scloud_test_appreg_scope1.scloud_test_appreg_scope2","scloud_test_appreg_resource2:scloud_test_appreg_scope3.scloud_test_appreg_scope4"],"webhookUrl":"https://scloud.test.appreg.webhook.updated.url.com"}}
+
+#testcase: appreg get-app --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/apps/scloud_test_appreg_name
+REQUEST BODY:<nil>
+
+#testcase: appreg list-apps
+REQUEST URL:app-registry/v1beta2/apps
+REQUEST BODY:<nil>
+
+#testcase: appreg create-subscription --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/subscriptions
+REQUEST BODY:{{"appName":"scloud_test_appreg_name"}}
+
+#testcase: appreg get-subscription --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/subscriptions/scloud_test_appreg_name
+REQUEST BODY:<nil>
+
+#testcase: appreg list-app-subscriptions --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/apps/scloud_test_appreg_name/subscriptions
+REQUEST BODY:<nil>
+
+#testcase: appreg list-subscriptions
+REQUEST URL:app-registry/v1beta2/subscriptions
+REQUEST BODY:<nil>
+
+#testcase: appreg delete-subscription --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/subscriptions/scloud_test_appreg_name
+REQUEST BODY:<nil>
+
+#testcase: appreg get-keys
+REQUEST URL:app-registry/v1beta2/keys
+REQUEST BODY:<nil>
+
+#testcase: appreg rotate-secret --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/apps/scloud_test_appreg_name/rotate-secret
+REQUEST BODY:<nil>
+
+#testcase: appreg delete-app --app-name scloud_test_appreg_name
+REQUEST URL:app-registry/v1beta2/apps/scloud_test_appreg_name
+REQUEST BODY:<nil>
+
