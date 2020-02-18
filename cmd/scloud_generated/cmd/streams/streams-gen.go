@@ -313,18 +313,10 @@ func init() {
 
 	streamsCmd.AddCommand(compileDSLCmd)
 
-	var compileDSLDsl string
-	compileDSLCmd.Flags().StringVar(&compileDSLDsl, "dsl", "", "This is a required parameter. The Streams DSL representation of a pipeline.")
-	compileDSLCmd.MarkFlagRequired("dsl")
-
 	var compileDSLInputDatafile string
 	compileDSLCmd.Flags().StringVar(&compileDSLInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(compileSPLCmd)
-
-	var compileSPLSpl string
-	compileSPLCmd.Flags().StringVar(&compileSPLSpl, "spl", "", "This is a required parameter. The SPL2 representation of a pipeline or function parameters.")
-	compileSPLCmd.MarkFlagRequired("spl")
 
 	var compileSPLInputDatafile string
 	compileSPLCmd.Flags().StringVar(&compileSPLInputDatafile, "input-datafile", "", "The input data file.")

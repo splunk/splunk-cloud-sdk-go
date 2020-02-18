@@ -1,35 +1,43 @@
 {
-  "createUserId": "test@splunk.com",
-  "data": {
+  "arguments": [
+    {
+      "groupArg": "time",
+      "position": 0,
+      "type": "long"
+    }
+  ],
+  "ast": {
     "edges": [
       {
-        "sourceNode": "e3f9eb13-a847-4717-9f83-89c815b03d01",
+        "sourceNode": "9953fede-aa87-4a6e-823a-64176915723b",
         "sourcePort": "output",
-        "targetNode": "6f14bd4d-e299-4677-b5db-441b40acd501",
+        "targetNode": "b3c6a990-ee54-4a20-a900-67cca16c18be",
         "targetPort": "input"
       }
     ],
     "nodes": [
       {
         "attributes": {},
-        "id": "e3f9eb13-a847-4717-9f83-89c815b03d01",
+        "id": "9953fede-aa87-4a6e-823a-64176915723b",
         "op": "read-splunk-firehose",
         "resolvedId": "read-splunk-firehose"
       },
       {
         "attributes": {},
         "dataset": "dataset:main",
-        "id": "6f14bd4d-e299-4677-b5db-441b40acd501",
+        "id": "b3c6a990-ee54-4a20-a900-67cca16c18be",
         "module": "module:index",
         "op": "write-index",
         "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
       }
     ],
-    "rootNode": ["6f14bd4d-e299-4677-b5db-441b40acd501"]
+    "rootNode": [
+      "b3c6a990-ee54-4a20-a900-67cca16c18be"
+    ]
   },
-
-  "description": "A passthrough pipeline",
-  "name": "passthrough",
-  "bypassValidation": true
-   
+  "attributes": null,
+  "categories": null,
+  "mappings": null,
+  "name": "test-fn",
+  "outputType": ""
 }

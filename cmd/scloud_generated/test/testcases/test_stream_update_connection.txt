@@ -1,0 +1,7 @@
+{
+  "name": "newname",
+  "data": {
+    "splunk-url":"https://hostname.port",
+     "token":"mytoken"},
+  "description": "A new connection"
+}
