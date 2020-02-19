@@ -346,41 +346,7 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 
 // ExpandGroup Creates and returns the expanded version of a group.
 func ExpandGroup(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var arguments map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
-	if err != nil {
-		return fmt.Errorf(`error parsing "arguments": ` + err.Error())
-	}
-	var groupId string
-	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
-	}
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.GroupExpandRequest{
-
-		Arguments: arguments,
-		Id:        id,
-	}
-
-	resp, err := client.StreamsService.ExpandGroup(groupId, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // ExpandPipeline Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
@@ -975,54 +941,12 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 
 // PutGroup Update a group function combining the Streams JSON of two or more functions.
 func PutGroup(cmd *cobra.Command, args []string) error {
-
-	var err error
-
-	// Parse all flags
-
-	var groupId string
-	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
-	}
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-
-	resp, err := PutGroupOverride(groupId, inputDatafile)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // PutTemplate Updates an existing template.
 func PutTemplate(cmd *cobra.Command, args []string) error {
-
-	var err error
-
-	// Parse all flags
-
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-	var templateId string
-	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
-	}
-
-	resp, err := PutTemplateOverride(templateId, inputDatafile)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // ReactivatePipeline Reactivate a pipeline
@@ -1120,28 +1044,7 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 
 // UpdateGroup Modify a group function by combining the Streams JSON of two or more functions.
 func UpdateGroup(cmd *cobra.Command, args []string) error {
-
-	var err error
-
-	// Parse all flags
-
-	var groupId string
-	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
-	}
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-
-	resp, err := UpdateGroupOverride(groupId, inputDatafile)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // UpdatePipeline Partially modifies an existing pipeline.

@@ -14,9 +14,13 @@ REQUEST BODY:{{"inputTree":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99
 REQUEST URL:streams/v2beta1/pipelines/validate
 REQUEST BODY:{{"upl":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99df379dd6","sourcePort":"output","targetNode":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","targetPort":"input"}],"nodes":[{"attributes":{},"id":"00ba387b-a219-4f68-b3a8-8b99df379dd6","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["fbe6269f-30d3-4922-be6c-84a9f2b84bb3"]}}}
 
-#testcase: streams update-pipeline  --id "417fb4ad-d264-4920-8028-7d4cba20528f" --input-datafile testcases/test_stream_update_pipeline.txt
-REQUEST URL:streams/v2beta1/pipelines/%22417fb4ad-d264-4920-8028-7d4cba20528f%22
+#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f --input-datafile testcases/test_stream_update_pipeline.txt
+REQUEST URL:streams/v2beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
 REQUEST BODY:{{"description":"Updated Integration Test Pipeline testPipelinfe1582068339","name":"updatedtestPipelinfe1582068339"}}
+
+#testcase: streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
+REQUEST URL:streams/v2beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f/reactivate
+REQUEST BODY:<nil>
 
 #testcase: streams list-pipelines
 REQUEST URL:streams/v2beta1/pipelines
@@ -50,7 +54,7 @@ REQUEST BODY:<nil>
 REQUEST URL:streams/v2beta1/connections
 REQUEST BODY:<nil>
 
-#testcase: streams create-connection --connector-id "879837b0-cabf-4bc2-8589-fcc4dad753e7" --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
+#testcase: streams create-connection --connector-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
 enable testhook-dryrun
 error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]interface {} err: unexpected end of JSON input
 
@@ -78,8 +82,8 @@ REQUEST BODY:{{"data":{"edges":[{"sourceNode":"fd60e488-a9d0-4049-8ba7-c3f3a7e9d
 REQUEST URL:streams/v2beta1/templates
 REQUEST BODY:<nil>
 
-#testcase: streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
-REQUEST URL:streams/v2beta1/templates/%22a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4%22
+#testcase: streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
+REQUEST URL:streams/v2beta1/templates/a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
 REQUEST BODY:<nil>
 
 #testcase: streams create-group --input-datafile testcases/test_stream_create_group.txt

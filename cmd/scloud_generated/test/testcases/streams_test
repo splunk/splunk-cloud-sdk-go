@@ -3,7 +3,8 @@ streams compile-dsl --input-datafile testcases/test_stream_compileDSL.txt
 streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
 streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.txt
 streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.txt
-streams update-pipeline  --id "417fb4ad-d264-4920-8028-7d4cba20528f" --input-datafile testcases/test_stream_update_pipeline.txt
+streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f --input-datafile testcases/test_stream_update_pipeline.txt
+streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
 
 # go sdk dosesn't have a working example for expandPipeline endpoint
 #streams expand-pipeline --input-datafile testcases/test_stream_expand_pipeline.txt
@@ -18,7 +19,7 @@ streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 streams list-connectors
 streams list-connections
 
-streams create-connection --connector-id "879837b0-cabf-4bc2-8589-fcc4dad753e7" --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
+streams create-connection --connector-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
 streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_update_connection.txt
 streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_put_connection.txt
 streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
@@ -27,7 +28,7 @@ streams get-registry --local false
 
 streams create-template --input-datafile testcases/test_stream_create_template.txt
 streams list-templates
-streams get-template --template-id "a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4"
+streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
 
 streams create-group --input-datafile testcases/test_stream_create_group.txt
 
