@@ -95,7 +95,7 @@ var deleteTemplateCmd = &cobra.Command{
 // expandGroup -- Creates and returns the expanded version of a group.
 var expandGroupCmd = &cobra.Command{
 	Use:   "expand-group",
-	Short: "Creates and returns the expanded version of a group.",
+	Short: "[not implemented] Creates and returns the expanded version of a group.",
 	RunE:  impl.ExpandGroup,
 }
 
@@ -228,14 +228,14 @@ var putConnectionCmd = &cobra.Command{
 // putGroup -- Update a group function combining the Streams JSON of two or more functions.
 var putGroupCmd = &cobra.Command{
 	Use:   "put-group",
-	Short: "Update a group function combining the Streams JSON of two or more functions.",
+	Short: "[not implemented] Update a group function combining the Streams JSON of two or more functions.",
 	RunE:  impl.PutGroup,
 }
 
 // putTemplate -- Updates an existing template.
 var putTemplateCmd = &cobra.Command{
 	Use:   "put-template",
-	Short: "Updates an existing template.",
+	Short: "[not implemented] Updates an existing template.",
 	RunE:  impl.PutTemplate,
 }
 
@@ -270,7 +270,7 @@ var updateConnectionCmd = &cobra.Command{
 // updateGroup -- Modify a group function by combining the Streams JSON of two or more functions.
 var updateGroupCmd = &cobra.Command{
 	Use:   "update-group",
-	Short: "Modify a group function by combining the Streams JSON of two or more functions.",
+	Short: "[not implemented] Modify a group function by combining the Streams JSON of two or more functions.",
 	RunE:  impl.UpdateGroup,
 }
 

@@ -24,6 +24,7 @@
 package streams
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -502,6 +503,9 @@ func (s *Service) GetInputSchema(getInputSchemaRequest GetInputSchemaRequest, re
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("===================2222222222")
+	fmt.Println(getInputSchemaRequest)
+	fmt.Println("===================1111112222222222")
 	response, err := s.Client.Post(services.RequestParams{URL: u, Body: getInputSchemaRequest})
 	if response != nil {
 		defer response.Body.Close()
