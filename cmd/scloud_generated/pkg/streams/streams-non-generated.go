@@ -61,7 +61,7 @@ func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// GetGroupOverride 
+// GetGroupOverride
 func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -87,7 +87,7 @@ func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, er
 
 }
 
-// PutTemplateOverride 
+// PutTemplateOverride
 func PutTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -113,7 +113,7 @@ func PutTemplateOverride(templateId string, filename string) (*model.TemplateRes
 
 }
 
-// StartPreviewOverride 
+// StartPreviewOverride
 func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {

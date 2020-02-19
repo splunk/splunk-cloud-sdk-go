@@ -291,10 +291,8 @@ func ListActions(cmd *cobra.Command, args []string) error {
 // TriggerAction Invokes an action.
 func TriggerAction(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
 	var action_name string
@@ -356,11 +354,11 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 		TtlSeconds:       ttlSeconds,
 	}
 
-	err = client.ActionService.TriggerAction(action_name, generated_request_body)
+	resp, err := TriggerActionOverride(action_name, generated_request_body)
 	if err != nil {
 		return err
 	}
-
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
