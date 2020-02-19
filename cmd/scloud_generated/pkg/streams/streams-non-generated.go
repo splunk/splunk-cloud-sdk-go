@@ -11,7 +11,7 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/streams"
 )
 
-// CreatePipeline Creates a pipeline.
+// CreatePipeline
 func CreatePipelineOverride(filename string) (*model.PipelineResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -36,7 +36,7 @@ func CreatePipelineOverride(filename string) (*model.PipelineResponse, error) {
 	return resp, nil
 }
 
-// ExpandPipelineOverride Creates a pipeline.
+// ExpandPipelineOverride
 func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -61,7 +61,7 @@ func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// GetGroupOverride Creates a pipeline.
+// GetGroupOverride 
 func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -87,7 +87,7 @@ func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, er
 
 }
 
-// PutTemplateOverride Creates a pipeline.
+// PutTemplateOverride 
 func PutTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -113,7 +113,7 @@ func PutTemplateOverride(templateId string, filename string) (*model.TemplateRes
 
 }
 
-// StartPreviewOverride Creates a pipeline.
+// StartPreviewOverride 
 func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -138,7 +138,7 @@ func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) 
 	return resp, nil
 }
 
-// UpdateGroupOverride Creates a pipeline.
+// UpdateGroupOverride
 func UpdateGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -163,7 +163,7 @@ func UpdateGroupOverride(groupId string, filename string) (*model.GroupResponse,
 	return resp, nil
 }
 
-// UpdatePipelineOverride Creates a pipeline.
+// UpdatePipelineOverride
 func UpdatePipelineOverride(id string, filename string) (*model.PipelineResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -188,7 +188,7 @@ func UpdatePipelineOverride(id string, filename string) (*model.PipelineResponse
 	return resp, nil
 }
 
-// UpdateTemplateOverride Creates a pipeline.
+// UpdateTemplateOverride
 func UpdateTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -213,7 +213,7 @@ func UpdateTemplateOverride(templateId string, filename string) (*model.Template
 	return resp, nil
 }
 
-// ValidatePipelineOverride Creates a pipeline.
+// ValidatePipelineOverride
 func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -238,7 +238,7 @@ func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) 
 	return resp, nil
 }
 
-// CompileDSLOverride Creates a pipeline.
+// CompileDSLOverride
 func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -263,7 +263,7 @@ func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// CompileSPLOverride Creates a pipeline.
+// CompileSPLOverride
 func CompileSPLOverride(filename string) (*model.UplPipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -288,7 +288,7 @@ func CompileSPLOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// CreateTemplateOverride Creates a pipeline.
+// CreateTemplateOverride
 func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -313,7 +313,7 @@ func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
 	return resp, nil
 }
 
-// MergePipelinesOverride Creates a pipeline.
+// MergePipelinesOverride
 func MergePipelinesOverride(filename string) (*model.UplPipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -338,7 +338,7 @@ func MergePipelinesOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// PutConnectionOverride Creates a pipeline.
+// PutConnectionOverride
 func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -363,7 +363,7 @@ func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveRes
 	return resp, nil
 }
 
-// PutConnectionOverride Creates a pipeline.
+// PutConnectionOverride
 func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -388,7 +388,7 @@ func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 	return resp, nil
 }
 
-// PutConnectionOverride Creates a pipeline.
+// PutConnectionOverride
 func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -413,7 +413,7 @@ func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) 
 	return resp, nil
 }
 
-// PutConnectionOverride Creates a pipeline.
+// PutConnectionOverride
 func GetInputSchemaOverride(filename string) (*model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -438,7 +438,7 @@ func GetInputSchemaOverride(filename string) (*model.UplType, error) {
 	return resp, nil
 }
 
-// UpdateConnectionOverride Creates a pipeline.
+// UpdateConnectionOverride
 func UpdateConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {

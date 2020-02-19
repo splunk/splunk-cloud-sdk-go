@@ -68,11 +68,6 @@ func CompileDSL(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
-	var dsl string
-	err = flags.ParseFlag(cmd.Flags(), "dsl", &dsl)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dsl": ` + err.Error())
-	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
@@ -98,11 +93,6 @@ func CompileSPL(cmd *cobra.Command, args []string) error {
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-	var spl string
-	err = flags.ParseFlag(cmd.Flags(), "spl", &spl)
-	if err != nil {
-		return fmt.Errorf(`error parsing "spl": ` + err.Error())
 	}
 	var syntaxDefault model.SplCompileRequestSyntax
 	syntax := &syntaxDefault
