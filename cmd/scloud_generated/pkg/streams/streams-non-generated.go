@@ -61,7 +61,7 @@ func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
 	return resp, nil
 }
 
-// GetGroupOverride
+// PutGroupOverride
 func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -363,7 +363,7 @@ func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveRes
 	return resp, nil
 }
 
-// PutConnectionOverride
+// CreateGroupOverride
 func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -388,7 +388,7 @@ func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 	return resp, nil
 }
 
-// PutConnectionOverride
+// GetOutputSchemaOverride
 func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
@@ -413,7 +413,7 @@ func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) 
 	return resp, nil
 }
 
-// PutConnectionOverride
+// GetInputSchemaOverride
 func GetInputSchemaOverride(filename string) (*model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
