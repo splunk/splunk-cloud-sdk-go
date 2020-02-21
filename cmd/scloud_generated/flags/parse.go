@@ -132,7 +132,7 @@ func ParseFlag(flags *pflag.FlagSet, name string, out interface{}) error {
 		return fmt.Errorf(`flags.ParseFlag: error retrieving flag flags.GetString("%s") err: %s`, name, err)
 	}
 
-	if strings.HasPrefix(outtype, "map[") && strval == "" {
+	if strval == "" {
 		return nil
 	}
 
