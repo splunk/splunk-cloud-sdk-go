@@ -3,6 +3,8 @@ package login
 import (
 	"fmt"
 
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/jsonx"
@@ -19,7 +21,7 @@ func Login(cmd *cobra.Command, args []string) error {
 	context, err := auth.Login(cmd)
 
 	if err != nil {
-		fmt.Println(err)
+		util.Error(err.Error())
 		return err
 	}
 

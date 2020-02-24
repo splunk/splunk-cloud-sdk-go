@@ -22,9 +22,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/splunk/splunk-cloud-sdk-go/util"
-
 	"github.com/golang/glog"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/config"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cli/httpx"

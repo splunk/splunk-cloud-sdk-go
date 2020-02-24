@@ -27,6 +27,7 @@ import (
 	"syscall"
 
 	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/config"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 
 	"github.com/spf13/viper"
 
@@ -66,7 +67,7 @@ func Abspath(p string) string {
 	} else {
 		root, err = homedir.Dir()
 		if err != nil {
-			fatal(err.Error())
+			util.Fatal(err.Error())
 		}
 	}
 	return path.Join(root, p)
@@ -76,7 +77,7 @@ func Abspath(p string) string {
 func getEnvironmentName() string {
 	err := loadConfigs()
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 	if envName, ok := settings.GetString("env"); ok && envName != "" {
 		return envName
@@ -96,7 +97,7 @@ func getEnvironment() *Environment {
 	}
 	envName, err := GetEnvironment(name)
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 	return envName
 }
@@ -110,7 +111,7 @@ func getUsername() string {
 	var username string
 	fmt.Print("Username: ")
 	if _, err := fmt.Scanln(&username); err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 
 	return username
@@ -136,7 +137,7 @@ func getPassword(cmd *cobra.Command) string {
 
 	password, err := getpass()
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 
 	return password
@@ -171,7 +172,7 @@ func getTenantName() string {
 
 	fmt.Print("Tenant: ")
 	if _, err := fmt.Scanln(&tenant); err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 
 	return tenant
@@ -220,18 +221,6 @@ func isInsecure() bool {
 	return insecure
 }
 
-// Prints an error message to stderr.
-func eprint(msg string, args ...interface{}) {
-	msg = fmt.Sprintf(msg, args...)
-	fmt.Fprintf(os.Stderr, "error: %s\n", msg)
-}
-
-// Prints an error message and exits.
-func fatal(msg string, args ...interface{}) {
-	eprint(msg, args...)
-	os.Exit(1)
-}
-
 // Ensure that the given app profile contains the required user credentials.
 func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 	kind, ok := profile["kind"]
@@ -255,14 +244,14 @@ func getCurrentContext(clientID string) *idp.Context {
 	v := ctxCache.Get(clientID)
 	m, ok := v.(*toml.Tree)
 	if !ok {
-		glog.Warningf("Deleting context cache")
+		util.Warning("Deleting context cache")
 		// bad cache entry
 		ctxCache.Delete(clientID) //nolint:errcheck
 		return nil
 	}
 	context := &idp.Context{}
 	if err := FromToml(context, m); err != nil {
-		eprint(err.Error())
+		util.Error(err.Error())
 		// bad cache entry
 		ctxCache.Delete(clientID) //nolint:errcheck
 		return nil
@@ -277,12 +266,12 @@ func getCurrentContext(clientID string) *idp.Context {
 func getContext(cmd *cobra.Command) *idp.Context {
 	profile, err := getProfile()
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 		return nil
 	}
 	clientID, ok := profile["client_id"]
 	if !ok {
-		fatal("bad app profile: no client_id")
+		util.Fatal("bad app profile: no client_id")
 		return nil
 	}
 	context := getCurrentContext(clientID)
@@ -293,7 +282,7 @@ func getContext(cmd *cobra.Command) *idp.Context {
 	ensureCredentials(profile, cmd)
 	context, err = authenticate(profile)
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 		return nil
 	}
 	ctxCache.Set(clientID, toMap(context))
@@ -319,7 +308,7 @@ func Login(cmd *cobra.Command) (*idp.Context, error) {
 	clientID := profile["client_id"]
 	glog.CopyStandardLogTo("INFO")
 
-	glog.Infof("Authenticate profile=%s", name)
+	util.Info("Authenticate profile=%s", name)
 	ensureCredentials(profile, cmd)
 	context, err := authenticate(profile)
 	if err != nil {
@@ -384,7 +373,7 @@ var config Cfg
 func GetEnvironment(name string) (*Environment, error) {
 	env, ok := config.Environments[name]
 	if !ok {
-		return nil, fmt.Errorf("Environment specified does not exist: '%s'", name)
+		return nil, fmt.Errorf("environment specified does not exist: '%s'", name)
 	}
 	return env, nil
 }
