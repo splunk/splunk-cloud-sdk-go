@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/argx"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )

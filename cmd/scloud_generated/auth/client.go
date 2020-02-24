@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/glog"
 	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/config"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -67,7 +66,6 @@ func newClient(svc *Service) *sdk.Client {
 	var serviceURL *url.URL
 	var hostURL = getHostURL()
 	serviceURL, err := url.Parse(hostURL)
-
 	var scheme string
 	if scheme = serviceURL.Scheme; scheme == "" {
 		if scheme = svc.Scheme; scheme == "" {
@@ -84,7 +82,7 @@ func newClient(svc *Service) *sdk.Client {
 
 	host := serviceURL.Hostname()
 	if host == "" {
-		glog.Warningf("No host-url specified in config file, using default host")
+		util.Warning("No host-url specified in config file, using default host")
 		host = svc.Host
 	}
 
@@ -102,10 +100,10 @@ func newClient(svc *Service) *sdk.Client {
 		}
 		certs, err := ioutil.ReadFile(caCert)
 		if err != nil {
-			glog.Warningf("Failed to append %q to RootCAs: %v", caCert, err)
+			util.Warning("Failed to append %q to RootCAs: %v", caCert, err)
 		}
 		if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
-			glog.Warningf("No certs appended, using system certs only")
+			util.Warning("No certs appended, using system certs only")
 		}
 		// set the RootCA
 		tlsConfig.RootCAs = rootCAs
@@ -139,7 +137,7 @@ func newClient(svc *Service) *sdk.Client {
 
 	result, err := sdk.NewClient(clientConfig)
 	if err != nil {
-		fatal(err.Error())
+		util.Fatal(err.Error())
 	}
 	return result
 }

@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -41,7 +43,7 @@ var get = &cobra.Command{
 	Short: "Retrieve the value of a given setting (key)",
 	Run: func(cmd *cobra.Command, args []string) {
 		key, _ := cmd.Flags().GetString("key")
-		fmt.Println(viper.GetString(key))
+		util.Info(viper.GetString(key))
 	},
 }
 
@@ -51,7 +53,7 @@ var list = &cobra.Command{
 	Short: "Retrieve all configuration settings",
 	Run: func(cmd *cobra.Command, args []string) {
 		for k, v := range viper.AllSettings() {
-			fmt.Printf("%s = %v\n", k, v)
+			util.Info("%s = %v\n", k, v)
 		}
 	},
 }
@@ -63,8 +65,7 @@ var set = &cobra.Command{
 		// Note: need to check again because it could have been deleted
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			util.Fatal(err.Error())
 		}
 		confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 		if !FileExists(confFile) {
@@ -81,14 +82,14 @@ var set = &cobra.Command{
 			viper.SetConfigFile(confFile)
 			err = viper.ReadInConfig()
 			if err != nil {
-				fmt.Println(err)
+				util.Error(err.Error())
 			}
 			err := viper.WriteConfig()
 			if err != nil {
-				fmt.Println(err)
+				util.Error(err.Error())
 			}
 		} else {
-			fmt.Printf("Here are the settings you can save:\n %s\n", GlobalFlags)
+			util.Info("Here are the settings you can save:\n %s\n", GlobalFlags)
 		}
 	},
 }
@@ -99,14 +100,14 @@ var reset = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		home, err := homedir.Dir()
 		if err != nil {
-			fmt.Println(err)
+			util.Error(err.Error())
 		}
 		confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 		if FileExists(confFile) {
-			fmt.Printf("Deleting configuration file: %s.\n", CfgFileName)
+			util.Info("Deleting configuration file: %s.\n", CfgFileName)
 			err = os.Remove(confFile)
 			if err != nil {
-				fmt.Println(err)
+				util.Error(err.Error())
 			}
 		}
 	},
@@ -117,12 +118,12 @@ func Initialize() {
 	// Find home directory.
 	home, err := homedir.Dir()
 	if err != nil {
-		fmt.Println(err)
+		util.Error(err.Error())
 	}
 	confFile := fmt.Sprintf("%s"+string(os.PathSeparator)+"%s", home, CfgFileName)
 	err = ioutil.WriteFile(confFile, []byte{}, 0755)
 	if err != nil {
-		fmt.Printf("Unable to write a new configuration file: %v", err)
+		util.Error("Unable to write a new configuration file: %v", err)
 	}
 	// Search config in home directory with name ".scloud" (without extension).
 	Load(home, confFile)
@@ -137,20 +138,20 @@ func Load(home string, confFile string) {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println(err)
+		util.Error(err.Error())
 	}
 }
 
 func Migrate(source string, target string) {
 	input, err := ioutil.ReadFile(source)
 	if err != nil {
-		fmt.Println(err)
+		util.Error(err.Error())
 		return
 	}
 	err = ioutil.WriteFile(target, input, 0644)
 	if err != nil {
-		fmt.Println("Error creating", target)
-		fmt.Println(err)
+		util.Error("Error creating", target)
+		util.Error(err.Error())
 		return
 	}
 }

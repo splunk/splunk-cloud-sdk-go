@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/splunk/splunk-cloud-sdk-go/util"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -102,8 +104,7 @@ func initConfig() {
 	// Find home directory.
 	home, err := homedir.Dir()
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		util.Fatal(err.Error())
 	}
 
 	legacyFile = fmt.Sprintf("%s/%s", home, config.LegacyCfgFileName)
@@ -131,6 +132,12 @@ func initConfig() {
 	if testhook {
 		config.GlobalFlags["testhook"] = true
 		fmt.Println("enable testhook")
+	}
+
+	// If flag 'log_dir' is provided, create log directory at the given location
+	logDir, _ := rootCmd.Flags().GetString("log_dir")
+	if logDir != "" {
+		util.CreateLogDirectory(logDir)
 	}
 
 	config.GlobalFlags["env"] = env
