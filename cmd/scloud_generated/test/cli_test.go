@@ -10,13 +10,13 @@ func TestCli_action(t *testing.T) {
 	test_engine.RunTest("testcases/action_test", t)
 }
 
+func TestCli_identity(t *testing.T) {
+	test_engine.RunTest("testcases/identity_test", t)
+}
+
 func TestCli_appreg(t *testing.T) {
 	test_engine.RunTest("testcases/appreg_test", t)
 }
-
-//func TestCli_identit(t *testing.T) {
-//	test_util.RunTest("testcases/identity_test", t)
-//}
 
 func TestCli_ingest(t *testing.T) {
 	test_engine.RunTest("testcases/ingest_test", t)
