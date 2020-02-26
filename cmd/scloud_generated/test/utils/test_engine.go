@@ -170,7 +170,7 @@ func formatInputForCommandExecution(input string) string {
 }
 
 //Set config and Login
-func setConfigurationAndLogin() (string, error) {
+func SetConfigurationAndLogin() (string, error) {
 
 	//Config set username, env, tenant and login
 	confArgs := []string{"config set --key username --value " + Username,
@@ -224,14 +224,9 @@ func Record_test_result(filepath string, testhook_arg string, t *testing.T) {
 }
 
 //Execute a global flag test case
-func Execute_cmd_with_global_flags(command string, searchString string, t *testing.T) bool {
+func Execute_cmd_with_global_flags(command string, searchString string, t *testing.T, expectStdErr bool) bool {
 
 	stderr := ""
-
-	//Set a default env, tenant and username to begin with and login
-	res, err := setConfigurationAndLogin()
-	assert.Empty(t, res)
-	assert.Nil(t, err)
 
 	args := strings.Split(command, " ")
 	for index, ele := range args {
@@ -240,11 +235,12 @@ func Execute_cmd_with_global_flags(command string, searchString string, t *testi
 
 	comnd := exec.Command(scloud, args...)
 	//execute testcase
-	res, err, stderr = executeCliCommand(comnd)
+	res, _, stderr := executeCliCommand(comnd)
+
 	//Validate if response output contains either expected results or an an expected error string
-	if strings.Contains(res, searchString) == false && strings.Contains(stderr, searchString) == false {
-		return false
+	if expectStdErr && strings.Contains(stderr, searchString) || strings.Contains(res, searchString) {
+		return true
 	}
 
-	return true
+	return false
 }

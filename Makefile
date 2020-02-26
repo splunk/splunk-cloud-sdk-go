@@ -61,6 +61,9 @@ vet: statik version scloudgen_version
 login: build_scloud
 	./cicd/scripts/login.sh
 
+login_scloudgen: build_scloud_generated
+	./cicd/scripts/login_scloud_gen.sh
+
 token:
 	./cicd/scripts/token.sh
 
@@ -121,6 +124,9 @@ test_integration: build
 test_integration_scloud: login build
 	export PYTHONPATH=$(PYTHONPATH):.
 	SCLOUD_TEST_DIR=$(shell pwd)/test/scloud GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
+
+test_integration_scloud_gen: login_scloudgen build
+	GO111MODULE=on sh ./cicd/integration/run_scloud_gen_tests.sh
 
 test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh
