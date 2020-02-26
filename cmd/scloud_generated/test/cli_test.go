@@ -21,3 +21,7 @@ func TestCli_appreg(t *testing.T) {
 func TestCli_ingest(t *testing.T) {
 	test_engine.RunTest("testcases/ingest_test", t)
 }
+
+func TestCli_search(t *testing.T) {
+	test_engine.RunTest("testcases/search_test", t)
+}
