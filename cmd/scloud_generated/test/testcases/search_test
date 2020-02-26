@@ -1,0 +1,10 @@
+search create-job --query "from index:main"
+search create-job --query "from index:main" --allow-side-effects true --collect-event-summary true --collect-field-summary true --collect-time-buckets true --enable-preview true
+search get-job --sid f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
+search list-jobs
+search list-results --sid f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
+search update-job --sid f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll --status finalized
+search list-events-summary --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
+search list-fields-summary --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
+search list-preview-results --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
+search list-time-buckets --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
