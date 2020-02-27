@@ -44,8 +44,8 @@ func Test_global_flag_invalid_auth_url(t *testing.T) {
 }
 
 func Test_global_flag_tenant(t *testing.T) {
-	command := "action list-actions --tenant " + utils.TestTenant
-	searchString := "kind"
+	command := "identity get-role --role tenant.admin --tenant " + utils.TestTenant
+	searchString := utils.TestTenant
 	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
 	assert.Equal(t, true, success)
 }
@@ -58,8 +58,8 @@ func Test_global_flag_invalid_tenant(t *testing.T) {
 }
 
 func Test_global_flag_env(t *testing.T) {
-	command := "action list-actions --env " + utils.Env1
-	searchString := "kind"
+	command := "identity list-groups --env " + utils.Env1
+	searchString := "tenant.admins"
 	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
 	assert.Equal(t, true, success)
 }
@@ -73,9 +73,9 @@ func Test_global_flag_invalid_env(t *testing.T) {
 
 //ToDO: Needs investigation, runs successfully locally but not in CI
 func Test_global_flag_incorrect_env(t *testing.T) {
-	command := "action list-actions --env " + utils.Env2
-	searchString := "401 Unauthorized"
-	success := utils.Execute_cmd_with_global_flags(command, searchString, t, true)
+	command := "identity list-groups --env " + utils.Env2
+	searchString := "password"
+	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
 	assert.Equal(t, true, success)
 }
 
