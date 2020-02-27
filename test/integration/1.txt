@@ -1,0 +1,1 @@
+[{\"capacity_gb\": 8,\"size\": \"tiny\",\"description\": \"This is a tiny amount of GB\",\"_raw\": \"\"}]
