@@ -25,3 +25,7 @@ func TestCli_ingest(t *testing.T) {
 func TestCli_search(t *testing.T) {
 	test_engine.RunTest("testcases/search_test", t)
 }
+
+func TestCli_kvstore(t *testing.T) {
+	test_engine.RunTest("testcases/kvstore_test", t)
+}
