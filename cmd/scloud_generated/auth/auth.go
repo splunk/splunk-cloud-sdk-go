@@ -129,12 +129,13 @@ func getpass() (string, error) {
 
 // Returns the selected password.
 func getPassword(cmd *cobra.Command) string {
-	if pwd, err := cmd.Flags().GetString("pwd"); err == nil {
-		if len(pwd) != 0 {
-			return pwd
+	if cmd != nil {
+		if pwd, err := cmd.Flags().GetString("pwd"); err == nil {
+			if len(pwd) != 0 {
+				return pwd
+			}
 		}
 	}
-
 	password, err := getpass()
 	if err != nil {
 		util.Fatal(err.Error())

@@ -232,11 +232,12 @@ func Execute_cmd_with_global_flags(command string, searchString string, t *testi
 	for index, ele := range args {
 		args[index] = strings.Trim(ele, " ")
 	}
-
 	comnd := exec.Command(scloud, args...)
+
 	//execute testcase
 	res, _, stderr := executeCliCommand(comnd)
 
+	res, stderr, searchString = strings.ToUpper(res), strings.ToUpper(stderr), strings.ToUpper(searchString)
 	//Validate if response output contains either expected results or an an expected error string
 	if expectStdErr && strings.Contains(stderr, searchString) || strings.Contains(res, searchString) {
 		return true
