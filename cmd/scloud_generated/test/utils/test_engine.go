@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -75,7 +76,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 			continue
 		}
 
-		args := strings.Split(line, " ")
+		args := splitArgs(line)
 		for index, ele := range args {
 			args[index] = strings.Trim(ele, " ")
 		}
@@ -124,6 +125,29 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	}
 
 	return ret, nil
+}
+
+func splitArgs(line string) []string {
+	// find quoted string
+	pattern := "\"[^\"]+\""
+	re := regexp.MustCompile(pattern)
+	found := re.FindAllString(line, -1)
+
+	if len(found) == 0 {
+		return strings.Split(line, " ")
+	}
+
+	var results []string
+	currentline := line
+	for _, quotestr := range found {
+		parts := strings.Split(currentline, quotestr)
+		currentline = parts[1]
+
+		args := strings.Split(strings.Trim(parts[0], " "), " ")
+		results = append(results, args...)
+		results = append(results, quotestr)
+	}
+	return results
 }
 
 // Replaces the boundary parameter random string (generated) with a fixed name 'BOUNDARY_PARAMETER'
