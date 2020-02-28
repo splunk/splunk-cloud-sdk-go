@@ -13,8 +13,8 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/appregistry"
 )
 
-// CreateApp Creates an app.
-func CreateApp(cmd *cobra.Command, args []string) error {
+// CreateAppNativeApp Creates an app.
+func CreateAppNativeApp(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -83,7 +83,7 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
 	// Form the request body
-	generated_request_body := model.CreateAppRequest{
+	generated_request_body := model.NativeAppPost{
 
 		AppPrincipalPermissions: appPrincipalPermissions,
 		Description:             description,
@@ -98,7 +98,193 @@ func CreateApp(cmd *cobra.Command, args []string) error {
 		WebhookUrl:              webhookUrl,
 	}
 
-	resp, err := client.AppRegistryService.CreateApp(generated_request_body)
+	resp, err := client.AppRegistryService.CreateApp(model.MakeCreateAppRequestFromNativeAppPost(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// CreateAppServiceApp Creates an app.
+func CreateAppServiceApp(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appPrincipalPermissions []string
+	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var kind model.AppResourceKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var loginUrlDefault string
+	loginUrl := &loginUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "login-url", &loginUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
+	}
+	var logoUrlDefault string
+	logoUrl := &logoUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", &logoUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var redirectUrls []string
+	err = flags.ParseFlag(cmd.Flags(), "redirect-urls", &redirectUrls)
+	if err != nil {
+		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
+	}
+	var setupUrlDefault string
+	setupUrl := &setupUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", &setupUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
+	}
+	var title string
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
+	if err != nil {
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
+	}
+	var userPermissionsFilter []string
+	err = flags.ParseFlag(cmd.Flags(), "user-permissions-filter", &userPermissionsFilter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
+	}
+	var webhookUrlDefault string
+	webhookUrl := &webhookUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", &webhookUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ServiceAppPost{
+
+		AppPrincipalPermissions: appPrincipalPermissions,
+		Description:             description,
+		Kind:                    kind,
+		LoginUrl:                loginUrl,
+		LogoUrl:                 logoUrl,
+		Name:                    name,
+		RedirectUrls:            redirectUrls,
+		SetupUrl:                setupUrl,
+		Title:                   title,
+		UserPermissionsFilter:   userPermissionsFilter,
+		WebhookUrl:              webhookUrl,
+	}
+
+	resp, err := client.AppRegistryService.CreateApp(model.MakeCreateAppRequestFromServiceAppPost(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// CreateAppWebApp Creates an app.
+func CreateAppWebApp(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appPrincipalPermissions []string
+	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var kind model.AppResourceKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var loginUrlDefault string
+	loginUrl := &loginUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "login-url", &loginUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
+	}
+	var logoUrlDefault string
+	logoUrl := &logoUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", &logoUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var redirectUrls []string
+	err = flags.ParseFlag(cmd.Flags(), "redirect-urls", &redirectUrls)
+	if err != nil {
+		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
+	}
+	var setupUrlDefault string
+	setupUrl := &setupUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", &setupUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
+	}
+	var title string
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
+	if err != nil {
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
+	}
+	var userPermissionsFilter []string
+	err = flags.ParseFlag(cmd.Flags(), "user-permissions-filter", &userPermissionsFilter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
+	}
+	var webhookUrlDefault string
+	webhookUrl := &webhookUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", &webhookUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.WebAppPost{
+
+		AppPrincipalPermissions: appPrincipalPermissions,
+		Description:             description,
+		Kind:                    kind,
+		LoginUrl:                loginUrl,
+		LogoUrl:                 logoUrl,
+		Name:                    name,
+		RedirectUrls:            redirectUrls,
+		SetupUrl:                setupUrl,
+		Title:                   title,
+		UserPermissionsFilter:   userPermissionsFilter,
+		WebhookUrl:              webhookUrl,
+	}
+
+	resp, err := client.AppRegistryService.CreateApp(model.MakeCreateAppRequestFromWebAppPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -332,8 +518,8 @@ func RotateSecret(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateApp Updates an app.
-func UpdateApp(cmd *cobra.Command, args []string) error {
+// UpdateAppCommonAppPut Updates an app.
+func UpdateAppCommonAppPut(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -397,7 +583,7 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
 	}
 	// Form the request body
-	generated_request_body := model.UpdateAppRequest{
+	generated_request_body := model.CommonAppPut{
 
 		AppPrincipalPermissions: appPrincipalPermissions,
 		Description:             description,
@@ -410,7 +596,93 @@ func UpdateApp(cmd *cobra.Command, args []string) error {
 		WebhookUrl:              webhookUrl,
 	}
 
-	resp, err := client.AppRegistryService.UpdateApp(appName, generated_request_body)
+	resp, err := client.AppRegistryService.UpdateApp(appName, model.MakeUpdateAppRequestFromCommonAppPut(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateAppWebAppPut Updates an app.
+func UpdateAppWebAppPut(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appName string
+	err = flags.ParseFlag(cmd.Flags(), "app-name", &appName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-name": ` + err.Error())
+	}
+	var appPrincipalPermissions []string
+	err = flags.ParseFlag(cmd.Flags(), "app-principal-permissions", &appPrincipalPermissions)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-principal-permissions": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var loginUrlDefault string
+	loginUrl := &loginUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "login-url", &loginUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "login-url": ` + err.Error())
+	}
+	var logoUrlDefault string
+	logoUrl := &logoUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo-url", &logoUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "logo-url": ` + err.Error())
+	}
+	var redirectUrls []string
+	err = flags.ParseFlag(cmd.Flags(), "redirect-urls", &redirectUrls)
+	if err != nil {
+		return fmt.Errorf(`error parsing "redirect-urls": ` + err.Error())
+	}
+	var setupUrlDefault string
+	setupUrl := &setupUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "setup-url", &setupUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "setup-url": ` + err.Error())
+	}
+	var title string
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
+	if err != nil {
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
+	}
+	var userPermissionsFilter []string
+	err = flags.ParseFlag(cmd.Flags(), "user-permissions-filter", &userPermissionsFilter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "user-permissions-filter": ` + err.Error())
+	}
+	var webhookUrlDefault string
+	webhookUrl := &webhookUrlDefault
+	err = flags.ParseFlag(cmd.Flags(), "webhook-url", &webhookUrl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "webhook-url": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.WebAppPut{
+
+		AppPrincipalPermissions: appPrincipalPermissions,
+		Description:             description,
+		LoginUrl:                loginUrl,
+		LogoUrl:                 logoUrl,
+		RedirectUrls:            redirectUrls,
+		SetupUrl:                setupUrl,
+		Title:                   title,
+		UserPermissionsFilter:   userPermissionsFilter,
+		WebhookUrl:              webhookUrl,
+	}
+
+	resp, err := client.AppRegistryService.UpdateApp(appName, model.MakeUpdateAppRequestFromWebAppPut(generated_request_body))
 	if err != nil {
 		return err
 	}

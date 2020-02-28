@@ -759,7 +759,7 @@ func ValidateToken(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var include []string
+	var include model.ValidateTokeninclude
 	err = flags.ParseFlag(cmd.Flags(), "include", &include)
 	if err != nil {
 		return fmt.Errorf(`error parsing "include": ` + err.Error())
