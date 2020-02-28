@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Splunk, Inc.
+ * Copyright © 2020 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -23,13 +23,17 @@
 
 package appregistry
 
+import (
+	"encoding/json"
+)
+
 type AppMetadataInternal struct {
 	// OAuth 2.0 Client ID.
-	ClientId string `json:"clientId"`
+	ClientId *string `json:"clientId,omitempty"`
 	// The date that the app was created.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt *string `json:"createdAt,omitempty"`
 	// The principal who created this app.
-	CreatedBy string `json:"createdBy"`
+	CreatedBy *string `json:"createdBy,omitempty"`
 }
 
 type AppMetadataPrivate struct {
@@ -42,8 +46,6 @@ type AppMetadataPrivate struct {
 }
 
 type AppMetadataPublic struct {
-	// Human-readable title for the app.
-	Title string `json:"title"`
 	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
 	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
 	// Short paragraph describing the app.
@@ -52,13 +54,15 @@ type AppMetadataPublic struct {
 	LoginUrl *string `json:"loginUrl,omitempty"`
 	// The URL used to display the app's logo.
 	LogoUrl *string `json:"logoUrl,omitempty"`
+	// Human-readable title for the app.
+	Title *string `json:"title,omitempty"`
 	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
 	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
 }
 
 type AppMetadataSecret struct {
 	// OAuth 2.0 Client Secret string (used for confidential clients).
-	ClientSecret string `json:"clientSecret"`
+	ClientSecret *string `json:"clientSecret,omitempty"`
 }
 
 type AppName struct {
@@ -71,6 +75,7 @@ type AppResource struct {
 	Name string `json:"name"`
 }
 
+// AppResourceKind :
 type AppResourceKind string
 
 // List of AppResourceKind
@@ -81,47 +86,232 @@ const (
 )
 
 type AppResponseCreateUpdate struct {
-	// OAuth 2.0 Client ID.
-	ClientId string `json:"clientId"`
-	// OAuth 2.0 Client Secret string (used for confidential clients).
-	ClientSecret string `json:"clientSecret"`
-	// The date that the app was created.
-	CreatedAt string `json:"createdAt"`
-	// The principal who created this app.
-	CreatedBy string          `json:"createdBy"`
-	Kind      AppResourceKind `json:"kind"`
-	// App name that is unique within Splunk Cloud Platform.
-	Name string `json:"name"`
-	// Human-readable title for the app.
-	Title string `json:"title"`
-	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
-	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
-	// Short paragraph describing the app.
-	Description *string `json:"description,omitempty"`
-	// The URL used to log in to the app.
-	LoginUrl *string `json:"loginUrl,omitempty"`
-	// The URL used to display the app's logo.
-	LogoUrl *string `json:"logoUrl,omitempty"`
-	// Array of URLs that can be used for redirect after logging into the app.
-	RedirectUrls []string `json:"redirectUrls,omitempty"`
-	// URL to redirect to after a subscription is created.
-	SetupUrl *string `json:"setupUrl,omitempty"`
-	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
-	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
-	// URL that webhook events are sent to.
-	WebhookUrl *string `json:"webhookUrl,omitempty"`
+	nativeApp  *NativeApp
+	serviceApp *ServiceApp
+	webApp     *WebApp
+	raw        interface{}
+}
+
+// MakeAppResponseCreateUpdateFromNativeApp creates a new AppResponseCreateUpdate from an instance of NativeApp
+func MakeAppResponseCreateUpdateFromNativeApp(f NativeApp) AppResponseCreateUpdate {
+	return AppResponseCreateUpdate{nativeApp: &f}
+}
+
+// IsNativeApp checks if the AppResponseCreateUpdate is a NativeApp
+func (m AppResponseCreateUpdate) IsNativeApp() bool {
+	return m.nativeApp != nil
+}
+
+// NativeApp returns NativeApp if IsNativeApp() is true, nil otherwise
+func (m AppResponseCreateUpdate) NativeApp() *NativeApp {
+	return m.nativeApp
+}
+
+// MakeAppResponseCreateUpdateFromServiceApp creates a new AppResponseCreateUpdate from an instance of ServiceApp
+func MakeAppResponseCreateUpdateFromServiceApp(f ServiceApp) AppResponseCreateUpdate {
+	return AppResponseCreateUpdate{serviceApp: &f}
+}
+
+// IsServiceApp checks if the AppResponseCreateUpdate is a ServiceApp
+func (m AppResponseCreateUpdate) IsServiceApp() bool {
+	return m.serviceApp != nil
+}
+
+// ServiceApp returns ServiceApp if IsServiceApp() is true, nil otherwise
+func (m AppResponseCreateUpdate) ServiceApp() *ServiceApp {
+	return m.serviceApp
+}
+
+// MakeAppResponseCreateUpdateFromWebApp creates a new AppResponseCreateUpdate from an instance of WebApp
+func MakeAppResponseCreateUpdateFromWebApp(f WebApp) AppResponseCreateUpdate {
+	return AppResponseCreateUpdate{webApp: &f}
+}
+
+// IsWebApp checks if the AppResponseCreateUpdate is a WebApp
+func (m AppResponseCreateUpdate) IsWebApp() bool {
+	return m.webApp != nil
+}
+
+// WebApp returns WebApp if IsWebApp() is true, nil otherwise
+func (m AppResponseCreateUpdate) WebApp() *WebApp {
+	return m.webApp
+}
+
+// MakeAppResponseCreateUpdateFromRawInterface creates a new AppResponseCreateUpdate from a raw interface{}
+func MakeAppResponseCreateUpdateFromRawInterface(f interface{}) AppResponseCreateUpdate {
+	return AppResponseCreateUpdate{raw: f}
+}
+
+// IsRawInterface checks if the AppResponseCreateUpdate is an interface{} (unknown type)
+func (m AppResponseCreateUpdate) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m AppResponseCreateUpdate) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals AppResponseCreateUpdate using the "kind" property
+func (m *AppResponseCreateUpdate) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "native":
+		m.nativeApp = &NativeApp{}
+		return json.Unmarshal(b, m.nativeApp)
+	case "service":
+		m.serviceApp = &ServiceApp{}
+		return json.Unmarshal(b, m.serviceApp)
+	case "web":
+		m.webApp = &WebApp{}
+		return json.Unmarshal(b, m.webApp)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals AppResponseCreateUpdate using the appropriate struct field
+func (m AppResponseCreateUpdate) MarshalJSON() ([]byte, error) {
+	if m.IsNativeApp() {
+		return json.Marshal(m.nativeApp)
+	} else if m.IsServiceApp() {
+		return json.Marshal(m.serviceApp)
+	} else if m.IsWebApp() {
+		return json.Marshal(m.webApp)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
 }
 
 type AppResponseGetList struct {
-	// OAuth 2.0 Client ID.
-	ClientId string `json:"clientId"`
-	// The date that the app was created.
-	CreatedAt string `json:"createdAt"`
-	// The principal who created this app.
-	CreatedBy string          `json:"createdBy"`
-	Kind      AppResourceKind `json:"kind"`
-	// App name that is unique within Splunk Cloud Platform.
-	Name string `json:"name"`
+	nativeApp  *NativeApp
+	serviceApp *ServiceApp
+	webApp     *WebApp
+	raw        interface{}
+}
+
+// MakeAppResponseGetListFromNativeApp creates a new AppResponseGetList from an instance of NativeApp
+func MakeAppResponseGetListFromNativeApp(f NativeApp) AppResponseGetList {
+	return AppResponseGetList{nativeApp: &f}
+}
+
+// IsNativeApp checks if the AppResponseGetList is a NativeApp
+func (m AppResponseGetList) IsNativeApp() bool {
+	return m.nativeApp != nil
+}
+
+// NativeApp returns NativeApp if IsNativeApp() is true, nil otherwise
+func (m AppResponseGetList) NativeApp() *NativeApp {
+	return m.nativeApp
+}
+
+// MakeAppResponseGetListFromServiceApp creates a new AppResponseGetList from an instance of ServiceApp
+func MakeAppResponseGetListFromServiceApp(f ServiceApp) AppResponseGetList {
+	return AppResponseGetList{serviceApp: &f}
+}
+
+// IsServiceApp checks if the AppResponseGetList is a ServiceApp
+func (m AppResponseGetList) IsServiceApp() bool {
+	return m.serviceApp != nil
+}
+
+// ServiceApp returns ServiceApp if IsServiceApp() is true, nil otherwise
+func (m AppResponseGetList) ServiceApp() *ServiceApp {
+	return m.serviceApp
+}
+
+// MakeAppResponseGetListFromWebApp creates a new AppResponseGetList from an instance of WebApp
+func MakeAppResponseGetListFromWebApp(f WebApp) AppResponseGetList {
+	return AppResponseGetList{webApp: &f}
+}
+
+// IsWebApp checks if the AppResponseGetList is a WebApp
+func (m AppResponseGetList) IsWebApp() bool {
+	return m.webApp != nil
+}
+
+// WebApp returns WebApp if IsWebApp() is true, nil otherwise
+func (m AppResponseGetList) WebApp() *WebApp {
+	return m.webApp
+}
+
+// MakeAppResponseGetListFromRawInterface creates a new AppResponseGetList from a raw interface{}
+func MakeAppResponseGetListFromRawInterface(f interface{}) AppResponseGetList {
+	return AppResponseGetList{raw: f}
+}
+
+// IsRawInterface checks if the AppResponseGetList is an interface{} (unknown type)
+func (m AppResponseGetList) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m AppResponseGetList) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals AppResponseGetList using the "kind" property
+func (m *AppResponseGetList) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "native":
+		m.nativeApp = &NativeApp{}
+		return json.Unmarshal(b, m.nativeApp)
+	case "service":
+		m.serviceApp = &ServiceApp{}
+		return json.Unmarshal(b, m.serviceApp)
+	case "web":
+		m.webApp = &WebApp{}
+		return json.Unmarshal(b, m.webApp)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals AppResponseGetList using the appropriate struct field
+func (m AppResponseGetList) MarshalJSON() ([]byte, error) {
+	if m.IsNativeApp() {
+		return json.Marshal(m.nativeApp)
+	} else if m.IsServiceApp() {
+		return json.Marshal(m.serviceApp)
+	} else if m.IsWebApp() {
+		return json.Marshal(m.webApp)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
+}
+
+type CommonAppPut struct {
 	// Human-readable title for the app.
 	Title string `json:"title"`
 	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
@@ -143,6 +333,162 @@ type AppResponseGetList struct {
 }
 
 type CreateAppRequest struct {
+	nativeAppPost  *NativeAppPost
+	serviceAppPost *ServiceAppPost
+	webAppPost     *WebAppPost
+	raw            interface{}
+}
+
+// MakeCreateAppRequestFromNativeAppPost creates a new CreateAppRequest from an instance of NativeAppPost
+func MakeCreateAppRequestFromNativeAppPost(f NativeAppPost) CreateAppRequest {
+	return CreateAppRequest{nativeAppPost: &f}
+}
+
+// IsNativeAppPost checks if the CreateAppRequest is a NativeAppPost
+func (m CreateAppRequest) IsNativeAppPost() bool {
+	return m.nativeAppPost != nil
+}
+
+// NativeAppPost returns NativeAppPost if IsNativeAppPost() is true, nil otherwise
+func (m CreateAppRequest) NativeAppPost() *NativeAppPost {
+	return m.nativeAppPost
+}
+
+// MakeCreateAppRequestFromServiceAppPost creates a new CreateAppRequest from an instance of ServiceAppPost
+func MakeCreateAppRequestFromServiceAppPost(f ServiceAppPost) CreateAppRequest {
+	return CreateAppRequest{serviceAppPost: &f}
+}
+
+// IsServiceAppPost checks if the CreateAppRequest is a ServiceAppPost
+func (m CreateAppRequest) IsServiceAppPost() bool {
+	return m.serviceAppPost != nil
+}
+
+// ServiceAppPost returns ServiceAppPost if IsServiceAppPost() is true, nil otherwise
+func (m CreateAppRequest) ServiceAppPost() *ServiceAppPost {
+	return m.serviceAppPost
+}
+
+// MakeCreateAppRequestFromWebAppPost creates a new CreateAppRequest from an instance of WebAppPost
+func MakeCreateAppRequestFromWebAppPost(f WebAppPost) CreateAppRequest {
+	return CreateAppRequest{webAppPost: &f}
+}
+
+// IsWebAppPost checks if the CreateAppRequest is a WebAppPost
+func (m CreateAppRequest) IsWebAppPost() bool {
+	return m.webAppPost != nil
+}
+
+// WebAppPost returns WebAppPost if IsWebAppPost() is true, nil otherwise
+func (m CreateAppRequest) WebAppPost() *WebAppPost {
+	return m.webAppPost
+}
+
+// MakeCreateAppRequestFromRawInterface creates a new CreateAppRequest from a raw interface{}
+func MakeCreateAppRequestFromRawInterface(f interface{}) CreateAppRequest {
+	return CreateAppRequest{raw: f}
+}
+
+// IsRawInterface checks if the CreateAppRequest is an interface{} (unknown type)
+func (m CreateAppRequest) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m CreateAppRequest) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals CreateAppRequest using the "kind" property
+func (m *CreateAppRequest) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "native":
+		m.nativeAppPost = &NativeAppPost{}
+		return json.Unmarshal(b, m.nativeAppPost)
+	case "service":
+		m.serviceAppPost = &ServiceAppPost{}
+		return json.Unmarshal(b, m.serviceAppPost)
+	case "web":
+		m.webAppPost = &WebAppPost{}
+		return json.Unmarshal(b, m.webAppPost)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals CreateAppRequest using the appropriate struct field
+func (m CreateAppRequest) MarshalJSON() ([]byte, error) {
+	if m.IsNativeAppPost() {
+		return json.Marshal(m.nativeAppPost)
+	} else if m.IsServiceAppPost() {
+		return json.Marshal(m.serviceAppPost)
+	} else if m.IsWebAppPost() {
+		return json.Marshal(m.webAppPost)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
+}
+
+type Error struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+// Public Key
+type Key struct {
+	// Public key used for verifying signed webhook requests.
+	Key *string `json:"key,omitempty"`
+}
+
+// A native kind app.
+type NativeApp struct {
+	// OAuth 2.0 Client ID.
+	ClientId string `json:"clientId"`
+	// The date that the app was created.
+	CreatedAt string `json:"createdAt"`
+	// The principal who created this app.
+	CreatedBy string          `json:"createdBy"`
+	Kind      AppResourceKind `json:"kind"`
+	// App name that is unique within Splunk Cloud Platform.
+	Name string `json:"name"`
+	// Human-readable title for the app.
+	Title string `json:"title"`
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
+}
+
+// Required input for creating a native kind app.
+type NativeAppPost struct {
 	Kind AppResourceKind `json:"kind"`
 	// App name that is unique within Splunk Cloud Platform.
 	Name string `json:"name"`
@@ -166,15 +512,62 @@ type CreateAppRequest struct {
 	WebhookUrl *string `json:"webhookUrl,omitempty"`
 }
 
-type Error struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+// A service kind app.
+type ServiceApp struct {
+	// OAuth 2.0 Client ID.
+	ClientId string `json:"clientId"`
+	// OAuth 2.0 Client Secret string (used for confidential clients).
+	ClientSecret string `json:"clientSecret"`
+	// The date that the app was created.
+	CreatedAt string `json:"createdAt"`
+	// The principal who created this app.
+	CreatedBy string          `json:"createdBy"`
+	Kind      AppResourceKind `json:"kind"`
+	// App name that is unique within Splunk Cloud Platform.
+	Name string `json:"name"`
+	// Human-readable title for the app.
+	Title string `json:"title"`
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
 }
 
-// Public Key
-type Key struct {
-	// Public key used for verifying signed webhook requests.
-	Key *string `json:"key,omitempty"`
+// Required input for creating a service kind app.
+type ServiceAppPost struct {
+	Kind AppResourceKind `json:"kind"`
+	// App name that is unique within Splunk Cloud Platform.
+	Name string `json:"name"`
+	// Human-readable title for the app.
+	Title string `json:"title"`
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
 }
 
 type Subscription struct {
@@ -197,6 +590,115 @@ type Subscription struct {
 }
 
 type UpdateAppRequest struct {
+	commonAppPut *CommonAppPut
+	webAppPut    *WebAppPut
+	raw          interface{}
+}
+
+// MakeUpdateAppRequestFromCommonAppPut creates a new UpdateAppRequest from an instance of CommonAppPut
+func MakeUpdateAppRequestFromCommonAppPut(f CommonAppPut) UpdateAppRequest {
+	return UpdateAppRequest{commonAppPut: &f}
+}
+
+// IsCommonAppPut checks if the UpdateAppRequest is a CommonAppPut
+func (m UpdateAppRequest) IsCommonAppPut() bool {
+	return m.commonAppPut != nil
+}
+
+// CommonAppPut returns CommonAppPut if IsCommonAppPut() is true, nil otherwise
+func (m UpdateAppRequest) CommonAppPut() *CommonAppPut {
+	return m.commonAppPut
+}
+
+// MakeUpdateAppRequestFromWebAppPut creates a new UpdateAppRequest from an instance of WebAppPut
+func MakeUpdateAppRequestFromWebAppPut(f WebAppPut) UpdateAppRequest {
+	return UpdateAppRequest{webAppPut: &f}
+}
+
+// IsWebAppPut checks if the UpdateAppRequest is a WebAppPut
+func (m UpdateAppRequest) IsWebAppPut() bool {
+	return m.webAppPut != nil
+}
+
+// WebAppPut returns WebAppPut if IsWebAppPut() is true, nil otherwise
+func (m UpdateAppRequest) WebAppPut() *WebAppPut {
+	return m.webAppPut
+}
+
+// MakeUpdateAppRequestFromRawInterface creates a new UpdateAppRequest from a raw interface{}
+func MakeUpdateAppRequestFromRawInterface(f interface{}) UpdateAppRequest {
+	return UpdateAppRequest{raw: f}
+}
+
+// IsRawInterface checks if the UpdateAppRequest is an interface{} (unknown type)
+func (m UpdateAppRequest) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m UpdateAppRequest) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals UpdateAppRequest using the "kind" property
+func (m *UpdateAppRequest) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "native":
+		m.commonAppPut = &CommonAppPut{}
+		return json.Unmarshal(b, m.commonAppPut)
+	case "service":
+		m.commonAppPut = &CommonAppPut{}
+		return json.Unmarshal(b, m.commonAppPut)
+	case "web":
+		m.webAppPut = &WebAppPut{}
+		return json.Unmarshal(b, m.webAppPut)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals UpdateAppRequest using the appropriate struct field
+func (m UpdateAppRequest) MarshalJSON() ([]byte, error) {
+	if m.IsCommonAppPut() {
+		return json.Marshal(m.commonAppPut)
+	} else if m.IsWebAppPut() {
+		return json.Marshal(m.webAppPut)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
+}
+
+// A web kind app.
+type WebApp struct {
+	// OAuth 2.0 Client ID.
+	ClientId string `json:"clientId"`
+	// OAuth 2.0 Client Secret string (used for confidential clients).
+	ClientSecret string `json:"clientSecret"`
+	// The date that the app was created.
+	CreatedAt string `json:"createdAt"`
+	// The principal who created this app.
+	CreatedBy string          `json:"createdBy"`
+	Kind      AppResourceKind `json:"kind"`
+	// App name that is unique within Splunk Cloud Platform.
+	Name string `json:"name"`
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls"`
 	// Human-readable title for the app.
 	Title string `json:"title"`
 	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
@@ -207,8 +709,52 @@ type UpdateAppRequest struct {
 	LoginUrl *string `json:"loginUrl,omitempty"`
 	// The URL used to display the app's logo.
 	LogoUrl *string `json:"logoUrl,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
+}
+
+// Required input for creating a web kind app.
+type WebAppPost struct {
+	Kind AppResourceKind `json:"kind"`
+	// App name that is unique within Splunk Cloud Platform.
+	Name string `json:"name"`
 	// Array of URLs that can be used for redirect after logging into the app.
-	RedirectUrls []string `json:"redirectUrls,omitempty"`
+	RedirectUrls []string `json:"redirectUrls"`
+	// Human-readable title for the app.
+	Title string `json:"title"`
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
+}
+
+type WebAppPut struct {
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls"`
+	// Human-readable title for the app.
+	Title string `json:"title"`
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
 	// URL to redirect to after a subscription is created.
 	SetupUrl *string `json:"setupUrl,omitempty"`
 	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.

@@ -226,7 +226,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	require.Nil(t, err)
 	require.NotEmpty(t, reactivatePipelineResponse)
 	assert.Equal(t, *pipeline.Id, *reactivatePipelineResponse.PipelineId)
-	assert.Equal(t, streams.PipelineReactivateResponsePipelineReactivationStatusAlreadyActivatedWithCurrentVersion, *reactivatePipelineResponse.PipelineReactivationStatus)
+	assert.Equal(t, streams.PipelineReactivateResponsePipelineReactivationStatusActivated, *reactivatePipelineResponse.PipelineReactivationStatus)
 }
 
 // Test GetPipelinesStatus streams endpoint
@@ -360,7 +360,6 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 		BypassValidation: &boolvar,
 		Name:             pipelineName,
 		Description:      &testPipelineDescription,
-		CreateUserId:     &testutils.TestTenant,
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
@@ -410,7 +409,6 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 		BypassValidation: &boolvar,
 		Name:             pipelineName,
 		Description:      &testPipelineDescription,
-		CreateUserId:     &testutils.TestTenant,
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
@@ -471,7 +469,6 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		BypassValidation: &boolvar,
 		Name:             pipelineName,
 		Description:      &testPipelineDescription,
-		CreateUserId:     &testutils.TestTenant,
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
@@ -593,7 +590,6 @@ func TestIntegrationValidateResponse(t *testing.T) {
 		BypassValidation: &boolvar,
 		Name:             pipelineName,
 		Description:      &testPipelineDescription,
-		CreateUserId:     &testutils.TestTenant,
 		Data:             uplPipeline,
 	})
 	require.Nil(t, err)
@@ -842,7 +838,6 @@ func TestIntegrationGetGroups(t *testing.T) {
 	require.Empty(t, err)
 	require.NotEmpty(t, test)
 	assert.NotEmpty(t, *test.Name)
-	assert.NotEmpty(t, *test.CreateUserId)
 	assert.NotEmpty(t, *test.OutputType)
 }
 
@@ -921,7 +916,6 @@ func makePipelineRequest(t *testing.T, name string, description string) streams.
 		BypassValidation: &boolvar,
 		Name:             name,
 		Description:      &description,
-		CreateUserId:     &testutils.TestTenant,
 		Data:             result,
 	}
 }

@@ -1,4 +1,13 @@
 components:
+  requestBodies:
+    postCollectorPayload:
+      content:
+        application/json:
+          schema:
+            type: string
+      description: |-
+        The payload uses concatenated JSON format.
+        Please consult https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for details.
   responses:
     badRequestError:
       content:
@@ -24,6 +33,50 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: The operation is unauthorized.
+    hecBadRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: |-
+        The request isn't valid.
+
+        Possible causes are:
+        there is no data
+        the data format is incorrect e.g. not JSON
+        the specified index is invalid
+        the event field is missing or empty
+        the fields property is invalid
+    hecForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: |-
+        The operation is unauthorized.
+
+        Possible causes are the provided token is invalid or disabled.
+    hecInternalError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: An internal service error occurred.
+    hecSuccessResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: The events were processed successfully.
+    hecUnauthorizedError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: |-
+        Authentication is required.
+
+        Possible causes are the authentication token is missing or the authorization header isn't well formed.
     internalError:
       content:
         application/json:
@@ -36,6 +89,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: The resource wasn't found.
+    serverBusyError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: The server cannot process the data sent because the server is overloaded.
     successResponse:
       content:
         application/json:
@@ -111,6 +170,23 @@ components:
       properties:
         filename:
           type: string
+      type: object
+    HECResponse:
+      properties:
+        code:
+          description: code defines the status of the response. For a complete list
+            of the possible values, please consult https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
+          format: int64
+          type: integer
+        invalid-event-number:
+          description: invalid-event-number defines the index of the first event in
+            error.
+          format: int64
+          type: integer
+        text:
+          description: text describes the response status
+          type: string
+      title: HECResponse defines the http response from the Http Event Collector service.
       type: object
     HTTPResponse:
       properties:
@@ -215,7 +291,7 @@ info:
   description: Use the Ingest service in Splunk Cloud Services to send event and metrics
     data, or upload a static file, to Splunk Cloud Services.
   title: Ingest API
-  version: v1beta2.2
+  version: v1beta2.3
 openapi: 3.0.0
 paths:
   /{tenant}/ingest/v1beta2/events:
@@ -339,4 +415,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: ingest/v1beta2/openapi.yaml

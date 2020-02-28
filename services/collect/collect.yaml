@@ -32,12 +32,14 @@ components:
         type: string
     jobIDs:
       description: The job ID list.
+      explode: false
       in: query
       name: jobIDs
       schema:
         items:
           type: string
         type: array
+      style: form
     jobId:
       description: The job ID.
       in: path
@@ -651,7 +653,7 @@ info:
   description: With the Collect service in Splunk Cloud Services, you can manage how
     data collection jobs ingest event and metric data.
   title: Collect Service
-  version: v1beta1.7
+  version: v1beta1.8
 openapi: 3.0.0
 paths:
   /{tenant}/collect/v1beta1/jobs:
@@ -796,7 +798,7 @@ paths:
           $ref: '#/components/responses/504'
         default:
           $ref: '#/components/responses/500'
-      summary: Creates a job
+      summary: Creates a job.
       x-authz-scope: collect.jobs.create
   /{tenant}/collect/v1beta1/jobs/{jobId}:
     delete:
@@ -899,4 +901,114 @@ paths:
           $ref: '#/components/responses/500'
       summary: Modifies a job based on the job ID.
       x-authz-scope: collect.jobs.update
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: collect/v1beta1/openapi.yaml
+  /{tenant}/collect/v1beta1/jobs/{jobId}/executions:
+    post:
+      operationId: createExecution
+      parameters:
+      - $ref: '#/components/parameters/authorizationHeaderParam'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/jobId'
+      responses:
+        "201":
+          $ref: '#/components/responses/singleExecutionResponse'
+        "400":
+          $ref: '#/components/responses/400'
+        "401":
+          $ref: '#/components/responses/401'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "409":
+          $ref: '#/components/responses/executionConflict'
+        "415":
+          $ref: '#/components/responses/415'
+        "422":
+          $ref: '#/components/responses/422'
+        "429":
+          $ref: '#/components/responses/429'
+        "501":
+          $ref: '#/components/responses/501'
+        "503":
+          $ref: '#/components/responses/503'
+        "504":
+          $ref: '#/components/responses/504'
+        default:
+          $ref: '#/components/responses/500'
+      summary: Creates an execution for a scheduled job based on the job ID.
+      x-authz-scope: collect.jobs.executions.create
+  /{tenant}/collect/v1beta1/jobs/{jobId}/executions/{executionUid}:
+    get:
+      operationId: getExecution
+      parameters:
+      - $ref: '#/components/parameters/authorizationHeaderParam'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/jobId'
+      - $ref: '#/components/parameters/executionUid'
+      responses:
+        "200":
+          $ref: '#/components/responses/singleExecutionResponse'
+        "401":
+          $ref: '#/components/responses/401'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "429":
+          $ref: '#/components/responses/429'
+        "501":
+          $ref: '#/components/responses/501'
+        "503":
+          $ref: '#/components/responses/503'
+        "504":
+          $ref: '#/components/responses/504'
+        default:
+          $ref: '#/components/responses/500'
+      summary: Returns the execution details based on the execution ID and job ID.
+      x-authz-scope: collect.jobs.executions.read
+    patch:
+      operationId: patchExecution
+      parameters:
+      - $ref: '#/components/parameters/authorizationHeaderParam'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/jobId'
+      - $ref: '#/components/parameters/executionUid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/executionPatch'
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/executionPatch'
+        description: The API request schema for patching an execution.
+        required: true
+      responses:
+        "202":
+          description: The execution was modified.
+        "400":
+          $ref: '#/components/responses/400'
+        "401":
+          $ref: '#/components/responses/401'
+        "403":
+          $ref: '#/components/responses/403'
+        "404":
+          $ref: '#/components/responses/404'
+        "415":
+          $ref: '#/components/responses/415'
+        "422":
+          $ref: '#/components/responses/422'
+        "429":
+          $ref: '#/components/responses/429'
+        "501":
+          $ref: '#/components/responses/501'
+        "503":
+          $ref: '#/components/responses/503'
+        "504":
+          $ref: '#/components/responses/504'
+        default:
+          $ref: '#/components/responses/500'
+      summary: Modifies an execution based on the job ID.
+      x-authz-scope: collect.jobs.executions.update
+
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: collect/v1beta1/openapi.yaml

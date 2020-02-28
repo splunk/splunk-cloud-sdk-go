@@ -609,4 +609,4 @@ paths:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: action/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: action/v1beta2/openapi.yaml
