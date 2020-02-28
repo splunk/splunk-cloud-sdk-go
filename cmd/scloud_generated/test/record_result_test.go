@@ -18,10 +18,6 @@ func Test_record_appreg(t *testing.T) {
 	test_engine.Record_test_result("testcases/appreg_test", testhook_arg, t)
 }
 
-func Test_record_streams(t *testing.T) {
-	test_engine.Record_test_result("testcases/streams_test", testhook_arg, t)
-}
-
 func Test_record_identity(t *testing.T) {
 	test_engine.Record_test_result("testcases/identity_test", testhook_arg, t)
 }
@@ -32,6 +28,10 @@ func Test_record_ingest(t *testing.T) {
 
 func Test_record_search(t *testing.T) {
 	test_engine.Record_test_result("testcases/search_test", testhook_arg, t)
+}
+
+func Test_record_streams(t *testing.T) {
+	test_engine.Record_test_result("testcases/streams_test", testhook_arg, t)
 }
 
 func Test_record_kvstore(t *testing.T) {
