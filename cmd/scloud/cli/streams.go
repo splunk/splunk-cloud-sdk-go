@@ -509,9 +509,6 @@ func (streamsCommand *StreamsCommand) parseForCreate(argv []string) streams.Pipe
 	if args.Description != "" {
 		pipelineRequest.Description = &args.Description
 	}
-	if args.CreateUserID != "" {
-		pipelineRequest.CreateUserId = &args.CreateUserID
-	}
 	if args.BypassValidation {
 		pipelineRequest.BypassValidation = &args.BypassValidation
 	}

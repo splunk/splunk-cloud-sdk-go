@@ -1,10 +1,5 @@
 # Contribution Guidelines
 
-For general information about contributing to Splunk projects, see: 
-
--  [Splunk and open source](http://dev.splunk.com/view/opensource/SP-CAAAEDM)
--  [Individual contributions](http://dev.splunk.com/goto/individualcontributions)
--  [Company contributions](http://dev.splunk.com/view/companycontributions/SP-CAAAEDR)
 
 ## Issues and bug reports
 
@@ -27,7 +22,7 @@ Configure your development environment as described in the project [README](/blo
 
 ## Submit a pull request
 
-1. Fill out the [Individual Contributor Agreement](http://dev.splunk.com/goto/individualcontributions).
+1. Fill out the [Splunk Contribution Agreement](https://www.splunk.com/goto/contributions).
 2. Create a new branch. For example:
 
     ```

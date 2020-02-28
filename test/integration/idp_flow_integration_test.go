@@ -101,7 +101,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	info, err := client.IdentityService.ValidateToken(&input)
 	assert.Emptyf(t, err, "Error validating using access token generated from refresh token: %s", err)
 	assert.NotNil(t, info)
@@ -158,7 +158,7 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	_, err = client.IdentityService.ValidateToken(&input)
 	assert.Emptyf(t, err, "Error validating using access token generated from client credentials: %s", err)
 }
@@ -212,7 +212,7 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 	})
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	_, err = client.IdentityService.ValidateToken(&input)
 	assert.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 }

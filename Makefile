@@ -95,14 +95,16 @@ upload_config:
 	@echo "$(DATETIME)" > $(CONFIG_VER_FILE)
 
 prereqs:
-	echo "Installing goimports .."
-	GO111MODULE=off go get golang.org/x/tools/cmd/goimports
-	echo "Installing statik .."
-	GO111MODULE=on go get github.com/rakyll/statik
 	echo "Installing golangci-lint .."
 	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
-	@echo "Installing gotestsum ..."
-	@go get gotest.tools/gotestsum
+	echo "Downloading modules .."
+	GO111MODULE=on go mod download
+	echo "Installing goimports .."
+	GO111MODULE=on go install golang.org/x/tools/cmd/goimports
+	echo "Installing gotestsum .."
+	GO111MODULE=on go install gotest.tools/gotestsum
+	echo "Installing statik .."
+	GO111MODULE=on go install github.com/rakyll/statik
 
 statik:
 	@echo "Generate static assets .."

@@ -33,11 +33,13 @@ func TestNewClient(t *testing.T) {
 	assert.Equal(t, client.AuthnPath, "custom/authn")
 	assert.Equal(t, client.AuthorizePath, "custom/authz")
 	assert.Equal(t, client.TokenPath, "custom/token")
+	assert.Equal(t, client.CsrfTokenPath, "custom/csrfToken")
 	clientEmptyParams := NewClient(providerHost, "", "", "", "", false)
 	assert.Equal(t, clientEmptyParams.ProviderHost, providerHost)
 	assert.Equal(t, clientEmptyParams.AuthnPath, defaultAuthnPath)
 	assert.Equal(t, clientEmptyParams.AuthorizePath, defaultAuthorizePath)
 	assert.Equal(t, clientEmptyParams.TokenPath, defaultTokenPath)
+	assert.Equal(t, clientEmptyParams.CsrfTokenPath, defaultCsrfTokenPath)
 }
 
 // This is required to use bytes.Buffer in the http.Request.Body

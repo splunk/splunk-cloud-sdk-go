@@ -186,7 +186,7 @@ func TestParseURLParamsUnexploded(t *testing.T) {
 		Arr:        []string{"ele1", "ele2", "ele3"},
 		ArrEnum:    []Enum{Mi, Do, Do},
 		Struct:     Struct{ID: 33, Name: "anonymous"},
-		Map:        map[string]interface{}{"foo": "bar", "five": 5},
+		Map:        map[string]interface{}{"foo": "bar", "five": 5, "list": []string{"x", "y", "z"}},
 		MapStrings: map[string]string{"a": "aa", "b": "bb", "c": "cc"},
 	}
 	values := ParseURLParams(o)
@@ -195,9 +195,12 @@ func TestParseURLParamsUnexploded(t *testing.T) {
 	assert.Equal(t, "id,33,name,anonymous", values.Get("strct"))
 	// For maps the key ordering can change so simple assert that kv pairs are contained within the string
 	m := values.Get("map")
-	assert.Equal(t, len("foo,bar,five,5"), len(m))
+	assert.Equal(t, len("foo,bar,five,5,list,x,list,y,list,z"), len(m))
 	assert.Contains(t, m, "foo,bar")
 	assert.Contains(t, m, "five,5")
+	assert.Contains(t, m, "list,x")
+	assert.Contains(t, m, "list,y")
+	assert.Contains(t, m, "list,z")
 	ms := values.Get("MapStrings")
 	assert.Equal(t, len("a,aa,b,bb,c,cc"), len(ms))
 	assert.Contains(t, ms, "a,aa")
@@ -214,7 +217,7 @@ func TestParseURLParamsExploded(t *testing.T) {
 		Arr:        []string{"ele1", "ele2", "ele3"},
 		ArrEnum:    []Enum{Mi, Do, Do},
 		Struct:     Struct{ID: 33, Name: "anonymous"},
-		Map:        map[string]interface{}{"foo": "bar", "five": 5},
+		Map:        map[string]interface{}{"foo": "bar", "five": 5, "list": []string{"x", "y", "z"}},
 		MapStrings: map[string]string{"a": "aa", "b": "bb", "c": "cc"},
 	}
 	values := ParseURLParams(o)
@@ -233,9 +236,10 @@ func TestParseURLParamsExploded(t *testing.T) {
 	assert.Equal(t, "cc", values.Get("c"))
 	assert.Equal(t, "5", values.Get("five"))
 	assert.Equal(t, "bar", values.Get("foo"))
+	assert.Equal(t, []string{"x", "y", "z"}, values["list"])
 	// Assert the encoded params replacing %2C with comma for readability
 	enc := strings.Replace(values.Encode(), "%2C", ",", -1)
-	assert.Equal(t, "a=aa&arr=ele1&arr=ele2&arr=ele3&arrenums=mi&arrenums=do&arrenums=do&b=bb&c=cc&five=5&foo=bar&id=33&name=anonymous", enc)
+	assert.Equal(t, "a=aa&arr=ele1&arr=ele2&arr=ele3&arrenums=mi&arrenums=do&arrenums=do&b=bb&c=cc&five=5&foo=bar&id=33&list=x&list=y&list=z&name=anonymous", enc)
 }
 
 func TestParseTemplatedPath(t *testing.T) {

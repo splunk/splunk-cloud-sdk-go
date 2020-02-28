@@ -18,8 +18,7 @@ components:
       schema:
         type: string
     Kind:
-      description: |
-        The kind of application.
+      description: The kind of application.
       in: query
       name: kind
       schema:
@@ -50,10 +49,6 @@ components:
           description: The principal who created this app.
           readOnly: true
           type: string
-      required:
-      - clientId
-      - createdBy
-      - createdAt
       type: object
     AppMetadataPrivate:
       properties:
@@ -105,8 +100,6 @@ components:
           items:
             type: string
           type: array
-      required:
-      - title
       type: object
     AppMetadataSecret:
       properties:
@@ -114,8 +107,6 @@ components:
           description: OAuth 2.0 Client Secret string (used for confidential clients).
           readOnly: true
           type: string
-      required:
-      - clientSecret
       type: object
     AppName:
       properties:
@@ -149,23 +140,44 @@ components:
       - service
       type: string
     AppResponseCreateUpdate:
-      allOf:
-      - $ref: '#/components/schemas/AppResource'
-      - $ref: '#/components/schemas/AppMetadataPublic'
-      - $ref: '#/components/schemas/AppMetadataPrivate'
-      - $ref: '#/components/schemas/AppMetadataInternal'
-      - $ref: '#/components/schemas/AppMetadataSecret'
+      discriminator:
+        mapping:
+          native: '#/components/schemas/NativeApp'
+          service: '#/components/schemas/ServiceApp'
+          web: '#/components/schemas/WebApp'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/ServiceApp'
+      - $ref: '#/components/schemas/WebApp'
+      - $ref: '#/components/schemas/NativeApp'
     AppResponseGetList:
+      discriminator:
+        mapping:
+          native: '#/components/schemas/NativeApp'
+          service: '#/components/schemas/ServiceApp'
+          web: '#/components/schemas/WebApp'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/ServiceApp'
+      - $ref: '#/components/schemas/WebApp'
+      - $ref: '#/components/schemas/NativeApp'
+    CommonAppPUT:
       allOf:
-      - $ref: '#/components/schemas/AppResource'
       - $ref: '#/components/schemas/AppMetadataPublic'
       - $ref: '#/components/schemas/AppMetadataPrivate'
-      - $ref: '#/components/schemas/AppMetadataInternal'
+      required:
+      - title
     CreateAppRequest:
-      allOf:
-      - $ref: '#/components/schemas/AppResource'
-      - $ref: '#/components/schemas/AppMetadataPublic'
-      - $ref: '#/components/schemas/AppMetadataPrivate'
+      discriminator:
+        mapping:
+          native: '#/components/schemas/NativeAppPOST'
+          service: '#/components/schemas/ServiceAppPOST'
+          web: '#/components/schemas/WebAppPOST'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/ServiceAppPOST'
+      - $ref: '#/components/schemas/WebAppPOST'
+      - $ref: '#/components/schemas/NativeAppPOST'
     Error:
       properties:
         code:
@@ -183,6 +195,60 @@ components:
           description: Public key used for verifying signed webhook requests.
           readOnly: true
           type: string
+      type: object
+    NativeApp:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      - $ref: '#/components/schemas/AppMetadataInternal'
+      description: A native kind app.
+      required:
+      - name
+      - kind
+      - title
+      - clientId
+      - createdBy
+      - createdAt
+      type: object
+    NativeAppPOST:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      description: Required input for creating a native kind app.
+      required:
+      - name
+      - kind
+      - title
+      type: object
+    ServiceApp:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      - $ref: '#/components/schemas/AppMetadataInternal'
+      - $ref: '#/components/schemas/AppMetadataSecret'
+      description: A service kind app.
+      required:
+      - name
+      - kind
+      - title
+      - clientId
+      - clientSecret
+      - createdBy
+      - createdAt
+      type: object
+    ServiceAppPOST:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      description: Required input for creating a service kind app.
+      required:
+      - name
+      - kind
+      - title
       type: object
     Subscription:
       properties:
@@ -232,9 +298,53 @@ components:
       - createdAt
       type: object
     UpdateAppRequest:
+      discriminator:
+        mapping:
+          native: '#/components/schemas/CommonAppPUT'
+          service: '#/components/schemas/CommonAppPUT'
+          web: '#/components/schemas/WebAppPUT'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/CommonAppPUT'
+      - $ref: '#/components/schemas/WebAppPUT'
+      - $ref: '#/components/schemas/CommonAppPUT'
+    WebApp:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      - $ref: '#/components/schemas/AppMetadataInternal'
+      - $ref: '#/components/schemas/AppMetadataSecret'
+      description: A web kind app.
+      required:
+      - name
+      - kind
+      - title
+      - redirectUrls
+      - clientId
+      - clientSecret
+      - createdBy
+      - createdAt
+      type: object
+    WebAppPOST:
+      allOf:
+      - $ref: '#/components/schemas/AppMetadataPublic'
+      - $ref: '#/components/schemas/AppResource'
+      - $ref: '#/components/schemas/AppMetadataPrivate'
+      description: Required input for creating a web kind app.
+      required:
+      - name
+      - kind
+      - title
+      - redirectUrls
+      type: object
+    WebAppPUT:
       allOf:
       - $ref: '#/components/schemas/AppMetadataPublic'
       - $ref: '#/components/schemas/AppMetadataPrivate'
+      required:
+      - title
+      - redirectUrls
   securitySchemes:
     BearerToken:
       scheme: bearer
@@ -450,7 +560,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AppResponseCreateUpdate'
-          description: 'The app was updated successfully. '
+          description: The app was updated successfully.
         "401":
           content:
             application/json:
@@ -844,4 +954,4 @@ paths:
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: app-registry/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: app-registry/v1beta2/openapi.yaml
