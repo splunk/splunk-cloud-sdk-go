@@ -128,25 +128,42 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 }
 
 func splitArgs(line string) []string {
-	// find quoted string
-	pattern := "\"[^\"]+\""
+
+	line = strings.Trim(line, " ")
+	var results []string
+	chars := strings.Split(line, "")
+
+	//find all flags
+	pattern := " --[a-z\\-]+ "
+
 	re := regexp.MustCompile(pattern)
-	found := re.FindAllString(line, -1)
+	found := re.FindAllStringIndex(line, -1)
 
 	if len(found) == 0 {
 		return strings.Split(line, " ")
 	}
 
-	var results []string
-	currentline := line
-	for _, quotestr := range found {
-		parts := strings.Split(currentline, quotestr)
-		currentline = parts[1]
+	i := 0
+	for index, ele := range found {
+		before := strings.Join(chars[i:ele[0]], "")
+		if index == 0 {
+			args := strings.Split(strings.Trim(before, " "), " ")
+			results = append(results, args...)
+		} else {
+			results = append(results, before)
+		}
 
-		args := strings.Split(strings.Trim(parts[0], " "), " ")
-		results = append(results, args...)
-		results = append(results, quotestr)
+		flag := strings.Join(chars[ele[0]:ele[1]], "")
+		results = append(results, flag)
+		i = ele[1]
 	}
+
+	if i < len(line) {
+		str := strings.Join(chars[i:len(line)], "")
+		results = append(results, str)
+
+	}
+
 	return results
 }
 

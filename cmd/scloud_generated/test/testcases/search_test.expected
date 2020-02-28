@@ -4,7 +4,7 @@ REQUEST BODY:{{"query":"\"from index:main\"","queryParameters":{}}}
 
 #testcase: search create-job --query "from index:main" --allow-side-effects true --collect-event-summary true --collect-field-summary true --collect-time-buckets true --enable-preview true
 REQUEST URL:search/v2beta1/jobs
-REQUEST BODY:{{"query":"\"from index:main\"","queryParameters":{}}}
+REQUEST BODY:{{"query":"\"from index:main\"","allowSideEffects":true,"collectEventSummary":true,"collectFieldSummary":true,"collectTimeBuckets":true,"enablePreview":true,"queryParameters":{}}}
 
 #testcase: search get-job --sid f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
 REQUEST URL:search/v2beta1/jobs/f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
