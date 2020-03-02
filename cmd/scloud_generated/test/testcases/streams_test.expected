@@ -55,8 +55,8 @@ REQUEST URL:streams/v2beta1/connections
 REQUEST BODY:<nil>
 
 #testcase: streams create-connection --connector-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
-enable testhook-dryrun
-error parsing "data": flags.ParseFlag: failure to unmarshal to type map[string]interface {} err: json: cannot unmarshal string into Go value of type map[string]interface {}
+REQUEST URL:streams/v2beta1/connections
+REQUEST BODY:{{"connectorId":"879837b0-cabf-4bc2-8589-fcc4dad753e7","data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"\"newconnection\"","name":"\"myconnection\""}}
 
 #testcase: streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_update_connection.txt
 REQUEST URL:streams/v2beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
