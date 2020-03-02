@@ -4,9 +4,6 @@
 
 The Splunk Cloud Services software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud Services with the Go programming language.
 
-To use Splunk Cloud Services SDKs, you must be included in the Splunk Investigate Beta Program.
-Sign up here: https://si.scp.splunk.com/.
-
 # Splunk Cloud Services CLI
 
 Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services.
@@ -95,8 +92,11 @@ Initialize your project using Go modules for dependency support. Your project ca
 
 4. Set your access token and tenant.
 
-    -  Retrieve your access token from the [Splunk Developer Portal](https://developer.splunk.com/scs/settings).
-
+    -  Retrieve your access token from the [Splunk Developer Portal](https://dev.splunk.com/scs/).
+       -  Log in at the top of the page. 
+       -  Open the [Reference](https://dev.splunk.com/scs/reference).
+       -  Navigate to any REST API. For example, go to [Provisioner GET /system/provisioner/v1beta1/tenants](https://api.scp.splunk.com/system/provisioner/v1beta1/tenants).
+       -  Click **Console**, then next to Authorization Token click **Show**, and then click **Copy to Clipboard** to copy your token.
     -  List your tenants using the following REST command, replacing `<accessToken>` with your access token:
 
         ```curl
@@ -122,9 +122,9 @@ Initialize your project using Go modules for dependency support. Your project ca
     ```
 
 ## Documentation
-For general documentation, see the [Splunk Developer Portal](https://developer.splunk.com/scs/).
+For general documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 
-For reference documentation, see the [Splunk Cloud Services SDK for Go API Reference](https://developer.splunk.com/scs/reference/sdk/splunk-cloud-sdk-go).
+For reference documentation, see the [Splunk Cloud Services SDK for Go API Reference](https://dev.splunk.com/scs/reference/sdk/splunk-cloud-sdk-go).
 
 ## Contributing
 

@@ -16,6 +16,13 @@ components:
         maxLength: 36
         minLength: 4
         type: string
+    appClientId:
+      description: ID of the app client to authorize
+      in: path
+      name: app_client_id
+      required: true
+      schema:
+        type: string
     clientId:
       description: ID of the client to authorize
       in: query
@@ -34,6 +41,13 @@ components:
       description: PKCE code challenge method
       in: query
       name: code_challenge_method
+      required: false
+      schema:
+        type: string
+    createdBy:
+      description: The principal name.
+      in: query
+      name: created_by
       required: false
       schema:
         type: string
@@ -261,6 +275,11 @@ components:
       minLength: 4
       type: string
       x-case-insensitive: true
+    AdminServicePrincipal:
+      enum:
+      - iac_audit
+      - iac_admin_tool
+      type: string
     App:
       description: Represents an app regsitration
       properties:
@@ -280,6 +299,10 @@ components:
       properties:
         description:
           description: Authentication description
+          type: string
+        requestId:
+          description: Request ID
+          maxLength: 36
           type: string
         sessionToken:
           description: Session token
@@ -302,6 +325,7 @@ components:
       required:
       - username
       - password
+      - csrfToken
       type: object
     ChangeKeyBody:
       properties:
@@ -425,8 +449,21 @@ components:
       - appPermissions
       - userPermissions
       type: object
+    CreateSvcPrincipalTokenBody:
+      properties:
+        reason:
+          maxLength: 280
+          minLength: 4
+          type: string
+        servicePrincipal:
+          $ref: '#/components/schemas/AdminServicePrincipal'
+      required:
+      - servicePrincipal
+      type: object
     CreateTenantBody:
       properties:
+        createdBy:
+          type: string
         name:
           $ref: '#/components/schemas/TenantName'
       required:
@@ -436,6 +473,10 @@ components:
       properties:
         csrf:
           description: CSRF token
+          type: string
+        requestId:
+          description: Request ID
+          maxLength: 36
           type: string
       type: object
     DecryptTokenBody:
@@ -524,11 +565,11 @@ components:
           type: string
         e:
           type: string
-        "false":
-          type: string
         kid:
           type: string
         kty:
+          type: string
+        "n":
           type: string
         use:
           type: string
@@ -617,6 +658,43 @@ components:
       - addedAt
       - addedBy
       - groupCount
+      type: object
+    OAuth2Client:
+      properties:
+        application_type:
+          type: string
+        client_id:
+          type: string
+        client_id_issued_at:
+          type: integer
+        client_name:
+          type: string
+        client_secret:
+          type: string
+        client_uri:
+          type: string
+        consent_method:
+          type: string
+        grant_types:
+          items:
+            type: string
+          type: array
+        initiate_login_uri:
+          type: string
+        post_logout_redirect_uris:
+          items:
+            type: string
+          type: array
+        redirect_uris:
+          items:
+            type: string
+          type: array
+        response_types:
+          items:
+            type: string
+          type: array
+        token_endpoint_auth_method:
+          type: string
       type: object
     PermissionSet:
       properties:
@@ -760,12 +838,12 @@ components:
       type: object
     ServiceAccountPeer:
       properties:
-        name:
-          type: string
         permissions:
           items:
             type: string
           type: array
+        principal:
+          type: string
         tenant:
           type: string
       type: object
@@ -831,6 +909,26 @@ components:
       - createdAt
       - createdBy
       type: object
+    TenantAsAdmin:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        name:
+          $ref: '#/components/schemas/TenantName'
+        proxiedBy:
+          type: string
+        status:
+          $ref: '#/components/schemas/TenantStatus'
+      required:
+      - name
+      - status
+      - createdAt
+      - createdBy
+      - proxiedBy
+      type: object
     TenantName:
       maxLength: 36
       minLength: 4
@@ -848,6 +946,7 @@ components:
       - ready
       - deleting
       - deleted
+      - tombstoned
       - suspended
       type: string
     Token:
@@ -869,6 +968,22 @@ components:
           type: string
         token_type:
           description: Must be Bearer type
+          type: string
+      type: object
+    UpdateTenantBody:
+      properties:
+        createdBy:
+          type: string
+        status:
+          enum:
+          - provisioning
+          - ready
+          - suspending
+          - suspended
+          - resuming
+          - deleting
+          - tombstoned
+          - failed
           type: string
       type: object
     UpdateTenantStateBody:
@@ -909,7 +1024,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v2beta1.13
+  version: v2beta1.17
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1676,4 +1791,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: identity/v2beta1/openapi.yaml

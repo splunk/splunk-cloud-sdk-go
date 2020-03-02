@@ -64,7 +64,7 @@ func main() {
 	})
 	exitOnError(err)
 	logInfo.Print("Validating token")
-	input := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 
 	info, err := client.ValidateToken(&input)
 	exitOnError(err)
