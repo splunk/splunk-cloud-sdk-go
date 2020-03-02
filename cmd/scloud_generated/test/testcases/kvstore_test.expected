@@ -1,6 +1,6 @@
 #testcase: kvstore create-index --name myindex --fields "[{\"direction\":-1,\"field\":\"integ_testField1\"}]" --collection gomod1582754557.gointegdskvidx_1582754557
-enable testhook-dryrun
-error parsing "fields": flags.ParseFlag: failure to unmarshal to type []kvstore.IndexFieldDefinition err: json: cannot unmarshal string into Go value of type []kvstore.IndexFieldDefinition
+REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/indexes
+REQUEST BODY:{{"fields":[{"direction":-1,"field":"integ_testField1"}],"name":"myindex"}}
 
 #testcase: kvstore delete-index --collection gomod1582754557.gointegdskvidx_1582754557 --index myindex
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/indexes/myindex
@@ -15,27 +15,28 @@ REQUEST URL:kvstore/v1beta1/ping
 REQUEST BODY:<nil>
 
 #testcase: kvstore insert-record --collection gomod1582754557.gointegdskvidx_1582754557 --body "{\"capacity_gb\": 8}"
-enable testhook-dryrun
-error parsing "body": flags.ParseFlag: failure to unmarshal to type map[string]interface {} err: unexpected end of JSON input
+REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557
+REQUEST BODY:{{"capacity_gb":8}}
 
 #testcase: kvstore list-records --collection gomod1582754557.gointegdskvidx_1582754557
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557
 REQUEST BODY:<nil>
 
 #testcase: kvstore insert-records --collection gomod1582754557.gointegdskvidx_1582754557 --body "[{\"capacity_gb\": 8},{\"capacity_gb\": 7}]"
-enable testhook-dryrun
-error parsing "body": flags.ParseFlag: failure to unmarshal to type []map[string]interface {} err: unexpected end of JSON input
+REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/batch
+REQUEST BODY:{[{"capacity_gb":8},{"capacity_gb":7}]}
 
 #testcase: kvstore put-record --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"  --body "{\"capacity_gb\": 8}"
-enable testhook-dryrun
-error parsing "body": flags.ParseFlag: failure to unmarshal to type map[string]interface {} err: unexpected end of JSON input
+REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/records/%225e58525673875400011ffb13%22
+REQUEST BODY:{{"capacity_gb":8}}
 
 #testcase: kvstore query-records --collection gomod1582754557.gointegdskvidx_1582754557
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/query
 REQUEST BODY:<nil>
 
 #testcase: kvstore get-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --k
-unknown flag: --k
+enable testhook-dryrun
+required flag(s) "key" not set
 
 #testcase: kvstore delete-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/records/%225e58525673875400011ffb13%22
