@@ -4,7 +4,7 @@
 
 .DEFAULT_GOAL:=build
 
-NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go")
+NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go" -not -name "statik.go")
 
 SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
 SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd
@@ -61,6 +61,9 @@ vet: statik version scloudgen_version
 login: build_scloud
 	./cicd/scripts/login.sh
 
+login_scloudgen: build_scloud_generated
+	./cicd/scripts/login_scloud_gen.sh
+
 token:
 	./cicd/scripts/token.sh
 
@@ -92,14 +95,16 @@ upload_config:
 	@echo "$(DATETIME)" > $(CONFIG_VER_FILE)
 
 prereqs:
-	echo "Installing goimports .."
-	GO111MODULE=off go get golang.org/x/tools/cmd/goimports
-	echo "Installing statik .."
-	GO111MODULE=on go get github.com/rakyll/statik
 	echo "Installing golangci-lint .."
 	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
-	@echo "Installing gotestsum ..."
-	@go get gotest.tools/gotestsum
+	echo "Downloading modules .."
+	GO111MODULE=on go mod download
+	echo "Installing goimports .."
+	GO111MODULE=on go install golang.org/x/tools/cmd/goimports
+	echo "Installing gotestsum .."
+	GO111MODULE=on go install gotest.tools/gotestsum
+	echo "Installing statik .."
+	GO111MODULE=on go install github.com/rakyll/statik
 
 statik:
 	@echo "Generate static assets .."
@@ -121,6 +126,9 @@ test_integration: build
 test_integration_scloud: login build
 	export PYTHONPATH=$(PYTHONPATH):.
 	SCLOUD_TEST_DIR=$(shell pwd)/test/scloud GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
+
+test_integration_scloud_gen: login_scloudgen build
+	GO111MODULE=on sh ./cicd/integration/run_scloud_gen_tests.sh
 
 test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh

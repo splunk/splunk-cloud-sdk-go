@@ -63,7 +63,7 @@ Here are some commands to get started:
 | List your tenants                | `scloud provisioner list-tenants`    |
 
 ## Documentation
-For more about using `scloud`, see [Splunk Cloud Services CLI](https://developer.splunk.com/scs/docs/overview/tools/tools_scloud) on the Splunk Developer Portal.
+For more about using `scloud`, see [Splunk Cloud Services CLI](https://dev.splunk.com/scs/docs/overview/tools/tools_scloud) on the Splunk Developer Portal.
 
 ## Contact
 If you have questions, reach out to us on [Slack](https://splunkdevplatform.slack.com) in the **#sdc** channel or email us at _devinfo@splunk.com_.

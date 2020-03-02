@@ -110,7 +110,8 @@ type appUpdateArgs struct {
 
 func (appRegCommand *AppRegistryCommand) createApp(argv []string) (interface{}, error) {
 	var args appArgs
-	_, err := argx.Parse(argv, &args)
+	var err error
+	_, err = argx.Parse(argv, &args)
 	if err != nil {
 		return nil, err
 	}
@@ -120,38 +121,94 @@ func (appRegCommand *AppRegistryCommand) createApp(argv []string) (interface{}, 
 	}
 	var appKind appregistry.AppResourceKind
 
+	var nativeAppPost appregistry.NativeAppPost
+	var serviceAppPost appregistry.ServiceAppPost
+	var webAppPost appregistry.WebAppPost
+
 	switch args.Kind {
 	case "web":
 		appKind = appregistry.AppResourceKindWeb
+		webAppPost = appregistry.WebAppPost{
+			Name:         args.Name,
+			Kind:         appKind,
+			Title:        args.Title,
+			Description:  &args.Description,
+			LogoUrl:      &args.LogoURL,
+			LoginUrl:     &args.LoginURL,
+			WebhookUrl:   &args.WebhookURL,
+			RedirectUrls: strings.Split(args.RedirectURLs, ","),
+			SetupUrl:     &args.SetupURL,
+		}
+		app, err := appRegCommand.appRegistryService.CreateApp(appregistry.MakeCreateAppRequestFromWebAppPost(webAppPost))
+		if err != nil {
+			return nil, err
+		}
+		if args.AppPrincipalPermissions != "" {
+			appPrincipalPermissions := strings.Split(args.AppPrincipalPermissions, ",")
+			app.WebApp().AppPrincipalPermissions = appPrincipalPermissions
+		}
+		if args.UserPermissionsFilter != "" {
+			userPermissionsFilter := strings.Split(args.UserPermissionsFilter, ",")
+			app.WebApp().UserPermissionsFilter = userPermissionsFilter
+		}
+		return app, err
 	case "native":
 		appKind = appregistry.AppResourceKindNative
+		nativeAppPost = appregistry.NativeAppPost{
+			Name:         args.Name,
+			Kind:         appKind,
+			Title:        args.Title,
+			Description:  &args.Description,
+			LogoUrl:      &args.LogoURL,
+			LoginUrl:     &args.LoginURL,
+			WebhookUrl:   &args.WebhookURL,
+			RedirectUrls: strings.Split(args.RedirectURLs, ","),
+			SetupUrl:     &args.SetupURL,
+		}
+		app, err := appRegCommand.appRegistryService.CreateApp(appregistry.MakeCreateAppRequestFromNativeAppPost(nativeAppPost))
+		if err != nil {
+			return nil, err
+		}
+		if args.AppPrincipalPermissions != "" {
+			appPrincipalPermissions := strings.Split(args.AppPrincipalPermissions, ",")
+			app.NativeApp().AppPrincipalPermissions = appPrincipalPermissions
+		}
+		if args.UserPermissionsFilter != "" {
+			userPermissionsFilter := strings.Split(args.UserPermissionsFilter, ",")
+			app.NativeApp().UserPermissionsFilter = userPermissionsFilter
+		}
+		return app, err
 	case "service":
 		appKind = appregistry.AppResourceKindService
+		serviceAppPost = appregistry.ServiceAppPost{
+			Name:         args.Name,
+			Kind:         appKind,
+			Title:        args.Title,
+			Description:  &args.Description,
+			LogoUrl:      &args.LogoURL,
+			LoginUrl:     &args.LoginURL,
+			WebhookUrl:   &args.WebhookURL,
+			RedirectUrls: strings.Split(args.RedirectURLs, ","),
+			SetupUrl:     &args.SetupURL,
+		}
+		app, err := appRegCommand.appRegistryService.CreateApp(appregistry.MakeCreateAppRequestFromServiceAppPost(serviceAppPost))
+		if err != nil {
+			return nil, err
+		}
+		if args.AppPrincipalPermissions != "" {
+			appPrincipalPermissions := strings.Split(args.AppPrincipalPermissions, ",")
+			app.NativeApp().AppPrincipalPermissions = appPrincipalPermissions
+		}
+		if args.UserPermissionsFilter != "" {
+			userPermissionsFilter := strings.Split(args.UserPermissionsFilter, ",")
+			app.NativeApp().UserPermissionsFilter = userPermissionsFilter
+		}
+		return app, err
 	default:
 		msg := fmt.Sprintf("'%v' was passed, use subcommand 'web', 'native', or 'service'", args.Kind)
 		fatal(msg)
 	}
-
-	app := appregistry.CreateAppRequest{
-		Name:         args.Name,
-		Kind:         appKind,
-		Title:        args.Title,
-		Description:  &args.Description,
-		LogoUrl:      &args.LogoURL,
-		LoginUrl:     &args.LoginURL,
-		WebhookUrl:   &args.WebhookURL,
-		RedirectUrls: strings.Split(args.RedirectURLs, ","),
-		SetupUrl:     &args.SetupURL,
-	}
-	if args.AppPrincipalPermissions != "" {
-		appPrincipalPermissions := strings.Split(args.AppPrincipalPermissions, ",")
-		app.AppPrincipalPermissions = appPrincipalPermissions
-	}
-	if args.UserPermissionsFilter != "" {
-		userPermissionsFilter := strings.Split(args.UserPermissionsFilter, ",")
-		app.UserPermissionsFilter = userPermissionsFilter
-	}
-	return appRegCommand.appRegistryService.CreateApp(app)
+	return appregistry.WebAppPost{}, fmt.Errorf("appregistry create app failed. please refer to help text for usage")
 }
 
 func (appRegCommand *AppRegistryCommand) createSubscription(args []string) error {
@@ -228,47 +285,46 @@ func (appRegCommand *AppRegistryCommand) updateApp(argv []string) (interface{}, 
 	}
 	checkEmpty(argv)
 
-	_, err = appRegCommand.appRegistryService.GetApp(args.Name)
+	app, err := appRegCommand.appRegistryService.GetApp(args.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	var app appregistry.UpdateAppRequest
+	var redirectURLs, appPrincipalPermissions, userPermissionsFilter []string
 
-	if args.Title != "" {
-		app.Title = args.Title
-	}
-	if args.Description != "" {
-		app.Description = &args.Description
-	}
-	if args.LogoURL != "" {
-		app.LogoUrl = &args.LogoURL
-	}
-	if args.LoginURL != "" {
-		app.LoginUrl = &args.LoginURL
-	}
-	if args.WebhookURL != "" {
-		app.WebhookUrl = &args.WebhookURL
-	}
-	if args.SetupURL != "" {
-		app.SetupUrl = &args.SetupURL
-	}
 	if args.RedirectURLs != "" {
-		redirectURLs := strings.Split(args.RedirectURLs, ",")
+		redirectURLs = strings.Split(args.RedirectURLs, ",")
 		for index, ele := range redirectURLs {
 			redirectURLs[index] = strings.TrimSpace(ele)
 		}
-		app.RedirectUrls = redirectURLs
 	}
 	if args.AppPrincipalPermissions != "" {
-		appPrincipalPermissions := strings.Split(args.AppPrincipalPermissions, ",")
-		app.AppPrincipalPermissions = appPrincipalPermissions
+		appPrincipalPermissions = strings.Split(args.AppPrincipalPermissions, ",")
 	}
 	if args.UserPermissionsFilter != "" {
-		userPermissionsFilter := strings.Split(args.UserPermissionsFilter, ",")
-		app.UserPermissionsFilter = userPermissionsFilter
+		userPermissionsFilter = strings.Split(args.UserPermissionsFilter, ",")
 	}
-	return appRegCommand.appRegistryService.UpdateApp(args.Name, app)
+
+	if app.IsWebApp() {
+		return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.MakeUpdateAppRequestFromWebAppPut(appregistry.WebAppPut{Title: args.Title,
+			Description:             &args.Description,
+			LogoUrl:                 &args.LogoURL,
+			LoginUrl:                &args.LoginURL,
+			SetupUrl:                &args.SetupURL,
+			WebhookUrl:              &args.WebhookURL,
+			RedirectUrls:            redirectURLs,
+			AppPrincipalPermissions: appPrincipalPermissions,
+			UserPermissionsFilter:   userPermissionsFilter}))
+	}
+	return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.MakeUpdateAppRequestFromCommonAppPut(appregistry.CommonAppPut{Title: args.Title,
+		Description:             &args.Description,
+		LogoUrl:                 &args.LogoURL,
+		LoginUrl:                &args.LoginURL,
+		SetupUrl:                &args.SetupURL,
+		WebhookUrl:              &args.WebhookURL,
+		RedirectUrls:            redirectURLs,
+		AppPrincipalPermissions: appPrincipalPermissions,
+		UserPermissionsFilter:   userPermissionsFilter}))
 }
 
 func (appRegCommand *AppRegistryCommand) getSpecJSON(argv []string) (interface{}, error) {

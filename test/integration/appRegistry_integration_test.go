@@ -39,7 +39,8 @@ func TestCRUDApp(t *testing.T) {
 	appName := fmt.Sprintf("g.c%d", testutils.TimeSec)
 
 	// Create app
-	app := appregistry.CreateAppRequest{
+
+	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
 		Kind:  appregistry.AppResourceKindWeb,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
@@ -47,7 +48,8 @@ func TestCRUDApp(t *testing.T) {
 		RedirectUrls: []string{
 			"https://localhost",
 		},
-	}
+	})
+
 	_, err := client.AppRegistryService.CreateApp(app)
 	require.Nil(t, err)
 	defer client.AppRegistryService.DeleteApp(appName)
@@ -63,26 +65,26 @@ func TestCRUDApp(t *testing.T) {
 	// Get the app
 	app_ret, err := client.AppRegistryService.GetApp(appName)
 	require.Nil(t, err)
-	require.Equal(t, app.Name, app_ret.Name)
-	require.Equal(t, app.Title, app_ret.Title)
-	require.Equal(t, app.RedirectUrls, app_ret.RedirectUrls)
-	require.Equal(t, string(app.Kind), string(app_ret.Kind))
+	require.Equal(t, app.WebAppPost().Name, app_ret.WebApp().Name)
+	require.Equal(t, app.WebAppPost().Title, app_ret.WebApp().Title)
+	require.Equal(t, app.WebAppPost().RedirectUrls, app_ret.WebApp().RedirectUrls)
+	require.Equal(t, string(app.WebAppPost().Kind), string(app_ret.WebApp().Kind))
 
 	// Update the app. TODO: title and redirecturl should not needed once patch method is implemented.
 	description := "new Description"
 	title := newAppTitle("newtitle")
 	redirecturl := []string{"https://newlocalhost"}
-	updateApp := appregistry.UpdateAppRequest{
+	updateApp := appregistry.MakeUpdateAppRequestFromWebAppPut(appregistry.WebAppPut{
 		Description:  &description,
 		RedirectUrls: redirecturl,
 		Title:        title,
-	}
+	})
 	app_update_ret, err := client.AppRegistryService.UpdateApp(appName, updateApp)
 	require.Nil(t, err)
-	require.Equal(t, app.Name, app_update_ret.Name)
-	require.Equal(t, title, app_update_ret.Title)
-	require.Equal(t, description, *app_update_ret.Description)
-	require.Equal(t, string(app.Kind), string(app_update_ret.Kind))
+	require.Equal(t, app.WebAppPost().Name, app_update_ret.WebApp().Name)
+	require.Equal(t, title, app_update_ret.WebApp().Title)
+	require.Equal(t, description, *app_update_ret.WebApp().Description)
+	require.Equal(t, string(app.WebAppPost().Kind), string(app_update_ret.WebApp().Kind))
 
 	// Delete the app
 	err = client.AppRegistryService.DeleteApp(appName)
@@ -95,14 +97,16 @@ func TestAppRotateSecret(t *testing.T) {
 	appName := fmt.Sprintf("g.r%d", testutils.TimeSec)
 
 	// Create app
-	app := appregistry.CreateAppRequest{
+	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
 		Kind:  appregistry.AppResourceKindWeb,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
+
 		RedirectUrls: []string{
 			"https://localhost",
 		},
-	}
+	})
+
 	app_created, err := client.AppRegistryService.CreateApp(app)
 	require.Nil(t, err)
 	defer client.AppRegistryService.DeleteApp(appName)
@@ -110,7 +114,7 @@ func TestAppRotateSecret(t *testing.T) {
 	// rotate secret
 	app_ret, err := client.AppRegistryService.RotateSecret(appName)
 	require.Nil(t, err)
-	require.NotEmpty(t, app_created.ClientSecret, app_ret.ClientSecret)
+	require.NotEmpty(t, app_created.WebApp().ClientId, app_ret.WebApp().ClientSecret)
 }
 
 // Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
@@ -119,14 +123,15 @@ func TestSubscriptions(t *testing.T) {
 	appName := fmt.Sprintf("g.s1%d", testutils.TimeSec)
 
 	// Create app
-	app := appregistry.CreateAppRequest{
-		Kind:  appregistry.AppResourceKindNative,
+	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
+		Kind:  appregistry.AppResourceKindWeb,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
+
 		RedirectUrls: []string{
 			"https://localhost",
 		},
-	}
+	})
 	_, err := client.AppRegistryService.CreateApp(app)
 	require.Nil(t, err)
 	defer client.AppRegistryService.DeleteApp(appName)
@@ -158,16 +163,17 @@ func TestSubscriptions(t *testing.T) {
 	appName2 := fmt.Sprintf("g.s2%d", testutils.TimeSec)
 	perms := []string{"*:action.*"}
 	permFilter := []string{"*:*.*"}
-	app2 := appregistry.CreateAppRequest{
+	app2 := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
 		Kind:                    appregistry.AppResourceKindService,
 		Name:                    appName2,
-		Title:                   newAppTitle("testtitle2"),
+		Title:                   newAppTitle("testtitle"),
 		AppPrincipalPermissions: perms,
 		UserPermissionsFilter:   permFilter,
 		RedirectUrls: []string{
 			"https://localhost",
 		},
-	}
+	})
+
 	_, err = client.AppRegistryService.CreateApp(app2)
 	require.Nil(t, err)
 	defer client.AppRegistryService.DeleteApp(appName2)

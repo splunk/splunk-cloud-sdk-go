@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Splunk, Inc.
+ * Copyright © 2020 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -134,6 +134,7 @@ type ActionImmutable struct {
 	UpdatedBy *string `json:"updatedBy,omitempty"`
 }
 
+// ActionKind :
 type ActionKind string
 
 // List of ActionKind
@@ -328,6 +329,7 @@ type ServiceError struct {
 	MoreInfo *string                `json:"moreInfo,omitempty"`
 }
 
+// StatusState :
 type StatusState string
 
 // List of StatusState
@@ -365,6 +367,7 @@ type TriggerEventActionMetadata struct {
 	Members []string `json:"members,omitempty"`
 }
 
+// TriggerEventKind :
 type TriggerEventKind string
 
 // List of TriggerEventKind

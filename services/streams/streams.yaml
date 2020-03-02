@@ -676,9 +676,9 @@ components:
         pipelineReactivationStatus:
           enum:
           - activated
-          - alreadyActivatedWithCurrentVersion
           - currentVersionInvalid
           - failedToDeactivateCurrentVersion
+          - notActivated
           - rolledBack
           - rolledBackError
           type: string
@@ -691,10 +691,6 @@ components:
             The pipeline still needs to be validated before activation. Defaults to
             false.
           type: boolean
-        createUserId:
-          description: The user that created the pipeline. Deprecated.
-          example: ""
-          type: string
         data:
           $ref: '#/components/schemas/UplPipeline'
         description:
@@ -813,14 +809,6 @@ components:
             $ref: '#/components/schemas/ObjectNode'
           type: array
       type: object
-    PreviewNodeData:
-      description: ""
-      properties:
-        nodes:
-          additionalProperties:
-            $ref: '#/components/schemas/PreviewNode'
-          type: object
-      type: object
     PreviewSessionStartRequest:
       description: ""
       properties:
@@ -874,16 +862,6 @@ components:
           format: int64
           type: integer
         recordsPerPipeline:
-          format: int32
-          type: integer
-      type: object
-    PreviewStoreResponse:
-      description: ""
-      properties:
-        recordsDropped:
-          format: int32
-          type: integer
-        recordsStored:
           format: int32
           type: integer
       type: object
@@ -1188,7 +1166,7 @@ info:
     service in Splunk Cloud Services also has metrics and preview session endpoints
     and gives you full control over your data pipeline.
   title: Data Stream Processing REST API
-  version: v2beta1.2
+  version: v2beta1.3
 openapi: 3.0.1
 paths:
   /{tenantId}/streams/v2beta1/connections:
@@ -2758,7 +2736,7 @@ paths:
       deprecated: false
       operationId: createTemplate
       parameters:
-      - description: ID of the te/nant
+      - description: ID of the tenant
         in: path
         name: tenantId
         required: true
@@ -2973,4 +2951,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 0bec7a40de8e5be4abcf1da6cfc73d3c5c653e61 path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: streams/v2beta1/openapi.yaml

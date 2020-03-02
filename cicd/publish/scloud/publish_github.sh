@@ -52,3 +52,13 @@ for artifact in $artifacts ; do
 done
 echo ""
 echo "Success!"
+
+echo "Uploading (replacing if files already existed) cross-compiled scloudgen archive artifacts to existing release of ${RELEASE_TAG} at ${GITHUB_REPO}/releases ..."
+echo ""
+artifacts=bin/cross-compiled_scloud_gen/archive/*
+for artifact in $artifacts ; do
+    echo "Uploading ${artifact} ..."
+    github-release upload --replace --user "${GITHUB_ORG}" --repo "${GITHUB_PROJECT}" --tag "${RELEASE_TAG}" --file "${artifact}" --name "$(basename ${artifact})"
+done
+echo ""
+echo "Success!"
