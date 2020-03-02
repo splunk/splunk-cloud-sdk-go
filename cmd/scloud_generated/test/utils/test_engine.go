@@ -164,7 +164,21 @@ func splitArgs(line string) []string {
 
 	}
 
-	return results
+	return removeEscapeFromArgs(results)
+}
+
+func removeEscapeFromArgs(args []string) []string {
+	for i, ele := range args {
+		if strings.HasPrefix(ele, "\"") &&
+			strings.HasSuffix(ele, "\"") &&
+			strings.Contains(ele, "\\") {
+			args[i] = strings.Trim(ele, "\"")
+			args[i] = strings.Replace(args[i], "\\", "", -1)
+
+		}
+	}
+
+	return args
 }
 
 // Replaces the boundary parameter random string (generated) with a fixed name 'BOUNDARY_PARAMETER'
