@@ -1,24 +1,30 @@
-#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --format raw
+#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --format raw < test_ingest_event_raw.log
+
 REQUEST URL:ingest/v1beta2/events
 REQUEST BODY:{[{"body":"event1: 199.72.81.55 - - [01/Jul/1995:00:00:01 -0400] \"GET /history/apollo/ HTTP/1.0\" 200 6245","host":"scloud_test_ingest_host","source":"scloud_test_ingest_source"},{"body":"event2: unicomp6.unicomp.net - - [01/Jul/1995:00:00:06 -0400] \"GET /shuttle/countdown/ HTTP/1.0\" 200 3985","host":"scloud_test_ingest_host","source":"scloud_test_ingest_source"}]}
 
-#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --format json
+#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --format json < test_ingest_event_json.log
+
 REQUEST URL:ingest/v1beta2/events
 REQUEST BODY:{[{"body":{"body":{"event":"199.72.81.55 - - [01/Jul/1995:00:00:01 -0400] \"GET /history/apollo/ HTTP/1.0\" 200 6245"},"host":"scloud_test_ingest_host","source":"scloud_test_ingest_source"},"host":"scloud_test_ingest_host","id":"scloud_test_ingest_id","source":"scloud_test_ingest_source","sourcetype":"scloud_test_ingest_sourcetype"}]}
 
-#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --attributes {"scloud_test_ingest_attribute":{"scloud_test_ingest_key":"scloud_test_ingest_value"}} --format event
+#testcase: ingest post-events --host scloud_test_ingest_host --source scloud_test_ingest_source --sourcetype scloud_test_ingest_sourcetype --id scloud_test_ingest_id --attributes {"scloud_test_ingest_attribute":{"scloud_test_ingest_key":"scloud_test_ingest_value"}} --format event < test_ingest_event_json.log
+
 REQUEST URL:ingest/v1beta2/events
 REQUEST BODY:{[{"body":{"event":"199.72.81.55 - - [01/Jul/1995:00:00:01 -0400] \"GET /history/apollo/ HTTP/1.0\" 200 6245"},"attributes":{"scloud_test_ingest_attribute":{"scloud_test_ingest_key":"scloud_test_ingest_value"}},"host":"scloud_test_ingest_host","id":"scloud_test_ingest_id","source":"scloud_test_ingest_source","sourcetype":"scloud_test_ingest_sourcetype"}]}
 
-#testcase: ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-dimensions {"scloud_test_metric_dimension_default_key":"scloud_test_metric_dimension_default_value"}
+#testcase: ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-dimensions {"scloud_test_metric_dimension_default_key":"scloud_test_metric_dimension_default_value"} < test_ingest_metric_json.log
+
 REQUEST URL:ingest/v1beta2/metrics
 REQUEST BODY:{[{"body":[{"name":"scloud_test_metric_name1","dimensions":{"scloud_test_metric_dimension_key1":"scloud_test_metric_dimension_value1"},"unit":"scloud_test_metric_unit1","value":100},{"name":"scloud_test_metric_name2","dimensions":{"scloud_test_metric_dimension_key2":"scloud_test_metric_dimension_value2"},"type":"scloud_test_metric_type2","value":20},{"name":"scloud_test_metric_name3","unit":"scloud_test_metric_unit3","value":45}],"attributes":{"defaultDimensions":{"scloud_test_metric_dimension_default_key":"scloud_test_metric_dimension_default_value"}},"host":"scloud_test_ingest_host_m","source":"scloud_test_ingest_source_m","sourcetype":"scloud_test_ingest_sourcetype_m"}]}
 
-#testcase: ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-type scloud_test_metric_type_default --default-unit scloud_test_metric_unit_default
+#testcase: ingest post-metrics --host scloud_test_ingest_host_m --source scloud_test_ingest_source_m --sourcetype scloud_test_ingest_sourcetype_m --id scloud_test_ingest_id_m --nanos 1 --timestamp 1580891104000 --default-type scloud_test_metric_type_default --default-unit scloud_test_metric_unit_default < test_ingest_metric_json.log
+
 REQUEST URL:ingest/v1beta2/metrics
 REQUEST BODY:{[{"body":[{"name":"scloud_test_metric_name1","dimensions":{"scloud_test_metric_dimension_key1":"scloud_test_metric_dimension_value1"},"unit":"scloud_test_metric_unit1","value":100},{"name":"scloud_test_metric_name2","dimensions":{"scloud_test_metric_dimension_key2":"scloud_test_metric_dimension_value2"},"type":"scloud_test_metric_type2","value":20},{"name":"scloud_test_metric_name3","unit":"scloud_test_metric_unit3","value":45}],"attributes":{"defaultType":"scloud_test_metric_type_default","defaultUnit":"scloud_test_metric_unit_default"},"host":"scloud_test_ingest_host_m","source":"scloud_test_ingest_source_m","sourcetype":"scloud_test_ingest_sourcetype_m"}]}
 
 #testcase: ingest upload-files --file-name test_ingest_event_raw.log
+
 REQUEST URL:ingest/v1beta2/files
 REQUEST BODY:{--BOUNDARY_PARAMETER
 Content-Disposition: form-data; name="upfile"; filename="test_ingest_event_raw.log"
