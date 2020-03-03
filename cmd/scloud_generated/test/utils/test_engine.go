@@ -110,7 +110,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 
 		scloudTestOutput, err := executeOneTestCase(line, testarg, stdinFileName)
 
-		ret1 := "#testcase: " + originalLine + "\n" + scloudTestOutput + "\n"
+		ret1 := "#testcase: " + originalLine + scloudTestOutput + "\n"
 
 		ret = ret + ret1
 		if err != nil {
