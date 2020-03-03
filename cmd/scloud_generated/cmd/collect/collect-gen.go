@@ -8,6 +8,13 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/pkg/collect"
 )
 
+// createExecution -- Creates an execution for a scheduled job based on the job ID.
+var createExecutionCmd = &cobra.Command{
+	Use:   "create-execution",
+	Short: "Creates an execution for a scheduled job based on the job ID.",
+	RunE:  impl.CreateExecution,
+}
+
 // createJob -- This API returns `403` if the number of collect workers is over a certain limit.
 var createJobCmd = &cobra.Command{
 	Use:   "create-job",
@@ -29,6 +36,13 @@ var deleteJobsCmd = &cobra.Command{
 	RunE:  impl.DeleteJobs,
 }
 
+// getExecution -- Returns the execution details based on the execution ID and job ID.
+var getExecutionCmd = &cobra.Command{
+	Use:   "get-execution",
+	Short: "Returns the execution details based on the execution ID and job ID.",
+	RunE:  impl.GetExecution,
+}
+
 // getJob -- Returns a job based on the job ID.
 var getJobCmd = &cobra.Command{
 	Use:   "get-job",
@@ -41,6 +55,13 @@ var listJobsCmd = &cobra.Command{
 	Use:   "list-jobs",
 	Short: "Returns a list of all jobs that belong to a tenant.",
 	RunE:  impl.ListJobs,
+}
+
+// patchExecution -- Modifies an execution based on the job ID.
+var patchExecutionCmd = &cobra.Command{
+	Use:   "patch-execution",
+	Short: "Modifies an execution based on the job ID.",
+	RunE:  impl.PatchExecution,
 }
 
 // patchJob -- This API returns `403` if the number of collect workers is over a certain limit.
@@ -58,11 +79,13 @@ var patchJobsCmd = &cobra.Command{
 }
 
 func init() {
-	collectCmd.AddCommand(createJobCmd)
+	collectCmd.AddCommand(createExecutionCmd)
 
-	var createJobAuthorization string
-	createJobCmd.Flags().StringVar(&createJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	createJobCmd.MarkFlagRequired("authorization")
+	var createExecutionJobId string
+	createExecutionCmd.Flags().StringVar(&createExecutionJobId, "job-id", "", "This is a required parameter. The job ID.")
+	createExecutionCmd.MarkFlagRequired("job-id")
+
+	collectCmd.AddCommand(createJobCmd)
 
 	var createJobConnectorID string
 	createJobCmd.Flags().StringVar(&createJobConnectorID, "connector-ID", "", "This is a required parameter. The ID of the connector used in the job.")
@@ -92,25 +115,23 @@ func init() {
 
 	collectCmd.AddCommand(deleteJobCmd)
 
-	var deleteJobAuthorization string
-	deleteJobCmd.Flags().StringVar(&deleteJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	deleteJobCmd.MarkFlagRequired("authorization")
-
 	var deleteJobJobId string
 	deleteJobCmd.Flags().StringVar(&deleteJobJobId, "job-id", "", "This is a required parameter. The job ID.")
 	deleteJobCmd.MarkFlagRequired("job-id")
 
 	collectCmd.AddCommand(deleteJobsCmd)
 
-	var deleteJobsAuthorization string
-	deleteJobsCmd.Flags().StringVar(&deleteJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	deleteJobsCmd.MarkFlagRequired("authorization")
+	collectCmd.AddCommand(getExecutionCmd)
+
+	var getExecutionExecutionUid string
+	getExecutionCmd.Flags().StringVar(&getExecutionExecutionUid, "execution-uid", "", "This is a required parameter. The execution UID.")
+	getExecutionCmd.MarkFlagRequired("execution-uid")
+
+	var getExecutionJobId string
+	getExecutionCmd.Flags().StringVar(&getExecutionJobId, "job-id", "", "This is a required parameter. The job ID.")
+	getExecutionCmd.MarkFlagRequired("job-id")
 
 	collectCmd.AddCommand(getJobCmd)
-
-	var getJobAuthorization string
-	getJobCmd.Flags().StringVar(&getJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	getJobCmd.MarkFlagRequired("authorization")
 
 	var getJobJobId string
 	getJobCmd.Flags().StringVar(&getJobJobId, "job-id", "", "This is a required parameter. The job ID.")
@@ -118,18 +139,23 @@ func init() {
 
 	collectCmd.AddCommand(listJobsCmd)
 
-	var listJobsAuthorization string
-	listJobsCmd.Flags().StringVar(&listJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	listJobsCmd.MarkFlagRequired("authorization")
-
 	var listJobsConnectorId string
 	listJobsCmd.Flags().StringVar(&listJobsConnectorId, "connector-id", "", "Specifies the connector ID used to filter jobs. A tailing wildcard is supported for the connector ID tag. If no wildcard is used then an exact match is used. Examples: * `my-connector:v1.0.0` selects `my-connector` connector with an exact match with tag v1.0.0 * `my-connector` selects `my-connector` connector with an exact match. Note as no tag is specified it actually refers to latest. * `my-connector:v1.*` selects all `my-connector` connectors with tags starting with v1., e.g. v1.0, v1.1.1, v1.2-alpha, etc. * `my-connector:*` selects all `my-connector` connectors with any tag.")
 
-	collectCmd.AddCommand(patchJobCmd)
+	collectCmd.AddCommand(patchExecutionCmd)
 
-	var patchJobAuthorization string
-	patchJobCmd.Flags().StringVar(&patchJobAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	patchJobCmd.MarkFlagRequired("authorization")
+	var patchExecutionExecutionUid string
+	patchExecutionCmd.Flags().StringVar(&patchExecutionExecutionUid, "execution-uid", "", "This is a required parameter. The execution UID.")
+	patchExecutionCmd.MarkFlagRequired("execution-uid")
+
+	var patchExecutionJobId string
+	patchExecutionCmd.Flags().StringVar(&patchExecutionJobId, "job-id", "", "This is a required parameter. The job ID.")
+	patchExecutionCmd.MarkFlagRequired("job-id")
+
+	var patchExecutionStatus string
+	patchExecutionCmd.Flags().StringVar(&patchExecutionStatus, "status", "", "The given status of the execution can accept values canceled")
+
+	collectCmd.AddCommand(patchJobCmd)
 
 	var patchJobJobId string
 	patchJobCmd.Flags().StringVar(&patchJobJobId, "job-id", "", "This is a required parameter. The job ID.")
@@ -157,10 +183,6 @@ func init() {
 	patchJobCmd.Flags().StringVar(&patchJobScheduled, "scheduled", "false", "Defines wheather a job is scheduled or not")
 
 	collectCmd.AddCommand(patchJobsCmd)
-
-	var patchJobsAuthorization string
-	patchJobsCmd.Flags().StringVar(&patchJobsAuthorization, "authorization", "", "This is a required parameter. The access token provided by the user (obtained from a known identity provider).")
-	patchJobsCmd.MarkFlagRequired("authorization")
 
 	var patchJobsConnectorID string
 	patchJobsCmd.Flags().StringVar(&patchJobsConnectorID, "connector-ID", "", "The ID of the connector used in the job.")
