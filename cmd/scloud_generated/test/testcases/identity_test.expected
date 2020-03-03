@@ -95,8 +95,7 @@ REQUEST URL:identity/v2beta1/members
 REQUEST BODY:<nil>
 
 #testcase: identity validate-token --include tenant,principal
-REQUEST URL:identity/v2beta1/validate?include=tenant%2Cprincipal
-REQUEST BODY:<nil>
+enable testhook-dryrun
 
 #testcase: identity remove-role-permission --role scloud_test_identity_role --permission testsdks:*:identity.groups.read
 REQUEST URL:identity/v2beta1/roles/scloud_test_identity_role/permissions/testsdks:%2A:identity.groups.read
