@@ -28,6 +28,54 @@ func executeCliCommand(cmd *exec.Cmd) (string, error, string) {
 	return out.String(), err, stderr.String()
 }
 
+func executeOneTestCase(line string, testarg string, stdinFileName string) (string, error) {
+	ret := ""
+	arg := testarg
+
+	args := splitArgs(line)
+	for index, ele := range args {
+		args[index] = strings.Trim(ele, " ")
+	}
+
+	os.Remove(auth.Abspath(".scloudTestOutput"))
+	scloudTestOutput := ""
+	args = append([]string{arg}, args...)
+	cmd := exec.Command(scloud, args...)
+
+	if stdinFileName != "" {
+		setCommandStdin(cmd, stdinFileName)
+	}
+
+	res, _, _ := executeCliCommand(cmd)
+
+	if !strings.Contains(res, auth.ScloudTestDone) {
+		scloudTestOutput = res
+	} else {
+		outcache, err := ioutil.ReadFile(auth.Abspath(".scloudTestOutput"))
+		scloudTestOutput = string(outcache)
+
+		if testarg == "--testhook" {
+			if err != nil {
+				resStr := ""
+				if len(res) > 0 {
+					resStr = ", response:" + res
+				}
+				fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resStr)
+			} else {
+				fmt.Printf("-- Execute \"%s\" Succeed\n", line)
+			}
+		}
+	}
+
+	if strings.Contains(scloudTestOutput, "Content-Type: application/octet-stream") {
+		scloudTestOutput = replaceBoundaryParameter(scloudTestOutput)
+	}
+
+	ret = ret + "#testcase: " + line + "\n" + scloudTestOutput + "\n"
+
+	return scloudTestOutput, nil
+}
+
 func getTestcaseResultFilePath(input string) string {
 
 	parts := strings.Split(input, "/")
@@ -42,8 +90,6 @@ func getTestcaseResultFilePath(input string) string {
 func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string, error) {
 	ret := ""
 
-	arg := testarg
-
 	// read in testcases line by line
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -54,67 +100,19 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	// Start reading from the file with a reader.
 	reader := bufio.NewReader(file)
 
-	var line string
 	var errs []string
 	for {
-		line, err = reader.ReadString('\n')
+
+		originalLine, line, stdinFileName, err := getNextTestcase(reader)
 		if err == io.EOF {
 			break
 		}
 
-		// If a testcase has stdin input file specified, the command and the stdin input are separated for processing here based on the '<'  delimiter.
-		testComponents := strings.Split(line, "<")
-		var stdinFileName string
-		if len(testComponents) > 1 {
-			line = testComponents[0]
-			stdinFileName = testComponents[1]
-			stdinFileName = formatInputForCommandExecution(stdinFileName)
-		}
-		line = formatInputForCommandExecution(line)
+		scloudTestOutput, err := executeOneTestCase(line, testarg, stdinFileName)
 
-		if len(line) == 0 || strings.HasPrefix(line, "#") {
-			continue
-		}
+		ret1 := "#testcase: " + originalLine + "\n" + scloudTestOutput + "\n"
 
-		args := splitArgs(line)
-		for index, ele := range args {
-			args[index] = strings.Trim(ele, " ")
-		}
-
-		os.Remove(auth.Abspath(".scloudTestOutput"))
-		scloudTestOutput := ""
-		args = append([]string{arg}, args...)
-		cmd := exec.Command(scloud, args...)
-
-		if stdinFileName != "" {
-			setCommandStdin(cmd, stdinFileName)
-		}
-
-		res, err, _ := executeCliCommand(cmd)
-		if !strings.Contains(res, auth.ScloudTestDone) {
-			scloudTestOutput = res
-		} else {
-			outcache, err := ioutil.ReadFile(auth.Abspath(".scloudTestOutput"))
-			scloudTestOutput = string(outcache)
-
-			if testarg == "--testhook" {
-				if err != nil {
-					resStr := ""
-					if len(res) > 0 {
-						resStr = ", response:" + res
-					}
-					fmt.Printf("-- Execute \"%s\" Failed: %s%s\n", line, err.Error(), resStr)
-				} else {
-					fmt.Printf("-- Execute \"%s\" Succeed\n", line)
-				}
-			}
-		}
-
-		if strings.Contains(scloudTestOutput, "Content-Type: application/octet-stream") {
-			scloudTestOutput = replaceBoundaryParameter(scloudTestOutput)
-		}
-		ret = ret + "#testcase: " + line + "\n" + scloudTestOutput + "\n"
-
+		ret = ret + ret1
 		if err != nil {
 			errs = append(errs, err.Error())
 		}
@@ -224,6 +222,37 @@ func formatInputForCommandExecution(input string) string {
 	return input
 }
 
+func getNextTestcase(reader *bufio.Reader) (string, string, string, error) {
+	originalLine := ""
+	for {
+		line, err := reader.ReadString('\n')
+		originalLine = line
+		if err == io.EOF {
+			return "", "", "", err
+		}
+
+		line = strings.Trim(line, " ")
+		line = strings.Trim(line, "\n")
+
+		if len(line) == 0 || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		// If a testcase has stdin input file specified, the command and the stdin input are separated for processing here based on the '<'  delimiter.
+		testComponents := strings.Split(line, "<")
+		var stdinFileName string
+		if len(testComponents) > 1 {
+			line = testComponents[0]
+			stdinFileName = testComponents[1]
+			stdinFileName = formatInputForCommandExecution(stdinFileName)
+		}
+
+		line = formatInputForCommandExecution(line)
+
+		return originalLine, line, stdinFileName, nil
+	}
+}
+
 //Set config and Login
 func SetConfigurationAndLogin() (string, error) {
 
@@ -251,16 +280,54 @@ func SetConfigurationAndLogin() (string, error) {
 
 func RunTest(filepath string, t *testing.T) {
 	arg := "--testhook-dryrun"
-	results, _ := getTestCasesAndExecuteCliCommands(filepath, arg)
 
-	//read expected result file
-	expectedResults, err := ioutil.ReadFile(getTestcaseResultFilePath(filepath))
-	fmt.Print(string(expectedResults))
-
+	// read in testcases line by line
+	testfile, err := os.Open(filepath)
 	assert.Nil(t, err)
 
-	// verify result
-	assert.Equal(t, string(expectedResults), results)
+	resultfile, err := os.Open(filepath + ".expected")
+	assert.Nil(t, err)
+
+	defer testfile.Close()
+
+	// Start reading from the file with a reader.
+	testreader := bufio.NewReader(testfile)
+	resultreader := bufio.NewReader(resultfile)
+
+	expectedResults := make(map[string]string)
+	var line string
+	key := ""
+	for {
+		line, err = resultreader.ReadString('\n')
+		if err == io.EOF {
+			break
+		}
+
+		if strings.HasPrefix(line, "#testcase:") {
+			key = strings.Replace(line, "#testcase: ", "", 1)
+			expectedResults[key] = ""
+		} else {
+			expectedResults[key] = expectedResults[key] + line
+		}
+
+	}
+
+	var errs []error
+	for {
+		origline, line, stdinFileName, err := getNextTestcase(testreader)
+		if err == io.EOF {
+			break
+		}
+
+		expectedResult := expectedResults[origline]
+		scloudTestOutput, err := executeOneTestCase(line, arg, stdinFileName)
+
+		if err != nil {
+			errs = append(errs, err)
+		}
+
+		assert.Equal(t, strings.Trim(expectedResult, "\n"), strings.Trim(scloudTestOutput, "\n"), "Failed test cmd:"+line)
+	}
 }
 
 func Record_test_result(filepath string, testhook_arg string, t *testing.T) {
