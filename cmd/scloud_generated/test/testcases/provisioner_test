@@ -1,0 +1,10 @@
+provisioner create-invite --email aa@splunk.com
+provisioner get-invite --invite-id i5e603d1366957b00069575fe
+provisioner list-invites
+provisioner delete-invite --invite-id i5e603d1366957b00069575fe
+provisioner list-provision-jobs
+provisioner list-tenants
+provisioner update-invite --invite-id i5e603d9225fe920006b12c8e --action accept
+provisioner create-provision-job
+provisioner list-provision-jobs
+ provisioner get-provision-job --job-id 5e603e3425fe920006b12c8f
