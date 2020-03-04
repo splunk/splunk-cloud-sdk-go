@@ -103,14 +103,14 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 	var errs []string
 	for {
 
-		originalLine, line, stdinFileName, err := getNextTestcase(reader)
+		rawLine, line, stdinFileName, err := getNextTestcase(reader)
 		if err == io.EOF {
 			break
 		}
 
 		scloudTestOutput, err := executeOneTestCase(line, testarg, stdinFileName)
 
-		ret1 := "#testcase: " + originalLine + scloudTestOutput + "\n"
+		ret1 := "#testcase: " + rawLine + scloudTestOutput + "\n"
 
 		ret = ret + ret1
 		if err != nil {
@@ -223,10 +223,10 @@ func formatInputForCommandExecution(input string) string {
 }
 
 func getNextTestcase(reader *bufio.Reader) (string, string, string, error) {
-	originalLine := ""
+	rawLine := ""
 	for {
 		line, err := reader.ReadString('\n')
-		originalLine = line
+		rawLine = line
 		if err == io.EOF {
 			return "", "", "", err
 		}
@@ -249,7 +249,7 @@ func getNextTestcase(reader *bufio.Reader) (string, string, string, error) {
 
 		line = formatInputForCommandExecution(line)
 
-		return originalLine, line, stdinFileName, nil
+		return rawLine, line, stdinFileName, nil
 	}
 }
 
@@ -315,12 +315,12 @@ func RunTest(filepath string, t *testing.T) {
 	var errs []error
 	var totalFailedCases = 0
 	for {
-		origline, line, stdinFileName, err := getNextTestcase(testreader)
+		rawLine, line, stdinFileName, err := getNextTestcase(testreader)
 		if err == io.EOF {
 			break
 		}
 
-		expectedResult := expectedResults[origline]
+		expectedResult := expectedResults[rawLine]
 		scloudTestOutput, err := executeOneTestCase(line, arg, stdinFileName)
 
 		if err != nil {
@@ -331,12 +331,12 @@ func RunTest(filepath string, t *testing.T) {
 		exp := strings.Trim(expectedResult, "\n")
 		if res != exp {
 			totalFailedCases++
+			assert.Equal(t, exp, res, "Failed test cmd:"+line)
 		}
-		assert.Equal(t, exp, res, "Failed test cmd:"+line)
 	}
 
 	if totalFailedCases > 0 {
-		assert.Fail(t, fmt.Sprintf("total failed testcases: %v", totalFailedCases))
+		assert.Fail(t, fmt.Sprintf("total failed testcases in %v: %v", t.Name(), totalFailedCases))
 	}
 }
 
