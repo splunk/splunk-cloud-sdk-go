@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"fmt"
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd/scloud/version"
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/jsonx"
 )
 
 // versionCmd represents the version command
@@ -20,6 +21,7 @@ func init() {
 
 func execVersionCmd(cmd *cobra.Command, args []string) error {
 
-	util.Info("scloud version %s-%s\n", version.Version, version.Commit)
+	err := fmt.Sprintf("scloud version %s-%s\n", version.Version, version.Commit)
+	jsonx.Pprint(cmd, err)
 	return nil
 }
