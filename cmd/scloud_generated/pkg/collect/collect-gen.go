@@ -13,6 +13,29 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/collect"
 )
 
+// CreateExecution Creates an execution for a scheduled job based on the job ID.
+func CreateExecution(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var jobId string
+	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
+	}
+
+	resp, err := client.CollectService.CreateExecution(jobId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreateJob This API returns `403` if the number of collect workers is over a certain limit.
 func CreateJob(cmd *cobra.Command, args []string) error {
 
@@ -22,11 +45,6 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var connectorID string
 	err = flags.ParseFlag(cmd.Flags(), "connector-ID", &connectorID)
 	if err != nil {
@@ -92,11 +110,6 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var jobId string
 	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
 	if err != nil {
@@ -118,15 +131,36 @@ func DeleteJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	// Parse all flags
-
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 
 	resp, err := client.CollectService.DeleteJobs()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetExecution Returns the execution details based on the execution ID and job ID.
+func GetExecution(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var executionUid string
+	err = flags.ParseFlag(cmd.Flags(), "execution-uid", &executionUid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "execution-uid": ` + err.Error())
+	}
+	var jobId string
+	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
+	}
+
+	resp, err := client.CollectService.GetExecution(jobId, executionUid)
 	if err != nil {
 		return err
 	}
@@ -143,11 +177,6 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var jobId string
 	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
 	if err != nil {
@@ -171,11 +200,6 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var connectorId string
 	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
 	if err != nil {
@@ -193,6 +217,45 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// PatchExecution Modifies an execution based on the job ID.
+func PatchExecution(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var executionUid string
+	err = flags.ParseFlag(cmd.Flags(), "execution-uid", &executionUid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "execution-uid": ` + err.Error())
+	}
+	var jobId string
+	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
+	}
+	var statusDefault model.ExecutionPatchStatus
+	status := &statusDefault
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ExecutionPatch{
+
+		Status: status,
+	}
+
+	err = client.CollectService.PatchExecution(jobId, executionUid, generated_request_body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // PatchJob This API returns `403` if the number of collect workers is over a certain limit.
 func PatchJob(cmd *cobra.Command, args []string) error {
 
@@ -202,11 +265,6 @@ func PatchJob(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var connectorIDDefault string
 	connectorID := &connectorIDDefault
 	err = flags.ParseFlag(cmd.Flags(), "connector-ID", &connectorID)
@@ -281,11 +339,6 @@ func PatchJobs(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var authorization string
-	err = flags.ParseFlag(cmd.Flags(), "authorization", &authorization)
-	if err != nil {
-		return fmt.Errorf(`error parsing "authorization": ` + err.Error())
-	}
 	var connectorIDDefault string
 	connectorID := &connectorIDDefault
 	err = flags.ParseFlag(cmd.Flags(), "connector-ID", &connectorID)

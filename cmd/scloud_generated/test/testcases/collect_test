@@ -1,0 +1,16 @@
+collect create-execution --job-id 8b631454-c042-451e-80d7-2bb30bbc3ba2
+collect create-job --connector-ID aws-cloudwatch-metrics --name collector12 --parameters "{\"namespaces\": \"AWSEC2\"}" --schedule "16 * * * *" --scale-policy "{\"Static\": {\"Workers\":2}}"
+collect delete-job --job-id 960173a2-3d21-4309-addb-0b2c2d43946e
+collect delete-jobs
+collect get-execution --job-id 962b9053-5479-41bc-a5f6-e51f1c441496 --execution-uid 9a712d93-49b7-4c6d-9f1d-17df2a6d9249
+collect get-job --job-id 960173a2-3d21-4309-addb-0b2c2d43946e
+collect list-jobs --connector-id my-connector:v1.0.0dsfsdf
+collect patch-execution --job-id 962b9053-5479-41bc-a5f6-e51f1c441496 --execution-uid 9a712d93-49b7-4c6d-9f1d-17df2a6d9249 --status canceled
+collect patch-job --job-id e414f500-e165-44e4-a88e-d2dbdec569ca --name collector12 --parameters "{\"namespaces\": \"AWSEC2\"}" --schedule "17 * * * *" --scale-policy "{\"Static\": {\"Workers\":2}}" --scheduled false
+collect patch-jobs --job-ids e414f500-e165-44e4-a88e-d2dbdec569ca --scale-policy "{\"Static\": {\"Workers\":2}}"
+collect patch-jobs --connector-id my-connector:v2.0.0
+collect patch-jobs --connector-id my-connector:v2.0.0 --scale-policy "{\"Static\": {\"Workers\":2}}"
+collect patch-jobs --job-ids "962b9053-5479-41bc-a5f6-e51f1c441496,004832bf-bbb8-4707-a9ff-5c2cfe4bf633" --event-extra-fields "[{\"name\": \"test\",\"value\":\"value1\"}]"
+
+
+
