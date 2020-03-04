@@ -328,6 +328,10 @@ func RunTest(filepath string, t *testing.T) {
 
 		assert.Equal(t, strings.Trim(expectedResult, "\n"), strings.Trim(scloudTestOutput, "\n"), "Failed test cmd:"+line)
 	}
+
+	if len(errs) > 0 {
+		fmt.Println(fmt.Sprintf("total failed testcases: %v", len(errs)))
+	}
 }
 
 func Record_test_result(filepath string, testhook_arg string, t *testing.T) {
