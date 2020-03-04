@@ -18,6 +18,7 @@ import (
 )
 
 var scloud = "../../../bin/scloud_gen"
+var cmdResultLinePrefix = "#testcase: "
 
 func executeCliCommand(cmd *exec.Cmd) (string, error, string) {
 	var out, stderr bytes.Buffer
@@ -71,7 +72,7 @@ func executeOneTestCase(line string, testarg string, stdinFileName string) (stri
 		scloudTestOutput = replaceBoundaryParameter(scloudTestOutput)
 	}
 
-	ret = ret + "#testcase: " + line + "\n" + scloudTestOutput + "\n"
+	ret = ret + cmdResultLinePrefix + line + "\n" + scloudTestOutput + "\n"
 
 	return scloudTestOutput, nil
 }
@@ -84,10 +85,9 @@ func getTestcaseResultFilePath(input string) string {
 	filepath += "/" + parts[0] + ".expected"
 
 	return filepath
-
 }
 
-func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string, error) {
+func executeTestCasesInAFile(filepath string, testarg string) (string, error) {
 	ret := ""
 
 	// read in testcases line by line
@@ -110,7 +110,7 @@ func getTestCasesAndExecuteCliCommands(filepath string, testarg string) (string,
 
 		scloudTestOutput, err := executeOneTestCase(line, testarg, stdinFileName)
 
-		ret1 := "#testcase: " + rawLine + scloudTestOutput + "\n"
+		ret1 := cmdResultLinePrefix + rawLine + scloudTestOutput + "\n"
 
 		ret = ret + ret1
 		if err != nil {
@@ -303,8 +303,8 @@ func RunTest(filepath string, t *testing.T) {
 			break
 		}
 
-		if strings.HasPrefix(line, "#testcase:") {
-			key = strings.Replace(line, "#testcase: ", "", 1)
+		if strings.HasPrefix(line, cmdResultLinePrefix) {
+			key = strings.Replace(line, cmdResultLinePrefix, "", 1)
 			expectedResults[key] = ""
 		} else {
 			expectedResults[key] = expectedResults[key] + line
@@ -342,7 +342,7 @@ func RunTest(filepath string, t *testing.T) {
 
 func Record_test_result(filepath string, testhook_arg string, t *testing.T) {
 
-	results, err := getTestCasesAndExecuteCliCommands(filepath, testhook_arg)
+	results, err := executeTestCasesInAFile(filepath, testhook_arg)
 	// write results string to file
 	f, err := os.Create(getTestcaseResultFilePath(filepath))
 	assert.Nil(t, err)
