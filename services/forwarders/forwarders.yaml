@@ -63,6 +63,8 @@ components:
       properties:
         pem:
           type: string
+      required:
+        - pem
       type: object
     CertificateInfo:
       properties:
@@ -229,4 +231,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: forwarders/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: forwarders/v2beta1/openapi.yaml

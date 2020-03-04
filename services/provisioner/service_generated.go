@@ -44,6 +44,43 @@ func NewService(config *services.Config) (*Service, error) {
 }
 
 /*
+	CreateEntitlementsJob - Creates an entitlements job.
+	Parameters:
+		tenantName
+		jobId
+		createEntitlementsJobBody
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateEntitlementsJob(tenantName string, jobId string, createEntitlementsJobBody CreateEntitlementsJobBody, resp ...*http.Response) (*EntitlementsJobInfo, error) {
+	pp := struct {
+		TenantName string
+		JobId      string
+	}{
+		TenantName: tenantName,
+		JobId:      jobId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/provisioner/v1beta1/jobs/tenants/{{.TenantName}}/entitlements/{{.JobId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: u, Body: createEntitlementsJobBody})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb EntitlementsJobInfo
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	CreateInvite - provisioner service endpoint
 	Creates an invitation for a person to join the tenant using their email address.
 	Parameters:
@@ -128,6 +165,43 @@ func (s *Service) DeleteInvite(inviteId string, resp ...*http.Response) error {
 		}
 	}
 	return err
+}
+
+/*
+	GetEntitlementsJob - provisioner service endpoint
+	Returns details of a specific entitlements job.
+	Parameters:
+		tenantName
+		jobId
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetEntitlementsJob(tenantName string, jobId string, resp ...*http.Response) (*EntitlementsJobInfo, error) {
+	pp := struct {
+		TenantName string
+		JobId      string
+	}{
+		TenantName: tenantName,
+		JobId:      jobId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/provisioner/v1beta1/jobs/tenants/{{.TenantName}}/entitlements/{{.JobId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb EntitlementsJobInfo
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
 }
 
 /*
