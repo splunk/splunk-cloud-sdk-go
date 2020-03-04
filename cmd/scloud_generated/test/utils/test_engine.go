@@ -313,6 +313,7 @@ func RunTest(filepath string, t *testing.T) {
 	}
 
 	var errs []error
+	var totalFailedCases = 0
 	for {
 		origline, line, stdinFileName, err := getNextTestcase(testreader)
 		if err == io.EOF {
@@ -326,11 +327,16 @@ func RunTest(filepath string, t *testing.T) {
 			errs = append(errs, err)
 		}
 
-		assert.Equal(t, strings.Trim(expectedResult, "\n"), strings.Trim(scloudTestOutput, "\n"), "Failed test cmd:"+line)
+		res := strings.Trim(scloudTestOutput, "\n")
+		exp := strings.Trim(expectedResult, "\n")
+		if res != exp {
+			totalFailedCases++
+		}
+		assert.Equal(t, exp, res, "Failed test cmd:"+line)
 	}
 
-	if len(errs) > 0 {
-		fmt.Println(fmt.Sprintf("total failed testcases: %v", len(errs)))
+	if totalFailedCases > 0 {
+		assert.Fail(t, fmt.Sprintf("total failed testcases: %v", totalFailedCases))
 	}
 }
 
