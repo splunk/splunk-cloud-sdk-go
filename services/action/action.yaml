@@ -306,7 +306,7 @@ info:
   description: |
     With the Action service in Splunk Cloud Services, you can receive incoming trigger events and use pre-defined action templates to turn these events into meaningful actions.
   title: Action Service
-  version: v1beta2.11
+  version: v1beta2.12
 openapi: 3.0.0
 paths:
   /{tenant}/action/v1beta2/actions:
@@ -360,10 +360,22 @@ paths:
                 $ref: '#/components/schemas/ServiceError'
           description: The request isn't valid.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The action template already exists.
         "422":
           content:
@@ -388,10 +400,22 @@ paths:
         "204":
           description: The action template was removed successfully.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The resource wasn't found.
         default:
           content:
@@ -413,8 +437,16 @@ paths:
                 $ref: '#/components/schemas/Action'
           description: The action template was returned successfully.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "404":
           description: The resource wasn't found.
@@ -460,10 +492,22 @@ paths:
                 $ref: '#/components/schemas/ServiceError'
           description: The request isn't valid.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The resource wasn't found.
         "422":
           content:
@@ -508,6 +552,10 @@ paths:
                 $ref: '#/components/schemas/ServiceError'
           description: The request isn't valid.
         "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The provided fields aren't valid.
         default:
           content:
@@ -530,10 +578,22 @@ paths:
                 $ref: '#/components/schemas/ActionResult'
           description: The status was returned successfully.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The resource wasn't found.
         default:
           content:
@@ -564,10 +624,22 @@ paths:
                 type: array
           description: The status was returned successfully.
         "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The user isn't authenticated.
         "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The operation isn't authorized.
         "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
           description: The resource wasn't found.
         default:
           content:
@@ -609,4 +681,4 @@ paths:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: action/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: action/v1beta2/openapi.yaml

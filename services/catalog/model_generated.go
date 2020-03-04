@@ -984,13 +984,13 @@ type DatasetImportedBy struct {
 }
 
 // DatasetPatch : Property values to be set in an existing dataset using a PATCH request.
-// DatasetPatch is ImportDatasetPatch, IndexDatasetPatch, JobDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, ViewDatasetPatch, (or interface{} if no matches are found)
+// DatasetPatch is ImportDatasetPatch, IndexDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, ViewDatasetPatch, (or interface{} if no matches are found)
 type DatasetPatch struct {
 	datasetPatch interface{}
 	isRaw        bool
 }
 
-// UnmarshalJSON unmarshals DatasetPatch into ImportDatasetPatch, IndexDatasetPatch, JobDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, ViewDatasetPatch, or interface{} if no matches are found
+// UnmarshalJSON unmarshals DatasetPatch into ImportDatasetPatch, IndexDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, ViewDatasetPatch, or interface{} if no matches are found
 func (m *DatasetPatch) UnmarshalJSON(b []byte) (err error) {
 	reader := bytes.NewReader(b)
 	d := json.NewDecoder(reader)
@@ -1011,11 +1011,6 @@ func (m *DatasetPatch) UnmarshalJSON(b []byte) (err error) {
 	var testIndexDatasetPatch IndexDatasetPatch
 	if err = attempt(&testIndexDatasetPatch); err == nil {
 		m.datasetPatch = testIndexDatasetPatch
-		return nil
-	}
-	var testJobDatasetPatch JobDatasetPatch
-	if err = attempt(&testJobDatasetPatch); err == nil {
-		m.datasetPatch = testJobDatasetPatch
 		return nil
 	}
 	var testKvCollectionDatasetPatch KvCollectionDatasetPatch
@@ -1087,25 +1082,6 @@ func (m DatasetPatch) IsIndexDatasetPatch() bool {
 // IndexDatasetPatch returns IndexDatasetPatch if IsIndexDatasetPatch() is true, nil otherwise
 func (m DatasetPatch) IndexDatasetPatch() *IndexDatasetPatch {
 	if v, ok := m.datasetPatch.(IndexDatasetPatch); ok {
-		return &v
-	}
-	return nil
-}
-
-// MakeDatasetPatchFromJobDatasetPatch creates a new DatasetPatch from an instance of JobDatasetPatch
-func MakeDatasetPatchFromJobDatasetPatch(f JobDatasetPatch) DatasetPatch {
-	return DatasetPatch{datasetPatch: f}
-}
-
-// IsJobDatasetPatch checks if the DatasetPatch is a JobDatasetPatch
-func (m DatasetPatch) IsJobDatasetPatch() bool {
-	_, ok := m.datasetPatch.(JobDatasetPatch)
-	return ok
-}
-
-// JobDatasetPatch returns JobDatasetPatch if IsJobDatasetPatch() is true, nil otherwise
-func (m DatasetPatch) JobDatasetPatch() *JobDatasetPatch {
-	if v, ok := m.datasetPatch.(JobDatasetPatch); ok {
 		return &v
 	}
 	return nil
@@ -1222,7 +1198,6 @@ type DatasetPatchCommon struct {
 type DatasetPost struct {
 	importDatasetPost       *ImportDatasetPost
 	indexDatasetPost        *IndexDatasetPost
-	jobDatasetPost          *JobDatasetPost
 	kvCollectionDatasetPost *KvCollectionDatasetPost
 	lookupDatasetPost       *LookupDatasetPost
 	metricDatasetPost       *MetricDatasetPost
@@ -1258,21 +1233,6 @@ func (m DatasetPost) IsIndexDatasetPost() bool {
 // IndexDatasetPost returns IndexDatasetPost if IsIndexDatasetPost() is true, nil otherwise
 func (m DatasetPost) IndexDatasetPost() *IndexDatasetPost {
 	return m.indexDatasetPost
-}
-
-// MakeDatasetPostFromJobDatasetPost creates a new DatasetPost from an instance of JobDatasetPost
-func MakeDatasetPostFromJobDatasetPost(f JobDatasetPost) DatasetPost {
-	return DatasetPost{jobDatasetPost: &f}
-}
-
-// IsJobDatasetPost checks if the DatasetPost is a JobDatasetPost
-func (m DatasetPost) IsJobDatasetPost() bool {
-	return m.jobDatasetPost != nil
-}
-
-// JobDatasetPost returns JobDatasetPost if IsJobDatasetPost() is true, nil otherwise
-func (m DatasetPost) JobDatasetPost() *JobDatasetPost {
-	return m.jobDatasetPost
 }
 
 // MakeDatasetPostFromKvCollectionDatasetPost creates a new DatasetPost from an instance of KvCollectionDatasetPost
@@ -1368,9 +1328,6 @@ func (m *DatasetPost) UnmarshalJSON(b []byte) (err error) {
 	case "index":
 		m.indexDatasetPost = &IndexDatasetPost{}
 		return json.Unmarshal(b, m.indexDatasetPost)
-	case "job":
-		m.jobDatasetPost = &JobDatasetPost{}
-		return json.Unmarshal(b, m.jobDatasetPost)
 	case "kvcollection":
 		m.kvCollectionDatasetPost = &KvCollectionDatasetPost{}
 		return json.Unmarshal(b, m.kvCollectionDatasetPost)
@@ -1401,8 +1358,6 @@ func (m DatasetPost) MarshalJSON() ([]byte, error) {
 		return json.Marshal(m.importDatasetPost)
 	} else if m.IsIndexDatasetPost() {
 		return json.Marshal(m.indexDatasetPost)
-	} else if m.IsJobDatasetPost() {
-		return json.Marshal(m.jobDatasetPost)
 	} else if m.IsKvCollectionDatasetPost() {
 		return json.Marshal(m.kvCollectionDatasetPost)
 	} else if m.IsLookupDatasetPost() {
@@ -2038,116 +1993,6 @@ type JobDatasetKind string
 const (
 	JobDatasetKindJob JobDatasetKind = "job"
 )
-
-// Property values to be set in an existing job dataset using a PATCH request.
-type JobDatasetPatch struct {
-	// Was the event summary requested for this searhc job?
-	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
-	// Was the field summary requested for this searhc job?
-	CollectFieldSummary *bool `json:"collectFieldSummary,omitempty"`
-	// Were the time bucketes requested for this searhc job?
-	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
-	// Time that the job was completed
-	CompletionTime *string `json:"completionTime,omitempty"`
-	// The time the dataset will be available in S3.
-	DeleteTime *string `json:"deleteTime,omitempty"`
-	// Time that the job was dispatched
-	DispatchTime *string `json:"dispatchTime,omitempty"`
-	// The runtime of the search in seconds.
-	ExecutionTime *float32 `json:"executionTime,omitempty"`
-	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
-	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
-	// Did the SPL query cause any side effects on a dataset?
-	HasSideEffects *bool           `json:"hasSideEffects,omitempty"`
-	Kind           *JobDatasetKind `json:"kind,omitempty"`
-	// The maximum number of seconds to run this search before finishing.
-	MaxTime *int32 `json:"maxTime,omitempty"`
-	// The name of module to reassign dataset into.
-	Module *string `json:"module,omitempty"`
-	// The dataset name. Dataset names must be unique within each module.
-	Name *string `json:"name,omitempty"`
-	// The name of the dataset owner. This value is obtained from the bearer token.
-	Owner *string `json:"owner,omitempty"`
-	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
-	Parameters map[string]interface{} `json:"parameters,omitempty"`
-	// The parent's ID of the search job.
-	Parent *string `json:"parent,omitempty"`
-	// An estimate of how complete the search job is.
-	PercentComplete *int32 `json:"percentComplete,omitempty"`
-	// The SPL query string for the search job.
-	Query *string `json:"query,omitempty"`
-	// Resolved earliest time for the job
-	ResolvedEarliest *string `json:"resolvedEarliest,omitempty"`
-	// Resolved latest time for the job
-	ResolvedLatest *string `json:"resolvedLatest,omitempty"`
-	// The instantaneous number of results produced by the search job.
-	ResultsAvailable *int32 `json:"resultsAvailable,omitempty"`
-	// The search head that started this search job.
-	SearchHead *string `json:"searchHead,omitempty"`
-	// The ID assigned to the search job.
-	Sid *string `json:"sid,omitempty"`
-	// The SPLv2 version of the search job query string.
-	Spl *string `json:"spl,omitempty"`
-	// The current status of the search job.
-	Status           *string                               `json:"status,omitempty"`
-	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
-}
-
-// Initial property values for creating a new job dataset using a POST request.
-type JobDatasetPost struct {
-	// Time that the job was completed
-	CompletionTime string `json:"completionTime"`
-	// The time the dataset will be available in S3.
-	DeleteTime string `json:"deleteTime"`
-	// Time that the job was dispatched
-	DispatchTime string         `json:"dispatchTime"`
-	Kind         JobDatasetKind `json:"kind"`
-	// The dataset name. Dataset names must be unique within each module.
-	Name string `json:"name"`
-	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
-	Parameters map[string]interface{} `json:"parameters"`
-	// The SPL query string for the search job.
-	Query string `json:"query"`
-	// Resolved earliest time for the job
-	ResolvedEarliest string `json:"resolvedEarliest"`
-	// Resolved latest time for the job
-	ResolvedLatest string `json:"resolvedLatest"`
-	// The ID assigned to the search job.
-	Sid string `json:"sid"`
-	// Was the event summary requested for this searhc job?
-	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
-	// Was the field summary requested for this searhc job?
-	CollectFieldSummary *bool `json:"collectFieldSummary,omitempty"`
-	// Were the time bucketes requested for this searhc job?
-	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
-	// The runtime of the search in seconds.
-	ExecutionTime *float32 `json:"executionTime,omitempty"`
-	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
-	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
-	// The fields to be associated with this dataset.
-	Fields []FieldPost `json:"fields,omitempty"`
-	// Did the SPL query cause any side effects on a dataset?
-	HasSideEffects *bool `json:"hasSideEffects,omitempty"`
-	// A unique dataset ID. Random ID used if not provided.
-	Id *string `json:"id,omitempty"`
-	// The maximum number of seconds to run this search before finishing.
-	MaxTime *int32 `json:"maxTime,omitempty"`
-	// The name of the module to create the new dataset in.
-	Module *string `json:"module,omitempty"`
-	// The parent's ID of the search job.
-	Parent *string `json:"parent,omitempty"`
-	// An estimate of how complete the search job is.
-	PercentComplete *int32 `json:"percentComplete,omitempty"`
-	// The instantaneous number of results produced by the search job.
-	ResultsAvailable *int32 `json:"resultsAvailable,omitempty"`
-	// The search head that started this search job.
-	SearchHead *string `json:"searchHead,omitempty"`
-	// The SPLv2 version of the search job query string.
-	Spl *string `json:"spl,omitempty"`
-	// The current status of the search job.
-	Status           *string                               `json:"status,omitempty"`
-	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
-}
 
 // Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
 type JobDatasetProperties struct {
