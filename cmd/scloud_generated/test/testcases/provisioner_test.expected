@@ -26,15 +26,15 @@ REQUEST BODY:<nil>
 REQUEST URL:provisioner/v1beta1/invites/i5e603d9225fe920006b12c8e
 REQUEST BODY:{{"action":"accept"}}
 
-#testcase: provisioner create-provision-job
+#testcase: provisioner create-provision-job --apps "newapp,newapp2"
 REQUEST URL:provisioner/v1beta1/jobs/tenants/provision
-REQUEST BODY:{{}}
+REQUEST BODY:{{"apps":["newapp,newapp2"]}}
 
 #testcase: provisioner list-provision-jobs
 REQUEST URL:provisioner/v1beta1/jobs/tenants/provision
 REQUEST BODY:<nil>
 
-#testcase:  provisioner get-provision-job --job-id 5e603e3425fe920006b12c8f
+#testcase: provisioner get-provision-job --job-id 5e603e3425fe920006b12c8f
 REQUEST URL:provisioner/v1beta1/jobs/tenants/provision/5e603e3425fe920006b12c8f
 REQUEST BODY:<nil>
 
