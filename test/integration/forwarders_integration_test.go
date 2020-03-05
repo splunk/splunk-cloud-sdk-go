@@ -136,7 +136,7 @@ func createAndUploadCertificate(t *testing.T, forwarder string) (error, string, 
 	}
 
 	str := string(fileBytes)
-	cert := forwarders.Certificate{Pem: &str}
+	cert := forwarders.Certificate{Pem: str}
 
 	// Upload the certificate to Splunk Forwarders service
 	certificateInfo, err := getSdkClient(t).ForwardersService.AddCertificate(cert)
