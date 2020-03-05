@@ -46,7 +46,7 @@ func TestIdentityClientInit(t *testing.T) {
 func TestCRUDGroups(t *testing.T) {
 	client := getClient(t)
 
-	_, err := client.IdentityService.ListGroups()
+	_, err := client.IdentityService.ListGroups(nil)
 	require.Nil(t, err)
 
 	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
@@ -66,7 +66,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, testutils.TestUsername, resultgroup1.CreatedBy)
 	assert.Equal(t, testutils.TestTenant, resultgroup1.Tenant)
 
-	resultgroup2, err := client.IdentityService.ListGroups()
+	resultgroup2, err := client.IdentityService.ListGroups(nil)
 	require.Nil(t, err)
 	assert.Contains(t, resultgroup2, groupName)
 

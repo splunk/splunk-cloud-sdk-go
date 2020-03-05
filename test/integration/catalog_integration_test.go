@@ -552,13 +552,6 @@ func TestUpdateJobDataset(t *testing.T) {
 
 	// This job should not be canceled since it was just created
 	require.NotEqual(t, newstatus, *jobds.Status)
-	ujb := catalog.JobDatasetPatch{
-		Status: &newstatus,
-	}
-
-	newjobds, err := client.CatalogService.UpdateDataset(jobds.Id, catalog.MakeDatasetPatchFromJobDatasetPatch(ujb))
-	require.Nil(t, err)
-	assert.Equal(t, newstatus, *newjobds.JobDataset().Status)
 }
 
 // Test UpdateLookupDataset

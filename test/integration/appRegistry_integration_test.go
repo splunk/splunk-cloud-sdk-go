@@ -74,11 +74,11 @@ func TestCRUDApp(t *testing.T) {
 	description := "new Description"
 	title := newAppTitle("newtitle")
 	redirecturl := []string{"https://newlocalhost"}
-	updateApp := appregistry.MakeUpdateAppRequestFromWebAppPut(appregistry.WebAppPut{
+	updateApp := appregistry.UpdateAppRequest{
 		Description:  &description,
 		RedirectUrls: redirecturl,
-		Title:        title,
-	})
+		Title:        &title,
+	}
 	app_update_ret, err := client.AppRegistryService.UpdateApp(appName, updateApp)
 	require.Nil(t, err)
 	require.Equal(t, app.WebAppPost().Name, app_update_ret.WebApp().Name)
