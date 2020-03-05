@@ -170,6 +170,8 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 }
 
 func TestIntegrationUploadFile(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client := getClient(t)
 
 	dir, err := os.Getwd()

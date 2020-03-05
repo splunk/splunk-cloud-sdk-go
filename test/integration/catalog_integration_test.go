@@ -329,6 +329,8 @@ func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 
 // Test CreateDataset for 401 Unauthorized operation error
 func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	name := makeDSName("401")
 	createView := catalog.ViewDatasetPost{
 		Name:   name,
@@ -479,6 +481,8 @@ func TestUpdateIndexDataset(t *testing.T) {
 
 // Test UpdateMetricDataset
 func TestUpdateMetricDataset(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client := getSdkClient(t)
 
 	metricds, err := createMetricDataset(t, makeDSName("umx"))
@@ -707,6 +711,8 @@ func TestCreateRuleDataAlreadyPresent(t *testing.T) {
 
 // Test CreateRule for 401 Unauthorized operation error
 func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	// create rule
 	ruleName := makeRuleName("401")
 	rule, err := getInvalidClient(t).CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
@@ -1025,6 +1031,8 @@ func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 
 // Test CreateDatasetField for 400 error
 func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client := getSdkClient(t)
 
 	// Create dataset

@@ -512,6 +512,8 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 
 //Test Latest Preview Session Metrics
 func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	// Create and start a test Ge session
 	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
 	require.Nil(t, err)
@@ -794,6 +796,8 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 
 // Test Get Groups endpoint
 func TestIntegrationGetGroups(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	request := streams.GetRegistryQueryParams{}.SetLocal(false)
 	result, err := getSdkClient(t).StreamsService.GetRegistry(&request)
 	require.Empty(t, err)
