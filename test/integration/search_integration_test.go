@@ -162,6 +162,8 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 
 //TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client := getClient(t)
 	require.NotNil(t, client)
 
@@ -229,6 +231,8 @@ func TestListTimeBuckets(t *testing.T) {
 
 //TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
