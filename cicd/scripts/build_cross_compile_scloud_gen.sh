@@ -8,6 +8,14 @@ if [[ -z "${SCLOUD_SRC_PATH}" ]] ; then
     exit 1
 fi
 
+if [[ "$(uname)" == "Darwin" ]] ; then
+    # MacOS
+    SED_FLG="-E"
+else
+    # Linux
+    SED_FLG="-r"
+
+fi
 
 BUILD_TARGETS_ARCH=( 386 amd64 )
 BUILD_TARGETS_OS=( darwin linux windows )
@@ -31,10 +39,12 @@ do
         target_dir=${TARGET_ROOT_DIR}/${os}_${arch}
         mkdir -p ${target_dir}
         target_file=${target_dir}/${program_name}
-        archive_file=${PWD}/${ARCHIVE_DIR}/scloud_gen_${TAG}_${os}_${arch}
         echo "Building ${target_file}";
         # The -s flag strips debug symbols from Linux, -w from DWARF (darwin). This reduces binary size by about half.
         env GOOS=${os} GOARCH=${arch} GO111MODULE=on go build -ldflags "-s -w" -a -o ${target_file} ${SCLOUD_SRC_PATH}
+        scloud_gen_version=v$(cat cmd/scloud_generated/cmd/scloud/version/client_info.go | sed ${SED_FLG} -n 's/const ScloudgenVersion = "([0-9]+\.[0-9]+\.[0-9]+.*)"/\1/p')
+        archive_file=${PWD}/${ARCHIVE_DIR}/scloud_gen_${scloud_gen_version}_${os}_${arch}
+
         if [[ 'windows' == ${os} ]]
         then
             pushd ${target_dir}
