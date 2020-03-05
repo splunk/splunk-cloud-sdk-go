@@ -201,8 +201,9 @@ func getRolePermission(argv []string) (interface{}, error) {
 }
 
 func listGroups(argv []string) (interface{}, error) {
-	query := head1(argv)
-	return identity().ListGroups(query)
+	access := sdkIdentity.ListGroupsaccess(head1(argv))
+	query := sdkIdentity.ListGroupsQueryParams{}.SetAccess(access)
+	return identity().ListGroups(&query)
 }
 
 func listGroupMembers(argv []string) (interface{}, error) {
