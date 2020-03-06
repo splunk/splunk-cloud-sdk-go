@@ -201,8 +201,9 @@ func getRolePermission(argv []string) (interface{}, error) {
 }
 
 func listGroups(argv []string) (interface{}, error) {
-	access := sdkIdentity.ListGroupsaccess(head1(argv))
-	query := sdkIdentity.ListGroupsQueryParams{}.SetAccess(access)
+	defaultAccess := "write"
+	access := head1OrDefault(argv, &defaultAccess)
+	query := sdkIdentity.ListGroupsQueryParams{}.SetAccess(sdkIdentity.ListGroupsaccess(access))
 	return identity().ListGroups(&query)
 }
 
