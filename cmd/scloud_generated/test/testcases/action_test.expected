@@ -4,7 +4,7 @@ REQUEST BODY:{{"kind":"email","name":"scloud_test_action_test","members":["kk@sp
 
 #testcase: action update-action-email-action-mutable --action-name scloud_test_action_test --subject "newsubject"
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test
-REQUEST BODY:{{"subject":"\"newsubject\""}}
+REQUEST BODY:{{"subject":"newsubject"}}
 
 #testcase: action get-action --action-name scloud_test_action_test
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test
@@ -16,11 +16,11 @@ REQUEST BODY:<nil>
 
 #testcase: action create-action-webhook-action --kind webhook --name scloud_test_action_test_wh --title newtitle --webhook-payload "{{ .name }} is a {{ .species }}" --webhook-url "https://webhook.site/test"
 REQUEST URL:action/v1beta2/actions
-REQUEST BODY:{{"kind":"webhook","name":"scloud_test_action_test_wh","webhookPayload":"\"{{ .name }} is a {{ .species }}\"","webhookUrl":"\"https://webhook.site/test\"","title":"newtitle"}}
+REQUEST BODY:{{"kind":"webhook","name":"scloud_test_action_test_wh","webhookPayload":"{{ .name }} is a {{ .species }}","webhookUrl":"https://webhook.site/test","title":"newtitle"}}
 
 #testcase: action update-action-webhook-action-mutable --action-name scloud_test_action_test_wh --title "newtitle"
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh
-REQUEST BODY:{{"title":"\"newtitle\""}}
+REQUEST BODY:{{"title":"newtitle"}}
 
 #testcase: action trigger-action --action-name scloud_test_action_test_wh
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh

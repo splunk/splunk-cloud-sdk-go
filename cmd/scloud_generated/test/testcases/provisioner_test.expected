@@ -28,7 +28,7 @@ REQUEST BODY:{{"action":"accept"}}
 
 #testcase: provisioner create-provision-job --apps "newapp,newapp2"
 REQUEST URL:provisioner/v1beta1/jobs/tenants/provision
-REQUEST BODY:{{"apps":["newapp,newapp2"]}}
+REQUEST BODY:{{"apps":["newapp","newapp2"]}}
 
 #testcase: provisioner list-provision-jobs
 REQUEST URL:provisioner/v1beta1/jobs/tenants/provision
