@@ -242,20 +242,35 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	})
 
 	concurrentSearches := 20
+
 	var wg sync.WaitGroup
 	wg.Add(concurrentSearches)
+
 	jobIDs := make(chan string, concurrentSearches)
+	errors := make(chan error, concurrentSearches)
+
 	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
 			defer wg.Done()
-			job, _ := service.CreateJob(PostJobsRequest)
-			require.NotNil(t, job)
-			jobIDs <- *job.Sid
+			job, err := service.CreateJob(PostJobsRequest)
+
+			if err != nil {
+				errors <- err
+			} else {
+				jobIDs <- *job.Sid
+			}
 		}(searchService)
 	}
+
 	// block on all jobs being created
 	wg.Wait()
 	close(jobIDs)
+	close(errors)
+
+	for err := range errors {
+		assert.NoError(t, err)
+	}
+
 	cnt := 0
 	for id := range jobIDs {
 		assert.NotEmpty(t, id)
@@ -275,23 +290,35 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	})
 
 	concurrentSearches := 15
+
 	var wg sync.WaitGroup
 	wg.Add(concurrentSearches)
+
 	jobIDs := make(chan string, concurrentSearches)
+	errors := make(chan error, concurrentSearches)
+
 	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
 			defer wg.Done()
-			job, _ := service.CreateJob(PostJobsRequest)
-			if job != nil {
+			job, err := service.CreateJob(PostJobsRequest)
+
+			if err != nil {
+				errors <- err
+			} else {
 				jobIDs <- *job.Sid
 			}
 		}(searchService)
 	}
+
 	// block on all jobs being created
 	wg.Wait()
 	close(jobIDs)
+	close(errors)
 
-	time.Sleep(100)
+	for err := range errors {
+		assert.NoError(t, err)
+	}
+
 	cnt := 0
 	for id := range jobIDs {
 		assert.NotEmpty(t, id)
