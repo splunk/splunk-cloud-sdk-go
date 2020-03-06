@@ -43,7 +43,7 @@ func TestAuthnResponseHandlerGoodToken(t *testing.T) {
 		TokenRetriever: &testTokenRetriever{},
 	}
 	ctx, err := rh.TokenRetriever.GetTokenContext()
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotNil(t, ctx)
 	assert.Equal(t, ctx.AccessToken, retrievedToken)
 }

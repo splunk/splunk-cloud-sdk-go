@@ -93,7 +93,7 @@ func TestIntegrationGetActions(t *testing.T) {
 
 	// Get Actions
 	actions, err := client.ActionService.ListActions()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(actions) >= 0)
 }
 
@@ -103,14 +103,14 @@ func TestGetCreateActionEmail(t *testing.T) {
 	act := genEmailAction()
 	var resp http.Response // provide a response pointer for response info
 	_, err := client.ActionService.CreateAction(act, &resp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, 201, resp.StatusCode)
 	in := act.EmailAction()
 	require.NotNil(t, in)
 	defer cleanupAction(client, in.Name)
 	actout, err := client.ActionService.GetAction(in.Name)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	out := actout.EmailAction()
 	require.NotNil(t, out)
 	assert.Equal(t, in.Kind, out.Kind)
@@ -130,7 +130,7 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	require.NotNil(t, in)
 	actout, err := client.ActionService.CreateAction(act)
 	defer cleanupAction(client, in.Name)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	out := actout.WebhookAction()
 	require.NotNil(t, out)
 	assert.EqualValues(t, in.Kind, out.Kind)
@@ -139,7 +139,7 @@ func TestGetCreateActionWebhook(t *testing.T) {
 	assert.EqualValues(t, in.WebhookUrl, out.WebhookUrl)
 	assert.EqualValues(t, in.WebhookPayload, out.WebhookPayload)
 	a, err := client.ActionService.GetAction(in.Name)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	out = a.WebhookAction()
 	require.NotNil(t, out)
 	assert.EqualValues(t, in.Kind, out.Kind)
@@ -179,12 +179,12 @@ func TestCreateActionFailExistingAction(t *testing.T) {
 	client := getSdkClient(t)
 	act := genEmailAction()
 	_, err := client.ActionService.CreateAction(act)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	in := act.EmailAction()
 	require.NotNil(t, in)
 	defer cleanupAction(client, in.Name)
 	actout, err := client.ActionService.GetAction(in.Name)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	out := actout.EmailAction()
 	require.NotNil(t, out)
 	assert.EqualValues(t, in.Name, out.Name)
@@ -204,7 +204,7 @@ func TestActionFailUnauthenticatedClient(t *testing.T) {
 	webhookAction := wact.WebhookAction()
 	require.NotNil(t, webhookAction)
 	_, err := client.ActionService.CreateAction(wact)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupAction(client, webhookAction.Name)
 
 	eact := genEmailAction()
@@ -246,7 +246,7 @@ func TestUpdateAction(t *testing.T) {
 	client := getSdkClient(t)
 	act := genEmailAction()
 	_, err := client.ActionService.CreateAction(act)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	emailAction := act.EmailAction()
 	require.NotNil(t, emailAction)
 	defer cleanupAction(client, emailAction.Name)
@@ -257,7 +257,7 @@ func TestUpdateAction(t *testing.T) {
 			Title:   &newTitle,
 			Subject: &newText,
 		}))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, actout)
 	require.NotNil(t, actout.EmailAction)
 	assert.Equal(t, newText, *actout.EmailAction().Subject)
@@ -269,9 +269,9 @@ func TestDeleteAction(t *testing.T) {
 	client := getSdkClient(t)
 	act := genEmailAction()
 	_, err := client.ActionService.CreateAction(act)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	err = client.ActionService.DeleteAction(act.EmailAction().Name)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 // Get non-existent Action results in a 404 NotFound
@@ -298,16 +298,16 @@ func TestGetActionStatus(t *testing.T) {
 	webhookAction := wact.WebhookAction()
 	require.NotNil(t, webhookAction)
 	act, err := client.ActionService.CreateAction(wact)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupAction(client, webhookAction.Name)
 	require.NotNil(t, act)
 	resp, err := client.ActionService.TriggerActionWithStatus(webhookAction.Name,
 		genTriggerEvent())
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, resp)
 	require.NotEmpty(t, *resp.StatusID)
 
 	stat, err := client.ActionService.GetActionStatus(webhookAction.Name, *resp.StatusID)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotNil(t, stat)
 }

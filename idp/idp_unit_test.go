@@ -64,7 +64,7 @@ func TestDecode(t *testing.T) {
 	}
 	ctx, err := decode(&resp)
 	require.NotNil(t, ctx)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, ctx.TokenType, "Bearer")
 	assert.Equal(t, ctx.AccessToken, "my.access.token")
 	assert.Equal(t, ctx.ExpiresIn, 3600)
