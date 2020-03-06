@@ -1,10 +1,10 @@
 #testcase: search create-job --query "from index:main"
 REQUEST URL:search/v2beta1/jobs
-REQUEST BODY:{{"query":"\"from index:main\"","queryParameters":{}}}
+REQUEST BODY:{{"query":"from index:main","queryParameters":{}}}
 
 #testcase: search create-job --query "from index:main" --allow-side-effects true --collect-event-summary true --collect-field-summary true --collect-time-buckets true --enable-preview true
 REQUEST URL:search/v2beta1/jobs
-REQUEST BODY:{{"query":"\"from index:main\"","allowSideEffects":true,"collectEventSummary":true,"collectFieldSummary":true,"collectTimeBuckets":true,"enablePreview":true,"queryParameters":{}}}
+REQUEST BODY:{{"query":"from index:main","allowSideEffects":true,"collectEventSummary":true,"collectFieldSummary":true,"collectTimeBuckets":true,"enablePreview":true,"queryParameters":{}}}
 
 #testcase: search get-job --sid f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
 REQUEST URL:search/v2beta1/jobs/f06b0ce82ee39c42a1384a580e0c043c_1582744223402696872_xdjll
@@ -23,18 +23,18 @@ REQUEST URL:search/v2beta1/jobs/f06b0ce82ee39c42a1384a580e0c043c_158274422340269
 REQUEST BODY:{{"status":"finalized"}}
 
 #testcase: search list-events-summary --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
-REQUEST URL:search/v2beta1/jobs/%220da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn%22/timeline-metadata/auto/events-summary
+REQUEST URL:search/v2beta1/jobs/0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn/timeline-metadata/auto/events-summary
 REQUEST BODY:<nil>
 
 #testcase: search list-fields-summary --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
-REQUEST URL:search/v2beta1/jobs/%220da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn%22/timeline-metadata/auto/fields-summary
+REQUEST URL:search/v2beta1/jobs/0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn/timeline-metadata/auto/fields-summary
 REQUEST BODY:<nil>
 
 #testcase: search list-preview-results --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
-REQUEST URL:search/v2beta1/jobs/%220da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn%22/results-preview
+REQUEST URL:search/v2beta1/jobs/0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn/results-preview
 REQUEST BODY:<nil>
 
 #testcase: search list-time-buckets --sid "0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn"
-REQUEST URL:search/v2beta1/jobs/%220da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn%22/timeline-metadata/auto/time-buckets
+REQUEST URL:search/v2beta1/jobs/0da44a16e80195c39ac3cf861bb0c7b2_1582745278455769675_l2wcn/timeline-metadata/auto/time-buckets
 REQUEST BODY:<nil>
 

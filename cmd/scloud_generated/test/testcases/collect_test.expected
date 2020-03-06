@@ -4,7 +4,7 @@ REQUEST BODY:<nil>
 
 #testcase: collect create-job --connector-ID aws-cloudwatch-metrics --name collector12 --parameters "{\"namespaces\": \"AWSEC2\"}" --schedule "16 * * * *" --scale-policy "{\"Static\": {\"Workers\":2}}"
 REQUEST URL:collect/v1beta1/jobs
-REQUEST BODY:{{"connectorID":"aws-cloudwatch-metrics","name":"collector12","parameters":{"namespaces":"AWSEC2"},"scalePolicy":{"static":{"workers":2}},"schedule":"\"16 * * * *\""}}
+REQUEST BODY:{{"connectorID":"aws-cloudwatch-metrics","name":"collector12","parameters":{"namespaces":"AWSEC2"},"scalePolicy":{"static":{"workers":2}},"schedule":"16 * * * *"}}
 
 #testcase: collect delete-job --job-id 960173a2-3d21-4309-addb-0b2c2d43946e
 REQUEST URL:collect/v1beta1/jobs/960173a2-3d21-4309-addb-0b2c2d43946e
@@ -32,7 +32,7 @@ REQUEST BODY:{{"status":"canceled"}}
 
 #testcase: collect patch-job --job-id e414f500-e165-44e4-a88e-d2dbdec569ca --name collector12 --parameters "{\"namespaces\": \"AWSEC2\"}" --schedule "17 * * * *" --scale-policy "{\"Static\": {\"Workers\":2}}" --scheduled false
 REQUEST URL:collect/v1beta1/jobs/e414f500-e165-44e4-a88e-d2dbdec569ca
-REQUEST BODY:{{"name":"collector12","parameters":{"namespaces":"AWSEC2"},"scalePolicy":{"static":{"workers":2}},"schedule":"\"17 * * * *\"","scheduled":false}}
+REQUEST BODY:{{"name":"collector12","parameters":{"namespaces":"AWSEC2"},"scalePolicy":{"static":{"workers":2}},"schedule":"17 * * * *","scheduled":false}}
 
 #testcase: collect patch-jobs --job-ids e414f500-e165-44e4-a88e-d2dbdec569ca --scale-policy "{\"Static\": {\"Workers\":2}}"
 REQUEST URL:collect/v1beta1/jobs?jobIDs=e414f500-e165-44e4-a88e-d2dbdec569ca
