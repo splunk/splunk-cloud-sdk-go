@@ -1,6 +1,8 @@
 import unittest
 import test
 
+SCLOUD_APP = "scloudapp"
+
 
 def appreg(*args):
     return test.scloud("appreg", *args)
@@ -9,22 +11,25 @@ def appreg(*args):
 class TestAppregistry(unittest.TestCase):
     def setUp(self):
         # retrieve the selected tenant name
-        code, self.tname, _ = test.scloud("get", "tenant")
-        self.assertEqual(0, code)
+        code, self.tname, err = test.scloud("get", "tenant")
+        self.assertEqual(0, code, err)
         self.assertIsNotNone(self.tname)
+        type(self).cleanupApp()
 
-    # delete apps/subscription in case a test fails in the middle
-    def tearDown(self):
-        appreg("delete-app", "scloudapptest")
-        appreg("delete-app", "scloudsubscription")
-        appreg("delete-subscription", "scloudsubscriptiontest")
-        appreg("delete-app", "scloudrotatesecrettest")
+    @classmethod
+    def tearDownClass(cls):
+        cls.cleanupApp()
+
+    @classmethod
+    def cleanupApp(cls):
+        appreg("delete-app", SCLOUD_APP)
+        appreg("delete-subscription", SCLOUD_APP)
 
     def test_create_get_delete_app(self):
-        appName = "scloudapptesting"
+        appName = SCLOUD_APP
 
         code, result, err = appreg("create-app", appName, "web", "--redirect-urls", "https://redirect1.com", "--title",
-                                   "scloudapptitle")
+                                   appName)
         self.assertEqual(0, code, err)
         self.assertIsNotNone(result)
 
@@ -40,7 +45,7 @@ class TestAppregistry(unittest.TestCase):
 
         # Update app
         code, result, err = appreg("update-app", appName, "--redirect-urls", "https://redirect2.com , https://mycompany.com", "--title",
-                                   "scloudapptitle")
+                                   appName)
         self.assertEqual(0, code, err)
         self.assertIsNotNone(result)
 
@@ -49,7 +54,7 @@ class TestAppregistry(unittest.TestCase):
         self.assertEqual(0, code, err)
 
     def test_create_get_delete_subscription(self):
-        appName = "scloudsubscription"
+        appName = SCLOUD_APP
 
         # Create-app
         code, result, err = appreg("create-app", appName, "web", "--redirect-urls", "https://redirect1.com", "--title",
@@ -79,7 +84,7 @@ class TestAppregistry(unittest.TestCase):
         self.assertEqual(0, code, err)
 
     def test_rotate_secret(self):
-        appName = "scloudrotatesecret"
+        appName = SCLOUD_APP
 
         code, result, err = appreg("create-app", appName, "web", "--redirect-urls", "https://redirect1.com", "--title",
                                    appName)
