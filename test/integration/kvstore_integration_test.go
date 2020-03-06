@@ -37,7 +37,7 @@ var (
 func makeCollectionName(t *testing.T, ctx string) (id, kvCollection string) {
 	dsname := makeDSName(ctx)
 	kvds, err := createKVCollectionDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	return kvds.KvCollectionDataset().Id, fmt.Sprintf("%s.%s", kvds.KvCollectionDataset().Module, kvds.KvCollectionDataset().Name)
 }
 
@@ -71,25 +71,25 @@ func TestIntegrationIndexEndpoints(t *testing.T) {
 		kvstore.IndexDefinition{
 			Name:   testIndex,
 			Fields: fields[:]})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, indexDescription)
 	assert.Equal(t, *indexDescription.Collection, kvCollection)
 
 	// Validate if the index was created
 	time.Sleep(2 * time.Second)
 	indexes, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, indexes)
 	assert.Equal(t, len(indexes), 1)
 	assert.Equal(t, indexes[0].Name, testIndex)
 
 	// Delete the test index
 	err = getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	// Validate if the index was deleted
 	result, err := getClient(t).KVStoreService.ListIndexes(kvCollection)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotNil(t, result)
 	assert.Equal(t, len(result), 0)
 }
@@ -135,7 +135,7 @@ func TestIntegrationDeleteNonExistingIndex(t *testing.T) {
 
 	// DeleteIndex
 	err := getClient(t).KVStoreService.DeleteIndex(kvCollection, testIndex)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 // --------------------------------------------------------------------------------
@@ -170,18 +170,18 @@ func TestPutRecords(t *testing.T) {
 
 	var res map[string]interface{}
 	err := json.Unmarshal([]byte(record), &res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// test replace record
 	key, err := getClient(t).KVStoreService.PutRecord(kvCollection, keys[0], res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, key)
 	assert.Equal(t, (*key).Key, keys[0])
 
 	// test insert record
 	recordID := "recordID"
 	key, err = getClient(t).KVStoreService.PutRecord(kvCollection, recordID, res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, key)
 	assert.Equal(t, (*key).Key, recordID)
 }
@@ -196,7 +196,7 @@ func TestGetRecordByKey(t *testing.T) {
 
 	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, result)
 	assert.NotNil(t, (*result)["_key"])
 	assert.Equal(t, (*result)["capacity_gb"], float64(8))
@@ -214,7 +214,7 @@ func TestDeleteRecordByKey(t *testing.T) {
 
 	// Delete record by key
 	err := getClient(t).KVStoreService.DeleteRecordByKey(kvCollection, keys[0])
-	require.Nil(t, err)
+	require.NoError(t, err)
 	time.Sleep(2 * time.Second)
 
 	// Validate that the record has been deleted
@@ -238,7 +238,7 @@ func TestDeleteRecord(t *testing.T) {
 	// Create query to test delete operation
 	query := kvstore.DeleteRecordsQueryParams{}.SetQuery(`{"capacity_gb": 16}`)
 	err := getClient(t).KVStoreService.DeleteRecords(kvCollection, &query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Validate that the record has been deleted
 	time.Sleep(2 * time.Second)
@@ -260,7 +260,7 @@ func TestListRecords(t *testing.T) {
 	queryParams := kvstore.ListRecordsQueryParams{Filters: filter}
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, &queryParams)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, records)
 	for _, r := range records {
 		// assert that the records we return have the kvpair we expect: size=tiny
@@ -291,10 +291,10 @@ func createTestRecord(t *testing.T, kvCollection string) []string {
         ]`
 	var res []map[string]interface{}
 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, keys)
 	assert.Equal(t, len(keys), 3)
 

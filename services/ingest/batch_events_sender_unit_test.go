@@ -64,7 +64,7 @@ func TestBatchEventsSenderState(t *testing.T) {
 	require.Nil(t, err, "error creating ingest service client")
 
 	collector, err := client.NewBatchEventsSender(5, 1000, 20)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	// Validate initial values
 	assert.Equal(t, 0, len(collector.EventsQueue))
@@ -82,28 +82,28 @@ func TestReadEvent(t *testing.T) {
 	require.Nil(t, err, "error creating ingest service client")
 
 	collector, err := client.NewBatchEventsSender(5, 1000, 20)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	var event Event
 	event = Event{Body: 1}
 	size, err := collector.readEvent(event)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 1, size)
 
 	event = Event{Body: true}
 	size, err = collector.readEvent(event)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 4, size)
 
 	str := "str"
 	event = Event{Body: str}
 	size, err = collector.readEvent(event)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 5, size)
 
 	event = Event{Body: `[1,"h"]`}
 	size, err = collector.readEvent(event)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 11, size)
 
 	jsonstr := `{"age": 27,
@@ -115,6 +115,6 @@ func TestReadEvent(t *testing.T) {
 	}`
 	event = Event{Body: jsonstr}
 	size, err = collector.readEvent(event)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, 179, size)
 }

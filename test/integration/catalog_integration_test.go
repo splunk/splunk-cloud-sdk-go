@@ -196,7 +196,7 @@ func createDatasetFieldName(datasetID string, fieldName string, client *sdk.Clie
 
 	testField := catalog.FieldPost{Name: fieldName, Datatype: &dataType, Fieldtype: &fieldType, Prevalence: &prevalenceType}
 	resultField, err := client.CatalogService.CreateFieldForDataset(datasetID, testField)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, resultField)
 	return resultField
 }
@@ -232,7 +232,7 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 // Test CreateIndexDataset
 func TestCreateIndexDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, indexds.IndexDataset().Id)
 	require.NotNil(t, indexds)
 	require.Equal(t, catalog.IndexDatasetKindIndex, indexds.IndexDataset().Kind)
@@ -242,10 +242,10 @@ func TestCreateIndexDataset(t *testing.T) {
 // Test CreateImportDataset
 func TestCreateImportDataset(t *testing.T) {
 	indexds, err := createIndexDataset(t, makeDSName("crix"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, indexds.IndexDataset().Id)
 	importds, err := createImportDatasetByName(t, makeDSName("crim"), indexds.IndexDataset().Name, testutils.TestModule)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, importds.ImportDataset().Id)
 	require.NotNil(t, importds)
 	require.Equal(t, catalog.ImportDatasetKindModelImport, importds.ImportDataset().Kind)
@@ -255,12 +255,12 @@ func TestCreateImportDataset(t *testing.T) {
 func TestCreateDatasetImport(t *testing.T) {
 	client := getSdkClient(t)
 	ds1, err := createIndexDataset(t, makeDSName("crix1"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds1.IndexDataset())
 	indexds1 := ds1.IndexDataset()
 	defer cleanupDataset(t, indexds1.Id)
 	ds2, err := createIndexDatasetWithModule(t, makeDSName("crix2"), testutils.TestModule2)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds2.IndexDataset())
 	indexds2 := ds2.IndexDataset()
 	defer cleanupDataset(t, indexds2.Id)
@@ -270,7 +270,7 @@ func TestCreateDatasetImport(t *testing.T) {
 		Module: indexds2.Module,
 	}
 	ids, err := client.CatalogService.CreateDatasetImport(indexds1.Id, impby)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, catalog.ImportDatasetKindModelImport, ids.Kind)
 	assert.Equal(t, indexds1.Module, ids.SourceModule)
 	assert.Equal(t, indexds1.Name, ids.SourceName)
@@ -280,7 +280,7 @@ func TestCreateDatasetImport(t *testing.T) {
 // Test CreateKVCollectionDataset
 func TestKVCollectionDataset(t *testing.T) {
 	kvds, err := createKVCollectionDataset(t, makeDSName("crkv"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, kvds.KvCollectionDataset().Id)
 	require.NotNil(t, kvds)
 	require.Equal(t, catalog.KvCollectionDatasetKindKvcollection, kvds.KvCollectionDataset().Kind)
@@ -289,7 +289,7 @@ func TestKVCollectionDataset(t *testing.T) {
 // Test CreateLookupDataset
 func TestLookupDataset(t *testing.T) {
 	lookupds, err := createLookupDataset(t, makeDSName("crlk"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, lookupds.LookupDataset().Id)
 	require.NotNil(t, lookupds)
 	require.Equal(t, catalog.LookupDatasetKindLookup, lookupds.LookupDataset().Kind)
@@ -298,7 +298,7 @@ func TestLookupDataset(t *testing.T) {
 // Test CreateMetricDataset
 func TestMetricDataset(t *testing.T) {
 	metricds, err := createMetricDataset(t, makeDSName("crmx"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, metricds.MetricDataset().Id)
 	require.NotNil(t, metricds)
 	require.Equal(t, catalog.MetricDatasetKindMetric, metricds.MetricDataset().Kind)
@@ -307,7 +307,7 @@ func TestMetricDataset(t *testing.T) {
 // Test CreateViewDataset
 func TestViewDataset(t *testing.T) {
 	viewds, err := createViewDataset(t, makeDSName("crvw"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, viewds.ViewDataset().Id)
 	require.NotNil(t, viewds)
 	require.Equal(t, catalog.ViewDatasetKindView, viewds.ViewDataset().Kind)
@@ -317,7 +317,7 @@ func TestViewDataset(t *testing.T) {
 func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 	// create dataset
 	ds, err := createLookupDataset(t, makeDSName("409"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 	_, err = createLookupDataset(t, makeDSName("409"))
 	require.NotNil(t, err)
@@ -353,11 +353,11 @@ func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 // Test ListDatasets
 func TestListAllDatasets(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("getall"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotZero(t, len(datasets))
 
 	// We should be able assert that the kinds are known and relate to their associated model
@@ -369,7 +369,7 @@ func TestListAllDatasets(t *testing.T) {
 // Test TestListDatasetsComplexFilter
 func TestListDatasetsComplexFilter(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("cxfil"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	req := &catalog.ListDatasetsQueryParams{Filter: "kind==\"kvcollection\" AND name==\"test_externalName\""}
@@ -382,58 +382,58 @@ func TestListDatasetsComplexFilter(t *testing.T) {
 func TestListDatasetsCount(t *testing.T) {
 	// Create three datasets
 	ds1, err := createLookupDataset(t, makeDSName("cnt1"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds1.LookupDataset().Id)
 	ds2, err := createLookupDataset(t, makeDSName("cnt2"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds2.LookupDataset().Id)
 	ds3, err := createLookupDataset(t, makeDSName("cnt3"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds3.LookupDataset().Id)
 
 	// There should be at least three
 	query := catalog.ListDatasetsQueryParams{}.SetCount(3)
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.Equal(t, 3, len(datasets))
 }
 
 //Test TestListDatasetsOrderBy
 func TestListDatasetsOrderBy(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("orby"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&catalog.ListDatasetsQueryParams{Orderby: []string{"id Descending"}})
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotZero(t, len(datasets))
 }
 
 // Test TestListDatasetsAll with filter, count, and orderby
 func TestListDatasetsAll(t *testing.T) {
 	ds, err := createViewDataset(t, makeDSName("fco"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.ViewDataset().Id)
 
 	query := catalog.ListDatasetsQueryParams{}.SetFilter(`kind=="view"`).SetFilter(`id=="` + ds.ViewDataset().Id + "\"").SetOrderby([]string{"id Descending"}).SetCount(1)
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotZero(t, len(datasets))
 }
 
 // Test GetDataset by id and resource name
 func TestGetDatasetByID(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("cnt"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds.LookupDataset())
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds1.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds1.LookupDataset().Name)
 	ds2, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Module+"."+ds.LookupDataset().Name, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds2.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds2.LookupDataset().Name)
 }
@@ -452,7 +452,7 @@ func TestUpdateIndexDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	indexds, err := createIndexDataset(t, makeDSName("uix"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, indexds.IndexDataset().Id)
 	require.NotNil(t, indexds.IndexDataset())
 	notdisabled := !disabled
@@ -463,7 +463,7 @@ func TestUpdateIndexDataset(t *testing.T) {
 	newindexds, err := client.CatalogService.UpdateDataset(
 		indexds.IndexDataset().Module+"."+indexds.IndexDataset().Name,
 		catalog.MakeDatasetPatchFromIndexDatasetPatch(uidx))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, !disabled, newindexds.IndexDataset().Disabled)
 	assert.Equal(t, newftime, *newindexds.IndexDataset().FrozenTimePeriodInSecs)
 
@@ -474,7 +474,7 @@ func TestUpdateIndexDataset(t *testing.T) {
 	newindexds1, err := client.CatalogService.UpdateDatasetById(
 		indexds.IndexDataset().Id,
 		catalog.MakeDatasetPatchFromIndexDatasetPatch(uidx1))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, disabled, newindexds1.IndexDataset().Disabled)
 	assert.Equal(t, frozenTimePeriodInSecs, *newindexds1.IndexDataset().FrozenTimePeriodInSecs)
 }
@@ -486,7 +486,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	metricds, err := createMetricDataset(t, makeDSName("umx"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, metricds.MetricDataset().Id)
 	require.NotNil(t, metricds)
 	notdisabled := !disabled
@@ -499,7 +499,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 		FrozenTimePeriodInSecs: &newftime,
 	}
 	newmetricsds, err := client.CatalogService.UpdateDataset(metricds.MetricDataset().Id, catalog.MakeDatasetPatchFromMetricDatasetPatch(umx))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, newname, newmetricsds.MetricDataset().Name)
 	assert.Equal(t, newmod, newmetricsds.MetricDataset().Module)
 	assert.Equal(t, newowner, newmetricsds.MetricDataset().Owner)
@@ -514,18 +514,18 @@ func TestUpdateMetricDataset(t *testing.T) {
 // 	client := getSdkClient(t)
 //
 //	 newmetricsds, err := createMetricDataset(t, makeDSName("umx"))
-//	 require.Nil(t, err)
+//	 require.NoError(t, err)
 //	 defer cleanupDataset(t, newmetricsds.Id)
 //	 require.NotNil(t, newmetricsds)
 //
 //	 newindexds, err := createIndexDataset(t, makeDSName("indx"))
-//	 require.Nil(t, err)
+//	 require.NoError(t, err)
 //	 defer cleanupDataset(t, newindexds.Id)
 //	 require.NotNil(t, newindexds)
 //
 //
 // 	importds, err := createImportDatasetByName(t, makeDSName("uim"), newmetricsds.Name, newmetricsds.Module)
-// 	require.Nil(t, err)
+// 	require.NoError(t, err)
 // 	defer cleanupDataset(t, importds.Id)
 // 	require.NotNil(t, importds)
 // 	uim := &catalog.ImportDatasetPatch{
@@ -533,7 +533,7 @@ func TestUpdateMetricDataset(t *testing.T) {
 // 		Module: &newindexds.Module,
 // 	}
 // 	newimportds, err := client.CatalogService.UpdateImportDataset(uim, importds.Id)
-// 	require.Nil(t, err)
+// 	require.NoError(t, err)
 // 	assert.Equal(t, newindexds.Name, newimportds.SourceName)
 // 	assert.Equal(t, newindexds.Module, newimportds.SourceModule)
 // }
@@ -545,10 +545,10 @@ func TestUpdateJobDataset(t *testing.T) {
 	// Create a search job to ensure at least one job exists
 	searchjobReq := search.SearchJob{Query: "| from index:main | head 1"}
 	searchjob, err := client.SearchService.CreateJob(searchjobReq)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	query := catalog.ListDatasetsQueryParams{}.SetFilter(fmt.Sprintf(`sid=="%s"`, *searchjob.Sid)).SetCount(1)
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotZero(t, len(datasets))
 	jobds := datasets[0].JobDataset()
 	require.NotNil(t, jobds.Id)
@@ -563,7 +563,7 @@ func TestUpdateLookupDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	lookupds, err := createLookupDataset(t, makeDSName("ulk"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, lookupds.LookupDataset().Id)
 	require.NotNil(t, lookupds)
 	notcasematch := !caseMatch
@@ -577,7 +577,7 @@ func TestUpdateLookupDataset(t *testing.T) {
 		Filter:             &filter,
 	}
 	newlookupds, err := client.CatalogService.UpdateDataset(lookupds.LookupDataset().Id, catalog.MakeDatasetPatchFromLookupDatasetPatch(ulk))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEqual(t, "cantchangethis", newlookupds.LookupDataset().Id)
 	assert.NotEqual(t, "cantchangethat", newlookupds.LookupDataset().Kind)
 	assert.Equal(t, "test1@splunk.com", newlookupds.LookupDataset().Owner)
@@ -591,7 +591,7 @@ func TestUpdateViewDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	viewds, err := createViewDataset(t, makeDSName("uvw"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, viewds.ViewDataset().Id)
 	require.NotNil(t, viewds)
 	newname = fmt.Sprintf("newvw%d", testutils.TimeSec)
@@ -601,7 +601,7 @@ func TestUpdateViewDataset(t *testing.T) {
 		Owner:  &newowner,
 	}
 	newviewds, err := client.CatalogService.UpdateDataset(viewds.ViewDataset().Id, catalog.MakeDatasetPatchFromViewDatasetPatch(uvw))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, newname, newviewds.ViewDataset().Name)
 	assert.Equal(t, newmod, newviewds.ViewDataset().Module)
 	assert.Equal(t, newowner, newviewds.ViewDataset().Owner)
@@ -624,10 +624,10 @@ func TestDeleteDataset(t *testing.T) {
 	client := getSdkClient(t)
 
 	ds, err := createViewDataset(t, makeDSName("delv"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	err = client.CatalogService.DeleteDataset(ds.ViewDataset().Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	_, err = client.CatalogService.GetDataset(ds.ViewDataset().Id, nil)
 	require.NotNil(t, err)
@@ -652,7 +652,7 @@ func TestCreateRules(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("crmat")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 	assert.Equal(t, ruleName, rule.Name)
 	assert.Equal(t, ruleMatch, rule.Match)
@@ -665,7 +665,7 @@ func TestUpdateRule(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("crmatu")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 
 	mat := `sourcetype::new_sourcetype`
@@ -681,7 +681,7 @@ func TestUpdateRuleById(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("crmatu")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 
 	mat := `sourcetype::new_sourcetype`
@@ -697,7 +697,7 @@ func TestCreateRuleDataAlreadyPresent(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("409")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 	assert.Equal(t, ruleName, rule.Name)
 	assert.Equal(t, ruleMatch, rule.Match)
@@ -733,11 +733,11 @@ func TestGetAllRules(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("getall")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 
 	rules, err := client.CatalogService.ListRules(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotZero(t, len(rules))
 }
 
@@ -748,11 +748,11 @@ func TestGetRuleByID(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("getid")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, rule.Id)
 
 	ruleByID, err := client.CatalogService.GetRule(rule.Id)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotNil(t, ruleByID)
 }
 
@@ -772,11 +772,11 @@ func TestDeleteRuleById(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("delid")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, rule.Id)
 
 	err = client.CatalogService.DeleteRuleById(rule.Id)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	var resp http.Response
 	r, err := client.CatalogService.GetRuleById(rule.Id, &resp)
@@ -792,11 +792,11 @@ func TestDeleteRule(t *testing.T) {
 	// create rule
 	ruleName := makeRuleName("delrl")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, rule.Id)
 
 	err = client.CatalogService.DeleteRule(ruleModule + "." + ruleName)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	var resp http.Response
 	r, err := client.CatalogService.GetRuleById(rule.Id, &resp)
@@ -827,7 +827,7 @@ func TestDatasetFieldGetList(t *testing.T) {
 	prevalenceType := catalog.FieldPrevalenceAll
 
 	d, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, d.LookupDataset())
 	ds := d.LookupDataset()
 	defer cleanupDataset(t, ds.Id)
@@ -839,48 +839,48 @@ func TestDatasetFieldGetList(t *testing.T) {
 	testField2 := catalog.FieldPost{Name: fieldName2, Datatype: &dataType, Fieldtype: &fieldType, Prevalence: &prevalenceType}
 	f1, err := client.CatalogService.CreateFieldForDataset(ds.Id, testField1)
 	f2, err := client.CatalogService.CreateFieldForDataset(ds.Id, testField2)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	// Get
 	results, err := client.CatalogService.GetFieldByIdForDataset(ds.Id, f1.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, results)
 	require.NotNil(t, f1)
 	require.NotNil(t, f2)
 	assert.Equal(t, testField1.Name, f1.Name)
 	assert.Equal(t, testField2.Name, f2.Name)
 	res1, err := client.CatalogService.GetFieldByIdForDataset(ds.Module+"."+ds.Name, f1.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, res1)
 	assert.Equal(t, testField1.Name, res1.Name)
 	res2, err := client.CatalogService.GetFieldByIdForDataset(ds.Id, f2.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, res2)
 	assert.Equal(t, testField2.Name, res2.Name)
 	fdid1, err := client.CatalogService.GetFieldByIdForDatasetById(ds.Id, f1.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, fdid1)
 	assert.Equal(t, testField1.Name, fdid1.Name)
 	fdid2, err := client.CatalogService.GetFieldByIdForDatasetById(ds.Id, f2.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, fdid2)
 	assert.Equal(t, testField2.Name, fdid2.Name)
 	fr1, err := client.CatalogService.GetFieldById(f1.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, fr1)
 	assert.Equal(t, testField1.Name, fr1.Name)
 	fr2, err := client.CatalogService.GetFieldById(f2.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, fr2)
 	assert.Equal(t, testField2.Name, fr2.Name)
 	// List
 	fs, err := client.CatalogService.ListFields(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(fs) > 0)
 	fs, err = client.CatalogService.ListFieldsForDataset(ds.Module+"."+ds.Name, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(fs) > 0)
 	fs, err = client.CatalogService.ListFieldsForDatasetById(ds.Id, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(fs) > 0)
 }
 
@@ -896,13 +896,13 @@ func TestCreateDatasetField(t *testing.T) {
 	prevalenceType := catalog.FieldPrevalenceAll
 
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field
 	testField := catalog.FieldPost{Name: fieldName, Datatype: &dataType, Fieldtype: &fieldType, Prevalence: &prevalenceType}
 	resultField, err := client.CatalogService.CreateFieldForDataset(ds.LookupDataset().Id, testField)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
 	// TODO: catalog.String, Dimension, and All do not match "S", "D", "A" - why is this?
@@ -913,7 +913,7 @@ func TestCreateDatasetField(t *testing.T) {
 
 	// Validate the creation of a new dataset field
 	resultField, err = client.CatalogService.GetFieldByIdForDataset(ds.LookupDataset().Id, resultField.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, resultField)
 }
 
@@ -924,7 +924,7 @@ func TestPatchDatasetField(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("patf")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field
@@ -933,7 +933,7 @@ func TestPatchDatasetField(t *testing.T) {
 	// Update the existing dataset field
 	dataType := catalog.FieldDataTypeString
 	resultField, err = client.CatalogService.UpdateFieldByIdForDataset(ds.LookupDataset().Id, resultField.Id, catalog.FieldPatch{Datatype: &dataType})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
 	assert.Equal(t, catalog.FieldDataTypeString, resultField.Datatype)
@@ -942,7 +942,7 @@ func TestPatchDatasetField(t *testing.T) {
 
 	dataType = catalog.FieldDataTypeNumber
 	resultField, err = client.CatalogService.UpdateFieldByIdForDatasetById(ds.LookupDataset().Id, resultField.Id, catalog.FieldPatch{Datatype: &dataType})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
 	assert.Equal(t, catalog.FieldDataTypeNumber, resultField.Datatype)
@@ -957,7 +957,7 @@ func TestDeleteDatasetField(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("delf")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field
@@ -965,7 +965,7 @@ func TestDeleteDatasetField(t *testing.T) {
 
 	// Delete dataset field
 	err = client.CatalogService.DeleteFieldByIdForDataset(ds.LookupDataset().Id, resultField.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Validate the deletion of the dataset field
 	_, err = client.CatalogService.GetFieldByIdForDataset(ds.LookupDataset().Id, resultField.Id)
@@ -988,7 +988,7 @@ func TestCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
 	prevalenceType := catalog.FieldPrevalenceAll
 
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field
@@ -1012,7 +1012,7 @@ func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 	fieldType := catalog.FieldTypeDimension
 	prevalenceType := catalog.FieldPrevalenceAll
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field
@@ -1038,7 +1038,7 @@ func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("f400")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Create a new dataset field but with no data
@@ -1058,7 +1058,7 @@ func TestPatchDatasetFieldDataNotFound(t *testing.T) {
 	dsname := makeDSName("fp404")
 	datatype := catalog.FieldDataTypeString
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Update non-existent dataset field
@@ -1076,7 +1076,7 @@ func TestDeleteDatasetFieldDataNotFound(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("fd404")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Delete dataset field
@@ -1094,7 +1094,7 @@ func TestRuleActions(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("acts")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// create new field in the dataset
@@ -1103,14 +1103,14 @@ func TestRuleActions(t *testing.T) {
 	// Create rule and rule action
 	ruleName := makeRuleName("acts")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 
 	// Create rule action - alias
 	alias := "myfieldalias"
 	aap := catalog.AliasActionPost{Field: field.Name, Alias: alias, Kind: catalog.AliasActionKindAlias}
 	action1, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromAliasActionPost(aap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action1.AliasAction().Id)
 
 	//update rule action by id
@@ -1132,7 +1132,7 @@ func TestRuleActions(t *testing.T) {
 	mode := "auto"
 	actionPost := catalog.AutoKvActionPost{Mode: mode, Kind: catalog.AutoKvActionKindAutokv}
 	action2, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromAutoKvActionPost(actionPost))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action2.AutoKvAction().Id)
 
 	//update rule action
@@ -1146,7 +1146,7 @@ func TestRuleActions(t *testing.T) {
 	expr := "\"some expression\""
 	eap := catalog.EvalActionPost{Field: field.Name, Expression: expr, Kind: catalog.EvalActionKindEval}
 	action3, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromEvalActionPost(eap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action3.EvalAction().Id)
 
 	//update rule eval action
@@ -1160,7 +1160,7 @@ func TestRuleActions(t *testing.T) {
 	expr2 := "myexpression2"
 	lap := catalog.LookupActionPost{Expression: expr2, Kind: catalog.LookupActionKindLookup}
 	action4, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromLookupActionPost(lap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action4.LookupAction().Id)
 
 	//update rule action
@@ -1175,13 +1175,13 @@ func TestRuleActions(t *testing.T) {
 	pattern := `field=myfield "From: (?<from>.*) To: (?<to>.*)"`
 	rap := catalog.RegexActionPost{Field: field.Name, Pattern: pattern, Limit: &limit, Kind: catalog.RegexActionKindRegex}
 	action5, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromRegexActionPost(rap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, *action5.RegexAction().Limit == 5)
 	defer cleanupRuleAction(t, rule.Id, action5.RegexAction().Id)
 
 	rap = catalog.RegexActionPost{Field: field.Name, Pattern: pattern, Limit: nil, Kind: catalog.RegexActionKindRegex}
 	action6, err := client.CatalogService.CreateActionForRule(rule.Module+"."+rule.Name, catalog.MakeActionPostFromRegexActionPost(rap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, (*int32)(nil), action6.RegexAction().Limit)
 	defer cleanupRuleAction(t, rule.Id, action6.RegexAction().Id)
 
@@ -1217,7 +1217,7 @@ func TestRuleActions(t *testing.T) {
 
 	// Delete action
 	err = client.CatalogService.DeleteActionByIdForRule(rule.Module+"."+rule.Name, action6.RegexAction().Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestCreateActionForRuleById(t *testing.T) {
@@ -1226,7 +1226,7 @@ func TestCreateActionForRuleById(t *testing.T) {
 	// Create dataset
 	dsname := makeDSName("actrid")
 	ds, err := createLookupDataset(t, dsname)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// create new field in the dataset
@@ -1235,14 +1235,14 @@ func TestCreateActionForRuleById(t *testing.T) {
 	// Create rule and rule action
 	ruleName := makeRuleName("actid")
 	rule, err := client.CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRule(t, rule.Id)
 
 	// Create rule action - alias
 	alias := "myfieldalias2"
 	aap := catalog.AliasActionPost{Field: field.Name, Alias: alias, Kind: catalog.AliasActionKindAlias}
 	action1, err := client.CatalogService.CreateActionForRuleById(rule.Id, catalog.MakeActionPostFromAliasActionPost(aap))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action1.AliasAction().Id)
 }
 
@@ -1252,14 +1252,14 @@ func TestGetModules(t *testing.T) {
 
 	// test using NO filter
 	modules, err := client.CatalogService.ListModules(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(modules) > 0)
 
 	// test using filter
 	filter := make(url.Values)
 	filter.Add("filter", `module==""`)
 	modules, err = client.CatalogService.ListModules(&catalog.ListModulesQueryParams{Filter: `module==""`})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, 1, len(modules))
 	assert.Equal(t, "", *modules[0].Name)
 }
@@ -1277,29 +1277,29 @@ func TestCRUDDashboard(t *testing.T) {
 		Definition: "{\"title\":\"this is my test dashboard\"}"})
 
 	defer client.CatalogService.DeleteDashboardById(db.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 	assert.Equal(t, module, db.Module)
 
 	//List
 	db, err = client.CatalogService.GetDashboardById(db.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 
 	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + dashboardName)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 
 	//ListAll
 	count := int32(10)
 	dbs, err := client.CatalogService.ListDashboards(&catalog.ListDashboardsQueryParams{Count: &count, Filter: `module=="allmembers"`, Orderby: []string{"id Descending"}})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotZero(t, len(dbs))
 
 	//Update
 	name_new := dashboardName + "_updated"
 	dashboard, err := client.CatalogService.UpdateDashboardById(db.Id, catalog.DashboardPatch{Name: &name_new})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, name_new, dashboard.Name)
 
 	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + name_new)
@@ -1307,7 +1307,7 @@ func TestCRUDDashboard(t *testing.T) {
 
 	//Delete
 	err = client.CatalogService.DeleteDashboardById(db.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Create
 	name1 := makeDSName("dashboard")
@@ -1321,13 +1321,13 @@ func TestCRUDDashboard(t *testing.T) {
 	// Update by name
 	name_new1 := name1 + "_updated"
 	err = client.CatalogService.UpdateDashboardByResourceName(module+"."+name1, catalog.DashboardPatch{Name: &name_new1})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + name_new1)
 	assert.Equal(t, name_new, db.Name)
 
 	// Delete by name
 	err = client.CatalogService.DeleteDashboardByResourceName(module + "." + name_new1)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func createWorkflow(client *sdk.Client) (*catalog.Workflow, error) {
@@ -1353,29 +1353,29 @@ func TestCRUDWorkflow(t *testing.T) {
 	client := getSdkClient(t)
 
 	wf, err := createWorkflow(client)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowById(wf.Id)
 
 	//List
 	wfg, err := client.CatalogService.GetWorkflowById(wf.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, wf.Id, wfg.Id)
 
 	//ListAll
 	dbs, err := client.CatalogService.ListWorkflows(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(dbs) > 0)
 
 	//Update
 	name_new := "newname"
 	err = client.CatalogService.UpdateWorkflowById(wf.Id, catalog.WorkflowPatch{Name: &name_new})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	wf, err = client.CatalogService.GetWorkflowById(wf.Id)
 	assert.Equal(t, name_new, wf.Name)
 
 	//Delete
 	err = client.CatalogService.DeleteWorkflowById(wf.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 // Test workflowBuild
@@ -1383,33 +1383,33 @@ func TestCRUDWorkflowBuild(t *testing.T) {
 	client := getSdkClient(t)
 
 	wf, err := createWorkflow(client)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowById(wf.Id)
 
 	wfb, err := createWorkflowBuild(client, wf)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
 
 	//List
 	wfg, err := client.CatalogService.GetWorkflowBuildById(wf.Id, wfb.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, wfb.Id, wfg.Id)
 
 	//ListAll
 	dbs, err := client.CatalogService.ListWorkflowBuilds(wf.Id, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(dbs) > 0)
 
 	//Update
 	name_new := "newname"
 	err = client.CatalogService.UpdateWorkflowBuildById(wf.Id, wfb.Id, catalog.WorkflowBuildPatch{Name: &name_new})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	wfb, err = client.CatalogService.GetWorkflowBuildById(wf.Id, wfb.Id)
 	assert.Equal(t, name_new, *wfb.Name)
 
 	//Delete
 	err = client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 // Test workflowRun
@@ -1417,11 +1417,11 @@ func TestCRUDWorkflowRun(t *testing.T) {
 	client := getSdkClient(t)
 
 	wf, err := createWorkflow(client)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowById(wf.Id)
 
 	wfb, err := createWorkflowBuild(client, wf)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
 
 	wfr, err := client.CatalogService.CreateWorkflowRun(
@@ -1432,29 +1432,29 @@ func TestCRUDWorkflowRun(t *testing.T) {
 			Inputdata:   []string{},
 			Timeoutsecs: 10})
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CatalogService.DeleteWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
 
 	//List
 	wfg, err := client.CatalogService.GetWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, wfr.Id, wfg.Id)
 
 	//ListAll
 	dbs, err := client.CatalogService.ListWorkflowRuns(wf.Id, wfb.Id, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.True(t, len(dbs) > 0)
 
 	//Update
 	name_new := "newname"
 	err = client.CatalogService.UpdateWorkflowRunById(wf.Id, wfb.Id, wfr.Id, catalog.WorkflowRunPatch{Name: &name_new})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	wfr, err = client.CatalogService.GetWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
 	assert.Equal(t, name_new, *wfr.Name)
 
 	//Delete
 	err = client.CatalogService.DeleteWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 // TODO: tim - CreateRelationship is failing with 500 error - catalog is working the issue
@@ -1465,13 +1465,13 @@ func TestCRUDWorkflowRun(t *testing.T) {
 // 	// Create datasets
 // 	dsname1 := makeDSName("rs1")
 // 	ds1, err := createIndexDataset(t, dsname1)
-// 	require.Nil(t, err)
+// 	require.NoError(t, err)
 // 	require.NotNil(t, ds1.GetIndexDataset())
 // 	inds1 := ds1.GetIndexDataset()
 // 	defer cleanupDataset(t, inds1.Id)
 // 	dsname2 := makeDSName("rs2")
 // 	ds2, err := createIndexDataset(t, dsname2)
-// 	require.Nil(t, err)
+// 	require.NoError(t, err)
 // 	require.NotNil(t, ds2.GetIndexDataset())
 // 	inds2 := ds2.GetIndexDataset()
 // 	defer cleanupDataset(t, inds2.Id)
@@ -1495,7 +1495,7 @@ func TestCRUDWorkflowRun(t *testing.T) {
 // 	var resp http.Response
 // 	rel, err := client.CatalogService.CreateRelationship(r, &resp)
 // 	// TODO: 500 err
-// 	require.Nil(t, err)
+// 	require.NoError(t, err)
 // 	require.NotNil(t, rel)
 // 	// CreateRelationship
 // 	// GetRelationshipById
@@ -1509,7 +1509,7 @@ func TestCRUDWorkflowRun(t *testing.T) {
 func TestCRUDAnnotations(t *testing.T) {
 	client := getSdkClient(t)
 	ds, err := createLookupDataset(t, makeDSName("annx"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, ds.LookupDataset())
 	lds := ds.LookupDataset()
 
@@ -1527,14 +1527,14 @@ func TestCRUDAnnotations(t *testing.T) {
 		}
 	}
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, annotationId)
 
 	defer client.CatalogService.DeleteAnnotationOfDatasetById(lds.Id, annotationId)
 	require.Equal(t, DefaultAnnotationTypeId, annotationId)
 	// Create
 	an2, err := client.CatalogService.CreateAnnotationForDatasetByResourceName(lds.Module+"."+lds.Name, m)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	for k, p := range *an2 {
 		if k == "annotationtypeid" {
 			annotationId = p.(string)
@@ -1546,18 +1546,18 @@ func TestCRUDAnnotations(t *testing.T) {
 
 	// List
 	ans1, err := client.CatalogService.ListAnnotationsForDatasetById(lds.Id, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.True(t, len(ans1) > 0)
 
 	ans2, err := client.CatalogService.ListAnnotationsForDatasetByResourceName(lds.Module+"."+lds.Name, nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.True(t, len(ans2) > 0)
 
 	// Delete
 	//Currently failing with a 404 - Annotation not found error, under investigation
 	//err = client.CatalogService.DeleteAnnotationOfDatasetById(lds.Id, annotationId)
-	//require.Nil(t, err)
+	//require.NoError(t, err)
 	//err = client.CatalogService.DeleteAnnotationOfDatasetByResourceName(lds.Module+"."+lds.Name, annotationId)
-	//require.Nil(t, err)
+	//require.NoError(t, err)
 
 }
