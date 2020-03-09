@@ -26,10 +26,6 @@ func executeCliCommand(cmd *exec.Cmd) (string, error, string) {
 	cmd.Stdout = &out
 	err := cmd.Run()
 
-	//fmt.Println(out.String())
-	//fmt.Println(err)
-	//fmt.Println(stderr.String())
-
 	return out.String(), err, stderr.String()
 }
 
