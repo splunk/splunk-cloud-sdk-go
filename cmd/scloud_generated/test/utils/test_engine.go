@@ -35,7 +35,9 @@ func executeOneTestCase(line string, testarg string, stdinFileName string) (stri
 
 	args := splitArgs(line)
 	for index, ele := range args {
-		args[index] = strings.Trim(ele, " ")
+		ele = strings.Trim(ele, " ")
+		ele = strings.Trim(ele, "'")
+		args[index] = strings.Replace(ele, `\n`, "\n", -1)
 	}
 
 	os.Remove(auth.Abspath(".scloudTestOutput"))
