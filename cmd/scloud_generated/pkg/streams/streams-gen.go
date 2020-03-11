@@ -183,13 +183,30 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
+	var bypassValidationDefault bool
+	bypassValidation := &bypassValidationDefault
+	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
+	if err != nil {
+		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
 
-	resp, err := CreatePipelineOverride(inputDatafile)
+	resp, err := CreatePipelineOverride(bypassValidation, description, name, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -204,13 +221,23 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
+	var description string
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
 
-	resp, err := CreateTemplateOverride(inputDatafile)
+	resp, err := CreateTemplateOverride(description, name, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -405,8 +432,18 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var nodeUuid string
+	err = flags.ParseFlag(cmd.Flags(), "node-uuid", &nodeUuid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "node-uuid": ` + err.Error())
+	}
+	var targetPortName string
+	err = flags.ParseFlag(cmd.Flags(), "target-port-name", &targetPortName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "target-port-name": ` + err.Error())
+	}
 
-	resp, err := GetInputSchemaOverride(inputDatafile)
+	resp, err := GetInputSchemaOverride(nodeUuid, targetPortName, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -426,8 +463,20 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var nodeUuidDefault string
+	nodeUuid := &nodeUuidDefault
+	err = flags.ParseFlag(cmd.Flags(), "node-uuid", &nodeUuid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "node-uuid": ` + err.Error())
+	}
+	var sourcePortNameDefault string
+	sourcePortName := &sourcePortNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "source-port-name", &sourcePortName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "source-port-name": ` + err.Error())
+	}
 
-	resp, err := GetOutputSchemaOverride(inputDatafile)
+	resp, err := GetOutputSchemaOverride(nodeUuid, sourcePortName, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1054,6 +1103,24 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
+	var bypassValidationDefault bool
+	bypassValidation := &bypassValidationDefault
+	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
+	if err != nil {
+		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
+	}
+	var createUserIdDefault string
+	createUserId := &createUserIdDefault
+	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -1064,8 +1131,14 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
 
-	resp, err := UpdatePipelineOverride(id, inputDatafile)
+	resp, err := UpdatePipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1080,10 +1153,22 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
 	var inputDatafile string
 	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 	var templateId string
 	err = flags.ParseFlag(cmd.Flags(), "template-id", &templateId)
@@ -1091,7 +1176,7 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
 
-	resp, err := UpdateTemplateOverride(templateId, inputDatafile)
+	resp, err := UpdateTemplateOverride(templateId, description, name, inputDatafile)
 	if err != nil {
 		return err
 	}

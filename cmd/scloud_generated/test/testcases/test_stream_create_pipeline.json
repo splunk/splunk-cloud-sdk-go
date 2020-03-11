@@ -1,33 +1,27 @@
 {
-  "nodeUuid": "3682041e-1814-4bd7-8e60-5c889b822585",
-  "targetPortName": "input",
-  "uplJson": {
-    "edges": [
+  "edges": [
       {
-        "sourceNode": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
+        "sourceNode": "e3f9eb13-a847-4717-9f83-89c815b03d01",
         "sourcePort": "output",
-        "targetNode": "3682041e-1814-4bd7-8e60-5c889b822585",
+        "targetNode": "6f14bd4d-e299-4677-b5db-441b40acd501",
         "targetPort": "input"
       }
     ],
     "nodes": [
       {
         "attributes": {},
-        "id": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
+        "id": "e3f9eb13-a847-4717-9f83-89c815b03d01",
         "op": "read-splunk-firehose",
         "resolvedId": "read-splunk-firehose"
       },
       {
         "attributes": {},
         "dataset": "dataset:main",
-        "id": "3682041e-1814-4bd7-8e60-5c889b822585",
+        "id": "6f14bd4d-e299-4677-b5db-441b40acd501",
         "module": "module:index",
         "op": "write-index",
         "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
       }
     ],
-    "rootNode": [
-      "3682041e-1814-4bd7-8e60-5c889b822585"
-    ]
-  }
+    "rootNode": ["6f14bd4d-e299-4677-b5db-441b40acd501"]
 }

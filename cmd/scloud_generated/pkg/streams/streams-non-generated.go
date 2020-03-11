@@ -6,13 +6,14 @@ package streams
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strings"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth"
 	model "github.com/splunk/splunk-cloud-sdk-go/services/streams"
 )
 
 // CreatePipeline
-func CreatePipelineOverride(filename string) (*model.PipelineResponse, error) {
+func CreatePipelineOverride(bypassValidation *bool, description *string, name string, filename string) (*model.PipelineResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -23,13 +24,13 @@ func CreatePipelineOverride(filename string) (*model.PipelineResponse, error) {
 		return nil, err
 	}
 
-	var data model.PipelineRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.CreatePipeline(data)
+	resp, err := client.StreamsService.CreatePipeline(model.PipelineRequest{Name: name, Data: data, BypassValidation: bypassValidation, Description: description})
 	if err != nil {
 		return nil, err
 	}
@@ -164,24 +165,26 @@ func UpdateGroupOverride(groupId string, filename string) (*model.GroupResponse,
 }
 
 // UpdatePipelineOverride
-func UpdatePipelineOverride(id string, filename string) (*model.PipelineResponse, error) {
+func UpdatePipelineOverride(id string, bypassValidation *bool, createUserId *string, description *string, name *string, filename string) (*model.PipelineResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+	var data *model.UplPipeline
+	if strings.Trim(filename, " ") != "" {
+		byets, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(byets, &data)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	var data model.PipelinePatchRequest
-	err = json.Unmarshal(byets, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := client.StreamsService.UpdatePipeline(id, data)
+	resp, err := client.StreamsService.UpdatePipeline(id, model.PipelinePatchRequest{Data: data, Name: name, CreateUserId: createUserId, Description: description, BypassValidation: bypassValidation})
 	if err != nil {
 		return nil, err
 	}
@@ -189,24 +192,26 @@ func UpdatePipelineOverride(id string, filename string) (*model.PipelineResponse
 }
 
 // UpdateTemplateOverride
-func UpdateTemplateOverride(templateId string, filename string) (*model.TemplateResponse, error) {
+func UpdateTemplateOverride(templateId string, description *string, name *string, filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+	var data *model.UplPipeline
+	if strings.Trim(filename, " ") != "" {
+		byets, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		err = json.Unmarshal(byets, &data)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	var data model.TemplatePatchRequest
-	err = json.Unmarshal(byets, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := client.StreamsService.UpdateTemplate(templateId, data)
+	resp, err := client.StreamsService.UpdateTemplate(templateId, model.TemplatePatchRequest{Data: data, Description: description, Name: name})
 	if err != nil {
 		return nil, err
 	}
@@ -225,13 +230,13 @@ func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) 
 		return nil, err
 	}
 
-	var data model.ValidateRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.ValidatePipeline(data)
+	resp, err := client.StreamsService.ValidatePipeline(model.ValidateRequest{Upl: data})
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +294,7 @@ func CompileSPLOverride(filename string) (*model.UplPipeline, error) {
 }
 
 // CreateTemplateOverride
-func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
+func CreateTemplateOverride(description string, name string, filename string) (*model.TemplateResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -300,13 +305,13 @@ func CreateTemplateOverride(filename string) (*model.TemplateResponse, error) {
 		return nil, err
 	}
 
-	var data model.TemplateRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.CreateTemplate(data)
+	resp, err := client.StreamsService.CreateTemplate(model.TemplateRequest{Data: data, Name: name, Description: description})
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +394,7 @@ func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 }
 
 // GetOutputSchemaOverride
-func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) {
+func GetOutputSchemaOverride(nodeUuid *string, sourcePortName *string, filename string) (map[string]model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -400,13 +405,13 @@ func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) 
 		return nil, err
 	}
 
-	var data model.GetOutputSchemaRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.GetOutputSchema(data)
+	resp, err := client.StreamsService.GetOutputSchema(model.GetOutputSchemaRequest{UplJson: data, NodeUuid: nodeUuid, SourcePortName: sourcePortName})
 	if err != nil {
 		return nil, err
 	}
@@ -414,7 +419,7 @@ func GetOutputSchemaOverride(filename string) (map[string]model.UplType, error) 
 }
 
 // GetInputSchemaOverride
-func GetInputSchemaOverride(filename string) (*model.UplType, error) {
+func GetInputSchemaOverride(nodeUuid string, targetPortName string, filename string) (*model.UplType, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -425,13 +430,13 @@ func GetInputSchemaOverride(filename string) (*model.UplType, error) {
 		return nil, err
 	}
 
-	var data model.GetInputSchemaRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.GetInputSchema(data)
+	resp, err := client.StreamsService.GetInputSchema(model.GetInputSchemaRequest{NodeUuid: nodeUuid, UplJson: data, TargetPortName: targetPortName})
 	if err != nil {
 		return nil, err
 	}

@@ -1,13 +1,14 @@
 streams compile-dsl --input-datafile testcases/test_stream_compileDSL.txt
 
-streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
-streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.txt
-streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.txt
-streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f --input-datafile testcases/test_stream_update_pipeline.txt
+streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
+streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.json
+streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.json
+streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
+
 streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
 
 # go sdk dosesn't have a working example for expandPipeline endpoint
-#streams expand-pipeline --input-datafile testcases/test_stream_expand_pipeline.txt
+#streams expand-pipeline --createUserId "test@splunk.com"  --input-datafile testcases/test_stream_expand_pipeline.txt
 
 streams list-pipelines
 streams get-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
@@ -26,14 +27,14 @@ streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 
 streams get-registry --local false
 
-streams create-template --input-datafile testcases/test_stream_create_template.txt
+streams create-template --input-datafile testcases/test_stream_create_template.json --name testTemplate1582068227 --description "integration test template"
 streams list-templates
 streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
 
 streams create-group --input-datafile testcases/test_stream_create_group.txt
 
-streams get-input-schema --input-datafile testcases/test_stream_get_input_schema.txt
+streams get-input-schema  --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "input" --input-datafile testcases/test_stream_get_input_schema.json
 
 # go sdk dosesn't have a working example for GetOutputSchema endpoint
-#streams get-output-schema --input-datafile testcases/test_stream_get_output_schema.txt
+#streams get-output-schema --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "output" --input-datafile testcases/test_stream_get_output_schema.json
 
