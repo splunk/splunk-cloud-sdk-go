@@ -349,10 +349,28 @@ func init() {
 
 	streamsCmd.AddCommand(createPipelineCmd)
 
+	var createPipelineName string
+	createPipelineCmd.Flags().StringVar(&createPipelineName, "name", "", "This is a required parameter. The name of the pipeline.")
+	createPipelineCmd.MarkFlagRequired("name")
+
+	var createPipelineBypassValidation string
+	createPipelineCmd.Flags().StringVar(&createPipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
+
+	var createPipelineDescription string
+	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
+
 	var createPipelineInputDatafile string
 	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(createTemplateCmd)
+
+	var createTemplateDescription string
+	createTemplateCmd.Flags().StringVar(&createTemplateDescription, "description", "", "This is a required parameter. Template description")
+	createTemplateCmd.MarkFlagRequired("description")
+
+	var createTemplateName string
+	createTemplateCmd.Flags().StringVar(&createTemplateName, "name", "", "This is a required parameter. Template name")
+	createTemplateCmd.MarkFlagRequired("name")
 
 	var createTemplateInputDatafile string
 	createTemplateCmd.Flags().StringVar(&createTemplateInputDatafile, "input-datafile", "", "The input data file.")
@@ -417,6 +435,14 @@ func init() {
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 
+	var getInputSchemaNodeUuid string
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaNodeUuid, "node-uuid", "", "This is a required parameter. The function ID.")
+	getInputSchemaCmd.MarkFlagRequired("node-uuid")
+
+	var getInputSchemaTargetPortName string
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter. The name of the input port.")
+	getInputSchemaCmd.MarkFlagRequired("target-port-name")
+
 	var getInputSchemaInputDatafile string
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "The input data file.")
 
@@ -424,6 +450,12 @@ func init() {
 
 	var getOutputSchemaInputDatafile string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "The input data file.")
+
+	var getOutputSchemaNodeUuid string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", "", "The function ID. If omitted, returns the output schema for all functions.")
+
+	var getOutputSchemaSourcePortName string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaSourcePortName, "source-port-name", "", "The name of the output port. Deprecated.")
 
 	streamsCmd.AddCommand(getPipelineCmd)
 
@@ -591,6 +623,14 @@ func init() {
 
 	streamsCmd.AddCommand(putTemplateCmd)
 
+	var putTemplateDescription string
+	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "This is a required parameter. Template description")
+	putTemplateCmd.MarkFlagRequired("description")
+
+	var putTemplateName string
+	putTemplateCmd.Flags().StringVar(&putTemplateName, "name", "", "This is a required parameter. Template name")
+	putTemplateCmd.MarkFlagRequired("name")
+
 	var putTemplateTemplateId string
 	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	putTemplateCmd.MarkFlagRequired("template-id")
@@ -639,8 +679,20 @@ func init() {
 	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "This is a required parameter. id of the pipeline to update")
 	updatePipelineCmd.MarkFlagRequired("id")
 
+	var updatePipelineBypassValidation string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
+
+	var updatePipelineCreateUserId string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
+
+	var updatePipelineDescription string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
+
 	var updatePipelineInputDatafile string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "The input data file.")
+
+	var updatePipelineName string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", "", "The name of the pipeline.")
 
 	streamsCmd.AddCommand(updateTemplateCmd)
 
@@ -648,8 +700,14 @@ func init() {
 	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
 	updateTemplateCmd.MarkFlagRequired("template-id")
 
+	var updateTemplateDescription string
+	updateTemplateCmd.Flags().StringVar(&updateTemplateDescription, "description", "", "Template description")
+
 	var updateTemplateInputDatafile string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateInputDatafile, "input-datafile", "", "The input data file.")
+
+	var updateTemplateName string
+	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

@@ -2,19 +2,19 @@
 REQUEST URL:streams/v2beta1/pipelines/compile-dsl
 REQUEST BODY:{{"dsl":"events = read-splunk-firehose(); write-index(events,\"module:index\",\"dataset:main\");"}}
 
-#testcase: streams create-pipeline --input-datafile testcases/test_stream_create_pipeline.txt
+#testcase: streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 REQUEST URL:streams/v2beta1/pipelines
 REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"attributes":{},"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"6f14bd4d-e299-4677-b5db-441b40acd501","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["6f14bd4d-e299-4677-b5db-441b40acd501"]},"name":"passthrough","bypassValidation":true,"description":"A passthrough pipeline"}}
 
-#testcase: streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.txt
+#testcase: streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.json
 REQUEST URL:streams/v2beta1/pipelines/merge
 REQUEST BODY:{{"inputTree":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99df379dd6","sourcePort":"output","targetNode":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","targetPort":"input"}],"nodes":[{"attributes":{},"id":"00ba387b-a219-4f68-b3a8-8b99df379dd6","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["fbe6269f-30d3-4922-be6c-84a9f2b84bb3"]},"mainTree":{"edges":[{"sourceNode":"97cfd7ee-f744-43d9-8338-2e164ebecf91","sourcePort":"output","targetNode":"9e6dec08-9658-46be-914b-fc872d9b7828","targetPort":"input"}],"nodes":[{"attributes":{},"id":"97cfd7ee-f744-43d9-8338-2e164ebecf91","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"9e6dec08-9658-46be-914b-fc872d9b7828","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["9e6dec08-9658-46be-914b-fc872d9b7828"]},"targetNode":"9e6dec08-9658-46be-914b-fc872d9b7828","targetPort":"input"}}
 
-#testcase: streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.txt
+#testcase: streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.json
 REQUEST URL:streams/v2beta1/pipelines/validate
 REQUEST BODY:{{"upl":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99df379dd6","sourcePort":"output","targetNode":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","targetPort":"input"}],"nodes":[{"attributes":{},"id":"00ba387b-a219-4f68-b3a8-8b99df379dd6","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["fbe6269f-30d3-4922-be6c-84a9f2b84bb3"]}}}
 
-#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f --input-datafile testcases/test_stream_update_pipeline.txt
+#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
 REQUEST URL:streams/v2beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
 REQUEST BODY:{{"description":"Updated Integration Test Pipeline testPipelinfe1582068339","name":"updatedtestPipelinfe1582068339"}}
 
@@ -74,7 +74,7 @@ REQUEST BODY:<nil>
 REQUEST URL:streams/v2beta1/pipelines/registry?local=false
 REQUEST BODY:<nil>
 
-#testcase: streams create-template --input-datafile testcases/test_stream_create_template.txt
+#testcase: streams create-template --input-datafile testcases/test_stream_create_template.json --name testTemplate1582068227 --description "integration test template"
 REQUEST URL:streams/v2beta1/templates
 REQUEST BODY:{{"data":{"edges":[{"sourceNode":"fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4","sourcePort":"output","targetNode":"6854c231-23ea-49ae-8471-ba84d4e3548f","targetPort":"input"}],"nodes":[{"attributes":{},"id":"fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"6854c231-23ea-49ae-8471-ba84d4e3548f","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["6854c231-23ea-49ae-8471-ba84d4e3548f"]},"description":"integration test template","name":"testTemplate1582068227"}}
 
@@ -90,7 +90,7 @@ REQUEST BODY:<nil>
 REQUEST URL:streams/v2beta1/groups
 REQUEST BODY:{{"arguments":[{"groupArg":"time","position":0,"type":"long"}],"ast":{"edges":[{"sourceNode":"9953fede-aa87-4a6e-823a-64176915723b","sourcePort":"output","targetNode":"b3c6a990-ee54-4a20-a900-67cca16c18be","targetPort":"input"}],"nodes":[{"attributes":{},"id":"9953fede-aa87-4a6e-823a-64176915723b","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"b3c6a990-ee54-4a20-a900-67cca16c18be","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["b3c6a990-ee54-4a20-a900-67cca16c18be"]},"attributes":null,"categories":null,"mappings":null,"name":"test-fn","outputType":""}}
 
-#testcase: streams get-input-schema --input-datafile testcases/test_stream_get_input_schema.txt
+#testcase: streams get-input-schema  --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "input" --input-datafile testcases/test_stream_get_input_schema.json
 REQUEST URL:streams/v2beta1/pipelines/input-schema
 REQUEST BODY:{{"nodeUuid":"3682041e-1814-4bd7-8e60-5c889b822585","targetPortName":"input","uplJson":{"edges":[{"sourceNode":"1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84","sourcePort":"output","targetNode":"3682041e-1814-4bd7-8e60-5c889b822585","targetPort":"input"}],"nodes":[{"attributes":{},"id":"1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"attributes":{},"dataset":"dataset:main","id":"3682041e-1814-4bd7-8e60-5c889b822585","module":"module:index","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}],"rootNode":["3682041e-1814-4bd7-8e60-5c889b822585"]}}}
 

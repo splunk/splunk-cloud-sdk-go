@@ -1,0 +1,29 @@
+{
+  "edges": [
+    {
+      "sourceNode": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
+      "sourcePort": "output",
+      "targetNode": "3682041e-1814-4bd7-8e60-5c889b822585",
+      "targetPort": "input"
+    }
+  ],
+  "nodes": [
+    {
+      "attributes": {},
+      "id": "1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84",
+      "op": "read-splunk-firehose",
+      "resolvedId": "read-splunk-firehose"
+    },
+    {
+      "attributes": {},
+      "dataset": "dataset:main",
+      "id": "3682041e-1814-4bd7-8e60-5c889b822585",
+      "module": "module:index",
+      "op": "write-index",
+      "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
+    }
+  ],
+  "rootNode": [
+    "3682041e-1814-4bd7-8e60-5c889b822585"
+  ]
+}
