@@ -18,6 +18,10 @@ func TestCli_collect(t *testing.T) {
 	test_engine.RunTest("testcases/collect_test", t)
 }
 
+func TestCli_forwarders(t *testing.T) {
+	test_engine.RunTest("testcases/forwarders_test", t)
+}
+
 func TestCli_identity(t *testing.T) {
 	test_engine.RunTest("testcases/identity_test", t)
 }
