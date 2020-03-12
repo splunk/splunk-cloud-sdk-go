@@ -600,8 +600,19 @@ func init() {
 
 	streamsCmd.AddCommand(mergePipelinesCmd)
 
-	var mergePipelinesInputDatafile string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputDatafile, "input-datafile", "", "The input data file.")
+	var mergePipelinesTargetNode string
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "This is a required parameter. The function ID of the merge target in the main pipeline.")
+	mergePipelinesCmd.MarkFlagRequired("target-node")
+
+	var mergePipelinesTargetPort string
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "This is a required parameter. The input port of the merge target in the main pipeline.")
+	mergePipelinesCmd.MarkFlagRequired("target-port")
+
+	var mergePipelinesInputTree string
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputTree, "input-tree", "", "The input data file for inputTree.")
+
+	var mergePipelinesMainTree string
+	mergePipelinesCmd.Flags().StringVar(&mergePipelinesMainTree, "main-tree", "", "The input data file for mainTree.")
 
 	streamsCmd.AddCommand(putConnectionCmd)
 
