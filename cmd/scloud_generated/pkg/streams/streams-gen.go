@@ -948,13 +948,28 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 
 	// Parse all flags
 
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	var inputTree string
+	err = flags.ParseFlag(cmd.Flags(), "input-tree", &inputTree)
 	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+		return fmt.Errorf(`error parsing "input-tree": ` + err.Error())
+	}
+	var mainTree string
+	err = flags.ParseFlag(cmd.Flags(), "main-tree", &mainTree)
+	if err != nil {
+		return fmt.Errorf(`error parsing "main-tree": ` + err.Error())
+	}
+	var targetNode string
+	err = flags.ParseFlag(cmd.Flags(), "target-node", &targetNode)
+	if err != nil {
+		return fmt.Errorf(`error parsing "target-node": ` + err.Error())
+	}
+	var targetPort string
+	err = flags.ParseFlag(cmd.Flags(), "target-port", &targetPort)
+	if err != nil {
+		return fmt.Errorf(`error parsing "target-port": ` + err.Error())
 	}
 
-	resp, err := MergePipelinesOverride(inputDatafile)
+	resp, err := MergePipelinesOverride(targetNode, targetPort, inputTree, mainTree)
 	if err != nil {
 		return err
 	}

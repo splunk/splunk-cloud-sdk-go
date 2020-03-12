@@ -319,24 +319,35 @@ func CreateTemplateOverride(description string, name string, filename string) (*
 }
 
 // MergePipelinesOverride
-func MergePipelinesOverride(filename string) (*model.UplPipeline, error) {
+func MergePipelinesOverride(targetNode string, targetPort string, inputTreeFilename string, mainTreeFilename string) (*model.UplPipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	byets, err := ioutil.ReadFile(inputTreeFilename)
 	if err != nil {
 		return nil, err
 	}
 
-	var data model.PipelinesMergeRequest
+	var data model.UplPipeline
 	err = json.Unmarshal(byets, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.MergePipelines(data)
+	byets, err = ioutil.ReadFile(mainTreeFilename)
+	if err != nil {
+		return nil, err
+	}
+
+	var data2 model.UplPipeline
+	err = json.Unmarshal(byets, &data2)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.StreamsService.MergePipelines(model.PipelinesMergeRequest{InputTree: data, MainTree: data2, TargetNode: targetNode, TargetPort: targetPort})
 	if err != nil {
 		return nil, err
 	}
