@@ -26,6 +26,11 @@ func Test_record_collect(t *testing.T) {
 	test_engine.Record_test_result("testcases/collect_test", testhook_arg, t)
 }
 
+func Test_record_forwarders(t *testing.T) {
+	skipCI(t)
+	test_engine.Record_test_result("testcases/forwarders_test", testhook_arg, t)
+}
+
 func Test_record_identity(t *testing.T) {
 	skipCI(t)
 	test_engine.Record_test_result("testcases/identity_test", testhook_arg, t)
