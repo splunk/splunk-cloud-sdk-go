@@ -1,4 +1,4 @@
-streams compile-dsl --input-datafile testcases/test_stream_compileDSL.txt
+streams compile-dsl --input-datafile testcases/test_stream_compileDSL.json
 
 streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 streams merge-pipelines --input-datafile testcases/test_stream_merge_pipelines.json
@@ -8,7 +8,7 @@ streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --descriptio
 streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
 
 # go sdk dosesn't have a working example for expandPipeline endpoint
-#streams expand-pipeline --createUserId "test@splunk.com"  --input-datafile testcases/test_stream_expand_pipeline.txt
+#streams expand-pipeline --createUserId "test@splunk.com"  --input-datafile testcases/test_stream_expand_pipeline.json
 
 streams list-pipelines
 streams get-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
@@ -21,8 +21,8 @@ streams list-connectors
 streams list-connections
 
 streams create-connection --connector-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
-streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_update_connection.txt
-streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_put_connection.txt
+streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_update_connection.json
+streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_put_connection.json
 streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 
 streams get-registry --local false
@@ -31,7 +31,7 @@ streams create-template --input-datafile testcases/test_stream_create_template.j
 streams list-templates
 streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
 
-streams create-group --input-datafile testcases/test_stream_create_group.txt
+streams create-group --input-datafile testcases/test_stream_create_group.json
 
 streams get-input-schema  --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "input" --input-datafile testcases/test_stream_get_input_schema.json
 
