@@ -23,6 +23,27 @@
 
 package identity
 
+// ListGroupsQueryParams represents valid query parameters for the ListGroups operation
+// For convenience ListGroupsQueryParams can be formed in a single statement, for example:
+//     `v := ListGroupsQueryParams{}.SetAccess(...)`
+type ListGroupsQueryParams struct {
+	// Access : List only the groups with specified access permission.
+	Access ListGroupsaccess `key:"access"`
+}
+
+func (q ListGroupsQueryParams) SetAccess(v ListGroupsaccess) ListGroupsQueryParams {
+	q.Access = v
+	return q
+}
+
+// ListGroupsaccess : List only the groups with specified access permission.
+type ListGroupsaccess string
+
+// List of ListGroupsaccess values
+const (
+	ListGroupsaccessWrite ListGroupsaccess = "write"
+)
+
 // ValidateTokenQueryParams represents valid query parameters for the ValidateToken operation
 // For convenience ValidateTokenQueryParams can be formed in a single statement, for example:
 //     `v := ValidateTokenQueryParams{}.SetInclude(...)`

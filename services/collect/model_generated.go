@@ -95,7 +95,7 @@ type ExecutionConflictError struct {
 
 type ExecutionPatch struct {
 	// The given status of the execution
-	Status *ExecutionPatchStatus `json:"status,omitempty"`
+	Status ExecutionPatchStatus `json:"status"`
 }
 
 // ExecutionPatchStatus : The given status of the execution

@@ -612,10 +612,12 @@ func (s *Service) ListGroupRoles(group string, resp ...*http.Response) ([]string
 	ListGroups - identity service endpoint
 	List the groups that exist in a given tenant.
 	Parameters:
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) ListGroups(resp ...*http.Response) ([]string, error) {
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v2beta1/groups`, nil)
+func (s *Service) ListGroups(query *ListGroupsQueryParams, resp ...*http.Response) ([]string, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/identity/v2beta1/groups`, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1004,6 +1006,35 @@ func (s *Service) RemoveRolePermission(role string, permission string, resp ...*
 		return err
 	}
 	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
+	RevokePrincipalAuthTokens - identity service endpoint
+	Revoke all existing tokens issued to a principal
+	Parameters:
+		principal: The principal name.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error {
+	pp := struct {
+		Principal string
+	}{
+		Principal: principal,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/identity/v2beta1/principals/{{.Principal}}/revoke`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u})
 	if response != nil {
 		defer response.Body.Close()
 

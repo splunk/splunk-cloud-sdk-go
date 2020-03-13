@@ -57,7 +57,7 @@ func TestListJobs(t *testing.T) {
 
 	query := search.ListJobsQueryParams{}.SetCount(0).SetStatus(search.SearchStatusRunning)
 	response, err := client.SearchService.ListJobs(&query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotNil(t, response)
 }
 
@@ -67,7 +67,7 @@ func TestGetJob(t *testing.T) {
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(*job.Sid)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.Equal(t, job.Sid, response.Sid)
 	assert.NotEmpty(t, response.Status)
@@ -78,7 +78,7 @@ func TestCreateJobWithTimerange(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
 	response, err := client.SearchService.CreateJob(PostJobsRequestWithEarliest)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.Equal(t, PostJobsRequest.Query, response.Query)
 	assert.Equal(t, search.SearchStatusRunning, *response.Status)
@@ -91,7 +91,7 @@ func TestCreateJobWithModule(t *testing.T) {
 	job, err := client.SearchService.CreateJob(PostJobsRequestModule)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	response, err := client.SearchService.GetJob(*job.Sid)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	//assert.Equal(t, *job.Sid, response.Sid)
 	assert.NotEmpty(t, response.Status)
@@ -106,7 +106,7 @@ func TestUpdateJobToBeCanceled(t *testing.T) {
 	assert.Equal(t, *(job.Status), search.SearchStatusRunning)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	_, err = client.SearchService.UpdateJob(*job.Sid, search.UpdateJob{Status: search.UpdateJobStatusCanceled})
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	job, err = client.SearchService.GetJob(*job.Sid)
 	// status should be canceled ??? but now we always get status failed from search service
 	//assert.Equal(t,*(job.Status),search.SEARCH_JOB_STATUS_CANCELED)
@@ -119,7 +119,7 @@ func TestUpdateJobToBeFinalized(t *testing.T) {
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	_, err = client.SearchService.UpdateJob(*job.Sid, search.UpdateJob{Status: search.UpdateJobStatusFinalized})
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 func TestGetJobResultsNextLink(t *testing.T) {
@@ -129,7 +129,7 @@ func TestGetJobResultsNextLink(t *testing.T) {
 	require.Emptyf(t, err, "Error creating job: %s", err)
 	query := search.ListResultsQueryParams{}.SetCount(0).SetOffset(0)
 	response, err := client.SearchService.ListResults(*job.Sid, &query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, response)
 	assert.NotEmpty(t, response.NextLink)
 }
@@ -142,7 +142,7 @@ func TestGetJobResults(t *testing.T) {
 	query := search.ListResultsQueryParams{}.SetCount(5).SetOffset(0)
 	response, err := client.SearchService.ListResults(*job.Sid, &query)
 
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.Equal(t, 5, len((*response).Results))
 }
@@ -162,6 +162,8 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 
 //TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client := getClient(t)
 	require.NotNil(t, client)
 
@@ -188,7 +190,7 @@ func TestListEventsSummary(t *testing.T) {
 	query := search.ListEventsSummaryQueryParams{}.SetCount(3).SetOffset(0).SetField("host")
 	response, err := client.SearchService.ListEventsSummary(*job.Sid, &query)
 
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.Equal(t, 3, len((*response).Results))
 }
@@ -205,7 +207,7 @@ func TestListFieldsSummary(t *testing.T) {
 	query := search.ListFieldsSummaryQueryParams{}.SetEarliest("-1s")
 	response, err := client.SearchService.ListFieldsSummary(*job.Sid, &query)
 
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.True(t, *(*response).EventCount == 5)
 	assert.NotEmpty(t, (*response).Fields)
@@ -222,13 +224,15 @@ func TestListTimeBuckets(t *testing.T) {
 
 	response, err := client.SearchService.ListTimeBuckets(*job.Sid)
 
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.True(t, *(*response).EventCount == 5)
 }
 
 //TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
@@ -238,20 +242,35 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 	})
 
 	concurrentSearches := 20
+
 	var wg sync.WaitGroup
 	wg.Add(concurrentSearches)
+
 	jobIDs := make(chan string, concurrentSearches)
+	errors := make(chan error, concurrentSearches)
+
 	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
 			defer wg.Done()
-			job, _ := service.CreateJob(PostJobsRequest)
-			require.NotNil(t, job)
-			jobIDs <- *job.Sid
+			job, err := service.CreateJob(PostJobsRequest)
+
+			if err != nil {
+				errors <- err
+			} else {
+				jobIDs <- *job.Sid
+			}
 		}(searchService)
 	}
+
 	// block on all jobs being created
 	wg.Wait()
 	close(jobIDs)
+	close(errors)
+
+	for err := range errors {
+		assert.NoError(t, err)
+	}
+
 	cnt := 0
 	for id := range jobIDs {
 		assert.NotEmpty(t, id)
@@ -271,23 +290,35 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 	})
 
 	concurrentSearches := 15
+
 	var wg sync.WaitGroup
 	wg.Add(concurrentSearches)
+
 	jobIDs := make(chan string, concurrentSearches)
+	errors := make(chan error, concurrentSearches)
+
 	for i := 0; i < concurrentSearches; i++ {
 		go func(service *search.Service) {
 			defer wg.Done()
-			job, _ := service.CreateJob(PostJobsRequest)
-			if job != nil {
+			job, err := service.CreateJob(PostJobsRequest)
+
+			if err != nil {
+				errors <- err
+			} else {
 				jobIDs <- *job.Sid
 			}
 		}(searchService)
 	}
+
 	// block on all jobs being created
 	wg.Wait()
 	close(jobIDs)
+	close(errors)
 
-	time.Sleep(100)
+	for err := range errors {
+		assert.NoError(t, err)
+	}
+
 	cnt := 0
 	for id := range jobIDs {
 		assert.NotEmpty(t, id)
@@ -305,7 +336,7 @@ func TestRetryOff(t *testing.T) {
 		RetryRequests: false,
 	})
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	concurrentSearches := 50
 	var wg sync.WaitGroup

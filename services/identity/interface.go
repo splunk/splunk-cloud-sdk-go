@@ -170,9 +170,10 @@ type Servicer interface {
 		ListGroups - identity service endpoint
 		List the groups that exist in a given tenant.
 		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListGroups(resp ...*http.Response) ([]string, error)
+	ListGroups(query *ListGroupsQueryParams, resp ...*http.Response) ([]string, error)
 	/*
 		ListMemberGroups - identity service endpoint
 		Returns a list of groups that a member belongs to within a tenant.
@@ -269,6 +270,14 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RemoveRolePermission(role string, permission string, resp ...*http.Response) error
+	/*
+		RevokePrincipalAuthTokens - identity service endpoint
+		Revoke all existing tokens issued to a principal
+		Parameters:
+			principal: The principal name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
 	/*
 		ValidateToken - identity service endpoint
 		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
