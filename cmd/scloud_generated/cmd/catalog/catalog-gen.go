@@ -155,13 +155,6 @@ var createDatasetIndexDatasetCmd = &cobra.Command{
 	RunE:  impl.CreateDatasetIndexDataset,
 }
 
-// createDatasetJobDataset -- Create a new dataset.
-var createDatasetJobDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-job-dataset",
-	Short: "Create a new dataset.",
-	RunE:  impl.CreateDatasetJobDataset,
-}
-
 // createDatasetKvCollectionDataset -- Create a new dataset.
 var createDatasetKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-kv-collection-dataset",
@@ -694,13 +687,6 @@ var updateDatasetByIdIndexDatasetCmd = &cobra.Command{
 	RunE:  impl.UpdateDatasetByIdIndexDataset,
 }
 
-// updateDatasetByIdJobDataset -- Update a specific dataset.
-var updateDatasetByIdJobDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-job-dataset",
-	Short: "Update a specific dataset.",
-	RunE:  impl.UpdateDatasetByIdJobDataset,
-}
-
 // updateDatasetByIdKvCollectionDataset -- Update a specific dataset.
 var updateDatasetByIdKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-kv-collection-dataset",
@@ -741,13 +727,6 @@ var updateDatasetIndexDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-index-dataset",
 	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetIndexDataset,
-}
-
-// updateDatasetJobDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-var updateDatasetJobDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-job-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
-	RunE:  impl.UpdateDatasetJobDataset,
 }
 
 // updateDatasetKvCollectionDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
@@ -1247,98 +1226,6 @@ func init() {
 	var createDatasetIndexDatasetName string
 	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetName, "name", "", "This is a required parameter. The dataset name. Dataset names must be unique within each module.")
 	createDatasetIndexDatasetCmd.MarkFlagRequired("name")
-
-	catalogCmd.AddCommand(createDatasetJobDatasetCmd)
-	var createDatasetJobDatasetCollectEventSummary string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetCollectEventSummary, "collect-event-summary", "false", "Was the event summary requested for this searhc job?")
-
-	var createDatasetJobDatasetCollectFieldSummary string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetCollectFieldSummary, "collect-field-summary", "false", "Was the field summary requested for this searhc job?")
-
-	var createDatasetJobDatasetCollectTimeBuckets string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetCollectTimeBuckets, "collect-time-buckets", "false", "Were the time bucketes requested for this searhc job?")
-
-	var createDatasetJobDatasetCompletionTime string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetCompletionTime, "completion-time", "", "This is a required parameter. Time that the job was completed")
-	createDatasetJobDatasetCmd.MarkFlagRequired("completionTime")
-
-	var createDatasetJobDatasetDeleteTime string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetDeleteTime, "delete-time", "", "This is a required parameter. The time the dataset will be available in S3.")
-	createDatasetJobDatasetCmd.MarkFlagRequired("deleteTime")
-
-	var createDatasetJobDatasetDispatchTime string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetDispatchTime, "dispatch-time", "", "This is a required parameter. Time that the job was dispatched")
-	createDatasetJobDatasetCmd.MarkFlagRequired("dispatchTime")
-
-	var createDatasetJobDatasetExecutionTime float32
-	createDatasetJobDatasetCmd.Flags().Float32Var(&createDatasetJobDatasetExecutionTime, "execution-time", 0.0, "The runtime of the search in seconds.")
-
-	var createDatasetJobDatasetExtractAllFields string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetExtractAllFields, "extract-all-fields", "false", "Should the search produce all fields (including those not explicity mentioned in the SPL)?")
-
-	var createDatasetJobDatasetFields string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetFields, "fields", "", "The fields to be associated with this dataset.")
-
-	var createDatasetJobDatasetHasSideEffects string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetHasSideEffects, "has-side-effects", "false", "Did the SPL query cause any side effects on a dataset?")
-
-	var createDatasetJobDatasetId string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
-
-	var createDatasetJobDatasetKind string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values job")
-	createDatasetJobDatasetCmd.MarkFlagRequired("kind")
-
-	var createDatasetJobDatasetMaxTime int32
-	createDatasetJobDatasetCmd.Flags().Int32Var(&createDatasetJobDatasetMaxTime, "max-time", 0, "The maximum number of seconds to run this search before finishing.")
-
-	var createDatasetJobDatasetModule string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetModule, "module", "", "The name of the module to create the new dataset in.")
-
-	var createDatasetJobDatasetName string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetName, "name", "", "This is a required parameter. The dataset name. Dataset names must be unique within each module.")
-	createDatasetJobDatasetCmd.MarkFlagRequired("name")
-
-	var createDatasetJobDatasetParameters string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetParameters, "parameters", "", "This is a required parameter. Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.")
-	createDatasetJobDatasetCmd.MarkFlagRequired("parameters")
-
-	var createDatasetJobDatasetParent string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetParent, "parent", "", "The parent's ID of the search job.")
-
-	var createDatasetJobDatasetPercentComplete int32
-	createDatasetJobDatasetCmd.Flags().Int32Var(&createDatasetJobDatasetPercentComplete, "percent-complete", 0, "An estimate of how complete the search job is.")
-
-	var createDatasetJobDatasetQuery string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetQuery, "query", "", "This is a required parameter. The SPL query string for the search job.")
-	createDatasetJobDatasetCmd.MarkFlagRequired("query")
-
-	var createDatasetJobDatasetResolvedEarliest string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetResolvedEarliest, "resolved-earliest", "", "This is a required parameter. Resolved earliest time for the job")
-	createDatasetJobDatasetCmd.MarkFlagRequired("resolvedEarliest")
-
-	var createDatasetJobDatasetResolvedLatest string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetResolvedLatest, "resolved-latest", "", "This is a required parameter. Resolved latest time for the job")
-	createDatasetJobDatasetCmd.MarkFlagRequired("resolvedLatest")
-
-	var createDatasetJobDatasetResultsAvailable int32
-	createDatasetJobDatasetCmd.Flags().Int32Var(&createDatasetJobDatasetResultsAvailable, "results-available", 0, "The instantaneous number of results produced by the search job.")
-
-	var createDatasetJobDatasetSearchHead string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetSearchHead, "search-head", "", "The search head that started this search job.")
-
-	var createDatasetJobDatasetSid string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetSid, "sid", "", "This is a required parameter. The ID assigned to the search job.")
-	createDatasetJobDatasetCmd.MarkFlagRequired("sid")
-
-	var createDatasetJobDatasetSpl string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetSpl, "spl", "", "The SPLv2 version of the search job query string.")
-
-	var createDatasetJobDatasetStatus string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetStatus, "status", "", "The current status of the search job.")
-
-	var createDatasetJobDatasetTimelineMetadata string
-	createDatasetJobDatasetCmd.Flags().StringVar(&createDatasetJobDatasetTimelineMetadata, "timeline-metadata", "", "Availability of timeline metadata artifacts.")
 
 	catalogCmd.AddCommand(createDatasetKvCollectionDatasetCmd)
 	var createDatasetKvCollectionDatasetFields string
@@ -2590,85 +2477,6 @@ func init() {
 	var updateDatasetIndexDatasetOwner string
 	updateDatasetIndexDatasetCmd.Flags().StringVar(&updateDatasetIndexDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
 
-	catalogCmd.AddCommand(updateDatasetJobDatasetCmd)
-	var updateDatasetJobDatasetCollectEventSummary string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetCollectEventSummary, "collect-event-summary", "false", "Was the event summary requested for this searhc job?")
-
-	var updateDatasetJobDatasetCollectFieldSummary string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetCollectFieldSummary, "collect-field-summary", "false", "Was the field summary requested for this searhc job?")
-
-	var updateDatasetJobDatasetCollectTimeBuckets string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetCollectTimeBuckets, "collect-time-buckets", "false", "Were the time bucketes requested for this searhc job?")
-
-	var updateDatasetJobDatasetCompletionTime string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetCompletionTime, "completion-time", "", "Time that the job was completed")
-
-	var updateDatasetJobDatasetDeleteTime string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetDeleteTime, "delete-time", "", "The time the dataset will be available in S3.")
-
-	var updateDatasetJobDatasetDispatchTime string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetDispatchTime, "dispatch-time", "", "Time that the job was dispatched")
-
-	var updateDatasetJobDatasetExecutionTime float32
-	updateDatasetJobDatasetCmd.Flags().Float32Var(&updateDatasetJobDatasetExecutionTime, "execution-time", 0.0, "The runtime of the search in seconds.")
-
-	var updateDatasetJobDatasetExtractAllFields string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetExtractAllFields, "extract-all-fields", "false", "Should the search produce all fields (including those not explicity mentioned in the SPL)?")
-
-	var updateDatasetJobDatasetHasSideEffects string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetHasSideEffects, "has-side-effects", "false", "Did the SPL query cause any side effects on a dataset?")
-
-	var updateDatasetJobDatasetKind string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetKind, "kind", "", "The dataset kind. can accept values job")
-
-	var updateDatasetJobDatasetMaxTime int32
-	updateDatasetJobDatasetCmd.Flags().Int32Var(&updateDatasetJobDatasetMaxTime, "max-time", 0, "The maximum number of seconds to run this search before finishing.")
-
-	var updateDatasetJobDatasetModule string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetJobDatasetName string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetJobDatasetOwner string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	var updateDatasetJobDatasetParameters string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetParameters, "parameters", "", "Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.")
-
-	var updateDatasetJobDatasetParent string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetParent, "parent", "", "The parent's ID of the search job.")
-
-	var updateDatasetJobDatasetPercentComplete int32
-	updateDatasetJobDatasetCmd.Flags().Int32Var(&updateDatasetJobDatasetPercentComplete, "percent-complete", 0, "An estimate of how complete the search job is.")
-
-	var updateDatasetJobDatasetQuery string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetQuery, "query", "", "The SPL query string for the search job.")
-
-	var updateDatasetJobDatasetResolvedEarliest string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetResolvedEarliest, "resolved-earliest", "", "Resolved earliest time for the job")
-
-	var updateDatasetJobDatasetResolvedLatest string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetResolvedLatest, "resolved-latest", "", "Resolved latest time for the job")
-
-	var updateDatasetJobDatasetResultsAvailable int32
-	updateDatasetJobDatasetCmd.Flags().Int32Var(&updateDatasetJobDatasetResultsAvailable, "results-available", 0, "The instantaneous number of results produced by the search job.")
-
-	var updateDatasetJobDatasetSearchHead string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetSearchHead, "search-head", "", "The search head that started this search job.")
-
-	var updateDatasetJobDatasetSid string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetSid, "sid", "", "The ID assigned to the search job.")
-
-	var updateDatasetJobDatasetSpl string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetSpl, "spl", "", "The SPLv2 version of the search job query string.")
-
-	var updateDatasetJobDatasetStatus string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetStatus, "status", "", "The current status of the search job.")
-
-	var updateDatasetJobDatasetTimelineMetadata string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetTimelineMetadata, "timeline-metadata", "", "Availability of timeline metadata artifacts.")
-
 	catalogCmd.AddCommand(updateDatasetKvCollectionDatasetCmd)
 	var updateDatasetKvCollectionDatasetKind string
 	updateDatasetKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetKvCollectionDatasetKind, "kind", "", "The dataset kind. can accept values kvcollection")
@@ -2771,85 +2579,6 @@ func init() {
 	var updateDatasetByIdIndexDatasetOwner string
 	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
 
-	catalogCmd.AddCommand(updateDatasetByIdJobDatasetCmd)
-	var updateDatasetByIdJobDatasetCollectEventSummary string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetCollectEventSummary, "collect-event-summary", "false", "Was the event summary requested for this searhc job?")
-
-	var updateDatasetByIdJobDatasetCollectFieldSummary string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetCollectFieldSummary, "collect-field-summary", "false", "Was the field summary requested for this searhc job?")
-
-	var updateDatasetByIdJobDatasetCollectTimeBuckets string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetCollectTimeBuckets, "collect-time-buckets", "false", "Were the time bucketes requested for this searhc job?")
-
-	var updateDatasetByIdJobDatasetCompletionTime string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetCompletionTime, "completion-time", "", "Time that the job was completed")
-
-	var updateDatasetByIdJobDatasetDeleteTime string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetDeleteTime, "delete-time", "", "The time the dataset will be available in S3.")
-
-	var updateDatasetByIdJobDatasetDispatchTime string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetDispatchTime, "dispatch-time", "", "Time that the job was dispatched")
-
-	var updateDatasetByIdJobDatasetExecutionTime float32
-	updateDatasetByIdJobDatasetCmd.Flags().Float32Var(&updateDatasetByIdJobDatasetExecutionTime, "execution-time", 0.0, "The runtime of the search in seconds.")
-
-	var updateDatasetByIdJobDatasetExtractAllFields string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetExtractAllFields, "extract-all-fields", "false", "Should the search produce all fields (including those not explicity mentioned in the SPL)?")
-
-	var updateDatasetByIdJobDatasetHasSideEffects string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetHasSideEffects, "has-side-effects", "false", "Did the SPL query cause any side effects on a dataset?")
-
-	var updateDatasetByIdJobDatasetKind string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetKind, "kind", "", "The dataset kind. can accept values job")
-
-	var updateDatasetByIdJobDatasetMaxTime int32
-	updateDatasetByIdJobDatasetCmd.Flags().Int32Var(&updateDatasetByIdJobDatasetMaxTime, "max-time", 0, "The maximum number of seconds to run this search before finishing.")
-
-	var updateDatasetByIdJobDatasetModule string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdJobDatasetName string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdJobDatasetOwner string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	var updateDatasetByIdJobDatasetParameters string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetParameters, "parameters", "", "Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.")
-
-	var updateDatasetByIdJobDatasetParent string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetParent, "parent", "", "The parent's ID of the search job.")
-
-	var updateDatasetByIdJobDatasetPercentComplete int32
-	updateDatasetByIdJobDatasetCmd.Flags().Int32Var(&updateDatasetByIdJobDatasetPercentComplete, "percent-complete", 0, "An estimate of how complete the search job is.")
-
-	var updateDatasetByIdJobDatasetQuery string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetQuery, "query", "", "The SPL query string for the search job.")
-
-	var updateDatasetByIdJobDatasetResolvedEarliest string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetResolvedEarliest, "resolved-earliest", "", "Resolved earliest time for the job")
-
-	var updateDatasetByIdJobDatasetResolvedLatest string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetResolvedLatest, "resolved-latest", "", "Resolved latest time for the job")
-
-	var updateDatasetByIdJobDatasetResultsAvailable int32
-	updateDatasetByIdJobDatasetCmd.Flags().Int32Var(&updateDatasetByIdJobDatasetResultsAvailable, "results-available", 0, "The instantaneous number of results produced by the search job.")
-
-	var updateDatasetByIdJobDatasetSearchHead string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetSearchHead, "search-head", "", "The search head that started this search job.")
-
-	var updateDatasetByIdJobDatasetSid string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetSid, "sid", "", "The ID assigned to the search job.")
-
-	var updateDatasetByIdJobDatasetSpl string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetSpl, "spl", "", "The SPLv2 version of the search job query string.")
-
-	var updateDatasetByIdJobDatasetStatus string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetStatus, "status", "", "The current status of the search job.")
-
-	var updateDatasetByIdJobDatasetTimelineMetadata string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetTimelineMetadata, "timeline-metadata", "", "Availability of timeline metadata artifacts.")
-
 	catalogCmd.AddCommand(updateDatasetByIdKvCollectionDatasetCmd)
 	var updateDatasetByIdKvCollectionDatasetKind string
 	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetKind, "kind", "", "The dataset kind. can accept values kvcollection")
@@ -2931,10 +2660,6 @@ func init() {
 	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
 	updateDatasetByIdIndexDatasetCmd.MarkFlagRequired("datasetid")
 
-	var updateDatasetByIdJobDatasetDatasetid string
-	updateDatasetByIdJobDatasetCmd.Flags().StringVar(&updateDatasetByIdJobDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdJobDatasetCmd.MarkFlagRequired("datasetid")
-
 	var updateDatasetByIdKvCollectionDatasetDatasetid string
 	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
 	updateDatasetByIdKvCollectionDatasetCmd.MarkFlagRequired("datasetid")
@@ -2958,10 +2683,6 @@ func init() {
 	var updateDatasetIndexDatasetDatasetresourcename string
 	updateDatasetIndexDatasetCmd.Flags().StringVar(&updateDatasetIndexDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
 	updateDatasetIndexDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetJobDatasetDatasetresourcename string
-	updateDatasetJobDatasetCmd.Flags().StringVar(&updateDatasetJobDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetJobDatasetCmd.MarkFlagRequired("datasetresourcename")
 
 	var updateDatasetKvCollectionDatasetDatasetresourcename string
 	updateDatasetKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetKvCollectionDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")

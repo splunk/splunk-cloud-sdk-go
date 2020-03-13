@@ -236,8 +236,7 @@ func PatchExecution(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
-	var statusDefault model.ExecutionPatchStatus
-	status := &statusDefault
+	var status model.ExecutionPatchStatus
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())
