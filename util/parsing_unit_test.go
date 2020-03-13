@@ -82,7 +82,7 @@ func TestParseEmptyResponse(t *testing.T) {
 	}
 	var testModel TestModel
 	err := ParseResponse(&testModel, httpResp)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 func TestParseUrlParams(t *testing.T) {
@@ -249,7 +249,7 @@ func TestParseTemplatedPath(t *testing.T) {
 	status := "FAILED"
 	path := fmt.Sprintf("/%s/myservice/v1beta2/all-things/thing_id_2939535/%s/status/%s", tenant, name, status)
 	params, err := ParseTemplatedPath(template, path)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, params)
 	assert.Equal(t, tenant, params["tenant"])
 	assert.Equal(t, name, params["thing_name"])
@@ -274,7 +274,7 @@ func TestParseTemplatedPathMissingMatch(t *testing.T) {
 	// no status
 	path := fmt.Sprintf("/%s/myservice/v1beta2/all-things/thing_id_2939535/%s/status", tenant, name)
 	params, err := ParseTemplatedPath(template, path)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	// no matches are returned if path doesn't match regex
 	require.Empty(t, params)
 }

@@ -23,9 +23,49 @@
 
 package provisioner
 
+type AnyValue interface{}
+
+type CreateEntitlementsJobBody struct {
+	AppClientID    string          `json:"appClientID"`
+	Entitlements   JobEntitlements `json:"entitlements"`
+	SubscriptionID string          `json:"subscriptionID"`
+}
+
 type CreateProvisionJobBody struct {
 	Apps   []string `json:"apps,omitempty"`
 	Tenant *string  `json:"tenant,omitempty"`
+}
+
+type EntitlementsJobInfo struct {
+	AppClientID    string                    `json:"appClientID"`
+	CreatedAt      string                    `json:"createdAt"`
+	CreatedBy      string                    `json:"createdBy"`
+	Entitlements   JobEntitlements           `json:"entitlements"`
+	Errors         EntitlementsJobInfoErrors `json:"errors"`
+	JobID          string                    `json:"jobID"`
+	Status         EntitlementsJobInfoStatus `json:"status"`
+	SubscriptionID string                    `json:"subscriptionID"`
+	Tenant         string                    `json:"tenant"`
+}
+
+type EntitlementsJobInfoStatus string
+
+// List of EntitlementsJobInfoStatus
+const (
+	EntitlementsJobInfoStatusCreated   EntitlementsJobInfoStatus = "created"
+	EntitlementsJobInfoStatusRunning   EntitlementsJobInfoStatus = "running"
+	EntitlementsJobInfoStatusCompleted EntitlementsJobInfoStatus = "completed"
+	EntitlementsJobInfoStatusFailed    EntitlementsJobInfoStatus = "failed"
+)
+
+type EntitlementsJobInfoErrors []EntitlementsJobInfoErrorsItems
+
+type EntitlementsJobInfoErrorsItems struct {
+	Code            string  `json:"code"`
+	JobStage        string  `json:"jobStage"`
+	Message         string  `json:"message"`
+	App             *string `json:"app,omitempty"`
+	EntitlementName *string `json:"entitlementName,omitempty"`
 }
 
 type Error struct {
@@ -79,6 +119,13 @@ type InviteInfoErrorsItems struct {
 }
 
 type Invites []InviteInfo
+
+type JobEntitlement struct {
+	Name  string      `json:"name"`
+	Value interface{} `json:"value"`
+}
+
+type JobEntitlements []JobEntitlement
 
 type ProvisionJobInfo struct {
 	Apps      []string               `json:"apps"`

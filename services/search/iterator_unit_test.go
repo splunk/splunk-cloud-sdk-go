@@ -68,7 +68,7 @@ func TestNextSuccess(t *testing.T) {
 	var results []map[string]interface{}
 
 	if err := json.Unmarshal(byt, &results); err != nil {
-		require.Nil(t, err)
+		require.NoError(t, err)
 	}
 
 	var searchResults *ListSearchResultsResponse
@@ -134,7 +134,7 @@ func TestNextOnZeroBatch(t *testing.T) {
 	var results []map[string]interface{}
 	byt := []byte(`[{"Raw":"test"},{"Raw":"test2"},{"Raw":"test3"},{"Raw":"test4"},{"Raw":"test5"}]`)
 	if err := json.Unmarshal(byt, &results); err != nil {
-		require.Nil(t, err)
+		require.NoError(t, err)
 	}
 
 	var searchResults *ListSearchResultsResponse

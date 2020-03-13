@@ -25,6 +25,15 @@ import (
 // Servicer represents the interface for implementing all endpoints for this service
 type Servicer interface {
 	/*
+		CreateEntitlementsJob - Creates an entitlements job.
+		Parameters:
+			tenantName
+			jobId
+			createEntitlementsJobBody
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateEntitlementsJob(tenantName string, jobId string, createEntitlementsJobBody CreateEntitlementsJobBody, resp ...*http.Response) (*EntitlementsJobInfo, error)
+	/*
 		CreateInvite - provisioner service endpoint
 		Creates an invitation for a person to join the tenant using their email address.
 		Parameters:
@@ -48,6 +57,15 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteInvite(inviteId string, resp ...*http.Response) error
+	/*
+		GetEntitlementsJob - provisioner service endpoint
+		Returns details of a specific entitlements job.
+		Parameters:
+			tenantName
+			jobId
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetEntitlementsJob(tenantName string, jobId string, resp ...*http.Response) (*EntitlementsJobInfo, error)
 	/*
 		GetInvite - provisioner service endpoint
 		Returns an invitation in the given tenant.

@@ -15,6 +15,8 @@ import (
 
 // TestProvisioner tests provisioner service-specific Splunk Cloud client
 func TestProvisioner(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	client, err := provisioner.NewService(&services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,

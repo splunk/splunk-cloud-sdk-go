@@ -26,7 +26,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 
 	// Create two test pipelines
 	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName1, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline1.Id, *pipeline1.Name)
 	require.NotEmpty(t, pipeline1)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline1.Status)
@@ -34,7 +34,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, *pipeline1.Description)
 
 	pipeline2, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName2, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline2.Id, *pipeline2.Name)
 	require.NotEmpty(t, pipeline2)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline2.Status)
@@ -53,7 +53,7 @@ func TestIntegrationGetAllPipelines(t *testing.T) {
 	}
 
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline2.Id, activatePipelineRequest)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline2.Id, activatePipelineResponse.Activated)
 	assert.Empty(t, activatePipelineResponse.Deactivated)
@@ -74,7 +74,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 
 	// Create a test pipeline and verify that the pipeline was created
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -109,7 +109,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -123,7 +123,7 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	}
 
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	assert.Empty(t, activatePipelineResponse.Deactivated)
@@ -143,7 +143,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -159,7 +159,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	time.Sleep(3 * time.Second)
@@ -170,7 +170,7 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 	}
 
 	deactivatePipelineResponse, err := getSdkClient(t).StreamsService.DeactivatePipeline(*pipeline.Id, deactivatePipelineRequest)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, deactivatePipelineResponse)
 	assert.Equal(t, pipeline.Id, deactivatePipelineResponse.Deactivated)
 	assert.Empty(t, deactivatePipelineResponse.Activated)
@@ -190,7 +190,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -205,7 +205,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	}
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	time.Sleep(5 * time.Second)
@@ -216,14 +216,14 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	}
 
 	deactivatePipelineResponse, err := getSdkClient(t).StreamsService.DeactivatePipeline(*pipeline.Id, deactivatePipelineRequest)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, deactivatePipelineResponse)
 	assert.Equal(t, *pipeline.Id, *deactivatePipelineResponse.Deactivated)
 	assert.Empty(t, deactivatePipelineResponse.Activated)
 
 	// Reactivate the deactivated test pipeline
 	reactivatePipelineResponse, err := getSdkClient(t).StreamsService.ReactivatePipeline(*pipeline.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, reactivatePipelineResponse)
 	assert.Equal(t, *pipeline.Id, *reactivatePipelineResponse.PipelineId)
 	assert.Equal(t, streams.PipelineReactivateResponsePipelineReactivationStatusActivated, *reactivatePipelineResponse.PipelineReactivationStatus)
@@ -236,7 +236,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 
 	// Create two test pipelines
 	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName1, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline1.Id, *pipeline1.Name)
 	require.NotEmpty(t, pipeline1)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline1.Status)
@@ -244,7 +244,7 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.Equal(t, testPipelineDescription, *pipeline1.Description)
 
 	pipeline2, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName2, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline2.Id, *pipeline2.Name)
 	require.NotEmpty(t, pipeline2)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline2.Status)
@@ -290,7 +290,7 @@ func TestIntegrationMergePipelines(t *testing.T) {
 
 	// Merge and verify the status of the merged UPL pipelines
 	result, err := getSdkClient(t).StreamsService.MergePipelines(mergeRequest)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, result)
 	require.NotEmpty(t, result.Edges)
 	require.Equal(t, 3, len(result.Edges))
@@ -304,7 +304,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, pipelineName, *pipeline.Name)
@@ -315,7 +315,7 @@ func TestIntegrationUpdatePipeline(t *testing.T) {
 	desc := fmt.Sprintf("Updated Integration Test Pipeline %v", pipelineName)
 	updatedPipeline, err := getSdkClient(t).StreamsService.UpdatePipeline(*pipeline.Id,
 		streams.PipelinePatchRequest{Name: &updatedPipelineName, Description: &desc})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, updatedPipeline)
 	assert.Equal(t, updatedPipelineName, *updatedPipeline.Name)
 	assert.Equal(t, desc, *updatedPipeline.Description)
@@ -328,7 +328,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 
 	// Create a test pipeline
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
 	assert.Equal(t, pipelineName, *pipeline.Name)
@@ -336,7 +336,7 @@ func TestIntegrationDeletePipeline(t *testing.T) {
 
 	// Delete the test pipeline
 	deletePipelineResponse, err := getSdkClient(t).StreamsService.DeletePipeline(*pipeline.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, deletePipelineResponse)
 
 	// Get the test pipeline and verify that its deleted
@@ -362,7 +362,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 		Description:      &testPipelineDescription,
 		Data:             uplPipeline,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -376,7 +376,7 @@ func TestIntegrationGetInputSchema(t *testing.T) {
 	}
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	assert.Empty(t, activatePipelineResponse.Deactivated)
@@ -411,7 +411,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 		Description:      &testPipelineDescription,
 		Data:             uplPipeline,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -425,7 +425,7 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	}
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	assert.Empty(t, activatePipelineResponse.Deactivated)
@@ -471,7 +471,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 		Description:      &testPipelineDescription,
 		Data:             uplPipeline,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, pipelineName)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -485,7 +485,7 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 	}
 	activatePipelineResponse, err := getSdkClient(t).StreamsService.ActivatePipeline(*pipeline.Id, activatePipelineRequest)
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, activatePipelineResponse)
 	assert.Equal(t, pipeline.Id, activatePipelineResponse.Activated)
 	assert.Empty(t, activatePipelineResponse.Deactivated)
@@ -512,14 +512,16 @@ func TestIntegrationGetLatestPipelineMetrics(t *testing.T) {
 
 //Test Latest Preview Session Metrics
 func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	// Create and start a test Ge session
 	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.NotEmpty(t, response.PreviewId)
 
 	response1, err := getSdkClient(t).StreamsService.StopPreview(*response.PreviewId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, response1)
 
 	////Get latest preview session metrics
@@ -544,7 +546,7 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 // Test Get Connectors
 func TestIntegrationListConnectors(t *testing.T) {
 	response, err := getSdkClient(t).StreamsService.ListConnectors()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response)
 }
 
@@ -556,17 +558,17 @@ func TestIntegrationCRUEConnections(t *testing.T) {
 	data["token"] = "mytoken"
 	connectionName := fmt.Sprintf("testConnection%d", testutils.TimeSec)
 	connection, err := getSdkClient(t).StreamsService.CreateConnection(streams.ConnectionRequest{ConnectorId: connectorId, Data: data, Name: connectionName})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotEmpty(t, connection)
 	defer getSdkClient(t).StreamsService.DeleteConnection(*connection.Id)
 
 	connections, err := getSdkClient(t).StreamsService.ListConnections(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, connections)
 
 	query := streams.ListConnectionsQueryParams{}.SetName(connectionName)
 	response1, err := getSdkClient(t).StreamsService.ListConnections(&query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response1)
 	require.Equal(t, 1, len(response1.Items))
 	assert.Equal(t, connectorId, *response1.Items[0].ConnectorId)
@@ -574,7 +576,7 @@ func TestIntegrationCRUEConnections(t *testing.T) {
 	assert.Equal(t, *connection.Id, *response1.Items[0].Id)
 
 	err = getSdkClient(t).StreamsService.DeleteConnection(*connection.Id)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 // Test Validate Upl Response streams endpoint
@@ -592,7 +594,7 @@ func TestIntegrationValidateResponse(t *testing.T) {
 		Description:      &testPipelineDescription,
 		Data:             uplPipeline,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 	require.NotEmpty(t, pipeline)
 	assert.Equal(t, streams.PipelineResponseStatusCreated, *pipeline.Status)
@@ -611,7 +613,7 @@ func TestIntegrationValidateResponse(t *testing.T) {
 func TestIntegrationStartPreviewSession(t *testing.T) {
 	// Create and start a test preview session
 	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response)
 	//previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
 	//defer cleanupPreview(t, previewIDStringVal)
@@ -619,7 +621,7 @@ func TestIntegrationStartPreviewSession(t *testing.T) {
 
 	// Verify that the test preview session is created
 	previewState, err := getSdkClient(t).StreamsService.GetPreviewSession(*response.PreviewId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, previewState)
 	assert.NotEmpty(t, response.PreviewId, previewState.PreviewId)
 	assert.NotEmpty(t, previewState.JobId)
@@ -629,13 +631,13 @@ func TestIntegrationStartPreviewSession(t *testing.T) {
 func TestIntegrationDeletePreviewSession(t *testing.T) {
 	// Create and start a test preview session
 	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.NotEmpty(t, response.PreviewId)
 
 	// Delete the test preview session
 	_, err = getSdkClient(t).StreamsService.StopPreview(*response.PreviewId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Verify that the test preview session is deleted
 	_, err = getSdkClient(t).StreamsService.GetPreviewSession(*response.PreviewId)
@@ -650,7 +652,7 @@ func TestIntegrationDeletePreviewSession(t *testing.T) {
 func TestIntegrationGetPreviewData(t *testing.T) {
 	// Create and start a test preview session
 	response, err := getSdkClient(t).StreamsService.StartPreview(createPreviewSessionStartRequest(t))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, response)
 	//previewIDStringVal := strconv.FormatInt(*response.PreviewId, 10)
 	//defer cleanupPreview(t, *response.PreviewId)
@@ -658,7 +660,7 @@ func TestIntegrationGetPreviewData(t *testing.T) {
 
 	// Verify that the preview data is generated
 	previewData, err := getSdkClient(t).StreamsService.GetPreviewData(*response.PreviewId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, previewData)
 	assert.NotEmpty(t, response.PreviewId, previewData.PreviewId)
 }
@@ -669,7 +671,7 @@ func TestIntegrationCreateTemplate(t *testing.T) {
 
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupTemplate(t, *template.TemplateId)
 	require.NotEmpty(t, template)
 	assert.Equal(t, templateName, *template.Name)
@@ -700,14 +702,14 @@ func TestIntegrationGetAllTemplates(t *testing.T) {
 
 	// Create two test templates
 	template1, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName1, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupTemplate(t, *template1.TemplateId)
 	require.NotEmpty(t, template1)
 	assert.Equal(t, templateName1, *template1.Name)
 	assert.Equal(t, testTemplateDescription, *template1.Description)
 
 	template2, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName2, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupTemplate(t, *template2.TemplateId)
 	require.NotEmpty(t, template2)
 	assert.Equal(t, templateName2, *template2.Name)
@@ -725,7 +727,7 @@ func TestIntegrationUpdateTemplate(t *testing.T) {
 
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupTemplate(t, *template.TemplateId)
 	require.NotEmpty(t, template)
 	assert.Equal(t, templateName, *template.Name)
@@ -736,7 +738,7 @@ func TestIntegrationUpdateTemplate(t *testing.T) {
 	desc := "Updated Integration Test Template"
 	updatedTemplate, err := getSdkClient(t).StreamsService.UpdateTemplate(*template.TemplateId,
 		streams.TemplatePatchRequest{Description: &desc, Name: &updatedTemplateName})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, updatedTemplate)
 	assert.Equal(t, updatedTemplateName, *updatedTemplate.Name)
 	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
@@ -749,7 +751,7 @@ func TestIntegrationPutTemplate(t *testing.T) {
 
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupTemplate(t, *template.TemplateId)
 	require.NotEmpty(t, template)
 	assert.Equal(t, templateName, *template.Name)
@@ -761,7 +763,7 @@ func TestIntegrationPutTemplate(t *testing.T) {
 
 	updatedTemplate, err := getSdkClient(t).StreamsService.PutTemplate(*template.TemplateId,
 		streams.TemplatePutRequest{Name: "new" + templateName, Description: updatedDescription, Data: result})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, updatedTemplate)
 	assert.Equal(t, "new"+templateName, *updatedTemplate.Name)
 	assert.Equal(t, "Updated Integration Test Template", *updatedTemplate.Description)
@@ -774,14 +776,14 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 
 	// Create a test template and verify that the template was created
 	template, err := getSdkClient(t).StreamsService.CreateTemplate(makeTemplateRequest(t, templateName, testTemplateDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, template)
 	assert.Equal(t, templateName, *template.Name)
 	assert.Equal(t, testTemplateDescription, *template.Description)
 
 	// Delete the test template
 	err = getSdkClient(t).StreamsService.DeleteTemplate(*template.TemplateId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Verify that the test template is deleted
 	_, err = getSdkClient(t).StreamsService.GetTemplate(*template.TemplateId, nil)
@@ -794,6 +796,8 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 
 // Test Get Groups endpoint
 func TestIntegrationGetGroups(t *testing.T) {
+	t.Skip("Pending integration fix")
+
 	request := streams.GetRegistryQueryParams{}.SetLocal(false)
 	result, err := getSdkClient(t).StreamsService.GetRegistry(&request)
 	require.Empty(t, err)
@@ -804,7 +808,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 
 	pipelineName := fmt.Sprintf("testPipelineef%d", testutils.TimeSec)
 	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
 
 	group, err := getSdkClient(t).StreamsService.CreateGroup(streams.GroupRequest{
@@ -812,7 +816,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 		Name:      "test-fn",
 		Ast:       *pipeline.Data,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	//cnt := 0
 	//temp := 0
@@ -848,7 +852,7 @@ func TestIntegrationGetGroups(t *testing.T) {
 //	local.Add("local", `true`)
 //	//GetRegistry to retrieve the groupID
 //	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, "mypipeline", testPipelineDescription))
-//	require.Nil(t, err)
+//	require.NoError(t, err)
 //	defer cleanupPipeline(getSdkClient(t), *pipeline1.Id, *pipeline1.Name)
 //
 //	result, err := getSdkClient(t).StreamsService.GetUPLRegistry((&streams.GetUPLRegistryQueryParams{}.SetLocal(true))
@@ -929,7 +933,7 @@ func createTestUplPipeline(t *testing.T) streams.UplPipeline {
 
 	resp, err := getSdkClient(t).StreamsService.ValidatePipeline(streams.ValidateRequest{Upl: *result})
 	assert.NotNil(t, resp)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 
 	return *result
 }

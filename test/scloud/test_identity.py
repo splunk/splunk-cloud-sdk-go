@@ -14,13 +14,13 @@ class TestIdentity(unittest.TestCase):
 
     def setUp(self):
         # retrieve the selected tenant name
-        code, self.tname, _ = test.scloud("get", "tenant")
-        self.assertEqual(0, code)
+        code, self.tname, err = test.scloud("get", "tenant")
+        self.assertEqual(0, code, err)
         self.assertIsNotNone(self.tname)
 
         # retrieve the current principal name
-        code, result, _ = identity("validate-token")
-        self.assertEqual(0, code)
+        code, result, err = identity("validate-token")
+        self.assertEqual(0, code, err)
         self.pname = result["name"]
         self.assertTrue(self.pname)
 
@@ -56,19 +56,19 @@ class TestIdentity(unittest.TestCase):
     def test_groups(self):
         gname = self._create_group()
 
-        code, group, _ = identity("create-group", gname)
-        self.assertEqual(0, code)
+        code, group, err = identity("create-group", gname)
+        self.assertEqual(0, code, err)
         self.assertEqual(self.tname, group["tenant"])
         self.assertEqual(gname, group["name"])
         self.assertTrue("createdAt" in group)
         self.assertTrue("createdBy" in group)
 
-        code, groups, _ = identity("list-groups")
-        self.assertEqual(0, code)
-        self.assertTrue(gname in groups)
+        code, result, err = identity("list-groups")
+        self.assertEqual(0, code, err)
+        self.assertTrue(gname in result)
 
-        code, group, _ = identity("get-group", gname)
-        self.assertEqual(0, code)
+        code, group, err = identity("get-group", gname)
+        self.assertEqual(0, code, err)
         self.assertEqual(self.tname, group["tenant"])
         self.assertEqual(gname, group["name"])
         self.assertTrue("createdAt" in group)
@@ -78,11 +78,11 @@ class TestIdentity(unittest.TestCase):
         self.assertEqual(1, code)
         self.assertTrue(test.is409(err))
 
-        code, _, _ = identity("delete-group", gname)
-        self.assertEqual(0, code)
+        code, _, err = identity("delete-group", gname)
+        self.assertEqual(0, code, err)
 
-        code, groups, _ = identity("list-groups")
-        self.assertEqual(0, code)
+        code, groups, err = identity("list-groups")
+        self.assertEqual(0, code, err)
         self.assertFalse(gname in groups)
 
         code, group, err = identity("get-group", gname)

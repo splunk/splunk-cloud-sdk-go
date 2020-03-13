@@ -181,7 +181,7 @@ func TestDeleteWorkflowRun(t *testing.T) {
 func TestListWorkflows(t *testing.T) {
 	client := getSdkClient(t)
 	workflows, err := client.MachineLearningService.ListWorkflows()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflows)
 	assert.IsType(t, []ml.WorkflowsGetResponse{}, workflows)
 }
@@ -190,7 +190,7 @@ func TestListWorkflowBuilds(t *testing.T) {
 	client := getSdkClient(t)
 	workflow := newWorkflow(t, client)
 	workflowBuilds, err := client.MachineLearningService.ListWorkflowBuilds(*workflow.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflowBuilds)
 	assert.Empty(t, workflowBuilds)
 }
@@ -200,7 +200,7 @@ func TestListWorkflowRuns(t *testing.T) {
 	workflow := newWorkflow(t, client)
 	workflowBuild := newWorkflowBuild(t, client, workflow.Id)
 	workflowRuns, err := client.MachineLearningService.ListWorkflowRuns(*workflow.Id, *workflowBuild.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflowRuns)
 	assert.Empty(t, workflowRuns)
 }
@@ -209,7 +209,7 @@ func TestGetWorkflow(t *testing.T) {
 	client := getSdkClient(t)
 	workflow := newWorkflow(t, client)
 	workflowRetrieved, err := client.MachineLearningService.GetWorkflow(*workflow.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflow)
 	assert.Equal(t, workflowRetrieved.Id, workflow.Id)
 }
@@ -219,7 +219,7 @@ func TestGetWorkflowBuild(t *testing.T) {
 	workflow := newWorkflow(t, client)
 	workflowBuild := newWorkflowBuild(t, client, workflow.Id)
 	workflowBuildRetrieved, err := client.MachineLearningService.GetWorkflowBuild(*workflow.Id, *workflowBuild.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflow)
 	assert.Equal(t, workflowBuildRetrieved.Id, workflowBuild.Id)
 }
@@ -230,7 +230,7 @@ func TestGetWorkflowRun(t *testing.T) {
 	workflowBuild := newWorkflowBuild(t, client, workflow.Id)
 	workflowRun := newWorkflowRun(t, client, workflow.Id, workflowBuild.Id)
 	workflowRunRetrieved, err := client.MachineLearningService.GetWorkflowRun(*workflow.Id, *workflowBuild.Id, *workflowRun.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, workflow)
 	assert.Equal(t, workflowRunRetrieved.Id, workflowRun.Id)
 }
@@ -298,7 +298,7 @@ func newWorkflow(t *testing.T, client *sdk.Client) *ml.Workflow {
 	}
 
 	createdWorkFlow, err := client.MachineLearningService.CreateWorkflow(workflow)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, createdWorkFlow)
 	return createdWorkFlow
 }
@@ -312,7 +312,7 @@ func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.
 		},
 	}
 	createdWorfklow, err := client.MachineLearningService.CreateWorkflowBuild(*workflowID, build)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, createdWorfklow)
 
 	buildID := createdWorfklow.Id
@@ -337,7 +337,7 @@ func newWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string) *ml.
 		if *workflowBuild.Status == ml.WorkflowBuildStatusFailed || *workflowBuild.Status == ml.WorkflowBuildStatusSuccess {
 			return workflowBuild
 		}
-		require.Nil(t, err)
+		require.NoError(t, err)
 	}
 	return nil
 }
@@ -357,7 +357,7 @@ func newWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workfl
 		},
 	}
 	createdWorkflowRun, err := client.MachineLearningService.CreateWorkflowRun(*workflowID, *workflowBuildID, run)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, createdWorkflowRun)
 	return createdWorkflowRun
 }
@@ -365,16 +365,16 @@ func newWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workfl
 func cleanupWorkflow(t *testing.T, client *sdk.Client, workflowID *string) {
 	err := client.MachineLearningService.DeleteWorkflow(*workflowID)
 	if t != nil {
-		require.Nil(t, err)
+		require.NoError(t, err)
 	}
 }
 
 func cleanupWorkflowBuild(t *testing.T, client *sdk.Client, workflowID *string, workflowBuildID *string) {
 	err := client.MachineLearningService.DeleteWorkflowBuild(*workflowID, *workflowBuildID)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func cleanupWorkflowRun(t *testing.T, client *sdk.Client, workflowID *string, workflowBuildID *string, workflowRunID *string) {
 	err := client.MachineLearningService.DeleteWorkflowRun(*workflowID, *workflowBuildID, *workflowRunID)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
