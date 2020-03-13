@@ -97,6 +97,12 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
 	}
+	var requiredFreshnessDefault float32
+	requiredFreshness := &requiredFreshnessDefault
+	err = flags.ParseFlag(cmd.Flags(), "required-freshness", &requiredFreshness)
+	if err != nil {
+		return fmt.Errorf(`error parsing "required-freshness": ` + err.Error())
+	}
 	var statusDefault model.SearchStatus
 	status := &statusDefault
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
@@ -127,7 +133,8 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 			RelativeTimeAnchor: relativeTimeAnchor,
 			Timezone:           timezone,
 		},
-		Status: status,
+		RequiredFreshness: requiredFreshness,
+		Status:            status,
 	}
 
 	resp, err := client.SearchService.CreateJob(generated_request_body)
@@ -270,6 +277,11 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
+	var filter string
+	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "filter": ` + err.Error())
+	}
 	var statusDefault model.SearchStatus
 	status := &statusDefault
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
@@ -279,6 +291,7 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	// Form query params
 	generated_query := model.ListJobsQueryParams{}
 	generated_query.Count = count
+	generated_query.Filter = filter
 	generated_query.Status = status
 
 	resp, err := client.SearchService.ListJobs(&generated_query)
