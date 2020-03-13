@@ -80,7 +80,6 @@ func PostEvents(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := PostEventsOverride(generated_request_body, format)
-
 	if err != nil {
 		return err
 	}
@@ -167,7 +166,6 @@ func PostMetrics(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := PostMetricsOverride(generated_request_body)
-
 	if err != nil {
 		return err
 	}
@@ -189,7 +187,6 @@ func UploadFiles(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := UploadFilesOverride(fileName)
-
 	if err != nil {
 		return err
 	}

@@ -99,18 +99,11 @@ var rotateSecretCmd = &cobra.Command{
 	RunE:  impl.RotateSecret,
 }
 
-// updateAppCommonAppPut -- Updates an app.
-var updateAppCommonAppPutCmd = &cobra.Command{
-	Use:   "update-app-common-app-put",
+// updateApp -- Updates an app.
+var updateAppCmd = &cobra.Command{
+	Use:   "update-app",
 	Short: "Updates an app.",
-	RunE:  impl.UpdateAppCommonAppPut,
-}
-
-// updateAppWebAppPut -- Updates an app.
-var updateAppWebAppPutCmd = &cobra.Command{
-	Use:   "update-app-web-app-put",
-	Short: "Updates an app.",
-	RunE:  impl.UpdateAppWebAppPut,
+	RunE:  impl.UpdateApp,
 }
 
 func init() {
@@ -278,71 +271,37 @@ func init() {
 	rotateSecretCmd.Flags().StringVar(&rotateSecretAppName, "app-name", "", "This is a required parameter. App name.")
 	rotateSecretCmd.MarkFlagRequired("app-name")
 
-	appregistryCmd.AddCommand(updateAppCommonAppPutCmd)
-	var updateAppCommonAppPutAppPrincipalPermissions []string
-	updateAppCommonAppPutCmd.Flags().StringSliceVar(&updateAppCommonAppPutAppPrincipalPermissions, "app-principal-permissions", nil, "Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.")
+	appregistryCmd.AddCommand(updateAppCmd)
 
-	var updateAppCommonAppPutDescription string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutDescription, "description", "", "Short paragraph describing the app.")
+	var updateAppAppName string
+	updateAppCmd.Flags().StringVar(&updateAppAppName, "app-name", "", "This is a required parameter. App name.")
+	updateAppCmd.MarkFlagRequired("app-name")
 
-	var updateAppCommonAppPutLoginUrl string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutLoginUrl, "login-url", "", "The URL used to log in to the app.")
+	var updateAppAppPrincipalPermissions []string
+	updateAppCmd.Flags().StringSliceVar(&updateAppAppPrincipalPermissions, "app-principal-permissions", nil, "Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.")
 
-	var updateAppCommonAppPutLogoUrl string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutLogoUrl, "logo-url", "", "The URL used to display the app's logo.")
+	var updateAppDescription string
+	updateAppCmd.Flags().StringVar(&updateAppDescription, "description", "", "Short paragraph describing the app.")
 
-	var updateAppCommonAppPutRedirectUrls []string
-	updateAppCommonAppPutCmd.Flags().StringSliceVar(&updateAppCommonAppPutRedirectUrls, "redirect-urls", nil, "Array of URLs that can be used for redirect after logging into the app.")
+	var updateAppLoginUrl string
+	updateAppCmd.Flags().StringVar(&updateAppLoginUrl, "login-url", "", "The URL used to log in to the app.")
 
-	var updateAppCommonAppPutSetupUrl string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutSetupUrl, "setup-url", "", "URL to redirect to after a subscription is created.")
+	var updateAppLogoUrl string
+	updateAppCmd.Flags().StringVar(&updateAppLogoUrl, "logo-url", "", "The URL used to display the app's logo.")
 
-	var updateAppCommonAppPutTitle string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutTitle, "title", "", "This is a required parameter. Human-readable title for the app.")
-	updateAppCommonAppPutCmd.MarkFlagRequired("title")
+	var updateAppRedirectUrls []string
+	updateAppCmd.Flags().StringSliceVar(&updateAppRedirectUrls, "redirect-urls", nil, "Array of URLs that can be used for redirect after logging into the app.")
 
-	var updateAppCommonAppPutUserPermissionsFilter []string
-	updateAppCommonAppPutCmd.Flags().StringSliceVar(&updateAppCommonAppPutUserPermissionsFilter, "user-permissions-filter", nil, "Array of permission filter templates that are used to intersect with a user's permissions when using the app.")
+	var updateAppSetupUrl string
+	updateAppCmd.Flags().StringVar(&updateAppSetupUrl, "setup-url", "", "URL to redirect to after a subscription is created.")
 
-	var updateAppCommonAppPutWebhookUrl string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
+	var updateAppTitle string
+	updateAppCmd.Flags().StringVar(&updateAppTitle, "title", "", "Human-readable title for the app.")
 
-	appregistryCmd.AddCommand(updateAppWebAppPutCmd)
-	var updateAppWebAppPutAppPrincipalPermissions []string
-	updateAppWebAppPutCmd.Flags().StringSliceVar(&updateAppWebAppPutAppPrincipalPermissions, "app-principal-permissions", nil, "Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.")
+	var updateAppUserPermissionsFilter []string
+	updateAppCmd.Flags().StringSliceVar(&updateAppUserPermissionsFilter, "user-permissions-filter", nil, "Array of permission filter templates that are used to intersect with a user's permissions when using the app.")
 
-	var updateAppWebAppPutDescription string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutDescription, "description", "", "Short paragraph describing the app.")
-
-	var updateAppWebAppPutLoginUrl string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutLoginUrl, "login-url", "", "The URL used to log in to the app.")
-
-	var updateAppWebAppPutLogoUrl string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutLogoUrl, "logo-url", "", "The URL used to display the app's logo.")
-
-	var updateAppWebAppPutRedirectUrls []string
-	updateAppWebAppPutCmd.Flags().StringSliceVar(&updateAppWebAppPutRedirectUrls, "redirect-urls", nil, "This is a required parameter. Array of URLs that can be used for redirect after logging into the app.")
-	updateAppWebAppPutCmd.MarkFlagRequired("redirectUrls")
-
-	var updateAppWebAppPutSetupUrl string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutSetupUrl, "setup-url", "", "URL to redirect to after a subscription is created.")
-
-	var updateAppWebAppPutTitle string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutTitle, "title", "", "This is a required parameter. Human-readable title for the app.")
-	updateAppWebAppPutCmd.MarkFlagRequired("title")
-
-	var updateAppWebAppPutUserPermissionsFilter []string
-	updateAppWebAppPutCmd.Flags().StringSliceVar(&updateAppWebAppPutUserPermissionsFilter, "user-permissions-filter", nil, "Array of permission filter templates that are used to intersect with a user's permissions when using the app.")
-
-	var updateAppWebAppPutWebhookUrl string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
-
-	var updateAppCommonAppPutAppName string
-	updateAppCommonAppPutCmd.Flags().StringVar(&updateAppCommonAppPutAppName, "app-name", "", "This is a required parameter. App name.")
-	updateAppCommonAppPutCmd.MarkFlagRequired("app-name")
-
-	var updateAppWebAppPutAppName string
-	updateAppWebAppPutCmd.Flags().StringVar(&updateAppWebAppPutAppName, "app-name", "", "This is a required parameter. App name.")
-	updateAppWebAppPutCmd.MarkFlagRequired("app-name")
+	var updateAppWebhookUrl string
+	updateAppCmd.Flags().StringVar(&updateAppWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
 
 }

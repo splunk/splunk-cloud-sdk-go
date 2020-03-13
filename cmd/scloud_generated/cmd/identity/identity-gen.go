@@ -220,6 +220,13 @@ var removeRolePermissionCmd = &cobra.Command{
 	RunE:  impl.RemoveRolePermission,
 }
 
+// revokePrincipalAuthTokens -- Revoke all existing tokens issued to a principal
+var revokePrincipalAuthTokensCmd = &cobra.Command{
+	Use:   "revoke-principal-auth-tokens",
+	Short: "Revoke all existing tokens issued to a principal",
+	RunE:  impl.RevokePrincipalAuthTokens,
+}
+
 // validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 
 var validateTokenCmd = &cobra.Command{
@@ -357,6 +364,9 @@ func init() {
 
 	identityCmd.AddCommand(listGroupsCmd)
 
+	var listGroupsAccess string
+	listGroupsCmd.Flags().StringVar(&listGroupsAccess, "access", "", "List only the groups with specified access permission.")
+
 	identityCmd.AddCommand(listMemberGroupsCmd)
 
 	var listMemberGroupsMember string
@@ -429,9 +439,15 @@ func init() {
 	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionRole, "role", "", "This is a required parameter. The role name.")
 	removeRolePermissionCmd.MarkFlagRequired("role")
 
+	identityCmd.AddCommand(revokePrincipalAuthTokensCmd)
+
+	var revokePrincipalAuthTokensPrincipal string
+	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
+
 	identityCmd.AddCommand(validateTokenCmd)
 
-	var validateTokenInclude []string
-	validateTokenCmd.Flags().StringSliceVar(&validateTokenInclude, "include", nil, "Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]")
+	var validateTokenInclude string
+	validateTokenCmd.Flags().StringVar(&validateTokenInclude, "include", "", "Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]")
 
 }

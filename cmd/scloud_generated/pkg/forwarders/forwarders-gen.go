@@ -22,8 +22,7 @@ func AddCertificate(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var pemDefault string
-	pem := &pemDefault
+	var pem string
 	err = flags.ParseFlag(cmd.Flags(), "pem", &pem)
 	if err != nil {
 		return fmt.Errorf(`error parsing "pem": ` + err.Error())

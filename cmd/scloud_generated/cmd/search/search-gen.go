@@ -103,7 +103,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var createJobMaxTime float32
-	createJobCmd.Flags().Float32Var(&createJobMaxTime, "max-time", 0.0, "The number of seconds to run the search before finalizing the search. The maximum value is 21600 seconds (6 hours).")
+	createJobCmd.Flags().Float32Var(&createJobMaxTime, "max-time", 0.0, "The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).")
 
 	var createJobMessages string
 	createJobCmd.Flags().StringVar(&createJobMessages, "messages", "", "")
@@ -113,6 +113,9 @@ func init() {
 
 	var createJobRelativeTimeAnchor string
 	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
+
+	var createJobRequiredFreshness float32
+	createJobCmd.Flags().Float32Var(&createJobRequiredFreshness, "required-freshness", 0.0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.")
 
 	var createJobStatus string
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
@@ -163,6 +166,9 @@ func init() {
 
 	var listJobsCount float32
 	listJobsCmd.Flags().Float32Var(&listJobsCount, "count", 0.0, "The maximum number of jobs that you want to return the status entries for.")
+
+	var listJobsFilter string
+	listJobsCmd.Flags().StringVar(&listJobsFilter, "filter", "", "Filter the list of jobs by sid. Valid format is  `sid IN ({comma separated list of SIDs in quotes})`. A maximum of 50 SIDs can be specified in one query.")
 
 	var listJobsStatus string
 	listJobsCmd.Flags().StringVar(&listJobsStatus, "status", "", "Filter the list of jobs by status. Valid status values are 'running', 'done', 'canceled', or 'failed'.")

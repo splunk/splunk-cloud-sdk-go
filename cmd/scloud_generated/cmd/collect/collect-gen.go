@@ -153,7 +153,8 @@ func init() {
 	patchExecutionCmd.MarkFlagRequired("job-id")
 
 	var patchExecutionStatus string
-	patchExecutionCmd.Flags().StringVar(&patchExecutionStatus, "status", "", "The given status of the execution can accept values canceled")
+	patchExecutionCmd.Flags().StringVar(&patchExecutionStatus, "status", "", "This is a required parameter. The given status of the execution can accept values canceled")
+	patchExecutionCmd.MarkFlagRequired("status")
 
 	collectCmd.AddCommand(patchJobCmd)
 
