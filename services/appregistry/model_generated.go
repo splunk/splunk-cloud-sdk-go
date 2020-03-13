@@ -311,27 +311,6 @@ func (m AppResponseGetList) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.raw)
 }
 
-type CommonAppPut struct {
-	// Human-readable title for the app.
-	Title string `json:"title"`
-	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
-	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
-	// Short paragraph describing the app.
-	Description *string `json:"description,omitempty"`
-	// The URL used to log in to the app.
-	LoginUrl *string `json:"loginUrl,omitempty"`
-	// The URL used to display the app's logo.
-	LogoUrl *string `json:"logoUrl,omitempty"`
-	// Array of URLs that can be used for redirect after logging into the app.
-	RedirectUrls []string `json:"redirectUrls,omitempty"`
-	// URL to redirect to after a subscription is created.
-	SetupUrl *string `json:"setupUrl,omitempty"`
-	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
-	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
-	// URL that webhook events are sent to.
-	WebhookUrl *string `json:"webhookUrl,omitempty"`
-}
-
 type CreateAppRequest struct {
 	nativeAppPost  *NativeAppPost
 	serviceAppPost *ServiceAppPost
@@ -590,98 +569,24 @@ type Subscription struct {
 }
 
 type UpdateAppRequest struct {
-	commonAppPut *CommonAppPut
-	webAppPut    *WebAppPut
-	raw          interface{}
-}
-
-// MakeUpdateAppRequestFromCommonAppPut creates a new UpdateAppRequest from an instance of CommonAppPut
-func MakeUpdateAppRequestFromCommonAppPut(f CommonAppPut) UpdateAppRequest {
-	return UpdateAppRequest{commonAppPut: &f}
-}
-
-// IsCommonAppPut checks if the UpdateAppRequest is a CommonAppPut
-func (m UpdateAppRequest) IsCommonAppPut() bool {
-	return m.commonAppPut != nil
-}
-
-// CommonAppPut returns CommonAppPut if IsCommonAppPut() is true, nil otherwise
-func (m UpdateAppRequest) CommonAppPut() *CommonAppPut {
-	return m.commonAppPut
-}
-
-// MakeUpdateAppRequestFromWebAppPut creates a new UpdateAppRequest from an instance of WebAppPut
-func MakeUpdateAppRequestFromWebAppPut(f WebAppPut) UpdateAppRequest {
-	return UpdateAppRequest{webAppPut: &f}
-}
-
-// IsWebAppPut checks if the UpdateAppRequest is a WebAppPut
-func (m UpdateAppRequest) IsWebAppPut() bool {
-	return m.webAppPut != nil
-}
-
-// WebAppPut returns WebAppPut if IsWebAppPut() is true, nil otherwise
-func (m UpdateAppRequest) WebAppPut() *WebAppPut {
-	return m.webAppPut
-}
-
-// MakeUpdateAppRequestFromRawInterface creates a new UpdateAppRequest from a raw interface{}
-func MakeUpdateAppRequestFromRawInterface(f interface{}) UpdateAppRequest {
-	return UpdateAppRequest{raw: f}
-}
-
-// IsRawInterface checks if the UpdateAppRequest is an interface{} (unknown type)
-func (m UpdateAppRequest) IsRawInterface() bool {
-	return m.raw != nil
-}
-
-// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
-func (m UpdateAppRequest) RawInterface() interface{} {
-	return m.raw
-}
-
-// UnmarshalJSON unmarshals UpdateAppRequest using the "kind" property
-func (m *UpdateAppRequest) UnmarshalJSON(b []byte) (err error) {
-	type discriminator struct {
-		Kind string `json:"kind"`
-	}
-	var d discriminator
-	err = json.Unmarshal(b, &d)
-	if err != nil {
-		return err
-	}
-	// Resolve into respective struct based on the discriminator value
-	switch d.Kind {
-	case "native":
-		m.commonAppPut = &CommonAppPut{}
-		return json.Unmarshal(b, m.commonAppPut)
-	case "service":
-		m.commonAppPut = &CommonAppPut{}
-		return json.Unmarshal(b, m.commonAppPut)
-	case "web":
-		m.webAppPut = &WebAppPut{}
-		return json.Unmarshal(b, m.webAppPut)
-	}
-	// Unknown discriminator value (this type may not yet be supported)
-	// unmarhsal to raw interface
-	var raw interface{}
-	err = json.Unmarshal(b, &raw)
-	if err != nil {
-		return err
-	}
-	m.raw = raw
-	return nil
-}
-
-// MarshalJSON marshals UpdateAppRequest using the appropriate struct field
-func (m UpdateAppRequest) MarshalJSON() ([]byte, error) {
-	if m.IsCommonAppPut() {
-		return json.Marshal(m.commonAppPut)
-	} else if m.IsWebAppPut() {
-		return json.Marshal(m.webAppPut)
-	}
-	// None of the structs are populated, send raw
-	return json.Marshal(m.raw)
+	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
+	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
+	// Short paragraph describing the app.
+	Description *string `json:"description,omitempty"`
+	// The URL used to log in to the app.
+	LoginUrl *string `json:"loginUrl,omitempty"`
+	// The URL used to display the app's logo.
+	LogoUrl *string `json:"logoUrl,omitempty"`
+	// Array of URLs that can be used for redirect after logging into the app.
+	RedirectUrls []string `json:"redirectUrls,omitempty"`
+	// URL to redirect to after a subscription is created.
+	SetupUrl *string `json:"setupUrl,omitempty"`
+	// Human-readable title for the app.
+	Title *string `json:"title,omitempty"`
+	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
+	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
+	// URL that webhook events are sent to.
+	WebhookUrl *string `json:"webhookUrl,omitempty"`
 }
 
 // A web kind app.
@@ -722,27 +627,6 @@ type WebAppPost struct {
 	Kind AppResourceKind `json:"kind"`
 	// App name that is unique within Splunk Cloud Platform.
 	Name string `json:"name"`
-	// Array of URLs that can be used for redirect after logging into the app.
-	RedirectUrls []string `json:"redirectUrls"`
-	// Human-readable title for the app.
-	Title string `json:"title"`
-	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
-	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
-	// Short paragraph describing the app.
-	Description *string `json:"description,omitempty"`
-	// The URL used to log in to the app.
-	LoginUrl *string `json:"loginUrl,omitempty"`
-	// The URL used to display the app's logo.
-	LogoUrl *string `json:"logoUrl,omitempty"`
-	// URL to redirect to after a subscription is created.
-	SetupUrl *string `json:"setupUrl,omitempty"`
-	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
-	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
-	// URL that webhook events are sent to.
-	WebhookUrl *string `json:"webhookUrl,omitempty"`
-}
-
-type WebAppPut struct {
 	// Array of URLs that can be used for redirect after logging into the app.
 	RedirectUrls []string `json:"redirectUrls"`
 	// Human-readable title for the app.

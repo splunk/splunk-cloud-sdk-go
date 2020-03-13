@@ -34,7 +34,7 @@ func TestNewClientDefaultProductionClient(t *testing.T) {
 	client, err := NewClient(&Config{
 		Token: token,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	baseURL := client.GetURL("")
 	require.Equal(t, baseURL.String(), defaultCloudURL)
 	apiURL := client.GetURL("api")
@@ -46,7 +46,7 @@ func TestNewClientAppClusterClient(t *testing.T) {
 	client, err := NewClient(&Config{
 		Token: token,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	appURL := client.GetURL("app")
 	require.Equal(t, appURL.String(), "https://app.scp.splunk.com")
 }
@@ -58,12 +58,12 @@ func TestBuildURLDefaultProductionClient(t *testing.T) {
 		Token:  token,
 		Tenant: tenant,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	testService := "myservice"
 	testVersion := "v1beta1"
 	testEndpoint := "widgets"
 	testURL, err := client.BuildURL(nil, "", testService, testVersion, testEndpoint)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	expectedURL := fmt.Sprintf("%s/%s/%s/%s/%s", defaultCloudURL, tenant, testService, testVersion, testEndpoint)
 	require.Equal(t, testURL.String(), expectedURL)
 }
@@ -81,11 +81,11 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 		Host:   hostWithPort,
 		Tenant: tenant,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, client.httpClient.Timeout, time.Second*5, "default timeout should be 5 seconds")
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
 
-	require.Nil(t, err)
+	require.NoError(t, err)
 	apiHostName := fmt.Sprintf("api.%s", host)
 	apiHostWithPort := fmt.Sprintf("%s:%s", apiHostName, apiPort)
 	assert.Equal(t, apiHostName, testURL.Hostname())
@@ -98,7 +98,7 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	client.SetOverrideHost("localhost")
 	assert.Equal(t, "localhost", client.overrideHost)
 	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "localhost", testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	// "localhost" has no port specified, so port is now "" rather than 8882
@@ -110,7 +110,7 @@ func TestBuildURLDefaultTenant(t *testing.T) {
 	client.SetOverrideHost("127.0.0.1:8080")
 	assert.Equal(t, "127.0.0.1:8080", client.overrideHost)
 	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "127.0.0.1", testURL.Hostname())
 	assert.Equal(t, apiURLProtocol, testURL.Scheme)
 	assert.Equal(t, "8080", testURL.Port())
@@ -132,7 +132,7 @@ func TestBuildURLPathParams(t *testing.T) {
 		Host:   hostWithPort,
 		Tenant: tenant,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	pp := struct {
 		WidgetID     int
 		SprocketName string
@@ -141,7 +141,7 @@ func TestBuildURLPathParams(t *testing.T) {
 		SprocketName: "spok",
 	}
 	u, err := client.BuildURLFromPathParams(nil, "api", `/myservice/v1beta3/widgets/{{.WidgetID}}/sprockets/{{.SprocketName}}`, pp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, u)
 	assert.Equal(t, `http://api.example.com:8882/EXAMPLE_TENANT/myservice/v1beta3/widgets/1234/sprockets/spok`, u.String())
 }
@@ -152,10 +152,10 @@ func TestNewClientOverrideHost(t *testing.T) {
 		OverrideHost: "localhost:8080",
 		Tenant:       "mytenant",
 	})
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, "localhost:8080", client.overrideHost)
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "localhost", testURL.Hostname())
 	assert.Equal(t, "https", testURL.Scheme)
 	assert.Equal(t, "8080", testURL.Port())
@@ -178,14 +178,14 @@ func TestBuildURLEscapedCharacters(t *testing.T) {
 		Token:  "TEST_TOKEN",
 		Tenant: "mytenant",
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	query := url.Values{}
 	query.Set("filter", `kind=="import"`)
 	query.Set("email", "user@example.com")
 
 	testURL, err := client.BuildURL(query, "api", "permissions", "mytenant:*:*write")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "https://api.scp.splunk.com/mytenant/permissions/mytenant:%2A:%2Awrite?email=user%40example.com&filter=kind%3D%3D%22import%22", testURL.String())
 }
 
@@ -196,16 +196,16 @@ func TestBuildURLSetDefaultTenant(t *testing.T) {
 		Token:  token,
 		Tenant: tenant,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	testURL, err := client.BuildURL(nil, "api", "services", "search", "jobs")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 	// Set to new tenant
 	tenant = "NEW_TENANT"
 	client.SetDefaultTenant(tenant)
 	testURL, err = client.BuildURL(nil, "api", "services", "search", "jobs")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("%s%s", tenant, "/services/search/jobs"), testURL.Path)
 	assert.Empty(t, testURL.Fragment)
 }
@@ -227,7 +227,7 @@ func TestNewTokenClient(t *testing.T) {
 		Tenant:  tenant,
 		Timeout: timeout,
 	})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, token, client.tokenContext.AccessToken)
 
 	testURL := client.GetURL("")
@@ -248,7 +248,7 @@ func (tr *tRet) GetTokenContext() (*idp.Context, error) {
 func TestNewTokenRetrieverClient(t *testing.T) {
 	var tokenRetriever = &tRet{}
 	var client, err = NewClient(&Config{TokenRetriever: tokenRetriever})
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, client.tokenContext.AccessToken, xyzToken, "access token should have been initialized to X.Y.Z")
 }
 

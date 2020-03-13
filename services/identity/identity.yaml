@@ -23,6 +23,13 @@ components:
       required: true
       schema:
         type: string
+    appId:
+      description: The Okta app Id.
+      in: path
+      name: app_id
+      required: true
+      schema:
+        type: string
     clientId:
       description: ID of the client to authorize
       in: query
@@ -696,6 +703,9 @@ components:
         token_endpoint_auth_method:
           type: string
       type: object
+    OktaApp:
+      description: Represents an Okta App (https://developer.okta.com/docs/reference/api/apps/#application-model)
+      type: object
     PermissionSet:
       properties:
         kind:
@@ -1031,6 +1041,14 @@ paths:
     get:
       description: List the groups that exist in a given tenant.
       operationId: listGroups
+      parameters:
+      - description: List only the groups with specified access permission.
+        in: query
+        name: access
+        schema:
+          enum:
+          - write
+          type: string
       responses:
         "200":
           content:
@@ -1452,6 +1470,12 @@ paths:
                   type: string
                 type: array
           description: The set of permissions was successfully returned.
+          headers:
+            Cache-Control:
+              description: max-age=<seconds>, specifies the time member permission
+                can be cached.
+              schema:
+                type: string
         "400":
           description: The request isn't valid.
         "401":
@@ -1786,9 +1810,27 @@ paths:
       x-authz-scope: identity.principals.read
     parameters:
     - $ref: '#/components/parameters/principal'
+  /system/identity/v2beta1/principals/{principal}/revoke:
+    parameters:
+    - $ref: '#/components/parameters/principal'
+    post:
+      description: Revoke all existing tokens issued to a principal
+      operationId: revokePrincipalAuthTokens
+      responses:
+        "204":
+          description: Successful operation
+        "400":
+          description: Malformed request
+        "401":
+          description: Unauthenticated user
+        "403":
+          description: Unauthorized operation
+        "404":
+          description: Resource not found
+      x-authz-scope: identity.principals.revoke
 security:
 - Bearer: []
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: identity/v2beta1/openapi.yaml

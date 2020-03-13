@@ -322,7 +322,15 @@ func head(items []string) (string, []string) {
 }
 
 func head1(items []string) string {
+	return head1OrDefault(items, nil)
+}
+
+func head1OrDefault(items []string, defaultValue *string) string {
 	if len(items) < 1 {
+		if defaultValue != nil {
+			return *defaultValue
+		}
+
 		etoofew()
 	}
 	h, items := head(items)

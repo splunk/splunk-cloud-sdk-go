@@ -27,6 +27,8 @@ components:
       name: jobId
       required: true
       schema:
+        maxLength: 250
+        minLength: 1
         type: string
     PrincipalName:
       in: path
@@ -57,6 +59,23 @@ components:
       required: true
   schemas:
     AnyValue: {}
+    CreateEntitlementsJobBody:
+      properties:
+        appClientID:
+          maxLength: 250
+          minLength: 2
+          type: string
+        entitlements:
+          $ref: '#/components/schemas/JobEntitlements'
+        subscriptionID:
+          maxLength: 250
+          minLength: 2
+          type: string
+      required:
+      - appClientID
+      - subscriptionID
+      - entitlements
+      type: object
     CreateProvisionJobBody:
       properties:
         apps:
@@ -88,11 +107,11 @@ components:
       type: object
     Entitlement:
       properties:
-        name:
-          type: string
-        sku:
-          maxLength: 100
+        appClientID:
+          maxLength: 250
           minLength: 2
+          type: string
+        name:
           type: string
         status:
           $ref: '#/components/schemas/EntitlementStatus'
@@ -105,19 +124,21 @@ components:
           $ref: '#/components/schemas/AnyValue'
       required:
       - name
-      - sku
       - value
       - updatedAt
       - updatedBy
       - status
+      - appClientID
       type: object
     EntitlementLog:
       properties:
         action:
           type: string
-        name:
+        appClientID:
+          maxLength: 250
+          minLength: 2
           type: string
-        sku:
+        name:
           type: string
         status:
           $ref: '#/components/schemas/EntitlementStatus'
@@ -130,7 +151,7 @@ components:
           $ref: '#/components/schemas/AnyValue'
       required:
       - name
-      - sku
+      - appClientID
       - value
       - updatedAt
       - updatedBy
@@ -152,6 +173,69 @@ components:
       - failed
       - deleting
       type: string
+    EntitlementsJobInfo:
+      properties:
+        appClientID:
+          maxLength: 250
+          minLength: 2
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        entitlements:
+          $ref: '#/components/schemas/JobEntitlements'
+        errors:
+          $ref: '#/components/schemas/EntitlementsJobInfoErrors'
+        jobID:
+          minLength: 1
+          type: string
+        status:
+          enum:
+          - created
+          - running
+          - completed
+          - failed
+          type: string
+        subscriptionID:
+          maxLength: 250
+          minLength: 2
+          type: string
+        tenant:
+          type: string
+      required:
+      - jobID
+      - appClientID
+      - subscriptionID
+      - tenant
+      - entitlements
+      - status
+      - createdAt
+      - createdBy
+      - errors
+      type: object
+    EntitlementsJobInfoErrors:
+      items:
+        $ref: '#/components/schemas/EntitlementsJobInfoErrorsItems'
+      type: array
+    EntitlementsJobInfoErrorsItems:
+      properties:
+        app:
+          type: string
+        code:
+          type: string
+        entitlementName:
+          type: string
+        jobStage:
+          type: string
+        message:
+          type: string
+      required:
+      - jobStage
+      - code
+      - message
+      type: object
     Error:
       properties:
         code:
@@ -255,6 +339,22 @@ components:
       items:
         $ref: '#/components/schemas/InviteInfo'
       type: array
+    JobEntitlement:
+      properties:
+        name:
+          maxLength: 100
+          minLength: 2
+          type: string
+        value:
+          $ref: '#/components/schemas/AnyValue'
+      required:
+      - name
+      - value
+      type: object
+    JobEntitlements:
+      items:
+        $ref: '#/components/schemas/JobEntitlement'
+      type: array
     ProvisionJobInfo:
       properties:
         apps:
@@ -313,14 +413,9 @@ components:
       type: array
     SetEntitlement:
       properties:
-        sku:
-          maxLength: 100
-          minLength: 2
-          type: string
         value:
           $ref: '#/components/schemas/AnyValue'
       required:
-      - sku
       - value
       type: object
     TenantInfo:
@@ -568,6 +663,71 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: The reason for the error
       x-authz-scope: identity.invites.write
+  /system/provisioner/v1beta1/jobs/tenants/{tenantName}/entitlements/{jobId}:
+    get:
+      description: Returns details of a specific entitlements job.
+      operationId: getEntitlementsJob
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementsJobInfo'
+          description: The details of the entitlements job were returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "429":
+          description: Too many requests were sent.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      x-authz-scope: identity.tenants.entitlements.read
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/JobId'
+    - $ref: '#/components/parameters/TenantName'
+    put:
+      operationId: createEntitlementsJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEntitlementsJobBody'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementsJobInfo'
+          description: The entitlements job was successfully created.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "422":
+          description: The provided fields aren't valid.
+        "423":
+          description: The resource is locked.
+        "429":
+          description: Too many requests were sent.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The reason for the error
+      summary: Creates an entitlements job.
+      x-authz-scope: identity.tenants.entitlements.write
   /system/provisioner/v1beta1/jobs/tenants/provision:
     get:
       description: Returns a list of all provision jobs created by the user.
@@ -712,4 +872,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 255efc63d957926b3feeae5de8a7d17be7e322ee path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: provisioner/v1beta1/openapi.yaml

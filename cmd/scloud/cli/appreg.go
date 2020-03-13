@@ -306,7 +306,7 @@ func (appRegCommand *AppRegistryCommand) updateApp(argv []string) (interface{}, 
 	}
 
 	if app.IsWebApp() {
-		return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.MakeUpdateAppRequestFromWebAppPut(appregistry.WebAppPut{Title: args.Title,
+		return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.UpdateAppRequest{Title: &args.Title,
 			Description:             &args.Description,
 			LogoUrl:                 &args.LogoURL,
 			LoginUrl:                &args.LoginURL,
@@ -314,9 +314,9 @@ func (appRegCommand *AppRegistryCommand) updateApp(argv []string) (interface{}, 
 			WebhookUrl:              &args.WebhookURL,
 			RedirectUrls:            redirectURLs,
 			AppPrincipalPermissions: appPrincipalPermissions,
-			UserPermissionsFilter:   userPermissionsFilter}))
+			UserPermissionsFilter:   userPermissionsFilter})
 	}
-	return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.MakeUpdateAppRequestFromCommonAppPut(appregistry.CommonAppPut{Title: args.Title,
+	return appRegCommand.appRegistryService.UpdateApp(args.Name, appregistry.UpdateAppRequest{Title: &args.Title,
 		Description:             &args.Description,
 		LogoUrl:                 &args.LogoURL,
 		LoginUrl:                &args.LoginURL,
@@ -324,7 +324,7 @@ func (appRegCommand *AppRegistryCommand) updateApp(argv []string) (interface{}, 
 		WebhookUrl:              &args.WebhookURL,
 		RedirectUrls:            redirectURLs,
 		AppPrincipalPermissions: appPrincipalPermissions,
-		UserPermissionsFilter:   userPermissionsFilter}))
+		UserPermissionsFilter:   userPermissionsFilter})
 }
 
 func (appRegCommand *AppRegistryCommand) getSpecJSON(argv []string) (interface{}, error) {

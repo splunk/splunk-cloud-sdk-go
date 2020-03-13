@@ -24,7 +24,7 @@
 package forwarders
 
 type Certificate struct {
-	Pem *string `json:"pem,omitempty"`
+	Pem string `json:"pem"`
 }
 
 type CertificateInfo struct {

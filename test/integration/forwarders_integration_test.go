@@ -39,13 +39,13 @@ import (
 // Test ListCertificates
 func TestListCertificates(t *testing.T) {
 	err := getSdkClient(t).ForwardersService.DeleteCertificates()
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Certificate 1
 	// Choose a name to identify the forwarder, create and generate a certificate
 	forwarder := "forwarder_01"
 	err, pemFile1, certificateInfo1 := createAndUploadCertificate(t, forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, pemFile1)
 	require.NotNil(t, certificateInfo1)
 
@@ -56,7 +56,7 @@ func TestListCertificates(t *testing.T) {
 	// Choose a name to identify the forwarder, create and generate a certificate
 	forwarder = "forwarder_02"
 	err, pemFile2, certificateInfo2 := createAndUploadCertificate(t, forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, pemFile2)
 	require.NotNil(t, certificateInfo2)
 
@@ -65,7 +65,7 @@ func TestListCertificates(t *testing.T) {
 	// Check if the test certificates were created as expected
 	var resp http.Response
 	certificates, err := getSdkClient(t).ForwardersService.ListCertificates(&resp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.NotZero(t, len(certificates))
 	require.NotNil(t, resp)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -77,7 +77,7 @@ func TestDeleteCertificates(t *testing.T) {
 	// Choose a name to identify the forwarder, create and generate a certificate
 	forwarder := "forwarder_01"
 	err, pemFile1, certificateInfo1 := createAndUploadCertificate(t, forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, pemFile1)
 	require.NotNil(t, certificateInfo1)
 
@@ -88,7 +88,7 @@ func TestDeleteCertificates(t *testing.T) {
 	// Choose a name to identify the forwarder, create and generate a certificate
 	forwarder = "forwarder_02"
 	err, pemFile2, certificateInfo2 := createAndUploadCertificate(t, forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, pemFile2)
 	require.NotNil(t, certificateInfo2)
 
@@ -96,11 +96,11 @@ func TestDeleteCertificates(t *testing.T) {
 
 	// Delete all the certificates
 	err = getSdkClient(t).ForwardersService.DeleteCertificates()
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Check if all the test certificates have been deleted
 	certificates, err := getSdkClient(t).ForwardersService.ListCertificates()
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Zero(t, len(certificates))
 }
 
@@ -109,7 +109,7 @@ func TestCreateAndDeleteCertificate(t *testing.T) {
 	// Choose a name to identify the forwarder, create and generate a certificate
 	forwarder := "forwarder_01"
 	err, pemFile1, certificateInfo1 := createAndUploadCertificate(t, forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, pemFile1)
 	require.NotNil(t, certificateInfo1)
 
@@ -118,14 +118,14 @@ func TestCreateAndDeleteCertificate(t *testing.T) {
 
 	//Delete certificate
 	err = getSdkClient(t).ForwardersService.DeleteCertificate(strconv.FormatInt(*certificateInfo1.Slot, 10))
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 }
 
 // Create and Upload a test certificate to Splunk Forwarders Service
 func createAndUploadCertificate(t *testing.T, forwarder string) (error, string, *forwarders.CertificateInfo) {
 	// Generate the certificate
 	err := generateCertificate(forwarder)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	// Generated certificate is in an external .pem file (deleted after test run finishes)
 	pemFile := fmt.Sprintf("%v.pem", forwarder)
@@ -136,7 +136,7 @@ func createAndUploadCertificate(t *testing.T, forwarder string) (error, string, 
 	}
 
 	str := string(fileBytes)
-	cert := forwarders.Certificate{Pem: &str}
+	cert := forwarders.Certificate{Pem: str}
 
 	// Upload the certificate to Splunk Forwarders service
 	certificateInfo, err := getSdkClient(t).ForwardersService.AddCertificate(cert)

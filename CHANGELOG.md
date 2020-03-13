@@ -1,5 +1,26 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.3.0
+### BREAKING CHANGES
+
+* AppRegistry
+	* Model `UpdateAppRequest` has been refactored from a discriminator-based app-kind-specific model to a single model.
+* Catalog
+	* `JobDatasetPATCH` and `JobDatasetPOST` have been removed.
+* Collect
+	* `executionPatch` model now requires `status` property.
+* Forwarders
+	* `Certificates` model now requires `pem` property.
+
+### FEATURES
+
+* Identity
+	* `ListGroups` now allows passing a query  to filter by access permission
+	* `ListMemberPermissions` returns new `max-age` header describing how long member permission can be cached
+	* New `RevokePrincipalAuthTokens` revokes all tokens for a principal
+* Provisioner
+	* Support for new endpoints: `CreateEntitlementsJob` and `GetEntitlementsJob`
+
 ## Version 1.2.1
 ### Breaking Changes
 *Appregistry models UpdateAppRequest, CreateAppRequest, AppResponseCreateUpdate,AppResponseGetList have been refactored from single model encompassing app related properties to discriminator based using app kind specific models - NativeApp, Webapp, ServiceApp models
