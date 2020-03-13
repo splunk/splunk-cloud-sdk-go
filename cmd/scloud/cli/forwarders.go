@@ -84,7 +84,7 @@ func (cmd *ForwardersCommand) createCertificate(args []string) (interface{}, err
 	}
 	str := string(fileBytes)
 
-	return cmd.forwardersService.AddCertificate(forwarders.Certificate{Pem: &str})
+	return cmd.forwardersService.AddCertificate(forwarders.Certificate{Pem: str})
 }
 
 func (cmd *ForwardersCommand) deleteCertificate(args []string) error {

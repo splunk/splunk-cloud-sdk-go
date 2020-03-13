@@ -50,7 +50,7 @@ func createRecord(t *testing.T, collection string, record map[string]interface{}
 		record)
 
 	assert.NotNil(t, key)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, (*key).Key)
 
 	return *key, err
@@ -72,7 +72,7 @@ func TestKVStoreCollectionsListRecordsReturnsEmptyDatasetOnCreation(t *testing.T
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	require.NotNil(t, records)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Len(t, records, 0)
 }
 
@@ -87,7 +87,7 @@ func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertReco
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert a new record into the kvstore
@@ -98,7 +98,7 @@ func TestKVStoreCollectionsListRecordsReturnsCorrectDatasetAfterSingleInsertReco
 	time.Sleep(2 * time.Second)
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
 
 	for _, element := range recordsAfterInsert {
@@ -118,7 +118,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -133,7 +133,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidInclude(t *testing.T) {
 	query := kvstore.ListRecordsQueryParams{}.SetFields([]string{"TEST_KEY_01"})
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &query)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
 
 	for _, element := range recordsAfterInsert {
@@ -154,7 +154,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -169,7 +169,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidExclude(t *testing.T) {
 	query := kvstore.ListRecordsQueryParams{}.SetFields([]string{"TEST_KEY_01:0"})
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &query)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 2)
 
 	for _, element := range recordsAfterInsert {
@@ -191,7 +191,7 @@ func TestKVStoreCollectionsListRecordsFieldsValidIncludeAndExclude(t *testing.T)
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -219,7 +219,7 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -232,7 +232,7 @@ func TestKVStoreCollectionsListRecordsCountValidInput(t *testing.T) {
 	query := kvstore.ListRecordsQueryParams{}.SetCount(1)
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &query)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
 }
 
@@ -246,7 +246,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -261,7 +261,7 @@ func TestKVStoreCollectionsListRecordsOffsetValidInput(t *testing.T) {
 	query := kvstore.ListRecordsQueryParams{}.SetOffset(1)
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &query)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
 }
 
@@ -276,7 +276,7 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -296,7 +296,7 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	query := kvstore.ListRecordsQueryParams{}.SetFields([]string{"TEST_KEY_02"})
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &query)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 3)
 
 	assert.EqualValues(t, "B", recordsAfterInsert[0]["TEST_KEY_02"])
@@ -318,7 +318,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert the first record into the kvstore
@@ -336,7 +336,7 @@ func TestKVStoreCollectionsListRecordsAllParametersSuccess(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	recordsAfterInsert, err := getClient(t).KVStoreService.ListRecords(kvCollection, &filters)
 	assert.NotNil(t, recordsAfterInsert)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, recordsAfterInsert, 1)
 
 	// The order before filtering should be: recordThree, recordOne, recordTwo
@@ -382,7 +382,7 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 	records, err := getClient(t).KVStoreService.ListRecords(kvCollection, nil)
 
 	assert.NotNil(t, records)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.Len(t, records, 0)
 
 	// Insert a new record into the kvstore
@@ -391,6 +391,6 @@ func TestKVStoreCollectionsInsertRecordSuccess(t *testing.T) {
 		record)
 
 	assert.NotNil(t, key)
-	assert.Nil(t, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, key.Key)
 }

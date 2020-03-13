@@ -190,7 +190,7 @@ func TestMarshalByMethodNil(t *testing.T) {
 func TestMarshalByMethodNonExistentMethod(t *testing.T) {
 	// This should marshal only the fields without any methods tags
 	bytes, err := MarshalByMethod(manyTypesAll, "not_a_real_method")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"-":"HyphenJSONTagValue","stringArray":["a","b","c","d"],"stringPointerSliceEmpty":["b","c","d"]}`, string(bytes))
 }
@@ -198,7 +198,7 @@ func TestMarshalByMethodNonExistentMethod(t *testing.T) {
 func TestMarshalByMethodPATCH(t *testing.T) {
 	// This should marshal only the fields without any methods tags or with a PATCH method tag
 	bytes, err := MarshalByMethod(manyTypesAll, "PATCH")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"-":"HyphenJSONTagValue","bool":false,"boolEmpty":true,"boolPointerEmpty":false,"intSliceEmpty":[1,3],"stringArray":["a","b","c","d"],"stringPointerSliceEmpty":["b","c","d"]}`, string(bytes))
 }
@@ -206,7 +206,7 @@ func TestMarshalByMethodPATCH(t *testing.T) {
 func TestMarshalByMethodPOST(t *testing.T) {
 	// This should marshal only the fields without any methods tags or with a POST method tag
 	bytes, err := MarshalByMethod(manyTypesAll, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"-":"HyphenJSONTagValue","EmptyJSONTag":"EmptyJSONTagValue","bool":false,"float":3.141,"floatEmpty":3.14159,"floatPointerEmpty":3.141,"int":1,"intEmpty":2,"intPointerArray":[1,2,3],"intPointerEmpty":3,"intPointerSlice":[2,3],"intSliceEmpty":[1,3],"interface":{"a":"a","one":1,"pi":3.14159,"yes":true},"interfaceEmpty":{"b":"b","no":false,"pi":3.141,"two":2},"string":"a","stringArray":["a","b","c","d"],"stringEmpty":"b","stringPointerEmpty":"c","stringPointerSliceEmpty":["b","c","d"],"stringSlice":["b","c"]}`, string(bytes))
 }
@@ -214,7 +214,7 @@ func TestMarshalByMethodPOST(t *testing.T) {
 func TestMarshalByMethodPUT(t *testing.T) {
 	// This should marshal only the fields without any methods tags or with a PUT method tag
 	bytes, err := MarshalByMethod(manyTypesAll, "PUT")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"-":"HyphenJSONTagValue","bool":false,"boolEmpty":true,"intPointerSlice":[2,3],"intSliceEmpty":[1,3],"stringArray":["a","b","c","d"],"stringPointerSliceEmpty":["b","c","d"]}`, string(bytes))
 }
@@ -223,7 +223,7 @@ func TestMarshalByMethodOmitEmpty(t *testing.T) {
 	// This should marshal only the fields without `omitempty` and without any methods tags or with a POST method tag
 	manyTypesEmpty := ManyTypes{}
 	bytes, err := MarshalByMethod(manyTypesEmpty, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"-":"","EmptyJSONTag":"","bool":false,"float":0,"int":0,"intPointerArray":[null,null,null],"intPointerSlice":null,"interface":null,"string":"","stringArray":["","","",""],"stringSlice":null}`, string(bytes))
 }
@@ -231,10 +231,10 @@ func TestMarshalByMethodOmitEmpty(t *testing.T) {
 func TestMarshalByMethodCaseInsensitive(t *testing.T) {
 	// Verify that the case of the method does not matter w.r.t. marshaling behavior
 	bytesUpper, err := MarshalByMethod(manyTypesAll, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytesUpper)
 	bytesLower, err := MarshalByMethod(manyTypesAll, "post")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytesLower)
 	assert.Equal(t, bytesLower, bytesUpper)
 }
@@ -242,37 +242,37 @@ func TestMarshalByMethodCaseInsensitive(t *testing.T) {
 func TestMarshalByMethodEmbedded(t *testing.T) {
 	a := SimpleA{A: "valueA"}
 	bytes, err := MarshalByMethod(a, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"a":"valueA"}`, string(bytes))
 
 	b := SimpleB{B: "valueB"}
 	bytes, err = MarshalByMethod(b, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"b":"valueB"}`, string(bytes))
 
 	cd := SimpleCD{C: "valueC", D: "valueD"}
 	bytes, err = MarshalByMethod(cd, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"c":"valueC","d":"valueD"}`, string(bytes))
 
 	embedded := Embedded{SimpleA: a}
 	bytes, err = MarshalByMethod(embedded, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"a":"valueA"}`, string(bytes))
 
 	embeddedPtr := EmbeddedPointer{SimpleB: &b}
 	bytes, err = MarshalByMethod(embeddedPtr, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"b":"valueB"}`, string(bytes))
 
 	embeddedMulti := EmbeddedMulti{Embedded: &embedded, EmbeddedPointer: embeddedPtr, SimpleCD: cd}
 	bytes, err = MarshalByMethod(embeddedMulti, "POST")
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotEmpty(t, bytes)
 	assert.Equal(t, `{"a":"valueA","b":"valueB","c":"valueC","d":"valueD"}`, string(bytes))
 }
@@ -288,7 +288,7 @@ func TestMarshalByMethodInvalidMethodsTag(t *testing.T) {
 	a := InvalidMethodsTag{A: "valueA"}
 	_, err := MarshalByMethod(a, "GET")
 	// there is no err because GET is found before POTS is encountered
-	require.Nil(t, err)
+	require.NoError(t, err)
 	_, err = MarshalByMethod(a, "POST")
 	require.NotNil(t, err)
 	assert.Contains(t, err.Error(), "`methods:` field tag found with invalid method: \"POTS\"")
@@ -298,7 +298,7 @@ func TestMarshalByMethodUnsupportedStringTag(t *testing.T) {
 	a := StringTag{A: "valueA"}
 	_, err := MarshalByMethod(a, "PATCH")
 	// there is no err because json field is not read since no PATCH field to marshal
-	require.Nil(t, err)
+	require.NoError(t, err)
 	_, err = MarshalByMethod(a, "POST")
 	require.NotNil(t, err)
 	assert.Contains(t, err.Error(), "the \"string\" tag (`json:\",string\"`) is not supported")

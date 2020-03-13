@@ -36,30 +36,30 @@ func TestCRUDJob(t *testing.T) {
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, createdJob.Data)
 	defer client.CollectService.DeleteJob(*createdJob.Data.Id)
 
 	//get job
 	getJob, err := client.CollectService.GetJob(*createdJob.Data.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.Equal(t, *createdJob.Data.Id, *getJob.Data.Id)
 
 	//List jobs
 	listedJob, err := client.CollectService.ListJobs(nil)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotZero(t, len(listedJob.Data))
 
 	//List jobs with query
 	query := collect.ListJobsQueryParams{}.SetConnectorId(createdJob.Data.ConnectorID)
 	listedJob1, err := client.CollectService.ListJobs(&query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotZero(t, len(listedJob1.Data))
 	require.Equal(t, createdJob.Data.ConnectorID, listedJob1.Data[0].ConnectorID)
 
 	//Delete job
 	err = client.CollectService.DeleteJob(*createdJob.Data.Id)
-	require.Nil(t, err)
+	require.NoError(t, err)
 }
 
 func TestPatchJob(t *testing.T) {
@@ -73,7 +73,7 @@ func TestPatchJob(t *testing.T) {
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CollectService.DeleteJob(*createdJob.Data.Id)
 
 	//Patch job
@@ -83,7 +83,7 @@ func TestPatchJob(t *testing.T) {
 	}
 
 	newJob, err := client.CollectService.PatchJob(*createdJob.Data.Id, patchJob)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.Equal(t, new_name, newJob.Data.Name)
 }
 
@@ -99,7 +99,7 @@ func TestPatchJobs(t *testing.T) {
 	}
 
 	createdJob, err := client.CollectService.CreateJob(job)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	defer client.CollectService.DeleteJob(*createdJob.Data.Id)
 
 	scale := collect.ScalePolicy{Static: collect.StaticScale{Workers: 1}}
@@ -109,12 +109,12 @@ func TestPatchJobs(t *testing.T) {
 
 	query := collect.PatchJobsQueryParams{}.SetConnectorId(createdJob.Data.ConnectorID)
 	newJobs, err := client.CollectService.PatchJobs(jobsPatchs, &query)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.True(t, newJobs.Data[0].Updated)
 	jobId := newJobs.Data[0].Id
 
 	job1, err := client.CollectService.GetJob(jobId)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.NotNil(t, job1.Data.Name)
 	static := job1.Data.ScalePolicy.Static
 	require.NotNil(t, static)

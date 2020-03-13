@@ -161,7 +161,7 @@ func TestParseResponseLookup(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(lookupDS))),
 	}
 	err := util.ParseResponse(&ds, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, LookupDatasetKindLookup, ds.LookupDataset().Kind)
 
 	require.NotNil(t, ds.LookupDataset().Id)
@@ -174,7 +174,7 @@ func TestParseResponseKvCollection(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(kvDS))),
 	}
 	err := util.ParseResponse(&kv, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, KvCollectionDatasetKindKvcollection, kv.KvCollectionDataset().Kind)
 
 	require.NotNil(t, kv.KvCollectionDataset().Id)
@@ -186,7 +186,7 @@ func TestParseResponseIndex(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(indexDS))),
 	}
 	err := util.ParseResponse(&indx, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, IndexDatasetKindIndex, indx.IndexDataset().Kind)
 
 	require.NotNil(t, indx.IndexDataset().Id)
@@ -200,7 +200,7 @@ func TestParseResponseMetric(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(metricDS))),
 	}
 	err := util.ParseResponse(&metric, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, MetricDatasetKindMetric, metric.MetricDataset().Kind)
 
 	require.NotNil(t, metric.MetricDataset().Id)
@@ -214,7 +214,7 @@ func TestParseResponseImport(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(importDS))),
 	}
 	err := util.ParseResponse(&imp, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, ImportDatasetKindModelImport, imp.ImportDataset().Kind)
 
 	require.NotNil(t, imp.ImportDataset().Id)
@@ -228,7 +228,7 @@ func TestParseResponseJob(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(jobDS))),
 	}
 	err := util.ParseResponse(&job, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, JobDatasetKindJob, job.JobDataset().Kind)
 
 	require.NotNil(t, job.JobDataset().Id)
@@ -242,7 +242,7 @@ func TestParseResponseView(t *testing.T) {
 		Body: ioutil.NopCloser(bytes.NewReader([]byte(viewDS))),
 	}
 	err := util.ParseResponse(&view, httpResp)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, ViewDatasetKindView, view.ViewDataset().Kind)
 
 	require.NotNil(t, view.ViewDataset().Id)
