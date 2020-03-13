@@ -170,11 +170,14 @@ func splitArgs(line string) []string {
 func removeEscapeFromArgs(args []string) []string {
 	for i, ele := range args {
 		if strings.HasPrefix(ele, "\"") &&
-			strings.HasSuffix(ele, "\"") &&
-			strings.Contains(ele, "\\") {
-			args[i] = strings.Trim(ele, "\"")
-			args[i] = strings.Replace(args[i], "\\", "", -1)
+			strings.HasSuffix(ele, "\"") {
+			// remove double quote
+			args[i] = ele[1 : len(ele)-1]
 
+			if strings.Contains(ele, "\\") {
+				args[i] = strings.Trim(args[i], "\"")
+				args[i] = strings.Replace(args[i], "\\", "", -1)
+			}
 		}
 	}
 
