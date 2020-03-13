@@ -40,7 +40,8 @@ func init() {
 	forwardersCmd.AddCommand(addCertificateCmd)
 
 	var addCertificatePem string
-	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "")
+	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "This is a required parameter. ")
+	addCertificateCmd.MarkFlagRequired("pem")
 
 	forwardersCmd.AddCommand(deleteCertificateCmd)
 

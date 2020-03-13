@@ -467,8 +467,18 @@ func ListGroups(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	// Parse all flags
 
-	resp, err := client.IdentityService.ListGroups()
+	var access model.ListGroupsaccess
+	err = flags.ParseFlag(cmd.Flags(), "access", &access)
+	if err != nil {
+		return fmt.Errorf(`error parsing "access": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListGroupsQueryParams{}
+	generated_query.Access = access
+
+	resp, err := client.IdentityService.ListGroups(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -749,6 +759,30 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// RevokePrincipalAuthTokens Revoke all existing tokens issued to a principal
+func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+
+	err = client.IdentityService.RevokePrincipalAuthTokens(principal)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ValidateToken Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 
 func ValidateToken(cmd *cobra.Command, args []string) error {
@@ -759,14 +793,16 @@ func ValidateToken(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var include model.ValidateTokeninclude
+	var includeDefault model.ValidateTokenincludeEnum
+	include := &includeDefault
 	err = flags.ParseFlag(cmd.Flags(), "include", &include)
 	if err != nil {
 		return fmt.Errorf(`error parsing "include": ` + err.Error())
 	}
 	// Form query params
 	generated_query := model.ValidateTokenQueryParams{}
-	generated_query.Include = include
+
+	generated_query.Include = []model.ValidateTokenincludeEnum{includeDefault}
 
 	resp, err := client.IdentityService.ValidateToken(&generated_query)
 	if err != nil {
