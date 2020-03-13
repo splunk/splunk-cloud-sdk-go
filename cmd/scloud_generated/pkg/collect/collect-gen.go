@@ -5,6 +5,7 @@ package collect
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/flags"
@@ -14,7 +15,6 @@ import (
 
 // CreateExecution Creates an execution for a scheduled job based on the job ID.
 func CreateExecution(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -28,17 +28,16 @@ func CreateExecution(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
-
-	resp, err :=   client.CollectService.CreateExecution(jobId)
+	resp, err := client.CollectService.CreateExecution(jobId)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // CreateJob This API returns `403` if the number of collect workers is over a certain limit.
 func CreateJob(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -85,27 +84,25 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.Job{
 
-		ConnectorID: connectorID,
+		ConnectorID:      connectorID,
 		EventExtraFields: eventExtraFields,
-		Name: name,
-		Parameters: parameters,
-		ScalePolicy: scalePolicy,
-		Schedule: schedule,
-		Scheduled: scheduled,
-
+		Name:             name,
+		Parameters:       parameters,
+		ScalePolicy:      scalePolicy,
+		Schedule:         schedule,
+		Scheduled:        scheduled,
 	}
 
-
-	resp, err :=   client.CollectService.CreateJob(generated_request_body)
+	resp, err := client.CollectService.CreateJob(generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // DeleteJob Removes a job based on the job ID.
 func DeleteJob(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -119,35 +116,32 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
-
-	err =   client.CollectService.DeleteJob(jobId)
+	err = client.CollectService.DeleteJob(jobId)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
+
 // DeleteJobs Removes all jobs on a tenant.
 func DeleteJobs(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
 
-
-
-	resp, err :=   client.CollectService.DeleteJobs()
+	resp, err := client.CollectService.DeleteJobs()
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // GetExecution Returns the execution details based on the execution ID and job ID.
 func GetExecution(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -166,17 +160,16 @@ func GetExecution(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
-
-	resp, err :=   client.CollectService.GetExecution(jobId, executionUid)
+	resp, err := client.CollectService.GetExecution(jobId, executionUid)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // GetJob Returns a job based on the job ID.
 func GetJob(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -190,17 +183,16 @@ func GetJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
-
-	resp, err :=   client.CollectService.GetJob(jobId)
+	resp, err := client.CollectService.GetJob(jobId)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // ListJobs Returns a list of all jobs that belong to a tenant.
 func ListJobs(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -217,18 +209,16 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListJobsQueryParams{}
 	generated_query.ConnectorId = connectorId
 
-
-
-	resp, err :=   client.CollectService.ListJobs(&generated_query)
+	resp, err := client.CollectService.ListJobs(&generated_query)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // PatchExecution Modifies an execution based on the job ID.
 func PatchExecution(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -255,20 +245,18 @@ func PatchExecution(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.ExecutionPatch{
 
 		Status: status,
-
 	}
 
-
-	err =   client.CollectService.PatchExecution(jobId, executionUid, generated_request_body)
+	err = client.CollectService.PatchExecution(jobId, executionUid, generated_request_body)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
+
 // PatchJob This API returns `403` if the number of collect workers is over a certain limit.
 func PatchJob(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -324,27 +312,25 @@ func PatchJob(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.JobPatch{
 
-		ConnectorID: connectorID,
+		ConnectorID:      connectorID,
 		EventExtraFields: eventExtraFields,
-		Name: name,
-		Parameters: parameters,
-		ScalePolicy: scalePolicy,
-		Schedule: schedule,
-		Scheduled: scheduled,
-
+		Name:             name,
+		Parameters:       parameters,
+		ScalePolicy:      scalePolicy,
+		Schedule:         schedule,
+		Scheduled:        scheduled,
 	}
 
-
-	resp, err :=   client.CollectService.PatchJob(jobId, generated_request_body)
+	resp, err := client.CollectService.PatchJob(jobId, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
 // PatchJobs This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.
 func PatchJobs(cmd *cobra.Command, args []string) error {
-
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -387,14 +373,12 @@ func PatchJobs(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.JobsPatch{
 
-		ConnectorID: connectorID,
+		ConnectorID:      connectorID,
 		EventExtraFields: eventExtraFields,
-		ScalePolicy: scalePolicy,
-
+		ScalePolicy:      scalePolicy,
 	}
 
-
-	resp, err :=   client.CollectService.PatchJobs(generated_request_body, &generated_query)
+	resp, err := client.CollectService.PatchJobs(generated_request_body, &generated_query)
 	if err != nil {
 		return err
 	}
