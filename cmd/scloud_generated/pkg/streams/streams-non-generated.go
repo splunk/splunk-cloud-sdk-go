@@ -325,7 +325,7 @@ func MergePipelinesOverride(targetNode string, targetPort string, inputTreeFilen
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(inputTreeFilename)
+	bytes, err := ioutil.ReadFile(inputTreeFilename)
 	if err != nil {
 		return nil, err
 	}
