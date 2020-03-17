@@ -173,7 +173,7 @@ func UpdatePipelineOverride(id string, bypassValidation *bool, createUserId *str
 
 	var data *model.UplPipeline
 	if strings.Trim(filename, " ") != "" {
-		byets, err := ioutil.ReadFile(filename)
+		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
 			return nil, err
 		}
