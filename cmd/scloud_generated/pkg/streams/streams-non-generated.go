@@ -19,13 +19,13 @@ func CreatePipelineOverride(bypassValidation *bool, description *string, name st
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -44,13 +44,13 @@ func ExpandPipelineOverride(filename string) (*model.UplPipeline, error) {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -69,13 +69,13 @@ func PutGroupOverride(groupId string, filename string) (*model.GroupResponse, er
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.GroupPutRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -95,13 +95,13 @@ func PutTemplateOverride(templateId string, filename string) (*model.TemplateRes
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.TemplatePutRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -121,13 +121,13 @@ func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) 
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.PreviewSessionStartRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -146,13 +146,13 @@ func UpdateGroupOverride(groupId string, filename string) (*model.GroupResponse,
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.GroupPatchRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func UpdatePipelineOverride(id string, bypassValidation *bool, createUserId *str
 			return nil, err
 		}
 
-		err = json.Unmarshal(byets, &data)
+		err = json.Unmarshal(bytes, &data)
 		if err != nil {
 			return nil, err
 		}
@@ -205,7 +205,7 @@ func UpdateTemplateOverride(templateId string, description *string, name *string
 			return nil, err
 		}
 
-		err = json.Unmarshal(byets, &data)
+		err = json.Unmarshal(bytes, &data)
 		if err != nil {
 			return nil, err
 		}
@@ -225,13 +225,13 @@ func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) 
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -250,13 +250,13 @@ func CompileDSLOverride(filename string) (*model.UplPipeline, error) {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.DslCompilationRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -275,13 +275,13 @@ func CompileSPLOverride(filename string) (*model.UplPipeline, error) {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.SplCompileRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -300,13 +300,13 @@ func CreateTemplateOverride(description string, name string, filename string) (*
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -330,8 +330,8 @@ func MergePipelinesOverride(targetNode string, targetPort string, inputTreeFilen
 		return nil, err
 	}
 
-	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	var inputtree model.UplPipeline
+	err = json.Unmarshal(bytes, &inputtree)
 	if err != nil {
 		return nil, err
 	}
@@ -341,13 +341,13 @@ func MergePipelinesOverride(targetNode string, targetPort string, inputTreeFilen
 		return nil, err
 	}
 
-	var data2 model.UplPipeline
-	err = json.Unmarshal(byets, &data2)
+	var maintree model.UplPipeline
+	err = json.Unmarshal(bytes, &maintree)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.MergePipelines(model.PipelinesMergeRequest{InputTree: data, MainTree: data2, TargetNode: targetNode, TargetPort: targetPort})
+	resp, err := client.StreamsService.MergePipelines(model.PipelinesMergeRequest{InputTree: inputtree, MainTree: maintree, TargetNode: targetNode, TargetPort: targetPort})
 	if err != nil {
 		return nil, err
 	}
@@ -361,13 +361,13 @@ func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveRes
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.ConnectionPutRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -386,13 +386,13 @@ func CreateGroupOverride(filename string) (*model.GroupResponse, error) {
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.GroupRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -411,13 +411,13 @@ func GetOutputSchemaOverride(nodeUuid *string, sourcePortName *string, filename 
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -436,13 +436,13 @@ func GetInputSchemaOverride(nodeUuid string, targetPortName string, filename str
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.UplPipeline
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
@@ -461,13 +461,13 @@ func UpdateConnectionOverride(id string, filename string) (*model.ConnectionSave
 		return nil, err
 	}
 
-	byets, err := ioutil.ReadFile(filename)
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var data model.ConnectionPatchRequest
-	err = json.Unmarshal(byets, &data)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
