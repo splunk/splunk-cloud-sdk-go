@@ -793,8 +793,7 @@ func ValidateToken(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var includeDefault model.ValidateTokenincludeEnum
-	include := &includeDefault
+	var include model.ValidateTokenincludeEnum
 	err = flags.ParseFlag(cmd.Flags(), "include", &include)
 	if err != nil {
 		return fmt.Errorf(`error parsing "include": ` + err.Error())
@@ -802,7 +801,7 @@ func ValidateToken(cmd *cobra.Command, args []string) error {
 	// Form query params
 	generated_query := model.ValidateTokenQueryParams{}
 
-	generated_query.Include = []model.ValidateTokenincludeEnum{includeDefault}
+	generated_query.Include = []model.ValidateTokenincludeEnum{include}
 
 	resp, err := client.IdentityService.ValidateToken(&generated_query)
 	if err != nil {
