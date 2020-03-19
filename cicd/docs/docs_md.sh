@@ -4,7 +4,7 @@
 cd "$(dirname "$0")/../.."
 
 GO111MODULE=off go get github.com/robertkrimen/godocdown/godocdown
-GO_NON_TEST_NON_EXAMPLE_PACKAGES=$(go list ./... | grep -v scloud | grep -v test | grep -v examples)
+GO_NON_TEST_NON_EXAMPLE_PACKAGES=$(go list ./... | grep -v test | grep -v examples)
 
 rm -rf docs/
 mkdir -p docs/pkg

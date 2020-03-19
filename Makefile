@@ -6,12 +6,9 @@
 
 NON_VENDOR_GO_FILES:=$(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -name "version.go" -not -name "statik.go")
 
-SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud
-SCLOUD_GEN_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud_generated/cmd
-CONFIG_VER_FILE:=cmd/scloud/cli/static/config.ver
-SCLOUD_CONFIG_VERSION:=$(shell cat $(CONFIG_VER_FILE))
+SCLOUD_SRC_PATH:=github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd
 
-setup: prereqs download_config statik version scloudgen_version
+setup: prereqs scloud_version
 
 lint: linttest
 	# vendor/ needed for golangci-lint to work at the moment
@@ -19,28 +16,22 @@ lint: linttest
 	golangci-lint run ./... --skip-dirs test --skip-files ".*_generated.go"  --skip-files "interface.go" --enable golint --disable megacheck
 	rm -rf vendor/
 
-linttest: statik version scloudgen_version
+linttest: scloud_version
 	# vendor/ needed for golangci-lint to work at the moment
 	GO111MODULE=on go mod vendor
 	golangci-lint run test/... --disable-all
 	rm -rf vendor/
 
-build: statik version scloudgen_version
+build: scloud_version
 	GO111MODULE=on go build -v ./...
 	make build_scloud
-	make build_scloud_generated
 
-build_scloud: statik version
-	@echo "Building scloud .."
-	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/cli
-
-build_scloud_generated: scloudgen_version
-	@echo "Building scloud generated.."
-	GO111MODULE=on go build -v -o bin/scloud_gen $(SCLOUD_GEN_SRC_PATH)/scloud/.
-	./cicd/scripts/build_cross_compile_scloud_gen.sh
+build_scloud: scloud_version
+	@echo "Building scloud.."
+	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/scloud/.
 
 build_cross_compile:
-	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
+	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile_scloud.sh
 
 format:
 	GO111MODULE=on gofmt -s -w $(NON_VENDOR_GO_FILES)
@@ -51,18 +42,15 @@ format_check:
 	test -z $(shell GO111MODULE=on gofmt -l $(NON_VENDOR_GO_FILES))
 	test -z $(shell GO111MODULE=on goimports -l $(NON_VENDOR_GO_FILES))
 
-scloudgen_version:
+scloud_version:
 	@echo "Generate version.go .."
-	cd $(CURDIR)/cmd/scloud_generated/cmd/scloud && go generate
+	cd $(CURDIR)/cmd/scloud/cmd/scloud && go generate
 
-vet: statik version scloudgen_version
+vet: scloud_version
 	GO111MODULE=on go vet ./...
 
-login: build_scloud
-	./cicd/scripts/login.sh
-
-login_scloudgen: build_scloud_generated
-	./cicd/scripts/login_scloud_gen.sh
+login_scloud: build_scloud
+	./cicd/scripts/login_scloud.sh
 
 token:
 	./cicd/scripts/token.sh
@@ -106,14 +94,6 @@ prereqs:
 	echo "Installing statik .."
 	GO111MODULE=on go install github.com/rakyll/statik
 
-statik:
-	@echo "Generate static assets .."
-	@statik -src=$(CURDIR)/cmd/scloud/cli/static -dest $(CURDIR)/cmd/scloud/cli
-
-version:
-	@echo "Generate version.go .."
-	cd $(CURDIR)/cmd/scloud/cli && go generate
-
 # This is a generic target that should invoke all levels of tests, i.e. unit tests, integration tests.
 test: test_unit test_integration
 
@@ -123,12 +103,8 @@ test_unit: build
 test_integration: build
 	GO111MODULE=on sh ./cicd/integration/runtests.sh
 
-test_integration_scloud: login build
-	export PYTHONPATH=$(PYTHONPATH):.
-	SCLOUD_TEST_DIR=$(shell pwd)/test/scloud GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
-
-test_integration_scloud_gen: login_scloudgen build
-	GO111MODULE=on sh ./cicd/integration/run_scloud_gen_tests.sh
+test_integration_scloud: login_scloud build
+	GO111MODULE=on sh ./cicd/integration/run_scloud_tests.sh
 
 test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh
