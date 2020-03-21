@@ -8,9 +8,9 @@ The Splunk Cloud Services software development kit (SDK) for Go contains library
 
 Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services.
 
-For more information about Splunk Cloud Services CLI [see the README](cmd/scloud/README.md).
+For more information about Splunk Cloud Services CLI, see the [Splunk Developer Portal](https://dev.splunk.com/scs/docs/overview/tools/tools_scloud).
 
-## Terms of Service (TOS)
+## Terms of Service
 
 Log in to [Splunk Investigate](https://si.scp.splunk.com/) and accept the Terms of Service when prompted.
 
