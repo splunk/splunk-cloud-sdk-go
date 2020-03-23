@@ -120,7 +120,7 @@ func ingestMetric(client *sdk.Client, index string) string {
 			Unit: &unit1},
 	}
 
-	timestamp := testutils.TimeSec * 1000
+	timestamp := testutils.RunSuffix * 1000
 	nanos := int32(1)
 	source := "mysource"
 	sourcetype := "mysourcetype"

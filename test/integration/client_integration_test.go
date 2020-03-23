@@ -65,9 +65,10 @@ func MakeSdkClient(rt http.RoundTripper) (*sdk.Client, error) {
 // TestSDKClientTokenInit tests initializing a service-wide Splunk Cloud client and validating the token provided
 func TestSDKClientInit(t *testing.T) {
 	client, err := sdk.NewClient(&services.Config{
-		Token:  testutils.TestAuthenticationToken,
-		Host:   testutils.TestSplunkCloudHost,
-		Tenant: testutils.TestTenant,
+		Token:   testutils.TestAuthenticationToken,
+		Host:    testutils.TestSplunkCloudHost,
+		Tenant:  testutils.TestTenant,
+		Timeout: testutils.TestTimeOut,
 	})
 	require.Emptyf(t, err, "error calling sdk.NewClient(): %s", err)
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
@@ -159,12 +160,13 @@ func (ml *MyLogger) Print(v ...interface{}) {
 }
 
 func TestRoundTripperWithSdkClient(t *testing.T) {
-	t.Skip("Pending integration fix")
+	responseRegexp := regexp.MustCompile(`Response from: POST .+\nRequest ID: (?P<RequestId>.+)`)
 
 	client, err := sdk.NewClient(&services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
+		Timeout:      testutils.TestTimeOut,
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
@@ -176,17 +178,23 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 	require.NotEmpty(t, action)
 	assert.Equal(t, 4, len(LoggerOutput))
 
-	// verify the logged request method, url & body
-	assert.Contains(t, LoggerOutput[1], "POST")
-	assert.Contains(t, LoggerOutput[1], "Host:")
-	assert.Contains(t, LoggerOutput[1], testutils.TestSplunkCloudHost)
-	// verify log the request body
-	assert.Contains(t, LoggerOutput[1], fmt.Sprintf("\"name\":\"%s\"", (*webhookAction.WebhookAction()).Name))
-	assert.Contains(t, LoggerOutput[1], "\"webhookUrl\":\"https://webhook.site/test\"")
+	// logged request
+	requestLog := LoggerOutput[1]
 
-	// verify the logged request is a guid
-	assert.Contains(t, LoggerOutput[1], "POST")
-	assert.Regexp(t, "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}", LoggerOutput[2])
+	// verify the logged request method, url & body
+	assert.Contains(t, requestLog, "POST")
+	assert.Contains(t, requestLog, "Host:")
+	assert.Contains(t, requestLog, testutils.TestSplunkCloudHost)
+	// verify log the request body
+	assert.Contains(t, requestLog, fmt.Sprintf("\"name\":\"%s\"", (*webhookAction.WebhookAction()).Name))
+	assert.Contains(t, requestLog, "\"webhookUrl\":\"https://webhook.site/test\"")
+
+	assert.Contains(t, requestLog, "POST")
+
+	// logged response
+	responseLog := LoggerOutput[2]
+
+	assert.Regexp(t, responseRegexp, responseLog)
 }
 
 func TestRoundTripperWithIdentityClient(t *testing.T) {
@@ -194,6 +202,7 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
+		Timeout:      testutils.TestTimeOut,
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
@@ -210,6 +219,7 @@ func TestRoundTripperWithInvalidClient(t *testing.T) {
 		Token:        testutils.TestAuthenticationToken,
 		Host:         "invalid.host",
 		Tenant:       testutils.TestTenant,
+		Timeout:      testutils.TestTimeOut,
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
 	})
 	require.Nil(t, err, "Error calling service.NewClient(): %s", err)

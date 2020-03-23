@@ -29,7 +29,7 @@ func TestCRUDJob(t *testing.T) {
 	client := getSdkClient(t)
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
-		Name:        fmt.Sprintf("gointegCollectJob%d", testutils.TimeSec),
+		Name:        fmt.Sprintf("gointegCollectJob%d", testutils.RunSuffix),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
 		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},
@@ -66,7 +66,7 @@ func TestPatchJob(t *testing.T) {
 	client := getSdkClient(t)
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
-		Name:        fmt.Sprintf("gointegCollectPatchJob%d", testutils.TimeSec),
+		Name:        fmt.Sprintf("gointegCollectPatchJob%d", testutils.RunSuffix),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
 		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},
@@ -92,7 +92,7 @@ func TestPatchJobs(t *testing.T) {
 
 	job := collect.Job{
 		ConnectorID: "aws-cloudwatch-metrics",
-		Name:        fmt.Sprintf("gointegCollectPatchJobs%d", testutils.TimeSec),
+		Name:        fmt.Sprintf("gointegCollectPatchJobs%d", testutils.RunSuffix),
 		Schedule:    "16 * * * *",
 		Parameters:  map[string]interface{}{"namespaces": "AWS/EC2"},
 		ScalePolicy: collect.ScalePolicy{Static: collect.StaticScale{Workers: 2}},

@@ -7,16 +7,6 @@ echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
 echo "TENANT_ID=$TENANT_ID"
 echo "==============================================="
 
-# Get the BEARER_TOKEN setup
-CONFIG_FILE="./.token"
-if [ -f $CONFIG_FILE ]; then
-    echo "Token found in $CONFIG_FILE"
-    export BEARER_TOKEN=$(cat $CONFIG_FILE)
-else
-    echo "Token was not set to $CONFIG_FILE"
-    exit 1
-fi
-
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
 if [ "$allow_failures" -eq "1" ]; then

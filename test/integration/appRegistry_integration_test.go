@@ -29,14 +29,14 @@ import (
 
 // newAppTitle creates standardized app title for tests
 func newAppTitle(title string) string {
-	ret := fmt.Sprintf("gsdk-%s-%d", title, testutils.TimeSec)
+	ret := fmt.Sprintf("gsdk-%s-%d", title, testutils.RunSuffix)
 	return ret
 }
 
 // Test Create/Get/Update/Delete app in app-registry service
 func TestCRUDApp(t *testing.T) {
 	client := getSdkClient(t)
-	appName := fmt.Sprintf("g.c%d", testutils.TimeSec)
+	appName := fmt.Sprintf("g.c%d", testutils.RunSuffix)
 
 	// Create app
 
@@ -94,7 +94,7 @@ func TestCRUDApp(t *testing.T) {
 // Test RotateSecret in app-registry service
 func TestAppRotateSecret(t *testing.T) {
 	client := getSdkClient(t)
-	appName := fmt.Sprintf("g.r%d", testutils.TimeSec)
+	appName := fmt.Sprintf("g.r%d", testutils.RunSuffix)
 
 	// Create app
 	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
@@ -119,10 +119,8 @@ func TestAppRotateSecret(t *testing.T) {
 
 // Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
 func TestSubscriptions(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	client := getSdkClient(t)
-	appName := fmt.Sprintf("g.s1%d", testutils.TimeSec)
+	appName := fmt.Sprintf("g.s1%d", testutils.RunSuffix)
 
 	// Create app
 	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
@@ -162,13 +160,13 @@ func TestSubscriptions(t *testing.T) {
 
 	// List all subscriptions
 	// create the 2nd subscription
-	appName2 := fmt.Sprintf("g.s2%d", testutils.TimeSec)
+	appName2 := fmt.Sprintf("g.s2%d", testutils.RunSuffix)
 	perms := []string{"*:action.*"}
 	permFilter := []string{"*:*.*"}
 	app2 := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
 		Kind:                    appregistry.AppResourceKindService,
 		Name:                    appName2,
-		Title:                   newAppTitle("testtitle"),
+		Title:                   newAppTitle("testtitle-2"),
 		AppPrincipalPermissions: perms,
 		UserPermissionsFilter:   permFilter,
 		RedirectUrls: []string{
