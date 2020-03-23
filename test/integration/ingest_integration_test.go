@@ -36,7 +36,7 @@ func TestIntegrationCreateEventsSuccess(t *testing.T) {
 	attributes1 := make(map[string]interface{})
 	attributes1["test1"] = "test1"
 	attributes["testkey1"] = attributes1
-	timeValue := int64(testutils.TimeSec * 1000) // Unix millis
+	timeValue := int64(testutils.RunSuffix * 1000) // Unix millis
 	clientURL := client.GetURL("")
 	hostURL := clientURL.RequestURI()
 	body1 := make(map[string]interface{})
@@ -140,7 +140,7 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 			Unit: &unit1},
 	}
 
-	timestamp := testutils.TimeSec * 1000
+	timestamp := testutils.RunSuffix * 1000
 	nanos := int32(1)
 	source := "mysource"
 	sourcetype := "mysourcetype"
@@ -170,8 +170,6 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 }
 
 func TestIntegrationUploadFile(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	client := getClient(t)
 
 	dir, err := os.Getwd()

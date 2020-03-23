@@ -49,7 +49,7 @@ func TestCRUDGroups(t *testing.T) {
 	_, err := client.IdentityService.ListGroups(nil)
 	require.NoError(t, err)
 
-	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.RunSuffix)
 
 	// create/get/delete group and groups
 	resultgroup, err := client.IdentityService.CreateGroup(identity.CreateGroupBody{Name: groupName})
@@ -71,7 +71,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, resultgroup2, groupName)
 
 	// group-roles
-	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.RunSuffix)
 	_, err = client.IdentityService.ListGroupRoles(groupName)
 	require.NoError(t, err)
 
@@ -146,7 +146,7 @@ func TestCRUDRoles(t *testing.T) {
 	_, err := client.IdentityService.ListRoles()
 	require.NoError(t, err)
 
-	roleName := fmt.Sprintf("roletest%d", testutils.TimeSec)
+	roleName := fmt.Sprintf("roletest%d", testutils.RunSuffix)
 
 	// create/get/delete role and roles
 	resultrole, err := client.IdentityService.CreateRole(identity.CreateRoleBody{Name: roleName})
@@ -171,7 +171,7 @@ func TestCRUDRoles(t *testing.T) {
 	_, err = client.IdentityService.ListRolePermissions(roleName)
 	require.NoError(t, err)
 
-	permissionName := fmt.Sprintf("%v:all:perm1.%d", testutils.TestTenant, testutils.TimeSec)
+	permissionName := fmt.Sprintf("%v:all:perm1.%d", testutils.TestTenant, testutils.RunSuffix)
 	resultroleperm, err := client.IdentityService.AddRolePermission(roleName, permissionName)
 	require.NoError(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
@@ -224,7 +224,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, memberName, result2.Name)
 	assert.Equal(t, testutils.TestTenant, result2.Tenant)
 
-	groupName := fmt.Sprintf("grouptest%d", testutils.TimeSec)
+	groupName := fmt.Sprintf("grouptest%d", testutils.RunSuffix)
 
 	// create a group
 	resultgroup, err := client.IdentityService.CreateGroup(identity.CreateGroupBody{Name: groupName})
@@ -246,7 +246,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result4, groupName)
 
 	// group-role
-	roleName := fmt.Sprintf("grouptestrole%d", testutils.TimeSec)
+	roleName := fmt.Sprintf("grouptestrole%d", testutils.RunSuffix)
 
 	// create a test role
 	resultrole, err := client.IdentityService.CreateRole(identity.CreateRoleBody{Name: roleName})
@@ -279,7 +279,7 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Contains(t, result5, roleName)
 
 	// add permission to role
-	permissionName := fmt.Sprintf("%v:%v:myperm.%d", testutils.TestTenant, groupName, testutils.TimeSec)
+	permissionName := fmt.Sprintf("%v:%v:myperm.%d", testutils.TestTenant, groupName, testutils.RunSuffix)
 	result6, err := client.IdentityService.AddRolePermission(roleName, permissionName)
 	require.NoError(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)

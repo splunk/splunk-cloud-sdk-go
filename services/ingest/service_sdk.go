@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -100,7 +101,6 @@ func (s *Service) UploadFiles(filename string, resp ...*http.Response) error {
 
 	file, err := os.Open(filename)
 	if err != nil {
-
 		return err
 	}
 	defer file.Close()
@@ -109,7 +109,7 @@ func (s *Service) UploadFiles(filename string, resp ...*http.Response) error {
 	if len(resp) > 0 && resp[0] != nil {
 		response = resp[0]
 	}
-	return s.uploadFileStream(u, file, filename, response)
+	return s.uploadFileStream(u, file, filepath.Base(filename), response)
 }
 
 /*

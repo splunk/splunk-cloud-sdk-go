@@ -18,66 +18,93 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
-// TimeSec denotes the current timestamp
-var TimeSec = time.Now().Unix()
+func init() {
+	err := godotenv.Load("../../.env")
+
+	if err != nil {
+		log.Println("Error loading .env")
+	}
+
+	TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
+	TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
+
+	TestTenant = os.Getenv("TENANT_ID")
+
+	TestMLTenant = os.Getenv("ML_TENANT_ID")
+
+	TestProvisionerTenant = os.Getenv("TENANT_PROVISIONER_ID")
+
+	TestUsername = os.Getenv("BACKEND_CLIENT_ID")
+	ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
+	TenantCreationOn = os.Getenv("TENANT_CREATION") == "1"
+	PkceClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
+	Username = os.Getenv("TEST_USERNAME")
+	Password = os.Getenv("TEST_PASSWORD")
+	IdpHost = os.Getenv("IDP_HOST")
+}
+
+// RunSuffix - run instance identifier suffix based on timestamp
+var RunSuffix = time.Now().Unix()
 
 // TestSplunkCloudHost - the url for the test api to be used
-var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
+var TestSplunkCloudHost string
 
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
-var TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
+var TestAuthenticationToken string
 
 // TestTenant - the tenant to be used for the API
-var TestTenant = os.Getenv("TENANT_ID")
+var TestTenant string
 
 // TestMLTenant - the tenant to be used for the API
-var TestMLTenant = os.Getenv("ML_TENANT_ID")
+var TestMLTenant string
 
 // TestProvisionerTenant - the tenant to be used for the API
-var TestProvisionerTenant = os.Getenv("TENANT_PROVISIONER_ID")
+var TestProvisionerTenant string
 
 // TestUsername - the user running tests on behalf of
-var TestUsername = os.Getenv("BACKEND_CLIENT_ID")
+var TestUsername string
 
 // TestInvalidTestTenant - the invalid tenant ID that denies permission to make requests against the api
 var TestInvalidTestTenant = "INVALID_TENANT_ID"
 
 // ExpiredAuthenticationToken - to test authentication retries
-var ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
+var ExpiredAuthenticationToken string
 
 // TestModule - A namespace for integration testing
-var TestModule = fmt.Sprintf("gomod%d", TimeSec)
+var TestModule = fmt.Sprintf("gomod%d", RunSuffix)
 
 // TestModule 2- A namespace for integration testing
-var TestModule2 = fmt.Sprintf("gomod2%d", TimeSec)
+var TestModule2 = fmt.Sprintf("gomod2%d", RunSuffix)
 
 // TestCollection - A collection for integration testing
-var TestCollection = fmt.Sprintf("gocollection%d", TimeSec)
+var TestCollection = fmt.Sprintf("gocollection%d", RunSuffix)
 
 // StubbyTestCollection - A collection for stubby testing
 var StubbyTestCollection = "testcollection0"
 
 // TestTimeOut - the timeout to be used for requests to the api
-var TestTimeOut = time.Second * 5
+var TestTimeOut = time.Second * 30
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
-var TenantCreationOn = os.Getenv("TENANT_CREATION") == "1"
+var TenantCreationOn bool
 
 // PKCE
 const NativeAppRedirectURI = "https://login.splunkbeta.com"
 
-var PkceClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
-var Username = os.Getenv("TEST_USERNAME")
-var Password = os.Getenv("TEST_PASSWORD")
-var IdpHost = os.Getenv("IDP_HOST")
+var PkceClientID string
+var Username string
+var Password string
+var IdpHost string
 
 // Get an client without the testing interface
 func MakeSdkClient(tr idp.TokenRetriever, tenant string) (*sdk.Client, error) {

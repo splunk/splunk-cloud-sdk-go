@@ -53,13 +53,13 @@ func genTriggerEvent() action.TriggerEvent {
 }
 
 func genEmailAction() action.Action {
-	emailActionName := fmt.Sprintf("e_cr_%d", testutils.TimeSec)
+	emailActionName := fmt.Sprintf("e_cr_%d", testutils.RunSuffix)
 	emailAction := action.EmailAction{Kind: action.ActionKindEmail, Name: emailActionName, Title: &title, Body: &body, BodyPlainText: &bodyPlainText, Subject: &subject}
 	return action.MakeActionFromEmailAction(emailAction)
 }
 
 func genWebhookAction() action.Action {
-	webhookActionName := fmt.Sprintf("w_cr_%d", testutils.TimeSec)
+	webhookActionName := fmt.Sprintf("w_cr_%d", testutils.RunSuffix)
 	webhookAction := action.WebhookAction{Kind: action.ActionKindWebhook, Name: webhookActionName, Title: &title, WebhookPayload: webhookPayload, WebhookUrl: webhookURL}
 	return action.MakeActionFromWebhookAction(webhookAction)
 }

@@ -117,7 +117,7 @@ func TestUpdateJobToBeFinalized(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
-	require.Emptyf(t, err, "Error creating job: %s", err)
+	require.NoError(t, err)
 	_, err = client.SearchService.UpdateJob(*job.Sid, search.UpdateJob{Status: search.UpdateJobStatusFinalized})
 	assert.NoError(t, err)
 }
@@ -126,7 +126,7 @@ func TestGetJobResultsNextLink(t *testing.T) {
 	client := getClient(t)
 	require.NotNil(t, client)
 	job, err := client.SearchService.CreateJob(PostJobsRequest)
-	require.Emptyf(t, err, "Error creating job: %s", err)
+	require.NoError(t, err)
 	query := search.ListResultsQueryParams{}.SetCount(0).SetOffset(0)
 	response, err := client.SearchService.ListResults(*job.Sid, &query)
 	require.NoError(t, err)
@@ -162,14 +162,16 @@ func TestIntegrationNewSearchJobBadRequest(t *testing.T) {
 
 //TestIntegrationGetJobResultsBadSearchID
 func TestIntegrationGetJobResultsBadSearchID(t *testing.T) {
-	t.Skip("Pending integration fix")
+	// id format: [\da-z]{32}_\d{19}_[\da-z]{5}
+	nonexistentSearchID := "nonexistent000000000000000000000_0000000000000000000_000id"
 
 	client := getClient(t)
 	require.NotNil(t, client)
 
 	query := search.ListResultsQueryParams{}.SetCount(0).SetOffset(0)
-	resp, err := client.SearchService.ListResults("NON_EXISTING_SEARCH_ID", &query)
-	require.NotNil(t, err)
+
+	resp, err := client.SearchService.ListResults(nonexistentSearchID, &query)
+	require.Error(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 404, httpErr.HTTPStatusCode)
@@ -231,12 +233,11 @@ func TestListTimeBuckets(t *testing.T) {
 
 //TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	searchService, _ := search.NewService(&services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
+		Timeout:       testutils.TestTimeOut,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
 	})
@@ -285,6 +286,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
+		Timeout:       testutils.TestTimeOut,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
 	})

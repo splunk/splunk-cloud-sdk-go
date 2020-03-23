@@ -34,9 +34,9 @@ import (
 // Test Dataset variables
 var (
 	// Base:
-	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.TimeSec)
-	newname        = fmt.Sprintf("newmx%d", testutils.TimeSec)
-	newmod         = fmt.Sprintf("newmod%d", testutils.TimeSec)
+	dsNameTemplate = fmt.Sprintf("gointegds%s_%d", "%s", testutils.RunSuffix)
+	newname        = fmt.Sprintf("newmx%d", testutils.RunSuffix)
+	newmod         = fmt.Sprintf("newmod%d", testutils.RunSuffix)
 	newowner       = "test1@splunk.com"
 	// Lookup:
 	caseMatch    = true
@@ -52,7 +52,7 @@ var (
 
 // Test Rule variables
 var (
-	ruleNameTemplate = fmt.Sprintf("gointegrule%s_%d", "%s", testutils.TimeSec)
+	ruleNameTemplate = fmt.Sprintf("gointegrule%s_%d", "%s", testutils.RunSuffix)
 	ruleModule       = "gointeg"
 	ruleMatch        = "sourcetype::integration_test_match"
 )
@@ -241,7 +241,7 @@ func TestCreateIndexDataset(t *testing.T) {
 //
 // Test CreateImportDataset
 func TestCreateImportDataset(t *testing.T) {
-	indexds, err := createIndexDataset(t, makeDSName("crix"))
+	indexds, err := createIndexDataset(t, makeDSName("crix2"))
 	require.NoError(t, err)
 	defer cleanupDataset(t, indexds.IndexDataset().Id)
 	importds, err := createImportDatasetByName(t, makeDSName("crim"), indexds.IndexDataset().Name, testutils.TestModule)
@@ -329,8 +329,6 @@ func TestCreateDatasetDataAlreadyPresentError(t *testing.T) {
 
 // Test CreateDataset for 401 Unauthorized operation error
 func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	name := makeDSName("401")
 	createView := catalog.ViewDatasetPost{
 		Name:   name,
@@ -347,7 +345,6 @@ func TestCreateDatasetUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test ListDatasets
@@ -481,8 +478,6 @@ func TestUpdateIndexDataset(t *testing.T) {
 
 // Test UpdateMetricDataset
 func TestUpdateMetricDataset(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	client := getSdkClient(t)
 
 	metricds, err := createMetricDataset(t, makeDSName("umx"))
@@ -490,18 +485,15 @@ func TestUpdateMetricDataset(t *testing.T) {
 	defer cleanupDataset(t, metricds.MetricDataset().Id)
 	require.NotNil(t, metricds)
 	notdisabled := !disabled
-	// Update the metrics dataset, including name and module
+	// Update the metrics dataset
+	// N.B.: Name and module not allowed to update
 	umx := catalog.MetricDatasetPatch{
-		Name:                   &newname,
-		Module:                 &newmod,
 		Owner:                  &newowner,
 		Disabled:               &notdisabled,
 		FrozenTimePeriodInSecs: &newftime,
 	}
 	newmetricsds, err := client.CatalogService.UpdateDataset(metricds.MetricDataset().Id, catalog.MakeDatasetPatchFromMetricDatasetPatch(umx))
 	require.NoError(t, err)
-	assert.Equal(t, newname, newmetricsds.MetricDataset().Name)
-	assert.Equal(t, newmod, newmetricsds.MetricDataset().Module)
 	assert.Equal(t, newowner, newmetricsds.MetricDataset().Owner)
 	assert.Equal(t, !disabled, newmetricsds.MetricDataset().Disabled)
 	assert.True(t, newftime == *newmetricsds.MetricDataset().FrozenTimePeriodInSecs)
@@ -594,7 +586,7 @@ func TestUpdateViewDataset(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanupDataset(t, viewds.ViewDataset().Id)
 	require.NotNil(t, viewds)
-	newname = fmt.Sprintf("newvw%d", testutils.TimeSec)
+	newname = fmt.Sprintf("newvw%d", testutils.RunSuffix)
 	uvw := catalog.ViewDatasetPatch{
 		Name:   &newname,
 		Module: &newmod,
@@ -711,8 +703,6 @@ func TestCreateRuleDataAlreadyPresent(t *testing.T) {
 
 // Test CreateRule for 401 Unauthorized operation error
 func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
-	t.Skip("Pending integration fix")
-
 	// create rule
 	ruleName := makeRuleName("401")
 	rule, err := getInvalidClient(t).CatalogService.CreateRule(catalog.RulePost{Name: ruleName, Module: &ruleModule, Match: ruleMatch})
@@ -723,7 +713,6 @@ func TestCreateRuleUnauthorizedOperationError(t *testing.T) {
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 401, httpErr.HTTPStatusCode)
-	assert.Equal(t, "Unable to authorize request: token is invalid", httpErr.Message)
 }
 
 // Test GetRules
@@ -1031,7 +1020,7 @@ func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 
 // Test CreateDatasetField for 400 error
 func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
-	t.Skip("Pending integration fix")
+	t.Skip("SCP-24776")
 
 	client := getSdkClient(t)
 
@@ -1044,7 +1033,7 @@ func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
 	// Create a new dataset field but with no data
 	testField := catalog.FieldPost{}
 	_, err = client.CatalogService.CreateFieldForDatasetById(ds.LookupDataset().Id, testField)
-	require.NotNil(t, err)
+	require.Error(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
 	assert.Equal(t, 400, httpErr.HTTPStatusCode)
@@ -1482,7 +1471,7 @@ func TestCRUDWorkflowRun(t *testing.T) {
 // 	// 	Sourceid: inds1.Id,
 // 	// 	Targetid: inds2.Id,
 // 	// }
-// 	relname := fmt.Sprintf("gorel%d", testutils.TimeSec)
+// 	relname := fmt.Sprintf("gorel%d", testutils.RunSuffix)
 // 	// src := inds1.Module + "." + inds1.Name
 // 	// tgt := inds2.Module + "." + inds2.Name
 // 	r := catalog.RelationshipPost{
