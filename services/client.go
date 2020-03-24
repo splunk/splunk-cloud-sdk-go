@@ -76,10 +76,12 @@ type BaseClient struct {
 	responseHandlers []ResponseHandler
 	// tokenRetriever to gather access tokens to be sent in the Authorization: Bearer header on client initialization and upon encountering an expired token
 	tokenRetriever idp.TokenRetriever
-	// tokenExpireWindow is the (optional) window within which a new token gets retreieved before the existing token expires. Default to 1 minute
+	// tokenExpireWindow is the (optional) window within which a new token gets retrieved before the existing token expires. Default to 1 minute
 	tokenExpireWindow time.Duration
 	// tokenMux is used to lock resource when a new token is being fetched
 	tokenMux sync.Mutex
+	// clientVersion contains the client name and its current version in string format
+	clientVersion string
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -154,6 +156,8 @@ type Config struct {
 	RoundTripper http.RoundTripper
 	// TokenExpireWindow is the (optional) window within which a new token gets retreieved before the existing token expires. Default to 1 minute
 	TokenExpireWindow time.Duration
+	// ClientVersion contains the client name and its current version in string format
+	ClientVersion string
 }
 
 // RequestParams contains all the optional request URL parameters
@@ -181,8 +185,14 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 	}
 	if c.tokenContext != nil && len(c.tokenContext.AccessToken) > 0 {
 		request.Header.Set("Authorization", fmt.Sprintf("%s %s", AuthorizationType, c.tokenContext.AccessToken))
-		request.Header.Set("Splunk-Client", fmt.Sprintf("%s/%s", UserAgent, Version))
 	}
+
+	httpSplunkClient := fmt.Sprintf("%s/%s", UserAgent, Version)
+	if len(c.clientVersion) > 0 {
+		httpSplunkClient = fmt.Sprintf("%s,%s", httpSplunkClient, c.clientVersion)
+	}
+	request.Header.Set("Splunk-Client", httpSplunkClient)
+
 	request.Header.Set("Content-Type", "application/json")
 	if len(headers) != 0 {
 		for key, value := range headers {
@@ -468,6 +478,10 @@ func NewClient(config *Config) (*BaseClient, error) {
 	if config.TokenExpireWindow != 0 {
 		tokenExpireWindow = config.TokenExpireWindow
 	}
+	clientVersion := ""
+	if config.ClientVersion != "" {
+		clientVersion = config.ClientVersion
+	}
 
 	// Enforce that exactly one of TokenRetriever or Token must be specified
 	if (config.TokenRetriever != nil && config.Token != "") || (config.TokenRetriever == nil && config.Token == "") {
@@ -507,6 +521,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 		tokenContext:      ctx,
 		responseHandlers:  handlers,
 		tokenExpireWindow: tokenExpireWindow,
+		clientVersion:     clientVersion,
 	}
 
 	if config.RoundTripper != nil {

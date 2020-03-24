@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/scloud/version"
+
 	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -109,6 +111,9 @@ func newClient(svc *Service) *sdk.Client {
 		tlsConfig.RootCAs = rootCAs
 	}
 
+	var scloudVersion string
+	scloudVersion = fmt.Sprintf("%s/%s", version.UserAgent, version.ScloudVersion)
+
 	var roundTripper http.RoundTripper
 
 	roundTripper = util.NewCustomSdkTransport(&GlogWrapper{}, &http.Transport{
@@ -133,6 +138,7 @@ func newClient(svc *Service) *sdk.Client {
 		Timeout:          10 * time.Second,
 		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
 		RoundTripper:     roundTripper,
+		ClientVersion:    scloudVersion,
 	}
 
 	result, err := sdk.NewClient(clientConfig)
