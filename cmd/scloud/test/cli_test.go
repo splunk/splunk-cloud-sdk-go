@@ -14,6 +14,10 @@ func TestCli_appreg(t *testing.T) {
 	test_engine.RunTest("testcases/appreg_test", t)
 }
 
+func TestCli_catalog(t *testing.T) {
+	test_engine.RunTest("testcases/catalog_test", t)
+}
+
 func TestCli_collect(t *testing.T) {
 	test_engine.RunTest("testcases/collect_test", t)
 }
