@@ -146,6 +146,21 @@ func TestBuildURLPathParams(t *testing.T) {
 	assert.Equal(t, `http://api.example.com:8882/EXAMPLE_TENANT/myservice/v1beta3/widgets/1234/sprockets/spok`, u.String())
 }
 
+func TestNewRequestClientVersion(t *testing.T) {
+	var clientVersion = "exampleClient/2.0.0"
+	var httpMethod = "GET"
+	var url = "https://api.staging.scp.splunk.com:443/mytenant/catalog/v2beta1/rules?count=2"
+	var expectedHTTPSplunkClient = fmt.Sprintf("%s/%s,%s", UserAgent, Version, clientVersion)
+	client, err := NewClient(&Config{
+		Token:         "MY TOKEN",
+		Tenant:        "mytenant",
+		ClientVersion: clientVersion,
+	})
+	require.NoError(t, err)
+	request, _ := client.NewRequest(httpMethod, url, nil, nil)
+	require.Equal(t, request.Header.Get("Splunk-Client"), expectedHTTPSplunkClient)
+}
+
 func TestNewClientOverrideHost(t *testing.T) {
 	client, err := NewClient(&Config{
 		Token:        "MY TOKEN",
