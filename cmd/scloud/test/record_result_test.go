@@ -21,6 +21,11 @@ func Test_record_appreg(t *testing.T) {
 	test_engine.Record_test_result("testcases/appreg_test", testhook_arg, t)
 }
 
+func Test_record_catalog(t *testing.T) {
+	skipCI(t)
+	test_engine.Record_test_result("testcases/catalog_test", testhook_arg, t)
+}
+
 func Test_record_collect(t *testing.T) {
 	skipCI(t)
 	test_engine.Record_test_result("testcases/collect_test", testhook_arg, t)

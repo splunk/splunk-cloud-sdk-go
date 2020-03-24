@@ -1,0 +1,193 @@
+# Test commands for view dataset - create and get
+catalog create-dataset-view-dataset --id 5e705c169a3bd200010d13b1 --kind view --module scloudtestcatalogmodule --name scloud_test_catalog_name_view --search 'search index=main|stats count()'
+catalog get-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
+
+# Test commands for dataset fields - create, list, get, update and delete
+# todo: Currently, user cannot provide the value for fieldid and hence unable to get, update or delete field by id in test engine
+# The commands below were run on command line and hence fieldid is present.
+#catalog list-fields --count 10 --orderby name asc --offset 2
+#catalog create-field-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_view --datatype STRING --description scloud_test_catalog_field_description --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name --prevalence UNKNOWN --summary scloud_test_catalog_field_summary --title scloud_test_catalog_field_title
+#catalog create-field-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --datatype NUMBER --description scloud_test_catalog_field_description2 --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name2 --prevalence UNKNOWN --summary scloud_test_catalog_field_summary2 --title scloud_test_catalog_field_title2
+#catalog list-fields-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --count 10 --orderby name asc
+#catalog list-fields-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --count 10 --orderby name asc
+#catalog get-field-by-id --fieldid 5e72fb38e425840001f0ebdf
+#catalog get-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf
+#catalog get-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+#catalog update-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf --datatype STRING --fieldtype MEASURE --prevalence SOME --description scloud_test_catalog_field_description_updated --name scloud_test_catalog_field_name_updated --summary scloud_test_catalog_field_summary_updated --title scloud_test_catalog_field_title_updated
+#catalog update-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf --datatype DATE --fieldtype DIMENSION --prevalence ALL --description scloud_test_catalog_field_description_updated2 --name scloud_test_catalog_field_name_updated2 --summary scloud_test_catalog_field_summary_updated2 --title scloud_test_catalog_field_title_updated2
+#catalog delete-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72f8c7e425840001f0eb2b
+#catalog delete-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+
+# Test commands for view dataset - update, list and delete
+catalog update-dataset-by-id-view-dataset --datasetid 5e705c169a3bd200010d13b1 --name scloud_test_catalog_name_updated1 --module scloudtestcatalogmoduleupdated1
+catalog update-dataset-view-dataset --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_updated1 --name scloud_test_catalog_name_updated2 --module scloudtestcatalogmoduleupdated2
+catalog list-datasets --filter module=="" --count 2 --offset 3 --orderby name desc
+catalog list-annotations-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --count 10 --orderby id asc --offset 2
+catalog list-annotations-for-dataset-by-resource-name --datasetresourcename scloudtestcatalogmoduleupdated2.scloud_test_catalog_name_updated2 --count 10 --orderby id asc --offset 2
+catalog list-annotations --count 10 --filter datasetid=="5e705c169a3bd200010d13b1" --orderby id desc --offset 2
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
+
+# Test commands for metric dataset - create, update and delete
+# Index datasets if not deleted immediately achieve the 'reserved' status and cannot be deleted later
+catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
+catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
+catalog update-dataset-metric-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
+
+# Test commands for import dataset - create, get, delete
+catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+
+catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
+catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+
+catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+
+catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+
+# Test commands for import dataset - create, update, delete
+catalog create-dataset-kv-collection-dataset --id 5e705c169a3bd200010d13b1 --kind kvcollection --module scloudtestcatalogmodule --name scloud_test_catalog_name_kv
+catalog update-dataset-by-id-kv-collection-dataset --datasetid 5e705c169a3bd200010d13b1
+catalog update-dataset-kv-collection-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_kv
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
+
+# Test commands for import dataset - create, update, delete
+catalog create-dataset-lookup-dataset --id 5e705c169a3bd200010d13b1 --kind lookup --module scloudtestcatalogmodule --name scloud_test_catalog_name_lookup --case-sensitive-match true --external-kind kvcollection --external-name scloud_test_catalog_external_name --filter kind=="lookup"
+catalog update-dataset-by-id-lookup-dataset --datasetid 5e705c169a3bd200010d13b1 --module scloudtestcatalogmoduleupdated1 --name scloud_test_catalog_name_lookup_updated1 --case-sensitive-match false --external-name scloud_test_catalog_external_name_updated1
+catalog update-dataset-lookup-dataset --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_lookup_updated1 --module scloudtestcatalogmoduleupdated2 --name scloud_test_catalog_name_lookup_updated2 --case-sensitive-match true --external-name scloud_test_catalog_external_name_updated2
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
+
+# Test commands for metric dataset - create, list, update, delete
+catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d13b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
+catalog list-fields --count 10 --orderby name asc --offset 2
+catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d13b1 --frozen-time-period-in-secs 80 --disabled false
+catalog update-dataset-metric-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --frozen-time-period-in-secs 80
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
+
+# Test commands for dashboards - create, get, list
+catalog create-dashboard --id 5e718bf99ad1fe0001ffde1d --isactive true --name scloud_test_catalog_name_dashboard --module scloudtestcatalogmodule --definition "{\"title\":\"this is scloud test dashboard\"}"
+catalog get-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
+catalog get-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
+catalog list-dashboards --count 10 --filter id=="5e718bf99ad1fe0001ffde1d" --orderby modified desc --offset 2
+
+# Test commands to list annotations of dashboards
+catalog list-annotations-for-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
+catalog list-annotations-for-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
+
+# Test commands for dashboards - Update and delete
+catalog update-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d --name scloud_test_catalog_name_dashboard_updated --module scloudtestcatalogmoduleupdated --isactive false
+catalog delete-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_name_dashboard_updated
+
+# Test commands to test delete dashboard by ID
+catalog create-dashboard --id 5e718bf99ad1fe0001ffde1d --isactive true --name scloud_test_catalog_name_dashboard --module scloudtestcatalogmodule --definition "{\"title\":\"this is scloud test dashboard\"}"
+catalog delete-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
+
+# Test commands for modules - list
+catalog list-modules
+
+# Test commands for relationship - list (create commands are not yet implemented, delete commands to be included with create commands)
+catalog list-relationships --count 10 --orderby id desc --offset 2 --filter name=="provider"
+
+# Test commands for workflows - create, get, list
+catalog create-workflow --id 5cf95720cb592800072ffde1 --description scloud_test_catalog_description --name scloud_test_catalog_name_wf --tasks []
+catalog get-workflow-by-id --workflowid 5cf95720cb592800072ffde1
+catalog list-workflows --count 10 --orderby name --offset 2 --filter version==1
+
+# Test commands for workflow builds - create, get, list
+catalog create-workflow-build --description scloud_test_catalog_description --id 5cf95720cb592800072ffd2a --workflowid 5cf95720cb592800072ffde1 --inputdata "[test_scloud_catalog_input_data]" --timeoutsecs 16000 --outputdata "[test_scloud_catalog_output_data]" --failuremessage test_scloud_catalog_failuremessage --name test_scloud_catalog_name --workflowid-body 5cf95720cb592800072ffde1 --status test_scloud_catalog_status
+catalog get-workflow-build-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a
+catalog list-workflow-builds --workflowid 5cf95720cb592800072ffde1 --count 2 --orderby name --offset 0 --filter version==1
+
+# Test commands for workflow runs - create, get, list, update, delete
+catalog create-workflow-run --description scloud_test_catalog_description --id 5cf95720cb592800072ffdcc --workflowid 5cf95720cb592800072ffde1 --inputdata "[test_scloud_catalog_input_data]" --timeoutsecs 16000 --outputdata "[test_scloud_catalog_output_data]" --failuremessage test_scloud_catalog_failuremessage --name test_scloud_catalog_name --workflowbuildid 5cf95720cb592800072ffd2a --workflowbuildid-body 5cf95720cb592800072ffd2a --status test_scloud_catalog_status
+catalog get-workflow-run-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a --workflowrunid 5cf95720cb592800072ffdcc
+catalog list-workflow-runs --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a --count 2 --orderby name --offset 0 --filter timeoutsecs==16000
+catalog update-workflow-run-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a --workflowrunid 5cf95720cb592800072ffdcc --description test_scloud_catalog_description_updated --name test_scloud_catalog_name_updated --status test_scloud_catalog_status_updated
+catalog delete-workflow-run-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a --workflowrunid 5cf95720cb592800072ffdcc
+
+# Test commands for workflow builds - update, delete
+catalog update-workflow-build-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a --description test_scloud_catalog_description_updated --name test_scloud_catalog_name_updated --status test_scloud_catalog_status_updated
+catalog delete-workflow-build-by-id --workflowid 5cf95720cb592800072ffde1 --workflowbuildid 5cf95720cb592800072ffd2a
+
+# Test commands for workflows - update, delete
+catalog update-workflow-by-id --workflowid 5cf95720cb592800072ffde1 --description scloud_test_catalog_description_updated --name scloud_test_catalog_name_wf_updated
+catalog delete-workflow-by-id --workflowid 5cf95720cb592800072ffde1
+
+# Test commands for rules - create, get, list, update, delete
+catalog create-rule --id 5d1bdbd77fb3db0001e45ea4 --module scloudtestcatalogmodule --name scloud_test_catalog_rule_name --match sourcetype::scloud_test_catalog_match --actions []
+catalog get-rule --ruleresourcename scloudtestcatalogmodule.scloud_test_catalog_rule_name
+catalog get-rule-by-id --ruleid 5d1bdbd77fb3db0001e45ea4
+catalog list-rules --count 4 --orderby name --offset 2 --filter version==1
+catalog update-rule --ruleresourcename scloudtestcatalogmodule.scloud_test_catalog_rule_name --module scloudtestcatalogmoduleupdated --name scloud_test_catalog_rule_name_updated --match sourcetype::scloud_test_catalog_match_updated
+catalog delete-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated
+
+# Test commands to test rule update and delete operations by ID
+catalog create-rule --id 5d1bdbd77fb3db0001e45ea4 --module scloudtestcatalogmodule --name scloud_test_catalog_rule_name --match sourcetype::scloud_test_catalog_match --actions []
+catalog update-rule-by-id --ruleid 5d1bdbd77fb3db0001e45ea4 --module scloudtestcatalogmoduleupdated --name scloud_test_catalog_rule_name_updated --match sourcetype::scloud_test_catalog_match_updated
+
+# Test commands for alias action (by ruleresourcename) - create, update, delete
+catalog create-action-for-rule-alias-action --id 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias --kind ALIAS --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-alias-action --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated
+catalog delete-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+
+# Test commands for alias action (by ruleid) - create, update, delete
+catalog create-action-for-rule-by-id-alias-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind ALIAS --alias scloud_test_catalog_alias --field scloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-by-id-alias-action --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --field scloud_test_catalog_field_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4
+catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for autoKV action (by ruleresourcename) - create, update, delete
+catalog create-action-for-rule-auto-kv-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
+catalog update-action-by-id-for-rule-auto-kv-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --mode multi
+catalog delete-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+
+# Test commands for autoKV action (by ruleid) - create, update, delete
+catalog create-action-for-rule-by-id-auto-kv-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
+catalog update-action-by-id-for-rule-by-id-auto-kv-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --mode none
+catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for eval action (by ruleresourcename) - create, update, delete
+catalog create-action-for-rule-eval-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-eval-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
+catalog delete-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+
+# Test commands for elias action (by ruleid) - create, update, delete
+catalog create-action-for-rule-by-id-eval-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-by-id-eval-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
+catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for lookup action (by ruleresourcename) - create, update, get, list, delete
+catalog create-action-for-rule-lookup-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
+catalog update-action-by-id-for-rule-lookup-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated
+catalog get-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+catalog list-actions-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --count 2 --orderby owner --offset 0 --filter kind=="LOOKUP"
+catalog delete-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+
+# Test commands for lookup action (by ruleid) - create, update, get, list, delete
+catalog create-action-for-rule-by-id-lookup-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
+catalog update-action-by-id-for-rule-by-id-lookup-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated
+catalog get-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+catalog list-actions-for-rule-by-id --ruleid 5d1bdbd77fb3db0001e45ea4 --count 2 --orderby owner --offset 0 --filter kind=="LOOKUP"
+catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for regex action (by ruleresourcename) - create, update, delete
+catalog create-action-for-rule-regex-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-regex-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
+catalog delete-action-by-id-for-rule --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --actionid 5d1bdbd77fb3db0001e45ac1
+
+# Test commands for regex action (by ruleid) - create, update, delete
+catalog create-action-for-rule-by-id-regex-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
+catalog update-action-by-id-for-rule-by-id-regex-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
+catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for rules - delete (by id)
+catalog delete-rule-by-id --ruleid 5d1bdbd77fb3db0001e45ea4
+
+# Test commands for import dataset - update
+# todo: Failing with error: Patch not allowed on internal dataset error; Catalog team is working on this
+# catalog update-dataset-by-id-import-dataset --datasetid 5e71b4080d5a0500017281db --name scloud_test_catalog_name_import_updated --module scloudtestcatalognewmodule
+# catalog update-dataset-import-dataset --datasetresourcename scloudtestcatalognewmodule.scloud_test_catalog_name_import_updated --name scloud_test_catalog_name_import_updated2 --module scloudtestcatalognewmodule2
+
+# todo: Test commands for job dataset: currently not available through admin gateway
