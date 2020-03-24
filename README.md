@@ -4,6 +4,8 @@
 
 The Splunk Cloud Services software development kit (SDK) for Go contains library code and examples to enable you to build apps using the Splunk Cloud Services with the Go programming language.
 
+    **Note:** This SDK is not used for Splunk Enterprise or Splunk Cloud development. For information about developing apps and add-ons for those products, see the [Splunk Developer Portal for Splunk Enterprise](https://dev.splunk.com/enterprise/).
+
 # Splunk Cloud Services CLI
 
 Splunk Cloud Services CLI, `scloud`, is a command-line tool for developers to make API calls to Splunk Cloud Services.
