@@ -13,7 +13,7 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 )
 
-// CreateActionForRuleAliasAction Create a new action for a rule associated with a specific resource name.
+// CreateActionForRuleAliasAction Creates a new action for a rule with the specified resource name.
 func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -79,7 +79,7 @@ func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleAutoKvAction Create a new action for a rule associated with a specific resource name.
+// CreateActionForRuleAutoKvAction Creates a new action for a rule with the specified resource name.
 func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -139,7 +139,7 @@ func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleByIdAliasAction Create a new action for a specific rule.
+// CreateActionForRuleByIdAliasAction Creates a new action for the specified rule.
 func CreateActionForRuleByIdAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -205,7 +205,7 @@ func CreateActionForRuleByIdAliasAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// CreateActionForRuleByIdAutoKvAction Create a new action for a specific rule.
+// CreateActionForRuleByIdAutoKvAction Creates a new action for the specified rule.
 func CreateActionForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -265,7 +265,7 @@ func CreateActionForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// CreateActionForRuleByIdEvalAction Create a new action for a specific rule.
+// CreateActionForRuleByIdEvalAction Creates a new action for the specified rule.
 func CreateActionForRuleByIdEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -331,7 +331,7 @@ func CreateActionForRuleByIdEvalAction(cmd *cobra.Command, args []string) error 
 	return nil
 }
 
-// CreateActionForRuleByIdLookupAction Create a new action for a specific rule.
+// CreateActionForRuleByIdLookupAction Creates a new action for the specified rule.
 func CreateActionForRuleByIdLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -391,7 +391,7 @@ func CreateActionForRuleByIdLookupAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// CreateActionForRuleByIdRegexAction Create a new action for a specific rule.
+// CreateActionForRuleByIdRegexAction Creates a new action for the specified rule.
 func CreateActionForRuleByIdRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -464,7 +464,7 @@ func CreateActionForRuleByIdRegexAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// CreateActionForRuleEvalAction Create a new action for a rule associated with a specific resource name.
+// CreateActionForRuleEvalAction Creates a new action for a rule with the specified resource name.
 func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -530,7 +530,7 @@ func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleLookupAction Create a new action for a rule associated with a specific resource name.
+// CreateActionForRuleLookupAction Creates a new action for a rule with the specified resource name.
 func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -590,7 +590,7 @@ func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleRegexAction Create a new action for a rule associated with a specific resource name.
+// CreateActionForRuleRegexAction Creates a new action for a rule with the specified resource name.
 func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -663,27 +663,27 @@ func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateAnnotationForDashboardbyId Create a new annotation for a specific dashboard.
+// CreateAnnotationForDashboardbyId Creates a new annotation for the specified dashboard.
 func CreateAnnotationForDashboardbyId(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDashboardsByResourceName Create a new annotation for a specific dataset.
+// CreateAnnotationForDashboardsByResourceName Creates a new annotation for the specified dataset resource name.
 func CreateAnnotationForDashboardsByResourceName(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDatasetById Create a new annotation for a specific dataset.
+// CreateAnnotationForDatasetById Creates a new annotation for the specified dataset.
 func CreateAnnotationForDatasetById(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDatasetByResourceName Create a new annotation for a specific dataset.
+// CreateAnnotationForDatasetByResourceName Creates a new annotation for the specified dataset.
 func CreateAnnotationForDatasetByResourceName(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateDashboard Create a new dashboard.
+// CreateDashboard Creates a new dashboard.
 func CreateDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -744,7 +744,7 @@ func CreateDashboard(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImport Create a new dataset import.
+// CreateDatasetImport Creates a new dataset import using the resource name of the imported dataset.
 func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -783,7 +783,7 @@ func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImportById Create a new dataset import.
+// CreateDatasetImportById Creates a new dataset import using the ID of the imported dataset.
 func CreateDatasetImportById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -822,7 +822,7 @@ func CreateDatasetImportById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImportByIdv1 Create a new dataset import.
+// CreateDatasetImportByIdv1 Creates a new dataset import using the ID of the imported dataset.
 func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -861,7 +861,7 @@ func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImportDataset Create a new dataset.
+// CreateDatasetImportDataset Creates a new dataset.
 func CreateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -880,7 +880,7 @@ func CreateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImportv1 Create a new dataset import.
+// CreateDatasetImportv1 Creates a new dataset import using the resource name of the imported dataset.
 func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -919,7 +919,7 @@ func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetIndexDataset Create a new dataset.
+// CreateDatasetIndexDataset Creates a new dataset.
 func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -986,7 +986,7 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetKvCollectionDataset Create a new dataset.
+// CreateDatasetKvCollectionDataset Creates a new dataset.
 func CreateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1040,7 +1040,7 @@ func CreateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetLookupDataset Create a new dataset.
+// CreateDatasetLookupDataset Creates a new dataset.
 func CreateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1120,7 +1120,7 @@ func CreateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetMetricDataset Create a new dataset.
+// CreateDatasetMetricDataset Creates a new dataset.
 func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1187,7 +1187,7 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetViewDataset Create a new dataset.
+// CreateDatasetViewDataset Creates a new dataset.
 func CreateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1247,7 +1247,7 @@ func CreateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateFieldForDataset Create a new field on a specific dataset.
+// CreateFieldForDataset Creates a new field in the dataset with the specified resource name.
 func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1329,7 +1329,7 @@ func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateFieldForDatasetById Add a new field to a dataset.
+// CreateFieldForDatasetById Adds a new field to the dataset with the specified ID.
 func CreateFieldForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1411,7 +1411,7 @@ func CreateFieldForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateRelationship Create a new relationship.
+// CreateRelationship Creates a new relationship.
 func CreateRelationship(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1500,7 +1500,7 @@ func CreateRelationship(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateRule Create a new rule.
+// CreateRule Creates a new rule.
 func CreateRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1561,7 +1561,7 @@ func CreateRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateWorkflow Create a new workflow configuration.
+// CreateWorkflow Creates a new workflow configuration.
 func CreateWorkflow(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1624,7 +1624,7 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateWorkflowBuild Create a new workflow build.
+// CreateWorkflowBuild Creates a new workflow build.
 func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1759,7 +1759,7 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateWorkflowRun Create a new workflow run for the specified workflow build ID.
+// CreateWorkflowRun Creates a new workflow run for the specified workflow build ID.
 func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1872,7 +1872,7 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteActionByIdForRule Delete an action on a rule.
+// DeleteActionByIdForRule Deletes the action with the specified ID that is associated with the specified rule resource name.
 func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1900,7 +1900,7 @@ func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteActionByIdForRuleById Delete an action that is part of a specific rule.
+// DeleteActionByIdForRuleById Deletes the action with the specified ID that is associated with the specified rule.
 func DeleteActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1928,7 +1928,7 @@ func DeleteActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteAnnotationOfDashboardById Delete a specific annotation of a dashboard.
+// DeleteAnnotationOfDashboardById Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
 func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1956,7 +1956,7 @@ func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteAnnotationOfDashboardByResourceName Delete a specific annotation of a dashboard.
+// DeleteAnnotationOfDashboardByResourceName Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
 func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1984,7 +1984,7 @@ func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string
 	return nil
 }
 
-// DeleteAnnotationOfDatasetById Delete a specific annotation of a dataset.
+// DeleteAnnotationOfDatasetById Deletes the annotation with the specified ID that is associated with the specified dataset.
 func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2012,7 +2012,7 @@ func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteAnnotationOfDatasetByResourceName Delete a specific annotation of a dataset.
+// DeleteAnnotationOfDatasetByResourceName Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
 func DeleteAnnotationOfDatasetByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2040,7 +2040,7 @@ func DeleteAnnotationOfDatasetByResourceName(cmd *cobra.Command, args []string) 
 	return nil
 }
 
-// DeleteDashboardById Delete the dashboard with the specified ID.
+// DeleteDashboardById Deletes the dashboard with the specified ID.
 func DeleteDashboardById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2063,7 +2063,7 @@ func DeleteDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteDashboardByResourceName Delete the dashboard with the specified resource name.
+// DeleteDashboardByResourceName Deletes the dashboard with the specified resource name.
 func DeleteDashboardByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2086,7 +2086,7 @@ func DeleteDashboardByResourceName(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteDataset Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// DeleteDataset Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func DeleteDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2109,7 +2109,7 @@ func DeleteDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteDatasetById Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.
+// DeleteDatasetById Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
 func DeleteDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2132,7 +2132,7 @@ func DeleteDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteFieldByIdForDataset Delete a field that is part of a specific dataset.
+// DeleteFieldByIdForDataset Deletes the field with the specified ID that is part of the specified dataset.
 func DeleteFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2160,7 +2160,7 @@ func DeleteFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteFieldByIdForDatasetById Delete a field that is part of a specific dataset.
+// DeleteFieldByIdForDatasetById Deletes the field with the specified ID that is part of the specified dataset.
 func DeleteFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2188,7 +2188,7 @@ func DeleteFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteRelationshipById Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.
+// DeleteRelationshipById Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
 func DeleteRelationshipById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2211,7 +2211,7 @@ func DeleteRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteRule Delete the rule with the specified resource name and its dependencies.
+// DeleteRule Deletes the rule with the specified resource name and its dependencies.
 func DeleteRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2234,7 +2234,7 @@ func DeleteRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteRuleById Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
+// DeleteRuleById Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 func DeleteRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2257,7 +2257,7 @@ func DeleteRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteWorkflowBuildById Delete the workflow build with the specified workflow build ID.
+// DeleteWorkflowBuildById Deletes the workflow build with the specified workflow build ID.
 func DeleteWorkflowBuildById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2285,7 +2285,7 @@ func DeleteWorkflowBuildById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteWorkflowById Delete the workflow with the specified workflow ID.
+// DeleteWorkflowById Deletes the workflow with the specified workflow ID.
 func DeleteWorkflowById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2308,7 +2308,7 @@ func DeleteWorkflowById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteWorkflowRunById Delete the workflow run with the specified workflow run ID.
+// DeleteWorkflowRunById Deletes the workflow run with the specified workflow run ID.
 func DeleteWorkflowRunById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2341,7 +2341,7 @@ func DeleteWorkflowRunById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetActionByIdForRule Return an action that is part of a specified rule.
+// GetActionByIdForRule Returns the action with the specified ID that is associated with the specified rule resource name.
 func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2369,7 +2369,7 @@ func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetActionByIdForRuleById Return information about an action that is part of a specific rule.
+// GetActionByIdForRuleById Returns information about the action with the specified ID that is associated with the specified rule.
 func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2397,7 +2397,7 @@ func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetDashboardById Return information about a dashboard with the specified ID.
+// GetDashboardById Returns information about the dashboard with the specified ID.
 func GetDashboardById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2420,7 +2420,7 @@ func GetDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetDashboardByResourceName Return information about a dashboard with the specified resource name.
+// GetDashboardByResourceName Returns information about the dashboard with the specified resource name.
 func GetDashboardByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2443,7 +2443,7 @@ func GetDashboardByResourceName(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetDataset Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// GetDataset Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func GetDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2475,7 +2475,7 @@ func GetDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetDatasetById Return information about the dataset with the specified ID.
+// GetDatasetById Returns information about the dataset with the specified ID.
 func GetDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2507,7 +2507,7 @@ func GetDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetFieldById Get a field that corresponds to a specific field ID.
+// GetFieldById Returns the field with the specified field ID.
 func GetFieldById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2530,7 +2530,7 @@ func GetFieldById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetFieldByIdForDataset Return a field that is part of a specific dataset.
+// GetFieldByIdForDataset Returns the field with the specified ID that is part of the specified dataset.
 func GetFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2558,7 +2558,7 @@ func GetFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetFieldByIdForDatasetById Return a field that is part of a specific dataset.
+// GetFieldByIdForDatasetById Returns the field with the specified ID that is part of the specified dataset.
 func GetFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2586,7 +2586,7 @@ func GetFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRelationshipById Get a specific relationship.
+// GetRelationshipById Returns the relationship with the specified relationship ID.
 func GetRelationshipById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2609,7 +2609,7 @@ func GetRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRule Get a rule with a specified resource name.
+// GetRule Returrns the rule with the specified resource name.
 func GetRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2632,7 +2632,7 @@ func GetRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRuleById Get information about a specific rule.
+// GetRuleById Returns information about rule with the specified rule ID.
 func GetRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2655,7 +2655,7 @@ func GetRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetWorkflowBuildById Return information about the workflow build with the specified workflow build ID.
+// GetWorkflowBuildById Returns information about the workflow build with the specified workflow build ID.
 func GetWorkflowBuildById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2683,7 +2683,7 @@ func GetWorkflowBuildById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetWorkflowById Return information about a workflow with the specified workflow ID.
+// GetWorkflowById Returns information about the workflow with the specified workflow ID.
 func GetWorkflowById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2706,7 +2706,7 @@ func GetWorkflowById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetWorkflowRunById Return information about the workflow run with the specified workflow build ID.
+// GetWorkflowRunById Returns information about the workflow run with the specified workflow build ID.
 func GetWorkflowRunById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2739,7 +2739,7 @@ func GetWorkflowRunById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListActionsForRule Return the list of actions that are part of a specified rule.
+// ListActionsForRule Returns the list of actions that are associated with the specified rule.
 func ListActionsForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2790,7 +2790,7 @@ func ListActionsForRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListActionsForRuleById Return the set of actions that are part of a rule.
+// ListActionsForRuleById Returns the set of actions that are part of the specified rule.
 func ListActionsForRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2841,7 +2841,7 @@ func ListActionsForRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotations Return the set of annotations across all objects.
+// ListAnnotations Returns the set of annotations across all objects.
 func ListAnnotations(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2887,7 +2887,7 @@ func ListAnnotations(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotationsForDashboardById Return the set of annotations that are part of a dashboard.
+// ListAnnotationsForDashboardById Returns the set of annotations that are associated with the specified dashboard.
 func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2918,7 +2918,7 @@ func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotationsForDashboardByResourceName Return the set of annotations that are part of a dashboard.
+// ListAnnotationsForDashboardByResourceName Returns the set of annotations that are associated with the specified dashboard resource name.
 func ListAnnotationsForDashboardByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2949,7 +2949,7 @@ func ListAnnotationsForDashboardByResourceName(cmd *cobra.Command, args []string
 	return nil
 }
 
-// ListAnnotationsForDatasetById Return the set of annotations that are part of a dataset.
+// ListAnnotationsForDatasetById Returns the set of annotations that are associated with the specified dataset.
 func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3000,7 +3000,7 @@ func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotationsForDatasetByResourceName Return the set of annotations that are part of a dataset.
+// ListAnnotationsForDatasetByResourceName Returns the set of annotations that are associated with the specified dataset resource name.
 func ListAnnotationsForDatasetByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3051,7 +3051,7 @@ func ListAnnotationsForDatasetByResourceName(cmd *cobra.Command, args []string) 
 	return nil
 }
 
-// ListDashboards Return a list of Dashboards.
+// ListDashboards Returns a list of dashboards.
 func ListDashboards(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3097,7 +3097,7 @@ func ListDashboards(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListDatasets Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
+// ListDatasets Returns a list of all datasets. Use a filter to return a specific list of datasets.
 func ListDatasets(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3150,7 +3150,7 @@ func ListDatasets(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFields Get a list of all fields in the Catalog.
+// ListFields Returns a list of all fields in the Metadata Catalog.
 func ListFields(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3196,7 +3196,7 @@ func ListFields(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFieldsForDataset Return the list of fields that are part of a specified dataset.
+// ListFieldsForDataset Returns the list of fields in the specified dataset.
 func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3247,7 +3247,7 @@ func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFieldsForDatasetById Return the set of fields for the specified dataset.
+// ListFieldsForDatasetById Returns the set of fields for the the dataset with the specified ID.
 func ListFieldsForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3298,7 +3298,7 @@ func ListFieldsForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListModules Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.
+// ListModules Returns a list of all modules. Use a filter to return a specific list of modules.
 func ListModules(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3324,7 +3324,7 @@ func ListModules(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListRelationships Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.
+// ListRelationships Returns a list of all relationships. Use a filter to return a specific list of relationships.
 func ListRelationships(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3370,7 +3370,7 @@ func ListRelationships(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListRules Return a list of rules that match a filter query if it is given, otherwise return all rules.
+// ListRules Returns a list of rules that match a filter, if specified, otherwise returns all rules.
 func ListRules(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3416,7 +3416,7 @@ func ListRules(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListWorkflowBuilds Return a list of Machine Learning workflow builds.
+// ListWorkflowBuilds Returns a list of Machine Learning workflow builds.
 func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3467,7 +3467,7 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListWorkflowRuns Return a list of Machine Learning workflow runs for specified workflow build ID.
+// ListWorkflowRuns Returns a list of Machine Learning workflow runs for specified workflow build ID.
 func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3569,7 +3569,7 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateActionByIdForRuleAliasAction Update the Action with the specified id for the specified Rule
+// UpdateActionByIdForRuleAliasAction Modifies the action with the specified ID that is associated with the specified rule resource name.
 func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3636,7 +3636,7 @@ func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// UpdateActionByIdForRuleAutoKvAction Update the Action with the specified id for the specified Rule
+// UpdateActionByIdForRuleAutoKvAction Modifies the action with the specified ID that is associated with the specified rule resource name.
 func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3696,7 +3696,7 @@ func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdAliasAction Update an action for a specific rule.
+// UpdateActionByIdForRuleByIdAliasAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleByIdAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3763,7 +3763,7 @@ func UpdateActionByIdForRuleByIdAliasAction(cmd *cobra.Command, args []string) e
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdAutoKvAction Update an action for a specific rule.
+// UpdateActionByIdForRuleByIdAutoKvAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3823,7 +3823,7 @@ func UpdateActionByIdForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) 
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdEvalAction Update an action for a specific rule.
+// UpdateActionByIdForRuleByIdEvalAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleByIdEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3890,7 +3890,7 @@ func UpdateActionByIdForRuleByIdEvalAction(cmd *cobra.Command, args []string) er
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdLookupAction Update an action for a specific rule.
+// UpdateActionByIdForRuleByIdLookupAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleByIdLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3950,7 +3950,7 @@ func UpdateActionByIdForRuleByIdLookupAction(cmd *cobra.Command, args []string) 
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdRegexAction Update an action for a specific rule.
+// UpdateActionByIdForRuleByIdRegexAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleByIdRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4024,7 +4024,7 @@ func UpdateActionByIdForRuleByIdRegexAction(cmd *cobra.Command, args []string) e
 	return nil
 }
 
-// UpdateActionByIdForRuleEvalAction Update the Action with the specified id for the specified Rule
+// UpdateActionByIdForRuleEvalAction Modifies the action with the specified ID that is associated with the specified rule resource name.
 func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4091,7 +4091,7 @@ func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error 
 	return nil
 }
 
-// UpdateActionByIdForRuleLookupAction Update the Action with the specified id for the specified Rule
+// UpdateActionByIdForRuleLookupAction Modifies the action with the specified ID that is associated with the specified rule resource name.
 func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4151,7 +4151,7 @@ func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// UpdateActionByIdForRuleRegexAction Update the Action with the specified id for the specified Rule
+// UpdateActionByIdForRuleRegexAction Modifies the action with the specified ID that is associated with the specified rule resource name.
 func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4225,7 +4225,7 @@ func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// UpdateDashboardById Update the dashboard with the specified ID.
+// UpdateDashboardById Modifies the dashboard with the specified ID.
 func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4287,7 +4287,7 @@ func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDashboardByResourceName Update the dashboard with the specified resource name.
+// UpdateDashboardByResourceName Modifies the dashboard with the specified resource name.
 func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4349,7 +4349,7 @@ func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdImportDataset Update a specific dataset.
+// UpdateDatasetByIdImportDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdImportDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4397,7 +4397,7 @@ func UpdateDatasetByIdImportDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdIndexDataset Update a specific dataset.
+// UpdateDatasetByIdIndexDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4466,7 +4466,7 @@ func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdKvCollectionDataset Update a specific dataset.
+// UpdateDatasetByIdKvCollectionDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdKvCollectionDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4521,7 +4521,7 @@ func UpdateDatasetByIdKvCollectionDataset(cmd *cobra.Command, args []string) err
 	return nil
 }
 
-// UpdateDatasetByIdLookupDataset Update a specific dataset.
+// UpdateDatasetByIdLookupDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdLookupDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4604,7 +4604,7 @@ func UpdateDatasetByIdLookupDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdMetricDataset Update a specific dataset.
+// UpdateDatasetByIdMetricDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdMetricDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4673,7 +4673,7 @@ func UpdateDatasetByIdMetricDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdViewDataset Update a specific dataset.
+// UpdateDatasetByIdViewDataset Modifies the dataset with the specified ID.
 func UpdateDatasetByIdViewDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4735,7 +4735,7 @@ func UpdateDatasetByIdViewDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetImportDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetImportDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4783,7 +4783,7 @@ func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetIndexDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetIndexDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4852,7 +4852,7 @@ func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetKvCollectionDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetKvCollectionDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4907,7 +4907,7 @@ func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetLookupDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetLookupDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4990,7 +4990,7 @@ func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetMetricDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetMetricDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5059,7 +5059,7 @@ func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetViewDataset Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetViewDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5121,7 +5121,7 @@ func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateFieldByIdForDataset Update a field with a specified ID for a specified dataset.
+// UpdateFieldByIdForDataset Modifies the field with the specified ID that is part of the specified dataset.
 func UpdateFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5209,7 +5209,7 @@ func UpdateFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateFieldByIdForDatasetById Update a field for a specific dataset.
+// UpdateFieldByIdForDatasetById Modifies the field with the specified ID that is part of the specified dataset.
 func UpdateFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5297,7 +5297,7 @@ func UpdateFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateRelationshipById Update a specific relationship.
+// UpdateRelationshipById Modifies the relationship with the specified relationship ID.
 func UpdateRelationshipById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5338,7 +5338,7 @@ func UpdateRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateRule Update the Rule with the specified resourcename
+// UpdateRule Modifies the rule with the specified resource name.
 func UpdateRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5400,7 +5400,7 @@ func UpdateRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateRuleById Update a specific rule.
+// UpdateRuleById Modifies the rule with the specified rule ID.
 func UpdateRuleById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5462,7 +5462,7 @@ func UpdateRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateWorkflowBuildById Update the workflow build with the specified workflow build ID.
+// UpdateWorkflowBuildById Modifies the workflow build with the specified workflow build ID.
 func UpdateWorkflowBuildById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5515,7 +5515,7 @@ func UpdateWorkflowBuildById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateWorkflowById Update the workflow with the specified workflow ID.
+// UpdateWorkflowById Modifies the workflow with the specified workflow ID.
 func UpdateWorkflowById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5556,7 +5556,7 @@ func UpdateWorkflowById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateWorkflowRunById Update the workflow run with the specified workflow run ID.
+// UpdateWorkflowRunById Modifies the workflow run with the specified workflow run ID.
 func UpdateWorkflowRunById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

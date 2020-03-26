@@ -22,7 +22,8 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var allowSideEffects interface{}
+	var allowSideEffectsDefault bool
+	allowSideEffects := &allowSideEffectsDefault
 	err = flags.ParseFlag(cmd.Flags(), "allow-side-effects", &allowSideEffects)
 	if err != nil {
 		return fmt.Errorf(`error parsing "allow-side-effects": ` + err.Error())
@@ -282,8 +283,7 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "filter": ` + err.Error())
 	}
-	var statusDefault model.SearchStatus
-	status := &statusDefault
+	var status *model.SearchStatus
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())

@@ -200,8 +200,10 @@ components:
       description: A fully-constructed search job, including read-only fields.
       properties:
         allowSideEffects:
+          default: false
           description: |
-            Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run. type: boolean default: false
+            Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run.
+          type: boolean
         collectEventSummary:
           default: false
           description: |
@@ -760,4 +762,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: search/v2beta1/openapi.yaml

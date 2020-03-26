@@ -98,8 +98,8 @@ type QueryParameters struct {
 type SearchJob struct {
 	// The SPL search string.
 	Query string `json:"query"`
-	// Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run. type: boolean default: false
-	AllowSideEffects interface{} `json:"allowSideEffects,omitempty"`
+	// Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run.
+	AllowSideEffects *bool `json:"allowSideEffects,omitempty"`
 	// Specified whether a search is allowed to collect events summary during the run time.
 	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
 	// Specified whether a search is allowed to collect Fields summary during the run time.

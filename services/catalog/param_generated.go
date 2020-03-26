@@ -364,7 +364,7 @@ type ListFieldsForDatasetQueryParams struct {
 	Filter string `key:"filter"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`
-	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
+	// Orderby : A list of fields to order the results by. You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
 	Orderby []string `key:"orderby"`
 }
 
@@ -398,7 +398,7 @@ type ListFieldsForDatasetByIdQueryParams struct {
 	Filter string `key:"filter"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`
-	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
+	// Orderby : A list of fields to order the results by. You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
 	Orderby []string `key:"orderby"`
 }
 

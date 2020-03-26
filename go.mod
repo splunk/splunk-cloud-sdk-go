@@ -13,9 +13,9 @@ require (
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
-	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d // indirect
+	golang.org/x/tools v0.0.0-20200226224502-204d844ad48d
 	gopkg.in/yaml.v2 v2.2.2
-	gotest.tools/gotestsum v0.4.0 // indirect
+	gotest.tools/gotestsum v0.4.0
 )
 
 go 1.13

@@ -8,577 +8,577 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/catalog"
 )
 
-// createActionForRuleAliasAction -- Create a new action for a rule associated with a specific resource name.
+// createActionForRuleAliasAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleAliasActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-alias-action",
-	Short: "Create a new action for a rule associated with a specific resource name.",
+	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleAliasAction,
 }
 
-// createActionForRuleAutoKvAction -- Create a new action for a rule associated with a specific resource name.
+// createActionForRuleAutoKvAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleAutoKvActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-auto-kv-action",
-	Short: "Create a new action for a rule associated with a specific resource name.",
+	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleAutoKvAction,
 }
 
-// createActionForRuleByIdAliasAction -- Create a new action for a specific rule.
+// createActionForRuleByIdAliasAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdAliasActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-by-id-alias-action",
-	Short: "Create a new action for a specific rule.",
+	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdAliasAction,
 }
 
-// createActionForRuleByIdAutoKvAction -- Create a new action for a specific rule.
+// createActionForRuleByIdAutoKvAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdAutoKvActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-by-id-auto-kv-action",
-	Short: "Create a new action for a specific rule.",
+	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdAutoKvAction,
 }
 
-// createActionForRuleByIdEvalAction -- Create a new action for a specific rule.
+// createActionForRuleByIdEvalAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdEvalActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-by-id-eval-action",
-	Short: "Create a new action for a specific rule.",
+	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdEvalAction,
 }
 
-// createActionForRuleByIdLookupAction -- Create a new action for a specific rule.
+// createActionForRuleByIdLookupAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdLookupActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-by-id-lookup-action",
-	Short: "Create a new action for a specific rule.",
+	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdLookupAction,
 }
 
-// createActionForRuleByIdRegexAction -- Create a new action for a specific rule.
+// createActionForRuleByIdRegexAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdRegexActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-by-id-regex-action",
-	Short: "Create a new action for a specific rule.",
+	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdRegexAction,
 }
 
-// createActionForRuleEvalAction -- Create a new action for a rule associated with a specific resource name.
+// createActionForRuleEvalAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleEvalActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-eval-action",
-	Short: "Create a new action for a rule associated with a specific resource name.",
+	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleEvalAction,
 }
 
-// createActionForRuleLookupAction -- Create a new action for a rule associated with a specific resource name.
+// createActionForRuleLookupAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleLookupActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-lookup-action",
-	Short: "Create a new action for a rule associated with a specific resource name.",
+	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleLookupAction,
 }
 
-// createActionForRuleRegexAction -- Create a new action for a rule associated with a specific resource name.
+// createActionForRuleRegexAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleRegexActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-regex-action",
-	Short: "Create a new action for a rule associated with a specific resource name.",
+	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleRegexAction,
 }
 
-// createAnnotationForDashboardbyId -- Create a new annotation for a specific dashboard.
+// createAnnotationForDashboardbyId -- Creates a new annotation for the specified dashboard.
 var createAnnotationForDashboardbyIdCmd = &cobra.Command{
 	Use:   "create-annotation-for-dashboardby-id",
-	Short: "[not implemented] Create a new annotation for a specific dashboard.",
+	Short: "[not implemented] Creates a new annotation for the specified dashboard.",
 	RunE:  impl.CreateAnnotationForDashboardbyId,
 }
 
-// createAnnotationForDashboardsByResourceName -- Create a new annotation for a specific dataset.
+// createAnnotationForDashboardsByResourceName -- Creates a new annotation for the specified dataset resource name.
 var createAnnotationForDashboardsByResourceNameCmd = &cobra.Command{
 	Use:   "create-annotation-for-dashboards-by-resource-name",
-	Short: "[not implemented] Create a new annotation for a specific dataset.",
+	Short: "[not implemented] Creates a new annotation for the specified dataset resource name.",
 	RunE:  impl.CreateAnnotationForDashboardsByResourceName,
 }
 
-// createAnnotationForDatasetById -- Create a new annotation for a specific dataset.
+// createAnnotationForDatasetById -- Creates a new annotation for the specified dataset.
 var createAnnotationForDatasetByIdCmd = &cobra.Command{
 	Use:   "create-annotation-for-dataset-by-id",
-	Short: "[not implemented] Create a new annotation for a specific dataset.",
+	Short: "[not implemented] Creates a new annotation for the specified dataset.",
 	RunE:  impl.CreateAnnotationForDatasetById,
 }
 
-// createAnnotationForDatasetByResourceName -- Create a new annotation for a specific dataset.
+// createAnnotationForDatasetByResourceName -- Creates a new annotation for the specified dataset.
 var createAnnotationForDatasetByResourceNameCmd = &cobra.Command{
 	Use:   "create-annotation-for-dataset-by-resource-name",
-	Short: "[not implemented] Create a new annotation for a specific dataset.",
+	Short: "[not implemented] Creates a new annotation for the specified dataset.",
 	RunE:  impl.CreateAnnotationForDatasetByResourceName,
 }
 
-// createDashboard -- Create a new dashboard.
+// createDashboard -- Creates a new dashboard.
 var createDashboardCmd = &cobra.Command{
 	Use:   "create-dashboard",
-	Short: "Create a new dashboard.",
+	Short: "Creates a new dashboard.",
 	RunE:  impl.CreateDashboard,
 }
 
-// createDatasetImport -- Create a new dataset import.
+// createDatasetImport -- Creates a new dataset import using the resource name of the imported dataset.
 var createDatasetImportCmd = &cobra.Command{
 	Use:   "create-dataset-import",
-	Short: "Create a new dataset import.",
+	Short: "Creates a new dataset import using the resource name of the imported dataset.",
 	RunE:  impl.CreateDatasetImport,
 }
 
-// createDatasetImportById -- Create a new dataset import.
+// createDatasetImportById -- Creates a new dataset import using the ID of the imported dataset.
 var createDatasetImportByIdCmd = &cobra.Command{
 	Use:   "create-dataset-import-by-id",
-	Short: "Create a new dataset import.",
+	Short: "Creates a new dataset import using the ID of the imported dataset.",
 	RunE:  impl.CreateDatasetImportById,
 }
 
-// createDatasetImportByIdv1 -- Create a new dataset import.
+// createDatasetImportByIdv1 -- Creates a new dataset import using the ID of the imported dataset.
 var createDatasetImportByIdv1Cmd = &cobra.Command{
 	Use:   "create-dataset-import-by-idv-1",
-	Short: "Create a new dataset import.",
+	Short: "Creates a new dataset import using the ID of the imported dataset.",
 	RunE:  impl.CreateDatasetImportByIdv1,
 }
 
-// createDatasetImportDataset -- Create a new dataset.
+// createDatasetImportDataset -- Creates a new dataset.
 var createDatasetImportDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-import-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetImportDataset,
 }
 
-// createDatasetImportv1 -- Create a new dataset import.
+// createDatasetImportv1 -- Creates a new dataset import using the resource name of the imported dataset.
 var createDatasetImportv1Cmd = &cobra.Command{
 	Use:   "create-dataset-importv-1",
-	Short: "Create a new dataset import.",
+	Short: "Creates a new dataset import using the resource name of the imported dataset.",
 	RunE:  impl.CreateDatasetImportv1,
 }
 
-// createDatasetIndexDataset -- Create a new dataset.
+// createDatasetIndexDataset -- Creates a new dataset.
 var createDatasetIndexDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-index-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetIndexDataset,
 }
 
-// createDatasetKvCollectionDataset -- Create a new dataset.
+// createDatasetKvCollectionDataset -- Creates a new dataset.
 var createDatasetKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-kv-collection-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetKvCollectionDataset,
 }
 
-// createDatasetLookupDataset -- Create a new dataset.
+// createDatasetLookupDataset -- Creates a new dataset.
 var createDatasetLookupDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-lookup-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetLookupDataset,
 }
 
-// createDatasetMetricDataset -- Create a new dataset.
+// createDatasetMetricDataset -- Creates a new dataset.
 var createDatasetMetricDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-metric-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetMetricDataset,
 }
 
-// createDatasetViewDataset -- Create a new dataset.
+// createDatasetViewDataset -- Creates a new dataset.
 var createDatasetViewDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-view-dataset",
-	Short: "Create a new dataset.",
+	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetViewDataset,
 }
 
-// createFieldForDataset -- Create a new field on a specific dataset.
+// createFieldForDataset -- Creates a new field in the dataset with the specified resource name.
 var createFieldForDatasetCmd = &cobra.Command{
 	Use:   "create-field-for-dataset",
-	Short: "Create a new field on a specific dataset.",
+	Short: "Creates a new field in the dataset with the specified resource name.",
 	RunE:  impl.CreateFieldForDataset,
 }
 
-// createFieldForDatasetById -- Add a new field to a dataset.
+// createFieldForDatasetById -- Adds a new field to the dataset with the specified ID.
 var createFieldForDatasetByIdCmd = &cobra.Command{
 	Use:   "create-field-for-dataset-by-id",
-	Short: "Add a new field to a dataset.",
+	Short: "Adds a new field to the dataset with the specified ID.",
 	RunE:  impl.CreateFieldForDatasetById,
 }
 
-// createRelationship -- Create a new relationship.
+// createRelationship -- Creates a new relationship.
 var createRelationshipCmd = &cobra.Command{
 	Use:   "create-relationship",
-	Short: "Create a new relationship.",
+	Short: "Creates a new relationship.",
 	RunE:  impl.CreateRelationship,
 }
 
-// createRule -- Create a new rule.
+// createRule -- Creates a new rule.
 var createRuleCmd = &cobra.Command{
 	Use:   "create-rule",
-	Short: "Create a new rule.",
+	Short: "Creates a new rule.",
 	RunE:  impl.CreateRule,
 }
 
-// createWorkflow -- Create a new workflow configuration.
+// createWorkflow -- Creates a new workflow configuration.
 var createWorkflowCmd = &cobra.Command{
 	Use:   "create-workflow",
-	Short: "Create a new workflow configuration.",
+	Short: "Creates a new workflow configuration.",
 	RunE:  impl.CreateWorkflow,
 }
 
-// createWorkflowBuild -- Create a new workflow build.
+// createWorkflowBuild -- Creates a new workflow build.
 var createWorkflowBuildCmd = &cobra.Command{
 	Use:   "create-workflow-build",
-	Short: "Create a new workflow build.",
+	Short: "Creates a new workflow build.",
 	RunE:  impl.CreateWorkflowBuild,
 }
 
-// createWorkflowRun -- Create a new workflow run for the specified workflow build ID.
+// createWorkflowRun -- Creates a new workflow run for the specified workflow build ID.
 var createWorkflowRunCmd = &cobra.Command{
 	Use:   "create-workflow-run",
-	Short: "Create a new workflow run for the specified workflow build ID.",
+	Short: "Creates a new workflow run for the specified workflow build ID.",
 	RunE:  impl.CreateWorkflowRun,
 }
 
-// deleteActionByIdForRule -- Delete an action on a rule.
+// deleteActionByIdForRule -- Deletes the action with the specified ID that is associated with the specified rule resource name.
 var deleteActionByIdForRuleCmd = &cobra.Command{
 	Use:   "delete-action-by-id-for-rule",
-	Short: "Delete an action on a rule.",
+	Short: "Deletes the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.DeleteActionByIdForRule,
 }
 
-// deleteActionByIdForRuleById -- Delete an action that is part of a specific rule.
+// deleteActionByIdForRuleById -- Deletes the action with the specified ID that is associated with the specified rule.
 var deleteActionByIdForRuleByIdCmd = &cobra.Command{
 	Use:   "delete-action-by-id-for-rule-by-id",
-	Short: "Delete an action that is part of a specific rule.",
+	Short: "Deletes the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.DeleteActionByIdForRuleById,
 }
 
-// deleteAnnotationOfDashboardById -- Delete a specific annotation of a dashboard.
+// deleteAnnotationOfDashboardById -- Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
 var deleteAnnotationOfDashboardByIdCmd = &cobra.Command{
 	Use:   "delete-annotation-of-dashboard-by-id",
-	Short: "Delete a specific annotation of a dashboard.",
+	Short: "Deletes the annotation with the speciifed ID that is associted with the specified dashboard.",
 	RunE:  impl.DeleteAnnotationOfDashboardById,
 }
 
-// deleteAnnotationOfDashboardByResourceName -- Delete a specific annotation of a dashboard.
+// deleteAnnotationOfDashboardByResourceName -- Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
 var deleteAnnotationOfDashboardByResourceNameCmd = &cobra.Command{
 	Use:   "delete-annotation-of-dashboard-by-resource-name",
-	Short: "Delete a specific annotation of a dashboard.",
+	Short: "Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.",
 	RunE:  impl.DeleteAnnotationOfDashboardByResourceName,
 }
 
-// deleteAnnotationOfDatasetById -- Delete a specific annotation of a dataset.
+// deleteAnnotationOfDatasetById -- Deletes the annotation with the specified ID that is associated with the specified dataset.
 var deleteAnnotationOfDatasetByIdCmd = &cobra.Command{
 	Use:   "delete-annotation-of-dataset-by-id",
-	Short: "Delete a specific annotation of a dataset.",
+	Short: "Deletes the annotation with the specified ID that is associated with the specified dataset.",
 	RunE:  impl.DeleteAnnotationOfDatasetById,
 }
 
-// deleteAnnotationOfDatasetByResourceName -- Delete a specific annotation of a dataset.
+// deleteAnnotationOfDatasetByResourceName -- Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
 var deleteAnnotationOfDatasetByResourceNameCmd = &cobra.Command{
 	Use:   "delete-annotation-of-dataset-by-resource-name",
-	Short: "Delete a specific annotation of a dataset.",
+	Short: "Deletes the annotation with the specified iD that is associated with the specified dataset resource name.",
 	RunE:  impl.DeleteAnnotationOfDatasetByResourceName,
 }
 
-// deleteDashboardById -- Delete the dashboard with the specified ID.
+// deleteDashboardById -- Deletes the dashboard with the specified ID.
 var deleteDashboardByIdCmd = &cobra.Command{
 	Use:   "delete-dashboard-by-id",
-	Short: "Delete the dashboard with the specified ID.",
+	Short: "Deletes the dashboard with the specified ID.",
 	RunE:  impl.DeleteDashboardById,
 }
 
-// deleteDashboardByResourceName -- Delete the dashboard with the specified resource name.
+// deleteDashboardByResourceName -- Deletes the dashboard with the specified resource name.
 var deleteDashboardByResourceNameCmd = &cobra.Command{
 	Use:   "delete-dashboard-by-resource-name",
-	Short: "Delete the dashboard with the specified resource name.",
+	Short: "Deletes the dashboard with the specified resource name.",
 	RunE:  impl.DeleteDashboardByResourceName,
 }
 
-// deleteDataset -- Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// deleteDataset -- Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var deleteDatasetCmd = &cobra.Command{
 	Use:   "delete-dataset",
-	Short: "Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.DeleteDataset,
 }
 
-// deleteDatasetById -- Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.
+// deleteDatasetById -- Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
 var deleteDatasetByIdCmd = &cobra.Command{
 	Use:   "delete-dataset-by-id",
-	Short: "Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.",
+	Short: "Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.",
 	RunE:  impl.DeleteDatasetById,
 }
 
-// deleteFieldByIdForDataset -- Delete a field that is part of a specific dataset.
+// deleteFieldByIdForDataset -- Deletes the field with the specified ID that is part of the specified dataset.
 var deleteFieldByIdForDatasetCmd = &cobra.Command{
 	Use:   "delete-field-by-id-for-dataset",
-	Short: "Delete a field that is part of a specific dataset.",
+	Short: "Deletes the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.DeleteFieldByIdForDataset,
 }
 
-// deleteFieldByIdForDatasetById -- Delete a field that is part of a specific dataset.
+// deleteFieldByIdForDatasetById -- Deletes the field with the specified ID that is part of the specified dataset.
 var deleteFieldByIdForDatasetByIdCmd = &cobra.Command{
 	Use:   "delete-field-by-id-for-dataset-by-id",
-	Short: "Delete a field that is part of a specific dataset.",
+	Short: "Deletes the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.DeleteFieldByIdForDatasetById,
 }
 
-// deleteRelationshipById -- Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.
+// deleteRelationshipById -- Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
 var deleteRelationshipByIdCmd = &cobra.Command{
 	Use:   "delete-relationship-by-id",
-	Short: "Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.",
+	Short: "Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.",
 	RunE:  impl.DeleteRelationshipById,
 }
 
-// deleteRule -- Delete the rule with the specified resource name and its dependencies.
+// deleteRule -- Deletes the rule with the specified resource name and its dependencies.
 var deleteRuleCmd = &cobra.Command{
 	Use:   "delete-rule",
-	Short: "Delete the rule with the specified resource name and its dependencies.",
+	Short: "Deletes the rule with the specified resource name and its dependencies.",
 	RunE:  impl.DeleteRule,
 }
 
-// deleteRuleById -- Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
+// deleteRuleById -- Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 var deleteRuleByIdCmd = &cobra.Command{
 	Use:   "delete-rule-by-id",
-	Short: "Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.",
+	Short: "Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.",
 	RunE:  impl.DeleteRuleById,
 }
 
-// deleteWorkflowBuildById -- Delete the workflow build with the specified workflow build ID.
+// deleteWorkflowBuildById -- Deletes the workflow build with the specified workflow build ID.
 var deleteWorkflowBuildByIdCmd = &cobra.Command{
 	Use:   "delete-workflow-build-by-id",
-	Short: "Delete the workflow build with the specified workflow build ID.",
+	Short: "Deletes the workflow build with the specified workflow build ID.",
 	RunE:  impl.DeleteWorkflowBuildById,
 }
 
-// deleteWorkflowById -- Delete the workflow with the specified workflow ID.
+// deleteWorkflowById -- Deletes the workflow with the specified workflow ID.
 var deleteWorkflowByIdCmd = &cobra.Command{
 	Use:   "delete-workflow-by-id",
-	Short: "Delete the workflow with the specified workflow ID.",
+	Short: "Deletes the workflow with the specified workflow ID.",
 	RunE:  impl.DeleteWorkflowById,
 }
 
-// deleteWorkflowRunById -- Delete the workflow run with the specified workflow run ID.
+// deleteWorkflowRunById -- Deletes the workflow run with the specified workflow run ID.
 var deleteWorkflowRunByIdCmd = &cobra.Command{
 	Use:   "delete-workflow-run-by-id",
-	Short: "Delete the workflow run with the specified workflow run ID.",
+	Short: "Deletes the workflow run with the specified workflow run ID.",
 	RunE:  impl.DeleteWorkflowRunById,
 }
 
-// getActionByIdForRule -- Return an action that is part of a specified rule.
+// getActionByIdForRule -- Returns the action with the specified ID that is associated with the specified rule resource name.
 var getActionByIdForRuleCmd = &cobra.Command{
 	Use:   "get-action-by-id-for-rule",
-	Short: "Return an action that is part of a specified rule.",
+	Short: "Returns the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.GetActionByIdForRule,
 }
 
-// getActionByIdForRuleById -- Return information about an action that is part of a specific rule.
+// getActionByIdForRuleById -- Returns information about the action with the specified ID that is associated with the specified rule.
 var getActionByIdForRuleByIdCmd = &cobra.Command{
 	Use:   "get-action-by-id-for-rule-by-id",
-	Short: "Return information about an action that is part of a specific rule.",
+	Short: "Returns information about the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.GetActionByIdForRuleById,
 }
 
-// getDashboardById -- Return information about a dashboard with the specified ID.
+// getDashboardById -- Returns information about the dashboard with the specified ID.
 var getDashboardByIdCmd = &cobra.Command{
 	Use:   "get-dashboard-by-id",
-	Short: "Return information about a dashboard with the specified ID.",
+	Short: "Returns information about the dashboard with the specified ID.",
 	RunE:  impl.GetDashboardById,
 }
 
-// getDashboardByResourceName -- Return information about a dashboard with the specified resource name.
+// getDashboardByResourceName -- Returns information about the dashboard with the specified resource name.
 var getDashboardByResourceNameCmd = &cobra.Command{
 	Use:   "get-dashboard-by-resource-name",
-	Short: "Return information about a dashboard with the specified resource name.",
+	Short: "Returns information about the dashboard with the specified resource name.",
 	RunE:  impl.GetDashboardByResourceName,
 }
 
-// getDataset -- Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// getDataset -- Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var getDatasetCmd = &cobra.Command{
 	Use:   "get-dataset",
-	Short: "Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.GetDataset,
 }
 
-// getDatasetById -- Return information about the dataset with the specified ID.
+// getDatasetById -- Returns information about the dataset with the specified ID.
 var getDatasetByIdCmd = &cobra.Command{
 	Use:   "get-dataset-by-id",
-	Short: "Return information about the dataset with the specified ID.",
+	Short: "Returns information about the dataset with the specified ID.",
 	RunE:  impl.GetDatasetById,
 }
 
-// getFieldById -- Get a field that corresponds to a specific field ID.
+// getFieldById -- Returns the field with the specified field ID.
 var getFieldByIdCmd = &cobra.Command{
 	Use:   "get-field-by-id",
-	Short: "Get a field that corresponds to a specific field ID.",
+	Short: "Returns the field with the specified field ID.",
 	RunE:  impl.GetFieldById,
 }
 
-// getFieldByIdForDataset -- Return a field that is part of a specific dataset.
+// getFieldByIdForDataset -- Returns the field with the specified ID that is part of the specified dataset.
 var getFieldByIdForDatasetCmd = &cobra.Command{
 	Use:   "get-field-by-id-for-dataset",
-	Short: "Return a field that is part of a specific dataset.",
+	Short: "Returns the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.GetFieldByIdForDataset,
 }
 
-// getFieldByIdForDatasetById -- Return a field that is part of a specific dataset.
+// getFieldByIdForDatasetById -- Returns the field with the specified ID that is part of the specified dataset.
 var getFieldByIdForDatasetByIdCmd = &cobra.Command{
 	Use:   "get-field-by-id-for-dataset-by-id",
-	Short: "Return a field that is part of a specific dataset.",
+	Short: "Returns the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.GetFieldByIdForDatasetById,
 }
 
-// getRelationshipById -- Get a specific relationship.
+// getRelationshipById -- Returns the relationship with the specified relationship ID.
 var getRelationshipByIdCmd = &cobra.Command{
 	Use:   "get-relationship-by-id",
-	Short: "Get a specific relationship.",
+	Short: "Returns the relationship with the specified relationship ID.",
 	RunE:  impl.GetRelationshipById,
 }
 
-// getRule -- Get a rule with a specified resource name.
+// getRule -- Returrns the rule with the specified resource name.
 var getRuleCmd = &cobra.Command{
 	Use:   "get-rule",
-	Short: "Get a rule with a specified resource name.",
+	Short: "Returrns the rule with the specified resource name.",
 	RunE:  impl.GetRule,
 }
 
-// getRuleById -- Get information about a specific rule.
+// getRuleById -- Returns information about rule with the specified rule ID.
 var getRuleByIdCmd = &cobra.Command{
 	Use:   "get-rule-by-id",
-	Short: "Get information about a specific rule.",
+	Short: "Returns information about rule with the specified rule ID.",
 	RunE:  impl.GetRuleById,
 }
 
-// getWorkflowBuildById -- Return information about the workflow build with the specified workflow build ID.
+// getWorkflowBuildById -- Returns information about the workflow build with the specified workflow build ID.
 var getWorkflowBuildByIdCmd = &cobra.Command{
 	Use:   "get-workflow-build-by-id",
-	Short: "Return information about the workflow build with the specified workflow build ID.",
+	Short: "Returns information about the workflow build with the specified workflow build ID.",
 	RunE:  impl.GetWorkflowBuildById,
 }
 
-// getWorkflowById -- Return information about a workflow with the specified workflow ID.
+// getWorkflowById -- Returns information about the workflow with the specified workflow ID.
 var getWorkflowByIdCmd = &cobra.Command{
 	Use:   "get-workflow-by-id",
-	Short: "Return information about a workflow with the specified workflow ID.",
+	Short: "Returns information about the workflow with the specified workflow ID.",
 	RunE:  impl.GetWorkflowById,
 }
 
-// getWorkflowRunById -- Return information about the workflow run with the specified workflow build ID.
+// getWorkflowRunById -- Returns information about the workflow run with the specified workflow build ID.
 var getWorkflowRunByIdCmd = &cobra.Command{
 	Use:   "get-workflow-run-by-id",
-	Short: "Return information about the workflow run with the specified workflow build ID.",
+	Short: "Returns information about the workflow run with the specified workflow build ID.",
 	RunE:  impl.GetWorkflowRunById,
 }
 
-// listActionsForRule -- Return the list of actions that are part of a specified rule.
+// listActionsForRule -- Returns the list of actions that are associated with the specified rule.
 var listActionsForRuleCmd = &cobra.Command{
 	Use:   "list-actions-for-rule",
-	Short: "Return the list of actions that are part of a specified rule.",
+	Short: "Returns the list of actions that are associated with the specified rule.",
 	RunE:  impl.ListActionsForRule,
 }
 
-// listActionsForRuleById -- Return the set of actions that are part of a rule.
+// listActionsForRuleById -- Returns the set of actions that are part of the specified rule.
 var listActionsForRuleByIdCmd = &cobra.Command{
 	Use:   "list-actions-for-rule-by-id",
-	Short: "Return the set of actions that are part of a rule.",
+	Short: "Returns the set of actions that are part of the specified rule.",
 	RunE:  impl.ListActionsForRuleById,
 }
 
-// listAnnotations -- Return the set of annotations across all objects.
+// listAnnotations -- Returns the set of annotations across all objects.
 var listAnnotationsCmd = &cobra.Command{
 	Use:   "list-annotations",
-	Short: "Return the set of annotations across all objects.",
+	Short: "Returns the set of annotations across all objects.",
 	RunE:  impl.ListAnnotations,
 }
 
-// listAnnotationsForDashboardById -- Return the set of annotations that are part of a dashboard.
+// listAnnotationsForDashboardById -- Returns the set of annotations that are associated with the specified dashboard.
 var listAnnotationsForDashboardByIdCmd = &cobra.Command{
 	Use:   "list-annotations-for-dashboard-by-id",
-	Short: "Return the set of annotations that are part of a dashboard.",
+	Short: "Returns the set of annotations that are associated with the specified dashboard.",
 	RunE:  impl.ListAnnotationsForDashboardById,
 }
 
-// listAnnotationsForDashboardByResourceName -- Return the set of annotations that are part of a dashboard.
+// listAnnotationsForDashboardByResourceName -- Returns the set of annotations that are associated with the specified dashboard resource name.
 var listAnnotationsForDashboardByResourceNameCmd = &cobra.Command{
 	Use:   "list-annotations-for-dashboard-by-resource-name",
-	Short: "Return the set of annotations that are part of a dashboard.",
+	Short: "Returns the set of annotations that are associated with the specified dashboard resource name.",
 	RunE:  impl.ListAnnotationsForDashboardByResourceName,
 }
 
-// listAnnotationsForDatasetById -- Return the set of annotations that are part of a dataset.
+// listAnnotationsForDatasetById -- Returns the set of annotations that are associated with the specified dataset.
 var listAnnotationsForDatasetByIdCmd = &cobra.Command{
 	Use:   "list-annotations-for-dataset-by-id",
-	Short: "Return the set of annotations that are part of a dataset.",
+	Short: "Returns the set of annotations that are associated with the specified dataset.",
 	RunE:  impl.ListAnnotationsForDatasetById,
 }
 
-// listAnnotationsForDatasetByResourceName -- Return the set of annotations that are part of a dataset.
+// listAnnotationsForDatasetByResourceName -- Returns the set of annotations that are associated with the specified dataset resource name.
 var listAnnotationsForDatasetByResourceNameCmd = &cobra.Command{
 	Use:   "list-annotations-for-dataset-by-resource-name",
-	Short: "Return the set of annotations that are part of a dataset.",
+	Short: "Returns the set of annotations that are associated with the specified dataset resource name.",
 	RunE:  impl.ListAnnotationsForDatasetByResourceName,
 }
 
-// listDashboards -- Return a list of Dashboards.
+// listDashboards -- Returns a list of dashboards.
 var listDashboardsCmd = &cobra.Command{
 	Use:   "list-dashboards",
-	Short: "Return a list of Dashboards.",
+	Short: "Returns a list of dashboards.",
 	RunE:  impl.ListDashboards,
 }
 
-// listDatasets -- Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
+// listDatasets -- Returns a list of all datasets. Use a filter to return a specific list of datasets.
 var listDatasetsCmd = &cobra.Command{
 	Use:   "list-datasets",
-	Short: "Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.",
+	Short: "Returns a list of all datasets. Use a filter to return a specific list of datasets.",
 	RunE:  impl.ListDatasets,
 }
 
-// listFields -- Get a list of all fields in the Catalog.
+// listFields -- Returns a list of all fields in the Metadata Catalog.
 var listFieldsCmd = &cobra.Command{
 	Use:   "list-fields",
-	Short: "Get a list of all fields in the Catalog.",
+	Short: "Returns a list of all fields in the Metadata Catalog.",
 	RunE:  impl.ListFields,
 }
 
-// listFieldsForDataset -- Return the list of fields that are part of a specified dataset.
+// listFieldsForDataset -- Returns the list of fields in the specified dataset.
 var listFieldsForDatasetCmd = &cobra.Command{
 	Use:   "list-fields-for-dataset",
-	Short: "Return the list of fields that are part of a specified dataset.",
+	Short: "Returns the list of fields in the specified dataset.",
 	RunE:  impl.ListFieldsForDataset,
 }
 
-// listFieldsForDatasetById -- Return the set of fields for the specified dataset.
+// listFieldsForDatasetById -- Returns the set of fields for the the dataset with the specified ID.
 var listFieldsForDatasetByIdCmd = &cobra.Command{
 	Use:   "list-fields-for-dataset-by-id",
-	Short: "Return the set of fields for the specified dataset.",
+	Short: "Returns the set of fields for the the dataset with the specified ID.",
 	RunE:  impl.ListFieldsForDatasetById,
 }
 
-// listModules -- Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.
+// listModules -- Returns a list of all modules. Use a filter to return a specific list of modules.
 var listModulesCmd = &cobra.Command{
 	Use:   "list-modules",
-	Short: "Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.",
+	Short: "Returns a list of all modules. Use a filter to return a specific list of modules.",
 	RunE:  impl.ListModules,
 }
 
-// listRelationships -- Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.
+// listRelationships -- Returns a list of all relationships. Use a filter to return a specific list of relationships.
 var listRelationshipsCmd = &cobra.Command{
 	Use:   "list-relationships",
-	Short: "Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.",
+	Short: "Returns a list of all relationships. Use a filter to return a specific list of relationships.",
 	RunE:  impl.ListRelationships,
 }
 
-// listRules -- Return a list of rules that match a filter query if it is given, otherwise return all rules.
+// listRules -- Returns a list of rules that match a filter, if specified, otherwise returns all rules.
 var listRulesCmd = &cobra.Command{
 	Use:   "list-rules",
-	Short: "Return a list of rules that match a filter query if it is given, otherwise return all rules.",
+	Short: "Returns a list of rules that match a filter, if specified, otherwise returns all rules.",
 	RunE:  impl.ListRules,
 }
 
-// listWorkflowBuilds -- Return a list of Machine Learning workflow builds.
+// listWorkflowBuilds -- Returns a list of Machine Learning workflow builds.
 var listWorkflowBuildsCmd = &cobra.Command{
 	Use:   "list-workflow-builds",
-	Short: "Return a list of Machine Learning workflow builds.",
+	Short: "Returns a list of Machine Learning workflow builds.",
 	RunE:  impl.ListWorkflowBuilds,
 }
 
-// listWorkflowRuns -- Return a list of Machine Learning workflow runs for specified workflow build ID.
+// listWorkflowRuns -- Returns a list of Machine Learning workflow runs for specified workflow build ID.
 var listWorkflowRunsCmd = &cobra.Command{
 	Use:   "list-workflow-runs",
-	Short: "Return a list of Machine Learning workflow runs for specified workflow build ID.",
+	Short: "Returns a list of Machine Learning workflow runs for specified workflow build ID.",
 	RunE:  impl.ListWorkflowRuns,
 }
 
@@ -589,227 +589,227 @@ var listWorkflowsCmd = &cobra.Command{
 	RunE:  impl.ListWorkflows,
 }
 
-// updateActionByIdForRuleAliasAction -- Update the Action with the specified id for the specified Rule
+// updateActionByIdForRuleAliasAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleAliasActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-alias-action",
-	Short: "Update the Action with the specified id for the specified Rule",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleAliasAction,
 }
 
-// updateActionByIdForRuleAutoKvAction -- Update the Action with the specified id for the specified Rule
+// updateActionByIdForRuleAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleAutoKvActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-auto-kv-action",
-	Short: "Update the Action with the specified id for the specified Rule",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleAutoKvAction,
 }
 
-// updateActionByIdForRuleByIdAliasAction -- Update an action for a specific rule.
+// updateActionByIdForRuleByIdAliasAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdAliasActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-by-id-alias-action",
-	Short: "Update an action for a specific rule.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdAliasAction,
 }
 
-// updateActionByIdForRuleByIdAutoKvAction -- Update an action for a specific rule.
+// updateActionByIdForRuleByIdAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdAutoKvActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-by-id-auto-kv-action",
-	Short: "Update an action for a specific rule.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdAutoKvAction,
 }
 
-// updateActionByIdForRuleByIdEvalAction -- Update an action for a specific rule.
+// updateActionByIdForRuleByIdEvalAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdEvalActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-by-id-eval-action",
-	Short: "Update an action for a specific rule.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdEvalAction,
 }
 
-// updateActionByIdForRuleByIdLookupAction -- Update an action for a specific rule.
+// updateActionByIdForRuleByIdLookupAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdLookupActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-by-id-lookup-action",
-	Short: "Update an action for a specific rule.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdLookupAction,
 }
 
-// updateActionByIdForRuleByIdRegexAction -- Update an action for a specific rule.
+// updateActionByIdForRuleByIdRegexAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdRegexActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-by-id-regex-action",
-	Short: "Update an action for a specific rule.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdRegexAction,
 }
 
-// updateActionByIdForRuleEvalAction -- Update the Action with the specified id for the specified Rule
+// updateActionByIdForRuleEvalAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleEvalActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-eval-action",
-	Short: "Update the Action with the specified id for the specified Rule",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleEvalAction,
 }
 
-// updateActionByIdForRuleLookupAction -- Update the Action with the specified id for the specified Rule
+// updateActionByIdForRuleLookupAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleLookupActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-lookup-action",
-	Short: "Update the Action with the specified id for the specified Rule",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleLookupAction,
 }
 
-// updateActionByIdForRuleRegexAction -- Update the Action with the specified id for the specified Rule
+// updateActionByIdForRuleRegexAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleRegexActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-regex-action",
-	Short: "Update the Action with the specified id for the specified Rule",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleRegexAction,
 }
 
-// updateDashboardById -- Update the dashboard with the specified ID.
+// updateDashboardById -- Modifies the dashboard with the specified ID.
 var updateDashboardByIdCmd = &cobra.Command{
 	Use:   "update-dashboard-by-id",
-	Short: "Update the dashboard with the specified ID.",
+	Short: "Modifies the dashboard with the specified ID.",
 	RunE:  impl.UpdateDashboardById,
 }
 
-// updateDashboardByResourceName -- Update the dashboard with the specified resource name.
+// updateDashboardByResourceName -- Modifies the dashboard with the specified resource name.
 var updateDashboardByResourceNameCmd = &cobra.Command{
 	Use:   "update-dashboard-by-resource-name",
-	Short: "Update the dashboard with the specified resource name.",
+	Short: "Modifies the dashboard with the specified resource name.",
 	RunE:  impl.UpdateDashboardByResourceName,
 }
 
-// updateDatasetByIdImportDataset -- Update a specific dataset.
+// updateDatasetByIdImportDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdImportDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-import-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdImportDataset,
 }
 
-// updateDatasetByIdIndexDataset -- Update a specific dataset.
+// updateDatasetByIdIndexDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdIndexDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-index-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdIndexDataset,
 }
 
-// updateDatasetByIdKvCollectionDataset -- Update a specific dataset.
+// updateDatasetByIdKvCollectionDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-kv-collection-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdKvCollectionDataset,
 }
 
-// updateDatasetByIdLookupDataset -- Update a specific dataset.
+// updateDatasetByIdLookupDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdLookupDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-lookup-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdLookupDataset,
 }
 
-// updateDatasetByIdMetricDataset -- Update a specific dataset.
+// updateDatasetByIdMetricDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdMetricDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-metric-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdMetricDataset,
 }
 
-// updateDatasetByIdViewDataset -- Update a specific dataset.
+// updateDatasetByIdViewDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdViewDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-by-id-view-dataset",
-	Short: "Update a specific dataset.",
+	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdViewDataset,
 }
 
-// updateDatasetImportDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetImportDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetImportDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-import-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetImportDataset,
 }
 
-// updateDatasetIndexDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetIndexDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetIndexDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-index-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetIndexDataset,
 }
 
-// updateDatasetKvCollectionDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetKvCollectionDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-kv-collection-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetKvCollectionDataset,
 }
 
-// updateDatasetLookupDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetLookupDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetLookupDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-lookup-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetLookupDataset,
 }
 
-// updateDatasetMetricDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetMetricDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetMetricDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-metric-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetMetricDataset,
 }
 
-// updateDatasetViewDataset -- Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetViewDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetViewDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-view-dataset",
-	Short: "Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetViewDataset,
 }
 
-// updateFieldByIdForDataset -- Update a field with a specified ID for a specified dataset.
+// updateFieldByIdForDataset -- Modifies the field with the specified ID that is part of the specified dataset.
 var updateFieldByIdForDatasetCmd = &cobra.Command{
 	Use:   "update-field-by-id-for-dataset",
-	Short: "Update a field with a specified ID for a specified dataset.",
+	Short: "Modifies the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.UpdateFieldByIdForDataset,
 }
 
-// updateFieldByIdForDatasetById -- Update a field for a specific dataset.
+// updateFieldByIdForDatasetById -- Modifies the field with the specified ID that is part of the specified dataset.
 var updateFieldByIdForDatasetByIdCmd = &cobra.Command{
 	Use:   "update-field-by-id-for-dataset-by-id",
-	Short: "Update a field for a specific dataset.",
+	Short: "Modifies the field with the specified ID that is part of the specified dataset.",
 	RunE:  impl.UpdateFieldByIdForDatasetById,
 }
 
-// updateRelationshipById -- Update a specific relationship.
+// updateRelationshipById -- Modifies the relationship with the specified relationship ID.
 var updateRelationshipByIdCmd = &cobra.Command{
 	Use:   "update-relationship-by-id",
-	Short: "Update a specific relationship.",
+	Short: "Modifies the relationship with the specified relationship ID.",
 	RunE:  impl.UpdateRelationshipById,
 }
 
-// updateRule -- Update the Rule with the specified resourcename
+// updateRule -- Modifies the rule with the specified resource name.
 var updateRuleCmd = &cobra.Command{
 	Use:   "update-rule",
-	Short: "Update the Rule with the specified resourcename",
+	Short: "Modifies the rule with the specified resource name.",
 	RunE:  impl.UpdateRule,
 }
 
-// updateRuleById -- Update a specific rule.
+// updateRuleById -- Modifies the rule with the specified rule ID.
 var updateRuleByIdCmd = &cobra.Command{
 	Use:   "update-rule-by-id",
-	Short: "Update a specific rule.",
+	Short: "Modifies the rule with the specified rule ID.",
 	RunE:  impl.UpdateRuleById,
 }
 
-// updateWorkflowBuildById -- Update the workflow build with the specified workflow build ID.
+// updateWorkflowBuildById -- Modifies the workflow build with the specified workflow build ID.
 var updateWorkflowBuildByIdCmd = &cobra.Command{
 	Use:   "update-workflow-build-by-id",
-	Short: "Update the workflow build with the specified workflow build ID.",
+	Short: "Modifies the workflow build with the specified workflow build ID.",
 	RunE:  impl.UpdateWorkflowBuildById,
 }
 
-// updateWorkflowById -- Update the workflow with the specified workflow ID.
+// updateWorkflowById -- Modifies the workflow with the specified workflow ID.
 var updateWorkflowByIdCmd = &cobra.Command{
 	Use:   "update-workflow-by-id",
-	Short: "Update the workflow with the specified workflow ID.",
+	Short: "Modifies the workflow with the specified workflow ID.",
 	RunE:  impl.UpdateWorkflowById,
 }
 
-// updateWorkflowRunById -- Update the workflow run with the specified workflow run ID.
+// updateWorkflowRunById -- Modifies the workflow run with the specified workflow run ID.
 var updateWorkflowRunByIdCmd = &cobra.Command{
 	Use:   "update-workflow-run-by-id",
-	Short: "Update the workflow run with the specified workflow run ID.",
+	Short: "Modifies the workflow run with the specified workflow run ID.",
 	RunE:  impl.UpdateWorkflowRunById,
 }
 
@@ -2065,7 +2065,7 @@ func init() {
 	listFieldsForDatasetCmd.Flags().Int32Var(&listFieldsForDatasetOffset, "offset", 0, "The number of results to skip before the first one returned.")
 
 	var listFieldsForDatasetOrderby []string
-	listFieldsForDatasetCmd.Flags().StringSliceVar(&listFieldsForDatasetOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
+	listFieldsForDatasetCmd.Flags().StringSliceVar(&listFieldsForDatasetOrderby, "orderby", nil, "A list of fields to order the results by. You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(listFieldsForDatasetByIdCmd)
 
@@ -2083,7 +2083,7 @@ func init() {
 	listFieldsForDatasetByIdCmd.Flags().Int32Var(&listFieldsForDatasetByIdOffset, "offset", 0, "The number of results to skip before the first one returned.")
 
 	var listFieldsForDatasetByIdOrderby []string
-	listFieldsForDatasetByIdCmd.Flags().StringSliceVar(&listFieldsForDatasetByIdOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
+	listFieldsForDatasetByIdCmd.Flags().StringSliceVar(&listFieldsForDatasetByIdOrderby, "orderby", nil, "A list of fields to order the results by. You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(listModulesCmd)
 

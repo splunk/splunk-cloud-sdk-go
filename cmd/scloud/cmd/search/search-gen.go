@@ -79,7 +79,7 @@ func init() {
 	createJobCmd.MarkFlagRequired("query")
 
 	var createJobAllowSideEffects string
-	createJobCmd.Flags().StringVar(&createJobAllowSideEffects, "allow-side-effects", "", "Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run. type: boolean default: false")
+	createJobCmd.Flags().StringVar(&createJobAllowSideEffects, "allow-side-effects", "false", "Specifies whether a search that contains commands with side effects (with possible security risks) is allowed to run.")
 
 	var createJobCollectEventSummary string
 	createJobCmd.Flags().StringVar(&createJobCollectEventSummary, "collect-event-summary", "false", "Specified whether a search is allowed to collect events summary during the run time.")

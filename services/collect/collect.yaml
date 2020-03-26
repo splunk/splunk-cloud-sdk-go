@@ -1013,4 +1013,4 @@ paths:
       summary: Modifies an execution based on the job ID.
       x-authz-scope: collect.jobs.executions.update
 
-# Retrieved from scp-openapi commit 17ef0ea6af9b3c78539b628b8e9d2ece45fc8329 path: collect/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: collect/v1beta1/openapi.yaml

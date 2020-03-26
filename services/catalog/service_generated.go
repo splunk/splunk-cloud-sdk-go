@@ -45,7 +45,7 @@ func NewService(config *services.Config) (*Service, error) {
 
 /*
 	CreateActionForRule - catalog service endpoint
-	Create a new action for a rule associated with a specific resource name.
+	Creates a new action for a rule with the specified resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		actionPost: The JSON representation of the action to be persisted.
@@ -80,7 +80,7 @@ func (s *Service) CreateActionForRule(ruleresourcename string, actionPost Action
 
 /*
 	CreateActionForRuleById - catalog service endpoint
-	Create a new action for a specific rule.
+	Creates a new action for the specified rule.
 	Parameters:
 		ruleid: ID of a Field.
 		actionPost: The JSON representation of the action to be persisted.
@@ -115,7 +115,7 @@ func (s *Service) CreateActionForRuleById(ruleid string, actionPost ActionPost, 
 
 /*
 	CreateAnnotationForDashboardbyId - catalog service endpoint
-	Create a new annotation for a specific dashboard.
+	Creates a new annotation for the specified dashboard.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		requestBody: The JSON representation of the annotation to be persisted.
@@ -150,7 +150,7 @@ func (s *Service) CreateAnnotationForDashboardbyId(dashboardid string, requestBo
 
 /*
 	CreateAnnotationForDashboardsByResourceName - catalog service endpoint
-	Create a new annotation for a specific dataset.
+	Creates a new annotation for the specified dataset resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		requestBody: The JSON representation of the annotation to be persisted.
@@ -185,7 +185,7 @@ func (s *Service) CreateAnnotationForDashboardsByResourceName(dashboardresourcen
 
 /*
 	CreateAnnotationForDatasetById - catalog service endpoint
-	Create a new annotation for a specific dataset.
+	Creates a new annotation for the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		requestBody: The JSON representation of the annotation to be persisted.
@@ -220,7 +220,7 @@ func (s *Service) CreateAnnotationForDatasetById(datasetid string, requestBody m
 
 /*
 	CreateAnnotationForDatasetByResourceName - catalog service endpoint
-	Create a new annotation for a specific dataset.
+	Creates a new annotation for the specified dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		requestBody: The JSON representation of the annotation to be persisted.
@@ -255,7 +255,7 @@ func (s *Service) CreateAnnotationForDatasetByResourceName(datasetresourcename s
 
 /*
 	CreateDashboard - catalog service endpoint
-	Create a new dashboard.
+	Creates a new dashboard.
 	Parameters:
 		dashboardPost: The JSON representation of the Dashboard to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -284,7 +284,7 @@ func (s *Service) CreateDashboard(dashboardPost DashboardPost, resp ...*http.Res
 
 /*
 	CreateDataset - catalog service endpoint
-	Create a new dataset.
+	Creates a new dataset.
 	Parameters:
 		datasetPost: JSON representation of the DatasetInfo to be persisted
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -313,7 +313,7 @@ func (s *Service) CreateDataset(datasetPost DatasetPost, resp ...*http.Response)
 
 /*
 	CreateDatasetImport - catalog service endpoint
-	Create a new dataset import.
+	Creates a new dataset import using the resource name of the imported dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		datasetImportedBy
@@ -348,7 +348,7 @@ func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImporte
 
 /*
 	CreateDatasetImportById - catalog service endpoint
-	Create a new dataset import.
+	Creates a new dataset import using the ID of the imported dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		datasetImportedBy
@@ -383,7 +383,7 @@ func (s *Service) CreateDatasetImportById(datasetid string, datasetImportedBy Da
 
 /*
 	CreateDatasetImportByIdv1 - catalog service endpoint
-	Create a new dataset import.
+	Creates a new dataset import using the ID of the imported dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		datasetImportedBy
@@ -418,7 +418,7 @@ func (s *Service) CreateDatasetImportByIdv1(datasetid string, datasetImportedBy 
 
 /*
 	CreateDatasetImportv1 - catalog service endpoint
-	Create a new dataset import.
+	Creates a new dataset import using the resource name of the imported dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		datasetImportedBy
@@ -453,7 +453,7 @@ func (s *Service) CreateDatasetImportv1(datasetresourcename string, datasetImpor
 
 /*
 	CreateFieldForDataset - catalog service endpoint
-	Create a new field on a specific dataset.
+	Creates a new field in the dataset with the specified resource name.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		fieldPost: The JSON representation of the field to be persisted.
@@ -488,7 +488,7 @@ func (s *Service) CreateFieldForDataset(datasetresourcename string, fieldPost Fi
 
 /*
 	CreateFieldForDatasetById - catalog service endpoint
-	Add a new field to a dataset.
+	Adds a new field to the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
 		fieldPost: The JSON representation of the field to be persisted.
@@ -523,7 +523,7 @@ func (s *Service) CreateFieldForDatasetById(datasetid string, fieldPost FieldPos
 
 /*
 	CreateRelationship - catalog service endpoint
-	Create a new relationship.
+	Creates a new relationship.
 	Parameters:
 		relationshipPost: The JSON representation of the relationship to persist.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -552,7 +552,7 @@ func (s *Service) CreateRelationship(relationshipPost RelationshipPost, resp ...
 
 /*
 	CreateRule - catalog service endpoint
-	Create a new rule.
+	Creates a new rule.
 	Parameters:
 		rulePost: The JSON representation of the rule to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -581,7 +581,7 @@ func (s *Service) CreateRule(rulePost RulePost, resp ...*http.Response) (*Rule, 
 
 /*
 	CreateWorkflow - catalog service endpoint
-	Create a new workflow configuration.
+	Creates a new workflow configuration.
 	Parameters:
 		workflowPost: The JSON representation of the workflow to be persisted.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -610,7 +610,7 @@ func (s *Service) CreateWorkflow(workflowPost WorkflowPost, resp ...*http.Respon
 
 /*
 	CreateWorkflowBuild - catalog service endpoint
-	Create a new workflow build.
+	Creates a new workflow build.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowBuildPost: The JSON representation of the workflow build to be persisted.
@@ -645,7 +645,7 @@ func (s *Service) CreateWorkflowBuild(workflowid string, workflowBuildPost Workf
 
 /*
 	CreateWorkflowRun - catalog service endpoint
-	Create a new workflow run for the specified workflow build ID.
+	Creates a new workflow run for the specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -683,7 +683,7 @@ func (s *Service) CreateWorkflowRun(workflowid string, workflowbuildid string, w
 
 /*
 	DeleteActionByIdForRule - catalog service endpoint
-	Delete an action on a rule.
+	Deletes the action with the specified ID that is associated with the specified rule resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		actionid: ID of an Action.
@@ -715,7 +715,7 @@ func (s *Service) DeleteActionByIdForRule(ruleresourcename string, actionid stri
 
 /*
 	DeleteActionByIdForRuleById - catalog service endpoint
-	Delete an action that is part of a specific rule.
+	Deletes the action with the specified ID that is associated with the specified rule.
 	Parameters:
 		ruleid: ID of a Field.
 		actionid: ID of an Action.
@@ -747,7 +747,7 @@ func (s *Service) DeleteActionByIdForRuleById(ruleid string, actionid string, re
 
 /*
 	DeleteAnnotationOfDashboardById - catalog service endpoint
-	Delete a specific annotation of a dashboard.
+	Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		annotationid: ID of a annotation.
@@ -779,7 +779,7 @@ func (s *Service) DeleteAnnotationOfDashboardById(dashboardid string, annotation
 
 /*
 	DeleteAnnotationOfDashboardByResourceName - catalog service endpoint
-	Delete a specific annotation of a dashboard.
+	Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		annotationid: ID of a annotation.
@@ -811,7 +811,7 @@ func (s *Service) DeleteAnnotationOfDashboardByResourceName(dashboardresourcenam
 
 /*
 	DeleteAnnotationOfDatasetById - catalog service endpoint
-	Delete a specific annotation of a dataset.
+	Deletes the annotation with the specified ID that is associated with the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		annotationid: ID of a annotation.
@@ -843,7 +843,7 @@ func (s *Service) DeleteAnnotationOfDatasetById(datasetid string, annotationid s
 
 /*
 	DeleteAnnotationOfDatasetByResourceName - catalog service endpoint
-	Delete a specific annotation of a dataset.
+	Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		annotationid: ID of a annotation.
@@ -875,7 +875,7 @@ func (s *Service) DeleteAnnotationOfDatasetByResourceName(datasetresourcename st
 
 /*
 	DeleteDashboardById - catalog service endpoint
-	Delete the dashboard with the specified ID.
+	Deletes the dashboard with the specified ID.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -904,7 +904,7 @@ func (s *Service) DeleteDashboardById(dashboardid string, resp ...*http.Response
 
 /*
 	DeleteDashboardByResourceName - catalog service endpoint
-	Delete the dashboard with the specified resource name.
+	Deletes the dashboard with the specified resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -933,7 +933,7 @@ func (s *Service) DeleteDashboardByResourceName(dashboardresourcename string, re
 
 /*
 	DeleteDataset - catalog service endpoint
-	Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+	Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -962,7 +962,7 @@ func (s *Service) DeleteDataset(datasetresourcename string, resp ...*http.Respon
 
 /*
 	DeleteDatasetById - catalog service endpoint
-	Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.
+	Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
 	Parameters:
 		datasetid: ID of a Dataset.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -991,7 +991,7 @@ func (s *Service) DeleteDatasetById(datasetid string, resp ...*http.Response) er
 
 /*
 	DeleteFieldByIdForDataset - catalog service endpoint
-	Delete a field that is part of a specific dataset.
+	Deletes the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		fieldid: ID of a Field.
@@ -1023,7 +1023,7 @@ func (s *Service) DeleteFieldByIdForDataset(datasetresourcename string, fieldid 
 
 /*
 	DeleteFieldByIdForDatasetById - catalog service endpoint
-	Delete a field that is part of a specific dataset.
+	Deletes the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		fieldid: ID of a Field.
@@ -1055,7 +1055,7 @@ func (s *Service) DeleteFieldByIdForDatasetById(datasetid string, fieldid string
 
 /*
 	DeleteRelationshipById - catalog service endpoint
-	Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.
+	Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
 	Parameters:
 		relationshipid: ID of a relationship.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1084,7 +1084,7 @@ func (s *Service) DeleteRelationshipById(relationshipid string, resp ...*http.Re
 
 /*
 	DeleteRule - catalog service endpoint
-	Delete the rule with the specified resource name and its dependencies.
+	Deletes the rule with the specified resource name and its dependencies.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1113,7 +1113,7 @@ func (s *Service) DeleteRule(ruleresourcename string, resp ...*http.Response) er
 
 /*
 	DeleteRuleById - catalog service endpoint
-	Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
+	Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 	Parameters:
 		ruleid: ID of a Field.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1142,7 +1142,7 @@ func (s *Service) DeleteRuleById(ruleid string, resp ...*http.Response) error {
 
 /*
 	DeleteWorkflowBuildById - catalog service endpoint
-	Delete the workflow build with the specified workflow build ID.
+	Deletes the workflow build with the specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -1174,7 +1174,7 @@ func (s *Service) DeleteWorkflowBuildById(workflowid string, workflowbuildid str
 
 /*
 	DeleteWorkflowById - catalog service endpoint
-	Delete the workflow with the specified workflow ID.
+	Deletes the workflow with the specified workflow ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1203,7 +1203,7 @@ func (s *Service) DeleteWorkflowById(workflowid string, resp ...*http.Response) 
 
 /*
 	DeleteWorkflowRunById - catalog service endpoint
-	Delete the workflow run with the specified workflow run ID.
+	Deletes the workflow run with the specified workflow run ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -1238,7 +1238,7 @@ func (s *Service) DeleteWorkflowRunById(workflowid string, workflowbuildid strin
 
 /*
 	GetActionByIdForRule - catalog service endpoint
-	Return an action that is part of a specified rule.
+	Returns the action with the specified ID that is associated with the specified rule resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		actionid: ID of an Action.
@@ -1275,7 +1275,7 @@ func (s *Service) GetActionByIdForRule(ruleresourcename string, actionid string,
 
 /*
 	GetActionByIdForRuleById - catalog service endpoint
-	Return information about an action that is part of a specific rule.
+	Returns information about the action with the specified ID that is associated with the specified rule.
 	Parameters:
 		ruleid: ID of a Field.
 		actionid: ID of an Action.
@@ -1312,7 +1312,7 @@ func (s *Service) GetActionByIdForRuleById(ruleid string, actionid string, resp 
 
 /*
 	GetDashboardById - catalog service endpoint
-	Return information about a dashboard with the specified ID.
+	Returns information about the dashboard with the specified ID.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1346,7 +1346,7 @@ func (s *Service) GetDashboardById(dashboardid string, resp ...*http.Response) (
 
 /*
 	GetDashboardByResourceName - catalog service endpoint
-	Return information about a dashboard with the specified resource name.
+	Returns information about the dashboard with the specified resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1380,7 +1380,7 @@ func (s *Service) GetDashboardByResourceName(dashboardresourcename string, resp 
 
 /*
 	GetDataset - catalog service endpoint
-	Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+	Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1416,7 +1416,7 @@ func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryP
 
 /*
 	GetDatasetById - catalog service endpoint
-	Return information about the dataset with the specified ID.
+	Returns information about the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1452,7 +1452,7 @@ func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryPar
 
 /*
 	GetFieldById - catalog service endpoint
-	Get a field that corresponds to a specific field ID.
+	Returns the field with the specified field ID.
 	Parameters:
 		fieldid: ID of a Field.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1486,7 +1486,7 @@ func (s *Service) GetFieldById(fieldid string, resp ...*http.Response) (*Field, 
 
 /*
 	GetFieldByIdForDataset - catalog service endpoint
-	Return a field that is part of a specific dataset.
+	Returns the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		fieldid: ID of a Field.
@@ -1523,7 +1523,7 @@ func (s *Service) GetFieldByIdForDataset(datasetresourcename string, fieldid str
 
 /*
 	GetFieldByIdForDatasetById - catalog service endpoint
-	Return a field that is part of a specific dataset.
+	Returns the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		fieldid: ID of a Field.
@@ -1560,7 +1560,7 @@ func (s *Service) GetFieldByIdForDatasetById(datasetid string, fieldid string, r
 
 /*
 	GetRelationshipById - catalog service endpoint
-	Get a specific relationship.
+	Returns the relationship with the specified relationship ID.
 	Parameters:
 		relationshipid: ID of a relationship.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1594,7 +1594,7 @@ func (s *Service) GetRelationshipById(relationshipid string, resp ...*http.Respo
 
 /*
 	GetRule - catalog service endpoint
-	Get a rule with a specified resource name.
+	Returrns the rule with the specified resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1628,7 +1628,7 @@ func (s *Service) GetRule(ruleresourcename string, resp ...*http.Response) (*Rul
 
 /*
 	GetRuleById - catalog service endpoint
-	Get information about a specific rule.
+	Returns information about rule with the specified rule ID.
 	Parameters:
 		ruleid: ID of a Field.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1662,7 +1662,7 @@ func (s *Service) GetRuleById(ruleid string, resp ...*http.Response) (*Rule, err
 
 /*
 	GetWorkflowBuildById - catalog service endpoint
-	Return information about the workflow build with the specified workflow build ID.
+	Returns information about the workflow build with the specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -1699,7 +1699,7 @@ func (s *Service) GetWorkflowBuildById(workflowid string, workflowbuildid string
 
 /*
 	GetWorkflowById - catalog service endpoint
-	Return information about a workflow with the specified workflow ID.
+	Returns information about the workflow with the specified workflow ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1733,7 +1733,7 @@ func (s *Service) GetWorkflowById(workflowid string, resp ...*http.Response) (*W
 
 /*
 	GetWorkflowRunById - catalog service endpoint
-	Return information about the workflow run with the specified workflow build ID.
+	Returns information about the workflow run with the specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -1773,7 +1773,7 @@ func (s *Service) GetWorkflowRunById(workflowid string, workflowbuildid string, 
 
 /*
 	ListActionsForRule - catalog service endpoint
-	Return the list of actions that are part of a specified rule.
+	Returns the list of actions that are associated with the specified rule.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1809,7 +1809,7 @@ func (s *Service) ListActionsForRule(ruleresourcename string, query *ListActions
 
 /*
 	ListActionsForRuleById - catalog service endpoint
-	Return the set of actions that are part of a rule.
+	Returns the set of actions that are part of the specified rule.
 	Parameters:
 		ruleid: ID of a Field.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1845,7 +1845,7 @@ func (s *Service) ListActionsForRuleById(ruleid string, query *ListActionsForRul
 
 /*
 	ListAnnotations - catalog service endpoint
-	Return the set of annotations across all objects.
+	Returns the set of annotations across all objects.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -1875,7 +1875,7 @@ func (s *Service) ListAnnotations(query *ListAnnotationsQueryParams, resp ...*ht
 
 /*
 	ListAnnotationsForDashboardById - catalog service endpoint
-	Return the set of annotations that are part of a dashboard.
+	Returns the set of annotations that are associated with the specified dashboard.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1911,7 +1911,7 @@ func (s *Service) ListAnnotationsForDashboardById(dashboardid string, query *Lis
 
 /*
 	ListAnnotationsForDashboardByResourceName - catalog service endpoint
-	Return the set of annotations that are part of a dashboard.
+	Returns the set of annotations that are associated with the specified dashboard resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1947,7 +1947,7 @@ func (s *Service) ListAnnotationsForDashboardByResourceName(dashboardresourcenam
 
 /*
 	ListAnnotationsForDatasetById - catalog service endpoint
-	Return the set of annotations that are part of a dataset.
+	Returns the set of annotations that are associated with the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1983,7 +1983,7 @@ func (s *Service) ListAnnotationsForDatasetById(datasetid string, query *ListAnn
 
 /*
 	ListAnnotationsForDatasetByResourceName - catalog service endpoint
-	Return the set of annotations that are part of a dataset.
+	Returns the set of annotations that are associated with the specified dataset resource name.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -2019,7 +2019,7 @@ func (s *Service) ListAnnotationsForDatasetByResourceName(datasetresourcename st
 
 /*
 	ListDashboards - catalog service endpoint
-	Return a list of Dashboards.
+	Returns a list of dashboards.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2049,7 +2049,7 @@ func (s *Service) ListDashboards(query *ListDashboardsQueryParams, resp ...*http
 
 /*
 	ListDatasets - catalog service endpoint
-	Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
+	Returns a list of all datasets. Use a filter to return a specific list of datasets.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2079,7 +2079,7 @@ func (s *Service) ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Res
 
 /*
 	ListFields - catalog service endpoint
-	Get a list of all fields in the Catalog.
+	Returns a list of all fields in the Metadata Catalog.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2109,7 +2109,7 @@ func (s *Service) ListFields(query *ListFieldsQueryParams, resp ...*http.Respons
 
 /*
 	ListFieldsForDataset - catalog service endpoint
-	Return the list of fields that are part of a specified dataset.
+	Returns the list of fields in the specified dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -2145,7 +2145,7 @@ func (s *Service) ListFieldsForDataset(datasetresourcename string, query *ListFi
 
 /*
 	ListFieldsForDatasetById - catalog service endpoint
-	Return the set of fields for the specified dataset.
+	Returns the set of fields for the the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -2181,7 +2181,7 @@ func (s *Service) ListFieldsForDatasetById(datasetid string, query *ListFieldsFo
 
 /*
 	ListModules - catalog service endpoint
-	Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.
+	Returns a list of all modules. Use a filter to return a specific list of modules.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2211,7 +2211,7 @@ func (s *Service) ListModules(query *ListModulesQueryParams, resp ...*http.Respo
 
 /*
 	ListRelationships - catalog service endpoint
-	Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.
+	Returns a list of all relationships. Use a filter to return a specific list of relationships.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2241,7 +2241,7 @@ func (s *Service) ListRelationships(query *ListRelationshipsQueryParams, resp ..
 
 /*
 	ListRules - catalog service endpoint
-	Return a list of rules that match a filter query if it is given, otherwise return all rules.
+	Returns a list of rules that match a filter, if specified, otherwise returns all rules.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2271,7 +2271,7 @@ func (s *Service) ListRules(query *ListRulesQueryParams, resp ...*http.Response)
 
 /*
 	ListWorkflowBuilds - catalog service endpoint
-	Return a list of Machine Learning workflow builds.
+	Returns a list of Machine Learning workflow builds.
 	Parameters:
 		workflowid: ID of a workflow.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -2307,7 +2307,7 @@ func (s *Service) ListWorkflowBuilds(workflowid string, query *ListWorkflowBuild
 
 /*
 	ListWorkflowRuns - catalog service endpoint
-	Return a list of Machine Learning workflow runs for specified workflow build ID.
+	Returns a list of Machine Learning workflow runs for specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -2376,7 +2376,7 @@ func (s *Service) ListWorkflows(query *ListWorkflowsQueryParams, resp ...*http.R
 
 /*
 	UpdateActionByIdForRule - catalog service endpoint
-	Update the Action with the specified id for the specified Rule
+	Modifies the action with the specified ID that is associated with the specified rule resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		actionid: ID of an Action.
@@ -2414,7 +2414,7 @@ func (s *Service) UpdateActionByIdForRule(ruleresourcename string, actionid stri
 
 /*
 	UpdateActionByIdForRuleById - catalog service endpoint
-	Update an action for a specific rule.
+	Modifies the action with the specified ID that is associated with the specified rule.
 	Parameters:
 		ruleid: ID of a Field.
 		actionid: ID of an Action.
@@ -2452,7 +2452,7 @@ func (s *Service) UpdateActionByIdForRuleById(ruleid string, actionid string, ac
 
 /*
 	UpdateDashboardById - catalog service endpoint
-	Update the dashboard with the specified ID.
+	Modifies the dashboard with the specified ID.
 	Parameters:
 		dashboardid: ID of a dashboard.
 		dashboardPatch: An updated representation of the dashboard to be persisted.
@@ -2487,7 +2487,7 @@ func (s *Service) UpdateDashboardById(dashboardid string, dashboardPatch Dashboa
 
 /*
 	UpdateDashboardByResourceName - catalog service endpoint
-	Update the dashboard with the specified resource name.
+	Modifies the dashboard with the specified resource name.
 	Parameters:
 		dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 		dashboardPatch: An updated representation of the dashboard to be persisted.
@@ -2517,7 +2517,7 @@ func (s *Service) UpdateDashboardByResourceName(dashboardresourcename string, da
 
 /*
 	UpdateDataset - catalog service endpoint
-	Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+	Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		datasetPatch: An updated representation of the dataset to be persisted.
@@ -2552,7 +2552,7 @@ func (s *Service) UpdateDataset(datasetresourcename string, datasetPatch Dataset
 
 /*
 	UpdateDatasetById - catalog service endpoint
-	Update a specific dataset.
+	Modifies the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
 		datasetPatch: An updated representation of the dataset to be persisted.
@@ -2587,7 +2587,7 @@ func (s *Service) UpdateDatasetById(datasetid string, datasetPatch DatasetPatch,
 
 /*
 	UpdateFieldByIdForDataset - catalog service endpoint
-	Update a field with a specified ID for a specified dataset.
+	Modifies the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		fieldid: ID of a Field.
@@ -2625,7 +2625,7 @@ func (s *Service) UpdateFieldByIdForDataset(datasetresourcename string, fieldid 
 
 /*
 	UpdateFieldByIdForDatasetById - catalog service endpoint
-	Update a field for a specific dataset.
+	Modifies the field with the specified ID that is part of the specified dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
 		fieldid: ID of a Field.
@@ -2663,7 +2663,7 @@ func (s *Service) UpdateFieldByIdForDatasetById(datasetid string, fieldid string
 
 /*
 	UpdateRelationshipById - catalog service endpoint
-	Update a specific relationship.
+	Modifies the relationship with the specified relationship ID.
 	Parameters:
 		relationshipid: ID of a relationship.
 		relationshipPatch: The properties to update in the specified relationship.
@@ -2698,7 +2698,7 @@ func (s *Service) UpdateRelationshipById(relationshipid string, relationshipPatc
 
 /*
 	UpdateRule - catalog service endpoint
-	Update the Rule with the specified resourcename
+	Modifies the rule with the specified resource name.
 	Parameters:
 		ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 		rulePatch: The properties to update in the specified rule.
@@ -2733,7 +2733,7 @@ func (s *Service) UpdateRule(ruleresourcename string, rulePatch RulePatch, resp 
 
 /*
 	UpdateRuleById - catalog service endpoint
-	Update a specific rule.
+	Modifies the rule with the specified rule ID.
 	Parameters:
 		ruleid: ID of a Field.
 		rulePatch: The properties to update in the specified rule.
@@ -2768,7 +2768,7 @@ func (s *Service) UpdateRuleById(ruleid string, rulePatch RulePatch, resp ...*ht
 
 /*
 	UpdateWorkflowBuildById - catalog service endpoint
-	Update the workflow build with the specified workflow build ID.
+	Modifies the workflow build with the specified workflow build ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
@@ -2801,7 +2801,7 @@ func (s *Service) UpdateWorkflowBuildById(workflowid string, workflowbuildid str
 
 /*
 	UpdateWorkflowById - catalog service endpoint
-	Update the workflow with the specified workflow ID.
+	Modifies the workflow with the specified workflow ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowPatch: An updated representation of the workflow to be persisted.
@@ -2831,7 +2831,7 @@ func (s *Service) UpdateWorkflowById(workflowid string, workflowPatch WorkflowPa
 
 /*
 	UpdateWorkflowRunById - catalog service endpoint
-	Update the workflow run with the specified workflow run ID.
+	Modifies the workflow run with the specified workflow run ID.
 	Parameters:
 		workflowid: ID of a workflow.
 		workflowbuildid: ID of a workflow build.
