@@ -8,6 +8,13 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/provisioner"
 )
 
+// createEntitlementsJob -- Creates an entitlements job.
+var createEntitlementsJobCmd = &cobra.Command{
+	Use:   "create-entitlements-job",
+	Short: "Creates an entitlements job.",
+	RunE:  impl.CreateEntitlementsJob,
+}
+
 // createInvite -- Creates an invitation for a person to join the tenant using their email address.
 var createInviteCmd = &cobra.Command{
 	Use:   "create-invite",
@@ -27,6 +34,13 @@ var deleteInviteCmd = &cobra.Command{
 	Use:   "delete-invite",
 	Short: "Removes an invitation in the given tenant.",
 	RunE:  impl.DeleteInvite,
+}
+
+// getEntitlementsJob -- Returns details of a specific entitlements job.
+var getEntitlementsJobCmd = &cobra.Command{
+	Use:   "get-entitlements-job",
+	Short: "Returns details of a specific entitlements job.",
+	RunE:  impl.GetEntitlementsJob,
 }
 
 // getInvite -- Returns an invitation in the given tenant.
@@ -79,6 +93,28 @@ var updateInviteCmd = &cobra.Command{
 }
 
 func init() {
+	provisionerCmd.AddCommand(createEntitlementsJobCmd)
+
+	var createEntitlementsJobAppClientID string
+	createEntitlementsJobCmd.Flags().StringVar(&createEntitlementsJobAppClientID, "app-client-id", "", "This is a required parameter. ")
+	createEntitlementsJobCmd.MarkFlagRequired("app-client-id")
+
+	var createEntitlementsJobEntitlements string
+	createEntitlementsJobCmd.Flags().StringVar(&createEntitlementsJobEntitlements, "entitlements", "", "This is a required parameter. ")
+	createEntitlementsJobCmd.MarkFlagRequired("entitlements")
+
+	var createEntitlementsJobJobId string
+	createEntitlementsJobCmd.Flags().StringVar(&createEntitlementsJobJobId, "job-id", "", "This is a required parameter. ")
+	createEntitlementsJobCmd.MarkFlagRequired("job-id")
+
+	var createEntitlementsJobSubscriptionID string
+	createEntitlementsJobCmd.Flags().StringVar(&createEntitlementsJobSubscriptionID, "subscription-id", "", "This is a required parameter. ")
+	createEntitlementsJobCmd.MarkFlagRequired("subscription-id")
+
+	var createEntitlementsJobTenantName string
+	createEntitlementsJobCmd.Flags().StringVar(&createEntitlementsJobTenantName, "tenant-name", "", "This is a required parameter. ")
+	createEntitlementsJobCmd.MarkFlagRequired("tenant-name")
+
 	provisionerCmd.AddCommand(createInviteCmd)
 
 	var createInviteEmail string
@@ -104,6 +140,16 @@ func init() {
 	var deleteInviteInviteId string
 	deleteInviteCmd.Flags().StringVar(&deleteInviteInviteId, "invite-id", "", "This is a required parameter. ")
 	deleteInviteCmd.MarkFlagRequired("invite-id")
+
+	provisionerCmd.AddCommand(getEntitlementsJobCmd)
+
+	var getEntitlementsJobJobId string
+	getEntitlementsJobCmd.Flags().StringVar(&getEntitlementsJobJobId, "job-id", "", "This is a required parameter. ")
+	getEntitlementsJobCmd.MarkFlagRequired("job-id")
+
+	var getEntitlementsJobTenantName string
+	getEntitlementsJobCmd.Flags().StringVar(&getEntitlementsJobTenantName, "tenant-name", "", "This is a required parameter. ")
+	getEntitlementsJobCmd.MarkFlagRequired("tenant-name")
 
 	provisionerCmd.AddCommand(getInviteCmd)
 
