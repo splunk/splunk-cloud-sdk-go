@@ -26,7 +26,7 @@ import (
 type Servicer interface {
 	/*
 		CreateActionForRule - catalog service endpoint
-		Create a new action for a rule associated with a specific resource name.
+		Creates a new action for a rule with the specified resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionPost: The JSON representation of the action to be persisted.
@@ -35,7 +35,7 @@ type Servicer interface {
 	CreateActionForRule(ruleresourcename string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
 	/*
 		CreateActionForRuleById - catalog service endpoint
-		Create a new action for a specific rule.
+		Creates a new action for the specified rule.
 		Parameters:
 			ruleid: ID of a Field.
 			actionPost: The JSON representation of the action to be persisted.
@@ -44,7 +44,7 @@ type Servicer interface {
 	CreateActionForRuleById(ruleid string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
 	/*
 		CreateAnnotationForDashboardbyId - catalog service endpoint
-		Create a new annotation for a specific dashboard.
+		Creates a new annotation for the specified dashboard.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			requestBody: The JSON representation of the annotation to be persisted.
@@ -53,7 +53,7 @@ type Servicer interface {
 	CreateAnnotationForDashboardbyId(dashboardid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDashboardsByResourceName - catalog service endpoint
-		Create a new annotation for a specific dataset.
+		Creates a new annotation for the specified dataset resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			requestBody: The JSON representation of the annotation to be persisted.
@@ -62,7 +62,7 @@ type Servicer interface {
 	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetById - catalog service endpoint
-		Create a new annotation for a specific dataset.
+		Creates a new annotation for the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			requestBody: The JSON representation of the annotation to be persisted.
@@ -71,7 +71,7 @@ type Servicer interface {
 	CreateAnnotationForDatasetById(datasetid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateAnnotationForDatasetByResourceName - catalog service endpoint
-		Create a new annotation for a specific dataset.
+		Creates a new annotation for the specified dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			requestBody: The JSON representation of the annotation to be persisted.
@@ -80,7 +80,7 @@ type Servicer interface {
 	CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateDashboard - catalog service endpoint
-		Create a new dashboard.
+		Creates a new dashboard.
 		Parameters:
 			dashboardPost: The JSON representation of the Dashboard to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -88,7 +88,7 @@ type Servicer interface {
 	CreateDashboard(dashboardPost DashboardPost, resp ...*http.Response) (*Dashboard, error)
 	/*
 		CreateDataset - catalog service endpoint
-		Create a new dataset.
+		Creates a new dataset.
 		Parameters:
 			datasetPost: JSON representation of the DatasetInfo to be persisted
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -96,7 +96,7 @@ type Servicer interface {
 	CreateDataset(datasetPost DatasetPost, resp ...*http.Response) (*Dataset, error)
 	/*
 		CreateDatasetImport - catalog service endpoint
-		Create a new dataset import.
+		Creates a new dataset import using the resource name of the imported dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			datasetImportedBy
@@ -105,7 +105,7 @@ type Servicer interface {
 	CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error)
 	/*
 		CreateDatasetImportById - catalog service endpoint
-		Create a new dataset import.
+		Creates a new dataset import using the ID of the imported dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			datasetImportedBy
@@ -114,7 +114,7 @@ type Servicer interface {
 	CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error)
 	/*
 		CreateDatasetImportByIdv1 - catalog service endpoint
-		Create a new dataset import.
+		Creates a new dataset import using the ID of the imported dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			datasetImportedBy
@@ -123,7 +123,7 @@ type Servicer interface {
 	CreateDatasetImportByIdv1(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
 	/*
 		CreateDatasetImportv1 - catalog service endpoint
-		Create a new dataset import.
+		Creates a new dataset import using the resource name of the imported dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			datasetImportedBy
@@ -132,7 +132,7 @@ type Servicer interface {
 	CreateDatasetImportv1(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error)
 	/*
 		CreateFieldForDataset - catalog service endpoint
-		Create a new field on a specific dataset.
+		Creates a new field in the dataset with the specified resource name.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldPost: The JSON representation of the field to be persisted.
@@ -141,7 +141,7 @@ type Servicer interface {
 	CreateFieldForDataset(datasetresourcename string, fieldPost FieldPost, resp ...*http.Response) (*Field, error)
 	/*
 		CreateFieldForDatasetById - catalog service endpoint
-		Add a new field to a dataset.
+		Adds a new field to the dataset with the specified ID.
 		Parameters:
 			datasetid: ID of a Dataset.
 			fieldPost: The JSON representation of the field to be persisted.
@@ -150,7 +150,7 @@ type Servicer interface {
 	CreateFieldForDatasetById(datasetid string, fieldPost FieldPost, resp ...*http.Response) (*Field, error)
 	/*
 		CreateRelationship - catalog service endpoint
-		Create a new relationship.
+		Creates a new relationship.
 		Parameters:
 			relationshipPost: The JSON representation of the relationship to persist.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -158,7 +158,7 @@ type Servicer interface {
 	CreateRelationship(relationshipPost RelationshipPost, resp ...*http.Response) (*Relationship, error)
 	/*
 		CreateRule - catalog service endpoint
-		Create a new rule.
+		Creates a new rule.
 		Parameters:
 			rulePost: The JSON representation of the rule to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -166,7 +166,7 @@ type Servicer interface {
 	CreateRule(rulePost RulePost, resp ...*http.Response) (*Rule, error)
 	/*
 		CreateWorkflow - catalog service endpoint
-		Create a new workflow configuration.
+		Creates a new workflow configuration.
 		Parameters:
 			workflowPost: The JSON representation of the workflow to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -174,7 +174,7 @@ type Servicer interface {
 	CreateWorkflow(workflowPost WorkflowPost, resp ...*http.Response) (*Workflow, error)
 	/*
 		CreateWorkflowBuild - catalog service endpoint
-		Create a new workflow build.
+		Creates a new workflow build.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowBuildPost: The JSON representation of the workflow build to be persisted.
@@ -183,7 +183,7 @@ type Servicer interface {
 	CreateWorkflowBuild(workflowid string, workflowBuildPost WorkflowBuildPost, resp ...*http.Response) (*WorkflowBuild, error)
 	/*
 		CreateWorkflowRun - catalog service endpoint
-		Create a new workflow run for the specified workflow build ID.
+		Creates a new workflow run for the specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -193,7 +193,7 @@ type Servicer interface {
 	CreateWorkflowRun(workflowid string, workflowbuildid string, workflowRunPost WorkflowRunPost, resp ...*http.Response) (*WorkflowRun, error)
 	/*
 		DeleteActionByIdForRule - catalog service endpoint
-		Delete an action on a rule.
+		Deletes the action with the specified ID that is associated with the specified rule resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
@@ -202,7 +202,7 @@ type Servicer interface {
 	DeleteActionByIdForRule(ruleresourcename string, actionid string, resp ...*http.Response) error
 	/*
 		DeleteActionByIdForRuleById - catalog service endpoint
-		Delete an action that is part of a specific rule.
+		Deletes the action with the specified ID that is associated with the specified rule.
 		Parameters:
 			ruleid: ID of a Field.
 			actionid: ID of an Action.
@@ -211,7 +211,7 @@ type Servicer interface {
 	DeleteActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) error
 	/*
 		DeleteAnnotationOfDashboardById - catalog service endpoint
-		Delete a specific annotation of a dashboard.
+		Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			annotationid: ID of a annotation.
@@ -220,7 +220,7 @@ type Servicer interface {
 	DeleteAnnotationOfDashboardById(dashboardid string, annotationid string, resp ...*http.Response) error
 	/*
 		DeleteAnnotationOfDashboardByResourceName - catalog service endpoint
-		Delete a specific annotation of a dashboard.
+		Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			annotationid: ID of a annotation.
@@ -229,7 +229,7 @@ type Servicer interface {
 	DeleteAnnotationOfDashboardByResourceName(dashboardresourcename string, annotationid string, resp ...*http.Response) error
 	/*
 		DeleteAnnotationOfDatasetById - catalog service endpoint
-		Delete a specific annotation of a dataset.
+		Deletes the annotation with the specified ID that is associated with the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			annotationid: ID of a annotation.
@@ -238,7 +238,7 @@ type Servicer interface {
 	DeleteAnnotationOfDatasetById(datasetid string, annotationid string, resp ...*http.Response) error
 	/*
 		DeleteAnnotationOfDatasetByResourceName - catalog service endpoint
-		Delete a specific annotation of a dataset.
+		Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			annotationid: ID of a annotation.
@@ -247,7 +247,7 @@ type Servicer interface {
 	DeleteAnnotationOfDatasetByResourceName(datasetresourcename string, annotationid string, resp ...*http.Response) error
 	/*
 		DeleteDashboardById - catalog service endpoint
-		Delete the dashboard with the specified ID.
+		Deletes the dashboard with the specified ID.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -255,7 +255,7 @@ type Servicer interface {
 	DeleteDashboardById(dashboardid string, resp ...*http.Response) error
 	/*
 		DeleteDashboardByResourceName - catalog service endpoint
-		Delete the dashboard with the specified resource name.
+		Deletes the dashboard with the specified resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -263,7 +263,7 @@ type Servicer interface {
 	DeleteDashboardByResourceName(dashboardresourcename string, resp ...*http.Response) error
 	/*
 		DeleteDataset - catalog service endpoint
-		Delete the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -271,7 +271,7 @@ type Servicer interface {
 	DeleteDataset(datasetresourcename string, resp ...*http.Response) error
 	/*
 		DeleteDatasetById - catalog service endpoint
-		Delete a specific dataset. Deleting a dataset also deletes its dependent objects, such as fields.
+		Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
 		Parameters:
 			datasetid: ID of a Dataset.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -279,7 +279,7 @@ type Servicer interface {
 	DeleteDatasetById(datasetid string, resp ...*http.Response) error
 	/*
 		DeleteFieldByIdForDataset - catalog service endpoint
-		Delete a field that is part of a specific dataset.
+		Deletes the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
@@ -288,7 +288,7 @@ type Servicer interface {
 	DeleteFieldByIdForDataset(datasetresourcename string, fieldid string, resp ...*http.Response) error
 	/*
 		DeleteFieldByIdForDatasetById - catalog service endpoint
-		Delete a field that is part of a specific dataset.
+		Deletes the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			fieldid: ID of a Field.
@@ -297,7 +297,7 @@ type Servicer interface {
 	DeleteFieldByIdForDatasetById(datasetid string, fieldid string, resp ...*http.Response) error
 	/*
 		DeleteRelationshipById - catalog service endpoint
-		Delete a specific relationship. Deleting a relationship also deleletes any objects that are dependents of that relationship, such as relationship fields.
+		Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
 		Parameters:
 			relationshipid: ID of a relationship.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -305,7 +305,7 @@ type Servicer interface {
 	DeleteRelationshipById(relationshipid string, resp ...*http.Response) error
 	/*
 		DeleteRule - catalog service endpoint
-		Delete the rule with the specified resource name and its dependencies.
+		Deletes the rule with the specified resource name and its dependencies.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -313,7 +313,7 @@ type Servicer interface {
 	DeleteRule(ruleresourcename string, resp ...*http.Response) error
 	/*
 		DeleteRuleById - catalog service endpoint
-		Delete a specific rule. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
+		Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 		Parameters:
 			ruleid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -321,7 +321,7 @@ type Servicer interface {
 	DeleteRuleById(ruleid string, resp ...*http.Response) error
 	/*
 		DeleteWorkflowBuildById - catalog service endpoint
-		Delete the workflow build with the specified workflow build ID.
+		Deletes the workflow build with the specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -330,7 +330,7 @@ type Servicer interface {
 	DeleteWorkflowBuildById(workflowid string, workflowbuildid string, resp ...*http.Response) error
 	/*
 		DeleteWorkflowById - catalog service endpoint
-		Delete the workflow with the specified workflow ID.
+		Deletes the workflow with the specified workflow ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -338,7 +338,7 @@ type Servicer interface {
 	DeleteWorkflowById(workflowid string, resp ...*http.Response) error
 	/*
 		DeleteWorkflowRunById - catalog service endpoint
-		Delete the workflow run with the specified workflow run ID.
+		Deletes the workflow run with the specified workflow run ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -348,7 +348,7 @@ type Servicer interface {
 	DeleteWorkflowRunById(workflowid string, workflowbuildid string, workflowrunid string, resp ...*http.Response) error
 	/*
 		GetActionByIdForRule - catalog service endpoint
-		Return an action that is part of a specified rule.
+		Returns the action with the specified ID that is associated with the specified rule resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
@@ -357,7 +357,7 @@ type Servicer interface {
 	GetActionByIdForRule(ruleresourcename string, actionid string, resp ...*http.Response) (*Action, error)
 	/*
 		GetActionByIdForRuleById - catalog service endpoint
-		Return information about an action that is part of a specific rule.
+		Returns information about the action with the specified ID that is associated with the specified rule.
 		Parameters:
 			ruleid: ID of a Field.
 			actionid: ID of an Action.
@@ -366,7 +366,7 @@ type Servicer interface {
 	GetActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) (*Action, error)
 	/*
 		GetDashboardById - catalog service endpoint
-		Return information about a dashboard with the specified ID.
+		Returns information about the dashboard with the specified ID.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -374,7 +374,7 @@ type Servicer interface {
 	GetDashboardById(dashboardid string, resp ...*http.Response) (*Dashboard, error)
 	/*
 		GetDashboardByResourceName - catalog service endpoint
-		Return information about a dashboard with the specified resource name.
+		Returns information about the dashboard with the specified resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -382,7 +382,7 @@ type Servicer interface {
 	GetDashboardByResourceName(dashboardresourcename string, resp ...*http.Response) (*Dashboard, error)
 	/*
 		GetDataset - catalog service endpoint
-		Return the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -391,7 +391,7 @@ type Servicer interface {
 	GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*Dataset, error)
 	/*
 		GetDatasetById - catalog service endpoint
-		Return information about the dataset with the specified ID.
+		Returns information about the dataset with the specified ID.
 		Parameters:
 			datasetid: ID of a Dataset.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -400,7 +400,7 @@ type Servicer interface {
 	GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*Dataset, error)
 	/*
 		GetFieldById - catalog service endpoint
-		Get a field that corresponds to a specific field ID.
+		Returns the field with the specified field ID.
 		Parameters:
 			fieldid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -408,7 +408,7 @@ type Servicer interface {
 	GetFieldById(fieldid string, resp ...*http.Response) (*Field, error)
 	/*
 		GetFieldByIdForDataset - catalog service endpoint
-		Return a field that is part of a specific dataset.
+		Returns the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
@@ -417,7 +417,7 @@ type Servicer interface {
 	GetFieldByIdForDataset(datasetresourcename string, fieldid string, resp ...*http.Response) (*Field, error)
 	/*
 		GetFieldByIdForDatasetById - catalog service endpoint
-		Return a field that is part of a specific dataset.
+		Returns the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			fieldid: ID of a Field.
@@ -426,7 +426,7 @@ type Servicer interface {
 	GetFieldByIdForDatasetById(datasetid string, fieldid string, resp ...*http.Response) (*Field, error)
 	/*
 		GetRelationshipById - catalog service endpoint
-		Get a specific relationship.
+		Returns the relationship with the specified relationship ID.
 		Parameters:
 			relationshipid: ID of a relationship.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -434,7 +434,7 @@ type Servicer interface {
 	GetRelationshipById(relationshipid string, resp ...*http.Response) (*Relationship, error)
 	/*
 		GetRule - catalog service endpoint
-		Get a rule with a specified resource name.
+		Returrns the rule with the specified resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -442,7 +442,7 @@ type Servicer interface {
 	GetRule(ruleresourcename string, resp ...*http.Response) (*Rule, error)
 	/*
 		GetRuleById - catalog service endpoint
-		Get information about a specific rule.
+		Returns information about rule with the specified rule ID.
 		Parameters:
 			ruleid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -450,7 +450,7 @@ type Servicer interface {
 	GetRuleById(ruleid string, resp ...*http.Response) (*Rule, error)
 	/*
 		GetWorkflowBuildById - catalog service endpoint
-		Return information about the workflow build with the specified workflow build ID.
+		Returns information about the workflow build with the specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -459,7 +459,7 @@ type Servicer interface {
 	GetWorkflowBuildById(workflowid string, workflowbuildid string, resp ...*http.Response) (*WorkflowBuild, error)
 	/*
 		GetWorkflowById - catalog service endpoint
-		Return information about a workflow with the specified workflow ID.
+		Returns information about the workflow with the specified workflow ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -467,7 +467,7 @@ type Servicer interface {
 	GetWorkflowById(workflowid string, resp ...*http.Response) (*Workflow, error)
 	/*
 		GetWorkflowRunById - catalog service endpoint
-		Return information about the workflow run with the specified workflow build ID.
+		Returns information about the workflow run with the specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -477,7 +477,7 @@ type Servicer interface {
 	GetWorkflowRunById(workflowid string, workflowbuildid string, workflowrunid string, resp ...*http.Response) (*WorkflowRun, error)
 	/*
 		ListActionsForRule - catalog service endpoint
-		Return the list of actions that are part of a specified rule.
+		Returns the list of actions that are associated with the specified rule.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -486,7 +486,7 @@ type Servicer interface {
 	ListActionsForRule(ruleresourcename string, query *ListActionsForRuleQueryParams, resp ...*http.Response) ([]Action, error)
 	/*
 		ListActionsForRuleById - catalog service endpoint
-		Return the set of actions that are part of a rule.
+		Returns the set of actions that are part of the specified rule.
 		Parameters:
 			ruleid: ID of a Field.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -495,7 +495,7 @@ type Servicer interface {
 	ListActionsForRuleById(ruleid string, query *ListActionsForRuleByIdQueryParams, resp ...*http.Response) ([]Action, error)
 	/*
 		ListAnnotations - catalog service endpoint
-		Return the set of annotations across all objects.
+		Returns the set of annotations across all objects.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -503,7 +503,7 @@ type Servicer interface {
 	ListAnnotations(query *ListAnnotationsQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDashboardById - catalog service endpoint
-		Return the set of annotations that are part of a dashboard.
+		Returns the set of annotations that are associated with the specified dashboard.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -512,7 +512,7 @@ type Servicer interface {
 	ListAnnotationsForDashboardById(dashboardid string, query *ListAnnotationsForDashboardByIdQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDashboardByResourceName - catalog service endpoint
-		Return the set of annotations that are part of a dashboard.
+		Returns the set of annotations that are associated with the specified dashboard resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -521,7 +521,7 @@ type Servicer interface {
 	ListAnnotationsForDashboardByResourceName(dashboardresourcename string, query *ListAnnotationsForDashboardByResourceNameQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDatasetById - catalog service endpoint
-		Return the set of annotations that are part of a dataset.
+		Returns the set of annotations that are associated with the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -530,7 +530,7 @@ type Servicer interface {
 	ListAnnotationsForDatasetById(datasetid string, query *ListAnnotationsForDatasetByIdQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListAnnotationsForDatasetByResourceName - catalog service endpoint
-		Return the set of annotations that are part of a dataset.
+		Returns the set of annotations that are associated with the specified dataset resource name.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -539,7 +539,7 @@ type Servicer interface {
 	ListAnnotationsForDatasetByResourceName(datasetresourcename string, query *ListAnnotationsForDatasetByResourceNameQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListDashboards - catalog service endpoint
-		Return a list of Dashboards.
+		Returns a list of dashboards.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -547,7 +547,7 @@ type Servicer interface {
 	ListDashboards(query *ListDashboardsQueryParams, resp ...*http.Response) ([]Dashboard, error)
 	/*
 		ListDatasets - catalog service endpoint
-		Returns a list of all datasets, unless you specify a filter. Use a filter to return a specific list of datasets.
+		Returns a list of all datasets. Use a filter to return a specific list of datasets.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -555,7 +555,7 @@ type Servicer interface {
 	ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Response) ([]Dataset, error)
 	/*
 		ListFields - catalog service endpoint
-		Get a list of all fields in the Catalog.
+		Returns a list of all fields in the Metadata Catalog.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -563,7 +563,7 @@ type Servicer interface {
 	ListFields(query *ListFieldsQueryParams, resp ...*http.Response) ([]Field, error)
 	/*
 		ListFieldsForDataset - catalog service endpoint
-		Return the list of fields that are part of a specified dataset.
+		Returns the list of fields in the specified dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -572,7 +572,7 @@ type Servicer interface {
 	ListFieldsForDataset(datasetresourcename string, query *ListFieldsForDatasetQueryParams, resp ...*http.Response) ([]Field, error)
 	/*
 		ListFieldsForDatasetById - catalog service endpoint
-		Return the set of fields for the specified dataset.
+		Returns the set of fields for the the dataset with the specified ID.
 		Parameters:
 			datasetid: ID of a Dataset.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -581,7 +581,7 @@ type Servicer interface {
 	ListFieldsForDatasetById(datasetid string, query *ListFieldsForDatasetByIdQueryParams, resp ...*http.Response) ([]Field, error)
 	/*
 		ListModules - catalog service endpoint
-		Return a list of all modules, unless you specify a filter. Use a filter to return a specific list of modules.
+		Returns a list of all modules. Use a filter to return a specific list of modules.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -589,7 +589,7 @@ type Servicer interface {
 	ListModules(query *ListModulesQueryParams, resp ...*http.Response) ([]Module, error)
 	/*
 		ListRelationships - catalog service endpoint
-		Returns a list of all relationships, unless you specify a filter. Use a filter to return a specific list of relationships.
+		Returns a list of all relationships. Use a filter to return a specific list of relationships.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -597,7 +597,7 @@ type Servicer interface {
 	ListRelationships(query *ListRelationshipsQueryParams, resp ...*http.Response) ([]Relationship, error)
 	/*
 		ListRules - catalog service endpoint
-		Return a list of rules that match a filter query if it is given, otherwise return all rules.
+		Returns a list of rules that match a filter, if specified, otherwise returns all rules.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -605,7 +605,7 @@ type Servicer interface {
 	ListRules(query *ListRulesQueryParams, resp ...*http.Response) ([]Rule, error)
 	/*
 		ListWorkflowBuilds - catalog service endpoint
-		Return a list of Machine Learning workflow builds.
+		Returns a list of Machine Learning workflow builds.
 		Parameters:
 			workflowid: ID of a workflow.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -614,7 +614,7 @@ type Servicer interface {
 	ListWorkflowBuilds(workflowid string, query *ListWorkflowBuildsQueryParams, resp ...*http.Response) ([]WorkflowBuild, error)
 	/*
 		ListWorkflowRuns - catalog service endpoint
-		Return a list of Machine Learning workflow runs for specified workflow build ID.
+		Returns a list of Machine Learning workflow runs for specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -632,7 +632,7 @@ type Servicer interface {
 	ListWorkflows(query *ListWorkflowsQueryParams, resp ...*http.Response) ([]Workflow, error)
 	/*
 		UpdateActionByIdForRule - catalog service endpoint
-		Update the Action with the specified id for the specified Rule
+		Modifies the action with the specified ID that is associated with the specified rule resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
@@ -642,7 +642,7 @@ type Servicer interface {
 	UpdateActionByIdForRule(ruleresourcename string, actionid string, actionPatch ActionPatch, resp ...*http.Response) (*Action, error)
 	/*
 		UpdateActionByIdForRuleById - catalog service endpoint
-		Update an action for a specific rule.
+		Modifies the action with the specified ID that is associated with the specified rule.
 		Parameters:
 			ruleid: ID of a Field.
 			actionid: ID of an Action.
@@ -652,7 +652,7 @@ type Servicer interface {
 	UpdateActionByIdForRuleById(ruleid string, actionid string, actionPatch ActionPatch, resp ...*http.Response) (*Action, error)
 	/*
 		UpdateDashboardById - catalog service endpoint
-		Update the dashboard with the specified ID.
+		Modifies the dashboard with the specified ID.
 		Parameters:
 			dashboardid: ID of a dashboard.
 			dashboardPatch: An updated representation of the dashboard to be persisted.
@@ -661,7 +661,7 @@ type Servicer interface {
 	UpdateDashboardById(dashboardid string, dashboardPatch DashboardPatch, resp ...*http.Response) (*Dashboard, error)
 	/*
 		UpdateDashboardByResourceName - catalog service endpoint
-		Update the dashboard with the specified resource name.
+		Modifies the dashboard with the specified resource name.
 		Parameters:
 			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
 			dashboardPatch: An updated representation of the dashboard to be persisted.
@@ -670,7 +670,7 @@ type Servicer interface {
 	UpdateDashboardByResourceName(dashboardresourcename string, dashboardPatch DashboardPatch, resp ...*http.Response) error
 	/*
 		UpdateDataset - catalog service endpoint
-		Update the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			datasetPatch: An updated representation of the dataset to be persisted.
@@ -679,7 +679,7 @@ type Servicer interface {
 	UpdateDataset(datasetresourcename string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
 	/*
 		UpdateDatasetById - catalog service endpoint
-		Update a specific dataset.
+		Modifies the dataset with the specified ID.
 		Parameters:
 			datasetid: ID of a Dataset.
 			datasetPatch: An updated representation of the dataset to be persisted.
@@ -688,7 +688,7 @@ type Servicer interface {
 	UpdateDatasetById(datasetid string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
 	/*
 		UpdateFieldByIdForDataset - catalog service endpoint
-		Update a field with a specified ID for a specified dataset.
+		Modifies the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
@@ -698,7 +698,7 @@ type Servicer interface {
 	UpdateFieldByIdForDataset(datasetresourcename string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error)
 	/*
 		UpdateFieldByIdForDatasetById - catalog service endpoint
-		Update a field for a specific dataset.
+		Modifies the field with the specified ID that is part of the specified dataset.
 		Parameters:
 			datasetid: ID of a Dataset.
 			fieldid: ID of a Field.
@@ -708,7 +708,7 @@ type Servicer interface {
 	UpdateFieldByIdForDatasetById(datasetid string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error)
 	/*
 		UpdateRelationshipById - catalog service endpoint
-		Update a specific relationship.
+		Modifies the relationship with the specified relationship ID.
 		Parameters:
 			relationshipid: ID of a relationship.
 			relationshipPatch: The properties to update in the specified relationship.
@@ -717,7 +717,7 @@ type Servicer interface {
 	UpdateRelationshipById(relationshipid string, relationshipPatch RelationshipPatch, resp ...*http.Response) (*Relationship, error)
 	/*
 		UpdateRule - catalog service endpoint
-		Update the Rule with the specified resourcename
+		Modifies the rule with the specified resource name.
 		Parameters:
 			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			rulePatch: The properties to update in the specified rule.
@@ -726,7 +726,7 @@ type Servicer interface {
 	UpdateRule(ruleresourcename string, rulePatch RulePatch, resp ...*http.Response) (*Rule, error)
 	/*
 		UpdateRuleById - catalog service endpoint
-		Update a specific rule.
+		Modifies the rule with the specified rule ID.
 		Parameters:
 			ruleid: ID of a Field.
 			rulePatch: The properties to update in the specified rule.
@@ -735,7 +735,7 @@ type Servicer interface {
 	UpdateRuleById(ruleid string, rulePatch RulePatch, resp ...*http.Response) (*Rule, error)
 	/*
 		UpdateWorkflowBuildById - catalog service endpoint
-		Update the workflow build with the specified workflow build ID.
+		Modifies the workflow build with the specified workflow build ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
@@ -745,7 +745,7 @@ type Servicer interface {
 	UpdateWorkflowBuildById(workflowid string, workflowbuildid string, workflowBuildPatch WorkflowBuildPatch, resp ...*http.Response) error
 	/*
 		UpdateWorkflowById - catalog service endpoint
-		Update the workflow with the specified workflow ID.
+		Modifies the workflow with the specified workflow ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowPatch: An updated representation of the workflow to be persisted.
@@ -754,7 +754,7 @@ type Servicer interface {
 	UpdateWorkflowById(workflowid string, workflowPatch WorkflowPatch, resp ...*http.Response) error
 	/*
 		UpdateWorkflowRunById - catalog service endpoint
-		Update the workflow run with the specified workflow run ID.
+		Modifies the workflow run with the specified workflow run ID.
 		Parameters:
 			workflowid: ID of a workflow.
 			workflowbuildid: ID of a workflow build.
