@@ -1,5 +1,15 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.4.0
+### Breaking Changes
+* Scloud v2.0 is released: all new commands and formats. Check docs to learn more about Scloud v2.0
+
+### Breaking Changes
+* The type of model search.searchjob.AllowSideEffects was changed from interface{} to *bool
+
+### Deprecated code
+* Scloud v1.x.x
+
 ## Version 1.3.0
 ### BREAKING CHANGES
 
