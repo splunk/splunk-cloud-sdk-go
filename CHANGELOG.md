@@ -4,11 +4,10 @@
 ### Breaking Changes
 * Scloud v2.0 is released: all new commands and formats. Check docs to learn more about Scloud v2.0
 
-### Breaking Changes
 * The type of model search.searchjob.AllowSideEffects was changed from interface{} to *bool
 
 ### Deprecated code
-* Scloud v1.x.x
+* Scloud v1.x.x will not be supported any more.
 
 ## Version 1.3.0
 ### BREAKING CHANGES
