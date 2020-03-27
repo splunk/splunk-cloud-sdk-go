@@ -131,7 +131,7 @@ publish:
 	make docs_publish
 
 publish_scloud:
-	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
+	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile_scloud.sh
 	./cicd/publish/scloud/publish_github.sh
 
 .FORCE:
