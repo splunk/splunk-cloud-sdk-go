@@ -7,7 +7,7 @@
 * The type of model search.searchjob.AllowSideEffects was changed from interface{} to *bool
 
 ### Deprecated code
-* Scloud v1.x.x will not be supported any more. No new releases of old scloud, old scloud binaries can still be found at past GosdK release locations" And include this as a part of release announcement "Homebrew will now install new scloud 2.0.0" and the new scloud binaries can be found
+* Scloud v1.x.x will not be supported any more. Older version of scloud binaries can still be found at previous releases
 
 ## Version 1.3.0
 ### BREAKING CHANGES
