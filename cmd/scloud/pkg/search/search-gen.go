@@ -283,7 +283,7 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "filter": ` + err.Error())
 	}
-	var status *model.SearchStatus
+	var status model.SearchStatus
 	err = flags.ParseFlag(cmd.Flags(), "status", &status)
 	if err != nil {
 		return fmt.Errorf(`error parsing "status": ` + err.Error())

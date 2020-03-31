@@ -89,6 +89,13 @@ components:
       required: true
       schema:
         type: string
+    Sid:
+      description: Sid of a Job Dataset.
+      in: path
+      name: sid
+      required: true
+      schema:
+        type: string
     Tenant:
       description: The tenant name.
       in: path
@@ -2903,7 +2910,7 @@ paths:
         list of datasets.
       operationId: listDatasets
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
+      - description: A filter to apply to the dataset list. The filter must be a SPL
           predicate expression.
         in: query
         name: filter
@@ -2918,7 +2925,7 @@ paths:
         schema:
           minimum: 1
           type: integer
-      - description: The number of results to skip before the first one returned.
+      - description: The number of results to skip before the first result is returned.
         in: query
         name: offset
         required: false
@@ -2926,7 +2933,7 @@ paths:
           minimum: 0
           type: integer
       - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
+          ascending or descending order using "<field> asc" or "<field> desc".  Ascending
           order is the default.
         in: query
         name: orderby
@@ -2954,8 +2961,8 @@ paths:
         "401":
           description: The operation is unauthorized.
         "404":
-          description: The datasets were not found, or the requesting user lacks catalog.datasets.read
-            permission for them.
+          description: The requested datasets were not found, or you lack catalog.datasets.read
+            permission for the datasets.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -4875,4 +4882,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: catalog/v2beta1/openapi.yaml

@@ -2024,13 +2024,13 @@ func init() {
 	listDatasetsCmd.Flags().Int32Var(&listDatasetsCount, "count", 0, "The maximum number of results to return.")
 
 	var listDatasetsFilter string
-	listDatasetsCmd.Flags().StringVar(&listDatasetsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
+	listDatasetsCmd.Flags().StringVar(&listDatasetsFilter, "filter", "", "A filter to apply to the dataset list. The filter must be a SPL predicate expression.")
 
 	var listDatasetsMaxstale int32
 	listDatasetsCmd.Flags().Int32Var(&listDatasetsMaxstale, "maxstale", 0, "The number of seconds beyond which we will refresh index metadata.")
 
 	var listDatasetsOffset int32
-	listDatasetsCmd.Flags().Int32Var(&listDatasetsOffset, "offset", 0, "The number of results to skip before the first one returned.")
+	listDatasetsCmd.Flags().Int32Var(&listDatasetsOffset, "offset", 0, "The number of results to skip before the first result is returned.")
 
 	var listDatasetsOrderby []string
 	listDatasetsCmd.Flags().StringSliceVar(&listDatasetsOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")

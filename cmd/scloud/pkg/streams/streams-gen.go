@@ -969,7 +969,7 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "target-port": ` + err.Error())
 	}
 
-	resp, err := MergePipelinesOverride(targetNode, targetPort, inputTree, mainTree)
+	resp, err := MergePipelinesOverride(targetNode, targetPort, mainTree, inputTree)
 	if err != nil {
 		return err
 	}

@@ -941,14 +941,12 @@ func createPreviewSessionStartRequest(t *testing.T) streams.PreviewSessionStartR
 	recordsLimit := int32(100)
 	recordsPerPipeline := int32(2)
 	sessionLifetimeMs := int64(300000)
-	useNewData := true
 
 	return streams.PreviewSessionStartRequest{
 		RecordsLimit:       &recordsLimit,
 		RecordsPerPipeline: &recordsPerPipeline,
 		SessionLifetimeMs:  &sessionLifetimeMs,
 		Upl:                result,
-		UseNewData:         &useNewData,
 	}
 }
 

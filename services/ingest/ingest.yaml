@@ -671,6 +671,14 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
       requestBody:
         content:
           multipart/form-data:
@@ -712,6 +720,14 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
       requestBody:
         content:
           application/json:
@@ -744,4 +760,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: ingest/v1beta2/openapi.yaml

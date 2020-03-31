@@ -285,6 +285,8 @@ components:
           default: 0
           description: |
             Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.
+          maximum: 259200
+          minimum: 0
           type: number
         resolvedEarliest:
           description: |
@@ -331,7 +333,7 @@ components:
         count:
           description: The total number of events that contain the field.
           type: integer
-        distictCount:
+        distinctCount:
           description: The total number of unique values in the field.
           type: integer
         isExact:
@@ -762,4 +764,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: search/v2beta1/openapi.yaml

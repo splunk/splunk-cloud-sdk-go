@@ -285,13 +285,13 @@ func (q ListDashboardsQueryParams) SetOrderby(v []string) ListDashboardsQueryPar
 type ListDatasetsQueryParams struct {
 	// Count : The maximum number of results to return.
 	Count *int32 `key:"count"`
-	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
+	// Filter : A filter to apply to the dataset list. The filter must be a SPL predicate expression.
 	Filter string `key:"filter"`
 	// Maxstale : The number of seconds beyond which we will refresh index metadata.
 	Maxstale *int32 `key:"maxstale"`
-	// Offset : The number of results to skip before the first one returned.
+	// Offset : The number of results to skip before the first result is returned.
 	Offset *int32 `key:"offset"`
-	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc.  Ascending order is the default.
+	// Orderby : A list of fields to order the results by.  You can specify either ascending or descending order using \&quot;&lt;field&gt; asc\&quot; or \&quot;&lt;field&gt; desc\&quot;.  Ascending order is the default.
 	Orderby []string `key:"orderby"`
 }
 

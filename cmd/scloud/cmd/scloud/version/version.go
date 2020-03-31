@@ -2,8 +2,8 @@
 package version
 
 const (
-    BuildBranch = "regenerate-2020-03-25.10.25.12"
-    BuildTime int64 = 1585245373
+    BuildBranch = "regenerate-2020-03-30.14.07.44"
+    BuildTime int64 = 1585602521
     Version = ScloudVersion
-    Commit = "bc63b7b-dirty"
+    Commit = "ebe7e20-dirty"
 )

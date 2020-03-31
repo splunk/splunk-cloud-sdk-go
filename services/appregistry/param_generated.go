@@ -28,10 +28,10 @@ package appregistry
 //     `v := ListSubscriptionsQueryParams{}.SetKind(...)`
 type ListSubscriptionsQueryParams struct {
 	// Kind : The kind of application.
-	Kind *AppResourceKind `key:"kind"`
+	Kind AppResourceKind `key:"kind"`
 }
 
 func (q ListSubscriptionsQueryParams) SetKind(v AppResourceKind) ListSubscriptionsQueryParams {
-	q.Kind = &v
+	q.Kind = v
 	return q
 }

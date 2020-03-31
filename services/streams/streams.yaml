@@ -825,15 +825,8 @@ components:
             to 300,000.
           format: int64
           type: integer
-        streamingConfigurationId:
-          description: Deprecated. Must be null if set.
-          format: int64
-          type: integer
         upl:
           $ref: '#/components/schemas/UplPipeline'
-        useNewData:
-          description: Deprecated. Must be true if set.
-          type: boolean
       required:
       - upl
       type: object
@@ -1153,6 +1146,8 @@ components:
     ValidateResponse:
       description: ""
       properties:
+        spl:
+          type: string
         success:
           type: boolean
         validationMessages:
@@ -1165,7 +1160,7 @@ info:
     (CRUD) operations on your data pipeline. The Streams service also has metrics
     and preview session endpoints and gives you full control over your data pipeline.
   title: Data Stream Processing REST API
-  version: v2beta1.3
+  version: v2beta1.4
 openapi: 3.0.1
 paths:
   /{tenantId}/streams/v2beta1/connections:
@@ -2947,4 +2942,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: streams/v2beta1/openapi.yaml
