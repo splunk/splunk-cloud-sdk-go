@@ -759,7 +759,7 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RevokePrincipalAuthTokens Revoke all existing tokens issued to a principal
+// RevokePrincipalAuthTokens Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()

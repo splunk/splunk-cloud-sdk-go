@@ -902,6 +902,15 @@ components:
       - addedBy
       - addedAt
       type: object
+    TakedownPrincipalBody:
+      properties:
+        reason:
+          maxLength: 280
+          minLength: 4
+          type: string
+      required:
+      - reason
+      type: object
     Tenant:
       properties:
         createdAt:
@@ -1034,7 +1043,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v2beta1.17
+  version: v2beta1.18
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1814,23 +1823,25 @@ paths:
     parameters:
     - $ref: '#/components/parameters/principal'
     post:
-      description: Revoke all existing tokens issued to a principal
+      description: Revoke all existing tokens issued to a principal. Principals can
+        reset their password by visiting https://login.splunk.com/en_us/page/lost_password
       operationId: revokePrincipalAuthTokens
       responses:
         "204":
-          description: Successful operation
+          description: All tokens associated with this principal were successfully
+            revoked.
         "400":
-          description: Malformed request
+          description: The request isn't valid.
         "401":
-          description: Unauthenticated user
+          description: The user isn't authenticated.
         "403":
-          description: Unauthorized operation
+          description: The operation isn't authorized.
         "404":
-          description: Resource not found
+          description: The resource wasn't found.
       x-authz-scope: identity.principals.revoke
 security:
 - Bearer: []
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 1f1cb97cb92c343b7c251291a7abf74ef6e0d819 path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: identity/v2beta1/openapi.yaml

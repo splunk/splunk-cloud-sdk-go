@@ -93,7 +93,7 @@ type ListJobsQueryParams struct {
 	// Filter : Filter the list of jobs by sid. Valid format is  &#x60;sid IN ({comma separated list of SIDs in quotes})&#x60;. A maximum of 50 SIDs can be specified in one query.
 	Filter string `key:"filter"`
 	// Status : Filter the list of jobs by status. Valid status values are &#39;running&#39;, &#39;done&#39;, &#39;canceled&#39;, or &#39;failed&#39;.
-	Status *SearchStatus `key:"status"`
+	Status SearchStatus `key:"status"`
 }
 
 func (q ListJobsQueryParams) SetCount(v float32) ListJobsQueryParams {
@@ -107,7 +107,7 @@ func (q ListJobsQueryParams) SetFilter(v string) ListJobsQueryParams {
 }
 
 func (q ListJobsQueryParams) SetStatus(v SearchStatus) ListJobsQueryParams {
-	q.Status = &v
+	q.Status = v
 	return q
 }
 

@@ -158,7 +158,7 @@ type SingleFieldSummary struct {
 	// The total number of events that contain the field.
 	Count *int32 `json:"count,omitempty"`
 	// The total number of unique values in the field.
-	DistictCount *int32 `json:"distictCount,omitempty"`
+	DistinctCount *int32 `json:"distinctCount,omitempty"`
 	// Specifies if the distinctCount is accurate. The isExact property is FALSE when the distinctCount exceeds the maximum count and an exact count is not available.
 	IsExact *bool `json:"isExact,omitempty"`
 	// The maximum numeric values in the field.

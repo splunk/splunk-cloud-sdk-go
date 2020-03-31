@@ -477,7 +477,7 @@ func ListSubscriptions(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var kind *model.AppResourceKind
+	var kind model.AppResourceKind
 	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
 	if err != nil {
 		return fmt.Errorf(`error parsing "kind": ` + err.Error())

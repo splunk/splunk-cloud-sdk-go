@@ -220,10 +220,10 @@ var removeRolePermissionCmd = &cobra.Command{
 	RunE:  impl.RemoveRolePermission,
 }
 
-// revokePrincipalAuthTokens -- Revoke all existing tokens issued to a principal
+// revokePrincipalAuthTokens -- Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 var revokePrincipalAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-principal-auth-tokens",
-	Short: "Revoke all existing tokens issued to a principal",
+	Short: "Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password",
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
