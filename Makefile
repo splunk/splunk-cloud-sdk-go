@@ -28,7 +28,9 @@ build: scloud_version
 
 build_scloud: scloud_version
 	@echo "Building scloud.."
-	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/scloud/.
+	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/scloud/
+	./cicd/scripts/build_cross_compile_scloud.sh
+
 
 build_cross_compile:
 	SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile_scloud.sh
@@ -131,7 +133,7 @@ publish:
 	make docs_publish
 
 publish_scloud:
-	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile.sh
+	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile_scloud.sh
 	./cicd/publish/scloud/publish_github.sh
 
 .FORCE:

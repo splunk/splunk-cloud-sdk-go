@@ -45,7 +45,7 @@ github-release info --user "${GITHUB_ORG}" --repo "${GITHUB_PROJECT}" --tag "${R
 
 echo "Uploading (replacing if files already existed) cross-compiled archive artifacts to existing release of ${RELEASE_TAG} at ${GITHUB_REPO}/releases ..."
 echo ""
-artifacts=bin/cross-compiled/archive/*
+artifacts=bin/cross-compiled_scloud/archive/*
 for artifact in $artifacts ; do
     echo "Uploading ${artifact} ..."
     github-release upload --replace --user "${GITHUB_ORG}" --repo "${GITHUB_PROJECT}" --tag "${RELEASE_TAG}" --file "${artifact}" --name "$(basename ${artifact})"
