@@ -58,6 +58,13 @@ components:
       required: false
       schema:
         type: string
+    domain:
+      description: The domain name identifier.
+      in: path
+      name: domain
+      required: true
+      schema:
+        type: string
     group:
       description: The group name.
       in: path
@@ -66,6 +73,13 @@ components:
       schema:
         type: string
       x-case-insensitive: true
+    idp:
+      description: The Identity Provider name.
+      in: path
+      name: idp
+      required: true
+      schema:
+        type: string
     include:
       description: Include additional information to return when validating tenant
         membership. Valid parameters [tenant, principal]
@@ -378,6 +392,21 @@ components:
       - name
       - principal
       type: object
+    CreateDomainBody:
+      properties:
+        id:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z]([.]?[_a-z0-9])*$
+          type: string
+        name:
+          maxLength: 253
+          pattern: ^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$
+          type: string
+      required:
+      - id
+      - name
+      type: object
     CreateGroupBody:
       properties:
         name:
@@ -387,6 +416,41 @@ components:
           type: string
       required:
       - name
+      type: object
+    CreateIdpBody:
+      properties:
+        description:
+          maxLength: 1024
+          type: string
+        federation_id:
+          maxLength: 256
+          type: string
+        name:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z]([.]?[_a-z0-9])*$
+          type: string
+        title:
+          maxLength: 256
+          type: string
+        token_idp_id:
+          maxLength: 256
+          type: string
+      required:
+      - name
+      - title
+      - federation_id
+      - token_idp_id
+      type: object
+    CreateIdpMappingBody:
+      properties:
+        idp:
+          maxLength: 36
+          minLength: 4
+          pattern: ^[_a-z]([.]?[_a-z0-9])*$
+          type: string
+      required:
+      - idp
       type: object
     CreateKeyBody:
       properties:
@@ -456,17 +520,6 @@ components:
       - appPermissions
       - userPermissions
       type: object
-    CreateSvcPrincipalTokenBody:
-      properties:
-        reason:
-          maxLength: 280
-          minLength: 4
-          type: string
-        servicePrincipal:
-          $ref: '#/components/schemas/AdminServicePrincipal'
-      required:
-      - servicePrincipal
-      type: object
     CreateTenantBody:
       properties:
         createdBy:
@@ -501,6 +554,34 @@ components:
       required:
       - token
       type: object
+    Domain:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+      type: object
+    DomainIdp:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        domain:
+          type: string
+        idp:
+          type: string
+      type: object
+    DomainList:
+      items:
+        $ref: '#/components/schemas/Domain'
+      type: array
     Group:
       properties:
         createdAt:
@@ -566,6 +647,28 @@ components:
       - addedAt
       - addedBy
       type: object
+    IdentityProvider:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        description:
+          type: string
+        federation_id:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        token_idp_id:
+          type: string
+      type: object
+    IdentityProviderList:
+      items:
+        $ref: '#/components/schemas/IdentityProvider'
+      type: array
     Jwk:
       properties:
         alg:
@@ -785,6 +888,62 @@ components:
       - principal
       - hasAccepted
       type: object
+    ResolveBody:
+      properties:
+        client_id:
+          maxLength: 36
+          type: string
+        code_challenge:
+          maxLength: 256
+          type: string
+        code_challenge_method:
+          maxLength: 4
+          type: string
+        email:
+          maxLength: 320
+          pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+          type: string
+        invite_id:
+          maxLength: 256
+          type: string
+        nonce:
+          maxLength: 256
+          type: string
+        redirect_uri:
+          maxLength: 2048
+          type: string
+        response_type:
+          maxLength: 128
+          type: string
+        scope:
+          maxLength: 128
+          type: string
+        state:
+          maxLength: 256
+          type: string
+        tenant:
+          $ref: '#/components/schemas/TenantName'
+      required:
+      - tenant
+      - email
+      - client_id
+      - response_type
+      - redirect_uri
+      - scope
+      - state
+      type: object
+    ResolvedAuth:
+      properties:
+        description:
+          type: string
+        idp_url:
+          type: string
+        name:
+          type: string
+    ResolvedAuthList:
+      items:
+        $ref: '#/components/schemas/ResolvedAuth'
+      type: array
     RevokePrincipalBody:
       properties:
         principal:
@@ -948,6 +1107,18 @@ components:
       - createdBy
       - proxiedBy
       type: object
+    TenantIdp:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        idp:
+          type: string
+        tenant:
+          type: string
+      type: object
     TenantName:
       maxLength: 36
       minLength: 4
@@ -988,6 +1159,25 @@ components:
         token_type:
           description: Must be Bearer type
           type: string
+      type: object
+    UpdateIdpBody:
+      properties:
+        description:
+          maxLength: 1024
+          type: string
+        federation_id:
+          maxLength: 256
+          type: string
+        title:
+          maxLength: 256
+          type: string
+        token_idp_id:
+          maxLength: 256
+          type: string
+      required:
+      - title
+      - federation_id
+      - token_idp_id
       type: object
     UpdateTenantBody:
       properties:
@@ -1844,4 +2034,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: identity/v2beta1/openapi.yaml

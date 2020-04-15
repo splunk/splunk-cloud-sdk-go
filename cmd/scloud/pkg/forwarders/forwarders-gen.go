@@ -13,7 +13,7 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 )
 
-// AddCertificate Each tenant can have up to five certificates.
+// AddCertificate Adds a certificate to a vacant slot on a tenant.
 func AddCertificate(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

@@ -516,7 +516,7 @@ func init() {
 	streamsCmd.AddCommand(getRegistryCmd)
 
 	var getRegistryLocal string
-	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "false", "local")
+	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "true", "local")
 
 	streamsCmd.AddCommand(getTemplateCmd)
 

@@ -102,7 +102,7 @@ info:
   description: Send data from a Splunk forwarder to the Splunk Forwarder service in
     Splunk Cloud Services.
   title: Splunk Forwarder Service
-  version: v2beta1.1
+  version: v2beta1.3
 openapi: 3.0.0
 paths:
   /{tenant}/forwarders/v2beta1/certificates:
@@ -161,7 +161,6 @@ paths:
       - Certificates
       x-authz-scope: forwarders.certificates.read
     post:
-      description: Each tenant can have up to five certificates.
       operationId: addCertificate
       parameters:
       - in: path
@@ -231,4 +230,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: forwarders/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: forwarders/v2beta1/openapi.yaml

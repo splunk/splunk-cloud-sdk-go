@@ -928,7 +928,8 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var disabled bool
+	var disabledDefault bool
+	disabled := &disabledDefault
 	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
 	if err != nil {
 		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
@@ -969,7 +970,7 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.IndexDatasetPost{
 
-		Disabled:               disabled,
+		Disabled:               *disabled,
 		Fields:                 fields,
 		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
 		Id:                     id,
@@ -1129,7 +1130,8 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var disabled bool
+	var disabledDefault bool
+	disabled := &disabledDefault
 	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
 	if err != nil {
 		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
@@ -1170,7 +1172,7 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.MetricDatasetPost{
 
-		Disabled:               disabled,
+		Disabled:               *disabled,
 		Fields:                 fields,
 		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
 		Id:                     id,
@@ -2507,7 +2509,7 @@ func GetDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetFieldById Returns the field with the specified field ID.
+// GetFieldById Returns the field with the specified ID.
 func GetFieldById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3150,7 +3152,7 @@ func ListDatasets(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFields Returns a list of all fields in the Metadata Catalog.
+// ListFields Returns a list of all of the fields in the Metadata Catalog.
 func ListFields(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3247,7 +3249,7 @@ func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFieldsForDatasetById Returns the set of fields for the the dataset with the specified ID.
+// ListFieldsForDatasetById Returns the set of fields for the dataset with the specified ID.
 func ListFieldsForDatasetById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

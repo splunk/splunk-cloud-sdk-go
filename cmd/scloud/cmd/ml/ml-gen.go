@@ -306,7 +306,7 @@ func init() {
 	createWorkflowRunCmd.MarkFlagRequired("output")
 
 	var createWorkflowRunEvaluate string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunEvaluate, "evaluate", "false", "Determine whether to evaluate the prediction.")
+	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunEvaluate, "evaluate", "true", "Determine whether to evaluate the prediction.")
 
 	var createWorkflowRunName string
 	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "", "")

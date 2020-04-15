@@ -400,10 +400,10 @@ var getDatasetByIdCmd = &cobra.Command{
 	RunE:  impl.GetDatasetById,
 }
 
-// getFieldById -- Returns the field with the specified field ID.
+// getFieldById -- Returns the field with the specified ID.
 var getFieldByIdCmd = &cobra.Command{
 	Use:   "get-field-by-id",
-	Short: "Returns the field with the specified field ID.",
+	Short: "Returns the field with the specified ID.",
 	RunE:  impl.GetFieldById,
 }
 
@@ -526,10 +526,10 @@ var listDatasetsCmd = &cobra.Command{
 	RunE:  impl.ListDatasets,
 }
 
-// listFields -- Returns a list of all fields in the Metadata Catalog.
+// listFields -- Returns a list of all of the fields in the Metadata Catalog.
 var listFieldsCmd = &cobra.Command{
 	Use:   "list-fields",
-	Short: "Returns a list of all fields in the Metadata Catalog.",
+	Short: "Returns a list of all of the fields in the Metadata Catalog.",
 	RunE:  impl.ListFields,
 }
 
@@ -540,10 +540,10 @@ var listFieldsForDatasetCmd = &cobra.Command{
 	RunE:  impl.ListFieldsForDataset,
 }
 
-// listFieldsForDatasetById -- Returns the set of fields for the the dataset with the specified ID.
+// listFieldsForDatasetById -- Returns the set of fields for the dataset with the specified ID.
 var listFieldsForDatasetByIdCmd = &cobra.Command{
 	Use:   "list-fields-for-dataset-by-id",
-	Short: "Returns the set of fields for the the dataset with the specified ID.",
+	Short: "Returns the set of fields for the dataset with the specified ID.",
 	RunE:  impl.ListFieldsForDatasetById,
 }
 
@@ -1204,8 +1204,7 @@ func init() {
 
 	catalogCmd.AddCommand(createDatasetIndexDatasetCmd)
 	var createDatasetIndexDatasetDisabled string
-	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetDisabled, "disabled", "false", "This is a required parameter. Specifies whether or not the Splunk index is disabled.")
-	createDatasetIndexDatasetCmd.MarkFlagRequired("disabled")
+	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
 
 	var createDatasetIndexDatasetFields string
 	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetFields, "fields", "", "The fields to be associated with this dataset.")
@@ -1247,8 +1246,7 @@ func init() {
 
 	catalogCmd.AddCommand(createDatasetLookupDatasetCmd)
 	var createDatasetLookupDatasetCaseSensitiveMatch string
-	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "false", "Match case-sensitively against the lookup.")
-
+	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
 	var createDatasetLookupDatasetExternalKind string
 	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetExternalKind, "external-kind", "", "This is a required parameter. The type of the external lookup. can accept values kvcollection")
 	createDatasetLookupDatasetCmd.MarkFlagRequired("externalKind")
@@ -1279,8 +1277,7 @@ func init() {
 
 	catalogCmd.AddCommand(createDatasetMetricDatasetCmd)
 	var createDatasetMetricDatasetDisabled string
-	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetDisabled, "disabled", "false", "This is a required parameter. Specifies whether or not the Splunk index is disabled.")
-	createDatasetMetricDatasetCmd.MarkFlagRequired("disabled")
+	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
 
 	var createDatasetMetricDatasetFields string
 	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetFields, "fields", "", "The fields to be associated with this dataset.")
@@ -2041,7 +2038,7 @@ func init() {
 	listFieldsCmd.Flags().Int32Var(&listFieldsCount, "count", 0, "The maximum number of results to return.")
 
 	var listFieldsFilter string
-	listFieldsCmd.Flags().StringVar(&listFieldsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
+	listFieldsCmd.Flags().StringVar(&listFieldsFilter, "filter", "", "A filter to apply to the dataset list. The filter must be a SPL predicate expression.")
 
 	var listFieldsOffset int32
 	listFieldsCmd.Flags().Int32Var(&listFieldsOffset, "offset", 0, "The number of results to skip before the first one returned.")
@@ -2059,7 +2056,7 @@ func init() {
 	listFieldsForDatasetCmd.Flags().Int32Var(&listFieldsForDatasetCount, "count", 0, "The maximum number of results to return.")
 
 	var listFieldsForDatasetFilter string
-	listFieldsForDatasetCmd.Flags().StringVar(&listFieldsForDatasetFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
+	listFieldsForDatasetCmd.Flags().StringVar(&listFieldsForDatasetFilter, "filter", "", "A filter to apply to the dataset list. The filter must be a SPL predicate expression.")
 
 	var listFieldsForDatasetOffset int32
 	listFieldsForDatasetCmd.Flags().Int32Var(&listFieldsForDatasetOffset, "offset", 0, "The number of results to skip before the first one returned.")
@@ -2077,7 +2074,7 @@ func init() {
 	listFieldsForDatasetByIdCmd.Flags().Int32Var(&listFieldsForDatasetByIdCount, "count", 0, "The maximum number of results to return.")
 
 	var listFieldsForDatasetByIdFilter string
-	listFieldsForDatasetByIdCmd.Flags().StringVar(&listFieldsForDatasetByIdFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
+	listFieldsForDatasetByIdCmd.Flags().StringVar(&listFieldsForDatasetByIdFilter, "filter", "", "A filter to apply to the dataset list. The filter must be a SPL predicate expression.")
 
 	var listFieldsForDatasetByIdOffset int32
 	listFieldsForDatasetByIdCmd.Flags().Int32Var(&listFieldsForDatasetByIdOffset, "offset", 0, "The number of results to skip before the first one returned.")
@@ -2492,8 +2489,7 @@ func init() {
 
 	catalogCmd.AddCommand(updateDatasetLookupDatasetCmd)
 	var updateDatasetLookupDatasetCaseSensitiveMatch string
-	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "false", "Match case-sensitively against the lookup.")
-
+	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
 	var updateDatasetLookupDatasetExternalKind string
 	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
 
@@ -2594,8 +2590,7 @@ func init() {
 
 	catalogCmd.AddCommand(updateDatasetByIdLookupDatasetCmd)
 	var updateDatasetByIdLookupDatasetCaseSensitiveMatch string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "false", "Match case-sensitively against the lookup.")
-
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
 	var updateDatasetByIdLookupDatasetExternalKind string
 	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
 

@@ -7,7 +7,7 @@ components:
             type: string
       description: |-
         The payload uses concatenated JSON format.
-        Please consult https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for details.
+        See https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for more information.
       x-go-name: Payload
   responses:
     badRequestError:
@@ -68,7 +68,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HECResponse'
-      description: The events were processed successfully.
+      description: 'The events were processed successfully. '
     hecTokenCreateSuccessResponse:
       content:
         application/json:
@@ -127,7 +127,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HECResponse'
-      description: The server cannot process the data sent because the server is overloaded.
+      description: The server can't process the data sent because the server is overloaded.
     successResponse:
       content:
         application/json:
@@ -175,7 +175,8 @@ components:
           type: object
           x-go-name: Attributes
         body:
-          description: JSON object for the event.
+          description: The raw event content. It can be a string, number, string array,
+            number array, JSON object, map, list, a JSON array, or a byte array.
           x-go-name: Body
         host:
           description: The host value assigned to the event data. Typically, this
@@ -221,7 +222,7 @@ components:
       properties:
         code:
           description: code defines the status of the response. For a complete list
-            of the possible values, please consult https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
+            of the possible error codes, see https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
           format: int64
           type: integer
           x-go-name: Code
@@ -235,7 +236,7 @@ components:
           description: text describes the response status
           type: string
           x-go-name: Message
-      title: HECResponse defines the http response from the Http Event Collector service.
+      title: HECResponse defines the HTTP response from the HTTP Event Collector service.
       type: object
     HECTokenAccessResponse:
       description: |-
@@ -244,7 +245,7 @@ components:
       properties:
         created_at:
           description: |-
-            created_at is a timestamp that captures when this token was created
+            created_at is a timestamp that captures when this token was created.
 
             type: string
             format: date-time
@@ -253,7 +254,7 @@ components:
           x-go-name: CreatedAt
         created_by:
           description: |-
-            created_by is the principal that created the token
+            created_by is the principal that created the token.
 
             type: string
           type: string
@@ -267,14 +268,14 @@ components:
           x-go-name: Description
         index:
           description: |-
-            index is the default value of the index field for records collected using this token
+            index is the default value of the index field for records collected using this token.
 
             type: string
           type: string
           x-go-name: Index
         last_modified_at:
           description: |-
-            last_modified_at is a timestamp that captures when this token was last modified
+            last_modified_at is a timestamp that captures when this token was last modified.
 
             type: string
             format: date-time
@@ -283,7 +284,7 @@ components:
           x-go-name: LastModifiedAt
         last_modified_by:
           description: |-
-            last_modified_by is the principal that last modified the token
+            last_modified_by is the principal that last modified the token.
 
             type: string
           type: string
@@ -298,14 +299,14 @@ components:
           x-go-name: Name
         source:
           description: |-
-            source is the default value of the source field for records collected using this token
+            source is the default value of the source field for records collected using this token.
 
             type: string
           type: string
           x-go-name: Source
         sourcetype:
           description: |-
-            sourcetype is the default value of the sourcetype field for records collected using this token
+            sourcetype is the default value of the sourcetype field for records collected using this token.
 
             type: string
           type: string
@@ -333,7 +334,7 @@ components:
           x-go-name: Description
         index:
           description: |-
-            index is the default value of the index field for records collected using this token
+            index is the default value of the index field for records collected using this token.
 
             type: string
           type: string
@@ -347,15 +348,13 @@ components:
           type: string
           x-go-name: Name
         source:
-          description: |-
-            source is the default value of the source field for records collected using this token
-
-            type: string
+          description: "source is the default value of the source field for records
+            collected using this token. \n\ntype: string"
           type: string
           x-go-name: Source
         sourcetype:
           description: |-
-            sourcetype is the default value of the sourcetype field for records collected using this token
+            sourcetype is the default value of the sourcetype field for records collected using this token.
 
             type: string
           type: string
@@ -370,7 +369,7 @@ components:
       properties:
         created_at:
           description: |-
-            created_at is a timestamp that captures when this token was created
+            created_at is a timestamp that captures when this token was created.
 
             type: string
             format: date-time
@@ -379,7 +378,7 @@ components:
           x-go-name: CreatedAt
         created_by:
           description: |-
-            created_by is the principal that created the token
+            created_by is the principal that created the token.
 
             type: string
           type: string
@@ -393,14 +392,14 @@ components:
           x-go-name: Description
         index:
           description: |-
-            index is the default value of the index field for records collected using this token
+            index is the default value of the index field for records collected using this token.
 
             type: string
           type: string
           x-go-name: Index
         last_modified_at:
           description: |-
-            last_modified_at is a timestamp that captures when this token was last modified
+            last_modified_at is a timestamp that captures when this token was last modified.
 
             type: string
             format: date-time
@@ -409,7 +408,7 @@ components:
           x-go-name: LastModifiedAt
         last_modified_by:
           description: |-
-            last_modified_by is the principal that last modified the token
+            last_modified_by is the principal that last modified the token.
 
             type: string
           type: string
@@ -424,21 +423,21 @@ components:
           x-go-name: Name
         source:
           description: |-
-            source is the default value of the source field for records collected using this token
+            source is the default value of the source field for records collected using this token.
 
             type: string
           type: string
           x-go-name: Source
         sourcetype:
           description: |-
-            sourcetype is the default value of the sourcetype field for records collected using this token
+            sourcetype is the default value of the sourcetype field for records collected using this token.
 
             type: string
           type: string
           x-go-name: Sourcetype
         tenant:
           description: |-
-            tenant is the tenant that this token belongs to
+            tenant is the tenant that this token belongs to.
 
             type: string
           pattern: '''[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*"'''
@@ -446,7 +445,7 @@ components:
           x-go-name: Tenant
         token:
           description: |-
-            token is the token value
+            token is the token value.
 
             type: string
           type: string
@@ -616,9 +615,436 @@ info:
   description: Use the Ingest service in Splunk Cloud Services to send event and metrics
     data, or upload a static file, to Splunk Cloud Services.
   title: Ingest API
-  version: v1beta2.9
+  version: v1beta2.12
 openapi: 3.0.0
 paths:
+  # SCP-25721: postCollector, postCollectorEvent, and postCollectorEventV1 are commented out to prevent
+  # code generation per the ingest service team as the Authorization header and payload do not conform
+  # to SCP standards (The auth header is not Bearer and the payload is not guaranteed to be valid JSON).
+  # /{tenant}/ingest/v1beta2/collector:
+  #   post:
+  #     description: 'Sends collector events and metrics. '
+  #     operationId: postCollector
+  #     parameters:
+  #     - description: Sets a default source field value for all events in the request.
+  #       in: query
+  #       name: source
+  #       schema:
+  #         type: string
+  #       x-go-name: Source
+  #     - description: Sets a default sourcetype field value for all events in the request.
+  #       in: query
+  #       name: sourcetype
+  #       schema:
+  #         type: string
+  #       x-go-name: Sourcetype
+  #     - description: Sets a default index field value for all events in the request.
+  #       in: query
+  #       name: index
+  #       schema:
+  #         type: string
+  #       x-go-name: Index
+  #     - description: The DSP HEC token provided by the user.
+  #       in: header
+  #       name: Authorization
+  #       required: true
+  #       schema:
+  #         pattern: ^(Splunk|Basic) .+
+  #         type: string
+  #     - in: path
+  #       name: tenant
+  #       required: true
+  #       schema:
+  #         type: string
+  #       x-go-name: Tenant
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/postCollectorPayload'
+  #     responses:
+  #       "200":
+  #         $ref: '#/components/responses/hecSuccessResponse'
+  #       "400":
+  #         $ref: '#/components/responses/hecBadRequestError'
+  #       "401":
+  #         $ref: '#/components/responses/hecUnauthorizedError'
+  #       "403":
+  #         $ref: '#/components/responses/hecForbiddenError'
+  #       "500":
+  #         $ref: '#/components/responses/hecInternalError'
+  #       "503":
+  #         $ref: '#/components/responses/serverBusyError'
+  #       default:
+  #         $ref: '#/components/responses/hecInternalError'
+  #     tags:
+  #     - Collector
+  #     x-auth-required: false
+  #     x-authz-scope: ingest.collector.write
+  # /{tenant}/ingest/v1beta2/collector/event:
+  #   post:
+  #     operationId: postCollectorEvent
+  #     parameters:
+  #     - description: Sets a default source field value for all events in the request.
+  #       in: query
+  #       name: source
+  #       schema:
+  #         type: string
+  #       x-go-name: Source
+  #     - description: Sets a default sourcetype field value for all events in the request.
+  #       in: query
+  #       name: sourcetype
+  #       schema:
+  #         type: string
+  #       x-go-name: Sourcetype
+  #     - description: Sets a default index field value for all events in the request.
+  #       in: query
+  #       name: index
+  #       schema:
+  #         type: string
+  #       x-go-name: Index
+  #     - description: The DSP HEC token provided by the user.
+  #       in: header
+  #       name: Authorization
+  #       required: true
+  #       schema:
+  #         pattern: ^(Splunk|Basic) .+
+  #         type: string
+  #     - in: path
+  #       name: tenant
+  #       required: true
+  #       schema:
+  #         type: string
+  #       x-go-name: Tenant
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/postCollectorPayload'
+  #     responses:
+  #       "200":
+  #         $ref: '#/components/responses/hecSuccessResponse'
+  #       "400":
+  #         $ref: '#/components/responses/hecBadRequestError'
+  #       "401":
+  #         $ref: '#/components/responses/hecUnauthorizedError'
+  #       "403":
+  #         $ref: '#/components/responses/hecForbiddenError'
+  #       "500":
+  #         $ref: '#/components/responses/hecInternalError'
+  #       "503":
+  #         $ref: '#/components/responses/serverBusyError'
+  #       default:
+  #         $ref: '#/components/responses/hecInternalError'
+  #     summary: Sends collector events.
+  #     tags:
+  #     - Collector
+  #     x-auth-required: false
+  #     x-authz-scope: ingest.collector.write
+  # /{tenant}/ingest/v1beta2/collector/event/1.0:
+  #   post:
+  #     operationId: postCollectorEventV1
+  #     parameters:
+  #     - description: Sets a default source field value for all events in the request.
+  #       in: query
+  #       name: source
+  #       schema:
+  #         type: string
+  #       x-go-name: Source
+  #     - description: Sets a default sourcetype field value for all events in the request.
+  #       in: query
+  #       name: sourcetype
+  #       schema:
+  #         type: string
+  #       x-go-name: Sourcetype
+  #     - description: Sets a default index field value for all events in the request.
+  #       in: query
+  #       name: index
+  #       schema:
+  #         type: string
+  #       x-go-name: Index
+  #     - description: The DSP HEC token provided by the user.
+  #       in: header
+  #       name: Authorization
+  #       required: true
+  #       schema:
+  #         pattern: ^(Splunk|Basic) .+
+  #         type: string
+  #     - in: path
+  #       name: tenant
+  #       required: true
+  #       schema:
+  #         type: string
+  #       x-go-name: Tenant
+  #     requestBody:
+  #       $ref: '#/components/requestBodies/postCollectorPayload'
+  #     responses:
+  #       "200":
+  #         $ref: '#/components/responses/hecSuccessResponse'
+  #       "400":
+  #         $ref: '#/components/responses/hecBadRequestError'
+  #       "401":
+  #         $ref: '#/components/responses/hecUnauthorizedError'
+  #       "403":
+  #         $ref: '#/components/responses/hecForbiddenError'
+  #       "500":
+  #         $ref: '#/components/responses/hecInternalError'
+  #       "503":
+  #         $ref: '#/components/responses/serverBusyError'
+  #       default:
+  #         $ref: '#/components/responses/hecInternalError'
+  #     summary: Sends collector events.
+  #     tags:
+  #     - Collector
+  #     x-auth-required: false
+  #     x-authz-scope: ingest.collector.write
+  /{tenant}/ingest/v1beta2/collector/tokens:
+    delete:
+      operationId: deleteAllCollectorTokens
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      responses:
+        "204":
+          $ref: '#/components/responses/hecTokenDeleteSuccessResponse'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: Delete All dsphec tokens for a given tenant.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.delete
+    get:
+      operationId: listCollectorTokens
+      parameters:
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          pattern: '''[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*"'''
+          type: string
+        x-go-name: Tenant
+      - in: query
+        name: limit
+        schema:
+          format: int64
+          type: integer
+        x-go-name: Limit
+      - in: query
+        name: offset
+        schema:
+          format: int64
+          type: integer
+        x-go-name: Offset
+      responses:
+        "200":
+          $ref: '#/components/responses/hecTokenListSuccessResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: List dsphec tokens for a tenant.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.read
+    post:
+      operationId: postCollectorTokens
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HECTokenCreateRequest'
+        description: The API request schema for the token.
+        required: true
+      responses:
+        "201":
+          $ref: '#/components/responses/hecTokenCreateSuccessResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "409":
+          $ref: '#/components/responses/resourceConflictError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: Creates dsphec tokens.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.write
+  /{tenant}/ingest/v1beta2/collector/tokens/{tokenName}:
+    delete:
+      operationId: deleteCollectorToken
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - in: path
+        name: tokenName
+        required: true
+        schema:
+          pattern: ^[a-z][a-z0-9]{3,35}$
+          type: string
+        x-go-name: Name
+      responses:
+        "204":
+          $ref: '#/components/responses/hecTokenDeleteSuccessResponse'
+        "400":
+          $ref: '#/components/responses/badRequestError'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: Delete dsphec token by name.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.delete
+    get:
+      operationId: getCollectorToken
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      - in: path
+        name: tokenName
+        required: true
+        schema:
+          type: string
+        x-go-name: Name
+      responses:
+        "200":
+          $ref: '#/components/responses/hecTokenGetSuccessResponse'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "404":
+          $ref: '#/components/responses/notFoundError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: Get the metadata of a dsphec token by name.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.read
+    put:
+      operationId: putCollectorToken
+      parameters:
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^Bearer .+
+          type: string
+      - in: path
+        name: tokenName
+        required: true
+        schema:
+          pattern: ^[a-z][a-z0-9]{3,35}$
+          type: string
+        x-go-name: Name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HECTokenUpdateRequest'
+        description: The API request schema for the token.
+        required: true
+      responses:
+        "200":
+          $ref: '#/components/responses/hecTokenGetSuccessResponse'
+        "401":
+          $ref: '#/components/responses/unauthorizedError'
+        "403":
+          $ref: '#/components/responses/forbiddenError'
+        "404":
+          $ref: '#/components/responses/notFoundError'
+        "500":
+          $ref: '#/components/responses/internalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/internalError'
+      summary: Update the metadata of a dsphec token by name.
+      tags:
+      - CollectorTokens
+      x-auth-required: true
+      x-authz-scope: ingest.collector.tokens.write
   /{tenant}/ingest/v1beta2/events:
     post:
       operationId: postEvents
@@ -760,4 +1186,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: ingest/v1beta2/openapi.yaml

@@ -941,6 +941,7 @@ paths:
           $ref: '#/components/responses/500'
       summary: Creates an execution for a scheduled job based on the job ID.
       x-authz-scope: collect.jobs.executions.create
+      x-internal: false
   /{tenant}/collect/v1beta1/jobs/{jobId}/executions/{executionUid}:
     get:
       operationId: getExecution
@@ -970,6 +971,7 @@ paths:
           $ref: '#/components/responses/500'
       summary: Returns the execution details based on the execution ID and job ID.
       x-authz-scope: collect.jobs.executions.read
+      x-internal: false
     patch:
       operationId: patchExecution
       parameters:
@@ -1014,5 +1016,6 @@ paths:
           $ref: '#/components/responses/500'
       summary: Modifies an execution based on the job ID.
       x-authz-scope: collect.jobs.executions.update
+      x-internal: false
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: collect/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: collect/v1beta1/openapi.yaml

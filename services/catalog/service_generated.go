@@ -1452,7 +1452,7 @@ func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryPar
 
 /*
 	GetFieldById - catalog service endpoint
-	Returns the field with the specified field ID.
+	Returns the field with the specified ID.
 	Parameters:
 		fieldid: ID of a Field.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2079,7 +2079,7 @@ func (s *Service) ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Res
 
 /*
 	ListFields - catalog service endpoint
-	Returns a list of all fields in the Metadata Catalog.
+	Returns a list of all of the fields in the Metadata Catalog.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -2145,7 +2145,7 @@ func (s *Service) ListFieldsForDataset(datasetresourcename string, query *ListFi
 
 /*
 	ListFieldsForDatasetById - catalog service endpoint
-	Returns the set of fields for the the dataset with the specified ID.
+	Returns the set of fields for the dataset with the specified ID.
 	Parameters:
 		datasetid: ID of a Dataset.
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -2629,7 +2629,7 @@ func (s *Service) UpdateFieldByIdForDataset(datasetresourcename string, fieldid 
 	Parameters:
 		datasetid: ID of a Dataset.
 		fieldid: ID of a Field.
-		fieldPatch: The properties to update in the specified field.
+		fieldPatch: The properties to update in the specified field, or the requesting user lacks catalog.datasets.read permission for them.
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
 func (s *Service) UpdateFieldByIdForDatasetById(datasetid string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error) {

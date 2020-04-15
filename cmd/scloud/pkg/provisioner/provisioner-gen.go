@@ -13,57 +13,6 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/provisioner"
 )
 
-// CreateEntitlementsJob Creates an entitlements job.
-func CreateEntitlementsJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var appClientID string
-	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientID)
-	if err != nil {
-		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
-	}
-	var entitlements []model.JobEntitlement
-	err = flags.ParseFlag(cmd.Flags(), "entitlements", &entitlements)
-	if err != nil {
-		return fmt.Errorf(`error parsing "entitlements": ` + err.Error())
-	}
-	var jobId string
-	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
-	}
-	var subscriptionID string
-	err = flags.ParseFlag(cmd.Flags(), "subscription-id", &subscriptionID)
-	if err != nil {
-		return fmt.Errorf(`error parsing "subscription-id": ` + err.Error())
-	}
-	var tenantName string
-	err = flags.ParseFlag(cmd.Flags(), "tenant-name", &tenantName)
-	if err != nil {
-		return fmt.Errorf(`error parsing "tenant-name": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.CreateEntitlementsJobBody{
-
-		AppClientID:    appClientID,
-		Entitlements:   entitlements,
-		SubscriptionID: subscriptionID,
-	}
-
-	resp, err := client.ProvisionerService.CreateEntitlementsJob(tenantName, jobId, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // CreateInvite Creates an invitation for a person to join the tenant using their email address.
 func CreateInvite(cmd *cobra.Command, args []string) error {
 
@@ -161,35 +110,6 @@ func DeleteInvite(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return nil
-}
-
-// GetEntitlementsJob Returns details of a specific entitlements job.
-func GetEntitlementsJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var jobId string
-	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
-	}
-	var tenantName string
-	err = flags.ParseFlag(cmd.Flags(), "tenant-name", &tenantName)
-	if err != nil {
-		return fmt.Errorf(`error parsing "tenant-name": ` + err.Error())
-	}
-
-	resp, err := client.ProvisionerService.GetEntitlementsJob(tenantName, jobId)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
 	return nil
 }
 

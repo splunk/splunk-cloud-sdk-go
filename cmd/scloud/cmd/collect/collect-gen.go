@@ -111,7 +111,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobEventExtraFields, "event-extra-fields", "", "")
 
 	var createJobScheduled string
-	createJobCmd.Flags().StringVar(&createJobScheduled, "scheduled", "false", "Defines whether a job is scheduled or not")
+	createJobCmd.Flags().StringVar(&createJobScheduled, "scheduled", "true", "Defines whether a job is scheduled or not")
 
 	collectCmd.AddCommand(deleteJobCmd)
 
