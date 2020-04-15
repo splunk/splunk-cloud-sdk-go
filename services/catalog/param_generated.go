@@ -326,7 +326,7 @@ func (q ListDatasetsQueryParams) SetOrderby(v []string) ListDatasetsQueryParams 
 type ListFieldsQueryParams struct {
 	// Count : The maximum number of results to return.
 	Count *int32 `key:"count"`
-	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
+	// Filter : A filter to apply to the dataset list. The filter must be a SPL predicate expression.
 	Filter string `key:"filter"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`
@@ -360,7 +360,7 @@ func (q ListFieldsQueryParams) SetOrderby(v []string) ListFieldsQueryParams {
 type ListFieldsForDatasetQueryParams struct {
 	// Count : The maximum number of results to return.
 	Count *int32 `key:"count"`
-	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
+	// Filter : A filter to apply to the dataset list. The filter must be a SPL predicate expression.
 	Filter string `key:"filter"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`
@@ -394,7 +394,7 @@ func (q ListFieldsForDatasetQueryParams) SetOrderby(v []string) ListFieldsForDat
 type ListFieldsForDatasetByIdQueryParams struct {
 	// Count : The maximum number of results to return.
 	Count *int32 `key:"count"`
-	// Filter : A filter to apply to the results list. The filter must be a SPL predicate expression.
+	// Filter : A filter to apply to the dataset list. The filter must be a SPL predicate expression.
 	Filter string `key:"filter"`
 	// Offset : The number of results to skip before the first one returned.
 	Offset *int32 `key:"offset"`

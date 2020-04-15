@@ -812,4 +812,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: kvstore/v1beta1/openapi.yaml

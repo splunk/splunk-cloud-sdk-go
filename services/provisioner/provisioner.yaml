@@ -663,71 +663,6 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: The reason for the error
       x-authz-scope: identity.invites.write
-  /system/provisioner/v1beta1/jobs/tenants/{tenantName}/entitlements/{jobId}:
-    get:
-      description: Returns details of a specific entitlements job.
-      operationId: getEntitlementsJob
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EntitlementsJobInfo'
-          description: The details of the entitlements job were returned successfully.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The operation isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "429":
-          description: Too many requests were sent.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The reason for the error
-      x-authz-scope: identity.tenants.entitlements.read
-    parameters:
-    - $ref: '#/components/parameters/AuthorizationHeader'
-    - $ref: '#/components/parameters/JobId'
-    - $ref: '#/components/parameters/TenantName'
-    put:
-      operationId: createEntitlementsJob
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateEntitlementsJobBody'
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EntitlementsJobInfo'
-          description: The entitlements job was successfully created.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The operation isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "422":
-          description: The provided fields aren't valid.
-        "423":
-          description: The resource is locked.
-        "429":
-          description: Too many requests were sent.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The reason for the error
-      summary: Creates an entitlements job.
-      x-authz-scope: identity.tenants.entitlements.write
   /system/provisioner/v1beta1/jobs/tenants/provision:
     get:
       description: Returns a list of all provision jobs created by the user.
@@ -872,4 +807,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: provisioner/v1beta1/openapi.yaml

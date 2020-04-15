@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -28,11 +30,19 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
+// GetFilename uses reflection to get current filename
+func GetFilename() string {
+	_, filename, _, _ := runtime.Caller(0)
+	return filename
+}
+
 func init() {
-	err := godotenv.Load("../../.env")
+	envPath := filepath.Join(filepath.Dir(GetFilename()), "..", "..", ".env")
+
+	err := godotenv.Load(envPath)
 
 	if err != nil {
-		log.Println("Error loading .env")
+		log.Println("Error loading .env from ", envPath)
 	}
 
 	TestAuthenticationToken = os.Getenv("BEARER_TOKEN")

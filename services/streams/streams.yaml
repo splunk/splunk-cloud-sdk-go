@@ -760,6 +760,28 @@ components:
           format: int64
           type: integer
       type: object
+    PipelineUpgradeResponse:
+      description: ""
+      properties:
+        flinkVersion:
+          type: string
+        pipelineId:
+          type: string
+        pipelineUpgradeError:
+          type: string
+        pipelineUpgradeStatus:
+          enum:
+          - upgraded
+          - not upgraded, restored back on old cluster
+          - not upgraded because it's not active
+          - not upgraded, couldn't restore back on old cluster, send help
+          - already upgraded
+          - not upgraded, pipeline version is not supported
+          - Couldn't be stopped on old cluster
+          type: string
+        tenantId:
+          type: string
+      type: object
     PipelinesMergeRequest:
       description: ""
       properties:
@@ -1099,6 +1121,10 @@ components:
         rootNode:
           description: The UUIDs of all sink functions in a given pipeline
           example: ""
+          items:
+            type: string
+          type: array
+        rootNodeFromUplPipeline:
           items:
             type: string
           type: array
@@ -2931,6 +2957,8 @@ paths:
 servers:
 - url: /
 tags:
+- description: Services Endpoint
+  name: apiv-2-beta-1-admin-controller
 - description: V2Beta1 Connectors and Connections Endpoints
   name: apiv-2-beta-1-connector-controller
 - description: V2Beta1 Group API Endpoints
@@ -2942,4 +2970,4 @@ tags:
 - description: V2Beta1 Preview API Endpoints
   name: apiv-2-beta-1-preview-controller
 
-# Retrieved from scp-openapi commit 0da82dfe75b0f9dc698bb0a127c17d6bd039344b path: streams/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: streams/v2beta1/openapi.yaml

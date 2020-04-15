@@ -8,10 +8,10 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/forwarders"
 )
 
-// addCertificate -- Each tenant can have up to five certificates.
+// addCertificate -- Adds a certificate to a vacant slot on a tenant.
 var addCertificateCmd = &cobra.Command{
 	Use:   "add-certificate",
-	Short: "Each tenant can have up to five certificates.",
+	Short: "Adds a certificate to a vacant slot on a tenant.",
 	RunE:  impl.AddCertificate,
 }
 

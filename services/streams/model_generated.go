@@ -552,7 +552,8 @@ type UplPipeline struct {
 	// The functions (or nodes) in your entire pipeline, including each function's operations, attributes, and properties
 	Nodes []UplNode `json:"nodes"`
 	// The UUIDs of all sink functions in a given pipeline
-	RootNode []string `json:"rootNode"`
+	RootNode                []string `json:"rootNode"`
+	RootNodeFromUplPipeline []string `json:"rootNodeFromUplPipeline,omitempty"`
 }
 
 type UplRegistry struct {

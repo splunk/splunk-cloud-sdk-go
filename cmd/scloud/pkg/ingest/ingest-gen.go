@@ -7,10 +7,163 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/flags"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
 	model "github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
+
+// DeleteAllCollectorTokens Delete All dsphec tokens for a given tenant.
+func DeleteAllCollectorTokens(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.IngestService.DeleteAllCollectorTokens()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// DeleteCollectorToken Delete dsphec token by name.
+func DeleteCollectorToken(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var tokenName string
+	err = flags.ParseFlag(cmd.Flags(), "token-name", &tokenName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "token-name": ` + err.Error())
+	}
+
+	resp, err := client.IngestService.DeleteCollectorToken(tokenName)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetCollectorToken Get the metadata of a dsphec token by name.
+func GetCollectorToken(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var tokenName string
+	err = flags.ParseFlag(cmd.Flags(), "token-name", &tokenName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "token-name": ` + err.Error())
+	}
+
+	resp, err := client.IngestService.GetCollectorToken(tokenName)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListCollectorTokens List dsphec tokens for a tenant.
+func ListCollectorTokens(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var limitDefault int64
+	limit := &limitDefault
+	err = flags.ParseFlag(cmd.Flags(), "limit", &limit)
+	if err != nil {
+		return fmt.Errorf(`error parsing "limit": ` + err.Error())
+	}
+	var offsetDefault int64
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListCollectorTokensQueryParams{}
+	generated_query.Limit = limit
+	generated_query.Offset = offset
+
+	resp, err := client.IngestService.ListCollectorTokens(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// PostCollectorTokens Creates dsphec tokens.
+func PostCollectorTokens(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var indexDefault string
+	index := &indexDefault
+	err = flags.ParseFlag(cmd.Flags(), "index", &index)
+	if err != nil {
+		return fmt.Errorf(`error parsing "index": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var sourceDefault string
+	source := &sourceDefault
+	err = flags.ParseFlag(cmd.Flags(), "source", &source)
+	if err != nil {
+		return fmt.Errorf(`error parsing "source": ` + err.Error())
+	}
+	var sourcetypeDefault string
+	sourcetype := &sourcetypeDefault
+	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.HecTokenCreateRequest{
+
+		Description: description,
+		Index:       index,
+		Name:        name,
+		Source:      source,
+		Sourcetype:  sourcetype,
+	}
+
+	resp, err := client.IngestService.PostCollectorTokens(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
 
 // PostEvents Sends events.
 func PostEvents(cmd *cobra.Command, args []string) error {
@@ -166,6 +319,61 @@ func PostMetrics(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := PostMetricsOverride(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// PutCollectorToken Update the metadata of a dsphec token by name.
+func PutCollectorToken(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var indexDefault string
+	index := &indexDefault
+	err = flags.ParseFlag(cmd.Flags(), "index", &index)
+	if err != nil {
+		return fmt.Errorf(`error parsing "index": ` + err.Error())
+	}
+	var sourceDefault string
+	source := &sourceDefault
+	err = flags.ParseFlag(cmd.Flags(), "source", &source)
+	if err != nil {
+		return fmt.Errorf(`error parsing "source": ` + err.Error())
+	}
+	var sourcetypeDefault string
+	sourcetype := &sourcetypeDefault
+	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
+	}
+	var tokenName string
+	err = flags.ParseFlag(cmd.Flags(), "token-name", &tokenName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "token-name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.HecTokenUpdateRequest{
+
+		Description: description,
+		Index:       index,
+		Source:      source,
+		Sourcetype:  sourcetype,
+	}
+
+	resp, err := client.IngestService.PutCollectorToken(tokenName, generated_request_body)
 	if err != nil {
 		return err
 	}

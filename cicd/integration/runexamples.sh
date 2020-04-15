@@ -9,7 +9,7 @@ echo "==============================================="
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')
 
-if [ "$allow_failures" -eq "1" ]; then
+if [[ "$allow_failures" == "1" ]]; then
     echo "Running examples but not gating on failures..."
     echo ""
     echo "Running ingestSearch ..."

@@ -8,6 +8,41 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/ingest"
 )
 
+// deleteAllCollectorTokens -- Delete All dsphec tokens for a given tenant.
+var deleteAllCollectorTokensCmd = &cobra.Command{
+	Use:   "delete-all-collector-tokens",
+	Short: "Delete All dsphec tokens for a given tenant.",
+	RunE:  impl.DeleteAllCollectorTokens,
+}
+
+// deleteCollectorToken -- Delete dsphec token by name.
+var deleteCollectorTokenCmd = &cobra.Command{
+	Use:   "delete-collector-token",
+	Short: "Delete dsphec token by name.",
+	RunE:  impl.DeleteCollectorToken,
+}
+
+// getCollectorToken -- Get the metadata of a dsphec token by name.
+var getCollectorTokenCmd = &cobra.Command{
+	Use:   "get-collector-token",
+	Short: "Get the metadata of a dsphec token by name.",
+	RunE:  impl.GetCollectorToken,
+}
+
+// listCollectorTokens -- List dsphec tokens for a tenant.
+var listCollectorTokensCmd = &cobra.Command{
+	Use:   "list-collector-tokens",
+	Short: "List dsphec tokens for a tenant.",
+	RunE:  impl.ListCollectorTokens,
+}
+
+// postCollectorTokens -- Creates dsphec tokens.
+var postCollectorTokensCmd = &cobra.Command{
+	Use:   "post-collector-tokens",
+	Short: "Creates dsphec tokens.",
+	RunE:  impl.PostCollectorTokens,
+}
+
 // postEvents -- Sends events.
 var postEventsCmd = &cobra.Command{
 	Use:   "post-events",
@@ -22,6 +57,13 @@ var postMetricsCmd = &cobra.Command{
 	RunE:  impl.PostMetrics,
 }
 
+// putCollectorToken -- Update the metadata of a dsphec token by name.
+var putCollectorTokenCmd = &cobra.Command{
+	Use:   "put-collector-token",
+	Short: "Update the metadata of a dsphec token by name.",
+	RunE:  impl.PutCollectorToken,
+}
+
 // uploadFiles -- Upload a CSV or text file that contains events.
 var uploadFilesCmd = &cobra.Command{
 	Use:   "upload-files",
@@ -30,6 +72,46 @@ var uploadFilesCmd = &cobra.Command{
 }
 
 func init() {
+	ingestCmd.AddCommand(deleteAllCollectorTokensCmd)
+
+	ingestCmd.AddCommand(deleteCollectorTokenCmd)
+
+	var deleteCollectorTokenTokenName string
+	deleteCollectorTokenCmd.Flags().StringVar(&deleteCollectorTokenTokenName, "token-name", "", "This is a required parameter. ")
+	deleteCollectorTokenCmd.MarkFlagRequired("token-name")
+
+	ingestCmd.AddCommand(getCollectorTokenCmd)
+
+	var getCollectorTokenTokenName string
+	getCollectorTokenCmd.Flags().StringVar(&getCollectorTokenTokenName, "token-name", "", "This is a required parameter. ")
+	getCollectorTokenCmd.MarkFlagRequired("token-name")
+
+	ingestCmd.AddCommand(listCollectorTokensCmd)
+
+	var listCollectorTokensLimit int64
+	listCollectorTokensCmd.Flags().Int64Var(&listCollectorTokensLimit, "limit", 0, "")
+
+	var listCollectorTokensOffset int64
+	listCollectorTokensCmd.Flags().Int64Var(&listCollectorTokensOffset, "offset", 0, "")
+
+	ingestCmd.AddCommand(postCollectorTokensCmd)
+
+	var postCollectorTokensName string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensName, "name", "", "This is a required parameter. name is the name of the token (unique within the tenant that it belongs to).  type: string")
+	postCollectorTokensCmd.MarkFlagRequired("name")
+
+	var postCollectorTokensDescription string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensDescription, "description", "", "description is an optional description of the token.  type: string")
+
+	var postCollectorTokensIndex string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensIndex, "index", "", "index is the default value of the index field for records collected using this token.  type: string")
+
+	var postCollectorTokensSource string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSource, "source", "", "source is the default value of the source field for records collected using this token.   type: string")
+
+	var postCollectorTokensSourcetype string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSourcetype, "sourcetype", "", "sourcetype is the default value of the sourcetype field for records collected using this token.  type: string")
+
 	ingestCmd.AddCommand(postEventsCmd)
 
 	var postEventsAttributes string
@@ -84,6 +166,24 @@ func init() {
 
 	var postMetricsTimestamp int64
 	postMetricsCmd.Flags().Int64Var(&postMetricsTimestamp, "timestamp", 0, "Epoch time in milliseconds.")
+
+	ingestCmd.AddCommand(putCollectorTokenCmd)
+
+	var putCollectorTokenTokenName string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenTokenName, "token-name", "", "This is a required parameter. ")
+	putCollectorTokenCmd.MarkFlagRequired("token-name")
+
+	var putCollectorTokenDescription string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenDescription, "description", "", "description is an optional description of the token.  type: string")
+
+	var putCollectorTokenIndex string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenIndex, "index", "", "index is the default value of the index field for records collected using this token  type: string")
+
+	var putCollectorTokenSource string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSource, "source", "", "source is the default value of the source field for records collected using this token  type: string")
+
+	var putCollectorTokenSourcetype string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSourcetype, "sourcetype", "", "sourcetype is the default value of the sourcetype field for records collected using this token  type: string")
 
 	ingestCmd.AddCommand(uploadFilesCmd)
 
