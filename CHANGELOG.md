@@ -1,6 +1,9 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.5.0
+Release v1.5.0
+
+## Version 1.5.0
 
 ### Services
 
