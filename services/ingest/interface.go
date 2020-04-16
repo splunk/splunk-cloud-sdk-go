@@ -60,6 +60,40 @@ type Servicer interface {
 	*/
 	UploadFilesStream(stream io.Reader, resp ...*http.Response) error
 	/*
+		DeleteAllCollectorTokens - Delete All dsphec tokens for a given tenant.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteAllCollectorTokens(resp ...*http.Response) (*map[string]interface{}, error)
+	/*
+		DeleteCollectorToken - Delete dsphec token by name.
+		Parameters:
+			tokenName
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteCollectorToken(tokenName string, resp ...*http.Response) (*map[string]interface{}, error)
+	/*
+		GetCollectorToken - Get the metadata of a dsphec token by name.
+		Parameters:
+			tokenName
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetCollectorToken(tokenName string, resp ...*http.Response) (*HecTokenAccessResponse, error)
+	/*
+		ListCollectorTokens - List dsphec tokens for a tenant.
+		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListCollectorTokens(query *ListCollectorTokensQueryParams, resp ...*http.Response) ([]HecTokenAccessResponse, error)
+	/*
+		PostCollectorTokens - Creates dsphec tokens.
+		Parameters:
+			hecTokenCreateRequest: The API request schema for the token.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	PostCollectorTokens(hecTokenCreateRequest HecTokenCreateRequest, resp ...*http.Response) (*HecTokenCreateResponse, error)
+	/*
 		PostEvents - Sends events.
 		Parameters:
 			event
@@ -73,4 +107,12 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	PostMetrics(metricEvent []MetricEvent, resp ...*http.Response) (*HttpResponse, error)
+	/*
+		PutCollectorToken - Update the metadata of a dsphec token by name.
+		Parameters:
+			tokenName
+			hecTokenUpdateRequest: The API request schema for the token.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	PutCollectorToken(tokenName string, hecTokenUpdateRequest HecTokenUpdateRequest, resp ...*http.Response) (*HecTokenAccessResponse, error)
 }

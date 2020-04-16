@@ -26,7 +26,6 @@ import (
 type Servicer interface {
 	/*
 		AddCertificate - Adds a certificate to a vacant slot on a tenant.
-		Each tenant can have up to five certificates.
 		Parameters:
 			certificate
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
