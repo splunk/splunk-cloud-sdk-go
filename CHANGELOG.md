@@ -1,5 +1,22 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.5.0
+## Version 5.0.0
+
+### Services
+
+#### Breaking Changes
+
+- Provisioner
+	- Removed endpoints: `CreateEntitlementsJob` and `GetEntitlementsJob`
+
+#### Features
+
+- Ingest
+  - Support for new operations: `deleteAllCollectorTokens`, `listCollectorTokens`, `postCollectorTokens`, `deleteCollectorToken`, `getCollectorToken`, `putCollectorToken`
+- Search
+  - Support for new operation: `deleteJob`
+
 ## Version 1.4.0
 ### Breaking Changes
 * Scloud v2.0 is released: all new commands and formats. Check https://dev.splunk.com/scs/docs/overview/tools/tools_scloud/ to learn more about Scloud v2.0

@@ -272,7 +272,7 @@ type Servicer interface {
 	RemoveRolePermission(role string, permission string, resp ...*http.Response) error
 	/*
 		RevokePrincipalAuthTokens - identity service endpoint
-		Revoke all existing tokens issued to a principal
+		Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 		Parameters:
 			principal: The principal name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
