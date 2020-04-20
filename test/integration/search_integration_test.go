@@ -237,9 +237,9 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
-		Timeout:       testutils.TestTimeOut,
+		Timeout:       testutils.SearchTestTimeout,
 		RetryRequests: true,
-		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 600}},
+		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 800}},
 	})
 
 	concurrentSearches := 20
@@ -286,7 +286,7 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
-		Timeout:       testutils.TestTimeOut,
+		Timeout:       testutils.SearchTestTimeout,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
 	})

@@ -215,6 +215,8 @@ func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
 		assert.NotEmpty(t, dataset.JobDataset().Id)
 	} else if dataset.IsMetricDataset() {
 		assert.NotEmpty(t, dataset.MetricDataset().Id)
+	} else if dataset.IsImportDataset() {
+		assert.NotEmpty(t, dataset.ImportDataset().Id)
 	} else if dataset.IsKvCollectionDataset() {
 		assert.NotEmpty(t, dataset.KvCollectionDataset().Id)
 	} else if dataset.IsRawInterface() { //handle unknown kinds
@@ -352,8 +354,8 @@ func TestListAllDatasets(t *testing.T) {
 	ds, err := createLookupDataset(t, makeDSName("getall"))
 	require.NoError(t, err)
 	defer cleanupDataset(t, ds.LookupDataset().Id)
-
-	datasets, err := getSdkClient(t).CatalogService.ListDatasets(nil)
+	req := &catalog.ListDatasetsQueryParams{Filter: "kind!=\"reserved\""}
+	datasets, err := getSdkClient(t).CatalogService.ListDatasets(req)
 	require.NoError(t, err)
 	assert.NotZero(t, len(datasets))
 
