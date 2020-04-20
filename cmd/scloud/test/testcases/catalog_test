@@ -3,20 +3,18 @@ catalog create-dataset-view-dataset --id 5e705c169a3bd200010d13b1 --kind view --
 catalog get-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
 
 # Test commands for dataset fields - create, list, get, update and delete
-# todo: Currently, user cannot provide the value for fieldid and hence unable to get, update or delete field by id in test engine
-# The commands below were run on command line and hence fieldid is present.
-#catalog list-fields --count 10 --orderby name asc --offset 2
-#catalog create-field-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_view --datatype STRING --description scloud_test_catalog_field_description --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name --prevalence UNKNOWN --summary scloud_test_catalog_field_summary --title scloud_test_catalog_field_title
-#catalog create-field-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --datatype NUMBER --description scloud_test_catalog_field_description2 --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name2 --prevalence UNKNOWN --summary scloud_test_catalog_field_summary2 --title scloud_test_catalog_field_title2
-#catalog list-fields-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --count 10 --orderby name asc
-#catalog list-fields-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --count 10 --orderby name asc
-#catalog get-field-by-id --fieldid 5e72fb38e425840001f0ebdf
-#catalog get-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf
-#catalog get-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
-#catalog update-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf --datatype STRING --fieldtype MEASURE --prevalence SOME --description scloud_test_catalog_field_description_updated --name scloud_test_catalog_field_name_updated --summary scloud_test_catalog_field_summary_updated --title scloud_test_catalog_field_title_updated
-#catalog update-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf --datatype DATE --fieldtype DIMENSION --prevalence ALL --description scloud_test_catalog_field_description_updated2 --name scloud_test_catalog_field_name_updated2 --summary scloud_test_catalog_field_summary_updated2 --title scloud_test_catalog_field_title_updated2
-#catalog delete-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72f8c7e425840001f0eb2b
-#catalog delete-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+catalog list-fields --count 10 --orderby name asc --offset 2
+catalog create-field-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_view --datatype STRING --description scloud_test_catalog_field_description --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name --prevalence UNKNOWN --summary scloud_test_catalog_field_summary --title scloud_test_catalog_field_title
+catalog create-field-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --datatype NUMBER --description scloud_test_catalog_field_description2 --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name2 --prevalence UNKNOWN --summary scloud_test_catalog_field_summary2 --title scloud_test_catalog_field_title2
+catalog list-fields-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --count 10 --orderby name asc
+catalog list-fields-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --count 10 --orderby name asc
+catalog get-field-by-id --fieldid 5e72fb38e425840001f0ebdf
+catalog get-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf
+catalog get-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+catalog update-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf --datatype STRING --fieldtype MEASURE --prevalence SOME --description scloud_test_catalog_field_description_updated --name scloud_test_catalog_field_name_updated --summary scloud_test_catalog_field_summary_updated --title scloud_test_catalog_field_title_updated
+catalog update-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf --datatype DATE --fieldtype DIMENSION --prevalence ALL --description scloud_test_catalog_field_description_updated2 --name scloud_test_catalog_field_name_updated2 --summary scloud_test_catalog_field_summary_updated2 --title scloud_test_catalog_field_title_updated2
+catalog delete-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72f8c7e425840001f0eb2b
+catalog delete-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
 
 # Test commands for view dataset - update, list and delete
 catalog update-dataset-by-id-view-dataset --datasetid 5e705c169a3bd200010d13b1 --name scloud_test_catalog_name_updated1 --module scloudtestcatalogmoduleupdated1
@@ -29,32 +27,35 @@ catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
 
 # Test commands for metric dataset - create, update and delete
 # Index datasets if not deleted immediately achieve the 'reserved' status and cannot be deleted later
-catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
+catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric1 --frozen-time-period-in-secs 60 --disabled true
 catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
 catalog update-dataset-metric-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
-catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
 
-# Test commands for import dataset - create, get, delete
+# Test commands for import dataset - create, get, update, delete
 catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+catalog update-dataset-import-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
 catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
 catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
+catalog update-dataset-by-id-import-dataset --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
 catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
 catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
 catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
 catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-# Test commands for import dataset - create, update, delete
+catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
+
+# Test commands for kv-collection dataset - create, update, delete
 catalog create-dataset-kv-collection-dataset --id 5e705c169a3bd200010d13b1 --kind kvcollection --module scloudtestcatalogmodule --name scloud_test_catalog_name_kv
 catalog update-dataset-by-id-kv-collection-dataset --datasetid 5e705c169a3bd200010d13b1
 catalog update-dataset-kv-collection-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_kv
 catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
 
-# Test commands for import dataset - create, update, delete
+# Test commands for lookup dataset - create, update, delete
 catalog create-dataset-lookup-dataset --id 5e705c169a3bd200010d13b1 --kind lookup --module scloudtestcatalogmodule --name scloud_test_catalog_name_lookup --case-sensitive-match true --external-kind kvcollection --external-name scloud_test_catalog_external_name --filter kind=="lookup"
 catalog update-dataset-by-id-lookup-dataset --datasetid 5e705c169a3bd200010d13b1 --module scloudtestcatalogmoduleupdated1 --name scloud_test_catalog_name_lookup_updated1 --case-sensitive-match false --external-name scloud_test_catalog_external_name_updated1
 catalog update-dataset-lookup-dataset --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_lookup_updated1 --module scloudtestcatalogmoduleupdated2 --name scloud_test_catalog_name_lookup_updated2 --case-sensitive-match true --external-name scloud_test_catalog_external_name_updated2
@@ -73,9 +74,13 @@ catalog get-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
 catalog get-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
 catalog list-dashboards --count 10 --filter id=="5e718bf99ad1fe0001ffde1d" --orderby modified desc --offset 2
 
-# Test commands to list annotations of dashboards
+# Test commands for annotations: list, delete
 catalog list-annotations-for-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
 catalog list-annotations-for-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
+catalog delete-annotation-of-dashboard-by-id --annotationid 5e9a1e90ec24390001289a11 --dashboardid 5e9a1e90ec24390001289b11
+catalog delete-annotation-of-dashboard-by-resource-name --annotationid 5e9a1e90ec24390001289a11 --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
+catalog delete-annotation-of-dataset-by-id --annotationid 5e9a1e90ec24390001289a11 --datasetid 5e9a1e90ec24390001289b11
+catalog delete-annotation-of-dataset-by-resource-name --annotationid 5e9a1e90ec24390001289a11 --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
 
 # Test commands for dashboards - Update and delete
 catalog update-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d --name scloud_test_catalog_name_dashboard_updated --module scloudtestcatalogmoduleupdated --isactive false
@@ -88,7 +93,12 @@ catalog delete-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d
 # Test commands for modules - list
 catalog list-modules
 
-# Test commands for relationship - list (create commands are not yet implemented, delete commands to be included with create commands)
+# Test commands for relationship - list (create, get, update and delete fail when tested against the server - Bug registered - SCP-26048)
+# Once resolved unskip these as part of https://jira.splunk.com/browse/DVPL-8150
+#catalog create-relationship --id 000000000000000000000600  --kind ONE --module scloudtestcatalogmodule --name testDataset --sourceid 5e705c169a3bd200010d18b1 --targetid 5e705c169a3bd200010d16b1
+#catalog get-relationship-by-id --relationshipid 000000000000000000000600
+#catalog update-relationship-by-id --relationshipid 000000000000000000000600 --name testDatasetUpdated --owner ownerUpdated
+#catalog delete-relationship-by-id --relationshipid 000000000000000000000600
 catalog list-relationships --count 10 --orderby id desc --offset 2 --filter name=="provider"
 
 # Test commands for workflows - create, get, list
@@ -184,10 +194,3 @@ catalog delete-action-by-id-for-rule-by-id --actionid 5d1bdbd77fb3db0001e45ac1 -
 
 # Test commands for rules - delete (by id)
 catalog delete-rule-by-id --ruleid 5d1bdbd77fb3db0001e45ea4
-
-# Test commands for import dataset - update
-# todo: Failing with error: Patch not allowed on internal dataset error; Catalog team is working on this
-# catalog update-dataset-by-id-import-dataset --datasetid 5e71b4080d5a0500017281db --name scloud_test_catalog_name_import_updated --module scloudtestcatalognewmodule
-# catalog update-dataset-import-dataset --datasetresourcename scloudtestcatalognewmodule.scloud_test_catalog_name_import_updated --name scloud_test_catalog_name_import_updated2 --module scloudtestcatalognewmodule2
-
-# todo: Test commands for job dataset: currently not available through admin gateway
