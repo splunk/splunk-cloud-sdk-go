@@ -6,6 +6,54 @@ REQUEST BODY:{{"kind":"view","name":"scloud_test_catalog_name_view","search":"se
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:<nil>
 
+#testcase: catalog list-fields --count 10 --orderby name asc --offset 2
+REQUEST URL:catalog/v2beta1/fields?count=10&offset=2&orderby=name+asc
+REQUEST BODY:<nil>
+
+#testcase: catalog create-field-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_view --datatype STRING --description scloud_test_catalog_field_description --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name --prevalence UNKNOWN --summary scloud_test_catalog_field_summary --title scloud_test_catalog_field_title
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_view/fields
+REQUEST BODY:{{"name":"scloud_test_catalog_field_name","datatype":"STRING","description":"scloud_test_catalog_field_description","fieldtype":"UNKNOWN","indexed":false,"prevalence":"UNKNOWN","summary":"scloud_test_catalog_field_summary","title":"scloud_test_catalog_field_title"}}
+
+#testcase: catalog create-field-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --datatype NUMBER --description scloud_test_catalog_field_description2 --fieldtype UNKNOWN --indexed false --name scloud_test_catalog_field_name2 --prevalence UNKNOWN --summary scloud_test_catalog_field_summary2 --title scloud_test_catalog_field_title2
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields
+REQUEST BODY:{{"name":"scloud_test_catalog_field_name2","datatype":"NUMBER","description":"scloud_test_catalog_field_description2","fieldtype":"UNKNOWN","indexed":false,"prevalence":"UNKNOWN","summary":"scloud_test_catalog_field_summary2","title":"scloud_test_catalog_field_title2"}}
+
+#testcase: catalog list-fields-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --count 10 --orderby name asc
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric/fields?count=10&orderby=name+asc
+REQUEST BODY:<nil>
+
+#testcase: catalog list-fields-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --count 10 --orderby name asc
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields?count=10&orderby=name+asc
+REQUEST BODY:<nil>
+
+#testcase: catalog get-field-by-id --fieldid 5e72fb38e425840001f0ebdf
+REQUEST URL:catalog/v2beta1/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:<nil>
+
+#testcase: catalog get-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:<nil>
+
+#testcase: catalog get-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:<nil>
+
+#testcase: catalog update-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72fb38e425840001f0ebdf --datatype STRING --fieldtype MEASURE --prevalence SOME --description scloud_test_catalog_field_description_updated --name scloud_test_catalog_field_name_updated --summary scloud_test_catalog_field_summary_updated --title scloud_test_catalog_field_title_updated
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:{{"datatype":"STRING","description":"scloud_test_catalog_field_description_updated","fieldtype":"MEASURE","name":"scloud_test_catalog_field_name_updated","prevalence":"SOME","summary":"scloud_test_catalog_field_summary_updated","title":"scloud_test_catalog_field_title_updated"}}
+
+#testcase: catalog update-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf --datatype DATE --fieldtype DIMENSION --prevalence ALL --description scloud_test_catalog_field_description_updated2 --name scloud_test_catalog_field_name_updated2 --summary scloud_test_catalog_field_summary_updated2 --title scloud_test_catalog_field_title_updated2
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:{{"datatype":"DATE","description":"scloud_test_catalog_field_description_updated2","fieldtype":"DIMENSION","name":"scloud_test_catalog_field_name_updated2","prevalence":"ALL","summary":"scloud_test_catalog_field_summary_updated2","title":"scloud_test_catalog_field_title_updated2"}}
+
+#testcase: catalog delete-field-by-id-for-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --fieldid 5e72f8c7e425840001f0eb2b
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric/fields/5e72f8c7e425840001f0eb2b
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-field-by-id-for-dataset-by-id --datasetid 5e705c169a3bd200010d13b1 --fieldid 5e72fb38e425840001f0ebdf
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields/5e72fb38e425840001f0ebdf
+REQUEST BODY:<nil>
+
 #testcase: catalog update-dataset-by-id-view-dataset --datasetid 5e705c169a3bd200010d13b1 --name scloud_test_catalog_name_updated1 --module scloudtestcatalogmoduleupdated1
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated1","name":"scloud_test_catalog_name_updated1"}}
@@ -34,9 +82,9 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
+#testcase: catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric1 --frozen-time-period-in-secs 60 --disabled true
 REQUEST URL:catalog/v2beta1/datasets
-REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_metric","frozenTimePeriodInSecs":60,"id":"5e705c169a3bd200010d16b1","module":"scloudtestcatalogmodule"}}
+REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_metric1","frozenTimePeriodInSecs":60,"id":"5e705c169a3bd200010d16b1","module":"scloudtestcatalogmodule"}}
 
 #testcase: catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
@@ -46,32 +94,36 @@ REQUEST BODY:{{"disabled":false,"frozenTimePeriodInSecs":80}}
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric
 REQUEST BODY:{{"frozenTimePeriodInSecs":80}}
 
-#testcase: catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
-REQUEST BODY:<nil>
-
 #testcase: catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/imported-by
 REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
+
+#testcase: catalog update-dataset-import-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
+REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
 
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d14b1/imported-by
+#testcase: catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/imported-by
 REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
 
 #testcase: catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import?maxstale=10
 REQUEST BODY:<nil>
 
+#testcase: catalog update-dataset-by-id-import-dataset --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1
+REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
+
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d14b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d14b1/importedby
+#testcase: catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/importedby
 REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
 
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
@@ -84,6 +136,10 @@ REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_na
 
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
+REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
 REQUEST BODY:<nil>
 
 #testcase: catalog create-dataset-kv-collection-dataset --id 5e705c169a3bd200010d13b1 --kind kvcollection --module scloudtestcatalogmodule --name scloud_test_catalog_name_kv
@@ -160,6 +216,22 @@ REQUEST BODY:<nil>
 
 #testcase: catalog list-annotations-for-dashboard-by-resource-name --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
 REQUEST URL:catalog/v2beta1/dashboards/scloudtestcatalogmodule.scloud_test_catalog_name_dashboard/annotations
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-annotation-of-dashboard-by-id --annotationid 5e9a1e90ec24390001289a11 --dashboardid 5e9a1e90ec24390001289b11
+REQUEST URL:catalog/v2beta1/dashboards/5e9a1e90ec24390001289b11/annotations/5e9a1e90ec24390001289a11
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-annotation-of-dashboard-by-resource-name --annotationid 5e9a1e90ec24390001289a11 --dashboardresourcename scloudtestcatalogmodule.scloud_test_catalog_name_dashboard
+REQUEST URL:catalog/v2beta1/dashboards/scloudtestcatalogmodule.scloud_test_catalog_name_dashboard/annotations/5e9a1e90ec24390001289a11
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-annotation-of-dataset-by-id --annotationid 5e9a1e90ec24390001289a11 --datasetid 5e9a1e90ec24390001289b11
+REQUEST URL:catalog/v2beta1/datasets/5e9a1e90ec24390001289b11/annotations/5e9a1e90ec24390001289a11
+REQUEST BODY:<nil>
+
+#testcase: catalog delete-annotation-of-dataset-by-resource-name --annotationid 5e9a1e90ec24390001289a11 --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/annotations/5e9a1e90ec24390001289a11
 REQUEST BODY:<nil>
 
 #testcase: catalog update-dashboard-by-id --dashboardid 5e718bf99ad1fe0001ffde1d --name scloud_test_catalog_name_dashboard_updated --module scloudtestcatalogmoduleupdated --isactive false
