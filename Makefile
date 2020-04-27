@@ -85,10 +85,10 @@ upload_config:
 	@echo "$(DATETIME)" > $(CONFIG_VER_FILE)
 
 prereqs:
-	echo "Installing golangci-lint .."
-	GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	echo "Downloading modules .."
 	GO111MODULE=on go mod download
+	echo "Installing golangci-lint .."
+	GO111MODULE=on go install github.com/golangci/golangci-lint/cmd/golangci-lint
 	echo "Installing goimports .."
 	GO111MODULE=on go install golang.org/x/tools/cmd/goimports
 	echo "Installing gotestsum .."
