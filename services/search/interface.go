@@ -36,6 +36,14 @@ type Servicer interface {
 	*/
 	CreateJob(searchJob SearchJob, resp ...*http.Response) (*SearchJob, error)
 	/*
+		DeleteJob - search service endpoint
+		Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+		Parameters:
+			deleteSearchJob
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteJob(deleteSearchJob DeleteSearchJob, resp ...*http.Response) (*DeleteSearchJob, error)
+	/*
 		GetJob - search service endpoint
 		Return the search job with the specified search ID (SID).
 		Parameters:

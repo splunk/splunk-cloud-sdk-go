@@ -23,6 +23,58 @@
 
 package search
 
+// A fully-constructed delete search job, including read-only fields.
+type DeleteSearchJob struct {
+	// The index to delete events from.
+	Index string `json:"index"`
+	// The module to run the delete search job in. The default module is used if module field is empty.
+	Module string `json:"module"`
+	// Specifies that the delete search job will contain side effects, with possible security risks.
+	AllowSideEffects *bool `json:"allowSideEffects,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to false.
+	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to false.
+	CollectFieldSummary *bool `json:"collectFieldSummary,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to false.
+	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
+	// The time, in GMT, that the search job is finished. Empty if the search job has not completed.
+	CompletionTime *string `json:"completionTime,omitempty"`
+	// The time, in GMT, that the search job is dispatched.
+	DispatchTime *string `json:"dispatchTime,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to false.
+	EnablePreview *bool `json:"enablePreview,omitempty"`
+	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
+	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).
+	MaxTime  *float32  `json:"maxTime,omitempty"`
+	Messages []Message `json:"messages,omitempty"`
+	// The name of the created search job.
+	Name *string `json:"name,omitempty"`
+	// An estimate of the percent of time remaining before the delete search job completes.
+	PercentComplete *int32 `json:"percentComplete,omitempty"`
+	// Events satisfying this predicate are going to be deleted. To delete all events from the index, \"true\" should be specified for this field.
+	Prediate *string `json:"prediate,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to false.
+	PreviewAvailable *string `json:"previewAvailable,omitempty"`
+	// The SPL search string that is generated based on index, module and predicate that are specified.
+	Query *string `json:"query,omitempty"`
+	// Represents parameters on the search job such as 'earliest' and 'latest'.
+	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
+	// This field does not apply to delete search jobs and is set to 0.
+	RequiredFreshness *float32 `json:"requiredFreshness,omitempty"`
+	// The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+	ResolvedEarliest *string `json:"resolvedEarliest,omitempty"`
+	// The latest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+	ResolvedLatest *string `json:"resolvedLatest,omitempty"`
+	// The number of results produced so far by the delete search job that are going to be deleted.
+	ResultsAvailable *int32 `json:"resultsAvailable,omitempty"`
+	// This field does not apply to delete search jobs and is defaulted to 0.
+	ResultsPreviewAvailable *int32 `json:"resultsPreviewAvailable,omitempty"`
+	// The ID assigned to the delete search job.
+	Sid    *string       `json:"sid,omitempty"`
+	Status *SearchStatus `json:"status,omitempty"`
+}
+
 // Fields statistics summary model of the events to-date, for search ID (sid).
 type FieldsSummary struct {
 	// The amount of time, in seconds, that a time bucket spans from the earliest to the latest time.

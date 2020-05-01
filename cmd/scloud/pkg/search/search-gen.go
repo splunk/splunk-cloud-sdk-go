@@ -146,6 +146,104 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeleteJob Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+
+func DeleteJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var earliestDefault string
+	earliest := &earliestDefault
+	err = flags.ParseFlag(cmd.Flags(), "earliest", &earliest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "earliest": ` + err.Error())
+	}
+	var extractAllFieldsDefault bool
+	extractAllFields := &extractAllFieldsDefault
+	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", &extractAllFields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
+	}
+	var index string
+	err = flags.ParseFlag(cmd.Flags(), "index", &index)
+	if err != nil {
+		return fmt.Errorf(`error parsing "index": ` + err.Error())
+	}
+	var latestDefault string
+	latest := &latestDefault
+	err = flags.ParseFlag(cmd.Flags(), "latest", &latest)
+	if err != nil {
+		return fmt.Errorf(`error parsing "latest": ` + err.Error())
+	}
+	var maxTimeDefault float32
+	maxTime := &maxTimeDefault
+	err = flags.ParseFlag(cmd.Flags(), "max-time", &maxTime)
+	if err != nil {
+		return fmt.Errorf(`error parsing "max-time": ` + err.Error())
+	}
+	var messages []model.Message
+	err = flags.ParseFlag(cmd.Flags(), "messages", &messages)
+	if err != nil {
+		return fmt.Errorf(`error parsing "messages": ` + err.Error())
+	}
+	var module string
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var predicateDefault string
+	predicate := &predicateDefault
+	err = flags.ParseFlag(cmd.Flags(), "predicate", &predicate)
+	if err != nil {
+		return fmt.Errorf(`error parsing "predicate": ` + err.Error())
+	}
+	var relativeTimeAnchorDefault string
+	relativeTimeAnchor := &relativeTimeAnchorDefault
+	err = flags.ParseFlag(cmd.Flags(), "relative-time-anchor", &relativeTimeAnchor)
+	if err != nil {
+		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
+	}
+	var statusDefault model.SearchStatus
+	status := &statusDefault
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+	var timezone interface{}
+	err = flags.ParseFlag(cmd.Flags(), "timezone", &timezone)
+	if err != nil {
+		return fmt.Errorf(`error parsing "timezone": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DeleteSearchJob{
+
+		ExtractAllFields: extractAllFields,
+		Index:            index,
+		MaxTime:          maxTime,
+		Messages:         messages,
+		Module:           module,
+		Prediate:         predicate,
+		QueryParameters: &model.QueryParameters{
+			Earliest:           earliest,
+			Latest:             latest,
+			RelativeTimeAnchor: relativeTimeAnchor,
+			Timezone:           timezone,
+		},
+		Status: status,
+	}
+
+	resp, err := client.SearchService.DeleteJob(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // GetJob Return the search job with the specified search ID (SID).
 func GetJob(cmd *cobra.Command, args []string) error {
 

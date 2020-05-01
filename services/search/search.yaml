@@ -82,6 +82,143 @@ components:
       schema:
         type: string
   schemas:
+    DeleteSearchJob:
+      description: A fully-constructed delete search job, including read-only fields.
+      properties:
+        allowSideEffects:
+          default: true
+          description: |
+            Specifies that the delete search job will contain side effects, with possible security risks.
+          readOnly: true
+          type: boolean
+        collectEventSummary:
+          default: false
+          description: |
+            This field does not apply to delete search jobs and is defaulted to false.
+          readOnly: true
+          type: boolean
+        collectFieldSummary:
+          default: false
+          description: |
+            This field does not apply to delete search jobs and is defaulted to false.
+          readOnly: true
+          type: boolean
+        collectTimeBuckets:
+          default: false
+          description: |
+            This field does not apply to delete search jobs and is defaulted to false.
+          readOnly: true
+          type: boolean
+        completionTime:
+          description: |
+            The time, in GMT, that the search job is finished. Empty if the search job has not completed.
+          readOnly: true
+          type: string
+        dispatchTime:
+          description: |
+            The time, in GMT, that the search job is dispatched.
+          readOnly: true
+          type: string
+        enablePreview:
+          default: false
+          description: |
+            This field does not apply to delete search jobs and is defaulted to false.
+          readOnly: true
+          type: boolean
+        extractAllFields:
+          default: false
+          description: |
+            Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
+          type: boolean
+        index:
+          description: The index to delete events from.
+          type: string
+        maxTime:
+          default: 3600
+          description: |
+            The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).
+          maximum: 3600
+          minimum: 1
+          type: number
+        messages:
+          items:
+            $ref: '#/components/schemas/Message'
+          type: array
+        module:
+          description: The module to run the delete search job in. The default module
+            is used if module field is empty.
+          type: string
+        name:
+          description: The name of the created search job.
+          maxLength: 100
+          readOnly: true
+          type: string
+        percentComplete:
+          default: 0
+          description: An estimate of the percent of time remaining before the delete
+            search job completes.
+          readOnly: true
+          type: integer
+        prediate:
+          description: Events satisfying this predicate are going to be deleted. To
+            delete all events from the index, "true" should be specified for this
+            field.
+          type: string
+        previewAvailable:
+          default: false
+          description: This field does not apply to delete search jobs and is defaulted
+            to false.
+          readOnly: true
+          type: string
+        query:
+          description: The SPL search string that is generated based on index, module
+            and predicate that are specified.
+          readOnly: true
+          type: string
+        queryParameters:
+          allOf:
+            - $ref: '#/components/schemas/QueryParameters'
+          description: Represents parameters on the search job such as 'earliest'
+            and 'latest'.
+        requiredFreshness:
+          default: 0
+          description: |
+            This field does not apply to delete search jobs and is set to 0.
+          readOnly: true
+          type: number
+        resolvedEarliest:
+          description: |
+            The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+          readOnly: true
+          type: string
+        resolvedLatest:
+          description: |
+            The latest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+          readOnly: true
+          type: string
+        resultsAvailable:
+          default: 0
+          description: The number of results produced so far by the delete search
+            job that are going to be deleted.
+          readOnly: true
+          type: integer
+        resultsPreviewAvailable:
+          default: 0
+          description: This field does not apply to delete search jobs and is defaulted
+            to 0.
+          readOnly: true
+          type: integer
+        sid:
+          description: The ID assigned to the delete search job.
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/SearchStatus'
+      required:
+        - index
+        - module
+        - predicate
+      type: object
     Error:
       properties:
         code:
@@ -141,7 +278,7 @@ components:
               typeSpecial:
                 type: string
             required:
-            - name
+              - name
             type: object
           type: array
         messages:
@@ -157,7 +294,7 @@ components:
         wait:
           type: string
       required:
-      - results
+        - results
       type: object
     Message:
       description: The message field in search results or search jobs. The types of
@@ -167,10 +304,10 @@ components:
           type: string
         type:
           enum:
-          - INFO
-          - DEBUG
-          - FATAL
-          - ERROR
+            - INFO
+            - DEBUG
+            - FATAL
+            - ERROR
           type: string
     QueryParameters:
       description: Represents parameters on the search job such as 'earliest' and
@@ -278,7 +415,7 @@ components:
           type: string
         queryParameters:
           allOf:
-          - $ref: '#/components/schemas/QueryParameters'
+            - $ref: '#/components/schemas/QueryParameters'
           description: Represents parameters on the search job such as 'earliest'
             and 'latest'.
         requiredFreshness:
@@ -316,16 +453,16 @@ components:
         status:
           $ref: '#/components/schemas/SearchStatus'
       required:
-      - query
+        - query
       type: object
     SearchStatus:
       description: |
         The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.
       enum:
-      - running
-      - done
-      - canceled
-      - failed
+        - running
+        - done
+        - canceled
+        - failed
       type: string
     SingleFieldSummary:
       description: Summary of each field.
@@ -353,7 +490,7 @@ components:
           description: An array of the values in the field.
           items:
             allOf:
-            - $ref: '#/components/schemas/SingleValueMode'
+              - $ref: '#/components/schemas/SingleValueMode'
           type: array
         numericCount:
           description: The count of the numeric values in the field.
@@ -417,7 +554,7 @@ components:
         buckets:
           items:
             allOf:
-            - $ref: '#/components/schemas/SingleTimeBucket'
+              - $ref: '#/components/schemas/SingleTimeBucket'
           type: array
         cursorTime:
           description: Identifies where the cursor is in processing the events. The
@@ -435,11 +572,11 @@ components:
             values you can PATCH are 'canceled' and 'finalized'. You can PATCH the
             'canceled' status only to a search job that is running.
           enum:
-          - canceled
-          - finalized
+            - canceled
+            - finalized
           type: string
       required:
-      - status
+        - status
       type: object
     listPreviewResultsResponse:
       description: The structure of the response body for the preview search results
@@ -468,7 +605,7 @@ components:
               typeSpecial:
                 type: string
             required:
-            - name
+              - name
             type: object
           type: array
         isPreviewStable:
@@ -486,8 +623,8 @@ components:
         wait:
           type: string
       required:
-      - results
-      - isPreviewStable
+        - results
+        - isPreviewStable
       type: object
   securitySchemes:
     BasicAuth:
@@ -507,9 +644,9 @@ paths:
       description: Return the matching list of search jobs.
       operationId: listJobs
       parameters:
-      - $ref: '#/components/parameters/Count'
-      - $ref: '#/components/parameters/StatusFilter'
-      - $ref: '#/components/parameters/SidFilter'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/StatusFilter'
+        - $ref: '#/components/parameters/SidFilter'
       responses:
         "200":
           content:
@@ -528,8 +665,8 @@ paths:
         "500":
           description: An internal service error occurred.
     parameters:
-    - $ref: '#/components/parameters/tenant'
-    - $ref: '#/components/parameters/AuthorizationHeader'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/AuthorizationHeader'
     post:
       description: Creates a search job.
       operationId: createJob
@@ -583,9 +720,9 @@ paths:
         "500":
           description: An internal service error occurred.
     parameters:
-    - $ref: '#/components/parameters/AuthorizationHeader'
-    - $ref: '#/components/parameters/tenant'
-    - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/AuthorizationHeader'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
     patch:
       description: Update the search job with the specified search ID (SID) with an
         action.
@@ -618,11 +755,11 @@ paths:
         ID (SID).
       operationId: listResults
       parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
-      - $ref: '#/components/parameters/count'
-      - $ref: '#/components/parameters/offset'
-      - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/tenant'
+        - $ref: '#/components/parameters/sid'
+        - $ref: '#/components/parameters/count'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/Field'
       responses:
         "200":
           content:
@@ -648,10 +785,10 @@ paths:
         search ID (SID). Can be used when a job is running to return interim results.
       operationId: listPreviewResults
       parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
-      - $ref: '#/components/parameters/count'
-      - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/tenant'
+        - $ref: '#/components/parameters/sid'
+        - $ref: '#/components/parameters/count'
+        - $ref: '#/components/parameters/offset'
       responses:
         "200":
           content:
@@ -678,13 +815,13 @@ paths:
       description: Return events summary, for search ID (SID) search.
       operationId: listEventsSummary
       parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
-      - $ref: '#/components/parameters/count'
-      - $ref: '#/components/parameters/offset'
-      - $ref: '#/components/parameters/Field'
-      - $ref: '#/components/parameters/Earliest'
-      - $ref: '#/components/parameters/Latest'
+        - $ref: '#/components/parameters/tenant'
+        - $ref: '#/components/parameters/sid'
+        - $ref: '#/components/parameters/count'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/Field'
+        - $ref: '#/components/parameters/Earliest'
+        - $ref: '#/components/parameters/Latest'
       responses:
         "200":
           content:
@@ -711,10 +848,10 @@ paths:
         (SID) search.
       operationId: listFieldsSummary
       parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
-      - $ref: '#/components/parameters/Earliest'
-      - $ref: '#/components/parameters/Latest'
+        - $ref: '#/components/parameters/tenant'
+        - $ref: '#/components/parameters/sid'
+        - $ref: '#/components/parameters/Earliest'
+        - $ref: '#/components/parameters/Latest'
       responses:
         "200":
           content:
@@ -741,8 +878,8 @@ paths:
         read to-date, for search ID(SID) search.
       operationId: listTimeBuckets
       parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
+        - $ref: '#/components/parameters/tenant'
+        - $ref: '#/components/parameters/sid'
       responses:
         "200":
           content:
@@ -763,5 +900,35 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
+  /{tenant}/search/v2beta1/jobs/delete:
+    parameters:
+      - $ref: '#/components/parameters/AuthorizationHeader'
+      - $ref: '#/components/parameters/tenant'
+    post:
+      description: |
+        Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+      operationId: deleteJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteSearchJob'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSearchJob'
+          description: The delete search job was created successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn’t authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 676f1fdc36fd7963f8e3e2c365d444cd07e5cb57 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit eeca479623b096d60a163519a72a8ef9e72ac25d path: search/v2beta1/openapi.yaml

@@ -15,18 +15,11 @@ var activatePipelineCmd = &cobra.Command{
 	RunE:  impl.ActivatePipeline,
 }
 
-// compileDSL -- Compiles the Streams DSL and returns Streams JSON.
-var compileDSLCmd = &cobra.Command{
-	Use:   "compile-dsl",
-	Short: "Compiles the Streams DSL and returns Streams JSON.",
-	RunE:  impl.CompileDSL,
-}
-
-// compileSPL -- Compiles SPL2 and returns Streams JSON.
-var compileSPLCmd = &cobra.Command{
-	Use:   "compile-spl",
-	Short: "Compiles SPL2 and returns Streams JSON.",
-	RunE:  impl.CompileSPL,
+// compile -- Compiles SPL2 and returns streams JSON.
+var compileCmd = &cobra.Command{
+	Use:   "compile",
+	Short: "Compiles SPL2 and returns streams JSON.",
+	RunE:  impl.Compile,
 }
 
 // createConnection -- Create a new DSP connection.
@@ -34,13 +27,6 @@ var createConnectionCmd = &cobra.Command{
 	Use:   "create-connection",
 	Short: "Create a new DSP connection.",
 	RunE:  impl.CreateConnection,
-}
-
-// createGroup -- Create a new group function by combining the Streams JSON of two or more functions.
-var createGroupCmd = &cobra.Command{
-	Use:   "create-group",
-	Short: "Create a new group function by combining the Streams JSON of two or more functions.",
-	RunE:  impl.CreateGroup,
 }
 
 // createPipeline -- Creates a pipeline.
@@ -64,6 +50,13 @@ var deactivatePipelineCmd = &cobra.Command{
 	RunE:  impl.DeactivatePipeline,
 }
 
+// decompile -- Decompiles UPL and returns SPL.
+var decompileCmd = &cobra.Command{
+	Use:   "decompile",
+	Short: "Decompiles UPL and returns SPL.",
+	RunE:  impl.Decompile,
+}
+
 // deleteConnection -- Delete all versions of a connection by its id.
 var deleteConnectionCmd = &cobra.Command{
 	Use:   "delete-connection",
@@ -71,11 +64,11 @@ var deleteConnectionCmd = &cobra.Command{
 	RunE:  impl.DeleteConnection,
 }
 
-// deleteGroup -- Removes an existing group.
-var deleteGroupCmd = &cobra.Command{
-	Use:   "delete-group",
-	Short: "Removes an existing group.",
-	RunE:  impl.DeleteGroup,
+// deleteFile -- Delete file.
+var deleteFileCmd = &cobra.Command{
+	Use:   "delete-file",
+	Short: "Delete file.",
+	RunE:  impl.DeleteFile,
 }
 
 // deletePipeline -- Removes a pipeline.
@@ -92,25 +85,11 @@ var deleteTemplateCmd = &cobra.Command{
 	RunE:  impl.DeleteTemplate,
 }
 
-// expandGroup -- Creates and returns the expanded version of a group.
-var expandGroupCmd = &cobra.Command{
-	Use:   "expand-group",
-	Short: "[not implemented] Creates and returns the expanded version of a group.",
-	RunE:  impl.ExpandGroup,
-}
-
-// expandPipeline -- Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
-var expandPipelineCmd = &cobra.Command{
-	Use:   "expand-pipeline",
-	Short: "Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.",
-	RunE:  impl.ExpandPipeline,
-}
-
-// getGroup -- Returns the full Streams JSON of a group.
-var getGroupCmd = &cobra.Command{
-	Use:   "get-group",
-	Short: "Returns the full Streams JSON of a group.",
-	RunE:  impl.GetGroup,
+// getFilesMetadata -- Returns files metadata.
+var getFilesMetadataCmd = &cobra.Command{
+	Use:   "get-files-metadata",
+	Short: "Returns files metadata.",
+	RunE:  impl.GetFilesMetadata,
 }
 
 // getInputSchema -- Returns the input schema for a function in a pipeline.
@@ -120,10 +99,17 @@ var getInputSchemaCmd = &cobra.Command{
 	RunE:  impl.GetInputSchema,
 }
 
-// getOutputSchema -- Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.
+// getLookupTable -- Returns lookup table results.
+var getLookupTableCmd = &cobra.Command{
+	Use:   "get-lookup-table",
+	Short: "Returns lookup table results.",
+	RunE:  impl.GetLookupTable,
+}
+
+// getOutputSchema -- Returns the output schema for a specified function in a pipeline.
 var getOutputSchemaCmd = &cobra.Command{
 	Use:   "get-output-schema",
-	Short: "Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.",
+	Short: "Returns the output schema for a specified function in a pipeline.",
 	RunE:  impl.GetOutputSchema,
 }
 
@@ -211,25 +197,18 @@ var listTemplatesCmd = &cobra.Command{
 	RunE:  impl.ListTemplates,
 }
 
-// mergePipelines -- Combines two Streams JSON programs.
-var mergePipelinesCmd = &cobra.Command{
-	Use:   "merge-pipelines",
-	Short: "Combines two Streams JSON programs.",
-	RunE:  impl.MergePipelines,
+// patchPipeline -- Patches an existing pipeline.
+var patchPipelineCmd = &cobra.Command{
+	Use:   "patch-pipeline",
+	Short: "Patches an existing pipeline.",
+	RunE:  impl.PatchPipeline,
 }
 
-// putConnection -- Modifies an existing DSP connection.
+// putConnection -- Updates an existing DSP connection.
 var putConnectionCmd = &cobra.Command{
 	Use:   "put-connection",
-	Short: "Modifies an existing DSP connection.",
+	Short: "Updates an existing DSP connection.",
 	RunE:  impl.PutConnection,
-}
-
-// putGroup -- Update a group function combining the Streams JSON of two or more functions.
-var putGroupCmd = &cobra.Command{
-	Use:   "put-group",
-	Short: "[not implemented] Update a group function combining the Streams JSON of two or more functions.",
-	RunE:  impl.PutGroup,
 }
 
 // putTemplate -- Updates an existing template.
@@ -260,32 +239,32 @@ var stopPreviewCmd = &cobra.Command{
 	RunE:  impl.StopPreview,
 }
 
-// updateConnection -- Partially modifies an existing DSP connection.
+// updateConnection -- Patches an existing DSP connection.
 var updateConnectionCmd = &cobra.Command{
 	Use:   "update-connection",
-	Short: "Partially modifies an existing DSP connection.",
+	Short: "Patches an existing DSP connection.",
 	RunE:  impl.UpdateConnection,
 }
 
-// updateGroup -- Modify a group function by combining the Streams JSON of two or more functions.
-var updateGroupCmd = &cobra.Command{
-	Use:   "update-group",
-	Short: "[not implemented] Modify a group function by combining the Streams JSON of two or more functions.",
-	RunE:  impl.UpdateGroup,
-}
-
-// updatePipeline -- Partially modifies an existing pipeline.
+// updatePipeline -- Updates an existing pipeline.
 var updatePipelineCmd = &cobra.Command{
 	Use:   "update-pipeline",
-	Short: "Partially modifies an existing pipeline.",
+	Short: "Updates an existing pipeline.",
 	RunE:  impl.UpdatePipeline,
 }
 
-// updateTemplate -- Partially modifies an existing template.
+// updateTemplate -- Patches an existing template.
 var updateTemplateCmd = &cobra.Command{
 	Use:   "update-template",
-	Short: "Partially modifies an existing template.",
+	Short: "Patches an existing template.",
 	RunE:  impl.UpdateTemplate,
+}
+
+// uploadFile -- Upload new file.
+var uploadFileCmd = &cobra.Command{
+	Use:   "upload-file",
+	Short: "Upload new file.",
+	RunE:  impl.UploadFile,
 }
 
 // validatePipeline -- Verifies whether the Streams JSON is valid.
@@ -299,7 +278,7 @@ func init() {
 	streamsCmd.AddCommand(activatePipelineCmd)
 
 	var activatePipelineId string
-	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", "", "This is a required parameter. id of the pipeline to activate")
+	activatePipelineCmd.Flags().StringVar(&activatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	activatePipelineCmd.MarkFlagRequired("id")
 
 	var activatePipelineActivateLatestVersion string
@@ -311,18 +290,14 @@ func init() {
 	var activatePipelineSkipRestoreState string
 	activatePipelineCmd.Flags().StringVar(&activatePipelineSkipRestoreState, "skip-restore-state", "false", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
 
-	streamsCmd.AddCommand(compileDSLCmd)
+	streamsCmd.AddCommand(compileCmd)
 
-	var compileDSLInputDatafile string
-	compileDSLCmd.Flags().StringVar(&compileDSLInputDatafile, "input-datafile", "", "The input data file.")
+	var compileSpl string
+	compileCmd.Flags().StringVar(&compileSpl, "spl", "", "This is a required parameter. The SPL2 representation of a pipeline or function parameters.")
+	compileCmd.MarkFlagRequired("spl")
 
-	streamsCmd.AddCommand(compileSPLCmd)
-
-	var compileSPLInputDatafile string
-	compileSPLCmd.Flags().StringVar(&compileSPLInputDatafile, "input-datafile", "", "The input data file.")
-
-	var compileSPLSyntax string
-	compileSPLCmd.Flags().StringVar(&compileSPLSyntax, "syntax", "", "The parse parameters as arguments to this SPL2 command can accept values UPL, DSL, SPL, EVAL, WHERE, TIMECHART, FIELDS, MVEXPAND, REX, BIN, RENAME, STATS, STATS_BY, SELECT, EXPRESSION, FUNCTION, LITERAL, UNKNOWN")
+	var compileValidate string
+	compileCmd.Flags().StringVar(&compileValidate, "validate", "false", "A boolean flag to indicate whether the pipeline should be validated.")
 
 	streamsCmd.AddCommand(createConnectionCmd)
 
@@ -341,11 +316,6 @@ func init() {
 	var createConnectionName string
 	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
-
-	streamsCmd.AddCommand(createGroupCmd)
-
-	var createGroupInputDatafile string
-	createGroupCmd.Flags().StringVar(&createGroupInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(createPipelineCmd)
 
@@ -378,60 +348,43 @@ func init() {
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 
 	var deactivatePipelineId string
-	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "This is a required parameter. id of the pipeline to deactivate")
+	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	deactivatePipelineCmd.MarkFlagRequired("id")
 
 	var deactivatePipelineSkipSavepoint string
 	deactivatePipelineCmd.Flags().StringVar(&deactivatePipelineSkipSavepoint, "skip-savepoint", "false", "Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.")
 
+	streamsCmd.AddCommand(decompileCmd)
+
+	var decompileUpl string
+	decompileCmd.Flags().StringVar(&decompileUpl, "upl", "", "This is a required parameter. ")
+	decompileCmd.MarkFlagRequired("upl")
+
 	streamsCmd.AddCommand(deleteConnectionCmd)
 
 	var deleteConnectionConnectionId string
-	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
+	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	deleteConnectionCmd.MarkFlagRequired("connection-id")
 
-	streamsCmd.AddCommand(deleteGroupCmd)
+	streamsCmd.AddCommand(deleteFileCmd)
 
-	var deleteGroupGroupId string
-	deleteGroupCmd.Flags().StringVar(&deleteGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
-	deleteGroupCmd.MarkFlagRequired("group-id")
+	var deleteFileFileId string
+	deleteFileCmd.Flags().StringVar(&deleteFileFileId, "file-id", "", "This is a required parameter. File ID")
+	deleteFileCmd.MarkFlagRequired("file-id")
 
 	streamsCmd.AddCommand(deletePipelineCmd)
 
 	var deletePipelineId string
-	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter. id of the pipeline to delete")
+	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	deletePipelineCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(deleteTemplateCmd)
 
 	var deleteTemplateTemplateId string
-	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template to delete")
+	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
 
-	streamsCmd.AddCommand(expandGroupCmd)
-
-	var expandGroupArguments string
-	expandGroupCmd.Flags().StringVar(&expandGroupArguments, "arguments", "", "This is a required parameter. Function arguments for the given id. Overrides default values.")
-	expandGroupCmd.MarkFlagRequired("arguments")
-
-	var expandGroupGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
-	expandGroupCmd.MarkFlagRequired("group-id")
-
-	var expandGroupId string
-	expandGroupCmd.Flags().StringVar(&expandGroupId, "id", "", "This is a required parameter. The ID associated with your group function in the pipeline Streams JSON")
-	expandGroupCmd.MarkFlagRequired("id")
-
-	streamsCmd.AddCommand(expandPipelineCmd)
-
-	var expandPipelineInputDatafile string
-	expandPipelineCmd.Flags().StringVar(&expandPipelineInputDatafile, "input-datafile", "", "The input data file.")
-
-	streamsCmd.AddCommand(getGroupCmd)
-
-	var getGroupGroupId string
-	getGroupCmd.Flags().StringVar(&getGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
-	getGroupCmd.MarkFlagRequired("group-id")
+	streamsCmd.AddCommand(getFilesMetadataCmd)
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
 
@@ -443,10 +396,32 @@ func init() {
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter. The name of the input port.")
 	getInputSchemaCmd.MarkFlagRequired("target-port-name")
 
+	var getInputSchemaUplJson string
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaUplJson, "upl-json", "", "This is a required parameter. ")
+	getInputSchemaCmd.MarkFlagRequired("upl-json")
+
 	var getInputSchemaInputDatafile string
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "The input data file.")
 
+	streamsCmd.AddCommand(getLookupTableCmd)
+
+	var getLookupTableConnectionId string
+	getLookupTableCmd.Flags().StringVar(&getLookupTableConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
+	getLookupTableCmd.MarkFlagRequired("connection-id")
+
+	var getLookupTableOffset int32
+	getLookupTableCmd.Flags().Int32Var(&getLookupTableOffset, "offset", 0, "This is a required parameter. offset")
+	getLookupTableCmd.MarkFlagRequired("offset")
+
+	var getLookupTableSize int32
+	getLookupTableCmd.Flags().Int32Var(&getLookupTableSize, "size", 0, "This is a required parameter. size")
+	getLookupTableCmd.MarkFlagRequired("size")
+
 	streamsCmd.AddCommand(getOutputSchemaCmd)
+
+	var getOutputSchemaUplJson string
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaUplJson, "upl-json", "", "This is a required parameter. ")
+	getOutputSchemaCmd.MarkFlagRequired("upl-json")
 
 	var getOutputSchemaInputDatafile string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "The input data file.")
@@ -460,7 +435,7 @@ func init() {
 	streamsCmd.AddCommand(getPipelineCmd)
 
 	var getPipelineId string
-	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", "", "This is a required parameter. id of the pipeline to get")
+	getPipelineCmd.Flags().StringVar(&getPipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	getPipelineCmd.MarkFlagRequired("id")
 
 	var getPipelineVersion string
@@ -469,7 +444,7 @@ func init() {
 	streamsCmd.AddCommand(getPipelineLatestMetricsCmd)
 
 	var getPipelineLatestMetricsId string
-	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "This is a required parameter. ID of the pipeline to get metrics for")
+	getPipelineLatestMetricsCmd.Flags().StringVar(&getPipelineLatestMetricsId, "id", "", "This is a required parameter. Pipeline ID")
 	getPipelineLatestMetricsCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(getPipelinesStatusCmd)
@@ -498,19 +473,19 @@ func init() {
 	streamsCmd.AddCommand(getPreviewDataCmd)
 
 	var getPreviewDataPreviewSessionId int64
-	getPreviewDataCmd.Flags().Int64Var(&getPreviewDataPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
+	getPreviewDataCmd.Flags().Int64Var(&getPreviewDataPreviewSessionId, "preview-session-id", 0, "This is a required parameter. Preview Session ID")
 	getPreviewDataCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getPreviewSessionCmd)
 
 	var getPreviewSessionPreviewSessionId int64
-	getPreviewSessionCmd.Flags().Int64Var(&getPreviewSessionPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
+	getPreviewSessionCmd.Flags().Int64Var(&getPreviewSessionPreviewSessionId, "preview-session-id", 0, "This is a required parameter. Preview Session ID")
 	getPreviewSessionCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getPreviewSessionLatestMetricsCmd)
 
 	var getPreviewSessionLatestMetricsPreviewSessionId int64
-	getPreviewSessionLatestMetricsCmd.Flags().Int64Var(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
+	getPreviewSessionLatestMetricsCmd.Flags().Int64Var(&getPreviewSessionLatestMetricsPreviewSessionId, "preview-session-id", 0, "This is a required parameter. Preview Session ID")
 	getPreviewSessionLatestMetricsCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(getRegistryCmd)
@@ -521,11 +496,11 @@ func init() {
 	streamsCmd.AddCommand(getTemplateCmd)
 
 	var getTemplateTemplateId string
-	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
+	getTemplateCmd.Flags().StringVar(&getTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	getTemplateCmd.MarkFlagRequired("template-id")
 
 	var getTemplateVersion int64
-	getTemplateCmd.Flags().Int64Var(&getTemplateVersion, "version", 0, "version of the template")
+	getTemplateCmd.Flags().Int64Var(&getTemplateVersion, "version", 0, "Template version")
 
 	streamsCmd.AddCommand(listConnectionsCmd)
 
@@ -598,39 +573,32 @@ func init() {
 	var listTemplatesSortField string
 	listTemplatesCmd.Flags().StringVar(&listTemplatesSortField, "sort-field", "", "sortField")
 
-	streamsCmd.AddCommand(mergePipelinesCmd)
+	streamsCmd.AddCommand(patchPipelineCmd)
 
-	var mergePipelinesTargetNode string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetNode, "target-node", "", "This is a required parameter. The function ID of the merge target in the main pipeline.")
-	mergePipelinesCmd.MarkFlagRequired("target-node")
+	var patchPipelineId string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineId, "id", "", "This is a required parameter. Pipeline ID")
+	patchPipelineCmd.MarkFlagRequired("id")
 
-	var mergePipelinesTargetPort string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesTargetPort, "target-port", "", "This is a required parameter. The input port of the merge target in the main pipeline.")
-	mergePipelinesCmd.MarkFlagRequired("target-port")
+	var patchPipelineBypassValidation string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
 
-	var mergePipelinesInputTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesInputTree, "input-tree", "", "The input data file for inputTree.")
+	var patchPipelineCreateUserId string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 
-	var mergePipelinesMainTree string
-	mergePipelinesCmd.Flags().StringVar(&mergePipelinesMainTree, "main-tree", "", "The input data file for mainTree.")
+	var patchPipelineDescription string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
+
+	var patchPipelineName string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineName, "name", "", "The name of the pipeline.")
 
 	streamsCmd.AddCommand(putConnectionCmd)
 
 	var putConnectionConnectionId string
-	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
+	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	putConnectionCmd.MarkFlagRequired("connection-id")
 
 	var putConnectionInputDatafile string
 	putConnectionCmd.Flags().StringVar(&putConnectionInputDatafile, "input-datafile", "", "The input data file.")
-
-	streamsCmd.AddCommand(putGroupCmd)
-
-	var putGroupGroupId string
-	putGroupCmd.Flags().StringVar(&putGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
-	putGroupCmd.MarkFlagRequired("group-id")
-
-	var putGroupInputDatafile string
-	putGroupCmd.Flags().StringVar(&putGroupInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(putTemplateCmd)
 
@@ -643,7 +611,7 @@ func init() {
 	putTemplateCmd.MarkFlagRequired("name")
 
 	var putTemplateTemplateId string
-	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
+	putTemplateCmd.Flags().StringVar(&putTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	putTemplateCmd.MarkFlagRequired("template-id")
 
 	var putTemplateInputDatafile string
@@ -652,10 +620,14 @@ func init() {
 	streamsCmd.AddCommand(reactivatePipelineCmd)
 
 	var reactivatePipelineId string
-	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter. Pipeline UUID to reactivate")
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(startPreviewCmd)
+
+	var startPreviewUpl string
+	startPreviewCmd.Flags().StringVar(&startPreviewUpl, "upl", "", "This is a required parameter. ")
+	startPreviewCmd.MarkFlagRequired("upl")
 
 	var startPreviewInputDatafile string
 	startPreviewCmd.Flags().StringVar(&startPreviewInputDatafile, "input-datafile", "", "The input data file.")
@@ -663,38 +635,30 @@ func init() {
 	streamsCmd.AddCommand(stopPreviewCmd)
 
 	var stopPreviewPreviewSessionId int64
-	stopPreviewCmd.Flags().Int64Var(&stopPreviewPreviewSessionId, "preview-session-id", 0, "This is a required parameter. ID of the preview session")
+	stopPreviewCmd.Flags().Int64Var(&stopPreviewPreviewSessionId, "preview-session-id", 0, "This is a required parameter. Preview Session ID")
 	stopPreviewCmd.MarkFlagRequired("preview-session-id")
 
 	streamsCmd.AddCommand(updateConnectionCmd)
 
 	var updateConnectionConnectionId string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter. ID of the connection")
+	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	updateConnectionCmd.MarkFlagRequired("connection-id")
 
 	var updateConnectionInputDatafile string
 	updateConnectionCmd.Flags().StringVar(&updateConnectionInputDatafile, "input-datafile", "", "The input data file.")
 
-	streamsCmd.AddCommand(updateGroupCmd)
-
-	var updateGroupGroupId string
-	updateGroupCmd.Flags().StringVar(&updateGroupGroupId, "group-id", "", "This is a required parameter. The group function's ID from the function registry")
-	updateGroupCmd.MarkFlagRequired("group-id")
-
-	var updateGroupInputDatafile string
-	updateGroupCmd.Flags().StringVar(&updateGroupInputDatafile, "input-datafile", "", "The input data file.")
-
 	streamsCmd.AddCommand(updatePipelineCmd)
 
 	var updatePipelineId string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "This is a required parameter. id of the pipeline to update")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	updatePipelineCmd.MarkFlagRequired("id")
+
+	var updatePipelineName string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", "", "This is a required parameter. The name of the pipeline.")
+	updatePipelineCmd.MarkFlagRequired("name")
 
 	var updatePipelineBypassValidation string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineBypassValidation, "bypass-validation", "false", "Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.")
-
-	var updatePipelineCreateUserId string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 
 	var updatePipelineDescription string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
@@ -702,13 +666,10 @@ func init() {
 	var updatePipelineInputDatafile string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "The input data file.")
 
-	var updatePipelineName string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineName, "name", "", "The name of the pipeline.")
-
 	streamsCmd.AddCommand(updateTemplateCmd)
 
 	var updateTemplateTemplateId string
-	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter. ID of the template")
+	updateTemplateCmd.Flags().StringVar(&updateTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	updateTemplateCmd.MarkFlagRequired("template-id")
 
 	var updateTemplateDescription string
@@ -719,6 +680,10 @@ func init() {
 
 	var updateTemplateName string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
+
+	streamsCmd.AddCommand(uploadFileCmd)
+	var uploadFilesFileName string
+	uploadFileCmd.Flags().StringVar(&uploadFilesFileName, "file-name", "", "File to upload.")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

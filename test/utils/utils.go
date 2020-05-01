@@ -106,7 +106,7 @@ var StubbyTestCollection = "testcollection0"
 var TestTimeOut = time.Second * 30
 
 // TestTimeOut - the timeout to be used for requests to the api in search tests
-var SearchTestTimeout = time.Second * 600
+var LongTestTimeout = time.Second * 600
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
 var TenantCreationOn bool

@@ -20,6 +20,7 @@ package streams
 
 import (
 	"net/http"
+	"os"
 )
 
 // Servicer represents the interface for implementing all endpoints for this service
@@ -27,25 +28,18 @@ type Servicer interface {
 	/*
 		ActivatePipeline - Activates an existing pipeline.
 		Parameters:
-			id: id of the pipeline to activate
+			id: Pipeline ID
 			activatePipelineRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ActivatePipeline(id string, activatePipelineRequest ActivatePipelineRequest, resp ...*http.Response) (*Response, error)
 	/*
-		CompileDSL - Compiles the Streams DSL and returns Streams JSON.
-		Parameters:
-			dslCompilationRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CompileDSL(dslCompilationRequest DslCompilationRequest, resp ...*http.Response) (*UplPipeline, error)
-	/*
-		CompileSPL - Compiles SPL2 and returns Streams JSON.
+		Compile - Compiles SPL2 and returns streams JSON.
 		Parameters:
 			splCompileRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CompileSPL(splCompileRequest SplCompileRequest, resp ...*http.Response) (*UplPipeline, error)
+	Compile(splCompileRequest SplCompileRequest, resp ...*http.Response) (*Pipeline, error)
 	/*
 		CreateConnection - Create a new DSP connection.
 		Parameters:
@@ -53,13 +47,6 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateConnection(connectionRequest ConnectionRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
-	/*
-		CreateGroup - Create a new group function by combining the Streams JSON of two or more functions.
-		Parameters:
-			groupRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateGroup(groupRequest GroupRequest, resp ...*http.Response) (*GroupResponse, error)
 	/*
 		CreatePipeline - Creates a pipeline.
 		Parameters:
@@ -77,79 +64,78 @@ type Servicer interface {
 	/*
 		DeactivatePipeline - Deactivates an existing pipeline.
 		Parameters:
-			id: id of the pipeline to deactivate
+			id: Pipeline ID
 			deactivatePipelineRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeactivatePipeline(id string, deactivatePipelineRequest DeactivatePipelineRequest, resp ...*http.Response) (*Response, error)
 	/*
+		Decompile - Decompiles UPL and returns SPL.
+		Parameters:
+			decompileRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	Decompile(decompileRequest DecompileRequest, resp ...*http.Response) (*DecompileResponse, error)
+	/*
 		DeleteConnection - Delete all versions of a connection by its id.
 		Parameters:
-			connectionId: ID of the connection
+			connectionId: Connection ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteConnection(connectionId string, resp ...*http.Response) error
 	/*
-		DeleteGroup - Removes an existing group.
+		DeleteFile - Delete file.
 		Parameters:
-			groupId: The group function's ID from the function registry
+			fileId: File ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteGroup(groupId string, resp ...*http.Response) error
+	DeleteFile(fileId string, resp ...*http.Response) error
 	/*
 		DeletePipeline - Removes a pipeline.
 		Parameters:
-			id: id of the pipeline to delete
+			id: Pipeline ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeletePipeline(id string, resp ...*http.Response) (*PipelineDeleteResponse, error)
+	DeletePipeline(id string, resp ...*http.Response) error
 	/*
 		DeleteTemplate - Removes a template with a specific ID.
 		Parameters:
-			templateId: ID of the template to delete
+			templateId: Template ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteTemplate(templateId string, resp ...*http.Response) error
 	/*
-		ExpandGroup - Creates and returns the expanded version of a group.
+		GetFilesMetadata - Returns files metadata.
 		Parameters:
-			groupId: The group function's ID from the function registry
-			groupExpandRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ExpandGroup(groupId string, groupExpandRequest GroupExpandRequest, resp ...*http.Response) (*UplPipeline, error)
-	/*
-		ExpandPipeline - Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
-		Parameters:
-			uplPipeline: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ExpandPipeline(uplPipeline UplPipeline, resp ...*http.Response) (*UplPipeline, error)
-	/*
-		GetGroup - Returns the full Streams JSON of a group.
-		Parameters:
-			groupId: The group function's ID from the function registry
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetGroup(groupId string, resp ...*http.Response) (*GroupResponse, error)
+	GetFilesMetadata(resp ...*http.Response) (*FilesMetaDataResponse, error)
 	/*
 		GetInputSchema - Returns the input schema for a function in a pipeline.
 		Parameters:
-			getInputSchemaRequest: Input Schema Request
+			getInputSchemaRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetInputSchema(getInputSchemaRequest GetInputSchemaRequest, resp ...*http.Response) (*UplType, error)
 	/*
-		GetOutputSchema - Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.
+		GetLookupTable - Returns lookup table results.
 		Parameters:
-			getOutputSchemaRequest: Output Schema Request
+			connectionId: Connection ID
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetLookupTable(connectionId string, query *GetLookupTableQueryParams, resp ...*http.Response) (*LookupTableResponse, error)
+	/*
+		GetOutputSchema - Returns the output schema for a specified function in a pipeline.
+		Parameters:
+			getOutputSchemaRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetOutputSchema(getOutputSchemaRequest GetOutputSchemaRequest, resp ...*http.Response) (map[string]UplType, error)
 	/*
 		GetPipeline - Returns an individual pipeline by version.
 		Parameters:
-			id: id of the pipeline to get
+			id: Pipeline ID
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
@@ -157,7 +143,7 @@ type Servicer interface {
 	/*
 		GetPipelineLatestMetrics - Returns the latest metrics for a single pipeline.
 		Parameters:
-			id: ID of the pipeline to get metrics for
+			id: Pipeline ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPipelineLatestMetrics(id string, resp ...*http.Response) (*MetricsResponse, error)
@@ -171,21 +157,21 @@ type Servicer interface {
 	/*
 		GetPreviewData - Returns the preview data for a session.
 		Parameters:
-			previewSessionId: ID of the preview session
+			previewSessionId: Preview Session ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPreviewData(previewSessionId int64, resp ...*http.Response) (*PreviewData, error)
 	/*
 		GetPreviewSession - Returns information from a preview session.
 		Parameters:
-			previewSessionId: ID of the preview session
+			previewSessionId: Preview Session ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPreviewSession(previewSessionId int64, resp ...*http.Response) (*PreviewState, error)
 	/*
 		GetPreviewSessionLatestMetrics - Returns the latest metrics for a preview session.
 		Parameters:
-			previewSessionId: ID of the preview session
+			previewSessionId: Preview Session ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPreviewSessionLatestMetrics(previewSessionId int64, resp ...*http.Response) (*MetricsResponse, error)
@@ -195,11 +181,11 @@ type Servicer interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetRegistry(query *GetRegistryQueryParams, resp ...*http.Response) (*UplRegistry, error)
+	GetRegistry(query *GetRegistryQueryParams, resp ...*http.Response) (*RegistryModel, error)
 	/*
 		GetTemplate - Returns an individual template by version.
 		Parameters:
-			templateId: ID of the template
+			templateId: Template ID
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
@@ -232,32 +218,25 @@ type Servicer interface {
 	*/
 	ListTemplates(query *ListTemplatesQueryParams, resp ...*http.Response) (*PaginatedResponseOfTemplateResponse, error)
 	/*
-		MergePipelines - Combines two Streams JSON programs.
+		PatchPipeline - Patches an existing pipeline.
 		Parameters:
-			pipelinesMergeRequest: Request JSON
+			id: Pipeline ID
+			pipelinePatchRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	MergePipelines(pipelinesMergeRequest PipelinesMergeRequest, resp ...*http.Response) (*UplPipeline, error)
+	PatchPipeline(id string, pipelinePatchRequest PipelinePatchRequest, resp ...*http.Response) (*PipelineResponse, error)
 	/*
-		PutConnection - Modifies an existing DSP connection.
+		PutConnection - Updates an existing DSP connection.
 		Parameters:
-			connectionId: ID of the connection
+			connectionId: Connection ID
 			connectionPutRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	PutConnection(connectionId string, connectionPutRequest ConnectionPutRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
 	/*
-		PutGroup - Update a group function combining the Streams JSON of two or more functions.
-		Parameters:
-			groupId: The group function's ID from the function registry
-			groupPutRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	PutGroup(groupId string, groupPutRequest GroupPutRequest, resp ...*http.Response) (*GroupResponse, error)
-	/*
 		PutTemplate - Updates an existing template.
 		Parameters:
-			templateId: ID of the template
+			templateId: Template ID
 			templatePutRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
@@ -265,7 +244,7 @@ type Servicer interface {
 	/*
 		ReactivatePipeline - Reactivate a pipeline
 		Parameters:
-			id: Pipeline UUID to reactivate
+			id: Pipeline ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ReactivatePipeline(id string, resp ...*http.Response) (*PipelineReactivateResponse, error)
@@ -279,46 +258,45 @@ type Servicer interface {
 	/*
 		StopPreview - Stops a preview session.
 		Parameters:
-			previewSessionId: ID of the preview session
+			previewSessionId: Preview Session ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	StopPreview(previewSessionId int64, resp ...*http.Response) (*string, error)
+	StopPreview(previewSessionId int64, resp ...*http.Response) error
 	/*
-		UpdateConnection - Partially modifies an existing DSP connection.
+		UpdateConnection - Patches an existing DSP connection.
 		Parameters:
-			connectionId: ID of the connection
+			connectionId: Connection ID
 			connectionPatchRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdateConnection(connectionId string, connectionPatchRequest ConnectionPatchRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
 	/*
-		UpdateGroup - Modify a group function by combining the Streams JSON of two or more functions.
+		UpdatePipeline - Updates an existing pipeline.
 		Parameters:
-			groupId: The group function's ID from the function registry
-			groupPatchRequest: Request JSON
+			id: Pipeline ID
+			pipelineRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateGroup(groupId string, groupPatchRequest GroupPatchRequest, resp ...*http.Response) (*GroupResponse, error)
+	UpdatePipeline(id string, pipelineRequest PipelineRequest, resp ...*http.Response) (*PipelineResponse, error)
 	/*
-		UpdatePipeline - Partially modifies an existing pipeline.
+		UpdateTemplate - Patches an existing template.
 		Parameters:
-			id: id of the pipeline to update
-			pipelinePatchRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdatePipeline(id string, pipelinePatchRequest PipelinePatchRequest, resp ...*http.Response) (*PipelineResponse, error)
-	/*
-		UpdateTemplate - Partially modifies an existing template.
-		Parameters:
-			templateId: ID of the template
+			templateId: Template ID
 			templatePatchRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdateTemplate(templateId string, templatePatchRequest TemplatePatchRequest, resp ...*http.Response) (*TemplateResponse, error)
 	/*
+		UploadFile - Upload new file.
+		Parameters:
+			file: Upload file
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UploadFile(file **os.File, resp ...*http.Response) (*UploadFile, error)
+	/*
 		ValidatePipeline - Verifies whether the Streams JSON is valid.
 		Parameters:
-			validateRequest: JSON UPL to validate
+			validateRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ValidatePipeline(validateRequest ValidateRequest, resp ...*http.Response) (*ValidateResponse, error)
