@@ -1,5 +1,29 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.6.0
+### BREAKING CHANGES
+
+* Streams - Includes support for new Streams version v3beta1 and support for v2Beta1 has been removed. As a result, here are the endpoints that are either removed or updated
+	* `CompileDSL` is not longer supported, substituted by Compile which leverages SPL instead of DSL to produce streams JSON object
+	*  CRUD on `Group`  endpoints have been removed and all models corresponding to Groups have been removed.
+	* `ExpandGroup` which creates and returns the expanded version of a group has been removed.
+	* `UpdatePipeline` endpoint accepts a request body of type PipelineRequest instead of PipelinePatchRequest.
+	* `UplPipeline` model replaced by `Pipeline` model
+	* `UplRegistry` model replaced by `RegistryModel` model
+	* `MergePipelines` support has been removed
+
+
+### FEATURES
+
+* Search
+	* New `DeleteSearchJob` creates a search job that deletes events from an index.
+* Streams
+	* New `UploadFiles` endpoint uploads files to streams
+	* New `GetLookupTable` endpoint returns lookup table results
+	* New `Decompile` endpoint decompiles UPL and returns SPL 
+	* New `DeleteFile` endpoint deletes a file give a file-id
+	* New `GetFilesMetaData` endpoint returns files metadata
+
 ## Version 1.5.0
 Release v1.5.0
 
