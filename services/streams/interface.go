@@ -20,7 +20,6 @@ package streams
 
 import (
 	"net/http"
-	"os"
 )
 
 // Servicer represents the interface for implementing all endpoints for this service
@@ -286,13 +285,6 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdateTemplate(templateId string, templatePatchRequest TemplatePatchRequest, resp ...*http.Response) (*TemplateResponse, error)
-	/*
-		UploadFile - Upload new file.
-		Parameters:
-			file: Upload file
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UploadFile(file **os.File, resp ...*http.Response) (*UploadFile, error)
 	/*
 		ValidatePipeline - Verifies whether the Streams JSON is valid.
 		Parameters:
