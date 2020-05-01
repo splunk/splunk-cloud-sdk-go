@@ -61,47 +61,34 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CompileDSL Compiles the Streams DSL and returns Streams JSON.
-func CompileDSL(cmd *cobra.Command, args []string) error {
+// Compile Compiles SPL2 and returns streams JSON.
+func Compile(cmd *cobra.Command, args []string) error {
 
-	var err error
-
-	// Parse all flags
-
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-
-	resp, err := CompileDSLOverride(inputDatafile)
+	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CompileSPL Compiles SPL2 and returns Streams JSON.
-func CompileSPL(cmd *cobra.Command, args []string) error {
-
-	var err error
-
 	// Parse all flags
 
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	var spl string
+	err = flags.ParseFlag(cmd.Flags(), "spl", &spl)
 	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+		return fmt.Errorf(`error parsing "spl": ` + err.Error())
 	}
-	var syntaxDefault model.SplCompileRequestSyntax
-	syntax := &syntaxDefault
-	err = flags.ParseFlag(cmd.Flags(), "syntax", &syntax)
+	var validateDefault bool
+	validate := &validateDefault
+	err = flags.ParseFlag(cmd.Flags(), "validate", &validate)
 	if err != nil {
-		return fmt.Errorf(`error parsing "syntax": ` + err.Error())
+		return fmt.Errorf(`error parsing "validate": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.SplCompileRequest{
+
+		Spl:      spl,
+		Validate: validate,
 	}
 
-	resp, err := CompileSPLOverride(inputDatafile)
+	resp, err := client.StreamsService.Compile(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -148,27 +135,6 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := client.StreamsService.CreateConnection(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateGroup Create a new group function by combining the Streams JSON of two or more functions.
-func CreateGroup(cmd *cobra.Command, args []string) error {
-
-	var err error
-
-	// Parse all flags
-
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-
-	resp, err := CreateGroupOverride(inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -279,6 +245,34 @@ func DeactivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// Decompile Decompiles UPL and returns SPL.
+func Decompile(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var upl model.Pipeline
+	err = flags.ParseFlag(cmd.Flags(), "upl", &upl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "upl": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DecompileRequest{
+
+		Upl: upl,
+	}
+
+	resp, err := client.StreamsService.Decompile(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // DeleteConnection Delete all versions of a connection by its id.
 func DeleteConnection(cmd *cobra.Command, args []string) error {
 
@@ -302,8 +296,8 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteGroup Removes an existing group.
-func DeleteGroup(cmd *cobra.Command, args []string) error {
+// DeleteFile Delete file.
+func DeleteFile(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -311,13 +305,13 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var groupId string
-	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
+	var fileId string
+	err = flags.ParseFlag(cmd.Flags(), "file-id", &fileId)
 	if err != nil {
-		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
+		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
 	}
 
-	err = client.StreamsService.DeleteGroup(groupId)
+	err = client.StreamsService.DeleteFile(fileId)
 	if err != nil {
 		return err
 	}
@@ -340,11 +334,11 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.DeletePipeline(id)
+	err = client.StreamsService.DeletePipeline(id)
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
+
 	return nil
 }
 
@@ -371,48 +365,15 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ExpandGroup Creates and returns the expanded version of a group.
-func ExpandGroup(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
-}
-
-// ExpandPipeline Returns the entire Streams JSON, including the expanded Streams JSON of any group functions in the pipeline.
-func ExpandPipeline(cmd *cobra.Command, args []string) error {
-
-	var err error
-
-	// Parse all flags
-
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
-	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
-	}
-
-	resp, err := ExpandPipelineOverride(inputDatafile)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetGroup Returns the full Streams JSON of a group.
-func GetGroup(cmd *cobra.Command, args []string) error {
+// GetFilesMetadata Returns files metadata.
+func GetFilesMetadata(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-	// Parse all flags
 
-	var groupId string
-	err = flags.ParseFlag(cmd.Flags(), "group-id", &groupId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "group-id": ` + err.Error())
-	}
-
-	resp, err := client.StreamsService.GetGroup(groupId)
+	resp, err := client.StreamsService.GetFilesMetadata()
 	if err != nil {
 		return err
 	}
@@ -451,7 +412,44 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetOutputSchema Returns the output schema for a specified function in a pipeline. If no function ID is  specified, the request returns the output schema for all functions in a pipeline.
+// GetLookupTable Returns lookup table results.
+func GetLookupTable(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectionId string
+	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
+	}
+	var offset int32
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var size int32
+	err = flags.ParseFlag(cmd.Flags(), "size", &size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "size": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.GetLookupTableQueryParams{}
+	generated_query.Offset = &offset
+	generated_query.Size = &size
+
+	resp, err := client.StreamsService.GetLookupTable(connectionId, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetOutputSchema Returns the output schema for a specified function in a pipeline.
 func GetOutputSchema(cmd *cobra.Command, args []string) error {
 
 	var err error
@@ -941,35 +939,61 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// MergePipelines Combines two Streams JSON programs.
-func MergePipelines(cmd *cobra.Command, args []string) error {
+// PatchPipeline Patches an existing pipeline.
+func PatchPipeline(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
-	var inputTree string
-	err = flags.ParseFlag(cmd.Flags(), "input-tree", &inputTree)
+	var bypassValidationDefault bool
+	bypassValidation := &bypassValidationDefault
+	err = flags.ParseFlag(cmd.Flags(), "bypass-validation", &bypassValidation)
 	if err != nil {
-		return fmt.Errorf(`error parsing "input-tree": ` + err.Error())
+		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
-	var mainTree string
-	err = flags.ParseFlag(cmd.Flags(), "main-tree", &mainTree)
+	var createUserIdDefault string
+	createUserId := &createUserIdDefault
+	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
 	if err != nil {
-		return fmt.Errorf(`error parsing "main-tree": ` + err.Error())
+		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
 	}
-	var targetNode string
-	err = flags.ParseFlag(cmd.Flags(), "target-node", &targetNode)
+	var dataDefault model.Pipeline
+	data := &dataDefault
+	err = flags.ParseFlag(cmd.Flags(), "data", &data)
 	if err != nil {
-		return fmt.Errorf(`error parsing "target-node": ` + err.Error())
+		return fmt.Errorf(`error parsing "data": ` + err.Error())
 	}
-	var targetPort string
-	err = flags.ParseFlag(cmd.Flags(), "target-port", &targetPort)
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
-		return fmt.Errorf(`error parsing "target-port": ` + err.Error())
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.PipelinePatchRequest{
+
+		BypassValidation: bypassValidation,
+		CreateUserId:     createUserId,
+		Data:             data,
+		Description:      description,
+		Name:             name,
 	}
 
-	resp, err := MergePipelinesOverride(targetNode, targetPort, mainTree, inputTree)
+	resp, err := client.StreamsService.PatchPipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -977,7 +1001,7 @@ func MergePipelines(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// PutConnection Modifies an existing DSP connection.
+// PutConnection Updates an existing DSP connection.
 func PutConnection(cmd *cobra.Command, args []string) error {
 
 	var err error
@@ -1001,11 +1025,6 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-}
-
-// PutGroup Update a group function combining the Streams JSON of two or more functions.
-func PutGroup(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // PutTemplate Updates an existing template.
@@ -1048,6 +1067,11 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var upl model.Pipeline
+	err = flags.ParseFlag(cmd.Flags(), "upl", &upl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "upl": ` + err.Error())
+	}
 
 	resp, err := StartPreviewOverride(inputDatafile)
 	if err != nil {
@@ -1072,15 +1096,15 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.StopPreview(previewSessionId)
+	err = client.StreamsService.StopPreview(previewSessionId)
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
+
 	return nil
 }
 
-// UpdateConnection Partially modifies an existing DSP connection.
+// UpdateConnection Patches an existing DSP connection.
 func UpdateConnection(cmd *cobra.Command, args []string) error {
 
 	var err error
@@ -1106,12 +1130,7 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateGroup Modify a group function by combining the Streams JSON of two or more functions.
-func UpdateGroup(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
-}
-
-// UpdatePipeline Partially modifies an existing pipeline.
+// UpdatePipeline Updates an existing pipeline.
 func UpdatePipeline(cmd *cobra.Command, args []string) error {
 
 	var err error
@@ -1124,11 +1143,8 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
-	var createUserIdDefault string
-	createUserId := &createUserIdDefault
-	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
 	if err != nil {
-		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
+		return fmt.Errorf(`error parsing "data": ` + err.Error())
 	}
 	var descriptionDefault string
 	description := &descriptionDefault
@@ -1146,14 +1162,13 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
-	var nameDefault string
-	name := &nameDefault
+	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
-	resp, err := UpdatePipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
+	resp, err := UpdatePipelineOverride(id, bypassValidation, description, name, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1161,13 +1176,12 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateTemplate Partially modifies an existing template.
+// UpdateTemplate Patches an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
 	var err error
 
 	// Parse all flags
-
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1192,6 +1206,27 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := UpdateTemplateOverride(templateId, description, name, inputDatafile)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UploadFile Upload new file.
+func UploadFile(cmd *cobra.Command, args []string) error {
+
+	var err error
+
+	// Parse all flags
+
+	var fileName string
+	err = flags.ParseFlag(cmd.Flags(), "file-name", &fileName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "file-name": ` + err.Error())
+	}
+
+	resp, err := UploadFilesOverride(fileName)
 	if err != nil {
 		return err
 	}

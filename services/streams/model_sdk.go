@@ -28,7 +28,7 @@ type PipelineQueryParams struct {
 
 // PartialTemplateRequest contains the template request data for partial update operation
 type PartialTemplateRequest struct {
-	Data        *UplPipeline `json:"data,omitempty"`
-	Description *string      `json:"description,omitempty"`
-	Name        *string      `json:"name,omitempty"`
+	Data        *Pipeline `json:"data,omitempty"`
+	Description *string   `json:"description,omitempty"`
+	Name        *string   `json:"name,omitempty"`
 }

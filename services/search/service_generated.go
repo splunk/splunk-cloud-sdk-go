@@ -73,6 +73,35 @@ func (s *Service) CreateJob(searchJob SearchJob, resp ...*http.Response) (*Searc
 }
 
 /*
+	DeleteJob - search service endpoint
+	Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+	Parameters:
+		deleteSearchJob
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteJob(deleteSearchJob DeleteSearchJob, resp ...*http.Response) (*DeleteSearchJob, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2beta1/jobs/delete`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: deleteSearchJob})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb DeleteSearchJob
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	GetJob - search service endpoint
 	Return the search job with the specified search ID (SID).
 	Parameters:

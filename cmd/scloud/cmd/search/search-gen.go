@@ -15,6 +15,14 @@ var createJobCmd = &cobra.Command{
 	RunE:  impl.CreateJob,
 }
 
+// deleteJob -- Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+
+var deleteJobCmd = &cobra.Command{
+	Use:   "delete-job",
+	Short: "Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.",
+	RunE:  impl.DeleteJob,
+}
+
 // getJob -- Return the search job with the specified search ID (SID).
 var getJobCmd = &cobra.Command{
 	Use:   "get-job",
@@ -122,6 +130,44 @@ func init() {
 
 	var createJobTimezone string
 	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
+
+	searchCmd.AddCommand(deleteJobCmd)
+
+	var deleteJobIndex string
+	deleteJobCmd.Flags().StringVar(&deleteJobIndex, "index", "", "This is a required parameter. The index to delete events from.")
+	deleteJobCmd.MarkFlagRequired("index")
+
+	var deleteJobModule string
+	deleteJobCmd.Flags().StringVar(&deleteJobModule, "module", "", "This is a required parameter. The module to run the delete search job in. The default module is used if module field is empty.")
+	deleteJobCmd.MarkFlagRequired("module")
+
+	var deleteJobEarliest string
+	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+
+	var deleteJobExtractAllFields string
+	deleteJobCmd.Flags().StringVar(&deleteJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.")
+
+	var deleteJobLatest string
+	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+
+	var deleteJobMaxTime float32
+	deleteJobCmd.Flags().Float32Var(&deleteJobMaxTime, "max-time", 0.0, "The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).")
+
+	var deleteJobMessages string
+	deleteJobCmd.Flags().StringVar(&deleteJobMessages, "messages", "", "")
+
+	var deleteJobPredicate string
+	deleteJobCmd.Flags().StringVar(&deleteJobPredicate, "predicate", "", "This is a required parameter. Events satisfying this predicate are going to be deleted. To delete all events from the index, true should be specified for this field.")
+	deleteJobCmd.MarkFlagRequired("predicate")
+
+	var deleteJobRelativeTimeAnchor string
+	deleteJobCmd.Flags().StringVar(&deleteJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
+
+	var deleteJobStatus string
+	deleteJobCmd.Flags().StringVar(&deleteJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
+
+	var deleteJobTimezone string
+	deleteJobCmd.Flags().StringVar(&deleteJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
 
 	searchCmd.AddCommand(getJobCmd)
 

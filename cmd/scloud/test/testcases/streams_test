@@ -31,6 +31,7 @@ streams create-template --input-datafile testcases/test_stream_create_template.j
 streams list-templates
 streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
 
+#Deprecated in v3beta1
 streams create-group --input-datafile testcases/test_stream_create_group.json
 
 streams get-input-schema  --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "input" --input-datafile testcases/test_stream_get_input_schema.json
