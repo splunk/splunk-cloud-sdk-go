@@ -26,18 +26,16 @@ import (
 	"path/filepath"
 	"syscall"
 
-	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
-
-	"github.com/spf13/viper"
-
 	"github.com/golang/glog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pelletier/go-toml"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth/fcache"
+	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
 
@@ -79,11 +77,18 @@ func getEnvironmentName() string {
 	if err != nil {
 		util.Fatal(err.Error())
 	}
+
+	usingEnv := DefaultEnv
+
 	if envName, ok := settings.GetString("env"); ok && envName != "" {
-		return envName
+		usingEnv = envName
+	} else {
+		util.Warning("No \"env\" is set in the config file, using default env instead")
 	}
 
-	return DefaultEnv // default
+	util.Info("Using env - " + usingEnv)
+
+	return usingEnv
 }
 
 func getEnvironment() *Environment {
