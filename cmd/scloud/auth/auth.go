@@ -247,6 +247,9 @@ func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 
 // Returns the cached authorization context associated with the given clientID.
 func getCurrentContext(clientID string) *idp.Context {
+	if ctxCache == nil {
+		return nil
+	}
 	v := ctxCache.Get(clientID)
 	m, ok := v.(*toml.Tree)
 	if !ok {
@@ -395,6 +398,11 @@ func GetProfile(name string) (map[string]string, error) {
 		return nil, fmt.Errorf("missing kind")
 	}
 	return profile, nil
+}
+
+// Returns the context from .scloud_context
+func GetContext(cmd *cobra.Command) *idp.Context {
+	return getContext(cmd)
 }
 
 // Open the named static file asset.

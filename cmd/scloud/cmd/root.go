@@ -15,6 +15,7 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/catalog"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/collect"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/context"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/forwarders"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/identity"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/ingest"
@@ -63,6 +64,7 @@ func init() {
 	rootCmd.AddCommand(catalog.Cmd())
 	rootCmd.AddCommand(collect.Cmd())
 	rootCmd.AddCommand(config.Cmd())
+	rootCmd.AddCommand(context.Cmd())
 	rootCmd.AddCommand(forwarders.Cmd())
 	rootCmd.AddCommand(identity.Cmd())
 	rootCmd.AddCommand(ingest.Cmd())
