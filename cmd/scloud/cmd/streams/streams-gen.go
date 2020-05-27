@@ -292,9 +292,8 @@ func init() {
 
 	streamsCmd.AddCommand(compileCmd)
 
-	var compileSpl string
-	compileCmd.Flags().StringVar(&compileSpl, "spl", "", "This is a required parameter. The SPL2 representation of a pipeline or function parameters.")
-	compileCmd.MarkFlagRequired("spl")
+	var compileInputDatafile string
+	compileCmd.Flags().StringVar(&compileInputDatafile, "input-datafile", "", "The input data file.")
 
 	var compileValidate string
 	compileCmd.Flags().StringVar(&compileValidate, "validate", "false", "A boolean flag to indicate whether the pipeline should be validated.")
@@ -396,10 +395,6 @@ func init() {
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaTargetPortName, "target-port-name", "", "This is a required parameter. The name of the input port.")
 	getInputSchemaCmd.MarkFlagRequired("target-port-name")
 
-	var getInputSchemaUplJson string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaUplJson, "upl-json", "", "This is a required parameter. ")
-	getInputSchemaCmd.MarkFlagRequired("upl-json")
-
 	var getInputSchemaInputDatafile string
 	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "The input data file.")
 
@@ -418,10 +413,6 @@ func init() {
 	getLookupTableCmd.MarkFlagRequired("size")
 
 	streamsCmd.AddCommand(getOutputSchemaCmd)
-
-	var getOutputSchemaUplJson string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaUplJson, "upl-json", "", "This is a required parameter. ")
-	getOutputSchemaCmd.MarkFlagRequired("upl-json")
 
 	var getOutputSchemaInputDatafile string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "The input data file.")
@@ -585,6 +576,9 @@ func init() {
 	var patchPipelineCreateUserId string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 
+	var patchPipelineData string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineData, "data", "", "")
+
 	var patchPipelineDescription string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 
@@ -601,6 +595,10 @@ func init() {
 	putConnectionCmd.Flags().StringVar(&putConnectionInputDatafile, "input-datafile", "", "The input data file.")
 
 	streamsCmd.AddCommand(putTemplateCmd)
+
+	var putTemplateData string
+	putTemplateCmd.Flags().StringVar(&putTemplateData, "data", "", "This is a required parameter. ")
+	putTemplateCmd.MarkFlagRequired("data")
 
 	var putTemplateDescription string
 	putTemplateCmd.Flags().StringVar(&putTemplateDescription, "description", "", "This is a required parameter. Template description")
@@ -624,10 +622,6 @@ func init() {
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(startPreviewCmd)
-
-	var startPreviewUpl string
-	startPreviewCmd.Flags().StringVar(&startPreviewUpl, "upl", "", "This is a required parameter. ")
-	startPreviewCmd.MarkFlagRequired("upl")
 
 	var startPreviewInputDatafile string
 	startPreviewCmd.Flags().StringVar(&startPreviewInputDatafile, "input-datafile", "", "The input data file.")
@@ -682,8 +676,6 @@ func init() {
 	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
 
 	streamsCmd.AddCommand(uploadFileCmd)
-	var uploadFilesFileName string
-	uploadFileCmd.Flags().StringVar(&uploadFilesFileName, "file-name", "", "File to upload.")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

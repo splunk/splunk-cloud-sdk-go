@@ -1,5 +1,6 @@
-#testcase: streams compile-dsl --input-datafile testcases/test_stream_compileDSL.json
-unknown flag: --input-datafile
+#testcase: streams compile --input-datafile testcases/test_stream_compile.json
+REQUEST URL:streams/v3beta1/pipelines/compile
+REQUEST BODY:{{"spl":"| from read_splunk_firehose() | into write_index(\"index\", \"main\");"}}
 
 #testcase: streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 REQUEST URL:streams/v3beta1/pipelines
@@ -88,6 +89,6 @@ REQUEST BODY:<nil>
 unknown flag: --input-datafile
 
 #testcase: streams get-input-schema  --node-uuid "3682041e-1814-4bd7-8e60-5c889b822585" --target-port-name "input" --input-datafile testcases/test_stream_get_input_schema.json
-enable testhook-dryrun
-required flag(s) "upl-json" not set
+REQUEST URL:streams/v3beta1/pipelines/input-schema
+REQUEST BODY:{{"nodeUuid":"3682041e-1814-4bd7-8e60-5c889b822585","targetPortName":"input","uplJson":{"edges":[{"sourceNode":"1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84","sourcePort":"output","targetNode":"3682041e-1814-4bd7-8e60-5c889b822585","targetPort":"input"}],"nodes":[{"id":"1df22bab-8d0d-44c3-ad8a-f3ba1b85ff84","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"3682041e-1814-4bd7-8e60-5c889b822585","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]}}}
 
