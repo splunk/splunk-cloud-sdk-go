@@ -64,16 +64,14 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 // Compile Compiles SPL2 and returns streams JSON.
 func Compile(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var spl string
-	err = flags.ParseFlag(cmd.Flags(), "spl", &spl)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "spl": ` + err.Error())
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 	var validateDefault bool
 	validate := &validateDefault
@@ -81,14 +79,8 @@ func Compile(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "validate": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.SplCompileRequest{
 
-		Spl:      spl,
-		Validate: validate,
-	}
-
-	resp, err := client.StreamsService.Compile(generated_request_body)
+	resp, err := CompileOverride(validate, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1067,11 +1059,6 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
-	var upl model.Pipeline
-	err = flags.ParseFlag(cmd.Flags(), "upl", &upl)
-	if err != nil {
-		return fmt.Errorf(`error parsing "upl": ` + err.Error())
-	}
 
 	resp, err := StartPreviewOverride(inputDatafile)
 	if err != nil {
@@ -1143,9 +1130,6 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
-	if err != nil {
-		return fmt.Errorf(`error parsing "data": ` + err.Error())
-	}
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1182,6 +1166,7 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	var err error
 
 	// Parse all flags
+
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)

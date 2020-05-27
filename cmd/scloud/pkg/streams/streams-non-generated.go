@@ -174,8 +174,8 @@ func ValidatePipelineOverride(filename string) (*model.ValidateResponse, error) 
 	return resp, nil
 }
 
-// CompileSPLOverride
-func CompileSPLOverride(filename string) (*model.Pipeline, error) {
+// CompileOverride
+func CompileOverride(validate *bool, filename string) (*model.Pipeline, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -191,6 +191,8 @@ func CompileSPLOverride(filename string) (*model.Pipeline, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	data.Validate = validate
 
 	resp, err := client.StreamsService.Compile(data)
 	if err != nil {

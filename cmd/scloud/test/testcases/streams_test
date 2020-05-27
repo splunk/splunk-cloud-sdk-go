@@ -1,4 +1,4 @@
-streams compile-dsl --input-datafile testcases/test_stream_compileDSL.json
+streams compile --input-datafile testcases/test_stream_compile.json
 
 streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 streams merge-pipelines  --target-node "9e6dec08-9658-46be-914b-fc872d9b7828" --target-port "input" --input-tree testcases/test_stream_merge_pipelines_inputtree.json --main-tree testcases/test_stream_merge_pipelines_maintree.json
