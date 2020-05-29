@@ -71,7 +71,7 @@ func PutTemplateOverride(templateId string, filename string) (*model.TemplateRes
 }
 
 // StartPreviewOverride
-func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) {
+func StartPreviewOverride(recordsLimit *int32, recordsPerPipeline *int32, sessionLifetimeMsfilename *int64, filename string) (*model.PreviewStartResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
@@ -82,13 +82,13 @@ func StartPreviewOverride(filename string) (*model.PreviewStartResponse, error) 
 		return nil, err
 	}
 
-	var data model.PreviewSessionStartRequest
+	var data model.Pipeline
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.StreamsService.StartPreview(data)
+	resp, err := client.StreamsService.StartPreview(model.PreviewSessionStartRequest{RecordsLimit: recordsLimit, RecordsPerPipeline: recordsPerPipeline, SessionLifetimeMs: sessionLifetimeMsfilename, Upl: data})
 	if err != nil {
 		return nil, err
 	}
@@ -226,31 +226,6 @@ func CreateTemplateOverride(description string, name string, filename string) (*
 	return resp, nil
 }
 
-// PutConnectionOverride
-func PutConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
-	client, err := auth.GetClient()
-	if err != nil {
-		return nil, err
-	}
-
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	var data model.ConnectionPutRequest
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := client.StreamsService.PutConnection(id, data)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
 // GetOutputSchemaOverride
 func GetOutputSchemaOverride(nodeUuid *string, sourcePortName *string, filename string) (map[string]model.UplType, error) {
 	client, err := auth.GetClient()
@@ -301,32 +276,33 @@ func GetInputSchemaOverride(nodeUuid string, targetPortName string, filename str
 	return resp, nil
 }
 
-// UpdateConnectionOverride
-func UpdateConnectionOverride(id string, filename string) (*model.ConnectionSaveResponse, error) {
+func PatchPipelineOverride(id string, bypassValidation *bool, createUserId *string, description *string, name *string, filename string) (*model.PipelineResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
 	}
+	var data *model.Pipeline
+	if filename != "" {
 
-	bytes, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
+		bytes, err := ioutil.ReadFile(filename)
+		if err != nil {
+			return nil, err
+		}
+		//var data *model.Pipeline
+		err = json.Unmarshal(bytes, &data)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	var data model.ConnectionPatchRequest
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := client.StreamsService.UpdateConnection(id, data)
+	resp, err := client.StreamsService.PatchPipeline(id, model.PipelinePatchRequest{Data: data, BypassValidation: bypassValidation, CreateUserId: createUserId, Description: description, Name: name})
 	if err != nil {
 		return nil, err
 	}
 	return resp, nil
 }
 
-func UploadFilesOverride(arg string) (*HttpResponse, error) {
+func UploadFileOverride(arg string) (*HttpResponse, error) {
 	client, err := auth.GetClient()
 	if err != nil {
 		return nil, err
