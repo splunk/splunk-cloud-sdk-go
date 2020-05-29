@@ -135,7 +135,7 @@ func newClient(svc *Service) *sdk.Client {
 		Token:            getToken(),
 		OverrideHost:     hostPort,
 		Scheme:           scheme,
-		Timeout:          10 * time.Second,
+		Timeout:          60 * time.Second,
 		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
 		RoundTripper:     roundTripper,
 		ClientVersion:    scloudVersion,

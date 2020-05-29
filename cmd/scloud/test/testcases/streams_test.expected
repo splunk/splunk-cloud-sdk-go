@@ -6,16 +6,17 @@ REQUEST BODY:{{"spl":"| from read_splunk_firehose() | into write_index(\"index\"
 REQUEST URL:streams/v3beta1/pipelines
 REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"passthrough","bypassValidation":true,"description":"A passthrough pipeline"}}
 
-#testcase: streams merge-pipelines  --target-node "9e6dec08-9658-46be-914b-fc872d9b7828" --target-port "input" --input-tree testcases/test_stream_merge_pipelines_inputtree.json --main-tree testcases/test_stream_merge_pipelines_maintree.json
-unknown flag: --target-node
-
 #testcase: streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.json
 REQUEST URL:streams/v3beta1/pipelines/validate
 REQUEST BODY:{{"upl":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99df379dd6","sourcePort":"output","targetNode":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","targetPort":"input"}],"nodes":[{"id":"00ba387b-a219-4f68-b3a8-8b99df379dd6","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]}}}
 
-#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
+#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --input-datafile testcases/test_stream_patch_pipeline.json --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
 REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
-REQUEST BODY:{{"data":{"edges":null,"nodes":null},"name":"updatedtestPipelinfe1582068339","description":"Updated Integration Test Pipeline testPipelinfe1582068339"}}
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"updatedtestPipelinfe1582068339","description":"Updated Integration Test Pipeline testPipelinfe1582068339"}}
+
+#testcase: streams patch-pipeline --id 417fb4ad-d264-4920-8028-7d4cba20528f --name passthrough --input-datafile testcases/test_stream_patch_pipeline.json --bypass-validation true --description "Patched pipeline"
+REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
+REQUEST BODY:{{"bypassValidation":true,"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"description":"Patched pipeline","name":"passthrough"}}
 
 #testcase: streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
 REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f/reactivate
@@ -57,13 +58,13 @@ REQUEST BODY:<nil>
 REQUEST URL:streams/v3beta1/connections
 REQUEST BODY:{{"connectorId":"879837b0-cabf-4bc2-8589-fcc4dad753e7","data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"newconnection","name":"myconnection"}}
 
-#testcase: streams update-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_update_connection.json
-REQUEST URL:streams/v3beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
-REQUEST BODY:{{"data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"A new connection","name":"newname"}}
+#testcase: streams update-connection --connection-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
+REQUEST URL:streams/v3beta1/connections/879837b0-cabf-4bc2-8589-fcc4dad753e7
+REQUEST BODY:{{"data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"newconnection","name":"myconnection"}}
 
-#testcase: streams put-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e --input-datafile testcases/test_stream_put_connection.json
-REQUEST URL:streams/v3beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e
-REQUEST BODY:{{"data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"A new connection","name":"newname"}}
+#testcase: streams put-connection --connection-id 879837b0-cabf-4bc2-8589-fcc4dad753e7 --data "{\"splunk-url\":\"https://hostname.port\", \"token\":\"mytoken\"}" --description "newconnection" --name "myconnection"
+REQUEST URL:streams/v3beta1/connections/879837b0-cabf-4bc2-8589-fcc4dad753e7
+REQUEST BODY:{{"data":{"splunk-url":"https://hostname.port","token":"mytoken"},"description":"newconnection","name":"myconnection"}}
 
 #testcase: streams delete-connection --connection-id 6c7896b2-a53c-4078-b757-07e80739d91e
 REQUEST URL:streams/v3beta1/connections/6c7896b2-a53c-4078-b757-07e80739d91e

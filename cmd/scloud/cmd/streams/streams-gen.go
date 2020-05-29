@@ -293,7 +293,7 @@ func init() {
 	streamsCmd.AddCommand(compileCmd)
 
 	var compileInputDatafile string
-	compileCmd.Flags().StringVar(&compileInputDatafile, "input-datafile", "", "The input data file.")
+	compileCmd.Flags().StringVar(&compileInputDatafile, "input-datafile", "", "The SPL2 representation of a pipeline or function parameters")
 
 	var compileValidate string
 	compileCmd.Flags().StringVar(&compileValidate, "validate", "false", "A boolean flag to indicate whether the pipeline should be validated.")
@@ -329,7 +329,7 @@ func init() {
 	createPipelineCmd.Flags().StringVar(&createPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 
 	var createPipelineInputDatafile string
-	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "The input data file.")
+	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
 	streamsCmd.AddCommand(createTemplateCmd)
 
@@ -342,7 +342,7 @@ func init() {
 	createTemplateCmd.MarkFlagRequired("name")
 
 	var createTemplateInputDatafile string
-	createTemplateCmd.Flags().StringVar(&createTemplateInputDatafile, "input-datafile", "", "The input data file.")
+	createTemplateCmd.Flags().StringVar(&createTemplateInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
 	streamsCmd.AddCommand(deactivatePipelineCmd)
 
@@ -396,7 +396,7 @@ func init() {
 	getInputSchemaCmd.MarkFlagRequired("target-port-name")
 
 	var getInputSchemaInputDatafile string
-	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "The input data file.")
+	getInputSchemaCmd.Flags().StringVar(&getInputSchemaInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
 	streamsCmd.AddCommand(getLookupTableCmd)
 
@@ -415,7 +415,7 @@ func init() {
 	streamsCmd.AddCommand(getOutputSchemaCmd)
 
 	var getOutputSchemaInputDatafile string
-	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "The input data file.")
+	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
 	var getOutputSchemaNodeUuid string
 	getOutputSchemaCmd.Flags().StringVar(&getOutputSchemaNodeUuid, "node-uuid", "", "The function ID. If omitted, returns the output schema for all functions.")
@@ -576,11 +576,11 @@ func init() {
 	var patchPipelineCreateUserId string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineCreateUserId, "create-user-id", "", "The user that created the pipeline. Deprecated.")
 
-	var patchPipelineData string
-	patchPipelineCmd.Flags().StringVar(&patchPipelineData, "data", "", "")
-
 	var patchPipelineDescription string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
+
+	var patchPipelineInputDatafile string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineInputDatafile, "input-datafile", "", "The input data file that represents the pipeline.")
 
 	var patchPipelineName string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineName, "name", "", "The name of the pipeline.")
@@ -591,8 +591,17 @@ func init() {
 	putConnectionCmd.Flags().StringVar(&putConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	putConnectionCmd.MarkFlagRequired("connection-id")
 
-	var putConnectionInputDatafile string
-	putConnectionCmd.Flags().StringVar(&putConnectionInputDatafile, "input-datafile", "", "The input data file.")
+	var putConnectionData string
+	putConnectionCmd.Flags().StringVar(&putConnectionData, "data", "", "This is a required parameter. The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	putConnectionCmd.MarkFlagRequired("data")
+
+	var putConnectionDescription string
+	putConnectionCmd.Flags().StringVar(&putConnectionDescription, "description", "", "This is a required parameter. The description of the connection.")
+	putConnectionCmd.MarkFlagRequired("description")
+
+	var putConnectionName string
+	putConnectionCmd.Flags().StringVar(&putConnectionName, "name", "", "This is a required parameter. The name of the connection.")
+	putConnectionCmd.MarkFlagRequired("name")
 
 	streamsCmd.AddCommand(putTemplateCmd)
 
@@ -624,7 +633,16 @@ func init() {
 	streamsCmd.AddCommand(startPreviewCmd)
 
 	var startPreviewInputDatafile string
-	startPreviewCmd.Flags().StringVar(&startPreviewInputDatafile, "input-datafile", "", "The input data file.")
+	startPreviewCmd.Flags().StringVar(&startPreviewInputDatafile, "input-datafile", "", "The input data file that represents the pipeline.")
+
+	var startPreviewRecordsLimit int32
+	startPreviewCmd.Flags().Int32Var(&startPreviewRecordsLimit, "records-limit", 0, "The maximum number of events per function. Defaults to 100.")
+
+	var startPreviewRecordsPerPipeline int32
+	startPreviewCmd.Flags().Int32Var(&startPreviewRecordsPerPipeline, "records-per-pipeline", 0, "The maximum number of events per pipeline. Defaults to 10000.")
+
+	var startPreviewSessionLifetimeMs int64
+	startPreviewCmd.Flags().Int64Var(&startPreviewSessionLifetimeMs, "session-lifetime-ms", 0, "The maximum lifetime of a session, in milliseconds. Defaults to 300,000.")
 
 	streamsCmd.AddCommand(stopPreviewCmd)
 
@@ -638,8 +656,14 @@ func init() {
 	updateConnectionCmd.Flags().StringVar(&updateConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	updateConnectionCmd.MarkFlagRequired("connection-id")
 
-	var updateConnectionInputDatafile string
-	updateConnectionCmd.Flags().StringVar(&updateConnectionInputDatafile, "input-datafile", "", "The input data file.")
+	var updateConnectionData string
+	updateConnectionCmd.Flags().StringVar(&updateConnectionData, "data", "", "The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+
+	var updateConnectionDescription string
+	updateConnectionCmd.Flags().StringVar(&updateConnectionDescription, "description", "", "The description of the connection.")
+
+	var updateConnectionName string
+	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
 
 	streamsCmd.AddCommand(updatePipelineCmd)
 
@@ -658,7 +682,7 @@ func init() {
 	updatePipelineCmd.Flags().StringVar(&updatePipelineDescription, "description", "", "The description of the pipeline. Defaults to null.")
 
 	var updatePipelineInputDatafile string
-	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "The input data file.")
+	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
 	streamsCmd.AddCommand(updateTemplateCmd)
 
@@ -677,9 +701,12 @@ func init() {
 
 	streamsCmd.AddCommand(uploadFileCmd)
 
+	var uploadFileFileName string
+	uploadFileCmd.Flags().StringVar(&uploadFileFileName, "file-name", "", "File to upload.")
+
 	streamsCmd.AddCommand(validatePipelineCmd)
 
 	var validatePipelineInputDatafile string
-	validatePipelineCmd.Flags().StringVar(&validatePipelineInputDatafile, "input-datafile", "", "The input data file.")
+	validatePipelineCmd.Flags().StringVar(&validatePipelineInputDatafile, "input-datafile", "", "The input data file that represents the pipeline.")
 
 }

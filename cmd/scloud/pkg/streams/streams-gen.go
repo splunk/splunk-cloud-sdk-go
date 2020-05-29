@@ -418,20 +418,22 @@ func GetLookupTable(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
-	var offset int32
+	var offsetDefault int32
+	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
 		return fmt.Errorf(`error parsing "offset": ` + err.Error())
 	}
-	var size int32
+	var sizeDefault int32
+	size := &sizeDefault
 	err = flags.ParseFlag(cmd.Flags(), "size", &size)
 	if err != nil {
 		return fmt.Errorf(`error parsing "size": ` + err.Error())
 	}
 	// Form query params
 	generated_query := model.GetLookupTableQueryParams{}
-	generated_query.Offset = &offset
-	generated_query.Size = &size
+	generated_query.Offset = offset
+	generated_query.Size = size
 
 	resp, err := client.StreamsService.GetLookupTable(connectionId, &generated_query)
 	if err != nil {
@@ -934,10 +936,8 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 // PatchPipeline Patches an existing pipeline.
 func PatchPipeline(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
 	var bypassValidationDefault bool
@@ -952,12 +952,6 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
 	}
-	var dataDefault model.Pipeline
-	data := &dataDefault
-	err = flags.ParseFlag(cmd.Flags(), "data", &data)
-	if err != nil {
-		return fmt.Errorf(`error parsing "data": ` + err.Error())
-	}
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -969,23 +963,19 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	if err != nil {
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+	}
 	var nameDefault string
 	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-	// Form the request body
-	generated_request_body := model.PipelinePatchRequest{
 
-		BypassValidation: bypassValidation,
-		CreateUserId:     createUserId,
-		Data:             data,
-		Description:      description,
-		Name:             name,
-	}
-
-	resp, err := client.StreamsService.PatchPipeline(id, generated_request_body)
+	resp, err := PatchPipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -996,8 +986,10 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 // PutConnection Updates an existing DSP connection.
 func PutConnection(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var connectionId string
@@ -1005,13 +997,30 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	var data map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "data", &data)
 	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+		return fmt.Errorf(`error parsing "data": ` + err.Error())
+	}
+	var description string
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ConnectionPutRequest{
+
+		Data:        data,
+		Description: description,
+		Name:        name,
 	}
 
-	resp, err := PutConnectionOverride(connectionId, inputDatafile)
+	resp, err := client.StreamsService.PutConnection(connectionId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1059,8 +1068,26 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var recordsLimitDefault int32
+	recordsLimit := &recordsLimitDefault
+	err = flags.ParseFlag(cmd.Flags(), "records-limit", &recordsLimit)
+	if err != nil {
+		return fmt.Errorf(`error parsing "records-limit": ` + err.Error())
+	}
+	var recordsPerPipelineDefault int32
+	recordsPerPipeline := &recordsPerPipelineDefault
+	err = flags.ParseFlag(cmd.Flags(), "records-per-pipeline", &recordsPerPipeline)
+	if err != nil {
+		return fmt.Errorf(`error parsing "records-per-pipeline": ` + err.Error())
+	}
+	var sessionLifetimeMsDefault int64
+	sessionLifetimeMs := &sessionLifetimeMsDefault
+	err = flags.ParseFlag(cmd.Flags(), "session-lifetime-ms", &sessionLifetimeMs)
+	if err != nil {
+		return fmt.Errorf(`error parsing "session-lifetime-ms": ` + err.Error())
+	}
 
-	resp, err := StartPreviewOverride(inputDatafile)
+	resp, err := StartPreviewOverride(recordsLimit, recordsPerPipeline, sessionLifetimeMs, inputDatafile)
 	if err != nil {
 		return err
 	}
@@ -1094,8 +1121,10 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 // UpdateConnection Patches an existing DSP connection.
 func UpdateConnection(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var connectionId string
@@ -1103,13 +1132,32 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
-	var inputDatafile string
-	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
+	var data map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "data", &data)
 	if err != nil {
-		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
+		return fmt.Errorf(`error parsing "data": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ConnectionPatchRequest{
+
+		Data:        data,
+		Description: description,
+		Name:        name,
 	}
 
-	resp, err := UpdateConnectionOverride(connectionId, inputDatafile)
+	resp, err := client.StreamsService.UpdateConnection(connectionId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1211,7 +1259,7 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "file-name": ` + err.Error())
 	}
 
-	resp, err := UploadFilesOverride(fileName)
+	resp, err := UploadFileOverride(fileName)
 	if err != nil {
 		return err
 	}

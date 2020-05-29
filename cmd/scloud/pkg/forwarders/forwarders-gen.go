@@ -10,30 +10,22 @@ import (
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/flags"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
-	model "github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 )
 
 // AddCertificate Adds a certificate to a vacant slot on a tenant.
 func AddCertificate(cmd *cobra.Command, args []string) error {
 
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
+	var err error
+
 	// Parse all flags
 
-	var pem string
-	err = flags.ParseFlag(cmd.Flags(), "pem", &pem)
+	var inputDatafile string
+	err = flags.ParseFlag(cmd.Flags(), "input-datafile", &inputDatafile)
 	if err != nil {
-		return fmt.Errorf(`error parsing "pem": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.Certificate{
-
-		Pem: pem,
+		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
-	resp, err := client.ForwardersService.AddCertificate(generated_request_body)
+	resp, err := AddCertificateOverride(inputDatafile)
 	if err != nil {
 		return err
 	}

@@ -39,9 +39,8 @@ var listCertificatesCmd = &cobra.Command{
 func init() {
 	forwardersCmd.AddCommand(addCertificateCmd)
 
-	var addCertificatePem string
-	addCertificateCmd.Flags().StringVar(&addCertificatePem, "pem", "", "This is a required parameter. ")
-	addCertificateCmd.MarkFlagRequired("pem")
+	var addCertificateInputDatafile string
+	addCertificateCmd.Flags().StringVar(&addCertificateInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that contains the pem string.")
 
 	forwardersCmd.AddCommand(deleteCertificateCmd)
 
