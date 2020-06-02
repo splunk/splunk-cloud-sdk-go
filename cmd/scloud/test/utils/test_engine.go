@@ -382,3 +382,15 @@ func Execute_cmd_with_global_flags(command string, searchString string, t *testi
 
 	return false
 }
+
+func ExecuteCmd(command string, t *testing.T) (string, error, string) {
+
+	args := strings.Split(command, " ")
+	for index, ele := range args {
+		args[index] = strings.Trim(ele, " ")
+	}
+	comnd := exec.Command(scloud, args...)
+
+	//execute command
+	return executeCliCommand(comnd)
+}

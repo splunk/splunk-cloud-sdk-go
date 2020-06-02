@@ -72,7 +72,7 @@ func Abspath(p string) string {
 }
 
 // Returns the name of the selected environment.
-func getEnvironmentName() string {
+func GetEnvironmentName() string {
 	err := loadConfigs()
 	if err != nil {
 		util.Fatal(err.Error())
@@ -98,7 +98,7 @@ func getEnvironment() *Environment {
 	if env != "" {
 		name = env
 	} else {
-		name = getEnvironmentName()
+		name = GetEnvironmentName()
 	}
 	envName, err := GetEnvironment(name)
 	if err != nil {
@@ -332,8 +332,26 @@ func loadConfigs() error {
 	if err := loadConfig(); err != nil {
 		return err
 	}
-	settings, _ = fcache.Load(Abspath(viper.ConfigFileUsed()))
-	ctxCache, _ = fcache.Load(Abspath(".scloud_context"))
+
+	var err error
+
+	settings, err = fcache.Load(Abspath(viper.ConfigFileUsed()))
+
+	if err != nil {
+		return err
+	}
+
+	ctxCachePath := os.Getenv("SCLOUD_CACHE_PATH")
+
+	if ctxCachePath == "" {
+		ctxCachePath = ".scloud_context"
+	}
+
+	ctxCache, err = fcache.Load(Abspath(ctxCachePath))
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -403,6 +421,22 @@ func GetProfile(name string) (map[string]string, error) {
 // Returns the context from .scloud_context
 func GetContext(cmd *cobra.Command) *idp.Context {
 	return getContext(cmd)
+}
+
+// Set context in .scloud_context
+func SetContext(cmd *cobra.Command, context map[string]interface{}) {
+	profile, err := getProfile()
+	if err != nil {
+		util.Fatal(err.Error())
+		return
+	}
+
+	clientID, ok := profile["client_id"]
+	if !ok {
+		util.Fatal("bad app profile: no client_id")
+		return
+	}
+	ctxCache.Set(clientID, context)
 }
 
 // Open the named static file asset.

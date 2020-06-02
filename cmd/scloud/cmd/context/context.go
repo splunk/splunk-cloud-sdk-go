@@ -1,10 +1,23 @@
 package context
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
+	"github.com/thoas/go-funk"
 )
+
+const ExpiresIn = 43200
+const DefaultExpiresIn = 3600
+const TokenType = "Bearer"
+const Scope = "offline_access openid email profile"
+const DefaultEnv = "prod"
+
+var ValidKeys = map[string]interface{}{
+	"access_token": "",
+}
 
 func Cmd() *cobra.Command {
 	return contextCmd
@@ -25,6 +38,48 @@ var list = &cobra.Command{
 	},
 }
 
+var set = &cobra.Command{
+	Use:   "set",
+	Short: "Set token context details",
+	Run: func(cmd *cobra.Command, args []string) {
+
+		// Extract flag values
+		key, _ := cmd.Flags().GetString("key")
+		value, _ := cmd.Flags().GetString("value")
+
+		// Validate Key
+		var isValidKey = funk.Contains(ValidKeys, key)
+
+		if !isValidKey {
+			message := fmt.Sprintf("Here are the keys you can set:\n %s\n", ValidKeys)
+			jsonx.Pprint(cmd, message)
+			return
+		}
+
+		expirationToUse := DefaultExpiresIn
+
+		if auth.GetEnvironmentName() != DefaultEnv {
+			expirationToUse = ExpiresIn
+		}
+
+		context := map[string]interface{}{
+			key:          value,
+			"token_type": TokenType,
+			"expires_in": expirationToUse,
+			"scope":      Scope,
+		}
+
+		auth.SetContext(cmd, context)
+	},
+}
+
 func init() {
 	contextCmd.AddCommand(list)
+	contextCmd.AddCommand(set)
+
+	set.Flags().StringP("key", "k", "", "The key stored in the context file")
+	set.Flags().StringP("value", "p", "", "The value stored in the context file")
+
+	_ = set.MarkFlagRequired("key")
+	_ = set.MarkFlagRequired("value")
 }
