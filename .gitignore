@@ -40,6 +40,7 @@ docs/
 # scloud
 bin
 default.yaml
+cmd/scloud/cmd/scloud/version/version.go
 
 # TODO: remove python testing for scloud
 *.pyc

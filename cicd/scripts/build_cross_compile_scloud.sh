@@ -41,7 +41,7 @@ do
         target_file=${target_dir}/${program_name}
         echo "Building ${target_file}";
         # The -s flag strips debug symbols from Linux, -w from DWARF (darwin). This reduces binary size by about half.
-        env GOOS=${os} GOARCH=${arch} GO111MODULE=on go build -ldflags "-s -w" -a -o ${target_file} ${SCLOUD_SRC_PATH}
+        env GOOS=${os} GOARCH=${arch} GO111MODULE=on go build -ldflags "-s -w" -a -mod=readonly -o ${target_file} ${SCLOUD_SRC_PATH}
         scloud_version=v$(cat cmd/scloud/cmd/scloud/version/client_info.go | sed ${SED_FLG} -n 's/const ScloudVersion = "([0-9]+\.[0-9]+\.[0-9]+.*)"/\1/p')
         archive_file=${PWD}/${ARCHIVE_DIR}/scloud_${scloud_version}_${os}_${arch}
 

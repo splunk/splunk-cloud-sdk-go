@@ -23,12 +23,12 @@ linttest: scloud_version
 	rm -rf vendor/
 
 build: scloud_version
-	GO111MODULE=on go build -v ./...
+	GO111MODULE=on go build -v -mod=readonly ./...
 	make build_scloud
 
 build_scloud: scloud_version
 	@echo "Building scloud.."
-	GO111MODULE=on go build -v -o bin/scloud $(SCLOUD_SRC_PATH)/scloud/
+	GO111MODULE=on go build -v -mod=readonly -o bin/scloud $(SCLOUD_SRC_PATH)/scloud/
 	./cicd/scripts/build_cross_compile_scloud.sh
 
 
@@ -46,10 +46,10 @@ format_check:
 
 scloud_version:
 	@echo "Generate version.go .."
-	cd $(CURDIR)/cmd/scloud/cmd/scloud && go generate
+	cd $(CURDIR)/cmd/scloud/cmd/scloud && go generate -mod=readonly
 
 vet: scloud_version
-	GO111MODULE=on go vet ./...
+	GO111MODULE=on go vet -mod=readonly ./...
 
 login_scloud: build_scloud
 	./cicd/scripts/login_scloud.sh
@@ -62,7 +62,7 @@ clean: download_config
 	build
 
 generate_interface:
-	@GO111MODULE=off && go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate
+	@GO111MODULE=off && go get github.com/vburenin/ifacemaker && cd services && GO111MODULE=on go generate -mod=readonly
 
 download_config:
 	@echo "Downloading current config ($(SCLOUD_CONFIG_VERSION)) from artifactory ..."
