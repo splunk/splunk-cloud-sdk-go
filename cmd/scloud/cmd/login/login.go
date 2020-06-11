@@ -22,4 +22,5 @@ func init() {
 	loginCmd.Flags().StringP("uid", "u", "", "Your username")
 	loginCmd.Flags().StringP("pwd", "p", "", "Your password")
 	loginCmd.Flags().BoolP("verbose", "", false, "Whether to display your access token")
+	loginCmd.Flags().BoolP("use-refresh-token", "", false, "Whether to use refresh token authentication flow")
 }
