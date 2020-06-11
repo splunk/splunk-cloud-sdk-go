@@ -17,9 +17,9 @@
 package auth
 
 import (
-	"errors"
 	"fmt"
 
+	"github.com/spf13/cobra"
 	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
 
 	"github.com/pelletier/go-toml"
@@ -92,7 +92,9 @@ func FromToml(ctx *idp.Context, t *toml.Tree) error {
 	return nil
 }
 
-func pkceFlow(profile map[string]string) (*idp.Context, error) {
+func PkceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {
+	ensureCredentials(profile, cmd)
+
 	clientID, err := gets(profile, "client_id")
 	if err != nil {
 		return nil, err
@@ -136,15 +138,42 @@ func pkceFlow(profile map[string]string) (*idp.Context, error) {
 	return tr.PKCEFlow(clientID, redirectURI, scope, username, password)
 }
 
-// Dispatch an authentication flow based on the given profile.
-func authenticate(profile map[string]string) (*idp.Context, error) {
-	kind, ok := profile["kind"]
-	if !ok {
-		return nil, errors.New("missing kind")
+func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {
+	clientID, err := gets(profile, "client_id")
+	if err != nil {
+		return nil, err
 	}
+	scope, err := getsd(profile, "scope", "openid")
+	if err != nil {
+		return nil, err
+	}
+	idpHost, err := gets(profile, "idp_host")
+	if err != nil {
+		return nil, err
+	}
+
+	var refreshToken string
+	context := getCurrentContext(clientID)
+
+	if context == nil {
+		refreshToken = ""
+	} else {
+		refreshToken = context.RefreshToken
+	}
+
+	tr := idp.NewRefreshTokenRetriever(clientID, scope, refreshToken, idpHost)
+
+	tr.Insecure = isInsecure()
+	return tr.Refresh(clientID, scope, refreshToken)
+}
+
+// Return the correct flow function
+func GetFlow(kind string) (func(map[string]string, *cobra.Command) (*idp.Context, error), error) {
 	switch kind {
 	case "pkce":
-		return pkceFlow(profile)
+		return PkceFlow, nil
+	case "refresh":
+		return RefreshFlow, nil
 	}
 	return nil, fmt.Errorf("bad profile kind: '%s'", kind)
 }

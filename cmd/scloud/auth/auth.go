@@ -151,7 +151,7 @@ func getPassword(cmd *cobra.Command) string {
 
 // Returns the selected app profile.
 func getProfile() (map[string]string, error) {
-	name := getProfileName()
+	name := GetProfileName()
 	profile, err := GetProfile(name)
 	if err != nil {
 		return nil, err
@@ -160,7 +160,7 @@ func getProfile() (map[string]string, error) {
 }
 
 // Returns the name of the selected app profile.
-func getProfileName() string {
+func GetProfileName() string {
 	return getEnvironment().Profile
 }
 
@@ -288,12 +288,25 @@ func getContext(cmd *cobra.Command) *idp.Context {
 		// todo: re-authenticate if token has expired
 		return context
 	}
-	ensureCredentials(profile, cmd)
-	context, err = authenticate(profile)
+
+	kind, ok := profile["kind"]
+	if !ok {
+		util.Fatal("missing kind")
+		return nil
+	}
+
+	authFlow, err := GetFlow(kind)
 	if err != nil {
 		util.Fatal(err.Error())
 		return nil
 	}
+
+	context, err = authFlow(profile, cmd)
+	if err != nil {
+		util.Fatal(err.Error())
+		return nil
+	}
+
 	ctxCache.Set(clientID, toMap(context))
 	return context
 }
@@ -302,24 +315,30 @@ func getToken() string {
 	return getContext(nil).AccessToken
 }
 
-// Authenticate, using the selected app profile.
-func Login(cmd *cobra.Command) (*idp.Context, error) {
-	err := loadConfigs()
-	if err != nil {
-		return nil, err
-	}
+func LoginSetUp() error {
+	return loadConfigs()
+}
 
-	name := getProfileName()
+func GetEnvironmentProfile() (map[string]string, error) {
+	name := GetProfileName()
 	profile, err := GetProfile(name)
 	if err != nil {
 		return nil, err
 	}
+	return profile, err
+}
+
+// Authenticate, using the selected app profile.
+func Login(cmd *cobra.Command, authFlow func(map[string]string, *cobra.Command) (*idp.Context, error)) (*idp.Context, error) {
+	profile, err := GetEnvironmentProfile()
+	if err != nil {
+		return nil, err
+	}
+
 	clientID := profile["client_id"]
 	glog.CopyStandardLogTo("INFO")
 
-	util.Info("Authenticate profile=%s", name)
-	ensureCredentials(profile, cmd)
-	context, err := authenticate(profile)
+	context, err := authFlow(profile, cmd)
 	if err != nil {
 		return nil, err
 	}
