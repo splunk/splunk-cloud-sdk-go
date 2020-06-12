@@ -50,7 +50,7 @@ func GetClient() (*sdk.Client, error) {
 
 func GetClientSystemTenant() (*sdk.Client, error) {
 	if sdkClient == nil {
-		err := loadConfig()
+		err := loadConfigs()
 		if err != nil {
 			return nil, err
 		}

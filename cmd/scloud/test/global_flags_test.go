@@ -2,6 +2,7 @@ package test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	utils "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/test/utils"
@@ -98,4 +99,23 @@ func Test_global_flag_insecure_cacert(t *testing.T) {
 
 	assert.Equal(t, true, success)
 
+}
+
+func TestGetSystemTenantWithGlobalEnv(t *testing.T) {
+	command := "identity list-principals --env " + utils.Env1
+	results, err, std := utils.ExecuteCmd(command, t)
+
+	assert.True(t, strings.Contains(results, utils.Username))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+}
+
+func TestGetSystemTenantWithoutGlobalEnv(t *testing.T) {
+	command := "identity list-principals"
+	results, err, std := utils.ExecuteCmd(command, t)
+
+	assert.True(t, strings.Contains(results, utils.Username))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
 }
