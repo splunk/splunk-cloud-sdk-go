@@ -556,6 +556,10 @@ type AliasAction struct {
 	Owner string `json:"owner"`
 	// The rule that this action is part of.
 	Ruleid string `json:"ruleid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -626,6 +630,14 @@ type AnnotationsProperties struct {
 	Relationshipid *string `json:"relationshipid,omitempty"`
 }
 
+// Appclientidcreatedby, appclientidmodifiedby app clientid properties for inclusion in othert objects.
+type AppClientIdProperties struct {
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+}
+
 // A complete autokv action as rendered in POST, PATCH, and GET responses.
 type AutoKvAction struct {
 	// The date and time object was created.
@@ -645,6 +657,10 @@ type AutoKvAction struct {
 	Owner string `json:"owner"`
 	// The rule that this action is part of.
 	Ruleid string `json:"ruleid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -708,6 +724,10 @@ type Dashboard struct {
 	Name string `json:"name"`
 	// The name of the object's owner.
 	Owner string `json:"owner"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Whether the dashboard is active or not.
 	Isactive *bool `json:"isactive,omitempty"`
 	// The version of the dashboard.
@@ -966,6 +986,10 @@ type DatasetCommon struct {
 	Name string `json:"name"`
 	// The dataset name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// Summary of the dataset's purpose.
@@ -1412,6 +1436,10 @@ type EvalAction struct {
 	Owner string `json:"owner"`
 	// The rule that this action is part of.
 	Ruleid string `json:"ruleid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -1476,6 +1504,10 @@ type Field struct {
 	// The field name.
 	Name       string          `json:"name"`
 	Prevalence FieldPrevalence `json:"prevalence"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The field description.
 	Description *string `json:"description,omitempty"`
 	// Whether or not the field has been indexed.
@@ -1594,6 +1626,10 @@ type ImportDataset struct {
 	SourceModule string `json:"sourceModule"`
 	// The dataset name being imported.
 	SourceName string `json:"sourceName"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// Summary of the dataset's purpose.
@@ -1798,6 +1834,10 @@ type IndexDataset struct {
 	Owner string `json:"owner"`
 	// The dataset name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
@@ -1929,6 +1969,10 @@ type JobDataset struct {
 	Resourcename string `json:"resourcename"`
 	// The ID assigned to the search job.
 	Sid string `json:"sid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Was the event summary requested for this searhc job?
 	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
 	// Was the field summary requested for this searhc job?
@@ -2085,6 +2129,10 @@ type KvCollectionDataset struct {
 	Owner string `json:"owner"`
 	// The dataset name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// Summary of the dataset's purpose.
@@ -2151,6 +2199,10 @@ type LookupAction struct {
 	Owner string `json:"owner"`
 	// The rule that this action is part of.
 	Ruleid string `json:"ruleid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -2218,6 +2270,10 @@ type LookupDataset struct {
 	Owner string `json:"owner"`
 	// The dataset name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Match case-sensitively against the lookup.
 	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
 	// Detailed description of the dataset.
@@ -2335,6 +2391,10 @@ type MetricDataset struct {
 	Owner string `json:"owner"`
 	// The dataset name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
@@ -2455,6 +2515,10 @@ type RegexAction struct {
 	Pattern string `json:"pattern"`
 	// The rule that this action is part of.
 	Ruleid string `json:"ruleid"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The maximum number of times per event to attempt to match fields with the regular expression.
 	Limit *int32 `json:"limit,omitempty"`
 	// The catalog version.
@@ -2539,6 +2603,10 @@ type Relationship struct {
 	Targetid string `json:"targetid"`
 	// The Catalog version.
 	Version int32 `json:"version"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The source dataset name qualified by module name. Either the sourceid or sourceresourcename property must be specified.
 	Sourceresourcename *string `json:"sourceresourcename,omitempty"`
 	// The target dataset name qualified by module name. Either the targetid or targetresourcename property must be specified.
@@ -2674,6 +2742,10 @@ type Rule struct {
 	Owner string `json:"owner"`
 	// The rule name qualified by the module name.
 	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -2836,6 +2908,10 @@ type ViewDataset struct {
 	Resourcename string `json:"resourcename"`
 	// A valid SPL-defined search.
 	Search string `json:"search"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
 	// Summary of the dataset's purpose.

@@ -105,13 +105,13 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobEnablePreview, "enable-preview", "false", "Specified whether a search is allowed to collect preview results during the run time.")
 
 	var createJobExtractAllFields string
-	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.")
+	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance.")
 
 	var createJobLatest string
 	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
-	var createJobMaxTime float32
-	createJobCmd.Flags().Float32Var(&createJobMaxTime, "max-time", 0.0, "The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).")
+	var createJobMaxTime int32
+	createJobCmd.Flags().Int32Var(&createJobMaxTime, "max-time", 0, "The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).")
 
 	var createJobMessages string
 	createJobCmd.Flags().StringVar(&createJobMessages, "messages", "", "")
@@ -122,8 +122,8 @@ func init() {
 	var createJobRelativeTimeAnchor string
 	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
 
-	var createJobRequiredFreshness float32
-	createJobCmd.Flags().Float32Var(&createJobRequiredFreshness, "required-freshness", 0.0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.")
+	var createJobRequiredFreshness int32
+	createJobCmd.Flags().Int32Var(&createJobRequiredFreshness, "required-freshness", 0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.")
 
 	var createJobStatus string
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
@@ -141,6 +141,10 @@ func init() {
 	deleteJobCmd.Flags().StringVar(&deleteJobModule, "module", "", "This is a required parameter. The module to run the delete search job in. The default module is used if module field is empty.")
 	deleteJobCmd.MarkFlagRequired("module")
 
+	var deleteJobPredicate string
+	deleteJobCmd.Flags().StringVar(&deleteJobPredicate, "predicate", "", "This is a required parameter. The predicate expression that identifies the events to delete from the index. This expression must return true or false. To delete all events from the index, specify true instead of an expression.")
+	deleteJobCmd.MarkFlagRequired("predicate")
+
 	var deleteJobEarliest string
 	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
@@ -150,15 +154,11 @@ func init() {
 	var deleteJobLatest string
 	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
-	var deleteJobMaxTime float32
-	deleteJobCmd.Flags().Float32Var(&deleteJobMaxTime, "max-time", 0.0, "The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).")
+	var deleteJobMaxTime int32
+	deleteJobCmd.Flags().Int32Var(&deleteJobMaxTime, "max-time", 0, "The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).")
 
 	var deleteJobMessages string
 	deleteJobCmd.Flags().StringVar(&deleteJobMessages, "messages", "", "")
-
-	var deleteJobPredicate string
-	deleteJobCmd.Flags().StringVar(&deleteJobPredicate, "predicate", "", "This is a required parameter. Events satisfying this predicate are going to be deleted. To delete all events from the index, true should be specified for this field.")
-	deleteJobCmd.MarkFlagRequired("predicate")
 
 	var deleteJobRelativeTimeAnchor string
 	deleteJobCmd.Flags().StringVar(&deleteJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
@@ -181,8 +181,8 @@ func init() {
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummarySid, "sid", "", "This is a required parameter. The search ID.")
 	listEventsSummaryCmd.MarkFlagRequired("sid")
 
-	var listEventsSummaryCount float32
-	listEventsSummaryCmd.Flags().Float32Var(&listEventsSummaryCount, "count", 0.0, "The maximum number of entries to return. Set to 0 to return all available entries.")
+	var listEventsSummaryCount int32
+	listEventsSummaryCmd.Flags().Int32Var(&listEventsSummaryCount, "count", 0, "The maximum number of entries to return. Set to 0 to return all available entries.")
 
 	var listEventsSummaryEarliest string
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
@@ -193,8 +193,8 @@ func init() {
 	var listEventsSummaryLatest string
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
-	var listEventsSummaryOffset float32
-	listEventsSummaryCmd.Flags().Float32Var(&listEventsSummaryOffset, "offset", 0.0, "Index of first item to return.")
+	var listEventsSummaryOffset int32
+	listEventsSummaryCmd.Flags().Int32Var(&listEventsSummaryOffset, "offset", 0, "Index of first item to return.")
 
 	searchCmd.AddCommand(listFieldsSummaryCmd)
 
@@ -210,8 +210,8 @@ func init() {
 
 	searchCmd.AddCommand(listJobsCmd)
 
-	var listJobsCount float32
-	listJobsCmd.Flags().Float32Var(&listJobsCount, "count", 0.0, "The maximum number of jobs that you want to return the status entries for.")
+	var listJobsCount int32
+	listJobsCmd.Flags().Int32Var(&listJobsCount, "count", 0, "The maximum number of jobs that you want to return the status entries for.")
 
 	var listJobsFilter string
 	listJobsCmd.Flags().StringVar(&listJobsFilter, "filter", "", "Filter the list of jobs by sid. Valid format is  `sid IN ({comma separated list of SIDs in quotes})`. A maximum of 50 SIDs can be specified in one query.")
@@ -225,11 +225,11 @@ func init() {
 	listPreviewResultsCmd.Flags().StringVar(&listPreviewResultsSid, "sid", "", "This is a required parameter. The search ID.")
 	listPreviewResultsCmd.MarkFlagRequired("sid")
 
-	var listPreviewResultsCount float32
-	listPreviewResultsCmd.Flags().Float32Var(&listPreviewResultsCount, "count", 0.0, "The maximum number of entries to return. Set to 0 to return all available entries.")
+	var listPreviewResultsCount int32
+	listPreviewResultsCmd.Flags().Int32Var(&listPreviewResultsCount, "count", 0, "The maximum number of entries to return. Set to 0 to return all available entries.")
 
-	var listPreviewResultsOffset float32
-	listPreviewResultsCmd.Flags().Float32Var(&listPreviewResultsOffset, "offset", 0.0, "Index of first item to return.")
+	var listPreviewResultsOffset int32
+	listPreviewResultsCmd.Flags().Int32Var(&listPreviewResultsOffset, "offset", 0, "Index of first item to return.")
 
 	searchCmd.AddCommand(listResultsCmd)
 
@@ -237,14 +237,14 @@ func init() {
 	listResultsCmd.Flags().StringVar(&listResultsSid, "sid", "", "This is a required parameter. The search ID.")
 	listResultsCmd.MarkFlagRequired("sid")
 
-	var listResultsCount float32
-	listResultsCmd.Flags().Float32Var(&listResultsCount, "count", 0.0, "The maximum number of entries to return. Set to 0 to return all available entries.")
+	var listResultsCount int32
+	listResultsCmd.Flags().Int32Var(&listResultsCount, "count", 0, "The maximum number of entries to return. Set to 0 to return all available entries.")
 
 	var listResultsField string
 	listResultsCmd.Flags().StringVar(&listResultsField, "field", "", "A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.")
 
-	var listResultsOffset float32
-	listResultsCmd.Flags().Float32Var(&listResultsOffset, "offset", 0.0, "Index of first item to return.")
+	var listResultsOffset int32
+	listResultsCmd.Flags().Int32Var(&listResultsOffset, "offset", 0, "Index of first item to return.")
 
 	searchCmd.AddCommand(listTimeBucketsCmd)
 

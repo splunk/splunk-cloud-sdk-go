@@ -28,7 +28,7 @@ package search
 //     `v := ListEventsSummaryQueryParams{}.SetCount(...).SetEarliest(...).SetField(...).SetLatest(...).SetOffset(...)`
 type ListEventsSummaryQueryParams struct {
 	// Count : The maximum number of entries to return. Set to 0 to return all available entries.
-	Count *float32 `key:"count"`
+	Count *int32 `key:"count"`
 	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Earliest string `key:"earliest"`
 	// Field : A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
@@ -36,10 +36,10 @@ type ListEventsSummaryQueryParams struct {
 	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Latest string `key:"latest"`
 	// Offset : Index of first item to return.
-	Offset *float32 `key:"offset"`
+	Offset *int32 `key:"offset"`
 }
 
-func (q ListEventsSummaryQueryParams) SetCount(v float32) ListEventsSummaryQueryParams {
+func (q ListEventsSummaryQueryParams) SetCount(v int32) ListEventsSummaryQueryParams {
 	q.Count = &v
 	return q
 }
@@ -59,7 +59,7 @@ func (q ListEventsSummaryQueryParams) SetLatest(v string) ListEventsSummaryQuery
 	return q
 }
 
-func (q ListEventsSummaryQueryParams) SetOffset(v float32) ListEventsSummaryQueryParams {
+func (q ListEventsSummaryQueryParams) SetOffset(v int32) ListEventsSummaryQueryParams {
 	q.Offset = &v
 	return q
 }
@@ -89,14 +89,14 @@ func (q ListFieldsSummaryQueryParams) SetLatest(v string) ListFieldsSummaryQuery
 //     `v := ListJobsQueryParams{}.SetCount(...).SetFilter(...).SetStatus(...)`
 type ListJobsQueryParams struct {
 	// Count : The maximum number of jobs that you want to return the status entries for.
-	Count *float32 `key:"count"`
+	Count *int32 `key:"count"`
 	// Filter : Filter the list of jobs by sid. Valid format is  &#x60;sid IN ({comma separated list of SIDs in quotes})&#x60;. A maximum of 50 SIDs can be specified in one query.
 	Filter string `key:"filter"`
 	// Status : Filter the list of jobs by status. Valid status values are &#39;running&#39;, &#39;done&#39;, &#39;canceled&#39;, or &#39;failed&#39;.
 	Status SearchStatus `key:"status"`
 }
 
-func (q ListJobsQueryParams) SetCount(v float32) ListJobsQueryParams {
+func (q ListJobsQueryParams) SetCount(v int32) ListJobsQueryParams {
 	q.Count = &v
 	return q
 }
@@ -116,17 +116,17 @@ func (q ListJobsQueryParams) SetStatus(v SearchStatus) ListJobsQueryParams {
 //     `v := ListPreviewResultsQueryParams{}.SetCount(...).SetOffset(...)`
 type ListPreviewResultsQueryParams struct {
 	// Count : The maximum number of entries to return. Set to 0 to return all available entries.
-	Count *float32 `key:"count"`
+	Count *int32 `key:"count"`
 	// Offset : Index of first item to return.
-	Offset *float32 `key:"offset"`
+	Offset *int32 `key:"offset"`
 }
 
-func (q ListPreviewResultsQueryParams) SetCount(v float32) ListPreviewResultsQueryParams {
+func (q ListPreviewResultsQueryParams) SetCount(v int32) ListPreviewResultsQueryParams {
 	q.Count = &v
 	return q
 }
 
-func (q ListPreviewResultsQueryParams) SetOffset(v float32) ListPreviewResultsQueryParams {
+func (q ListPreviewResultsQueryParams) SetOffset(v int32) ListPreviewResultsQueryParams {
 	q.Offset = &v
 	return q
 }
@@ -136,14 +136,14 @@ func (q ListPreviewResultsQueryParams) SetOffset(v float32) ListPreviewResultsQu
 //     `v := ListResultsQueryParams{}.SetCount(...).SetField(...).SetOffset(...)`
 type ListResultsQueryParams struct {
 	// Count : The maximum number of entries to return. Set to 0 to return all available entries.
-	Count *float32 `key:"count"`
+	Count *int32 `key:"count"`
 	// Field : A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
 	Field string `key:"field"`
 	// Offset : Index of first item to return.
-	Offset *float32 `key:"offset"`
+	Offset *int32 `key:"offset"`
 }
 
-func (q ListResultsQueryParams) SetCount(v float32) ListResultsQueryParams {
+func (q ListResultsQueryParams) SetCount(v int32) ListResultsQueryParams {
 	q.Count = &v
 	return q
 }
@@ -153,7 +153,7 @@ func (q ListResultsQueryParams) SetField(v string) ListResultsQueryParams {
 	return q
 }
 
-func (q ListResultsQueryParams) SetOffset(v float32) ListResultsQueryParams {
+func (q ListResultsQueryParams) SetOffset(v int32) ListResultsQueryParams {
 	q.Offset = &v
 	return q
 }

@@ -70,9 +70,9 @@ components:
           example: ""
           type: string
       required:
-        - data
-        - description
-        - name
+      - data
+      - description
+      - name
       type: object
     ConnectionRequest:
       description: ""
@@ -98,10 +98,10 @@ components:
           example: ""
           type: string
       required:
-        - connectorId
-        - data
-        - description
-        - name
+      - connectorId
+      - data
+      - description
+      - name
       type: object
     ConnectionResponse:
       description: ""
@@ -214,7 +214,7 @@ components:
         upl:
           $ref: '#/components/schemas/Pipeline'
       required:
-        - upl
+      - upl
       type: object
     DecompileResponse:
       description: ""
@@ -277,9 +277,9 @@ components:
         uplJson:
           $ref: '#/components/schemas/Pipeline'
       required:
-        - nodeUuid
-        - targetPortName
-        - uplJson
+      - nodeUuid
+      - targetPortName
+      - uplJson
       type: object
     GetOutputSchemaRequest:
       description: ""
@@ -296,70 +296,15 @@ components:
         uplJson:
           $ref: '#/components/schemas/Pipeline'
       required:
-        - uplJson
-      type: object
-    JsonNode:
-      description: ""
-      properties:
-        "":
-          type: boolean
-        array:
-          type: boolean
-        bigDecimal:
-          type: boolean
-        bigInteger:
-          type: boolean
-        binary:
-          type: boolean
-        boolean:
-          type: boolean
-        containerNode:
-          type: boolean
-        double:
-          type: boolean
-        float:
-          type: boolean
-        floatingPointNumber:
-          type: boolean
-        int:
-          type: boolean
-        integralNumber:
-          type: boolean
-        long:
-          type: boolean
-        missingNode:
-          type: boolean
-        nodeType:
-          enum:
-            - ARRAY
-            - BINARY
-            - BOOLEAN
-            - MISSING
-            - "NULL"
-            - NUMBER
-            - OBJECT
-            - POJO
-            - STRING
-          type: string
-        number:
-          type: boolean
-        object:
-          type: boolean
-        pojo:
-          type: boolean
-        short:
-          type: boolean
-        textual:
-          type: boolean
-        valueNode:
-          type: boolean
+      - uplJson
       type: object
     LookupTableResponse:
       description: ""
       properties:
         data:
           items:
-            $ref: '#/components/schemas/JsonNode'
+            properties: {}
+            type: object
           type: array
         types:
           additionalProperties:
@@ -433,6 +378,17 @@ components:
           format: int64
           type: integer
       type: object
+    PaginatedResponseOfPlugin:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Plugin'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
     PaginatedResponseOfTemplateResponse:
       description: ""
       properties:
@@ -470,8 +426,8 @@ components:
             $ref: '#/components/schemas/PipelineNode'
           type: array
       required:
-        - edges
-        - nodes
+      - edges
+      - nodes
       type: object
     PipelineEdge:
       description: ""
@@ -556,12 +512,12 @@ components:
           type: string
         pipelineReactivationStatus:
           enum:
-            - activated
-            - currentVersionInvalid
-            - failedToDeactivateCurrentVersion
-            - notActivated
-            - rolledBack
-            - rolledBackError
+          - activated
+          - currentVersionInvalid
+          - failedToDeactivateCurrentVersion
+          - notActivated
+          - rolledBack
+          - rolledBackError
           type: string
       type: object
     PipelineRequest:
@@ -583,8 +539,8 @@ components:
           example: ""
           type: string
       required:
-        - data
-        - name
+      - data
+      - name
       type: object
     PipelineResponse:
       description: ""
@@ -620,11 +576,11 @@ components:
           type: string
         status:
           enum:
-            - CREATED
-            - ACTIVATED
-            - FAILED
-            - RESTARTING
-            - FINISHED
+          - CREATED
+          - ACTIVATED
+          - FAILED
+          - RESTARTING
+          - FINISHED
           type: string
         statusMessage:
           type: string
@@ -637,6 +593,72 @@ components:
           items:
             type: string
           type: array
+        version:
+          format: int64
+          type: integer
+      type: object
+    Plugin:
+      description: ""
+      properties:
+        description:
+          type: string
+        isDeleted:
+          type: boolean
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        name:
+          type: string
+        pluginId:
+          type: string
+        tenantId:
+          type: string
+      type: object
+    PluginPatchRequest:
+      description: ""
+      properties:
+        description:
+          description: Plugin description
+          example: ""
+          type: string
+        name:
+          description: Plugin name
+          example: ""
+          type: string
+      type: object
+    PluginRequest:
+      description: ""
+      properties:
+        description:
+          description: Plugin description
+          example: ""
+          type: string
+        name:
+          description: Plugin name
+          example: ""
+          type: string
+      required:
+      - description
+      - name
+      type: object
+    PluginResponse:
+      description: ""
+      properties:
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        description:
+          type: string
+        jarLocation:
+          type: string
+        name:
+          type: string
+        pluginId:
+          type: string
         version:
           format: int64
           type: integer
@@ -693,7 +715,7 @@ components:
         upl:
           $ref: '#/components/schemas/Pipeline'
       required:
-        - upl
+      - upl
       type: object
     PreviewStartResponse:
       description: ""
@@ -770,7 +792,7 @@ components:
           description: A boolean flag to indicate whether the pipeline should be validated.
           type: boolean
       required:
-        - spl
+      - spl
       type: object
     TemplatePatchRequest:
       description: ""
@@ -800,9 +822,9 @@ components:
           example: ""
           type: string
       required:
-        - data
-        - description
-        - name
+      - data
+      - description
+      - name
       type: object
     TemplateRequest:
       description: ""
@@ -818,9 +840,9 @@ components:
           example: ""
           type: string
       required:
-        - data
-        - description
-        - name
+      - data
+      - description
+      - name
       type: object
     TemplateResponse:
       description: ""
@@ -879,11 +901,13 @@ components:
         upl:
           $ref: '#/components/schemas/Pipeline'
       required:
-        - upl
+      - upl
       type: object
     ValidateResponse:
       description: ""
       properties:
+        nodeId:
+          type: string
         spl:
           type: string
         success:
@@ -906,53 +930,57 @@ paths:
       deprecated: false
       operationId: listConnections
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - explode: true
+        in: query
+        name: connectorId
+        schema:
+          items:
             type: string
-        - in: query
-          name: functionId
-          schema:
-            type: string
-        - in: query
-          name: createUserId
-          schema:
-            type: string
-        - in: query
-          name: connectorId
-          schema:
-            type: string
-        - in: query
-          name: name
-          schema:
-            type: string
-        - in: query
-          name: offset
-          schema:
-            format: int32
-            type: integer
-        - in: query
-          name: pageSize
-          schema:
-            format: int32
-            type: integer
-        - in: query
-          name: sortField
-          schema:
-            type: string
-        - description: Specify either ascending ('asc') or descending ('desc') sort
-            order for a given field (sortField), which must be set for sortDir to apply.
-            Defaults to 'asc'.
-          in: query
-          name: sortDir
-          schema:
-            type: string
-        - in: query
-          name: showSecretNames
-          schema:
-            type: string
+          type: array
+        style: form
+      - in: query
+        name: functionId
+        schema:
+          type: string
+      - in: query
+        name: createUserId
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: sortField
+        schema:
+          type: string
+      - description: Specify either ascending ('asc') or descending ('desc') sort
+          order for a given field (sortField), which must be set for sortDir to apply.
+          Defaults to 'asc'.
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - in: query
+        name: showSecretNames
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -1010,18 +1038,18 @@ paths:
           description: An internal service error has occurred.
       summary: Returns a list of connections (latest versions only) by tenant ID.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.read
     post:
       deprecated: false
       operationId: createConnection
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1086,25 +1114,25 @@ paths:
           description: An internal service error has occurred.
       summary: Create a new DSP connection.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.create
   /{tenantId}/streams/v3beta1/connections/{connectionId}:
     delete:
       deprecated: false
       operationId: deleteConnection
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Connection ID
-          in: path
-          name: connectionId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Connection ID
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           content: {}
@@ -1159,24 +1187,24 @@ paths:
           description: An internal service error has occurred.
       summary: Delete all versions of a connection by its id.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.delete
     patch:
       deprecated: false
       operationId: updateConnection
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Connection ID
-          in: path
-          name: connectionId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Connection ID
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1241,24 +1269,24 @@ paths:
           description: An internal service error has occurred.
       summary: Patches an existing DSP connection.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.update
     put:
       deprecated: false
       operationId: putConnection
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Connection ID
-          in: path
-          name: connectionId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Connection ID
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1323,19 +1351,19 @@ paths:
           description: An internal service error has occurred.
       summary: Updates an existing DSP connection.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.update
   /{tenantId}/streams/v3beta1/connectors:
     get:
       deprecated: false
       operationId: listConnectors
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -1393,19 +1421,19 @@ paths:
           description: An internal service error has occurred.
       summary: Returns a list of the available connectors.
       tags:
-        - connectors
+      - connectors
       x-authz-scope: streams.connections.read
   /{tenantId}/streams/v3beta1/files:
     get:
       deprecated: false
       operationId: getFilesMetadata
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -1463,18 +1491,19 @@ paths:
           description: An internal service error has occurred.
       summary: Returns files metadata.
       tags:
-        - files
+      - files
       x-authz-scope: streams.files.read
     post:
       deprecated: false
       operationId: uploadFile
+      x-hidden: true
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           multipart/form-data:
@@ -1541,25 +1570,25 @@ paths:
           description: An internal service error has occurred.
       summary: Upload new file.
       tags:
-        - files
+      - files
       x-authz-scope: streams.files.create
   /{tenantId}/streams/v3beta1/files/{fileId}:
     delete:
       deprecated: false
       operationId: deleteFile
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: File ID
-          in: path
-          name: fileId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           content: {}
@@ -1614,39 +1643,114 @@ paths:
           description: An internal service error has occurred.
       summary: Delete file.
       tags:
-        - files
+      - files
       x-authz-scope: streams.files.delete
+    get:
+      deprecated: false
+      operationId: getFileMetadata
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFile'
+          description: Returns files metadata.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get file metadata.
+      tags:
+      - files
+      x-authz-scope: streams.files.read
   /{tenantId}/streams/v3beta1/lookups/{connectionId}:
     get:
       deprecated: false
       operationId: getLookupTable
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Connection ID
-          in: path
-          name: connectionId
-          required: true
-          schema:
-            type: string
-        - description: size
-          in: query
-          name: size
-          required: true
-          schema:
-            format: int32
-            type: integer
-        - description: offset
-          in: query
-          name: offset
-          required: true
-          schema:
-            format: int32
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Connection ID
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      - description: size
+        in: query
+        name: size
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        schema:
+          format: int32
+          type: integer
       responses:
         "200":
           content:
@@ -1704,62 +1808,62 @@ paths:
           description: An internal service error has occurred.
       summary: Returns lookup table results.
       tags:
-        - lookup
+      - lookup
       x-authz-scope: streams.lookups.read
   /{tenantId}/streams/v3beta1/pipelines:
     get:
       deprecated: false
       operationId: listPipelines
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: offset
-          in: query
-          name: offset
-          schema:
-            format: int32
-            type: integer
-        - description: pageSize
-          in: query
-          name: pageSize
-          schema:
-            format: int32
-            type: integer
-        - description: sortField
-          in: query
-          name: sortField
-          schema:
-            type: string
-        - description: sortDir
-          in: query
-          name: sortDir
-          schema:
-            type: string
-        - description: activated
-          in: query
-          name: activated
-          schema:
-            type: boolean
-        - description: createUserId
-          in: query
-          name: createUserId
-          schema:
-            type: string
-        - description: name
-          in: query
-          name: name
-          schema:
-            type: string
-        - description: includeData
-          in: query
-          name: includeData
-          schema:
-            default: false
-            type: boolean
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - description: activated
+        in: query
+        name: activated
+        schema:
+          type: boolean
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
+      - description: name
+        in: query
+        name: name
+        schema:
+          type: string
+      - description: includeData
+        in: query
+        name: includeData
+        schema:
+          default: false
+          type: boolean
       responses:
         "200":
           content:
@@ -1817,18 +1921,18 @@ paths:
           description: An internal service error has occurred.
       summary: Returns all pipelines.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
     post:
       deprecated: false
       operationId: createPipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1893,25 +1997,25 @@ paths:
           description: An internal service error has occurred.
       summary: Creates a pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.create
   /{tenantId}/streams/v3beta1/pipelines/{id}:
     delete:
       deprecated: false
       operationId: deletePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           content: {}
@@ -1966,29 +2070,29 @@ paths:
           description: An internal service error has occurred.
       summary: Removes a pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.delete
     get:
       deprecated: false
       operationId: getPipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - description: version
-          in: query
-          name: version
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: version
+        in: query
+        name: version
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -2046,24 +2150,24 @@ paths:
           description: An internal service error has occurred.
       summary: Returns an individual pipeline by version.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
     patch:
       deprecated: false
       operationId: patchPipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2128,24 +2232,24 @@ paths:
           description: An internal service error has occurred.
       summary: Patches an existing pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.update
     put:
       deprecated: false
       operationId: updatePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2210,25 +2314,25 @@ paths:
           description: An internal service error has occurred.
       summary: Updates an existing pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.update
   /{tenantId}/streams/v3beta1/pipelines/{id}/activate:
     post:
       deprecated: false
       operationId: activatePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2293,25 +2397,25 @@ paths:
           description: An internal service error has occurred.
       summary: Activates an existing pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.activate
   /{tenantId}/streams/v3beta1/pipelines/{id}/deactivate:
     post:
       deprecated: false
       operationId: deactivatePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2376,25 +2480,25 @@ paths:
           description: An internal service error has occurred.
       summary: Deactivates an existing pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.deactivate
   /{tenantId}/streams/v3beta1/pipelines/{id}/metrics/latest:
     get:
       deprecated: false
       operationId: getPipelineLatestMetrics
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -2452,25 +2556,25 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the latest metrics for a single pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
   /{tenantId}/streams/v3beta1/pipelines/{id}/reactivate:
     post:
       deprecated: false
       operationId: reactivatePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Pipeline ID
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -2528,19 +2632,19 @@ paths:
           description: An internal service error has occurred.
       summary: Reactivate a pipeline
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.activate
   /{tenantId}/streams/v3beta1/pipelines/compile:
     post:
       deprecated: false
       operationId: compile
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2605,19 +2709,19 @@ paths:
           description: An internal service error has occurred.
       summary: Compiles SPL2 and returns streams JSON.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.update
   /{tenantId}/streams/v3beta1/pipelines/decompile:
     post:
       deprecated: false
       operationId: decompile
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2682,19 +2786,19 @@ paths:
           description: An internal service error has occurred.
       summary: Decompiles UPL and returns SPL.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.update
   /{tenantId}/streams/v3beta1/pipelines/input-schema:
     post:
       deprecated: false
       operationId: getInputSchema
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2759,19 +2863,19 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the input schema for a function in a pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
   /{tenantId}/streams/v3beta1/pipelines/output-schema:
     post:
       deprecated: false
       operationId: getOutputSchema
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2838,25 +2942,25 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the output schema for a specified function in a pipeline.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
   /{tenantId}/streams/v3beta1/pipelines/registry:
     get:
       deprecated: false
       operationId: getRegistry
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: local
-          in: query
-          name: local
-          schema:
-            default: true
-            type: boolean
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: local
+        in: query
+        name: local
+        schema:
+          default: true
+          type: boolean
       responses:
         "200":
           content:
@@ -2914,56 +3018,56 @@ paths:
           description: An internal service error has occurred.
       summary: Returns all functions in JSON format.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
   /{tenantId}/streams/v3beta1/pipelines/status:
     get:
       deprecated: false
       operationId: getPipelinesStatus
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: offset
-          in: query
-          name: offset
-          schema:
-            format: int32
-            type: integer
-        - description: pageSize
-          in: query
-          name: pageSize
-          schema:
-            format: int32
-            type: integer
-        - description: sortField
-          in: query
-          name: sortField
-          schema:
-            type: string
-        - description: sortDir
-          in: query
-          name: sortDir
-          schema:
-            type: string
-        - description: activated
-          in: query
-          name: activated
-          schema:
-            type: boolean
-        - description: createUserId
-          in: query
-          name: createUserId
-          schema:
-            type: string
-        - description: name
-          in: query
-          name: name
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - description: activated
+        in: query
+        name: activated
+        schema:
+          type: boolean
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
+      - description: name
+        in: query
+        name: name
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -3021,19 +3125,19 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the status of pipelines from the underlying streaming system.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.read
   /{tenantId}/streams/v3beta1/pipelines/validate:
     post:
       deprecated: false
       operationId: validatePipeline
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -3098,26 +3202,26 @@ paths:
           description: An internal service error has occurred.
       summary: Verifies whether the Streams JSON is valid.
       tags:
-        - pipelines
+      - pipelines
       x-authz-scope: streams.pipelines.update
   /{tenantId}/streams/v3beta1/preview-data/{previewSessionId}:
     get:
       deprecated: false
       operationId: getPreviewData
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Preview Session ID
-          in: path
-          name: previewSessionId
-          required: true
-          schema:
-            format: int64
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Preview Session ID
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
       responses:
         "200":
           content:
@@ -3175,19 +3279,19 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the preview data for a session.
       tags:
-        - preview
+      - preview
       x-authz-scope: streams.pipelines.preview
   /{tenantId}/streams/v3beta1/preview-session:
     post:
       deprecated: false
       operationId: startPreview
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -3252,26 +3356,26 @@ paths:
           description: An internal service error has occurred.
       summary: Creates a preview session for a pipeline.
       tags:
-        - preview
+      - preview
       x-authz-scope: streams.pipelines.preview
   /{tenantId}/streams/v3beta1/preview-session/{previewSessionId}:
     delete:
       deprecated: false
       operationId: stopPreview
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Preview Session ID
-          in: path
-          name: previewSessionId
-          required: true
-          schema:
-            format: int64
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Preview Session ID
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
       responses:
         "204":
           content: {}
@@ -3326,25 +3430,25 @@ paths:
           description: An internal service error has occurred.
       summary: Stops a preview session.
       tags:
-        - preview
+      - preview
       x-authz-scope: streams.pipelines.preview
     get:
       deprecated: false
       operationId: getPreviewSession
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Preview Session ID
-          in: path
-          name: previewSessionId
-          required: true
-          schema:
-            format: int64
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Preview Session ID
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
       responses:
         "200":
           content:
@@ -3402,26 +3506,26 @@ paths:
           description: An internal service error has occurred.
       summary: Returns information from a preview session.
       tags:
-        - preview
+      - preview
       x-authz-scope: streams.pipelines.preview
   /{tenantId}/streams/v3beta1/preview-session/{previewSessionId}/metrics/latest:
     get:
       deprecated: false
       operationId: getPreviewSessionLatestMetrics
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Preview Session ID
-          in: path
-          name: previewSessionId
-          required: true
-          schema:
-            format: int64
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Preview Session ID
+        in: path
+        name: previewSessionId
+        required: true
+        schema:
+          format: int64
+          type: integer
       responses:
         "200":
           content:
@@ -3479,41 +3583,41 @@ paths:
           description: An internal service error has occurred.
       summary: Returns the latest metrics for a preview session.
       tags:
-        - preview
+      - preview
       x-authz-scope: streams.pipelines.preview
   /{tenantId}/streams/v3beta1/templates:
     get:
       deprecated: false
       operationId: listTemplates
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: offset
-          in: query
-          name: offset
-          schema:
-            format: int32
-            type: integer
-        - description: pageSize
-          in: query
-          name: pageSize
-          schema:
-            format: int32
-            type: integer
-        - description: sortField
-          in: query
-          name: sortField
-          schema:
-            type: string
-        - description: sortDir
-          in: query
-          name: sortDir
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -3571,18 +3675,18 @@ paths:
           description: An internal service error has occurred.
       summary: Returns a list of all templates.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.read
     post:
       deprecated: false
       operationId: createTemplate
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -3647,25 +3751,25 @@ paths:
           description: An internal service error has occurred.
       summary: Creates a template for a tenant.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.create
   /{tenantId}/streams/v3beta1/templates/{templateId}:
     delete:
       deprecated: false
       operationId: deleteTemplate
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Template ID
-          in: path
-          name: templateId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Template ID
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           content: {}
@@ -3720,30 +3824,30 @@ paths:
           description: An internal service error has occurred.
       summary: Removes a template with a specific ID.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.delete
     get:
       deprecated: false
       operationId: getTemplate
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Template ID
-          in: path
-          name: templateId
-          required: true
-          schema:
-            type: string
-        - description: Template version
-          in: query
-          name: version
-          schema:
-            format: int64
-            type: integer
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Template ID
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
+      - description: Template version
+        in: query
+        name: version
+        schema:
+          format: int64
+          type: integer
       responses:
         "200":
           content:
@@ -3801,24 +3905,24 @@ paths:
           description: An internal service error has occurred.
       summary: Returns an individual template by version.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.read
     patch:
       deprecated: false
       operationId: updateTemplate
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Template ID
-          in: path
-          name: templateId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Template ID
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -3889,24 +3993,24 @@ paths:
           description: An internal service error has occurred.
       summary: Patches an existing template.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.update
     put:
       deprecated: false
       operationId: putTemplate
       parameters:
-        - description: Tenant ID
-          in: path
-          name: tenantId
-          required: true
-          schema:
-            type: string
-        - description: Template ID
-          in: path
-          name: templateId
-          required: true
-          schema:
-            type: string
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Template ID
+        in: path
+        name: templateId
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -3971,22 +4075,24 @@ paths:
           description: An internal service error has occurred.
       summary: Updates an existing template.
       tags:
-        - templates
+      - templates
       x-authz-scope: streams.templates.update
 servers:
-  - url: /
+- url: /
 tags:
-  - description: V3Beta1 Connectors and Connections Endpoints
-    name: connectors
-  - description: V3Beta1 Template API Endpoints
-    name: templates
-  - description: Files API Endpoints
-    name: files
-  - description: Lookups API Endpoints
-    name: lookup
-  - description: V3Beta1 Pipeline API Endpoints
-    name: pipelines
-  - description: V3Beta1 Preview API Endpoints
-    name: preview
+- description: V3Beta1 Connectors and Connections Endpoints
+  name: connectors
+- description: V3Beta1 Template API Endpoints
+  name: templates
+- description: Files API Endpoints
+  name: files
+- description: Lookups API Endpoints
+  name: lookup
+- description: Services Endpoint
+  name: apiv-3-beta-1-admin-controller
+- description: V3Beta1 Pipeline API Endpoints
+  name: pipelines
+- description: V3Beta1 Preview API Endpoints
+  name: preview
 
-# Retrieved from scp-openapi commit ae71b4bbf09256bf99e116a06f1de945e742b26c path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: streams/v3beta1/openapi.yaml

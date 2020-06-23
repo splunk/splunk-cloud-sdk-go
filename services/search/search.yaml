@@ -16,7 +16,7 @@ components:
       name: count
       schema:
         default: 1000
-        type: number
+        type: integer
     Earliest:
       description: |
         The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
@@ -59,14 +59,14 @@ components:
       name: count
       schema:
         default: 30
-        type: number
+        type: integer
     offset:
       description: Index of first item to return.
       in: query
       name: offset
       schema:
         default: 0
-        type: number
+        type: integer
     sid:
       description: The search ID.
       in: path
@@ -139,7 +139,7 @@ components:
             The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).
           maximum: 3600
           minimum: 1
-          type: number
+          type: integer
         messages:
           items:
             $ref: '#/components/schemas/Message'
@@ -159,10 +159,10 @@ components:
             search job completes.
           readOnly: true
           type: integer
-        prediate:
-          description: Events satisfying this predicate are going to be deleted. To
-            delete all events from the index, "true" should be specified for this
-            field.
+        predicate:
+          description: The predicate expression that identifies the events to delete
+            from the index. This expression must return true or false. To delete all
+            events from the index, specify "true" instead of an expression.
           type: string
         previewAvailable:
           default: false
@@ -177,7 +177,7 @@ components:
           type: string
         queryParameters:
           allOf:
-            - $ref: '#/components/schemas/QueryParameters'
+          - $ref: '#/components/schemas/QueryParameters'
           description: Represents parameters on the search job such as 'earliest'
             and 'latest'.
         requiredFreshness:
@@ -185,7 +185,7 @@ components:
           description: |
             This field does not apply to delete search jobs and is set to 0.
           readOnly: true
-          type: number
+          type: integer
         resolvedEarliest:
           description: |
             The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
@@ -215,9 +215,9 @@ components:
         status:
           $ref: '#/components/schemas/SearchStatus'
       required:
-        - index
-        - module
-        - predicate
+      - index
+      - module
+      - predicate
       type: object
     Error:
       properties:
@@ -237,6 +237,7 @@ components:
         duration:
           description: The amount of time, in seconds, that a time bucket spans from
             the earliest to the latest time.
+          format: double
           type: number
         earliestTime:
           description: If specified, the earliest timestamp, in UTC format, of the
@@ -278,7 +279,7 @@ components:
               typeSpecial:
                 type: string
             required:
-              - name
+            - name
             type: object
           type: array
         messages:
@@ -294,7 +295,7 @@ components:
         wait:
           type: string
       required:
-        - results
+      - results
       type: object
     Message:
       description: The message field in search results or search jobs. The types of
@@ -304,10 +305,10 @@ components:
           type: string
         type:
           enum:
-            - INFO
-            - DEBUG
-            - FATAL
-            - ERROR
+          - INFO
+          - DEBUG
+          - FATAL
+          - ERROR
           type: string
     QueryParameters:
       description: Represents parameters on the search job such as 'earliest' and
@@ -374,7 +375,7 @@ components:
         extractAllFields:
           default: false
           description: |
-            Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
+            Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance.
           type: boolean
         maxTime:
           default: 3600
@@ -382,7 +383,7 @@ components:
             The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).
           maximum: 3600
           minimum: 1
-          type: number
+          type: integer
         messages:
           items:
             $ref: '#/components/schemas/Message'
@@ -415,7 +416,7 @@ components:
           type: string
         queryParameters:
           allOf:
-            - $ref: '#/components/schemas/QueryParameters'
+          - $ref: '#/components/schemas/QueryParameters'
           description: Represents parameters on the search job such as 'earliest'
             and 'latest'.
         requiredFreshness:
@@ -424,7 +425,7 @@ components:
             Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.
           maximum: 259200
           minimum: 0
-          type: number
+          type: integer
         resolvedEarliest:
           description: |
             The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
@@ -453,16 +454,16 @@ components:
         status:
           $ref: '#/components/schemas/SearchStatus'
       required:
-        - query
+      - query
       type: object
     SearchStatus:
       description: |
         The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.
       enum:
-        - running
-        - done
-        - canceled
-        - failed
+      - running
+      - done
+      - canceled
+      - failed
       type: string
     SingleFieldSummary:
       description: Summary of each field.
@@ -482,6 +483,7 @@ components:
           type: string
         mean:
           description: The mean (average) for the numeric values in the field.
+          format: double
           type: number
         min:
           description: The minimum numeric values in the field.
@@ -490,7 +492,7 @@ components:
           description: An array of the values in the field.
           items:
             allOf:
-              - $ref: '#/components/schemas/SingleValueMode'
+            - $ref: '#/components/schemas/SingleValueMode'
           type: array
         numericCount:
           description: The count of the numeric values in the field.
@@ -500,6 +502,7 @@ components:
           type: boolean
         stddev:
           description: The standard deviation for the numeric values in the field.
+          format: double
           type: number
       type: object
     SingleTimeBucket:
@@ -510,11 +513,13 @@ components:
             Typically this count is capped at 10000.
           type: integer
         duration:
+          format: double
           type: number
         earliestTime:
           description: The timestamp of the earliest event in the current bucket,
             in UNIX format. This is the same time as 'earliestTimeStrfTime' in UNIX
             format.
+          format: double
           type: number
         earliestTimeStrfTime:
           description: The timestamp of the earliest event in the current bucket,
@@ -554,7 +559,7 @@ components:
         buckets:
           items:
             allOf:
-              - $ref: '#/components/schemas/SingleTimeBucket'
+            - $ref: '#/components/schemas/SingleTimeBucket'
           type: array
         cursorTime:
           description: Identifies where the cursor is in processing the events. The
@@ -572,11 +577,11 @@ components:
             values you can PATCH are 'canceled' and 'finalized'. You can PATCH the
             'canceled' status only to a search job that is running.
           enum:
-            - canceled
-            - finalized
+          - canceled
+          - finalized
           type: string
       required:
-        - status
+      - status
       type: object
     listPreviewResultsResponse:
       description: The structure of the response body for the preview search results
@@ -605,7 +610,7 @@ components:
               typeSpecial:
                 type: string
             required:
-              - name
+            - name
             type: object
           type: array
         isPreviewStable:
@@ -623,8 +628,8 @@ components:
         wait:
           type: string
       required:
-        - results
-        - isPreviewStable
+      - results
+      - isPreviewStable
       type: object
   securitySchemes:
     BasicAuth:
@@ -644,9 +649,9 @@ paths:
       description: Return the matching list of search jobs.
       operationId: listJobs
       parameters:
-        - $ref: '#/components/parameters/Count'
-        - $ref: '#/components/parameters/StatusFilter'
-        - $ref: '#/components/parameters/SidFilter'
+      - $ref: '#/components/parameters/Count'
+      - $ref: '#/components/parameters/StatusFilter'
+      - $ref: '#/components/parameters/SidFilter'
       responses:
         "200":
           content:
@@ -665,8 +670,8 @@ paths:
         "500":
           description: An internal service error occurred.
     parameters:
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
     post:
       description: Creates a search job.
       operationId: createJob
@@ -720,9 +725,9 @@ paths:
         "500":
           description: An internal service error occurred.
     parameters:
-      - $ref: '#/components/parameters/AuthorizationHeader'
-      - $ref: '#/components/parameters/tenant'
-      - $ref: '#/components/parameters/sid'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/sid'
     patch:
       description: Update the search job with the specified search ID (SID) with an
         action.
@@ -755,11 +760,11 @@ paths:
         ID (SID).
       operationId: listResults
       parameters:
-        - $ref: '#/components/parameters/tenant'
-        - $ref: '#/components/parameters/sid'
-        - $ref: '#/components/parameters/count'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/Field'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/count'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/Field'
       responses:
         "200":
           content:
@@ -785,10 +790,10 @@ paths:
         search ID (SID). Can be used when a job is running to return interim results.
       operationId: listPreviewResults
       parameters:
-        - $ref: '#/components/parameters/tenant'
-        - $ref: '#/components/parameters/sid'
-        - $ref: '#/components/parameters/count'
-        - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/count'
+      - $ref: '#/components/parameters/offset'
       responses:
         "200":
           content:
@@ -815,13 +820,13 @@ paths:
       description: Return events summary, for search ID (SID) search.
       operationId: listEventsSummary
       parameters:
-        - $ref: '#/components/parameters/tenant'
-        - $ref: '#/components/parameters/sid'
-        - $ref: '#/components/parameters/count'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/Field'
-        - $ref: '#/components/parameters/Earliest'
-        - $ref: '#/components/parameters/Latest'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/count'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/Field'
+      - $ref: '#/components/parameters/Earliest'
+      - $ref: '#/components/parameters/Latest'
       responses:
         "200":
           content:
@@ -848,10 +853,10 @@ paths:
         (SID) search.
       operationId: listFieldsSummary
       parameters:
-        - $ref: '#/components/parameters/tenant'
-        - $ref: '#/components/parameters/sid'
-        - $ref: '#/components/parameters/Earliest'
-        - $ref: '#/components/parameters/Latest'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/Earliest'
+      - $ref: '#/components/parameters/Latest'
       responses:
         "200":
           content:
@@ -878,8 +883,8 @@ paths:
         read to-date, for search ID(SID) search.
       operationId: listTimeBuckets
       parameters:
-        - $ref: '#/components/parameters/tenant'
-        - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
       responses:
         "200":
           content:
@@ -902,8 +907,8 @@ paths:
           description: An internal service error occurred.
   /{tenant}/search/v2beta1/jobs/delete:
     parameters:
-      - $ref: '#/components/parameters/AuthorizationHeader'
-      - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/tenant'
     post:
       description: |
         Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
@@ -931,4 +936,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit eeca479623b096d60a163519a72a8ef9e72ac25d path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: search/v2beta1/openapi.yaml

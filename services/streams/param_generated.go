@@ -141,19 +141,19 @@ func (q GetTemplateQueryParams) SetVersion(v int64) GetTemplateQueryParams {
 // For convenience ListConnectionsQueryParams can be formed in a single statement, for example:
 //     `v := ListConnectionsQueryParams{}.SetConnectorId(...).SetCreateUserId(...).SetFunctionId(...).SetName(...).SetOffset(...).SetPageSize(...).SetShowSecretNames(...).SetSortDir(...).SetSortField(...)`
 type ListConnectionsQueryParams struct {
-	ConnectorId     string `key:"connectorId"`
-	CreateUserId    string `key:"createUserId"`
-	FunctionId      string `key:"functionId"`
-	Name            string `key:"name"`
-	Offset          *int32 `key:"offset"`
-	PageSize        *int32 `key:"pageSize"`
-	ShowSecretNames string `key:"showSecretNames"`
+	ConnectorId     []string `key:"connectorId"`
+	CreateUserId    string   `key:"createUserId"`
+	FunctionId      string   `key:"functionId"`
+	Name            string   `key:"name"`
+	Offset          *int32   `key:"offset"`
+	PageSize        *int32   `key:"pageSize"`
+	ShowSecretNames string   `key:"showSecretNames"`
 	// SortDir : Specify either ascending (&#39;asc&#39;) or descending (&#39;desc&#39;) sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to &#39;asc&#39;.
 	SortDir   string `key:"sortDir"`
 	SortField string `key:"sortField"`
 }
 
-func (q ListConnectionsQueryParams) SetConnectorId(v string) ListConnectionsQueryParams {
+func (q ListConnectionsQueryParams) SetConnectorId(v []string) ListConnectionsQueryParams {
 	q.ConnectorId = v
 	return q
 }

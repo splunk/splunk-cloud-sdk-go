@@ -296,11 +296,6 @@ components:
       minLength: 4
       type: string
       x-case-insensitive: true
-    AdminServicePrincipal:
-      enum:
-      - iac_audit
-      - iac_admin_tool
-      type: string
     App:
       description: Represents an app regsitration
       properties:
@@ -433,14 +428,10 @@ components:
         title:
           maxLength: 256
           type: string
-        token_idp_id:
-          maxLength: 256
-          type: string
       required:
       - name
       - title
       - federation_id
-      - token_idp_id
       type: object
     CreateIdpMappingBody:
       properties:
@@ -578,10 +569,6 @@ components:
         idp:
           type: string
       type: object
-    DomainList:
-      items:
-        $ref: '#/components/schemas/Domain'
-      type: array
     Group:
       properties:
         createdAt:
@@ -662,8 +649,6 @@ components:
           type: string
         title:
           type: string
-        token_idp_id:
-          type: string
       type: object
     IdentityProviderList:
       items:
@@ -672,16 +657,22 @@ components:
     Jwk:
       properties:
         alg:
+          maxLength: 64
           type: string
         e:
+          maxLength: 64
           type: string
         kid:
+          maxLength: 1024
           type: string
         kty:
+          maxLength: 64
           type: string
         "n":
+          maxLength: 4096
           type: string
         use:
+          maxLength: 64
           type: string
       type: object
     Jwks:
@@ -924,7 +915,6 @@ components:
         tenant:
           $ref: '#/components/schemas/TenantName'
       required:
-      - tenant
       - email
       - client_id
       - response_type
@@ -944,15 +934,6 @@ components:
       items:
         $ref: '#/components/schemas/ResolvedAuth'
       type: array
-    RevokePrincipalBody:
-      properties:
-        principal:
-          minLength: 2
-          type: string
-          x-case-insensitive: true
-      required:
-      - principal
-      type: object
     Role:
       properties:
         createdAt:
@@ -990,8 +971,14 @@ components:
       - addedAt
       - addedBy
       type: object
+    SensitiveTenants:
+      items:
+        type: string
+      type: array
     ServiceAccount:
       properties:
+        appName:
+          type: string
         defaultpermissions:
           items:
             type: string
@@ -1081,6 +1068,8 @@ components:
           $ref: '#/components/schemas/TenantName'
         status:
           $ref: '#/components/schemas/TenantStatus'
+        useDefaultIdp:
+          type: boolean
       required:
       - name
       - status
@@ -1171,13 +1160,9 @@ components:
         title:
           maxLength: 256
           type: string
-        token_idp_id:
-          maxLength: 256
-          type: string
       required:
       - title
       - federation_id
-      - token_idp_id
       type: object
     UpdateTenantBody:
       properties:
@@ -1193,6 +1178,11 @@ components:
           - deleting
           - tombstoned
           - failed
+          type: string
+        useDefaultIdp:
+          enum:
+          - "true"
+          - "false"
           type: string
       type: object
     UpdateTenantStateBody:
@@ -1233,7 +1223,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v2beta1.18
+  version: v2beta1.19
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v2beta1/groups:
@@ -1660,6 +1650,13 @@ paths:
       description: |
         Returns a set of permissions granted to the member within the tenant.
       operationId: listMemberPermissions
+      parameters:
+      - description: List only the permissions matching the scope filter.
+        in: query
+        name: scopeFilter
+        required: false
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -2009,6 +2006,24 @@ paths:
       x-authz-scope: identity.principals.read
     parameters:
     - $ref: '#/components/parameters/principal'
+  /system/identity/v2beta1/principals/{principal}/keys:
+    parameters:
+    - $ref: '#/components/parameters/principal'
+    put:
+      description: Set principal public keys
+      operationId: setPrincipalPublicKeys
+      responses:
+        "204":
+          description: Public keys have been updated
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+      x-authz-scope: identity.principalkeys.write
   /system/identity/v2beta1/principals/{principal}/revoke:
     parameters:
     - $ref: '#/components/parameters/principal'
@@ -2034,4 +2049,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit ae71b4bbf09256bf99e116a06f1de945e742b26c path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: identity/v2beta1/openapi.yaml

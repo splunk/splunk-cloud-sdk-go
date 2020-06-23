@@ -67,6 +67,77 @@ components:
       type: object
     ClusteringReport:
       type: object
+    CreatModelRequest:
+      description: Create model, initiate model upload request definition
+      properties:
+        inputFields:
+          description: model input fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        modelName:
+          description: name of the model to be uploaded, must be unique per tenant
+          type: string
+        modelType:
+          description: model type
+          type: string
+        outputFields:
+          description: model output fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        projectId:
+          description: which project this model belongs to
+          type: string
+      required:
+      - modelName
+      - inputFields
+      - outputFields
+      type: object
+    CreateModelResponse:
+      properties:
+        created:
+          description: the timestamp of the model creation.
+          format: int64
+          type: integer
+        createdBy:
+          description: the user who created and uploaded this model
+          type: string
+        inputFields:
+          description: model input fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        modelId:
+          description: the unique id of a model
+          format: uuid
+          type: string
+        modelName:
+          description: the name of the model
+          type: string
+        modelType:
+          description: model type
+          type: string
+        outputFields:
+          description: model output fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        owner:
+          description: owner of the model
+          type: string
+        sessionId:
+          description: the upload session id corresponding for this upload.
+          format: uuid
+          type: string
+        tenant:
+          description: tenant of the model
+          type: string
+        version:
+          description: version of the model
+          minimum: 1
+          type: integer
+      type: object
     CrossValidation:
       properties:
         kFold:
@@ -136,6 +207,19 @@ components:
       required:
       - code
       - message
+    ErrorResponse:
+      properties:
+        code:
+          type: string
+        details:
+          items:
+            type: object
+          type: array
+        message:
+          type: string
+      required:
+      - code
+      - message
     Events:
       description: Output events to the Ingest /events endpoint.
       properties:
@@ -165,6 +249,32 @@ components:
           type: string
         message:
           type: string
+      type: object
+    FieldInfo:
+      properties:
+        name:
+          description: name of the field
+          type: string
+        size:
+          description: size of the tensor field. Scalar fields must have size 1.
+          minimum: 1
+          type: integer
+        type:
+          description: type of the field
+          enum:
+          - long
+          - float
+          - double
+          - string
+          - longTensor
+          - floatTensor
+          - doubleTensor
+          - stringTensor
+          type: string
+      required:
+      - name
+      - type
+      - size
       type: object
     Fields:
       properties:
@@ -264,6 +374,54 @@ components:
           type: string
       required:
       - topic
+      type: object
+    ListModelResponse:
+      description: response definition for get a list of models for the user
+      items:
+        $ref: '#/components/schemas/ModelInfo'
+      type: array
+    ModelInfo:
+      properties:
+        created:
+          description: the timestamp of the model definition creation.
+          format: int64
+          type: integer
+        createdBy:
+          description: the user who created and uploaded this model
+          type: string
+        inputFields:
+          description: model input fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        modelId:
+          description: the unique id of a model
+          format: uuid
+          type: string
+        modelName:
+          description: the name of the model
+          type: string
+        modelType:
+          description: model type
+          type: string
+        outputFields:
+          description: model output fields
+          items:
+            $ref: '#/components/schemas/FieldInfo'
+          type: array
+        owner:
+          description: owner of the model
+          type: string
+        projectId:
+          description: project id
+          type: string
+        tenant:
+          description: tenant of the model
+          type: string
+        version:
+          description: version of the model
+          minimum: 1
+          type: integer
       type: object
     OutputData:
       properties:
@@ -405,6 +563,13 @@ components:
           type: boolean
       type: object
     TrainingParameters:
+      type: object
+    UploadBinaryRequest:
+      description: Binary upload request definition
+      properties:
+        binary:
+          format: binary
+          type: string
       type: object
     Workflow:
       properties:
@@ -1760,4 +1925,4 @@ paths:
 tags:
 - name: mlTag
 
-# Retrieved from scp-openapi commit ae71b4bbf09256bf99e116a06f1de945e742b26c path: ml/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: ml/v2beta1/openapi.yaml

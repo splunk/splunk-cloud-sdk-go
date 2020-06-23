@@ -928,8 +928,7 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var disabledDefault bool
-	disabled := &disabledDefault
+	var disabled bool
 	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
 	if err != nil {
 		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
@@ -970,7 +969,7 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.IndexDatasetPost{
 
-		Disabled:               *disabled,
+		Disabled:               disabled,
 		Fields:                 fields,
 		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
 		Id:                     id,
@@ -1130,8 +1129,7 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var disabledDefault bool
-	disabled := &disabledDefault
+	var disabled bool
 	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
 	if err != nil {
 		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
@@ -1172,7 +1170,7 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.MetricDatasetPost{
 
-		Disabled:               *disabled,
+		Disabled:               disabled,
 		Fields:                 fields,
 		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
 		Id:                     id,

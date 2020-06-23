@@ -357,6 +357,29 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// GetFileMetadata Get file metadata.
+func GetFileMetadata(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var fileId string
+	err = flags.ParseFlag(cmd.Flags(), "file-id", &fileId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
+	}
+
+	resp, err := client.StreamsService.GetFileMetadata(fileId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // GetFilesMetadata Returns files metadata.
 func GetFilesMetadata(cmd *cobra.Command, args []string) error {
 
@@ -732,7 +755,7 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var connectorId string
+	var connectorId []string
 	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "connector-id": ` + err.Error())
