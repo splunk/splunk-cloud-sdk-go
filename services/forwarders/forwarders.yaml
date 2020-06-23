@@ -102,7 +102,7 @@ info:
   description: Send data from a Splunk forwarder to the Splunk Forwarder service in
     Splunk Cloud Services.
   title: Splunk Forwarder Service
-  version: v2beta1.3
+  version: v2beta1.4
 openapi: 3.0.0
 paths:
   /{tenant}/forwarders/v2beta1/certificates:
@@ -132,6 +132,7 @@ paths:
       summary: Removes all certificates on a tenant.
       tags:
       - Certificates
+      x-auth-required: true
       x-authz-scope: forwarders.certificates.delete
     get:
       operationId: listCertificates
@@ -159,6 +160,7 @@ paths:
       summary: Returns a list of all certificates for a tenant.
       tags:
       - Certificates
+      x-auth-required: true
       x-authz-scope: forwarders.certificates.read
     post:
       operationId: addCertificate
@@ -193,6 +195,7 @@ paths:
       summary: Adds a certificate to a vacant slot on a tenant.
       tags:
       - Certificates
+      x-auth-required: true
       x-authz-scope: forwarders.certificates.write
   /{tenant}/forwarders/v2beta1/certificates/{slot}:
     delete:
@@ -226,8 +229,9 @@ paths:
       summary: Removes a certificate on a particular slot on a tenant.
       tags:
       - Certificates
+      x-auth-required: true
       x-authz-scope: forwarders.certificates.delete
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit ae71b4bbf09256bf99e116a06f1de945e742b26c path: forwarders/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: forwarders/v2beta1/openapi.yaml

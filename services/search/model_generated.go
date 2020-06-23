@@ -29,6 +29,8 @@ type DeleteSearchJob struct {
 	Index string `json:"index"`
 	// The module to run the delete search job in. The default module is used if module field is empty.
 	Module string `json:"module"`
+	// The predicate expression that identifies the events to delete from the index. This expression must return true or false. To delete all events from the index, specify \"true\" instead of an expression.
+	Predicate string `json:"predicate"`
 	// Specifies that the delete search job will contain side effects, with possible security risks.
 	AllowSideEffects *bool `json:"allowSideEffects,omitempty"`
 	// This field does not apply to delete search jobs and is defaulted to false.
@@ -46,14 +48,12 @@ type DeleteSearchJob struct {
 	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
 	// The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).
-	MaxTime  *float32  `json:"maxTime,omitempty"`
+	MaxTime  *int32    `json:"maxTime,omitempty"`
 	Messages []Message `json:"messages,omitempty"`
 	// The name of the created search job.
 	Name *string `json:"name,omitempty"`
 	// An estimate of the percent of time remaining before the delete search job completes.
 	PercentComplete *int32 `json:"percentComplete,omitempty"`
-	// Events satisfying this predicate are going to be deleted. To delete all events from the index, \"true\" should be specified for this field.
-	Prediate *string `json:"prediate,omitempty"`
 	// This field does not apply to delete search jobs and is defaulted to false.
 	PreviewAvailable *string `json:"previewAvailable,omitempty"`
 	// The SPL search string that is generated based on index, module and predicate that are specified.
@@ -61,7 +61,7 @@ type DeleteSearchJob struct {
 	// Represents parameters on the search job such as 'earliest' and 'latest'.
 	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
 	// This field does not apply to delete search jobs and is set to 0.
-	RequiredFreshness *float32 `json:"requiredFreshness,omitempty"`
+	RequiredFreshness *int32 `json:"requiredFreshness,omitempty"`
 	// The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
 	ResolvedEarliest *string `json:"resolvedEarliest,omitempty"`
 	// The latest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
@@ -78,7 +78,7 @@ type DeleteSearchJob struct {
 // Fields statistics summary model of the events to-date, for search ID (sid).
 type FieldsSummary struct {
 	// The amount of time, in seconds, that a time bucket spans from the earliest to the latest time.
-	Duration *float32 `json:"duration,omitempty"`
+	Duration *float64 `json:"duration,omitempty"`
 	// If specified, the earliest timestamp, in UTC format, of the events to process.
 	EarliestTime *string `json:"earliestTime,omitempty"`
 	// The total number of events for all fields returned in the time range (earliestTime and latestTime) specified.
@@ -164,10 +164,10 @@ type SearchJob struct {
 	DispatchTime *string `json:"dispatchTime,omitempty"`
 	// Specified whether a search is allowed to collect preview results during the run time.
 	EnablePreview *bool `json:"enablePreview,omitempty"`
-	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
+	// Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
 	// The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).
-	MaxTime  *float32  `json:"maxTime,omitempty"`
+	MaxTime  *int32    `json:"maxTime,omitempty"`
 	Messages []Message `json:"messages,omitempty"`
 	// The module to run the search in. The default module is used if a module is not specified.
 	Module *string `json:"module,omitempty"`
@@ -180,7 +180,7 @@ type SearchJob struct {
 	// Represents parameters on the search job such as 'earliest' and 'latest'.
 	QueryParameters *QueryParameters `json:"queryParameters,omitempty"`
 	// Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.
-	RequiredFreshness *float32 `json:"requiredFreshness,omitempty"`
+	RequiredFreshness *int32 `json:"requiredFreshness,omitempty"`
 	// The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
 	ResolvedEarliest *string `json:"resolvedEarliest,omitempty"`
 	// The latest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
@@ -216,7 +216,7 @@ type SingleFieldSummary struct {
 	// The maximum numeric values in the field.
 	Max *string `json:"max,omitempty"`
 	// The mean (average) for the numeric values in the field.
-	Mean *float32 `json:"mean,omitempty"`
+	Mean *float64 `json:"mean,omitempty"`
 	// The minimum numeric values in the field.
 	Min *string `json:"min,omitempty"`
 	// An array of the values in the field.
@@ -226,16 +226,16 @@ type SingleFieldSummary struct {
 	// Specifies if the field was added or changed by the search.
 	Relevant *bool `json:"relevant,omitempty"`
 	// The standard deviation for the numeric values in the field.
-	Stddev *float32 `json:"stddev,omitempty"`
+	Stddev *float64 `json:"stddev,omitempty"`
 }
 
 // Events summary in single time bucket.
 type SingleTimeBucket struct {
 	// Count of available events. Not all events in a bucket are retrievable. Typically this count is capped at 10000.
 	AvailableCount *int32   `json:"availableCount,omitempty"`
-	Duration       *float32 `json:"duration,omitempty"`
+	Duration       *float64 `json:"duration,omitempty"`
 	// The timestamp of the earliest event in the current bucket, in UNIX format. This is the same time as 'earliestTimeStrfTime' in UNIX format.
-	EarliestTime *float32 `json:"earliestTime,omitempty"`
+	EarliestTime *float64 `json:"earliestTime,omitempty"`
 	// The timestamp of the earliest event in the current bucket, in UTC format with seconds. For example 2019-01-25T13:15:30Z, which follows the ISO-8601 (%FT%T.%Q) format.
 	EarliestTimeStrfTime *string `json:"earliestTimeStrfTime,omitempty"`
 	// Specifies if all of the events in the current bucket have been finalized.

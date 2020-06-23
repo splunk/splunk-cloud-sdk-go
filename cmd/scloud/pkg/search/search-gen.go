@@ -70,7 +70,7 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "latest": ` + err.Error())
 	}
-	var maxTimeDefault float32
+	var maxTimeDefault int32
 	maxTime := &maxTimeDefault
 	err = flags.ParseFlag(cmd.Flags(), "max-time", &maxTime)
 	if err != nil {
@@ -98,7 +98,7 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relative-time-anchor": ` + err.Error())
 	}
-	var requiredFreshnessDefault float32
+	var requiredFreshnessDefault int32
 	requiredFreshness := &requiredFreshnessDefault
 	err = flags.ParseFlag(cmd.Flags(), "required-freshness", &requiredFreshness)
 	if err != nil {
@@ -179,7 +179,7 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "latest": ` + err.Error())
 	}
-	var maxTimeDefault float32
+	var maxTimeDefault int32
 	maxTime := &maxTimeDefault
 	err = flags.ParseFlag(cmd.Flags(), "max-time", &maxTime)
 	if err != nil {
@@ -195,8 +195,7 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
 	}
-	var predicateDefault string
-	predicate := &predicateDefault
+	var predicate string
 	err = flags.ParseFlag(cmd.Flags(), "predicate", &predicate)
 	if err != nil {
 		return fmt.Errorf(`error parsing "predicate": ` + err.Error())
@@ -226,7 +225,7 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 		MaxTime:          maxTime,
 		Messages:         messages,
 		Module:           module,
-		Prediate:         predicate,
+		Predicate:        predicate,
 		QueryParameters: &model.QueryParameters{
 			Earliest:           earliest,
 			Latest:             latest,
@@ -276,7 +275,7 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var countDefault float32
+	var countDefault int32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
@@ -297,7 +296,7 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "latest": ` + err.Error())
 	}
-	var offsetDefault float32
+	var offsetDefault int32
 	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
@@ -370,7 +369,7 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var countDefault float32
+	var countDefault int32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
@@ -409,13 +408,13 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var countDefault float32
+	var countDefault int32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
-	var offsetDefault float32
+	var offsetDefault int32
 	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {
@@ -448,7 +447,7 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var countDefault float32
+	var countDefault int32
 	count := &countDefault
 	err = flags.ParseFlag(cmd.Flags(), "count", &count)
 	if err != nil {
@@ -459,7 +458,7 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "field": ` + err.Error())
 	}
-	var offsetDefault float32
+	var offsetDefault int32
 	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
 	if err != nil {

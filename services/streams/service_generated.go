@@ -364,6 +364,39 @@ func (s *Service) DeleteTemplate(templateId string, resp ...*http.Response) erro
 }
 
 /*
+	GetFileMetadata - Get file metadata.
+	Parameters:
+		fileId: File ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetFileMetadata(fileId string, resp ...*http.Response) (*UploadFile, error) {
+	pp := struct {
+		FileId string
+	}{
+		FileId: fileId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/files/{{.FileId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb UploadFile
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	GetFilesMetadata - Returns files metadata.
 	Parameters:
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided

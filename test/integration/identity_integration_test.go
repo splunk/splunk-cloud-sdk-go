@@ -289,7 +289,10 @@ func TestCRUDMembers(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	permissionName1 := fmt.Sprintf("%v:%v:identity.groups.read", testutils.TestTenant, groupName)
 	permissionName2 := fmt.Sprintf("%v:%v:identity.members.read", testutils.TestTenant, memberName)
-	result7, err := client.IdentityService.ListMemberPermissions(memberName)
+
+	scope := identity.ListMemberPermissionsQueryParams{ScopeFilter: ""}
+	result7, err := client.IdentityService.ListMemberPermissions(memberName, &scope)
+
 	require.NoError(t, err)
 	assert.Contains(t, result7, permissionName)
 	assert.Contains(t, result7, permissionName1)

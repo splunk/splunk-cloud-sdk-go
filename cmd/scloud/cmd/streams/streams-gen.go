@@ -85,6 +85,13 @@ var deleteTemplateCmd = &cobra.Command{
 	RunE:  impl.DeleteTemplate,
 }
 
+// getFileMetadata -- Get file metadata.
+var getFileMetadataCmd = &cobra.Command{
+	Use:   "get-file-metadata",
+	Short: "Get file metadata.",
+	RunE:  impl.GetFileMetadata,
+}
+
 // getFilesMetadata -- Returns files metadata.
 var getFilesMetadataCmd = &cobra.Command{
 	Use:   "get-files-metadata",
@@ -383,6 +390,12 @@ func init() {
 	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
 
+	streamsCmd.AddCommand(getFileMetadataCmd)
+
+	var getFileMetadataFileId string
+	getFileMetadataCmd.Flags().StringVar(&getFileMetadataFileId, "file-id", "", "This is a required parameter. File ID")
+	getFileMetadataCmd.MarkFlagRequired("file-id")
+
 	streamsCmd.AddCommand(getFilesMetadataCmd)
 
 	streamsCmd.AddCommand(getInputSchemaCmd)
@@ -495,8 +508,8 @@ func init() {
 
 	streamsCmd.AddCommand(listConnectionsCmd)
 
-	var listConnectionsConnectorId string
-	listConnectionsCmd.Flags().StringVar(&listConnectionsConnectorId, "connector-id", "", "")
+	var listConnectionsConnectorId []string
+	listConnectionsCmd.Flags().StringSliceVar(&listConnectionsConnectorId, "connector-id", nil, "")
 
 	var listConnectionsCreateUserId string
 	listConnectionsCmd.Flags().StringVar(&listConnectionsCreateUserId, "create-user-id", "", "")

@@ -227,6 +227,13 @@ var revokePrincipalAuthTokensCmd = &cobra.Command{
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
+// setPrincipalPublicKeys -- Set principal public keys
+var setPrincipalPublicKeysCmd = &cobra.Command{
+	Use:   "set-principal-public-keys",
+	Short: "Set principal public keys",
+	RunE:  impl.SetPrincipalPublicKeys,
+}
+
 // validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 
 var validateTokenCmd = &cobra.Command{
@@ -379,6 +386,9 @@ func init() {
 	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsMember, "member", "", "This is a required parameter. The member name.")
 	listMemberPermissionsCmd.MarkFlagRequired("member")
 
+	var listMemberPermissionsScopeFilter string
+	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsScopeFilter, "scope-filter", "", "List only the permissions matching the scope filter.")
+
 	identityCmd.AddCommand(listMemberRolesCmd)
 
 	var listMemberRolesMember string
@@ -444,6 +454,12 @@ func init() {
 	var revokePrincipalAuthTokensPrincipal string
 	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(setPrincipalPublicKeysCmd)
+
+	var setPrincipalPublicKeysPrincipal string
+	setPrincipalPublicKeysCmd.Flags().StringVar(&setPrincipalPublicKeysPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	setPrincipalPublicKeysCmd.MarkFlagRequired("principal")
 
 	identityCmd.AddCommand(validateTokenCmd)
 

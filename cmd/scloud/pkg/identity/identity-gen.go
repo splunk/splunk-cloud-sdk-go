@@ -524,8 +524,16 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+	var scopeFilter string
+	err = flags.ParseFlag(cmd.Flags(), "scope-filter", &scopeFilter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "scope-filter": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListMemberPermissionsQueryParams{}
+	generated_query.ScopeFilter = scopeFilter
 
-	resp, err := client.IdentityService.ListMemberPermissions(member)
+	resp, err := client.IdentityService.ListMemberPermissions(member, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -776,6 +784,30 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 	}
 
 	err = client.IdentityService.RevokePrincipalAuthTokens(principal)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SetPrincipalPublicKeys Set principal public keys
+func SetPrincipalPublicKeys(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+
+	err = client.IdentityService.SetPrincipalPublicKeys(principal)
 	if err != nil {
 		return err
 	}

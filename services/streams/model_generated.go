@@ -159,47 +159,9 @@ type GetOutputSchemaRequest struct {
 	SourcePortName *string `json:"sourcePortName,omitempty"`
 }
 
-type JsonNode struct {
-	Array               *bool             `json:"array,omitempty"`
-	BigDecimal          *bool             `json:"bigDecimal,omitempty"`
-	BigInteger          *bool             `json:"bigInteger,omitempty"`
-	Binary              *bool             `json:"binary,omitempty"`
-	Boolean             *bool             `json:"boolean,omitempty"`
-	ContainerNode       *bool             `json:"containerNode,omitempty"`
-	Double              *bool             `json:"double,omitempty"`
-	Float               *bool             `json:"float,omitempty"`
-	FloatingPointNumber *bool             `json:"floatingPointNumber,omitempty"`
-	Int                 *bool             `json:"int,omitempty"`
-	IntegralNumber      *bool             `json:"integralNumber,omitempty"`
-	Long                *bool             `json:"long,omitempty"`
-	MissingNode         *bool             `json:"missingNode,omitempty"`
-	NodeType            *JsonNodeNodeType `json:"nodeType,omitempty"`
-	Number              *bool             `json:"number,omitempty"`
-	Object              *bool             `json:"object,omitempty"`
-	Pojo                *bool             `json:"pojo,omitempty"`
-	Short               *bool             `json:"short,omitempty"`
-	Textual             *bool             `json:"textual,omitempty"`
-	ValueNode           *bool             `json:"valueNode,omitempty"`
-}
-
-type JsonNodeNodeType string
-
-// List of JsonNodeNodeType
-const (
-	JsonNodeNodeTypeArray   JsonNodeNodeType = "ARRAY"
-	JsonNodeNodeTypeBinary  JsonNodeNodeType = "BINARY"
-	JsonNodeNodeTypeBoolean JsonNodeNodeType = "BOOLEAN"
-	JsonNodeNodeTypeMissing JsonNodeNodeType = "MISSING"
-	JsonNodeNodeTypeNull    JsonNodeNodeType = "NULL"
-	JsonNodeNodeTypeNumber  JsonNodeNodeType = "NUMBER"
-	JsonNodeNodeTypeObject  JsonNodeNodeType = "OBJECT"
-	JsonNodeNodeTypePojo    JsonNodeNodeType = "POJO"
-	JsonNodeNodeTypeString  JsonNodeNodeType = "STRING"
-)
-
 type LookupTableResponse struct {
-	Data  []JsonNode        `json:"data,omitempty"`
-	Types map[string]string `json:"types,omitempty"`
+	Data  []map[string]interface{} `json:"data,omitempty"`
+	Types map[string]string        `json:"types,omitempty"`
 }
 
 type MapOfstringAndobject map[string]interface{}
@@ -466,6 +428,7 @@ type ValidateRequest struct {
 }
 
 type ValidateResponse struct {
+	NodeId             *string  `json:"nodeId,omitempty"`
 	Spl                *string  `json:"spl,omitempty"`
 	Success            *bool    `json:"success,omitempty"`
 	ValidationMessages []string `json:"validationMessages,omitempty"`
