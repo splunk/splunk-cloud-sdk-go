@@ -104,6 +104,13 @@ type Servicer interface {
 	*/
 	DeleteTemplate(templateId string, resp ...*http.Response) error
 	/*
+		GetFileMetadata - Get file metadata.
+		Parameters:
+			fileId: File ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetFileMetadata(fileId string, resp ...*http.Response) (*UploadFile, error)
+	/*
 		GetFilesMetadata - Returns files metadata.
 		Parameters:
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided

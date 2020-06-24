@@ -187,9 +187,10 @@ type Servicer interface {
 		Returns a set of permissions granted to the member within the tenant.
 		Parameters:
 			member: The member name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListMemberPermissions(member string, resp ...*http.Response) ([]string, error)
+	ListMemberPermissions(member string, query *ListMemberPermissionsQueryParams, resp ...*http.Response) ([]string, error)
 	/*
 		ListMemberRoles - identity service endpoint
 		Returns a set of roles that a given member holds within the tenant.
@@ -278,6 +279,14 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
+	/*
+		SetPrincipalPublicKeys - identity service endpoint
+		Set principal public keys
+		Parameters:
+			principal: The principal name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	SetPrincipalPublicKeys(principal string, resp ...*http.Response) error
 	/*
 		ValidateToken - identity service endpoint
 		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
