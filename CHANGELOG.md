@@ -1,5 +1,46 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.7.0
+## Go SDK v1.7.0
+
+### Breaking Changes
+*  Identity
+   *  Added  `query` parameter with type `ListMemberPermissionsQueryParams` to  `ListMemberPermissions` endpoint 
+   *  New `ListMemberPermissionsQueryParams` model with `ScopeFilter` property
+*  Search
+   *  Modified `MaxTime` property to be typed int32  in `SearchJob`
+   *  Modified `Duration` property to be typed `float64` in `FieldSummary`
+   *  Modified `RequiredFreshness` property to be typed `int32` in `FieldSummary` 
+   *  Modified `Mean` and `Stddev` properties to typed `float64` in `SingleFieldSummary`
+   *  Modified `Duration` and `EarliestTime` properties to typed `float64` in `SingleTimeBucket`
+   *  Modified `Count` and `Offset` properties to be typed `*int32` in `ListEventsSummaryQueryParams` model
+   *  Modified `Count` property to be typed `*int32` in `ListJobsQueryParams` model
+   *  Modified `Count` and `Offset` properties to be typed `*int32` in `ListPreviewResultsQueryParams` model
+   *  Modified `Count` and `Offset` properties to be typed `*int32` in `ListResultsQueryParams` model
+*  Streams
+   * Modified `ConnectorId` property to `[]string` in `ListConnectionsQueryParams` model
+### Non-Breaking Changes
+*  Catalog
+   * `AppClientIdProperties` model has been added
+* Identity
+   * New `SetPrincipalPublicKeys` endpoint added
+*  Streams
+   * Added `NodeId` property to ValidateResponse Model
+   * Removed `JsonNode` Model
+   * Added `GetFileMetadata` endpoint
+
+## SCloud v3.1.0
+### Breaking Changes
+*  SCloud forwarders AddCertificate endpoint accepts inputFile
+### Non-Breaking Changes
+*  New `Context list` cmd added
+*  New `Context set --key <key> --value <value>` cmd added
+*  New `Identity set-principal-public-keys --principal <principal name>` cmd added
+*  New `--use-refresh-token` flag added to trigger refresh authentication flow
+*  Increased client timeout to 60 seconds
+### BugFix
+* Fixed system level crash when `--env` flag is used
+
 ## Version 1.6.0
 ### BREAKING CHANGES
 
