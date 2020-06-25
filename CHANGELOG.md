@@ -29,7 +29,7 @@
    * Removed `JsonNode` Model
    * Added `GetFileMetadata` endpoint
 
-## SCloud v3.1.0
+## SCloud v4.0.0
 ### Breaking Changes
 *  SCloud forwarders AddCertificate endpoint accepts inputFile
 ### Non-Breaking Changes
