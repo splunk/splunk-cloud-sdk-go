@@ -62,12 +62,26 @@ var set = &cobra.Command{
 			expirationToUse = ExpiresIn
 		}
 
-		context := map[string]interface{}{
-			key:          value,
-			"token_type": TokenType,
-			"expires_in": expirationToUse,
-			"scope":      Scope,
+		clientID, err := auth.GetClientID(cmd)
+		if err != nil {
+			jsonx.Pprint(cmd, err)
+			return
 		}
+
+		currentContext := auth.GetCurrentContext(clientID)
+		var context map[string]interface{}
+
+		if currentContext == nil {
+			context = map[string]interface{}{
+				"token_type": TokenType,
+				"scope":      Scope,
+			}
+		} else {
+			context = auth.ToMap(currentContext)
+		}
+
+		context[key] = value
+		context["expires_in"] = expirationToUse
 
 		auth.SetContext(cmd, context)
 	},

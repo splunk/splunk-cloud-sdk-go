@@ -153,7 +153,7 @@ func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, e
 	}
 
 	var refreshToken string
-	context := getCurrentContext(clientID)
+	context := GetCurrentContext(clientID)
 
 	if context == nil {
 		refreshToken = ""
