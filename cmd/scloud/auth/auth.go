@@ -246,7 +246,7 @@ func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 }
 
 // Returns the cached authorization context associated with the given clientID.
-func getCurrentContext(clientID string) *idp.Context {
+func GetCurrentContext(clientID string) *idp.Context {
 	if ctxCache == nil {
 		return nil
 	}
@@ -283,7 +283,7 @@ func getContext(cmd *cobra.Command) *idp.Context {
 		util.Fatal("bad app profile: no client_id")
 		return nil
 	}
-	context := getCurrentContext(clientID)
+	context := GetCurrentContext(clientID)
 	if context != nil {
 		// todo: re-authenticate if token has expired
 		return context
@@ -307,7 +307,7 @@ func getContext(cmd *cobra.Command) *idp.Context {
 		return nil
 	}
 
-	ctxCache.Set(clientID, toMap(context))
+	ctxCache.Set(clientID, ToMap(context))
 	return context
 }
 
@@ -342,7 +342,7 @@ func Login(cmd *cobra.Command, authFlow func(map[string]string, *cobra.Command) 
 	if err != nil {
 		return nil, err
 	}
-	ctxCache.Set(clientID, toMap(context))
+	ctxCache.Set(clientID, ToMap(context))
 	return context, nil
 }
 
@@ -442,6 +442,23 @@ func GetContext(cmd *cobra.Command) *idp.Context {
 	return getContext(cmd)
 }
 
+// Return client id
+func GetClientID(cmd *cobra.Command) (string, error) {
+	profile, err := getProfile()
+	if err != nil {
+		util.Fatal(err.Error())
+		return "", fmt.Errorf("error obtaining profile information %v", err)
+	}
+
+	clientID, ok := profile["client_id"]
+
+	if !ok {
+		util.Fatal("bad app profile: no client_id")
+		return "", fmt.Errorf("bad app profile: no client_id")
+	}
+	return clientID, nil
+}
+
 // Set context in .scloud_context
 func SetContext(cmd *cobra.Command, context map[string]interface{}) {
 	profile, err := getProfile()
@@ -474,7 +491,7 @@ func open(fileName string) (io.Reader, error) {
 
 }
 
-func toMap(ctx *idp.Context) map[string]interface{} {
+func ToMap(ctx *idp.Context) map[string]interface{} {
 	result := map[string]interface{}{
 		"token_type":   ctx.TokenType,
 		"access_token": ctx.AccessToken,
