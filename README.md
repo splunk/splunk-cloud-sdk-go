@@ -67,7 +67,7 @@ Initialize your project using Go modules for dependency support. Your project ca
         })
         exitOnErr(err)
         // Validate access to Splunk Cloud Services and tenant
-        query := identity.ValidateTokenQueryParams{Include: []string{"principal", "tenant"}}
+        query := identity.ValidateTokenQueryParams{Include: identity.ValidateTokeninclude{"principal", "tenant"}}
         info, err := client.IdentityService.ValidateToken(&query)
         exitOnErr(err)
         fmt.Println("name: " + info.Name)
@@ -94,18 +94,11 @@ Initialize your project using Go modules for dependency support. Your project ca
 
 4. Set your access token and tenant.
 
-    -  Retrieve your access token from the [Splunk Developer Portal](https://dev.splunk.com/scs/).
-       -  Log in at the top of the page. 
-       -  Open the [Reference](https://dev.splunk.com/scs/reference).
-       -  Navigate to any REST API. For example, go to [Provisioner GET /system/provisioner/v1beta1/tenants](https://api.scp.splunk.com/system/provisioner/v1beta1/tenants).
-       -  Click **Console**, then next to Authorization Token click **Show**, and then click **Copy to Clipboard** to copy your token.
-    -  List your tenants using the following REST command, replacing `<accessToken>` with your access token:
-
-        ```curl
-        curl -X GET "https://api.scp.splunk.com/system/identity/v2beta1/tenants" \
-        -H "Authorization: Bearer <accessToken>"
-        ```
-
+    -  Retrieve your access token from the [Splunk Cloud Console](https://console.scp.splunk.com).
+       -  Log in with your email address. 
+       -  Enter/Choose your tenant.
+       -  Navigate to the Settings page from the top-right dropdown.
+       -  Under **Authorization** / Access Token click **Copy to clipboard** to copy your token.
     -  Run the following command, replacing `<accessToken>` and `<tenant>` with your values:
 
         ```bash
