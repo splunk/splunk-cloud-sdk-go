@@ -374,6 +374,32 @@ components:
       required:
       - status
       type: object
+    QueryDefinition:
+      properties:
+        count:
+          default: -1
+          description: Maximum number of records to return.
+          type: integer
+        fields:
+          description: Comma-separated list of fields to include or exclude.
+          items:
+            type: string
+          type: array
+        offset:
+          default: -1
+          description: Number of records to skip from the start.
+          type: integer
+        orderby:
+          description: Sort order.
+          items:
+            type: string
+          type: array
+        query:
+          description: Query JSON expression.
+          type: string
+      required:
+      - query
+      type: object
     TenantDescription:
       properties:
         collections:
@@ -479,9 +505,27 @@ paths:
     - $ref: '#/components/parameters/CollectionParam'
     post:
       operationId: insertRecords
+      parameters:
+      - description: Allow records with keys included to update their respective records
+          in the database
+        in: query
+        name: allow_updates
+        required: false
+        schema:
+          default: false
+          type: boolean
       requestBody:
         $ref: '#/components/requestBodies/insertRecordsRecords'
       responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Successfully returned a list of the keys of the inserted/updated
+            records.
         "201":
           content:
             application/json:
@@ -812,4 +856,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: kvstore/v1beta1/openapi.yaml

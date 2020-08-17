@@ -204,6 +204,12 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var allow_updatesDefault bool
+	allow_updates := &allow_updatesDefault
+	err = flags.ParseFlag(cmd.Flags(), "allow-updates", &allow_updates)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-updates": ` + err.Error())
+	}
 	var body []map[string]interface{}
 	err = flags.ParseFlag(cmd.Flags(), "body", &body)
 	if err != nil {
@@ -214,8 +220,11 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "collection": ` + err.Error())
 	}
+	// Form query params
+	generated_query := model.InsertRecordsQueryParams{}
+	generated_query.Allow_updates = allow_updates
 
-	resp, err := client.KVStoreService.InsertRecords(collection, body)
+	resp, err := client.KVStoreService.InsertRecords(collection, body, &generated_query)
 	if err != nil {
 		return err
 	}

@@ -88,6 +88,58 @@ func Compile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// CreateCollectJob Create a new collect job.
+func CreateCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectionId string
+	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
+	}
+	var connectorId string
+	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connector-id": ` + err.Error())
+	}
+	var description string
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var parameters map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "parameters", &parameters)
+	if err != nil {
+		return fmt.Errorf(`error parsing "parameters": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.CollectJobRequest{
+
+		ConnectionId: connectionId,
+		ConnectorId:  connectorId,
+		Description:  description,
+		Name:         name,
+		Parameters:   parameters,
+	}
+
+	resp, err := client.StreamsService.CreateCollectJob(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreateConnection Create a new DSP connection.
 func CreateConnection(cmd *cobra.Command, args []string) error {
 
@@ -265,6 +317,29 @@ func Decompile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeleteCollectJob Delete a collect job.
+func DeleteCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+
+	err = client.StreamsService.DeleteCollectJob(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteConnection Delete all versions of a connection by its id.
 func DeleteConnection(cmd *cobra.Command, args []string) error {
 
@@ -334,6 +409,30 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeletePlugin Delete an admin plugin
+func DeletePlugin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var pluginId string
+	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
+	}
+
+	resp, err := client.StreamsService.DeletePlugin(pluginId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // DeleteTemplate Removes a template with a specific ID.
 func DeleteTemplate(cmd *cobra.Command, args []string) error {
 
@@ -354,6 +453,37 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// GetCollectJob Get a collect job.
+func GetCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var version string
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.GetCollectJobQueryParams{}
+	generated_query.Version = version
+
+	resp, err := client.StreamsService.GetCollectJob(id, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -611,6 +741,53 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 	generated_query.SortField = sortField
 
 	resp, err := client.StreamsService.GetPipelinesStatus(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetPlugins Returns all the plugins that are available for all tenants.
+func GetPlugins(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var offsetDefault int32
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var pageSizeDefault int32
+	pageSize := &pageSizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &pageSize)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var sortDir string
+	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
+	}
+	var sortField string
+	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.GetPluginsQueryParams{}
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
+
+	resp, err := client.StreamsService.GetPlugins(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1006,6 +1183,48 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// PatchPlugin Patch an existing admin plugin.
+func PatchPlugin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var pluginId string
+	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.PluginPatchRequest{
+
+		Description: description,
+		Name:        name,
+	}
+
+	resp, err := client.StreamsService.PatchPlugin(pluginId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // PutConnection Updates an existing DSP connection.
 func PutConnection(cmd *cobra.Command, args []string) error {
 
@@ -1065,13 +1284,89 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var allowNonRestoredStateDefault bool
+	allowNonRestoredState := &allowNonRestoredStateDefault
+	err = flags.ParseFlag(cmd.Flags(), "allow-non-restored-state", &allowNonRestoredState)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-non-restored-state": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var skipRestoreStateDefault bool
+	skipRestoreState := &skipRestoreStateDefault
+	err = flags.ParseFlag(cmd.Flags(), "skip-restore-state", &skipRestoreState)
+	if err != nil {
+		return fmt.Errorf(`error parsing "skip-restore-state": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ReactivatePipelineRequest{
+
+		AllowNonRestoredState: allowNonRestoredState,
+		SkipRestoreState:      skipRestoreState,
+	}
+
+	resp, err := client.StreamsService.ReactivatePipeline(id, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// RegisterPlugin Register a new plugin that's available for all tenants.
+func RegisterPlugin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var description string
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.PluginRequest{
+
+		Description: description,
+		Name:        name,
+	}
+
+	resp, err := client.StreamsService.RegisterPlugin(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// StartCollectJob Start a collect job.
+func StartCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
-	resp, err := client.StreamsService.ReactivatePipeline(id)
+	resp, err := client.StreamsService.StartCollectJob(id)
 	if err != nil {
 		return err
 	}
@@ -1111,6 +1406,29 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := StartPreviewOverride(recordsLimit, recordsPerPipeline, sessionLifetimeMs, inputDatafile)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// StopCollectJob Stop a collect job.
+func StopCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+
+	resp, err := client.StreamsService.StopCollectJob(id)
 	if err != nil {
 		return err
 	}
@@ -1231,6 +1549,46 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// UpdatePlugin Update admin plugin info.
+func UpdatePlugin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var description string
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var pluginId string
+	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.PluginRequest{
+
+		Description: description,
+		Name:        name,
+	}
+
+	resp, err := client.StreamsService.UpdatePlugin(pluginId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // UpdateTemplate Patches an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
@@ -1288,6 +1646,11 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
+}
+
+// UploadPlugin Upload a new plugin that's available for all tenants.
+func UploadPlugin(cmd *cobra.Command, args []string) error {
+	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // ValidatePipeline Verifies whether the Streams JSON is valid.

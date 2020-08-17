@@ -1386,7 +1386,7 @@ func (s *Service) GetDashboardByResourceName(dashboardresourcename string, resp 
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*Dataset, error) {
+func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*DatasetGet, error) {
 	values := util.ParseURLParams(query)
 	pp := struct {
 		Datasetresourcename string
@@ -1409,7 +1409,7 @@ func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryP
 	if err != nil {
 		return nil, err
 	}
-	var rb Dataset
+	var rb DatasetGet
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -1422,7 +1422,7 @@ func (s *Service) GetDataset(datasetresourcename string, query *GetDatasetQueryP
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*Dataset, error) {
+func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*DatasetGet, error) {
 	values := util.ParseURLParams(query)
 	pp := struct {
 		Datasetid string
@@ -1445,7 +1445,7 @@ func (s *Service) GetDatasetById(datasetid string, query *GetDatasetByIdQueryPar
 	if err != nil {
 		return nil, err
 	}
-	var rb Dataset
+	var rb DatasetGet
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -2054,7 +2054,7 @@ func (s *Service) ListDashboards(query *ListDashboardsQueryParams, resp ...*http
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Response) ([]Dataset, error) {
+func (s *Service) ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Response) ([]DatasetGet, error) {
 	values := util.ParseURLParams(query)
 	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/catalog/v2beta1/datasets`, nil)
 	if err != nil {
@@ -2072,7 +2072,7 @@ func (s *Service) ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Res
 	if err != nil {
 		return nil, err
 	}
-	var rb []Dataset
+	var rb []DatasetGet
 	err = util.ParseResponse(&rb, response)
 	return rb, err
 }

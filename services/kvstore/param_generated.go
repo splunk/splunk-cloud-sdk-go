@@ -36,6 +36,19 @@ func (q DeleteRecordsQueryParams) SetQuery(v string) DeleteRecordsQueryParams {
 	return q
 }
 
+// InsertRecordsQueryParams represents valid query parameters for the InsertRecords operation
+// For convenience InsertRecordsQueryParams can be formed in a single statement, for example:
+//     `v := InsertRecordsQueryParams{}.SetAllowUpdates(...)`
+type InsertRecordsQueryParams struct {
+	// AllowUpdates : Allow records with keys included to update their respective records in the database
+	AllowUpdates *bool `key:"allow_updates"`
+}
+
+func (q InsertRecordsQueryParams) SetAllowUpdates(v bool) InsertRecordsQueryParams {
+	q.AllowUpdates = &v
+	return q
+}
+
 // ListRecordsQueryParams represents valid query parameters for the ListRecords operation
 // For convenience ListRecordsQueryParams can be formed in a single statement, for example:
 //     `v := ListRecordsQueryParams{}.SetCount(...).SetFields(...).SetFilters(...).SetOffset(...).SetOrderby(...)`

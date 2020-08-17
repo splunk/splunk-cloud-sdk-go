@@ -107,7 +107,7 @@ func init() {
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensIndex, "index", "", "index is the default value of the index field for records collected using this token.  type: string")
 
 	var postCollectorTokensSource string
-	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSource, "source", "", "source is the default value of the source field for records collected using this token.   type: string")
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSource, "source", "", "source is the default value of the source field for records collected using this token.  type: string")
 
 	var postCollectorTokensSourcetype string
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSourcetype, "sourcetype", "", "sourcetype is the default value of the sourcetype field for records collected using this token.  type: string")

@@ -22,6 +22,13 @@ var compileCmd = &cobra.Command{
 	RunE:  impl.Compile,
 }
 
+// createCollectJob -- Create a new collect job.
+var createCollectJobCmd = &cobra.Command{
+	Use:   "create-collect-job",
+	Short: "Create a new collect job.",
+	RunE:  impl.CreateCollectJob,
+}
+
 // createConnection -- Create a new DSP connection.
 var createConnectionCmd = &cobra.Command{
 	Use:   "create-connection",
@@ -57,6 +64,13 @@ var decompileCmd = &cobra.Command{
 	RunE:  impl.Decompile,
 }
 
+// deleteCollectJob -- Delete a collect job.
+var deleteCollectJobCmd = &cobra.Command{
+	Use:   "delete-collect-job",
+	Short: "Delete a collect job.",
+	RunE:  impl.DeleteCollectJob,
+}
+
 // deleteConnection -- Delete all versions of a connection by its id.
 var deleteConnectionCmd = &cobra.Command{
 	Use:   "delete-connection",
@@ -78,11 +92,25 @@ var deletePipelineCmd = &cobra.Command{
 	RunE:  impl.DeletePipeline,
 }
 
+// deletePlugin -- Delete an admin plugin
+var deletePluginCmd = &cobra.Command{
+	Use:   "delete-plugin",
+	Short: "Delete an admin plugin",
+	RunE:  impl.DeletePlugin,
+}
+
 // deleteTemplate -- Removes a template with a specific ID.
 var deleteTemplateCmd = &cobra.Command{
 	Use:   "delete-template",
 	Short: "Removes a template with a specific ID.",
 	RunE:  impl.DeleteTemplate,
+}
+
+// getCollectJob -- Get a collect job.
+var getCollectJobCmd = &cobra.Command{
+	Use:   "get-collect-job",
+	Short: "Get a collect job.",
+	RunE:  impl.GetCollectJob,
 }
 
 // getFileMetadata -- Get file metadata.
@@ -139,6 +167,13 @@ var getPipelinesStatusCmd = &cobra.Command{
 	Use:   "get-pipelines-status",
 	Short: "Returns the status of pipelines from the underlying streaming system.",
 	RunE:  impl.GetPipelinesStatus,
+}
+
+// getPlugins -- Returns all the plugins that are available for all tenants.
+var getPluginsCmd = &cobra.Command{
+	Use:   "get-plugins",
+	Short: "Returns all the plugins that are available for all tenants.",
+	RunE:  impl.GetPlugins,
 }
 
 // getPreviewData -- Returns the preview data for a session.
@@ -211,6 +246,13 @@ var patchPipelineCmd = &cobra.Command{
 	RunE:  impl.PatchPipeline,
 }
 
+// patchPlugin -- Patch an existing admin plugin.
+var patchPluginCmd = &cobra.Command{
+	Use:   "patch-plugin",
+	Short: "Patch an existing admin plugin.",
+	RunE:  impl.PatchPlugin,
+}
+
 // putConnection -- Updates an existing DSP connection.
 var putConnectionCmd = &cobra.Command{
 	Use:   "put-connection",
@@ -232,11 +274,32 @@ var reactivatePipelineCmd = &cobra.Command{
 	RunE:  impl.ReactivatePipeline,
 }
 
+// registerPlugin -- Register a new plugin that's available for all tenants.
+var registerPluginCmd = &cobra.Command{
+	Use:   "register-plugin",
+	Short: "Register a new plugin that's available for all tenants.",
+	RunE:  impl.RegisterPlugin,
+}
+
+// startCollectJob -- Start a collect job.
+var startCollectJobCmd = &cobra.Command{
+	Use:   "start-collect-job",
+	Short: "Start a collect job.",
+	RunE:  impl.StartCollectJob,
+}
+
 // startPreview -- Creates a preview session for a pipeline.
 var startPreviewCmd = &cobra.Command{
 	Use:   "start-preview",
 	Short: "Creates a preview session for a pipeline.",
 	RunE:  impl.StartPreview,
+}
+
+// stopCollectJob -- Stop a collect job.
+var stopCollectJobCmd = &cobra.Command{
+	Use:   "stop-collect-job",
+	Short: "Stop a collect job.",
+	RunE:  impl.StopCollectJob,
 }
 
 // stopPreview -- Stops a preview session.
@@ -260,6 +323,13 @@ var updatePipelineCmd = &cobra.Command{
 	RunE:  impl.UpdatePipeline,
 }
 
+// updatePlugin -- Update admin plugin info.
+var updatePluginCmd = &cobra.Command{
+	Use:   "update-plugin",
+	Short: "Update admin plugin info.",
+	RunE:  impl.UpdatePlugin,
+}
+
 // updateTemplate -- Patches an existing template.
 var updateTemplateCmd = &cobra.Command{
 	Use:   "update-template",
@@ -272,6 +342,13 @@ var uploadFileCmd = &cobra.Command{
 	Use:   "upload-file",
 	Short: "Upload new file.",
 	RunE:  impl.UploadFile,
+}
+
+// uploadPlugin -- Upload a new plugin that's available for all tenants.
+var uploadPluginCmd = &cobra.Command{
+	Use:   "upload-plugin",
+	Short: "[not implemented] Upload a new plugin that's available for all tenants.",
+	RunE:  impl.UploadPlugin,
 }
 
 // validatePipeline -- Verifies whether the Streams JSON is valid.
@@ -304,6 +381,28 @@ func init() {
 
 	var compileValidate string
 	compileCmd.Flags().StringVar(&compileValidate, "validate", "false", "A boolean flag to indicate whether the pipeline should be validated.")
+
+	streamsCmd.AddCommand(createCollectJobCmd)
+
+	var createCollectJobConnectionId string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobConnectionId, "connection-id", "", "This is a required parameter. The ID of the connection that is assigned to this collect job.")
+	createCollectJobCmd.MarkFlagRequired("connection-id")
+
+	var createCollectJobConnectorId string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobConnectorId, "connector-id", "", "This is a required parameter. The ID of the connector this collect job uses.")
+	createCollectJobCmd.MarkFlagRequired("connector-id")
+
+	var createCollectJobDescription string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobDescription, "description", "", "This is a required parameter. The description of the collect job.")
+	createCollectJobCmd.MarkFlagRequired("description")
+
+	var createCollectJobName string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobName, "name", "", "This is a required parameter. The name of the collect job.")
+	createCollectJobCmd.MarkFlagRequired("name")
+
+	var createCollectJobParameters string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobParameters, "parameters", "", "This is a required parameter. The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	createCollectJobCmd.MarkFlagRequired("parameters")
 
 	streamsCmd.AddCommand(createConnectionCmd)
 
@@ -366,6 +465,12 @@ func init() {
 	decompileCmd.Flags().StringVar(&decompileUpl, "upl", "", "This is a required parameter. ")
 	decompileCmd.MarkFlagRequired("upl")
 
+	streamsCmd.AddCommand(deleteCollectJobCmd)
+
+	var deleteCollectJobId string
+	deleteCollectJobCmd.Flags().StringVar(&deleteCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	deleteCollectJobCmd.MarkFlagRequired("id")
+
 	streamsCmd.AddCommand(deleteConnectionCmd)
 
 	var deleteConnectionConnectionId string
@@ -384,11 +489,26 @@ func init() {
 	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	deletePipelineCmd.MarkFlagRequired("id")
 
+	streamsCmd.AddCommand(deletePluginCmd)
+
+	var deletePluginPluginId string
+	deletePluginCmd.Flags().StringVar(&deletePluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
+	deletePluginCmd.MarkFlagRequired("plugin-id")
+
 	streamsCmd.AddCommand(deleteTemplateCmd)
 
 	var deleteTemplateTemplateId string
 	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
+
+	streamsCmd.AddCommand(getCollectJobCmd)
+
+	var getCollectJobId string
+	getCollectJobCmd.Flags().StringVar(&getCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	getCollectJobCmd.MarkFlagRequired("id")
+
+	var getCollectJobVersion string
+	getCollectJobCmd.Flags().StringVar(&getCollectJobVersion, "version", "", "version")
 
 	streamsCmd.AddCommand(getFileMetadataCmd)
 
@@ -473,6 +593,20 @@ func init() {
 
 	var getPipelinesStatusSortField string
 	getPipelinesStatusCmd.Flags().StringVar(&getPipelinesStatusSortField, "sort-field", "", "sortField")
+
+	streamsCmd.AddCommand(getPluginsCmd)
+
+	var getPluginsOffset int32
+	getPluginsCmd.Flags().Int32Var(&getPluginsOffset, "offset", 0, "offset")
+
+	var getPluginsPageSize int32
+	getPluginsCmd.Flags().Int32Var(&getPluginsPageSize, "page-size", 0, "pageSize")
+
+	var getPluginsSortDir string
+	getPluginsCmd.Flags().StringVar(&getPluginsSortDir, "sort-dir", "", "sortDir")
+
+	var getPluginsSortField string
+	getPluginsCmd.Flags().StringVar(&getPluginsSortField, "sort-field", "", "sortField")
 
 	streamsCmd.AddCommand(getPreviewDataCmd)
 
@@ -598,6 +732,18 @@ func init() {
 	var patchPipelineName string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineName, "name", "", "The name of the pipeline.")
 
+	streamsCmd.AddCommand(patchPluginCmd)
+
+	var patchPluginPluginId string
+	patchPluginCmd.Flags().StringVar(&patchPluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
+	patchPluginCmd.MarkFlagRequired("plugin-id")
+
+	var patchPluginDescription string
+	patchPluginCmd.Flags().StringVar(&patchPluginDescription, "description", "", "Plugin description")
+
+	var patchPluginName string
+	patchPluginCmd.Flags().StringVar(&patchPluginName, "name", "", "Plugin name")
+
 	streamsCmd.AddCommand(putConnectionCmd)
 
 	var putConnectionConnectionId string
@@ -643,6 +789,28 @@ func init() {
 	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
+	var reactivatePipelineAllowNonRestoredState string
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineAllowNonRestoredState, "allow-non-restored-state", "false", "Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.")
+
+	var reactivatePipelineSkipRestoreState string
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineSkipRestoreState, "skip-restore-state", "false", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
+
+	streamsCmd.AddCommand(registerPluginCmd)
+
+	var registerPluginDescription string
+	registerPluginCmd.Flags().StringVar(&registerPluginDescription, "description", "", "This is a required parameter. Plugin description")
+	registerPluginCmd.MarkFlagRequired("description")
+
+	var registerPluginName string
+	registerPluginCmd.Flags().StringVar(&registerPluginName, "name", "", "This is a required parameter. Plugin name")
+	registerPluginCmd.MarkFlagRequired("name")
+
+	streamsCmd.AddCommand(startCollectJobCmd)
+
+	var startCollectJobId string
+	startCollectJobCmd.Flags().StringVar(&startCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	startCollectJobCmd.MarkFlagRequired("id")
+
 	streamsCmd.AddCommand(startPreviewCmd)
 
 	var startPreviewInputDatafile string
@@ -656,6 +824,12 @@ func init() {
 
 	var startPreviewSessionLifetimeMs int64
 	startPreviewCmd.Flags().Int64Var(&startPreviewSessionLifetimeMs, "session-lifetime-ms", 0, "The maximum lifetime of a session, in milliseconds. Defaults to 300,000.")
+
+	streamsCmd.AddCommand(stopCollectJobCmd)
+
+	var stopCollectJobId string
+	stopCollectJobCmd.Flags().StringVar(&stopCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	stopCollectJobCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(stopPreviewCmd)
 
@@ -697,6 +871,20 @@ func init() {
 	var updatePipelineInputDatafile string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
+	streamsCmd.AddCommand(updatePluginCmd)
+
+	var updatePluginDescription string
+	updatePluginCmd.Flags().StringVar(&updatePluginDescription, "description", "", "This is a required parameter. Plugin description")
+	updatePluginCmd.MarkFlagRequired("description")
+
+	var updatePluginName string
+	updatePluginCmd.Flags().StringVar(&updatePluginName, "name", "", "This is a required parameter. Plugin name")
+	updatePluginCmd.MarkFlagRequired("name")
+
+	var updatePluginPluginId string
+	updatePluginCmd.Flags().StringVar(&updatePluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
+	updatePluginCmd.MarkFlagRequired("plugin-id")
+
 	streamsCmd.AddCommand(updateTemplateCmd)
 
 	var updateTemplateTemplateId string
@@ -716,6 +904,12 @@ func init() {
 
 	var uploadFileFileName string
 	uploadFileCmd.Flags().StringVar(&uploadFileFileName, "file-name", "", "File to upload.")
+
+	streamsCmd.AddCommand(uploadPluginCmd)
+
+	var uploadPluginPluginId string
+	uploadPluginCmd.Flags().StringVar(&uploadPluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
+	uploadPluginCmd.MarkFlagRequired("plugin-id")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

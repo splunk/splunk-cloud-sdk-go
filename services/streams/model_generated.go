@@ -38,6 +38,40 @@ type ArgumentModel struct {
 	Type     *string `json:"type,omitempty"`
 }
 
+type CollectJobRequest struct {
+	// The ID of the connection that is assigned to this collect job.
+	ConnectionId string `json:"connectionId"`
+	// The ID of the connector this collect job uses.
+	ConnectorId string `json:"connectorId"`
+	// The description of the collect job.
+	Description string `json:"description"`
+	// The name of the collect job.
+	Name string `json:"name"`
+	// The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+	Parameters map[string]interface{} `json:"parameters"`
+}
+
+type CollectJobResponse struct {
+	ActivePipelinesUsing []map[string]interface{} `json:"activePipelinesUsing,omitempty"`
+	ConnectionId         *string                  `json:"connectionId,omitempty"`
+	ConnectorId          *string                  `json:"connectorId,omitempty"`
+	CreateDate           *int64                   `json:"createDate,omitempty"`
+	CreateUserId         *string                  `json:"createUserId,omitempty"`
+	Description          *string                  `json:"description,omitempty"`
+	Id                   *string                  `json:"id,omitempty"`
+	LastUpdateDate       *int64                   `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserId     *string                  `json:"lastUpdateUserId,omitempty"`
+	Name                 *string                  `json:"name,omitempty"`
+	Parameters           map[string]interface{}   `json:"parameters,omitempty"`
+	Status               *string                  `json:"status,omitempty"`
+	Version              *int64                   `json:"version,omitempty"`
+}
+
+type CollectJobStartStopResponse struct {
+	Id     *string `json:"id,omitempty"`
+	Status *string `json:"status,omitempty"`
+}
+
 type ConnectionPatchRequest struct {
 	// The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
 	Data map[string]interface{} `json:"data,omitempty"`
@@ -196,6 +230,11 @@ type PaginatedResponseOfPipelineResponse struct {
 	Total *int64             `json:"total,omitempty"`
 }
 
+type PaginatedResponseOfPlugin struct {
+	Items []Plugin `json:"items,omitempty"`
+	Total *int64   `json:"total,omitempty"`
+}
+
 type PaginatedResponseOfTemplateResponse struct {
 	Items []TemplateResponse `json:"items,omitempty"`
 	Total *int64             `json:"total,omitempty"`
@@ -231,11 +270,18 @@ type PipelineMigrationInfo struct {
 }
 
 type PipelineNode struct {
-	Arguments  map[string]interface{} `json:"arguments,omitempty"`
+	// A unique identifier for the function.
+	Id string `json:"id"`
+	// The operation name.
+	Op string `json:"op"`
+	// Function arguments keyed by argument name.
+	Arguments map[string]interface{} `json:"arguments,omitempty"`
+	// For internal use only. This field is ignored.
 	Attributes map[string]interface{} `json:"attributes,omitempty"`
-	Id         *string                `json:"id,omitempty"`
-	Op         *string                `json:"op,omitempty"`
-	ResolvedId *string                `json:"resolvedId,omitempty"`
+	// The identifier describing the operation name and required argument types. This field is ignored.
+	ResolvedId *string `json:"resolvedId,omitempty"`
+	// If present, creates a named statement when decompiling to SPL2. For example, \"$events = | from splunk_firehose();\".
+	StatementName *string `json:"statementName,omitempty"`
 }
 
 type PipelinePatchRequest struct {
@@ -310,6 +356,30 @@ const (
 	PipelineResponseStatusFinished   PipelineResponseStatus = "FINISHED"
 )
 
+type Plugin struct {
+	Description      *string `json:"description,omitempty"`
+	IsDeleted        *bool   `json:"isDeleted,omitempty"`
+	LastUpdateDate   *int64  `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserId *string `json:"lastUpdateUserId,omitempty"`
+	Name             *string `json:"name,omitempty"`
+	PluginId         *string `json:"pluginId,omitempty"`
+	TenantId         *string `json:"tenantId,omitempty"`
+}
+
+type PluginPatchRequest struct {
+	// Plugin description
+	Description *string `json:"description,omitempty"`
+	// Plugin name
+	Name *string `json:"name,omitempty"`
+}
+
+type PluginRequest struct {
+	// Plugin description
+	Description string `json:"description"`
+	// Plugin name
+	Name string `json:"name"`
+}
+
 type PreviewData struct {
 	CurrentNumberOfRecords *int32                 `json:"currentNumberOfRecords,omitempty"`
 	Nodes                  map[string]PreviewNode `json:"nodes,omitempty"`
@@ -345,6 +415,13 @@ type PreviewState struct {
 	JobId                  *string `json:"jobId,omitempty"`
 	PreviewId              *int64  `json:"previewId,omitempty"`
 	RecordsPerPipeline     *int32  `json:"recordsPerPipeline,omitempty"`
+}
+
+type ReactivatePipelineRequest struct {
+	// Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.
+	AllowNonRestoredState *bool `json:"allowNonRestoredState,omitempty"`
+	// Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
+	SkipRestoreState *bool `json:"skipRestoreState,omitempty"`
 }
 
 type RegistryModel struct {

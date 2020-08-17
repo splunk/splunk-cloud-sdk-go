@@ -704,6 +704,60 @@ type AutoKvActionProperties struct {
 	Mode *string `json:"mode,omitempty"`
 }
 
+// A complete catalog dataset as rendered in POST, PATCH, and GET responses.
+type CatalogDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// A unique dataset ID.
+	Id   string             `json:"id"`
+	Kind CatalogDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The name of the module that contains the dataset.
+	Module string `json:"module"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+	// Internal use only.
+	Url *string `json:"url,omitempty"`
+	// The catalog version.
+	Version *int32 `json:"version,omitempty"`
+}
+
+// CatalogDatasetKind : The dataset kind.
+type CatalogDatasetKind string
+
+// List of CatalogDatasetKind
+const (
+	CatalogDatasetKindCatalog CatalogDatasetKind = "catalog"
+)
+
+// Properties of catalog datasets which can be read, set, and changed through the API.
+type CatalogDatasetProperties struct {
+	Kind *CatalogDatasetKind `json:"kind,omitempty"`
+	// Internal use only.
+	Url *string `json:"url,omitempty"`
+}
+
 // A complete dashboard as rendered in POST, PATCH, and GET responses.
 type Dashboard struct {
 	// The date and time object was created.
@@ -778,7 +832,7 @@ type DashboardPost struct {
 	Version *int32 `json:"version,omitempty"`
 }
 
-// Dataset : A complete dataset as rendered in POST, PATCH, and GET responses.
+// Dataset : A complete dataset as rendered in POST, PATCH responses.
 type Dataset struct {
 	importDataset       *ImportDataset
 	indexDataset        *IndexDataset
@@ -992,12 +1046,254 @@ type DatasetCommon struct {
 	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
 	Title *string `json:"title,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
+}
+
+// DatasetGet : A complete dataset as rendered in GET responses.
+type DatasetGet struct {
+	catalogDataset      *CatalogDataset
+	importDataset       *ImportDataset
+	indexDataset        *IndexDataset
+	jobDataset          *JobDataset
+	kvCollectionDataset *KvCollectionDataset
+	lookupDataset       *LookupDataset
+	metricDataset       *MetricDataset
+	splv1sinkDataset    *Splv1sinkDataset
+	viewDataset         *ViewDataset
+	raw                 interface{}
+}
+
+// MakeDatasetGetFromCatalogDataset creates a new DatasetGet from an instance of CatalogDataset
+func MakeDatasetGetFromCatalogDataset(f CatalogDataset) DatasetGet {
+	return DatasetGet{catalogDataset: &f}
+}
+
+// IsCatalogDataset checks if the DatasetGet is a CatalogDataset
+func (m DatasetGet) IsCatalogDataset() bool {
+	return m.catalogDataset != nil
+}
+
+// CatalogDataset returns CatalogDataset if IsCatalogDataset() is true, nil otherwise
+func (m DatasetGet) CatalogDataset() *CatalogDataset {
+	return m.catalogDataset
+}
+
+// MakeDatasetGetFromImportDataset creates a new DatasetGet from an instance of ImportDataset
+func MakeDatasetGetFromImportDataset(f ImportDataset) DatasetGet {
+	return DatasetGet{importDataset: &f}
+}
+
+// IsImportDataset checks if the DatasetGet is a ImportDataset
+func (m DatasetGet) IsImportDataset() bool {
+	return m.importDataset != nil
+}
+
+// ImportDataset returns ImportDataset if IsImportDataset() is true, nil otherwise
+func (m DatasetGet) ImportDataset() *ImportDataset {
+	return m.importDataset
+}
+
+// MakeDatasetGetFromIndexDataset creates a new DatasetGet from an instance of IndexDataset
+func MakeDatasetGetFromIndexDataset(f IndexDataset) DatasetGet {
+	return DatasetGet{indexDataset: &f}
+}
+
+// IsIndexDataset checks if the DatasetGet is a IndexDataset
+func (m DatasetGet) IsIndexDataset() bool {
+	return m.indexDataset != nil
+}
+
+// IndexDataset returns IndexDataset if IsIndexDataset() is true, nil otherwise
+func (m DatasetGet) IndexDataset() *IndexDataset {
+	return m.indexDataset
+}
+
+// MakeDatasetGetFromJobDataset creates a new DatasetGet from an instance of JobDataset
+func MakeDatasetGetFromJobDataset(f JobDataset) DatasetGet {
+	return DatasetGet{jobDataset: &f}
+}
+
+// IsJobDataset checks if the DatasetGet is a JobDataset
+func (m DatasetGet) IsJobDataset() bool {
+	return m.jobDataset != nil
+}
+
+// JobDataset returns JobDataset if IsJobDataset() is true, nil otherwise
+func (m DatasetGet) JobDataset() *JobDataset {
+	return m.jobDataset
+}
+
+// MakeDatasetGetFromKvCollectionDataset creates a new DatasetGet from an instance of KvCollectionDataset
+func MakeDatasetGetFromKvCollectionDataset(f KvCollectionDataset) DatasetGet {
+	return DatasetGet{kvCollectionDataset: &f}
+}
+
+// IsKvCollectionDataset checks if the DatasetGet is a KvCollectionDataset
+func (m DatasetGet) IsKvCollectionDataset() bool {
+	return m.kvCollectionDataset != nil
+}
+
+// KvCollectionDataset returns KvCollectionDataset if IsKvCollectionDataset() is true, nil otherwise
+func (m DatasetGet) KvCollectionDataset() *KvCollectionDataset {
+	return m.kvCollectionDataset
+}
+
+// MakeDatasetGetFromLookupDataset creates a new DatasetGet from an instance of LookupDataset
+func MakeDatasetGetFromLookupDataset(f LookupDataset) DatasetGet {
+	return DatasetGet{lookupDataset: &f}
+}
+
+// IsLookupDataset checks if the DatasetGet is a LookupDataset
+func (m DatasetGet) IsLookupDataset() bool {
+	return m.lookupDataset != nil
+}
+
+// LookupDataset returns LookupDataset if IsLookupDataset() is true, nil otherwise
+func (m DatasetGet) LookupDataset() *LookupDataset {
+	return m.lookupDataset
+}
+
+// MakeDatasetGetFromMetricDataset creates a new DatasetGet from an instance of MetricDataset
+func MakeDatasetGetFromMetricDataset(f MetricDataset) DatasetGet {
+	return DatasetGet{metricDataset: &f}
+}
+
+// IsMetricDataset checks if the DatasetGet is a MetricDataset
+func (m DatasetGet) IsMetricDataset() bool {
+	return m.metricDataset != nil
+}
+
+// MetricDataset returns MetricDataset if IsMetricDataset() is true, nil otherwise
+func (m DatasetGet) MetricDataset() *MetricDataset {
+	return m.metricDataset
+}
+
+// MakeDatasetGetFromSplv1sinkDataset creates a new DatasetGet from an instance of Splv1sinkDataset
+func MakeDatasetGetFromSplv1sinkDataset(f Splv1sinkDataset) DatasetGet {
+	return DatasetGet{splv1sinkDataset: &f}
+}
+
+// IsSplv1sinkDataset checks if the DatasetGet is a Splv1sinkDataset
+func (m DatasetGet) IsSplv1sinkDataset() bool {
+	return m.splv1sinkDataset != nil
+}
+
+// Splv1sinkDataset returns Splv1sinkDataset if IsSplv1sinkDataset() is true, nil otherwise
+func (m DatasetGet) Splv1sinkDataset() *Splv1sinkDataset {
+	return m.splv1sinkDataset
+}
+
+// MakeDatasetGetFromViewDataset creates a new DatasetGet from an instance of ViewDataset
+func MakeDatasetGetFromViewDataset(f ViewDataset) DatasetGet {
+	return DatasetGet{viewDataset: &f}
+}
+
+// IsViewDataset checks if the DatasetGet is a ViewDataset
+func (m DatasetGet) IsViewDataset() bool {
+	return m.viewDataset != nil
+}
+
+// ViewDataset returns ViewDataset if IsViewDataset() is true, nil otherwise
+func (m DatasetGet) ViewDataset() *ViewDataset {
+	return m.viewDataset
+}
+
+// MakeDatasetGetFromRawInterface creates a new DatasetGet from a raw interface{}
+func MakeDatasetGetFromRawInterface(f interface{}) DatasetGet {
+	return DatasetGet{raw: f}
+}
+
+// IsRawInterface checks if the DatasetGet is an interface{} (unknown type)
+func (m DatasetGet) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m DatasetGet) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals DatasetGet using the "kind" property
+func (m *DatasetGet) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "catalog":
+		m.catalogDataset = &CatalogDataset{}
+		return json.Unmarshal(b, m.catalogDataset)
+	case "import":
+		m.importDataset = &ImportDataset{}
+		return json.Unmarshal(b, m.importDataset)
+	case "index":
+		m.indexDataset = &IndexDataset{}
+		return json.Unmarshal(b, m.indexDataset)
+	case "job":
+		m.jobDataset = &JobDataset{}
+		return json.Unmarshal(b, m.jobDataset)
+	case "kvcollection":
+		m.kvCollectionDataset = &KvCollectionDataset{}
+		return json.Unmarshal(b, m.kvCollectionDataset)
+	case "lookup":
+		m.lookupDataset = &LookupDataset{}
+		return json.Unmarshal(b, m.lookupDataset)
+	case "metric":
+		m.metricDataset = &MetricDataset{}
+		return json.Unmarshal(b, m.metricDataset)
+	case "splv1sink":
+		m.splv1sinkDataset = &Splv1sinkDataset{}
+		return json.Unmarshal(b, m.splv1sinkDataset)
+	case "view":
+		m.viewDataset = &ViewDataset{}
+		return json.Unmarshal(b, m.viewDataset)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals DatasetGet using the appropriate struct field
+func (m DatasetGet) MarshalJSON() ([]byte, error) {
+	if m.IsCatalogDataset() {
+		return json.Marshal(m.catalogDataset)
+	} else if m.IsImportDataset() {
+		return json.Marshal(m.importDataset)
+	} else if m.IsIndexDataset() {
+		return json.Marshal(m.indexDataset)
+	} else if m.IsJobDataset() {
+		return json.Marshal(m.jobDataset)
+	} else if m.IsKvCollectionDataset() {
+		return json.Marshal(m.kvCollectionDataset)
+	} else if m.IsLookupDataset() {
+		return json.Marshal(m.lookupDataset)
+	} else if m.IsMetricDataset() {
+		return json.Marshal(m.metricDataset)
+	} else if m.IsSplv1sinkDataset() {
+		return json.Marshal(m.splv1sinkDataset)
+	} else if m.IsViewDataset() {
+		return json.Marshal(m.viewDataset)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
 }
 
 type DatasetImportedBy struct {
@@ -1632,6 +1928,8 @@ type ImportDataset struct {
 	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
@@ -1846,6 +2144,8 @@ type IndexDataset struct {
 	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
 	LatestEventTime *string `json:"latestEventTime,omitempty"`
 	// The latest index time for any of the events in this index.
@@ -1981,12 +2281,16 @@ type JobDataset struct {
 	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// Specifies whether a search is allowed to collect preview results during the runtime, internal search service use only.
+	EnablePreview *bool `json:"enablePreview,omitempty"`
 	// The runtime of the search in seconds.
 	ExecutionTime *float32 `json:"executionTime,omitempty"`
 	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
 	// Did the SPL query cause any side effects on a dataset?
 	HasSideEffects *bool `json:"hasSideEffects,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// The maximum number of seconds to run this search before finishing.
 	MaxTime *int32 `json:"maxTime,omitempty"`
 	// The parent's ID of the search job.
@@ -2006,6 +2310,8 @@ type JobDataset struct {
 	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
 	Title *string `json:"title,omitempty"`
+	// Search without the time range resolved, internal search service use only.
+	UnresolvedTimeSpl *string `json:"unresolvedTimeSpl,omitempty"`
 	// The catalog version.
 	Version *int32 `json:"version,omitempty"`
 }
@@ -2052,6 +2358,8 @@ type JobDatasetProperties struct {
 	DeleteTime *string `json:"deleteTime,omitempty"`
 	// Time that the job was dispatched
 	DispatchTime *string `json:"dispatchTime,omitempty"`
+	// Specifies whether a search is allowed to collect preview results during the runtime, internal search service use only.
+	EnablePreview *bool `json:"enablePreview,omitempty"`
 	// The runtime of the search in seconds.
 	ExecutionTime *float32 `json:"executionTime,omitempty"`
 	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
@@ -2084,6 +2392,8 @@ type JobDatasetProperties struct {
 	// The current status of the search job.
 	Status           *string                               `json:"status,omitempty"`
 	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
+	// Search without the time range resolved, internal search service use only.
+	UnresolvedTimeSpl *string `json:"unresolvedTimeSpl,omitempty"`
 }
 
 // Availability of timeline metadata artifacts.
@@ -2135,6 +2445,8 @@ type KvCollectionDataset struct {
 	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
@@ -2280,6 +2592,8 @@ type LookupDataset struct {
 	Description *string `json:"description,omitempty"`
 	// A query that filters results out of the lookup before those results are returned.
 	Filter *string `json:"filter,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.
@@ -2403,6 +2717,8 @@ type MetricDataset struct {
 	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
 	// The frozenTimePeriodInSecs to use for the index
 	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
 	LatestEventTime *string `json:"latestEventTime,omitempty"`
 	// The earliest index time for any of the measures in this index.
@@ -2791,6 +3107,60 @@ type RuleProperties struct {
 	Version *int32 `json:"version,omitempty"`
 }
 
+// A complete catalog dataset as rendered in GET responses.
+type Splv1sinkDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// A unique dataset ID.
+	Id   string               `json:"id"`
+	Kind Splv1sinkDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The name of the module that contains the dataset.
+	Module string `json:"module"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// Internal use by common-ast, contains the converted SPL for a SPL2 search query.
+	Splv1 string `json:"splv1"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+	// The catalog version.
+	Version *int32 `json:"version,omitempty"`
+}
+
+// Splv1sinkDatasetKind : The dataset kind.
+type Splv1sinkDatasetKind string
+
+// List of Splv1sinkDatasetKind
+const (
+	Splv1sinkDatasetKindSplv1sink Splv1sinkDatasetKind = "splv1sink"
+)
+
+// Properties of splv1sink datasets which can be read through the API.
+type Splv1sinkDatasetProperties struct {
+	Kind *Splv1sinkDatasetKind `json:"kind,omitempty"`
+	// Internal use by common-ast, contains the converted SPL for a SPL2 search query.
+	Splv1 *string `json:"splv1,omitempty"`
+}
+
 // A complete task as rendered in POST, PATCH, and GET responses.
 type Task struct {
 	// The task algorithm name.
@@ -2914,6 +3284,8 @@ type ViewDataset struct {
 	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
 	// Detailed description of the dataset.
 	Description *string `json:"description,omitempty"`
+	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
+	Internalname *string `json:"internalname,omitempty"`
 	// Summary of the dataset's purpose.
 	Summary *string `json:"summary,omitempty"`
 	// The title of the dataset.  Does not have to be unique.

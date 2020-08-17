@@ -244,15 +244,17 @@ func (s *Service) InsertRecord(collection string, body map[string]interface{}, r
 	Parameters:
 		collection: The name of the collection.
 		requestBody: Array of records to insert.
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) InsertRecords(collection string, requestBody []map[string]interface{}, resp ...*http.Response) ([]string, error) {
+func (s *Service) InsertRecords(collection string, requestBody []map[string]interface{}, query *InsertRecordsQueryParams, resp ...*http.Response) ([]string, error) {
+	values := util.ParseURLParams(query)
 	pp := struct {
 		Collection string
 	}{
 		Collection: collection,
 	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/kvstore/v1beta1/collections/{{.Collection}}/batch`, pp)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/kvstore/v1beta1/collections/{{.Collection}}/batch`, pp)
 	if err != nil {
 		return nil, err
 	}

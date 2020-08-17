@@ -234,4 +234,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: forwarders/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: forwarders/v2beta1/openapi.yaml
