@@ -293,7 +293,7 @@ func createTestRecord(t *testing.T, kvCollection string) []string {
 	err := json.Unmarshal([]byte(integrationTestRecord), &res)
 	require.NoError(t, err)
 
-	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res)
+	keys, err := getClient(t).KVStoreService.InsertRecords(kvCollection, res, nil)
 	require.NoError(t, err)
 	require.NotNil(t, keys)
 	assert.Equal(t, len(keys), 3)

@@ -202,7 +202,7 @@ func createDatasetFieldName(datasetID string, fieldName string, client *sdk.Clie
 }
 
 // assertDatasetKind - Helper to assert that the kind for the Dataset matches model associated with that kind
-func assertDatasetKind(t *testing.T, dataset catalog.Dataset) {
+func assertDatasetKind(t *testing.T, dataset catalog.DatasetGet) {
 	if dataset.IsIndexDataset() {
 		assert.NotEmpty(t, dataset.IndexDataset().Id)
 	} else if dataset.IsViewDataset() {

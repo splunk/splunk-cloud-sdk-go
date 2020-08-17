@@ -96,12 +96,12 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	resolvedId := pipeline.Data.Nodes[0].ResolvedId
 	assert.NotEmpty(t, op)
 	assert.NotEmpty(t, resolvedId)
-	assert.Equal(t, "read_splunk_firehose", *op)
+	assert.Equal(t, "read_splunk_firehose", op)
 	assert.Equal(t, "read_splunk_firehose:string", *resolvedId)
 
 	op = pipeline.Data.Nodes[1].Op
 	assert.NotEmpty(t, op)
-	assert.Equal(t, "write_index", *op)
+	assert.Equal(t, "write_index", op)
 	assert.Empty(t, pipeline.Data.Nodes[1].Attributes)
 	assert.Equal(t, nil, pipeline.Data.Nodes[1].Attributes["module"])
 	assert.Equal(t, nil, pipeline.Data.Nodes[1].Attributes["dataset"])
@@ -233,7 +233,7 @@ func TestIntegrationReactivatePipeline(t *testing.T) {
 	assert.Empty(t, deactivatePipelineResponse.Activated)
 
 	// Reactivate the deactivated test pipeline
-	reactivatePipelineResponse, err := streamsService.ReactivatePipeline(*pipeline.Id)
+	reactivatePipelineResponse, err := streamsService.ReactivatePipeline(*pipeline.Id, streams.ReactivatePipelineRequest{})
 	require.NoError(t, err)
 	require.NotEmpty(t, reactivatePipelineResponse)
 	assert.Equal(t, *pipeline.Id, *reactivatePipelineResponse.PipelineId)
@@ -707,12 +707,12 @@ func TestIntegrationCreateTemplate(t *testing.T) {
 	require.NotEmpty(t, template.Data.Nodes)
 	require.Equal(t, 2, len(template.Data.Nodes))
 
-	assert.NotEmpty(t, *template.Data.Nodes[0].Id)
-	assert.Equal(t, "read_splunk_firehose", *template.Data.Nodes[0].Op)
+	assert.NotEmpty(t, template.Data.Nodes[0].Id)
+	assert.Equal(t, "read_splunk_firehose", template.Data.Nodes[0].Op)
 
 	dataNode2 := (*template.Data).Nodes[1]
 	assert.NotEmpty(t, dataNode2.Id)
-	assert.Equal(t, "write_index", *dataNode2.Op)
+	assert.Equal(t, "write_index", dataNode2.Op)
 	assert.Empty(t, dataNode2.Attributes)
 }
 
