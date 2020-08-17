@@ -29,6 +29,13 @@ var addMemberCmd = &cobra.Command{
 	RunE:  impl.AddMember,
 }
 
+// addPrincipalPublicKey -- Add service principal public key
+var addPrincipalPublicKeyCmd = &cobra.Command{
+	Use:   "add-principal-public-key",
+	Short: "Add service principal public key",
+	RunE:  impl.AddPrincipalPublicKey,
+}
+
 // addRolePermission -- Adds permissions to a role in a given tenant.
 var addRolePermissionCmd = &cobra.Command{
 	Use:   "add-role-permission",
@@ -55,6 +62,13 @@ var deleteGroupCmd = &cobra.Command{
 	Use:   "delete-group",
 	Short: "Deletes a group in a given tenant.",
 	RunE:  impl.DeleteGroup,
+}
+
+// deletePrincipalPublicKey -- Deletes principal public key
+var deletePrincipalPublicKeyCmd = &cobra.Command{
+	Use:   "delete-principal-public-key",
+	Short: "Deletes principal public key",
+	RunE:  impl.DeletePrincipalPublicKey,
 }
 
 // deleteRole -- Deletes a defined role for a given tenant.
@@ -97,6 +111,20 @@ var getPrincipalCmd = &cobra.Command{
 	Use:   "get-principal",
 	Short: "Returns the details of a principal, including its tenant membership.",
 	RunE:  impl.GetPrincipal,
+}
+
+// getPrincipalPublicKey -- Returns principal public key
+var getPrincipalPublicKeyCmd = &cobra.Command{
+	Use:   "get-principal-public-key",
+	Short: "Returns principal public key",
+	RunE:  impl.GetPrincipalPublicKey,
+}
+
+// getPrincipalPublicKeys -- Returns principal public keys
+var getPrincipalPublicKeysCmd = &cobra.Command{
+	Use:   "get-principal-public-keys",
+	Short: "Returns principal public keys",
+	RunE:  impl.GetPrincipalPublicKeys,
 }
 
 // getRole -- Returns a role for a given tenant.
@@ -227,11 +255,11 @@ var revokePrincipalAuthTokensCmd = &cobra.Command{
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
-// setPrincipalPublicKeys -- Set principal public keys
-var setPrincipalPublicKeysCmd = &cobra.Command{
-	Use:   "set-principal-public-keys",
-	Short: "Set principal public keys",
-	RunE:  impl.SetPrincipalPublicKeys,
+// updatePrincipalPublicKey -- Update principal public key
+var updatePrincipalPublicKeyCmd = &cobra.Command{
+	Use:   "update-principal-public-key",
+	Short: "Update principal public key",
+	RunE:  impl.UpdatePrincipalPublicKey,
 }
 
 // validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
@@ -269,6 +297,33 @@ func init() {
 	addMemberCmd.Flags().StringVar(&addMemberName, "name", "", "This is a required parameter. ")
 	addMemberCmd.MarkFlagRequired("name")
 
+	identityCmd.AddCommand(addPrincipalPublicKeyCmd)
+
+	var addPrincipalPublicKeyPrincipal string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	addPrincipalPublicKeyCmd.MarkFlagRequired("principal")
+
+	var addPrincipalPublicKeyAlg string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyAlg, "alg", "", " can accept values ES256, ES384, ES512")
+
+	var addPrincipalPublicKeyCrv string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyCrv, "crv", "", "")
+
+	var addPrincipalPublicKeyD string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyD, "d", "", "")
+
+	var addPrincipalPublicKeyKid string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyKid, "kid", "", "")
+
+	var addPrincipalPublicKeyKty string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyKty, "kty", "", " can accept values EC")
+
+	var addPrincipalPublicKeyX string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyX, "x", "", "")
+
+	var addPrincipalPublicKeyY string
+	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyY, "y", "", "")
+
 	identityCmd.AddCommand(addRolePermissionCmd)
 
 	var addRolePermissionBody string
@@ -296,6 +351,16 @@ func init() {
 	var deleteGroupGroup string
 	deleteGroupCmd.Flags().StringVar(&deleteGroupGroup, "group", "", "This is a required parameter. The group name.")
 	deleteGroupCmd.MarkFlagRequired("group")
+
+	identityCmd.AddCommand(deletePrincipalPublicKeyCmd)
+
+	var deletePrincipalPublicKeyKeyId string
+	deletePrincipalPublicKeyCmd.Flags().StringVar(&deletePrincipalPublicKeyKeyId, "key-id", "", "This is a required parameter. Identifier of a public key.")
+	deletePrincipalPublicKeyCmd.MarkFlagRequired("key-id")
+
+	var deletePrincipalPublicKeyPrincipal string
+	deletePrincipalPublicKeyCmd.Flags().StringVar(&deletePrincipalPublicKeyPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	deletePrincipalPublicKeyCmd.MarkFlagRequired("principal")
 
 	identityCmd.AddCommand(deleteRoleCmd)
 
@@ -340,6 +405,22 @@ func init() {
 	var getPrincipalPrincipal string
 	getPrincipalCmd.Flags().StringVar(&getPrincipalPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	getPrincipalCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(getPrincipalPublicKeyCmd)
+
+	var getPrincipalPublicKeyKeyId string
+	getPrincipalPublicKeyCmd.Flags().StringVar(&getPrincipalPublicKeyKeyId, "key-id", "", "This is a required parameter. Identifier of a public key.")
+	getPrincipalPublicKeyCmd.MarkFlagRequired("key-id")
+
+	var getPrincipalPublicKeyPrincipal string
+	getPrincipalPublicKeyCmd.Flags().StringVar(&getPrincipalPublicKeyPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	getPrincipalPublicKeyCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(getPrincipalPublicKeysCmd)
+
+	var getPrincipalPublicKeysPrincipal string
+	getPrincipalPublicKeysCmd.Flags().StringVar(&getPrincipalPublicKeysPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	getPrincipalPublicKeysCmd.MarkFlagRequired("principal")
 
 	identityCmd.AddCommand(getRoleCmd)
 
@@ -455,11 +536,19 @@ func init() {
 	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
 
-	identityCmd.AddCommand(setPrincipalPublicKeysCmd)
+	identityCmd.AddCommand(updatePrincipalPublicKeyCmd)
 
-	var setPrincipalPublicKeysPrincipal string
-	setPrincipalPublicKeysCmd.Flags().StringVar(&setPrincipalPublicKeysPrincipal, "principal", "", "This is a required parameter. The principal name.")
-	setPrincipalPublicKeysCmd.MarkFlagRequired("principal")
+	var updatePrincipalPublicKeyKeyId string
+	updatePrincipalPublicKeyCmd.Flags().StringVar(&updatePrincipalPublicKeyKeyId, "key-id", "", "This is a required parameter. Identifier of a public key.")
+	updatePrincipalPublicKeyCmd.MarkFlagRequired("key-id")
+
+	var updatePrincipalPublicKeyPrincipal string
+	updatePrincipalPublicKeyCmd.Flags().StringVar(&updatePrincipalPublicKeyPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	updatePrincipalPublicKeyCmd.MarkFlagRequired("principal")
+
+	var updatePrincipalPublicKeyStatus string
+	updatePrincipalPublicKeyCmd.Flags().StringVar(&updatePrincipalPublicKeyStatus, "status", "", "This is a required parameter.  can accept values active, inactive")
+	updatePrincipalPublicKeyCmd.MarkFlagRequired("status")
 
 	identityCmd.AddCommand(validateTokenCmd)
 

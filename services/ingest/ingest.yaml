@@ -68,7 +68,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HECResponse'
-      description: 'The events were processed successfully. '
+      description: The events were processed successfully.
     hecTokenCreateSuccessResponse:
       content:
         application/json:
@@ -348,8 +348,10 @@ components:
           type: string
           x-go-name: Name
         source:
-          description: "source is the default value of the source field for records
-            collected using this token. \n\ntype: string"
+          description: |-
+            source is the default value of the source field for records collected using this token.
+
+            type: string
           type: string
           x-go-name: Source
         sourcetype:
@@ -615,183 +617,9 @@ info:
   description: Use the Ingest service in Splunk Cloud Services to send event and metrics
     data, or upload a static file, to Splunk Cloud Services.
   title: Ingest API
-  version: v1beta2.12
+  version: v1beta2.14
 openapi: 3.0.0
 paths:
-  # SCP-25721: postCollector, postCollectorEvent, and postCollectorEventV1 are commented out to prevent
-  # code generation per the ingest service team as the Authorization header and payload do not conform
-  # to SCP standards (The auth header is not Bearer and the payload is not guaranteed to be valid JSON).
-  # /{tenant}/ingest/v1beta2/collector:
-  #   post:
-  #     description: 'Sends collector events and metrics. '
-  #     operationId: postCollector
-  #     parameters:
-  #     - description: Sets a default source field value for all events in the request.
-  #       in: query
-  #       name: source
-  #       schema:
-  #         type: string
-  #       x-go-name: Source
-  #     - description: Sets a default sourcetype field value for all events in the request.
-  #       in: query
-  #       name: sourcetype
-  #       schema:
-  #         type: string
-  #       x-go-name: Sourcetype
-  #     - description: Sets a default index field value for all events in the request.
-  #       in: query
-  #       name: index
-  #       schema:
-  #         type: string
-  #       x-go-name: Index
-  #     - description: The DSP HEC token provided by the user.
-  #       in: header
-  #       name: Authorization
-  #       required: true
-  #       schema:
-  #         pattern: ^(Splunk|Basic) .+
-  #         type: string
-  #     - in: path
-  #       name: tenant
-  #       required: true
-  #       schema:
-  #         type: string
-  #       x-go-name: Tenant
-  #     requestBody:
-  #       $ref: '#/components/requestBodies/postCollectorPayload'
-  #     responses:
-  #       "200":
-  #         $ref: '#/components/responses/hecSuccessResponse'
-  #       "400":
-  #         $ref: '#/components/responses/hecBadRequestError'
-  #       "401":
-  #         $ref: '#/components/responses/hecUnauthorizedError'
-  #       "403":
-  #         $ref: '#/components/responses/hecForbiddenError'
-  #       "500":
-  #         $ref: '#/components/responses/hecInternalError'
-  #       "503":
-  #         $ref: '#/components/responses/serverBusyError'
-  #       default:
-  #         $ref: '#/components/responses/hecInternalError'
-  #     tags:
-  #     - Collector
-  #     x-auth-required: false
-  #     x-authz-scope: ingest.collector.write
-  # /{tenant}/ingest/v1beta2/collector/event:
-  #   post:
-  #     operationId: postCollectorEvent
-  #     parameters:
-  #     - description: Sets a default source field value for all events in the request.
-  #       in: query
-  #       name: source
-  #       schema:
-  #         type: string
-  #       x-go-name: Source
-  #     - description: Sets a default sourcetype field value for all events in the request.
-  #       in: query
-  #       name: sourcetype
-  #       schema:
-  #         type: string
-  #       x-go-name: Sourcetype
-  #     - description: Sets a default index field value for all events in the request.
-  #       in: query
-  #       name: index
-  #       schema:
-  #         type: string
-  #       x-go-name: Index
-  #     - description: The DSP HEC token provided by the user.
-  #       in: header
-  #       name: Authorization
-  #       required: true
-  #       schema:
-  #         pattern: ^(Splunk|Basic) .+
-  #         type: string
-  #     - in: path
-  #       name: tenant
-  #       required: true
-  #       schema:
-  #         type: string
-  #       x-go-name: Tenant
-  #     requestBody:
-  #       $ref: '#/components/requestBodies/postCollectorPayload'
-  #     responses:
-  #       "200":
-  #         $ref: '#/components/responses/hecSuccessResponse'
-  #       "400":
-  #         $ref: '#/components/responses/hecBadRequestError'
-  #       "401":
-  #         $ref: '#/components/responses/hecUnauthorizedError'
-  #       "403":
-  #         $ref: '#/components/responses/hecForbiddenError'
-  #       "500":
-  #         $ref: '#/components/responses/hecInternalError'
-  #       "503":
-  #         $ref: '#/components/responses/serverBusyError'
-  #       default:
-  #         $ref: '#/components/responses/hecInternalError'
-  #     summary: Sends collector events.
-  #     tags:
-  #     - Collector
-  #     x-auth-required: false
-  #     x-authz-scope: ingest.collector.write
-  # /{tenant}/ingest/v1beta2/collector/event/1.0:
-  #   post:
-  #     operationId: postCollectorEventV1
-  #     parameters:
-  #     - description: Sets a default source field value for all events in the request.
-  #       in: query
-  #       name: source
-  #       schema:
-  #         type: string
-  #       x-go-name: Source
-  #     - description: Sets a default sourcetype field value for all events in the request.
-  #       in: query
-  #       name: sourcetype
-  #       schema:
-  #         type: string
-  #       x-go-name: Sourcetype
-  #     - description: Sets a default index field value for all events in the request.
-  #       in: query
-  #       name: index
-  #       schema:
-  #         type: string
-  #       x-go-name: Index
-  #     - description: The DSP HEC token provided by the user.
-  #       in: header
-  #       name: Authorization
-  #       required: true
-  #       schema:
-  #         pattern: ^(Splunk|Basic) .+
-  #         type: string
-  #     - in: path
-  #       name: tenant
-  #       required: true
-  #       schema:
-  #         type: string
-  #       x-go-name: Tenant
-  #     requestBody:
-  #       $ref: '#/components/requestBodies/postCollectorPayload'
-  #     responses:
-  #       "200":
-  #         $ref: '#/components/responses/hecSuccessResponse'
-  #       "400":
-  #         $ref: '#/components/responses/hecBadRequestError'
-  #       "401":
-  #         $ref: '#/components/responses/hecUnauthorizedError'
-  #       "403":
-  #         $ref: '#/components/responses/hecForbiddenError'
-  #       "500":
-  #         $ref: '#/components/responses/hecInternalError'
-  #       "503":
-  #         $ref: '#/components/responses/serverBusyError'
-  #       default:
-  #         $ref: '#/components/responses/hecInternalError'
-  #     summary: Sends collector events.
-  #     tags:
-  #     - Collector
-  #     x-auth-required: false
-  #     x-authz-scope: ingest.collector.write
   /{tenant}/ingest/v1beta2/collector/tokens:
     delete:
       operationId: deleteAllCollectorTokens
@@ -1186,4 +1014,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: ingest/v1beta2/openapi.yaml

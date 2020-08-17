@@ -106,6 +106,34 @@ func (s *Service) Compile(splCompileRequest SplCompileRequest, resp ...*http.Res
 }
 
 /*
+	CreateCollectJob - Create a new collect job.
+	Parameters:
+		collectJobRequest: Request JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateCollectJob(collectJobRequest CollectJobRequest, resp ...*http.Response) (*CollectJobResponse, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/collect-jobs`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: collectJobRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb CollectJobResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	CreateConnection - Create a new DSP connection.
 	Parameters:
 		connectionRequest: Request JSON
@@ -252,6 +280,34 @@ func (s *Service) Decompile(decompileRequest DecompileRequest, resp ...*http.Res
 }
 
 /*
+	DeleteCollectJob - Delete a collect job.
+	Parameters:
+		id: Collect Job ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteCollectJob(id string, resp ...*http.Response) error {
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/collect-jobs/{{.Id}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
 	DeleteConnection - Delete all versions of a connection by its id.
 	Parameters:
 		connectionId: Connection ID
@@ -336,6 +392,39 @@ func (s *Service) DeletePipeline(id string, resp ...*http.Response) error {
 }
 
 /*
+	DeletePlugin - Delete an admin plugin
+	Parameters:
+		pluginId: Plugin ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeletePlugin(pluginId string, resp ...*http.Response) (*string, error) {
+	pp := struct {
+		PluginId string
+	}{
+		PluginId: pluginId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/streams/v3beta1/plugins/{{.PluginId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb string
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	DeleteTemplate - Removes a template with a specific ID.
 	Parameters:
 		templateId: Template ID
@@ -361,6 +450,41 @@ func (s *Service) DeleteTemplate(templateId string, resp ...*http.Response) erro
 		}
 	}
 	return err
+}
+
+/*
+	GetCollectJob - Get a collect job.
+	Parameters:
+		id: Collect Job ID
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetCollectJob(id string, query *GetCollectJobQueryParams, resp ...*http.Response) (*CollectJobResponse, error) {
+	values := util.ParseURLParams(query)
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/streams/v3beta1/collect-jobs/{{.Id}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb CollectJobResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
 }
 
 /*
@@ -607,6 +731,35 @@ func (s *Service) GetPipelinesStatus(query *GetPipelinesStatusQueryParams, resp 
 		return nil, err
 	}
 	var rb PaginatedResponseOfPipelineJobStatus
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetPlugins - Returns all the plugins that are available for all tenants.
+	Parameters:
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetPlugins(query *GetPluginsQueryParams, resp ...*http.Response) (*PaginatedResponseOfPlugin, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/system/streams/v3beta1/plugins`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PaginatedResponseOfPlugin
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -923,6 +1076,40 @@ func (s *Service) PatchPipeline(id string, pipelinePatchRequest PipelinePatchReq
 }
 
 /*
+	PatchPlugin - Patch an existing admin plugin.
+	Parameters:
+		pluginId: Plugin ID
+		pluginPatchRequest: PluginRequest JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) PatchPlugin(pluginId string, pluginPatchRequest PluginPatchRequest, resp ...*http.Response) (*Plugin, error) {
+	pp := struct {
+		PluginId string
+	}{
+		PluginId: pluginId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/streams/v3beta1/plugins/{{.PluginId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Patch(services.RequestParams{URL: u, Body: pluginPatchRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Plugin
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	PutConnection - Updates an existing DSP connection.
 	Parameters:
 		connectionId: Connection ID
@@ -994,15 +1181,77 @@ func (s *Service) PutTemplate(templateId string, templatePutRequest TemplatePutR
 	ReactivatePipeline - Reactivate a pipeline
 	Parameters:
 		id: Pipeline ID
+		reactivatePipelineRequest: Request JSON
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) ReactivatePipeline(id string, resp ...*http.Response) (*PipelineReactivateResponse, error) {
+func (s *Service) ReactivatePipeline(id string, reactivatePipelineRequest ReactivatePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponse, error) {
 	pp := struct {
 		Id string
 	}{
 		Id: id,
 	}
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/pipelines/{{.Id}}/reactivate`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: reactivatePipelineRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PipelineReactivateResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	RegisterPlugin - Register a new plugin that's available for all tenants.
+	Parameters:
+		pluginRequest: Request JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) RegisterPlugin(pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/streams/v3beta1/plugins`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: pluginRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Plugin
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	StartCollectJob - Start a collect job.
+	Parameters:
+		id: Collect Job ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) StartCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error) {
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/collect-jobs/{{.Id}}/start`, pp)
 	if err != nil {
 		return nil, err
 	}
@@ -1018,7 +1267,7 @@ func (s *Service) ReactivatePipeline(id string, resp ...*http.Response) (*Pipeli
 	if err != nil {
 		return nil, err
 	}
-	var rb PipelineReactivateResponse
+	var rb CollectJobStartStopResponse
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -1047,6 +1296,39 @@ func (s *Service) StartPreview(previewSessionStartRequest PreviewSessionStartReq
 		return nil, err
 	}
 	var rb PreviewStartResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	StopCollectJob - Stop a collect job.
+	Parameters:
+		id: Collect Job ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) StopCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error) {
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/collect-jobs/{{.Id}}/stop`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb CollectJobStartStopResponse
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -1143,6 +1425,40 @@ func (s *Service) UpdatePipeline(id string, pipelineRequest PipelineRequest, res
 		return nil, err
 	}
 	var rb PipelineResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	UpdatePlugin - Update admin plugin info.
+	Parameters:
+		pluginId: Plugin ID
+		pluginRequest: PluginRequest JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UpdatePlugin(pluginId string, pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error) {
+	pp := struct {
+		PluginId string
+	}{
+		PluginId: pluginId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/streams/v3beta1/plugins/{{.PluginId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: u, Body: pluginRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Plugin
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

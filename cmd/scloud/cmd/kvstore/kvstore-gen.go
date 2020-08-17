@@ -166,6 +166,9 @@ func init() {
 	insertRecordsCmd.Flags().StringVar(&insertRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	insertRecordsCmd.MarkFlagRequired("collection")
 
+	var insertRecordsAllowUpdates string
+	insertRecordsCmd.Flags().StringVar(&insertRecordsAllowUpdates, "allow-updates", "false", "Allow records with keys included to update their respective records in the database")
+
 	kvstoreCmd.AddCommand(listIndexesCmd)
 
 	var listIndexesCollection string

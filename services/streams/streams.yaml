@@ -30,6 +30,84 @@ components:
         type:
           type: string
       type: object
+    CollectJobRequest:
+      description: ""
+      properties:
+        connectionId:
+          description: The ID of the connection that is assigned to this collect job.
+          example: ""
+          type: string
+        connectorId:
+          description: The ID of the connector this collect job uses.
+          example: ""
+          type: string
+        description:
+          description: The description of the collect job.
+          example: ""
+          type: string
+        name:
+          description: The name of the collect job.
+          example: ""
+          type: string
+        parameters:
+          description: The key-value pairs of parameters for this collect job. Collect
+            jobs may have some configurations that are required, which all collect
+            jobs must provide values for. For configuration values of type BYTES,
+            the provided values must be Base64 encoded.
+          example: ""
+          properties: {}
+          type: object
+      required:
+      - connectionId
+      - connectorId
+      - description
+      - name
+      - parameters
+      type: object
+    CollectJobResponse:
+      description: ""
+      properties:
+        activePipelinesUsing:
+          items:
+            $ref: '#/components/schemas/MapOfstringAndobject'
+          type: array
+        connectionId:
+          type: string
+        connectorId:
+          type: string
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        name:
+          type: string
+        parameters:
+          properties: {}
+          type: object
+        status:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    CollectJobStartStopResponse:
+      description: ""
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+      type: object
     ConnectionPatchRequest:
       description: ""
       properties:
@@ -467,17 +545,36 @@ components:
       description: ""
       properties:
         arguments:
+          description: Function arguments keyed by argument name.
+          example: ""
           properties: {}
           type: object
         attributes:
+          description: For internal use only. This field is ignored.
+          example: ""
           properties: {}
           type: object
         id:
+          description: A unique identifier for the function.
+          example: ""
           type: string
         op:
+          description: The operation name.
+          example: ""
           type: string
         resolvedId:
+          description: The identifier describing the operation name and required argument
+            types. This field is ignored.
+          example: ""
           type: string
+        statementName:
+          description: If present, creates a named statement when decompiling to SPL2.
+            For example, "$events = | from splunk_firehose();".
+          example: ""
+          type: string
+      required:
+      - id
+      - op
       type: object
     PipelinePatchRequest:
       description: ""
@@ -745,6 +842,21 @@ components:
           format: int32
           type: integer
       type: object
+    ReactivatePipelineRequest:
+      description: ""
+      properties:
+        allowNonRestoredState:
+          description: Set to true to allow the pipeline to ignore any unused progress
+            states. In some cases, when a data pipeline is changed, the progress state
+            will be stored for functions that no longer exist, so this must be set
+            to reactivate a pipeline in this state. Defaults to false.
+          type: boolean
+        skipRestoreState:
+          description: Set to true to start reading from the latest input rather than
+            from where the pipeline's previous run left off, which can cause data
+            loss. Defaults to false.
+          type: boolean
+      type: object
     RegistryModel:
       description: ""
       properties:
@@ -925,6 +1037,399 @@ info:
   version: v3beta1.1
 openapi: 3.0.1
 paths:
+  /{tenantId}/streams/v3beta1/collect-jobs:
+    post:
+      deprecated: false
+      operationId: createCollectJob
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectJobRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectJobResponse'
+          description: The collect job was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Create a new collect job.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.create
+      x-internal: "true"
+  /{tenantId}/streams/v3beta1/collect-jobs/{id}:
+    delete:
+      deprecated: false
+      operationId: deleteCollectJob
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Collect Job ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: The collect job was deleted successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Delete a collect job.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.delete
+      x-internal: "true"
+    get:
+      deprecated: false
+      operationId: getCollectJob
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Collect Job ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: version
+        in: query
+        name: version
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectJobResponse'
+          description: Returns the collect job for the specified id.
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectJobResponse'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get a collect job.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.read
+      x-internal: "true"
+  /{tenantId}/streams/v3beta1/collect-jobs/{id}/start:
+    post:
+      deprecated: false
+      operationId: startCollectJob
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Collect Job ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectJobStartStopResponse'
+          description: The collect job was started successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Start a collect job.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.start
+      x-internal: "true"
+  /{tenantId}/streams/v3beta1/collect-jobs/{id}/stop:
+    post:
+      deprecated: false
+      operationId: stopCollectJob
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Collect Job ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectJobStartStopResponse'
+          description: The collect job was stopped successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Stop a collect job.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.stop
+      x-internal: "true"
   /{tenantId}/streams/v3beta1/connections:
     get:
       deprecated: false
@@ -2575,6 +3080,13 @@ paths:
         required: true
         schema:
           type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReactivatePipelineRequest'
+        description: Request JSON
+        required: false
       responses:
         "200":
           content:
@@ -4077,6 +4589,469 @@ paths:
       tags:
       - templates
       x-authz-scope: streams.templates.update
+  /system/streams/v3beta1/plugins:
+    get:
+      deprecated: false
+      operationId: getPlugins
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfPlugin'
+          description: Returns all the plugins.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns all the plugins that are available for all tenants.
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.read
+    post:
+      deprecated: false
+      operationId: registerPlugin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PluginRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+          description: The plugin was registered successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Register a new plugin that's available for all tenants.
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.create
+  /system/streams/v3beta1/plugins/{pluginId}:
+    delete:
+      deprecated: false
+      operationId: deletePlugin
+      parameters:
+      - description: Plugin ID
+        in: path
+        name: pluginId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Delete an admin plugin
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.delete
+    patch:
+      deprecated: false
+      operationId: patchPlugin
+      parameters:
+      - description: Plugin ID
+        in: path
+        name: pluginId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PluginPatchRequest'
+        description: PluginRequest JSON
+        required: false
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+          description: The plugin was modified successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Patch an existing admin plugin.
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.update
+    put:
+      deprecated: false
+      operationId: updatePlugin
+      parameters:
+      - description: Plugin ID
+        in: path
+        name: pluginId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PluginRequest'
+        description: PluginRequest JSON
+        required: false
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plugin'
+          description: The plugin was updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Update admin plugin info.
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.update
+  /system/streams/v3beta1/plugins/{pluginId}/upload:
+    post:
+      deprecated: false
+      operationId: uploadPlugin
+      x-hidden: true
+      parameters:
+      - description: Plugin ID
+        in: path
+        name: pluginId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                pluginJar:
+                  description: Plugin JAR
+                  format: binary
+                  type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PluginResponse'
+          description: The plugin was uploaded successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Upload a new plugin that's available for all tenants.
+      tags:
+      - apiv-3-beta-1-admin-controller
+      x-admin: "true"
+      x-authz-scope: streams.plugins.create
 servers:
 - url: /
 tags:
@@ -4084,6 +5059,8 @@ tags:
   name: connectors
 - description: V3Beta1 Template API Endpoints
   name: templates
+- description: V3Beta1 Collect Job Endpoints
+  name: collectJobs
 - description: Files API Endpoints
   name: files
 - description: Lookups API Endpoints
@@ -4095,4 +5072,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 2552e9a85ce32779e55e91977eddb123f9082103 path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: streams/v3beta1/openapi.yaml

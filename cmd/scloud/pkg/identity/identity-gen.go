@@ -107,6 +107,83 @@ func AddMember(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// AddPrincipalPublicKey Add service principal public key
+func AddPrincipalPublicKey(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var algDefault model.EcJwkAlg
+	alg := &algDefault
+	err = flags.ParseFlag(cmd.Flags(), "alg", &alg)
+	if err != nil {
+		return fmt.Errorf(`error parsing "alg": ` + err.Error())
+	}
+	var crvDefault string
+	crv := &crvDefault
+	err = flags.ParseFlag(cmd.Flags(), "crv", &crv)
+	if err != nil {
+		return fmt.Errorf(`error parsing "crv": ` + err.Error())
+	}
+	var dDefault string
+	d := &dDefault
+	err = flags.ParseFlag(cmd.Flags(), "d", &d)
+	if err != nil {
+		return fmt.Errorf(`error parsing "d": ` + err.Error())
+	}
+	var kidDefault string
+	kid := &kidDefault
+	err = flags.ParseFlag(cmd.Flags(), "kid", &kid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kid": ` + err.Error())
+	}
+	var ktyDefault model.EcJwkKty
+	kty := &ktyDefault
+	err = flags.ParseFlag(cmd.Flags(), "kty", &kty)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kty": ` + err.Error())
+	}
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+	var xDefault string
+	x := &xDefault
+	err = flags.ParseFlag(cmd.Flags(), "x", &x)
+	if err != nil {
+		return fmt.Errorf(`error parsing "x": ` + err.Error())
+	}
+	var yDefault string
+	y := &yDefault
+	err = flags.ParseFlag(cmd.Flags(), "y", &y)
+	if err != nil {
+		return fmt.Errorf(`error parsing "y": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.EcJwk{
+
+		Alg: alg,
+		Crv: crv,
+		D:   d,
+		Kid: kid,
+		Kty: kty,
+		X:   x,
+		Y:   y,
+	}
+
+	resp, err := client.IdentityService.AddPrincipalPublicKey(principal, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // AddRolePermission Adds permissions to a role in a given tenant.
 func AddRolePermission(cmd *cobra.Command, args []string) error {
 
@@ -207,6 +284,35 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	}
 
 	err = client.IdentityService.DeleteGroup(group)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeletePrincipalPublicKey Deletes principal public key
+func DeletePrincipalPublicKey(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var keyId string
+	err = flags.ParseFlag(cmd.Flags(), "key-id", &keyId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "key-id": ` + err.Error())
+	}
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+
+	err = client.IdentityService.DeletePrincipalPublicKey(principal, keyId)
 	if err != nil {
 		return err
 	}
@@ -356,6 +462,59 @@ func GetPrincipal(cmd *cobra.Command, args []string) error {
 	}
 
 	resp, err := client.IdentityService.GetPrincipal(principal)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetPrincipalPublicKey Returns principal public key
+func GetPrincipalPublicKey(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var keyId string
+	err = flags.ParseFlag(cmd.Flags(), "key-id", &keyId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "key-id": ` + err.Error())
+	}
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetPrincipalPublicKey(principal, keyId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetPrincipalPublicKeys Returns principal public keys
+func GetPrincipalPublicKeys(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+
+	resp, err := client.IdentityService.GetPrincipalPublicKeys(principal)
 	if err != nil {
 		return err
 	}
@@ -791,8 +950,8 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// SetPrincipalPublicKeys Set principal public keys
-func SetPrincipalPublicKeys(cmd *cobra.Command, args []string) error {
+// UpdatePrincipalPublicKey Update principal public key
+func UpdatePrincipalPublicKey(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
 
@@ -801,17 +960,32 @@ func SetPrincipalPublicKeys(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var keyId string
+	err = flags.ParseFlag(cmd.Flags(), "key-id", &keyId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "key-id": ` + err.Error())
+	}
 	var principal string
 	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
 	if err != nil {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
+	var status model.PrincipalPublicKeyStatusBodyStatus
+	err = flags.ParseFlag(cmd.Flags(), "status", &status)
+	if err != nil {
+		return fmt.Errorf(`error parsing "status": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.PrincipalPublicKeyStatusBody{
 
-	err = client.IdentityService.SetPrincipalPublicKeys(principal)
+		Status: status,
+	}
+
+	resp, err := client.IdentityService.UpdatePrincipalPublicKey(principal, keyId, generated_request_body)
 	if err != nil {
 		return err
 	}
-
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
