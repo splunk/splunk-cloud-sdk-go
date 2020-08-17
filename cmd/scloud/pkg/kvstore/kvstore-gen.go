@@ -222,7 +222,7 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	}
 	// Form query params
 	generated_query := model.InsertRecordsQueryParams{}
-	generated_query.Allow_updates = allow_updates
+	generated_query.AllowUpdates = allow_updates
 
 	resp, err := client.KVStoreService.InsertRecords(collection, body, &generated_query)
 	if err != nil {
