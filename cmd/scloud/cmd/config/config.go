@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
 
@@ -25,6 +26,7 @@ var GlobalFlags = map[string]interface{}{
 	"insecure":       false,
 	"testhookdryrun": false,
 	"testhook":       false,
+	"timeout":        0,
 }
 
 // Cmd -- used to connection to rootCmd
@@ -79,6 +81,11 @@ var set = &cobra.Command{
 
 		// prevent non-supported keys from being written
 		if isValidProperty(key) {
+			if key == "timeout" && !isPositiveInt(value) {
+				message := fmt.Sprintf("Timeout value should be a positive integer\n")
+				jsonx.Pprint(cmd, message)
+				return
+			}
 			viper.Set(key, value)
 			viper.SetConfigType("toml")
 			viper.SetConfigFile(confFile)
@@ -167,6 +174,14 @@ func isValidProperty(key string) bool {
 		}
 	}
 	return false
+}
+
+func isPositiveInt(value string) bool {
+	parsedValue, err := strconv.Atoi(value)
+	if err != nil || parsedValue < 1 {
+		return false
+	}
+	return true
 }
 
 func FileExists(filename string) bool {

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,8 +22,9 @@ import (
 )
 
 const (
-	defaultScheme = "https"
-	defaultPort   = "443"
+	defaultScheme  = "https"
+	defaultPort    = "443"
+	defaultTimeout = 10
 	// use ScloudTestDone to indicate the scloud test command is done when using testhook-dryrun flag
 	ScloudTestDone = "Test Command is done\n"
 )
@@ -61,6 +63,24 @@ func GetClientSystemTenant() (*sdk.Client, error) {
 	}
 
 	return sdkClient, nil
+}
+
+func getTimeoutForConfig() time.Duration {
+	defaultTimeoutForConfig := time.Duration(defaultTimeout) * time.Second
+
+	timeout, _ := cf.GlobalFlags["timeout"].(uint)
+	if timeout != 0 {
+		return time.Duration(timeout) * time.Second
+	}
+
+	if timeoutInSettings, ok := settings.GetString("timeout"); ok && timeoutInSettings != "" {
+		timeout, err := strconv.Atoi(timeoutInSettings)
+		if err == nil {
+			return time.Duration(timeout) * time.Second
+		}
+	}
+
+	return defaultTimeoutForConfig
 }
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
@@ -135,7 +155,7 @@ func newClient(svc *Service) *sdk.Client {
 		Token:            getToken(),
 		OverrideHost:     hostPort,
 		Scheme:           scheme,
-		Timeout:          60 * time.Second,
+		Timeout:          getTimeoutForConfig(),
 		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
 		RoundTripper:     roundTripper,
 		ClientVersion:    scloudVersion,
