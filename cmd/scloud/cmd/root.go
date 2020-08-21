@@ -39,6 +39,7 @@ var (
 	cacert         string
 	testhookDryrun bool
 	testhook       bool
+	timeout        uint
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -81,7 +82,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&hostURL, "host-url", "", "Set a host URL to override the public SDC host (https://<host>:<port>)")
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "Specify whether to skip TLS validation. The default is \"false\" to enable TLS certificate validation")
 	rootCmd.PersistentFlags().StringVar(&cacert, "ca-cert", "", "Set the public cert file to use for a local host using HTTPS with TLScertificate validation enabled")
-
+	rootCmd.PersistentFlags().UintVar(&timeout, "timeout", 0, "Set HTTPS timeout (in seconds)")
 	// add hidden test flags
 	rootCmd.PersistentFlags().BoolVar(&testhookDryrun, "testhook-dryrun", false, "a string flag")
 	err := rootCmd.PersistentFlags().MarkHidden("testhook-dryrun")
@@ -153,5 +154,7 @@ func initConfig() {
 	config.GlobalFlags["insecure"] = insecure
 
 	config.GlobalFlags["ca-cert"] = cacert
+
+	config.GlobalFlags["timeout"] = timeout
 
 }
