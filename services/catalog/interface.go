@@ -388,7 +388,7 @@ type Servicer interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*Dataset, error)
+	GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*DatasetGet, error)
 	/*
 		GetDatasetById - catalog service endpoint
 		Returns information about the dataset with the specified ID.
@@ -397,7 +397,7 @@ type Servicer interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*Dataset, error)
+	GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*DatasetGet, error)
 	/*
 		GetFieldById - catalog service endpoint
 		Returns the field with the specified ID.
@@ -552,7 +552,7 @@ type Servicer interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Response) ([]Dataset, error)
+	ListDatasets(query *ListDatasetsQueryParams, resp ...*http.Response) ([]DatasetGet, error)
 	/*
 		ListFields - catalog service endpoint
 		Returns a list of all of the fields in the Metadata Catalog.

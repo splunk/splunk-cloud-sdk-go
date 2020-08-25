@@ -77,9 +77,10 @@ type Servicer interface {
 		Parameters:
 			collection: The name of the collection.
 			requestBody: Array of records to insert.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	InsertRecords(collection string, requestBody []map[string]interface{}, resp ...*http.Response) ([]string, error)
+	InsertRecords(collection string, requestBody []map[string]interface{}, query *InsertRecordsQueryParams, resp ...*http.Response) ([]string, error)
 	/*
 		ListIndexes - Returns a list of all indexes on a collection.
 		Parameters:
