@@ -124,7 +124,7 @@ type PKCERetriever struct {
 	*Client
 	// ClientID corresponding to a PKCE flow supported IdP client
 	ClientID string
-	// RedirectURI that has been whitelisted according to the ClientID (NOTE: redirection is not actually needed for this implementation but this URI must match one specified by the IdP)
+	// RedirectURI that has been allowlisted according to the ClientID (NOTE: redirection is not actually needed for this implementation but this URI must match one specified by the IdP)
 	RedirectURI string
 	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
 	Scope string
