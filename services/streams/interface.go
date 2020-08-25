@@ -40,6 +40,13 @@ type Servicer interface {
 	*/
 	Compile(splCompileRequest SplCompileRequest, resp ...*http.Response) (*Pipeline, error)
 	/*
+		CreateCollectJob - Create a new collect job.
+		Parameters:
+			collectJobRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateCollectJob(collectJobRequest CollectJobRequest, resp ...*http.Response) (*CollectJobResponse, error)
+	/*
 		CreateConnection - Create a new DSP connection.
 		Parameters:
 			connectionRequest: Request JSON
@@ -76,6 +83,13 @@ type Servicer interface {
 	*/
 	Decompile(decompileRequest DecompileRequest, resp ...*http.Response) (*DecompileResponse, error)
 	/*
+		DeleteCollectJob - Delete a collect job.
+		Parameters:
+			id: Collect Job ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteCollectJob(id string, resp ...*http.Response) error
+	/*
 		DeleteConnection - Delete all versions of a connection by its id.
 		Parameters:
 			connectionId: Connection ID
@@ -97,12 +111,27 @@ type Servicer interface {
 	*/
 	DeletePipeline(id string, resp ...*http.Response) error
 	/*
+		DeletePlugin - Delete an admin plugin
+		Parameters:
+			pluginId: Plugin ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeletePlugin(pluginId string, resp ...*http.Response) (*string, error)
+	/*
 		DeleteTemplate - Removes a template with a specific ID.
 		Parameters:
 			templateId: Template ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteTemplate(templateId string, resp ...*http.Response) error
+	/*
+		GetCollectJob - Get a collect job.
+		Parameters:
+			id: Collect Job ID
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetCollectJob(id string, query *GetCollectJobQueryParams, resp ...*http.Response) (*CollectJobResponse, error)
 	/*
 		GetFileMetadata - Get file metadata.
 		Parameters:
@@ -160,6 +189,13 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPipelinesStatus(query *GetPipelinesStatusQueryParams, resp ...*http.Response) (*PaginatedResponseOfPipelineJobStatus, error)
+	/*
+		GetPlugins - Returns all the plugins that are available for all tenants.
+		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetPlugins(query *GetPluginsQueryParams, resp ...*http.Response) (*PaginatedResponseOfPlugin, error)
 	/*
 		GetPreviewData - Returns the preview data for a session.
 		Parameters:
@@ -232,6 +268,14 @@ type Servicer interface {
 	*/
 	PatchPipeline(id string, pipelinePatchRequest PipelinePatchRequest, resp ...*http.Response) (*PipelineResponse, error)
 	/*
+		PatchPlugin - Patch an existing admin plugin.
+		Parameters:
+			pluginId: Plugin ID
+			pluginPatchRequest: PluginRequest JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	PatchPlugin(pluginId string, pluginPatchRequest PluginPatchRequest, resp ...*http.Response) (*Plugin, error)
+	/*
 		PutConnection - Updates an existing DSP connection.
 		Parameters:
 			connectionId: Connection ID
@@ -251,9 +295,24 @@ type Servicer interface {
 		ReactivatePipeline - Reactivate a pipeline
 		Parameters:
 			id: Pipeline ID
+			reactivatePipelineRequest: Request JSON
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ReactivatePipeline(id string, resp ...*http.Response) (*PipelineReactivateResponse, error)
+	ReactivatePipeline(id string, reactivatePipelineRequest ReactivatePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponse, error)
+	/*
+		RegisterPlugin - Register a new plugin that's available for all tenants.
+		Parameters:
+			pluginRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	RegisterPlugin(pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error)
+	/*
+		StartCollectJob - Start a collect job.
+		Parameters:
+			id: Collect Job ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	StartCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error)
 	/*
 		StartPreview - Creates a preview session for a pipeline.
 		Parameters:
@@ -261,6 +320,13 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	StartPreview(previewSessionStartRequest PreviewSessionStartRequest, resp ...*http.Response) (*PreviewStartResponse, error)
+	/*
+		StopCollectJob - Stop a collect job.
+		Parameters:
+			id: Collect Job ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	StopCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error)
 	/*
 		StopPreview - Stops a preview session.
 		Parameters:
@@ -284,6 +350,14 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdatePipeline(id string, pipelineRequest PipelineRequest, resp ...*http.Response) (*PipelineResponse, error)
+	/*
+		UpdatePlugin - Update admin plugin info.
+		Parameters:
+			pluginId: Plugin ID
+			pluginRequest: PluginRequest JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdatePlugin(pluginId string, pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error)
 	/*
 		UpdateTemplate - Patches an existing template.
 		Parameters:

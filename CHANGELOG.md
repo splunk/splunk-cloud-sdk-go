@@ -1,5 +1,24 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.8.0
+**Breaking Changes**
+
+`Catalog service`: GetDataset,  GetDatasetById and ListDatasets endpoints now return data type of DatasetGet instead of Dataset
+
+`Identify service`: remove endpoint SetPrincipalPublicKeys
+
+`Kvstore service`:  InsertRecords endpoint has a new parameter of InsertRecordsQueryParams
+
+`Stream service`: ReactivatePipeline has a new parameter of ReactivatePipelineRequest
+
+**Non-Breaking Changes**
+
+`Identify service`: 
+- new endpoints are added: AddPrincipalPublicKey, GetPrincipalPublicKey, GetPrincipalPublicKeys, DeletePrincipalPublicKey, and UpdatePrincipalPublicKey 
+
+`Stream service`: 
+- new endpoints are added: CreateCollectJob, DeleteCollectJob, DeletePlugin, GetCollectJob, GetPlugins, PatchPlugin, RegisterPlugin,StartCollectJob,StopCollectJob,UpdatePlugin
+
 ## Version 1.7.0
 ## Go SDK v1.7.0
 

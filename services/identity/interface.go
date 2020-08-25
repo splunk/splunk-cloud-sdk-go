@@ -51,6 +51,15 @@ type Servicer interface {
 	*/
 	AddMember(addMemberBody AddMemberBody, resp ...*http.Response) (*Member, error)
 	/*
+		AddPrincipalPublicKey - identity service endpoint
+		Add service principal public key
+		Parameters:
+			principal: The principal name.
+			ecJwk: Service principal public key
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	AddPrincipalPublicKey(principal string, ecJwk EcJwk, resp ...*http.Response) (*PrincipalPublicKey, error)
+	/*
 		AddRolePermission - identity service endpoint
 		Adds permissions to a role in a given tenant.
 		Parameters:
@@ -83,6 +92,15 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteGroup(group string, resp ...*http.Response) error
+	/*
+		DeletePrincipalPublicKey - identity service endpoint
+		Deletes principal public key
+		Parameters:
+			principal: The principal name.
+			keyId: Identifier of a public key.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeletePrincipalPublicKey(principal string, keyId string, resp ...*http.Response) error
 	/*
 		DeleteRole - identity service endpoint
 		Deletes a defined role for a given tenant.
@@ -133,6 +151,23 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetPrincipal(principal string, resp ...*http.Response) (*Principal, error)
+	/*
+		GetPrincipalPublicKey - identity service endpoint
+		Returns principal public key
+		Parameters:
+			principal: The principal name.
+			keyId: Identifier of a public key.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetPrincipalPublicKey(principal string, keyId string, resp ...*http.Response) (*PrincipalPublicKey, error)
+	/*
+		GetPrincipalPublicKeys - identity service endpoint
+		Returns principal public keys
+		Parameters:
+			principal: The principal name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetPrincipalPublicKeys(principal string, resp ...*http.Response) (*PrincipalPublicKeys, error)
 	/*
 		GetRole - identity service endpoint
 		Returns a role for a given tenant.
@@ -280,13 +315,15 @@ type Servicer interface {
 	*/
 	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
 	/*
-		SetPrincipalPublicKeys - identity service endpoint
-		Set principal public keys
+		UpdatePrincipalPublicKey - identity service endpoint
+		Update principal public key
 		Parameters:
 			principal: The principal name.
+			keyId: Identifier of a public key.
+			principalPublicKeyStatusBody: Status of the public key
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	SetPrincipalPublicKeys(principal string, resp ...*http.Response) error
+	UpdatePrincipalPublicKey(principal string, keyId string, principalPublicKeyStatusBody PrincipalPublicKeyStatusBody, resp ...*http.Response) (*PrincipalPublicKey, error)
 	/*
 		ValidateToken - identity service endpoint
 		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
