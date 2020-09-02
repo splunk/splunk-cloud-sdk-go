@@ -6,11 +6,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
-
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
+	usageUtil "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/util"
 )
 
 const LegacyCfgFileName = ".scloud"
@@ -38,6 +38,9 @@ func Cmd() *cobra.Command {
 var configCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Save settings in a local configuration file",
+	Run: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Usage()
+	},
 }
 
 var get = &cobra.Command{
@@ -209,4 +212,7 @@ func init() {
 
 	_ = set.MarkFlagRequired("key")
 	_ = set.MarkFlagRequired("value")
+
+	configCmd.SetUsageTemplate(usageUtil.UsageTemplate)
+	configCmd.SetHelpTemplate(usageUtil.HelpTemplate)
 }

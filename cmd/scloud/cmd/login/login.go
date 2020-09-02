@@ -3,6 +3,7 @@ package login
 import (
 	"github.com/spf13/cobra"
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/login"
+	usageUtil "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/util"
 )
 
 // Cmd -- used to connection to rootCmd
@@ -10,7 +11,7 @@ func Cmd() *cobra.Command {
 	return loginCmd
 }
 
-// loginCmd represents the catalog command
+// loginCmd represents the login command
 var loginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Log in to Splunk Cloud Services",
@@ -23,4 +24,7 @@ func init() {
 	loginCmd.Flags().StringP("pwd", "p", "", "Your password")
 	loginCmd.Flags().BoolP("verbose", "", false, "Whether to display your access token")
 	loginCmd.Flags().BoolP("use-refresh-token", "", false, "Whether to use refresh token authentication flow")
+
+	loginCmd.SetUsageTemplate(usageUtil.UsageTemplate)
+	loginCmd.SetHelpTemplate(usageUtil.HelpTemplate)
 }

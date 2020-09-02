@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
+	usageUtil "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/util"
 	"github.com/thoas/go-funk"
 )
 
@@ -27,6 +28,9 @@ var contextCmd = &cobra.Command{
 	Use:   "context",
 	Short: "Token Context Information",
 	Long:  "Context represents an authentication context, which is the result of a successful OAuth authentication",
+	Run: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Usage()
+	},
 }
 
 var list = &cobra.Command{
@@ -96,4 +100,7 @@ func init() {
 
 	_ = set.MarkFlagRequired("key")
 	_ = set.MarkFlagRequired("value")
+
+	contextCmd.SetUsageTemplate(usageUtil.UsageTemplate)
+	contextCmd.SetHelpTemplate(usageUtil.HelpTemplate)
 }
