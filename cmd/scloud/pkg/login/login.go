@@ -3,11 +3,11 @@ package login
 import (
 	"errors"
 	"fmt"
+	"regexp"
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
 
 const refreshFlow = "refresh"
@@ -42,9 +42,11 @@ func Login(cmd *cobra.Command, args []string) error {
 	// Step 4: Login given authentication
 	context, err := auth.Login(cmd, authFlow)
 	if err != nil {
-		util.Error(err.Error())
-
-		return errors.New(err.Error() + ".  Try again using the --logtostderr flag to show details about the error.")
+		if isHTTPError(err) {
+			fmt.Printf("%v \n Try again using the --logtostderr flag to show details about the error.\n", err)
+			return nil
+		}
+		return err
 	}
 
 	// Step 5: Print Context
@@ -55,6 +57,11 @@ func Login(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// check whether the error contains 400s and 500s HTTP error
+func isHTTPError(err error) bool {
+	regex := regexp.MustCompile(`(400|401|403|404|500|502|503|504){1}`)
+	return regex.MatchString(err.Error())
+}
 func getAuthKindFromProfile() (string, error) {
 	profile, err := auth.GetEnvironmentProfile()
 

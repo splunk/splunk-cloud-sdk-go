@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	usageUtil "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/util"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 
 	"github.com/mitchellh/go-homedir"
@@ -46,6 +47,9 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "scloud",
 	Short: "Splunk Cloud Services CLI",
+	Run: func(cmd *cobra.Command, args []string) {
+		_ = cmd.Usage()
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -75,6 +79,9 @@ func init() {
 	rootCmd.AddCommand(provisioner.Cmd())
 	rootCmd.AddCommand(search.Cmd())
 	rootCmd.AddCommand(streams.Cmd())
+
+	rootCmd.SetUsageTemplate(usageUtil.UsageTemplate)
+	rootCmd.SetHelpTemplate(usageUtil.HelpTemplate)
 
 	rootCmd.PersistentFlags().StringVar(&env, "env", "", "Set the target environment")
 	rootCmd.PersistentFlags().StringVar(&tenant, "tenant", "", "Set the tenant to use for operations against platform services")
