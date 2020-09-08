@@ -71,6 +71,9 @@ func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromAliasActionPost(generated_request_body))
 	if err != nil {
 		return err
@@ -130,6 +133,9 @@ func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 		Ruleid:  ruleid,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromAutoKvActionPost(generated_request_body))
 	if err != nil {
@@ -197,6 +203,9 @@ func CreateActionForRuleByIdAliasAction(cmd *cobra.Command, args []string) error
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromAliasActionPost(generated_request_body))
 	if err != nil {
 		return err
@@ -256,6 +265,9 @@ func CreateActionForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) erro
 		Ruleid:  ruleidBody,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromAutoKvActionPost(generated_request_body))
 	if err != nil {
@@ -323,6 +335,9 @@ func CreateActionForRuleByIdEvalAction(cmd *cobra.Command, args []string) error 
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromEvalActionPost(generated_request_body))
 	if err != nil {
 		return err
@@ -382,6 +397,9 @@ func CreateActionForRuleByIdLookupAction(cmd *cobra.Command, args []string) erro
 		Ruleid:     ruleidBody,
 		Version:    version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromLookupActionPost(generated_request_body))
 	if err != nil {
@@ -456,6 +474,9 @@ func CreateActionForRuleByIdRegexAction(cmd *cobra.Command, args []string) error
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromRegexActionPost(generated_request_body))
 	if err != nil {
 		return err
@@ -522,6 +543,9 @@ func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromEvalActionPost(generated_request_body))
 	if err != nil {
 		return err
@@ -581,6 +605,9 @@ func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 		Ruleid:     ruleid,
 		Version:    version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromLookupActionPost(generated_request_body))
 	if err != nil {
@@ -654,6 +681,9 @@ func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 		Ruleid:  ruleid,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromRegexActionPost(generated_request_body))
 	if err != nil {
@@ -736,6 +766,9 @@ func CreateDashboard(cmd *cobra.Command, args []string) error {
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDashboard(generated_request_body)
 	if err != nil {
 		return err
@@ -774,6 +807,9 @@ func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 		Module: module,
 		Name:   name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDatasetImport(datasetresourcename, generated_request_body)
 	if err != nil {
@@ -814,6 +850,9 @@ func CreateDatasetImportById(cmd *cobra.Command, args []string) error {
 		Name:   name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDatasetImportById(datasetid, generated_request_body)
 	if err != nil {
 		return err
@@ -853,6 +892,9 @@ func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
 		Name:   name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDatasetImportByIdv1(datasetid, generated_request_body)
 	if err != nil {
 		return err
@@ -871,6 +913,9 @@ func CreateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 
 	// Form the request body
 	generated_request_body := model.ImportDatasetPost{}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromImportDatasetPost(generated_request_body))
 	if err != nil {
@@ -910,6 +955,9 @@ func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
 		Module: module,
 		Name:   name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDatasetImportv1(datasetresourcename, generated_request_body)
 	if err != nil {
@@ -978,6 +1026,9 @@ func CreateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 		Name:                   name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromIndexDatasetPost(generated_request_body))
 	if err != nil {
 		return err
@@ -1031,6 +1082,9 @@ func CreateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 		Module: module,
 		Name:   name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromKvCollectionDatasetPost(generated_request_body))
 	if err != nil {
@@ -1112,6 +1166,9 @@ func CreateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 		Name:               name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromLookupDatasetPost(generated_request_body))
 	if err != nil {
 		return err
@@ -1179,6 +1236,9 @@ func CreateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 		Name:                   name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromMetricDatasetPost(generated_request_body))
 	if err != nil {
 		return err
@@ -1238,6 +1298,9 @@ func CreateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 		Name:   name,
 		Search: search,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromViewDatasetPost(generated_request_body))
 	if err != nil {
@@ -1321,6 +1384,9 @@ func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 		Title:       title,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateFieldForDataset(datasetresourcename, generated_request_body)
 	if err != nil {
 		return err
@@ -1402,6 +1468,9 @@ func CreateFieldForDatasetById(cmd *cobra.Command, args []string) error {
 		Summary:     summary,
 		Title:       title,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateFieldForDatasetById(datasetid, generated_request_body)
 	if err != nil {
@@ -1492,6 +1561,9 @@ func CreateRelationship(cmd *cobra.Command, args []string) error {
 		Version:            version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateRelationship(generated_request_body)
 	if err != nil {
 		return err
@@ -1552,6 +1624,9 @@ func CreateRule(cmd *cobra.Command, args []string) error {
 		Name:    name,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateRule(generated_request_body)
 	if err != nil {
@@ -1615,6 +1690,9 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 		Tasks:        tasks,
 		Version:      version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateWorkflow(generated_request_body)
 	if err != nil {
@@ -1751,6 +1829,9 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 		Workflowversion:   workflowversion,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateWorkflowBuild(workflowid, generated_request_body)
 	if err != nil {
 		return err
@@ -1864,6 +1945,9 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 		Workflowbuildversion: workflowbuildversion,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.CreateWorkflowRun(workflowid, workflowbuildid, generated_request_body)
 	if err != nil {
 		return err
@@ -1891,6 +1975,9 @@ func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteActionByIdForRule(ruleresourcename, actionid)
 	if err != nil {
@@ -1920,6 +2007,9 @@ func DeleteActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteActionByIdForRuleById(ruleid, actionid)
 	if err != nil {
 		return err
@@ -1947,6 +2037,9 @@ func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteAnnotationOfDashboardById(dashboardid, annotationid)
 	if err != nil {
@@ -1976,6 +2069,9 @@ func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string
 		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteAnnotationOfDashboardByResourceName(dashboardresourcename, annotationid)
 	if err != nil {
 		return err
@@ -2003,6 +2099,9 @@ func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteAnnotationOfDatasetById(datasetid, annotationid)
 	if err != nil {
@@ -2032,6 +2131,9 @@ func DeleteAnnotationOfDatasetByResourceName(cmd *cobra.Command, args []string) 
 		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteAnnotationOfDatasetByResourceName(datasetresourcename, annotationid)
 	if err != nil {
 		return err
@@ -2054,6 +2156,9 @@ func DeleteDashboardById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteDashboardById(dashboardid)
 	if err != nil {
@@ -2078,6 +2183,9 @@ func DeleteDashboardByResourceName(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteDashboardByResourceName(dashboardresourcename)
 	if err != nil {
 		return err
@@ -2101,6 +2209,9 @@ func DeleteDataset(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteDataset(datasetresourcename)
 	if err != nil {
 		return err
@@ -2123,6 +2234,9 @@ func DeleteDatasetById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteDatasetById(datasetid)
 	if err != nil {
@@ -2152,6 +2266,9 @@ func DeleteFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteFieldByIdForDataset(datasetresourcename, fieldid)
 	if err != nil {
 		return err
@@ -2180,6 +2297,9 @@ func DeleteFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteFieldByIdForDatasetById(datasetid, fieldid)
 	if err != nil {
 		return err
@@ -2202,6 +2322,9 @@ func DeleteRelationshipById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relationshipid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteRelationshipById(relationshipid)
 	if err != nil {
@@ -2226,6 +2349,9 @@ func DeleteRule(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteRule(ruleresourcename)
 	if err != nil {
 		return err
@@ -2248,6 +2374,9 @@ func DeleteRuleById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteRuleById(ruleid)
 	if err != nil {
@@ -2277,6 +2406,9 @@ func DeleteWorkflowBuildById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteWorkflowBuildById(workflowid, workflowbuildid)
 	if err != nil {
 		return err
@@ -2299,6 +2431,9 @@ func DeleteWorkflowById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.DeleteWorkflowById(workflowid)
 	if err != nil {
@@ -2333,6 +2468,9 @@ func DeleteWorkflowRunById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "workflowrunid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.DeleteWorkflowRunById(workflowid, workflowbuildid, workflowrunid)
 	if err != nil {
 		return err
@@ -2360,6 +2498,9 @@ func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetActionByIdForRule(ruleresourcename, actionid)
 	if err != nil {
@@ -2389,6 +2530,9 @@ func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetActionByIdForRuleById(ruleid, actionid)
 	if err != nil {
 		return err
@@ -2412,6 +2556,9 @@ func GetDashboardById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetDashboardById(dashboardid)
 	if err != nil {
 		return err
@@ -2434,6 +2581,9 @@ func GetDashboardByResourceName(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetDashboardByResourceName(dashboardresourcename)
 	if err != nil {
@@ -2467,6 +2617,9 @@ func GetDataset(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetDatasetQueryParams{}
 	generated_query.Maxstale = maxstale
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetDataset(datasetresourcename, &generated_query)
 	if err != nil {
 		return err
@@ -2499,6 +2652,9 @@ func GetDatasetById(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetDatasetByIdQueryParams{}
 	generated_query.Maxstale = maxstale
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetDatasetById(datasetid, &generated_query)
 	if err != nil {
 		return err
@@ -2521,6 +2677,9 @@ func GetFieldById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetFieldById(fieldid)
 	if err != nil {
@@ -2550,6 +2709,9 @@ func GetFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetFieldByIdForDataset(datasetresourcename, fieldid)
 	if err != nil {
 		return err
@@ -2578,6 +2740,9 @@ func GetFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetFieldByIdForDatasetById(datasetid, fieldid)
 	if err != nil {
 		return err
@@ -2600,6 +2765,9 @@ func GetRelationshipById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "relationshipid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetRelationshipById(relationshipid)
 	if err != nil {
@@ -2624,6 +2792,9 @@ func GetRule(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetRule(ruleresourcename)
 	if err != nil {
 		return err
@@ -2646,6 +2817,9 @@ func GetRuleById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetRuleById(ruleid)
 	if err != nil {
@@ -2675,6 +2849,9 @@ func GetWorkflowBuildById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.GetWorkflowBuildById(workflowid, workflowbuildid)
 	if err != nil {
 		return err
@@ -2697,6 +2874,9 @@ func GetWorkflowById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetWorkflowById(workflowid)
 	if err != nil {
@@ -2730,6 +2910,9 @@ func GetWorkflowRunById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "workflowrunid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.GetWorkflowRunById(workflowid, workflowbuildid, workflowrunid)
 	if err != nil {
@@ -2782,6 +2965,9 @@ func ListActionsForRule(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListActionsForRule(ruleresourcename, &generated_query)
 	if err != nil {
 		return err
@@ -2833,6 +3019,9 @@ func ListActionsForRuleById(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListActionsForRuleById(ruleid, &generated_query)
 	if err != nil {
 		return err
@@ -2879,6 +3068,9 @@ func ListAnnotations(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListAnnotations(&generated_query)
 	if err != nil {
 		return err
@@ -2910,6 +3102,9 @@ func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListAnnotationsForDashboardByIdQueryParams{}
 	generated_query.Filter = filter
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListAnnotationsForDashboardById(dashboardid, &generated_query)
 	if err != nil {
 		return err
@@ -2940,6 +3135,9 @@ func ListAnnotationsForDashboardByResourceName(cmd *cobra.Command, args []string
 	// Form query params
 	generated_query := model.ListAnnotationsForDashboardByResourceNameQueryParams{}
 	generated_query.Filter = filter
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListAnnotationsForDashboardByResourceName(dashboardresourcename, &generated_query)
 	if err != nil {
@@ -2992,6 +3190,9 @@ func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListAnnotationsForDatasetById(datasetid, &generated_query)
 	if err != nil {
 		return err
@@ -3043,6 +3244,9 @@ func ListAnnotationsForDatasetByResourceName(cmd *cobra.Command, args []string) 
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListAnnotationsForDatasetByResourceName(datasetresourcename, &generated_query)
 	if err != nil {
 		return err
@@ -3088,6 +3292,9 @@ func ListDashboards(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListDashboards(&generated_query)
 	if err != nil {
@@ -3142,6 +3349,9 @@ func ListDatasets(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListDatasets(&generated_query)
 	if err != nil {
 		return err
@@ -3187,6 +3397,9 @@ func ListFields(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListFields(&generated_query)
 	if err != nil {
@@ -3239,6 +3452,9 @@ func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListFieldsForDataset(datasetresourcename, &generated_query)
 	if err != nil {
 		return err
@@ -3290,6 +3506,9 @@ func ListFieldsForDatasetById(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListFieldsForDatasetById(datasetid, &generated_query)
 	if err != nil {
 		return err
@@ -3315,6 +3534,9 @@ func ListModules(cmd *cobra.Command, args []string) error {
 	// Form query params
 	generated_query := model.ListModulesQueryParams{}
 	generated_query.Filter = filter
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListModules(&generated_query)
 	if err != nil {
@@ -3362,6 +3584,9 @@ func ListRelationships(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListRelationships(&generated_query)
 	if err != nil {
 		return err
@@ -3407,6 +3632,9 @@ func ListRules(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListRules(&generated_query)
 	if err != nil {
@@ -3458,6 +3686,9 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListWorkflowBuilds(workflowid, &generated_query)
 	if err != nil {
@@ -3515,6 +3746,9 @@ func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.ListWorkflowRuns(workflowid, workflowbuildid, &generated_query)
 	if err != nil {
 		return err
@@ -3560,6 +3794,9 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.ListWorkflows(&generated_query)
 	if err != nil {
@@ -3628,6 +3865,9 @@ func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromAliasActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -3687,6 +3927,9 @@ func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) erro
 		Owner:   owner,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromAutoKvActionPatch(generated_request_body))
 	if err != nil {
@@ -3755,6 +3998,9 @@ func UpdateActionByIdForRuleByIdAliasAction(cmd *cobra.Command, args []string) e
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromAliasActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -3814,6 +4060,9 @@ func UpdateActionByIdForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) 
 		Owner:   owner,
 		Version: version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromAutoKvActionPatch(generated_request_body))
 	if err != nil {
@@ -3882,6 +4131,9 @@ func UpdateActionByIdForRuleByIdEvalAction(cmd *cobra.Command, args []string) er
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromEvalActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -3941,6 +4193,9 @@ func UpdateActionByIdForRuleByIdLookupAction(cmd *cobra.Command, args []string) 
 		Owner:      owner,
 		Version:    version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromLookupActionPatch(generated_request_body))
 	if err != nil {
@@ -4016,6 +4271,9 @@ func UpdateActionByIdForRuleByIdRegexAction(cmd *cobra.Command, args []string) e
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromRegexActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4083,6 +4341,9 @@ func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error 
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromEvalActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4142,6 +4403,9 @@ func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) erro
 		Owner:      owner,
 		Version:    version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromLookupActionPatch(generated_request_body))
 	if err != nil {
@@ -4217,6 +4481,9 @@ func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromRegexActionPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4278,6 +4545,9 @@ func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 		Name:       name,
 		Version:    version,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDashboardById(dashboardid, generated_request_body)
 	if err != nil {
@@ -4341,6 +4611,9 @@ func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
 		Version:    version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.UpdateDashboardByResourceName(dashboardresourcename, generated_request_body)
 	if err != nil {
 		return err
@@ -4388,6 +4661,9 @@ func UpdateDatasetByIdImportDataset(cmd *cobra.Command, args []string) error {
 		Name:   name,
 		Owner:  owner,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromImportDatasetPatch(generated_request_body))
 	if err != nil {
@@ -4458,6 +4734,9 @@ func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
 		Owner:                  owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4512,6 +4791,9 @@ func UpdateDatasetByIdKvCollectionDataset(cmd *cobra.Command, args []string) err
 		Name:   name,
 		Owner:  owner,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
 	if err != nil {
@@ -4596,6 +4878,9 @@ func UpdateDatasetByIdLookupDataset(cmd *cobra.Command, args []string) error {
 		Owner:              owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4665,6 +4950,9 @@ func UpdateDatasetByIdMetricDataset(cmd *cobra.Command, args []string) error {
 		Owner:                  owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4727,6 +5015,9 @@ func UpdateDatasetByIdViewDataset(cmd *cobra.Command, args []string) error {
 		Search: search,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromViewDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4774,6 +5065,9 @@ func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 		Name:   name,
 		Owner:  owner,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromImportDatasetPatch(generated_request_body))
 	if err != nil {
@@ -4844,6 +5138,9 @@ func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 		Owner:                  owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -4898,6 +5195,9 @@ func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 		Name:   name,
 		Owner:  owner,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
 	if err != nil {
@@ -4982,6 +5282,9 @@ func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 		Owner:              owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -5051,6 +5354,9 @@ func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 		Owner:                  owner,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
@@ -5112,6 +5418,9 @@ func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 		Owner:  owner,
 		Search: search,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromViewDatasetPatch(generated_request_body))
 	if err != nil {
@@ -5201,6 +5510,9 @@ func UpdateFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 		Title:       title,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateFieldByIdForDataset(datasetresourcename, fieldid, generated_request_body)
 	if err != nil {
 		return err
@@ -5289,6 +5601,9 @@ func UpdateFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
 		Title:       title,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateFieldByIdForDatasetById(datasetid, fieldid, generated_request_body)
 	if err != nil {
 		return err
@@ -5329,6 +5644,9 @@ func UpdateRelationshipById(cmd *cobra.Command, args []string) error {
 		Name:  name,
 		Owner: owner,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.UpdateRelationshipById(relationshipid, generated_request_body)
 	if err != nil {
@@ -5392,6 +5710,9 @@ func UpdateRule(cmd *cobra.Command, args []string) error {
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateRule(ruleresourcename, generated_request_body)
 	if err != nil {
 		return err
@@ -5454,6 +5775,9 @@ func UpdateRuleById(cmd *cobra.Command, args []string) error {
 		Version: version,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CatalogService.UpdateRuleById(ruleid, generated_request_body)
 	if err != nil {
 		return err
@@ -5507,6 +5831,9 @@ func UpdateWorkflowBuildById(cmd *cobra.Command, args []string) error {
 		Status:      status,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CatalogService.UpdateWorkflowBuildById(workflowid, workflowbuildid, generated_request_body)
 	if err != nil {
 		return err
@@ -5547,6 +5874,9 @@ func UpdateWorkflowById(cmd *cobra.Command, args []string) error {
 		Description: description,
 		Name:        name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.UpdateWorkflowById(workflowid, generated_request_body)
 	if err != nil {
@@ -5605,6 +5935,9 @@ func UpdateWorkflowRunById(cmd *cobra.Command, args []string) error {
 		Name:        name,
 		Status:      status,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CatalogService.UpdateWorkflowRunById(workflowid, workflowbuildid, workflowrunid, generated_request_body)
 	if err != nil {

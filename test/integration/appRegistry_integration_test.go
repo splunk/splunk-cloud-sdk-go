@@ -39,9 +39,8 @@ func TestCRUDApp(t *testing.T) {
 	appName := fmt.Sprintf("g.c%d", testutils.RunSuffix)
 
 	// Create app
-
-	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
-		Kind:  appregistry.AppResourceKindWeb,
+	app := appregistry.MakeCreateAppRequestFromNativeAppPost(appregistry.NativeAppPost{
+		Kind:  appregistry.AppResourceKindNative,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
 
@@ -64,11 +63,12 @@ func TestCRUDApp(t *testing.T) {
 
 	// Get the app
 	app_ret, err := client.AppRegistryService.GetApp(appName)
+
 	require.NoError(t, err)
-	require.Equal(t, app.WebAppPost().Name, app_ret.WebApp().Name)
-	require.Equal(t, app.WebAppPost().Title, app_ret.WebApp().Title)
-	require.Equal(t, app.WebAppPost().RedirectUrls, app_ret.WebApp().RedirectUrls)
-	require.Equal(t, string(app.WebAppPost().Kind), string(app_ret.WebApp().Kind))
+	require.Equal(t, app.NativeAppPost().Name, app_ret.NativeApp().Name)
+	require.Equal(t, app.NativeAppPost().Title, app_ret.NativeApp().Title)
+	require.Equal(t, app.NativeAppPost().RedirectUrls, app_ret.NativeApp().RedirectUrls)
+	require.Equal(t, string(app.NativeAppPost().Kind), string(app_ret.NativeApp().Kind))
 
 	// Update the app. TODO: title and redirecturl should not needed once patch method is implemented.
 	description := "new Description"
@@ -81,10 +81,10 @@ func TestCRUDApp(t *testing.T) {
 	}
 	app_update_ret, err := client.AppRegistryService.UpdateApp(appName, updateApp)
 	require.NoError(t, err)
-	require.Equal(t, app.WebAppPost().Name, app_update_ret.WebApp().Name)
-	require.Equal(t, title, app_update_ret.WebApp().Title)
-	require.Equal(t, description, *app_update_ret.WebApp().Description)
-	require.Equal(t, string(app.WebAppPost().Kind), string(app_update_ret.WebApp().Kind))
+	require.Equal(t, app.NativeAppPost().Name, app_update_ret.NativeApp().Name)
+	require.Equal(t, title, app_update_ret.NativeApp().Title)
+	require.Equal(t, description, *app_update_ret.NativeApp().Description)
+	require.Equal(t, string(app.NativeAppPost().Kind), string(app_update_ret.NativeApp().Kind))
 
 	// Delete the app
 	err = client.AppRegistryService.DeleteApp(appName)
@@ -97,8 +97,8 @@ func TestAppRotateSecret(t *testing.T) {
 	appName := fmt.Sprintf("g.r%d", testutils.RunSuffix)
 
 	// Create app
-	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
-		Kind:  appregistry.AppResourceKindWeb,
+	app := appregistry.MakeCreateAppRequestFromNativeAppPost(appregistry.NativeAppPost{
+		Kind:  appregistry.AppResourceKindNative,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
 
@@ -114,7 +114,7 @@ func TestAppRotateSecret(t *testing.T) {
 	// rotate secret
 	app_ret, err := client.AppRegistryService.RotateSecret(appName)
 	require.NoError(t, err)
-	require.NotEmpty(t, app_created.WebApp().ClientId, app_ret.WebApp().ClientSecret)
+	require.NotEmpty(t, app_created.NativeApp().ClientId, app_ret.NativeApp().ClientId)
 }
 
 // Test Create/Get/List/Delete subscriptions and get apps/subscriptions in app-registry service
@@ -123,8 +123,8 @@ func TestSubscriptions(t *testing.T) {
 	appName := fmt.Sprintf("g.s1%d", testutils.RunSuffix)
 
 	// Create app
-	app := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
-		Kind:  appregistry.AppResourceKindWeb,
+	app := appregistry.MakeCreateAppRequestFromNativeAppPost(appregistry.NativeAppPost{
+		Kind:  appregistry.AppResourceKindNative,
 		Name:  appName,
 		Title: newAppTitle("testtitle"),
 
@@ -163,8 +163,8 @@ func TestSubscriptions(t *testing.T) {
 	appName2 := fmt.Sprintf("g.s2%d", testutils.RunSuffix)
 	perms := []string{"*:action.*"}
 	permFilter := []string{"*:*.*"}
-	app2 := appregistry.MakeCreateAppRequestFromWebAppPost(appregistry.WebAppPost{
-		Kind:                    appregistry.AppResourceKindService,
+	app2 := appregistry.MakeCreateAppRequestFromNativeAppPost(appregistry.NativeAppPost{
+		Kind:                    appregistry.AppResourceKindNative,
 		Name:                    appName2,
 		Title:                   newAppTitle("testtitle-2"),
 		AppPrincipalPermissions: perms,

@@ -21,6 +21,9 @@ func DeleteAllCollectorTokens(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IngestService.DeleteAllCollectorTokens()
 	if err != nil {
 		return err
@@ -44,6 +47,9 @@ func DeleteCollectorToken(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "token-name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IngestService.DeleteCollectorToken(tokenName)
 	if err != nil {
 		return err
@@ -66,6 +72,9 @@ func GetCollectorToken(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "token-name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IngestService.GetCollectorToken(tokenName)
 	if err != nil {
@@ -100,6 +109,9 @@ func ListCollectorTokens(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListCollectorTokensQueryParams{}
 	generated_query.Limit = limit
 	generated_query.Offset = offset
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IngestService.ListCollectorTokens(&generated_query)
 	if err != nil {
@@ -156,6 +168,9 @@ func PostCollectorTokens(cmd *cobra.Command, args []string) error {
 		Source:      source,
 		Sourcetype:  sourcetype,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IngestService.PostCollectorTokens(generated_request_body)
 	if err != nil {
@@ -231,6 +246,9 @@ func PostEvents(cmd *cobra.Command, args []string) error {
 			Timestamp:  timestamp,
 		},
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := PostEventsOverride(generated_request_body, format)
 	if err != nil {
@@ -318,6 +336,9 @@ func PostMetrics(cmd *cobra.Command, args []string) error {
 		},
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := PostMetricsOverride(generated_request_body)
 	if err != nil {
 		return err
@@ -373,6 +394,9 @@ func PutCollectorToken(cmd *cobra.Command, args []string) error {
 		Sourcetype:  sourcetype,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IngestService.PutCollectorToken(tokenName, generated_request_body)
 	if err != nil {
 		return err
@@ -393,6 +417,9 @@ func UploadFiles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "file-name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := UploadFilesOverride(fileName)
 	if err != nil {

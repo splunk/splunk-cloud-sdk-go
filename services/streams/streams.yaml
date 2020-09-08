@@ -412,6 +412,17 @@ components:
           properties: {}
           type: object
       type: object
+    PaginatedResponseOfCollectJobResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CollectJobResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
     PaginatedResponseOfConnectionResponse:
       description: ""
       properties:
@@ -462,6 +473,17 @@ components:
         items:
           items:
             $ref: '#/components/schemas/Plugin'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
+    PaginatedResponseOfRulesResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RulesResponse'
           type: array
         total:
           format: int64
@@ -893,6 +915,106 @@ components:
         name:
           type: string
       type: object
+    RulesActionsResponse:
+      description: ""
+      properties:
+        arguments:
+          properties: {}
+          type: object
+        kind:
+          type: string
+      type: object
+    RulesRequest:
+      description: ""
+      properties:
+        arguments:
+          description: The arguments for the rules
+          example: ""
+          properties: {}
+          type: object
+        description:
+          type: string
+        externalId:
+          description: Unique id of the rules package
+          example: ""
+          type: string
+        kind:
+          description: Rules kind
+          example: ""
+          type: string
+        name:
+          description: The name of the rules
+          example: ""
+          type: string
+        rulesDescription:
+          description: The description of the rules. Defaults to null.
+          example: ""
+          type: string
+        sourcetype:
+          description: The sourcetype that the rules has to be applied
+          example: ""
+          type: string
+        sourcetypeDefinition:
+          description: Sourcetype definition
+          example: ""
+          type: string
+        sourcetypeDescription:
+          description: Sourcetype description
+          example: ""
+          type: string
+        version:
+          description: The version of the rules
+          example: ""
+          type: string
+      required:
+      - arguments
+      - externalId
+      - kind
+      - name
+      - sourcetype
+      - sourcetypeDefinition
+      - version
+      type: object
+    RulesResponse:
+      description: ""
+      properties:
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        description:
+          type: string
+        externalId:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        name:
+          type: string
+        sourcetypes:
+          additionalProperties:
+            $ref: '#/components/schemas/RulesSourcetypesResponse'
+          type: object
+        tenantId:
+          type: string
+        version:
+          type: string
+      type: object
+    RulesSourcetypesResponse:
+      description: ""
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/RulesActionsResponse'
+          type: array
+        definition:
+          type: string
+        description:
+          type: string
+      type: object
     SplCompileRequest:
       description: ""
       properties:
@@ -1038,6 +1160,76 @@ info:
 openapi: 3.0.1
 paths:
   /{tenantId}/streams/v3beta1/collect-jobs:
+    get:
+      deprecated: false
+      operationId: listCollectJobs
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfCollectJobResponse'
+          description: Returns a list of collect jobs.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get all collect jobs.
+      tags:
+      - collectJobs
+      x-authz-scope: streams.collectjobs.read
+      x-internal: "true"
     post:
       deprecated: false
       operationId: createCollectJob
@@ -1217,12 +1409,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/CollectJobResponse'
           description: Returns the collect job for the specified id.
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CollectJobResponse'
-          description: Created
         "400":
           content:
             application/json:
@@ -4097,6 +4283,241 @@ paths:
       tags:
       - preview
       x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v3beta1/rules:
+    get:
+      deprecated: false
+      operationId: listRulesPackages
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfRulesResponse'
+          description: Returns a list of rules packages.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns all rules packages.
+      tags:
+      - rules
+      x-authz-scope: streams.rules.read
+      x-internal: "true"
+    post:
+      deprecated: false
+      operationId: createRulesPackage
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RulesRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulesResponse'
+          description: The rules package was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Creates a new RulesPackage
+      tags:
+      - rules
+      x-authz-scope: streams.rules.create
+      x-internal: "true"
+  /{tenantId}/streams/v3beta1/rules/{externalId}:
+    get:
+      deprecated: false
+      operationId: getRulesPackage
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: RulesPackage ID
+        in: path
+        name: externalId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulesResponse'
+          description: Returns the rules packages with the specified id.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your pipeline.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns the rules package with specific id
+      tags:
+      - rules
+      x-authz-scope: streams.rules.read
+      x-internal: "true"
   /{tenantId}/streams/v3beta1/templates:
     get:
       deprecated: false
@@ -5067,9 +5488,11 @@ tags:
   name: lookup
 - description: Services Endpoint
   name: apiv-3-beta-1-admin-controller
+- description: V3Beta1 Rules API Endpoints
+  name: rules
 - description: V3Beta1 Pipeline API Endpoints
   name: pipelines
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: streams/v3beta1/openapi.yaml

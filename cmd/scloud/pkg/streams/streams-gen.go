@@ -53,6 +53,9 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 		SkipRestoreState:      skipRestoreState,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.ActivatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
@@ -79,6 +82,9 @@ func Compile(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "validate": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := CompileOverride(validate, inputDatafile)
 	if err != nil {
@@ -132,6 +138,9 @@ func CreateCollectJob(cmd *cobra.Command, args []string) error {
 		Parameters:   parameters,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.CreateCollectJob(generated_request_body)
 	if err != nil {
 		return err
@@ -178,6 +187,9 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.CreateConnection(generated_request_body)
 	if err != nil {
 		return err
@@ -216,7 +228,98 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := CreatePipelineOverride(bypassValidation, description, name, inputDatafile)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// CreateRulesPackage Creates a new RulesPackage
+func CreateRulesPackage(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var arguments map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
+	if err != nil {
+		return fmt.Errorf(`error parsing "arguments": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var externalId string
+	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
+	}
+	var kind string
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var rulesDescriptionDefault string
+	rulesDescription := &rulesDescriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "rules-description", &rulesDescription)
+	if err != nil {
+		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
+	}
+	var sourcetype string
+	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
+	}
+	var sourcetypeDefinition string
+	err = flags.ParseFlag(cmd.Flags(), "sourcetype-definition", &sourcetypeDefinition)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetype-definition": ` + err.Error())
+	}
+	var sourcetypeDescriptionDefault string
+	sourcetypeDescription := &sourcetypeDescriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "sourcetype-description", &sourcetypeDescription)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetype-description": ` + err.Error())
+	}
+	var version string
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.RulesRequest{
+
+		Arguments:             arguments,
+		Description:           description,
+		ExternalId:            externalId,
+		Kind:                  kind,
+		Name:                  name,
+		RulesDescription:      rulesDescription,
+		Sourcetype:            sourcetype,
+		SourcetypeDefinition:  sourcetypeDefinition,
+		SourcetypeDescription: sourcetypeDescription,
+		Version:               version,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.CreateRulesPackage(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -246,6 +349,9 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := CreateTemplateOverride(description, name, inputDatafile)
 	if err != nil {
@@ -281,6 +387,9 @@ func DeactivatePipeline(cmd *cobra.Command, args []string) error {
 		SkipSavepoint: skipSavepoint,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.DeactivatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
@@ -309,6 +418,9 @@ func Decompile(cmd *cobra.Command, args []string) error {
 		Upl: upl,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.Decompile(generated_request_body)
 	if err != nil {
 		return err
@@ -331,6 +443,9 @@ func DeleteCollectJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.StreamsService.DeleteCollectJob(id)
 	if err != nil {
@@ -355,6 +470,9 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.StreamsService.DeleteConnection(connectionId)
 	if err != nil {
 		return err
@@ -378,6 +496,9 @@ func DeleteFile(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.StreamsService.DeleteFile(fileId)
 	if err != nil {
 		return err
@@ -400,6 +521,9 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.StreamsService.DeletePipeline(id)
 	if err != nil {
@@ -425,6 +549,9 @@ func DeletePlugin(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.DeletePlugin(pluginId)
 	if err != nil {
 		return err
@@ -447,6 +574,9 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.StreamsService.DeleteTemplate(templateId)
 	if err != nil {
@@ -479,6 +609,9 @@ func GetCollectJob(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetCollectJobQueryParams{}
 	generated_query.Version = version
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetCollectJob(id, &generated_query)
 	if err != nil {
 		return err
@@ -502,6 +635,9 @@ func GetFileMetadata(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetFileMetadata(fileId)
 	if err != nil {
 		return err
@@ -517,6 +653,9 @@ func GetFilesMetadata(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetFilesMetadata()
 	if err != nil {
@@ -548,6 +687,9 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "target-port-name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := GetInputSchemaOverride(nodeUuid, targetPortName, inputDatafile)
 	if err != nil {
@@ -588,6 +730,9 @@ func GetLookupTable(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Size = size
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetLookupTable(connectionId, &generated_query)
 	if err != nil {
 		return err
@@ -621,6 +766,9 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "source-port-name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := GetOutputSchemaOverride(nodeUuid, sourcePortName, inputDatafile)
 	if err != nil {
 		return err
@@ -652,6 +800,9 @@ func GetPipeline(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetPipelineQueryParams{}
 	generated_query.Version = version
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetPipeline(id, &generated_query)
 	if err != nil {
 		return err
@@ -674,6 +825,9 @@ func GetPipelineLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetPipelineLatestMetrics(id)
 	if err != nil {
@@ -740,6 +894,9 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 	generated_query.SortDir = sortDir
 	generated_query.SortField = sortField
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetPipelinesStatus(&generated_query)
 	if err != nil {
 		return err
@@ -787,6 +944,9 @@ func GetPlugins(cmd *cobra.Command, args []string) error {
 	generated_query.SortDir = sortDir
 	generated_query.SortField = sortField
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetPlugins(&generated_query)
 	if err != nil {
 		return err
@@ -809,6 +969,9 @@ func GetPreviewData(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetPreviewData(previewSessionId)
 	if err != nil {
@@ -833,6 +996,9 @@ func GetPreviewSession(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetPreviewSession(previewSessionId)
 	if err != nil {
 		return err
@@ -855,6 +1021,9 @@ func GetPreviewSessionLatestMetrics(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetPreviewSessionLatestMetrics(previewSessionId)
 	if err != nil {
@@ -883,7 +1052,36 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetRegistryQueryParams{}
 	generated_query.Local = local
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetRegistry(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetRulesPackage Returns the rules package with specific id
+func GetRulesPackage(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var externalId string
+	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.GetRulesPackage(externalId)
 	if err != nil {
 		return err
 	}
@@ -915,7 +1113,29 @@ func GetTemplate(cmd *cobra.Command, args []string) error {
 	generated_query := model.GetTemplateQueryParams{}
 	generated_query.Version = version
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.GetTemplate(templateId, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListCollectJobs Get all collect jobs.
+func ListCollectJobs(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ListCollectJobs()
 	if err != nil {
 		return err
 	}
@@ -991,6 +1211,9 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	generated_query.SortDir = sortDir
 	generated_query.SortField = sortField
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.ListConnections(&generated_query)
 	if err != nil {
 		return err
@@ -1006,6 +1229,9 @@ func ListConnectors(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.ListConnectors()
 	if err != nil {
@@ -1079,7 +1305,45 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	generated_query.SortDir = sortDir
 	generated_query.SortField = sortField
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.ListPipelines(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListRulesPackages Returns all rules packages.
+func ListRulesPackages(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var sortDir string
+	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
+	}
+	var sortField string
+	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListRulesPackagesQueryParams{}
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ListRulesPackages(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1124,6 +1388,9 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	generated_query.PageSize = pageSize
 	generated_query.SortDir = sortDir
 	generated_query.SortField = sortField
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.ListTemplates(&generated_query)
 	if err != nil {
@@ -1175,6 +1442,9 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := PatchPipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
 	if err != nil {
 		return err
@@ -1216,6 +1486,9 @@ func PatchPlugin(cmd *cobra.Command, args []string) error {
 		Description: description,
 		Name:        name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.PatchPlugin(pluginId, generated_request_body)
 	if err != nil {
@@ -1261,6 +1534,9 @@ func PutConnection(cmd *cobra.Command, args []string) error {
 		Description: description,
 		Name:        name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.PutConnection(connectionId, generated_request_body)
 	if err != nil {
@@ -1308,6 +1584,9 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 		SkipRestoreState:      skipRestoreState,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.ReactivatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
@@ -1343,6 +1622,9 @@ func RegisterPlugin(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.RegisterPlugin(generated_request_body)
 	if err != nil {
 		return err
@@ -1365,6 +1647,9 @@ func StartCollectJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.StartCollectJob(id)
 	if err != nil {
@@ -1405,6 +1690,9 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "session-lifetime-ms": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := StartPreviewOverride(recordsLimit, recordsPerPipeline, sessionLifetimeMs, inputDatafile)
 	if err != nil {
 		return err
@@ -1428,6 +1716,9 @@ func StopCollectJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.StopCollectJob(id)
 	if err != nil {
 		return err
@@ -1450,6 +1741,9 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "preview-session-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.StreamsService.StopPreview(previewSessionId)
 	if err != nil {
@@ -1498,6 +1792,9 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.UpdateConnection(connectionId, generated_request_body)
 	if err != nil {
 		return err
@@ -1541,6 +1838,9 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := UpdatePipelineOverride(id, bypassValidation, description, name, inputDatafile)
 	if err != nil {
 		return err
@@ -1581,6 +1881,9 @@ func UpdatePlugin(cmd *cobra.Command, args []string) error {
 		Name:        name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.StreamsService.UpdatePlugin(pluginId, generated_request_body)
 	if err != nil {
 		return err
@@ -1619,6 +1922,9 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := UpdateTemplateOverride(templateId, description, name, inputDatafile)
 	if err != nil {
 		return err
@@ -1639,6 +1945,9 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "file-name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := UploadFileOverride(fileName)
 	if err != nil {
@@ -1665,6 +1974,9 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := ValidatePipelineOverride(inputDatafile)
 	if err != nil {

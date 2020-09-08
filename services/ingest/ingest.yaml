@@ -1014,4 +1014,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: ingest/v1beta2/openapi.yaml

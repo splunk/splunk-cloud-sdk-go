@@ -44,6 +44,9 @@ func CreateIndex(cmd *cobra.Command, args []string) error {
 		Name:   name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.KVStoreService.CreateIndex(collection, generated_request_body)
 	if err != nil {
 		return err
@@ -72,6 +75,9 @@ func DeleteIndex(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "index": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.KVStoreService.DeleteIndex(collection, index)
 	if err != nil {
 		return err
@@ -99,6 +105,9 @@ func DeleteRecordByKey(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "key": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.KVStoreService.DeleteRecordByKey(collection, key)
 	if err != nil {
@@ -131,6 +140,9 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 	generated_query := model.DeleteRecordsQueryParams{}
 	generated_query.Query = query
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.KVStoreService.DeleteRecords(collection, &generated_query)
 	if err != nil {
 		return err
@@ -159,6 +171,9 @@ func GetRecordByKey(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "key": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.KVStoreService.GetRecordByKey(collection, key)
 	if err != nil {
 		return err
@@ -186,6 +201,9 @@ func InsertRecord(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "collection": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.KVStoreService.InsertRecord(collection, body)
 	if err != nil {
@@ -224,6 +242,9 @@ func InsertRecords(cmd *cobra.Command, args []string) error {
 	generated_query := model.InsertRecordsQueryParams{}
 	generated_query.AllowUpdates = allow_updates
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.KVStoreService.InsertRecords(collection, body, &generated_query)
 	if err != nil {
 		return err
@@ -246,6 +267,9 @@ func ListIndexes(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "collection": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.KVStoreService.ListIndexes(collection)
 	if err != nil {
@@ -304,6 +328,9 @@ func ListRecords(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.KVStoreService.ListRecords(collection, &generated_query)
 	if err != nil {
 		return err
@@ -319,6 +346,9 @@ func Ping(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.KVStoreService.Ping()
 	if err != nil {
@@ -352,6 +382,9 @@ func PutRecord(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "key": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.KVStoreService.PutRecord(collection, key, body)
 	if err != nil {
@@ -409,6 +442,9 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 	generated_query.Query = query
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.KVStoreService.QueryRecords(collection, &generated_query)
 	if err != nil {

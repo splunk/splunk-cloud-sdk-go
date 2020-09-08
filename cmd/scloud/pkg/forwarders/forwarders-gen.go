@@ -25,6 +25,9 @@ func AddCertificate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := AddCertificateOverride(inputDatafile)
 	if err != nil {
 		return err
@@ -48,6 +51,9 @@ func DeleteCertificate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "slot": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.ForwardersService.DeleteCertificate(slot)
 	if err != nil {
 		return err
@@ -64,6 +70,9 @@ func DeleteCertificates(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.ForwardersService.DeleteCertificates()
 	if err != nil {
 		return err
@@ -79,6 +88,9 @@ func ListCertificates(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ForwardersService.ListCertificates()
 	if err != nil {

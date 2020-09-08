@@ -210,6 +210,11 @@ type NodeMetrics struct {
 	Metrics map[string]interface{} `json:"metrics,omitempty"`
 }
 
+type PaginatedResponseOfCollectJobResponse struct {
+	Items []CollectJobResponse `json:"items,omitempty"`
+	Total *int64               `json:"total,omitempty"`
+}
+
 type PaginatedResponseOfConnectionResponse struct {
 	Items []ConnectionResponse `json:"items,omitempty"`
 	Total *int64               `json:"total,omitempty"`
@@ -233,6 +238,11 @@ type PaginatedResponseOfPipelineResponse struct {
 type PaginatedResponseOfPlugin struct {
 	Items []Plugin `json:"items,omitempty"`
 	Total *int64   `json:"total,omitempty"`
+}
+
+type PaginatedResponseOfRulesResponse struct {
+	Items []RulesResponse `json:"items,omitempty"`
+	Total *int64          `json:"total,omitempty"`
 }
 
 type PaginatedResponseOfTemplateResponse struct {
@@ -441,6 +451,52 @@ type RuleMetrics struct {
 	MatchCount      *int64  `json:"matchCount,omitempty"`
 	MatchPercentage *int64  `json:"matchPercentage,omitempty"`
 	Name            *string `json:"name,omitempty"`
+}
+
+type RulesActionsResponse struct {
+	Arguments map[string]interface{} `json:"arguments,omitempty"`
+	Kind      *string                `json:"kind,omitempty"`
+}
+
+type RulesRequest struct {
+	// The arguments for the rules
+	Arguments map[string]interface{} `json:"arguments"`
+	// Unique id of the rules package
+	ExternalId string `json:"externalId"`
+	// Rules kind
+	Kind string `json:"kind"`
+	// The name of the rules
+	Name string `json:"name"`
+	// The sourcetype that the rules has to be applied
+	Sourcetype string `json:"sourcetype"`
+	// Sourcetype definition
+	SourcetypeDefinition string `json:"sourcetypeDefinition"`
+	// The version of the rules
+	Version     string  `json:"version"`
+	Description *string `json:"description,omitempty"`
+	// The description of the rules. Defaults to null.
+	RulesDescription *string `json:"rulesDescription,omitempty"`
+	// Sourcetype description
+	SourcetypeDescription *string `json:"sourcetypeDescription,omitempty"`
+}
+
+type RulesResponse struct {
+	CreateDate       *int64                              `json:"createDate,omitempty"`
+	CreateUserId     *string                             `json:"createUserId,omitempty"`
+	Description      *string                             `json:"description,omitempty"`
+	ExternalId       *string                             `json:"externalId,omitempty"`
+	LastUpdateDate   *int64                              `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserId *string                             `json:"lastUpdateUserId,omitempty"`
+	Name             *string                             `json:"name,omitempty"`
+	Sourcetypes      map[string]RulesSourcetypesResponse `json:"sourcetypes,omitempty"`
+	TenantId         *string                             `json:"tenantId,omitempty"`
+	Version          *string                             `json:"version,omitempty"`
+}
+
+type RulesSourcetypesResponse struct {
+	Actions     []RulesActionsResponse `json:"actions,omitempty"`
+	Definition  *string                `json:"definition,omitempty"`
+	Description *string                `json:"description,omitempty"`
 }
 
 type SplCompileRequest struct {

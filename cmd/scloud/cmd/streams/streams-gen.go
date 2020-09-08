@@ -43,6 +43,13 @@ var createPipelineCmd = &cobra.Command{
 	RunE:  impl.CreatePipeline,
 }
 
+// createRulesPackage -- Creates a new RulesPackage
+var createRulesPackageCmd = &cobra.Command{
+	Use:   "create-rules-package",
+	Short: "Creates a new RulesPackage",
+	RunE:  impl.CreateRulesPackage,
+}
+
 // createTemplate -- Creates a template for a tenant.
 var createTemplateCmd = &cobra.Command{
 	Use:   "create-template",
@@ -204,11 +211,25 @@ var getRegistryCmd = &cobra.Command{
 	RunE:  impl.GetRegistry,
 }
 
+// getRulesPackage -- Returns the rules package with specific id
+var getRulesPackageCmd = &cobra.Command{
+	Use:   "get-rules-package",
+	Short: "Returns the rules package with specific id",
+	RunE:  impl.GetRulesPackage,
+}
+
 // getTemplate -- Returns an individual template by version.
 var getTemplateCmd = &cobra.Command{
 	Use:   "get-template",
 	Short: "Returns an individual template by version.",
 	RunE:  impl.GetTemplate,
+}
+
+// listCollectJobs -- Get all collect jobs.
+var listCollectJobsCmd = &cobra.Command{
+	Use:   "list-collect-jobs",
+	Short: "Get all collect jobs.",
+	RunE:  impl.ListCollectJobs,
 }
 
 // listConnections -- Returns a list of connections (latest versions only) by tenant ID.
@@ -230,6 +251,13 @@ var listPipelinesCmd = &cobra.Command{
 	Use:   "list-pipelines",
 	Short: "Returns all pipelines.",
 	RunE:  impl.ListPipelines,
+}
+
+// listRulesPackages -- Returns all rules packages.
+var listRulesPackagesCmd = &cobra.Command{
+	Use:   "list-rules-packages",
+	Short: "Returns all rules packages.",
+	RunE:  impl.ListRulesPackages,
 }
 
 // listTemplates -- Returns a list of all templates.
@@ -437,6 +465,45 @@ func init() {
 	var createPipelineInputDatafile string
 	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
+	streamsCmd.AddCommand(createRulesPackageCmd)
+
+	var createRulesPackageArguments string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageArguments, "arguments", "", "This is a required parameter. The arguments for the rules")
+	createRulesPackageCmd.MarkFlagRequired("arguments")
+
+	var createRulesPackageExternalId string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageExternalId, "external-id", "", "This is a required parameter. Unique id of the rules package")
+	createRulesPackageCmd.MarkFlagRequired("external-id")
+
+	var createRulesPackageKind string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageKind, "kind", "", "This is a required parameter. Rules kind")
+	createRulesPackageCmd.MarkFlagRequired("kind")
+
+	var createRulesPackageName string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageName, "name", "", "This is a required parameter. The name of the rules")
+	createRulesPackageCmd.MarkFlagRequired("name")
+
+	var createRulesPackageSourcetype string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetype, "sourcetype", "", "This is a required parameter. The sourcetype that the rules has to be applied")
+	createRulesPackageCmd.MarkFlagRequired("sourcetype")
+
+	var createRulesPackageSourcetypeDefinition string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetypeDefinition, "sourcetype-definition", "", "This is a required parameter. Sourcetype definition")
+	createRulesPackageCmd.MarkFlagRequired("sourcetype-definition")
+
+	var createRulesPackageVersion string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageVersion, "version", "", "This is a required parameter. The version of the rules")
+	createRulesPackageCmd.MarkFlagRequired("version")
+
+	var createRulesPackageDescription string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageDescription, "description", "", "")
+
+	var createRulesPackageRulesDescription string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageRulesDescription, "rules-description", "", "The description of the rules. Defaults to null.")
+
+	var createRulesPackageSourcetypeDescription string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetypeDescription, "sourcetype-description", "", "Sourcetype description")
+
 	streamsCmd.AddCommand(createTemplateCmd)
 
 	var createTemplateDescription string
@@ -631,6 +698,12 @@ func init() {
 	var getRegistryLocal string
 	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "true", "local")
 
+	streamsCmd.AddCommand(getRulesPackageCmd)
+
+	var getRulesPackageExternalId string
+	getRulesPackageCmd.Flags().StringVar(&getRulesPackageExternalId, "external-id", "", "This is a required parameter. RulesPackage ID")
+	getRulesPackageCmd.MarkFlagRequired("external-id")
+
 	streamsCmd.AddCommand(getTemplateCmd)
 
 	var getTemplateTemplateId string
@@ -639,6 +712,8 @@ func init() {
 
 	var getTemplateVersion int64
 	getTemplateCmd.Flags().Int64Var(&getTemplateVersion, "version", 0, "Template version")
+
+	streamsCmd.AddCommand(listCollectJobsCmd)
 
 	streamsCmd.AddCommand(listConnectionsCmd)
 
@@ -696,6 +771,14 @@ func init() {
 
 	var listPipelinesSortField string
 	listPipelinesCmd.Flags().StringVar(&listPipelinesSortField, "sort-field", "", "sortField")
+
+	streamsCmd.AddCommand(listRulesPackagesCmd)
+
+	var listRulesPackagesSortDir string
+	listRulesPackagesCmd.Flags().StringVar(&listRulesPackagesSortDir, "sort-dir", "", "sortDir")
+
+	var listRulesPackagesSortField string
+	listRulesPackagesCmd.Flags().StringVar(&listRulesPackagesSortField, "sort-field", "", "sortField")
 
 	streamsCmd.AddCommand(listTemplatesCmd)
 
