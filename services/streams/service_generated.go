@@ -190,6 +190,34 @@ func (s *Service) CreatePipeline(pipelineRequest PipelineRequest, resp ...*http.
 }
 
 /*
+	CreateRulesPackage - Creates a new RulesPackage
+	Parameters:
+		rulesRequest: Request JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateRulesPackage(rulesRequest RulesRequest, resp ...*http.Response) (*RulesResponse, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/rules`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: rulesRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb RulesResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	CreateTemplate - Creates a template for a tenant.
 	Parameters:
 		templateRequest: Request JSON
@@ -893,6 +921,39 @@ func (s *Service) GetRegistry(query *GetRegistryQueryParams, resp ...*http.Respo
 }
 
 /*
+	GetRulesPackage - Returns the rules package with specific id
+	Parameters:
+		externalId: RulesPackage ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetRulesPackage(externalId string, resp ...*http.Response) (*RulesResponse, error) {
+	pp := struct {
+		ExternalId string
+	}{
+		ExternalId: externalId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/rules/{{.ExternalId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb RulesResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	GetTemplate - Returns an individual template by version.
 	Parameters:
 		templateId: Template ID
@@ -923,6 +984,33 @@ func (s *Service) GetTemplate(templateId string, query *GetTemplateQueryParams, 
 		return nil, err
 	}
 	var rb TemplateResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	ListCollectJobs - Get all collect jobs.
+	Parameters:
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListCollectJobs(resp ...*http.Response) (*PaginatedResponseOfCollectJobResponse, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/collect-jobs`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PaginatedResponseOfCollectJobResponse
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -1008,6 +1096,35 @@ func (s *Service) ListPipelines(query *ListPipelinesQueryParams, resp ...*http.R
 		return nil, err
 	}
 	var rb PaginatedResponseOfPipelineResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	ListRulesPackages - Returns all rules packages.
+	Parameters:
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListRulesPackages(query *ListRulesPackagesQueryParams, resp ...*http.Response) (*PaginatedResponseOfRulesResponse, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/streams/v3beta1/rules`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PaginatedResponseOfRulesResponse
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

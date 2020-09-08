@@ -38,6 +38,9 @@ func AddGroupMember(cmd *cobra.Command, args []string) error {
 		Name: name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.AddGroupMember(group, generated_request_body)
 	if err != nil {
 		return err
@@ -71,6 +74,9 @@ func AddGroupRole(cmd *cobra.Command, args []string) error {
 		Name: name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.AddGroupRole(group, generated_request_body)
 	if err != nil {
 		return err
@@ -98,6 +104,9 @@ func AddMember(cmd *cobra.Command, args []string) error {
 
 		Name: name,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.AddMember(generated_request_body)
 	if err != nil {
@@ -176,6 +185,9 @@ func AddPrincipalPublicKey(cmd *cobra.Command, args []string) error {
 		Y:   y,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.AddPrincipalPublicKey(principal, generated_request_body)
 	if err != nil {
 		return err
@@ -203,6 +215,9 @@ func AddRolePermission(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.AddRolePermission(role, body)
 	if err != nil {
@@ -232,6 +247,9 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 		Name: name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.CreateGroup(generated_request_body)
 	if err != nil {
 		return err
@@ -260,6 +278,9 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 		Name: name,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.CreateRole(generated_request_body)
 	if err != nil {
 		return err
@@ -282,6 +303,9 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.IdentityService.DeleteGroup(group)
 	if err != nil {
@@ -312,6 +336,9 @@ func DeletePrincipalPublicKey(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.IdentityService.DeletePrincipalPublicKey(principal, keyId)
 	if err != nil {
 		return err
@@ -335,6 +362,9 @@ func DeleteRole(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.IdentityService.DeleteRole(role)
 	if err != nil {
 		return err
@@ -357,6 +387,9 @@ func GetGroup(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetGroup(group)
 	if err != nil {
@@ -386,6 +419,9 @@ func GetGroupMember(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.GetGroupMember(group, member)
 	if err != nil {
 		return err
@@ -414,6 +450,9 @@ func GetGroupRole(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.GetGroupRole(group, role)
 	if err != nil {
 		return err
@@ -436,6 +475,9 @@ func GetMember(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetMember(member)
 	if err != nil {
@@ -460,6 +502,9 @@ func GetPrincipal(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetPrincipal(principal)
 	if err != nil {
@@ -490,6 +535,9 @@ func GetPrincipalPublicKey(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.GetPrincipalPublicKey(principal, keyId)
 	if err != nil {
 		return err
@@ -514,6 +562,9 @@ func GetPrincipalPublicKeys(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.GetPrincipalPublicKeys(principal)
 	if err != nil {
 		return err
@@ -536,6 +587,9 @@ func GetRole(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetRole(role)
 	if err != nil {
@@ -565,6 +619,9 @@ func GetRolePermission(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.GetRolePermission(role, permission)
 	if err != nil {
 		return err
@@ -588,6 +645,9 @@ func ListGroupMembers(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListGroupMembers(group)
 	if err != nil {
 		return err
@@ -610,6 +670,9 @@ func ListGroupRoles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListGroupRoles(group)
 	if err != nil {
@@ -637,6 +700,9 @@ func ListGroups(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListGroupsQueryParams{}
 	generated_query.Access = access
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListGroups(&generated_query)
 	if err != nil {
 		return err
@@ -659,6 +725,9 @@ func ListMemberGroups(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListMemberGroups(member)
 	if err != nil {
@@ -692,6 +761,9 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListMemberPermissionsQueryParams{}
 	generated_query.ScopeFilter = scopeFilter
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListMemberPermissions(member, &generated_query)
 	if err != nil {
 		return err
@@ -716,6 +788,9 @@ func ListMemberRoles(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListMemberRoles(member)
 	if err != nil {
 		return err
@@ -731,6 +806,9 @@ func ListMembers(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListMembers()
 	if err != nil {
@@ -748,6 +826,9 @@ func ListPrincipals(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListPrincipals()
 	if err != nil {
@@ -772,6 +853,9 @@ func ListRoleGroups(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListRoleGroups(role)
 	if err != nil {
 		return err
@@ -795,6 +879,9 @@ func ListRolePermissions(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.ListRolePermissions(role)
 	if err != nil {
 		return err
@@ -810,6 +897,9 @@ func ListRoles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListRoles()
 	if err != nil {
@@ -839,6 +929,9 @@ func RemoveGroupMember(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.IdentityService.RemoveGroupMember(group, member)
 	if err != nil {
 		return err
@@ -867,6 +960,9 @@ func RemoveGroupRole(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.IdentityService.RemoveGroupRole(group, role)
 	if err != nil {
 		return err
@@ -889,6 +985,9 @@ func RemoveMember(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.IdentityService.RemoveMember(member)
 	if err != nil {
@@ -918,6 +1017,9 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.IdentityService.RemoveRolePermission(role, permission)
 	if err != nil {
 		return err
@@ -941,6 +1043,9 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "principal": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.IdentityService.RevokePrincipalAuthTokens(principal)
 	if err != nil {
@@ -981,6 +1086,9 @@ func UpdatePrincipalPublicKey(cmd *cobra.Command, args []string) error {
 		Status: status,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.IdentityService.UpdatePrincipalPublicKey(principal, keyId, generated_request_body)
 	if err != nil {
 		return err
@@ -1008,6 +1116,9 @@ func ValidateToken(cmd *cobra.Command, args []string) error {
 	generated_query := model.ValidateTokenQueryParams{}
 
 	generated_query.Include = []model.ValidateTokenincludeEnum{include}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ValidateToken(&generated_query)
 	if err != nil {

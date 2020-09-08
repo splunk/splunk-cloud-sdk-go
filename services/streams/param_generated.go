@@ -307,6 +307,26 @@ func (q ListPipelinesQueryParams) SetSortField(v string) ListPipelinesQueryParam
 	return q
 }
 
+// ListRulesPackagesQueryParams represents valid query parameters for the ListRulesPackages operation
+// For convenience ListRulesPackagesQueryParams can be formed in a single statement, for example:
+//     `v := ListRulesPackagesQueryParams{}.SetSortDir(...).SetSortField(...)`
+type ListRulesPackagesQueryParams struct {
+	// SortDir : sortDir
+	SortDir string `key:"sortDir"`
+	// SortField : sortField
+	SortField string `key:"sortField"`
+}
+
+func (q ListRulesPackagesQueryParams) SetSortDir(v string) ListRulesPackagesQueryParams {
+	q.SortDir = v
+	return q
+}
+
+func (q ListRulesPackagesQueryParams) SetSortField(v string) ListRulesPackagesQueryParams {
+	q.SortField = v
+	return q
+}
+
 // ListTemplatesQueryParams represents valid query parameters for the ListTemplates operation
 // For convenience ListTemplatesQueryParams can be formed in a single statement, for example:
 //     `v := ListTemplatesQueryParams{}.SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`

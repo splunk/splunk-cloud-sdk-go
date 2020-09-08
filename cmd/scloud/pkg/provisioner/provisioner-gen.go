@@ -46,6 +46,9 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 		Groups:  groups,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ProvisionerService.CreateInvite(generated_request_body)
 	if err != nil {
 		return err
@@ -82,6 +85,9 @@ func CreateProvisionJob(cmd *cobra.Command, args []string) error {
 		Tenant: tenant,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ProvisionerService.CreateProvisionJob(generated_request_body)
 	if err != nil {
 		return err
@@ -105,6 +111,9 @@ func DeleteInvite(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.ProvisionerService.DeleteInvite(inviteId)
 	if err != nil {
 		return err
@@ -127,6 +136,9 @@ func GetInvite(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ProvisionerService.GetInvite(inviteId)
 	if err != nil {
@@ -152,6 +164,9 @@ func GetProvisionJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ProvisionerService.GetProvisionJob(jobId)
 	if err != nil {
 		return err
@@ -176,6 +191,9 @@ func GetTenant(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "tenant-name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ProvisionerService.GetTenant(tenantName)
 	if err != nil {
 		return err
@@ -191,6 +209,9 @@ func ListInvites(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ProvisionerService.ListInvites()
 	if err != nil {
@@ -209,6 +230,9 @@ func ListProvisionJobs(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ProvisionerService.ListProvisionJobs()
 	if err != nil {
 		return err
@@ -225,6 +249,9 @@ func ListTenants(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ProvisionerService.ListTenants()
 	if err != nil {
@@ -258,6 +285,9 @@ func UpdateInvite(cmd *cobra.Command, args []string) error {
 
 		Action: action,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ProvisionerService.UpdateInvite(inviteId, generated_request_body)
 	if err != nil {

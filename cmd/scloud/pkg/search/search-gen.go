@@ -138,6 +138,9 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 		Status:            status,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.SearchService.CreateJob(generated_request_body)
 	if err != nil {
 		return err
@@ -235,6 +238,9 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 		Status: status,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.SearchService.DeleteJob(generated_request_body)
 	if err != nil {
 		return err
@@ -257,6 +263,9 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.GetJob(sid)
 	if err != nil {
@@ -315,6 +324,9 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	generated_query.Latest = latest
 	generated_query.Offset = offset
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.SearchService.ListEventsSummary(sid, &generated_query)
 	if err != nil {
 		return err
@@ -351,6 +363,9 @@ func ListFieldsSummary(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListFieldsSummaryQueryParams{}
 	generated_query.Earliest = earliest
 	generated_query.Latest = latest
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.ListFieldsSummary(sid, &generated_query)
 	if err != nil {
@@ -391,6 +406,9 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	generated_query.Filter = filter
 	generated_query.Status = status
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.SearchService.ListJobs(&generated_query)
 	if err != nil {
 		return err
@@ -429,6 +447,9 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 	generated_query := model.ListPreviewResultsQueryParams{}
 	generated_query.Count = count
 	generated_query.Offset = offset
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.ListPreviewResults(sid, &generated_query)
 	if err != nil {
@@ -475,6 +496,9 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	generated_query.Field = field
 	generated_query.Offset = offset
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.SearchService.ListResults(sid, &generated_query)
 	if err != nil {
 		return err
@@ -497,6 +521,9 @@ func ListTimeBuckets(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "sid": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.ListTimeBuckets(sid)
 	if err != nil {
@@ -530,6 +557,9 @@ func UpdateJob(cmd *cobra.Command, args []string) error {
 
 		Status: status,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.UpdateJob(sid, generated_request_body)
 	if err != nil {

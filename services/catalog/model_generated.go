@@ -836,7 +836,6 @@ type DashboardPost struct {
 type Dataset struct {
 	importDataset       *ImportDataset
 	indexDataset        *IndexDataset
-	jobDataset          *JobDataset
 	kvCollectionDataset *KvCollectionDataset
 	lookupDataset       *LookupDataset
 	metricDataset       *MetricDataset
@@ -872,21 +871,6 @@ func (m Dataset) IsIndexDataset() bool {
 // IndexDataset returns IndexDataset if IsIndexDataset() is true, nil otherwise
 func (m Dataset) IndexDataset() *IndexDataset {
 	return m.indexDataset
-}
-
-// MakeDatasetFromJobDataset creates a new Dataset from an instance of JobDataset
-func MakeDatasetFromJobDataset(f JobDataset) Dataset {
-	return Dataset{jobDataset: &f}
-}
-
-// IsJobDataset checks if the Dataset is a JobDataset
-func (m Dataset) IsJobDataset() bool {
-	return m.jobDataset != nil
-}
-
-// JobDataset returns JobDataset if IsJobDataset() is true, nil otherwise
-func (m Dataset) JobDataset() *JobDataset {
-	return m.jobDataset
 }
 
 // MakeDatasetFromKvCollectionDataset creates a new Dataset from an instance of KvCollectionDataset
@@ -982,9 +966,6 @@ func (m *Dataset) UnmarshalJSON(b []byte) (err error) {
 	case "index":
 		m.indexDataset = &IndexDataset{}
 		return json.Unmarshal(b, m.indexDataset)
-	case "job":
-		m.jobDataset = &JobDataset{}
-		return json.Unmarshal(b, m.jobDataset)
 	case "kvcollection":
 		m.kvCollectionDataset = &KvCollectionDataset{}
 		return json.Unmarshal(b, m.kvCollectionDataset)
@@ -1015,8 +996,6 @@ func (m Dataset) MarshalJSON() ([]byte, error) {
 		return json.Marshal(m.importDataset)
 	} else if m.IsIndexDataset() {
 		return json.Marshal(m.indexDataset)
-	} else if m.IsJobDataset() {
-		return json.Marshal(m.jobDataset)
 	} else if m.IsKvCollectionDataset() {
 		return json.Marshal(m.kvCollectionDataset)
 	} else if m.IsLookupDataset() {
@@ -1061,7 +1040,7 @@ type DatasetGet struct {
 	catalogDataset      *CatalogDataset
 	importDataset       *ImportDataset
 	indexDataset        *IndexDataset
-	jobDataset          *JobDataset
+	jobDatasetGet       *JobDatasetGet
 	kvCollectionDataset *KvCollectionDataset
 	lookupDataset       *LookupDataset
 	metricDataset       *MetricDataset
@@ -1115,19 +1094,19 @@ func (m DatasetGet) IndexDataset() *IndexDataset {
 	return m.indexDataset
 }
 
-// MakeDatasetGetFromJobDataset creates a new DatasetGet from an instance of JobDataset
-func MakeDatasetGetFromJobDataset(f JobDataset) DatasetGet {
-	return DatasetGet{jobDataset: &f}
+// MakeDatasetGetFromJobDatasetGet creates a new DatasetGet from an instance of JobDatasetGet
+func MakeDatasetGetFromJobDatasetGet(f JobDatasetGet) DatasetGet {
+	return DatasetGet{jobDatasetGet: &f}
 }
 
-// IsJobDataset checks if the DatasetGet is a JobDataset
-func (m DatasetGet) IsJobDataset() bool {
-	return m.jobDataset != nil
+// IsJobDatasetGet checks if the DatasetGet is a JobDatasetGet
+func (m DatasetGet) IsJobDatasetGet() bool {
+	return m.jobDatasetGet != nil
 }
 
-// JobDataset returns JobDataset if IsJobDataset() is true, nil otherwise
-func (m DatasetGet) JobDataset() *JobDataset {
-	return m.jobDataset
+// JobDatasetGet returns JobDatasetGet if IsJobDatasetGet() is true, nil otherwise
+func (m DatasetGet) JobDatasetGet() *JobDatasetGet {
+	return m.jobDatasetGet
 }
 
 // MakeDatasetGetFromKvCollectionDataset creates a new DatasetGet from an instance of KvCollectionDataset
@@ -1242,8 +1221,8 @@ func (m *DatasetGet) UnmarshalJSON(b []byte) (err error) {
 		m.indexDataset = &IndexDataset{}
 		return json.Unmarshal(b, m.indexDataset)
 	case "job":
-		m.jobDataset = &JobDataset{}
-		return json.Unmarshal(b, m.jobDataset)
+		m.jobDatasetGet = &JobDatasetGet{}
+		return json.Unmarshal(b, m.jobDatasetGet)
 	case "kvcollection":
 		m.kvCollectionDataset = &KvCollectionDataset{}
 		return json.Unmarshal(b, m.kvCollectionDataset)
@@ -1279,8 +1258,8 @@ func (m DatasetGet) MarshalJSON() ([]byte, error) {
 		return json.Marshal(m.importDataset)
 	} else if m.IsIndexDataset() {
 		return json.Marshal(m.indexDataset)
-	} else if m.IsJobDataset() {
-		return json.Marshal(m.jobDataset)
+	} else if m.IsJobDatasetGet() {
+		return json.Marshal(m.jobDatasetGet)
 	} else if m.IsKvCollectionDataset() {
 		return json.Marshal(m.kvCollectionDataset)
 	} else if m.IsLookupDataset() {
@@ -2232,90 +2211,6 @@ type IndexDatasetReadOnlyProperties struct {
 	TotalSize *int32 `json:"totalSize,omitempty"`
 }
 
-// A complete job dataset as rendered in POST, PATCH, and GET responses.
-type JobDataset struct {
-	// Time that the job was completed
-	CompletionTime string `json:"completionTime"`
-	// The date and time object was created.
-	Created string `json:"created"`
-	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
-	Createdby string `json:"createdby"`
-	// The time the dataset will be available in S3.
-	DeleteTime string `json:"deleteTime"`
-	// Time that the job was dispatched
-	DispatchTime string `json:"dispatchTime"`
-	// A unique dataset ID.
-	Id   string         `json:"id"`
-	Kind JobDatasetKind `json:"kind"`
-	// The date and time object was modified.
-	Modified string `json:"modified"`
-	// The name of the user who most recently modified the object.
-	Modifiedby string `json:"modifiedby"`
-	// The name of the module that contains the dataset.
-	Module string `json:"module"`
-	// The dataset name. Dataset names must be unique within each module.
-	Name string `json:"name"`
-	// The name of the object's owner.
-	Owner string `json:"owner"`
-	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
-	Parameters map[string]interface{} `json:"parameters"`
-	// The SPL query string for the search job.
-	Query string `json:"query"`
-	// Resolved earliest time for the job
-	ResolvedEarliest string `json:"resolvedEarliest"`
-	// Resolved latest time for the job
-	ResolvedLatest string `json:"resolvedLatest"`
-	// The dataset name qualified by the module name.
-	Resourcename string `json:"resourcename"`
-	// The ID assigned to the search job.
-	Sid string `json:"sid"`
-	// AppClinetId of the creator app of the dataset.
-	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
-	// AppClinetId of the modifier app of the dataset.
-	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
-	// Was the event summary requested for this searhc job?
-	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
-	// Was the field summary requested for this searhc job?
-	CollectFieldSummary *bool `json:"collectFieldSummary,omitempty"`
-	// Were the time bucketes requested for this searhc job?
-	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
-	// Detailed description of the dataset.
-	Description *string `json:"description,omitempty"`
-	// Specifies whether a search is allowed to collect preview results during the runtime, internal search service use only.
-	EnablePreview *bool `json:"enablePreview,omitempty"`
-	// The runtime of the search in seconds.
-	ExecutionTime *float32 `json:"executionTime,omitempty"`
-	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
-	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
-	// Did the SPL query cause any side effects on a dataset?
-	HasSideEffects *bool `json:"hasSideEffects,omitempty"`
-	// The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
-	Internalname *string `json:"internalname,omitempty"`
-	// The maximum number of seconds to run this search before finishing.
-	MaxTime *int32 `json:"maxTime,omitempty"`
-	// The parent's ID of the search job.
-	Parent *string `json:"parent,omitempty"`
-	// An estimate of how complete the search job is.
-	PercentComplete *int32 `json:"percentComplete,omitempty"`
-	// The instantaneous number of results produced by the search job.
-	ResultsAvailable *int32 `json:"resultsAvailable,omitempty"`
-	// The search head that started this search job.
-	SearchHead *string `json:"searchHead,omitempty"`
-	// The SPLv2 version of the search job query string.
-	Spl *string `json:"spl,omitempty"`
-	// The current status of the search job.
-	Status *string `json:"status,omitempty"`
-	// Summary of the dataset's purpose.
-	Summary          *string                               `json:"summary,omitempty"`
-	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
-	// The title of the dataset.  Does not have to be unique.
-	Title *string `json:"title,omitempty"`
-	// Search without the time range resolved, internal search service use only.
-	UnresolvedTimeSpl *string `json:"unresolvedTimeSpl,omitempty"`
-	// The catalog version.
-	Version *int32 `json:"version,omitempty"`
-}
-
 // JobDatasetEventSummaryAvailableStatus : Availability of event summary.
 type JobDatasetEventSummaryAvailableStatus string
 
@@ -2335,6 +2230,66 @@ const (
 	JobDatasetFieldSummaryAvailableStatusFalse   JobDatasetFieldSummaryAvailableStatus = "false"
 	JobDatasetFieldSummaryAvailableStatusUnknown JobDatasetFieldSummaryAvailableStatus = "UNKNOWN"
 )
+
+// Job dataset as rendered in POST response for dataset API endpoint.
+type JobDatasetGet struct {
+	// Time that the job was completed
+	CompletionTime string `json:"completionTime"`
+	// The time the dataset will be available in S3.
+	DeleteTime string `json:"deleteTime"`
+	// Time that the job was dispatched
+	DispatchTime string         `json:"dispatchTime"`
+	Kind         JobDatasetKind `json:"kind"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
+	Parameters map[string]interface{} `json:"parameters"`
+	// The SPL query string for the search job.
+	Query string `json:"query"`
+	// Resolved earliest time for the job
+	ResolvedEarliest string `json:"resolvedEarliest"`
+	// Resolved latest time for the job
+	ResolvedLatest string `json:"resolvedLatest"`
+	// The ID assigned to the search job.
+	Sid string `json:"sid"`
+	// Was the event summary requested for this searhc job?
+	CollectEventSummary *bool `json:"collectEventSummary,omitempty"`
+	// Was the field summary requested for this searhc job?
+	CollectFieldSummary *bool `json:"collectFieldSummary,omitempty"`
+	// Were the time bucketes requested for this searhc job?
+	CollectTimeBuckets *bool `json:"collectTimeBuckets,omitempty"`
+	// Specifies whether a search is allowed to collect preview results during the runtime, internal search service use only.
+	EnablePreview *bool `json:"enablePreview,omitempty"`
+	// The runtime of the search in seconds.
+	ExecutionTime *float32 `json:"executionTime,omitempty"`
+	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
+	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// The fields to extract. Valid values are all, none, or indexed.
+	ExtractFields *string `json:"extractFields,omitempty"`
+	// The fields to be associated with this dataset.
+	Fields []FieldPost `json:"fields,omitempty"`
+	// Did the SPL query cause any side effects on a dataset?
+	HasSideEffects *bool `json:"hasSideEffects,omitempty"`
+	// A unique dataset ID. Random ID used if not provided.
+	Id *string `json:"id,omitempty"`
+	// The maximum number of seconds to run this search before finishing.
+	MaxTime *int32 `json:"maxTime,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module *string `json:"module,omitempty"`
+	// The parent's ID of the search job.
+	Parent *string `json:"parent,omitempty"`
+	// An estimate of how complete the search job is.
+	PercentComplete *int32 `json:"percentComplete,omitempty"`
+	// The instantaneous number of results produced by the search job.
+	ResultsAvailable *int32 `json:"resultsAvailable,omitempty"`
+	// The search head that started this search job.
+	SearchHead *string `json:"searchHead,omitempty"`
+	// The SPLv2 version of the search job query string.
+	Spl *string `json:"spl,omitempty"`
+	// The current status of the search job.
+	Status           *string                               `json:"status,omitempty"`
+	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
+}
 
 // JobDatasetKind : The dataset kind.
 type JobDatasetKind string
@@ -2364,6 +2319,8 @@ type JobDatasetProperties struct {
 	ExecutionTime *float32 `json:"executionTime,omitempty"`
 	// Should the search produce all fields (including those not explicity mentioned in the SPL)?
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// The fields to extract. Valid values are all, none, or indexed.
+	ExtractFields *string `json:"extractFields,omitempty"`
 	// Did the SPL query cause any side effects on a dataset?
 	HasSideEffects *bool           `json:"hasSideEffects,omitempty"`
 	Kind           *JobDatasetKind `json:"kind,omitempty"`
@@ -2392,8 +2349,6 @@ type JobDatasetProperties struct {
 	// The current status of the search job.
 	Status           *string                               `json:"status,omitempty"`
 	TimelineMetadata *JobDatasetPropertiesTimelineMetadata `json:"timelineMetadata,omitempty"`
-	// Search without the time range resolved, internal search service use only.
-	UnresolvedTimeSpl *string `json:"unresolvedTimeSpl,omitempty"`
 }
 
 // Availability of timeline metadata artifacts.

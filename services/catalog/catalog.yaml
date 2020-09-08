@@ -521,7 +521,6 @@ components:
         mapping:
           import: '#/components/schemas/ImportDataset'
           index: '#/components/schemas/IndexDataset'
-          job: '#/components/schemas/JobDataset'
           kvcollection: '#/components/schemas/KVCollectionDataset'
           lookup: '#/components/schemas/LookupDataset'
           metric: '#/components/schemas/MetricDataset'
@@ -532,7 +531,6 @@ components:
       - $ref: '#/components/schemas/IndexDataset'
       - $ref: '#/components/schemas/ViewDataset'
       - $ref: '#/components/schemas/ImportDataset'
-      - $ref: '#/components/schemas/JobDataset'
       - $ref: '#/components/schemas/MetricDataset'
       - $ref: '#/components/schemas/KVCollectionDataset'
     DatasetCommon:
@@ -603,7 +601,7 @@ components:
           catalog: '#/components/schemas/CatalogDataset'
           import: '#/components/schemas/ImportDataset'
           index: '#/components/schemas/IndexDataset'
-          job: '#/components/schemas/JobDataset'
+          job: '#/components/schemas/JobDatasetGET'
           kvcollection: '#/components/schemas/KVCollectionDataset'
           lookup: '#/components/schemas/LookupDataset'
           metric: '#/components/schemas/MetricDataset'
@@ -615,7 +613,7 @@ components:
       - $ref: '#/components/schemas/IndexDataset'
       - $ref: '#/components/schemas/ViewDataset'
       - $ref: '#/components/schemas/ImportDataset'
-      - $ref: '#/components/schemas/JobDataset'
+      - $ref: '#/components/schemas/JobDatasetGET'
       - $ref: '#/components/schemas/MetricDataset'
       - $ref: '#/components/schemas/KVCollectionDataset'
       - $ref: '#/components/schemas/CatalogDataset'
@@ -1082,6 +1080,7 @@ components:
       - $ref: '#/components/schemas/JobDatasetProperties'
       - $ref: '#/components/schemas/MetadataProperties'
       - $ref: '#/components/schemas/DatasetCommon'
+      - $ref: '#/components/schemas/JobDatasetInternalProperties'
       description: A complete job dataset as rendered in POST, PATCH, and GET responses.
       required:
       - kind
@@ -1109,6 +1108,30 @@ components:
       - false
       - UNKNOWN
       type: string
+    JobDatasetGET:
+      allOf:
+      - $ref: '#/components/schemas/JobDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPOSTCommon'
+      description: Job dataset as rendered in POST response for dataset API endpoint.
+      required:
+      - kind
+      - sid
+      - query
+      - sql
+      - resolvedEarliest
+      - resolvedLatest
+      - dispatchTime
+      - completionTime
+      - deleteTime
+      - parameters
+      type: object
+    JobDatasetInternalProperties:
+      description: Properties of job datasets which internal use only.
+      properties:
+        unresolvedTimeSpl:
+          description: Search without the time range resolved, internal search service
+            use only.
+          type: string
     JobDatasetKind:
       description: The dataset kind.
       enum:
@@ -1117,6 +1140,7 @@ components:
     JobDatasetPATCH:
       allOf:
       - $ref: '#/components/schemas/JobDatasetProperties'
+      - $ref: '#/components/schemas/JobDatasetInternalProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
       description: Property values to be set in an existing job dataset using a PATCH
         request.
@@ -1124,6 +1148,7 @@ components:
       allOf:
       - $ref: '#/components/schemas/JobDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
+      - $ref: '#/components/schemas/JobDatasetInternalProperties'
       description: Initial property values for creating a new job dataset using a
         POST request.
       required:
@@ -1172,6 +1197,9 @@ components:
           description: Should the search produce all fields (including those not explicity
             mentioned in the SPL)?
           type: boolean
+        extractFields:
+          description: The fields to extract. Valid values are all, none, or indexed.
+          type: string
         hasSideEffects:
           description: Did the SPL query cause any side effects on a dataset?
           type: boolean
@@ -1229,10 +1257,6 @@ components:
                   $ref: '#/components/schemas/JobDatasetTimeBucketsAvailableStatus'
               type: object
           type: object
-        unresolvedTimeSpl:
-          description: Search without the time range resolved, internal search service
-            use only.
-          type: string
     JobDatasetTimeBucketsAvailableStatus:
       description: Availability of time buckets (histogram of events).
       enum:
@@ -5002,4 +5026,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: catalog/v2beta1/openapi.yaml

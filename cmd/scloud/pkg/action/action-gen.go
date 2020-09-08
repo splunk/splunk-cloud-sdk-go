@@ -86,6 +86,9 @@ func CreateActionEmailAction(cmd *cobra.Command, args []string) error {
 		Title:         title,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromEmailAction(generated_request_body))
 	if err != nil {
 		return err
@@ -145,6 +148,9 @@ func CreateActionWebhookAction(cmd *cobra.Command, args []string) error {
 		WebhookUrl:     webhookUrl,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.CreateAction(model.MakeActionFromWebhookAction(generated_request_body))
 	if err != nil {
 		return err
@@ -168,6 +174,9 @@ func DeleteAction(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "action-name": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.ActionService.DeleteAction(action_name)
 	if err != nil {
 		return err
@@ -190,6 +199,9 @@ func GetAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "action-name": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ActionService.GetAction(action_name)
 	if err != nil {
@@ -219,6 +231,9 @@ func GetActionStatus(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "status-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.GetActionStatus(action_name, status_id)
 	if err != nil {
 		return err
@@ -247,6 +262,9 @@ func GetActionStatusDetails(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "status-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.GetActionStatusDetails(action_name, status_id)
 	if err != nil {
 		return err
@@ -264,6 +282,9 @@ func GetPublicWebhookKeys(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.GetPublicWebhookKeys()
 	if err != nil {
 		return err
@@ -279,6 +300,9 @@ func ListActions(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ActionService.ListActions()
 	if err != nil {
@@ -354,6 +378,9 @@ func TriggerAction(cmd *cobra.Command, args []string) error {
 		TtlSeconds:       ttlSeconds,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := TriggerActionOverride(action_name, generated_request_body)
 	if err != nil {
 		return err
@@ -428,6 +455,9 @@ func UpdateActionEmailActionMutable(cmd *cobra.Command, args []string) error {
 		Title:         title,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromEmailActionMutable(generated_request_body))
 	if err != nil {
 		return err
@@ -481,6 +511,9 @@ func UpdateActionWebhookActionMutable(cmd *cobra.Command, args []string) error {
 		WebhookPayload: webhookPayload,
 		WebhookUrl:     webhookUrl,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.ActionService.UpdateAction(action_name, model.MakeActionMutableFromWebhookActionMutable(generated_request_body))
 	if err != nil {

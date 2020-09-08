@@ -904,6 +904,26 @@ components:
         tenant:
           type: string
       type: object
+    KeyList:
+      description: A list of api key.
+      properties:
+        count:
+          type: integer
+        details:
+          additionalProperties:
+            $ref: '#/components/schemas/Key'
+          type: object
+          x-omitempty: true
+        items:
+          items:
+            type: string
+          type: array
+        nextLink:
+          type: string
+      required:
+      - items
+      - nextLink
+      type: object
     KeySecret:
       properties:
         clientId:
@@ -1015,55 +1035,6 @@ components:
       type: object
     OktaApp:
       description: Represents an Okta App (https://developer.okta.com/docs/reference/api/apps/#application-model)
-      type: object
-    Permission:
-      properties:
-        addedAt:
-          format: date-time
-          type: string
-        addedBy:
-          type: string
-        app:
-          description: App name for app permission
-          type: string
-        permission:
-          type: string
-        role:
-          description: Role name for role permission
-          type: string
-        service:
-          description: Service name for service permission
-          type: string
-        tenant:
-          type: string
-        type:
-          enum:
-          - role
-          - service
-          - app
-          type: string
-      required:
-      - type
-      - tenant
-      - permission
-      type: object
-    PermissionList:
-      description: A list of permissions.
-      properties:
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Permission'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
       type: object
     PermissionSet:
       properties:
@@ -1356,6 +1327,10 @@ components:
       properties:
         appName:
           type: string
+        appTenant:
+          type: string
+        labels:
+          type: object
         name:
           type: string
         permissions:
@@ -1364,6 +1339,12 @@ components:
           type: array
         principal:
           type: string
+        principalKind:
+          type: string
+        systemPermissions:
+          items:
+            type: string
+          type: array
       type: object
     ServiceAccountList:
       description: A list of service account.
@@ -2604,4 +2585,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: identity/v2beta1/openapi.yaml

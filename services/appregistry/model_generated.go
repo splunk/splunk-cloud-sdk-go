@@ -314,7 +314,6 @@ func (m AppResponseGetList) MarshalJSON() ([]byte, error) {
 type CreateAppRequest struct {
 	nativeAppPost  *NativeAppPost
 	serviceAppPost *ServiceAppPost
-	webAppPost     *WebAppPost
 	raw            interface{}
 }
 
@@ -346,21 +345,6 @@ func (m CreateAppRequest) IsServiceAppPost() bool {
 // ServiceAppPost returns ServiceAppPost if IsServiceAppPost() is true, nil otherwise
 func (m CreateAppRequest) ServiceAppPost() *ServiceAppPost {
 	return m.serviceAppPost
-}
-
-// MakeCreateAppRequestFromWebAppPost creates a new CreateAppRequest from an instance of WebAppPost
-func MakeCreateAppRequestFromWebAppPost(f WebAppPost) CreateAppRequest {
-	return CreateAppRequest{webAppPost: &f}
-}
-
-// IsWebAppPost checks if the CreateAppRequest is a WebAppPost
-func (m CreateAppRequest) IsWebAppPost() bool {
-	return m.webAppPost != nil
-}
-
-// WebAppPost returns WebAppPost if IsWebAppPost() is true, nil otherwise
-func (m CreateAppRequest) WebAppPost() *WebAppPost {
-	return m.webAppPost
 }
 
 // MakeCreateAppRequestFromRawInterface creates a new CreateAppRequest from a raw interface{}
@@ -396,9 +380,6 @@ func (m *CreateAppRequest) UnmarshalJSON(b []byte) (err error) {
 	case "service":
 		m.serviceAppPost = &ServiceAppPost{}
 		return json.Unmarshal(b, m.serviceAppPost)
-	case "web":
-		m.webAppPost = &WebAppPost{}
-		return json.Unmarshal(b, m.webAppPost)
 	}
 	// Unknown discriminator value (this type may not yet be supported)
 	// unmarhsal to raw interface
@@ -417,8 +398,6 @@ func (m CreateAppRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(m.nativeAppPost)
 	} else if m.IsServiceAppPost() {
 		return json.Marshal(m.serviceAppPost)
-	} else if m.IsWebAppPost() {
-		return json.Marshal(m.webAppPost)
 	}
 	// None of the structs are populated, send raw
 	return json.Marshal(m.raw)
@@ -600,31 +579,6 @@ type WebApp struct {
 	// The principal who created this app.
 	CreatedBy string          `json:"createdBy"`
 	Kind      AppResourceKind `json:"kind"`
-	// App name that is unique within Splunk Cloud Platform.
-	Name string `json:"name"`
-	// Array of URLs that can be used for redirect after logging into the app.
-	RedirectUrls []string `json:"redirectUrls"`
-	// Human-readable title for the app.
-	Title string `json:"title"`
-	// Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
-	AppPrincipalPermissions []string `json:"appPrincipalPermissions,omitempty"`
-	// Short paragraph describing the app.
-	Description *string `json:"description,omitempty"`
-	// The URL used to log in to the app.
-	LoginUrl *string `json:"loginUrl,omitempty"`
-	// The URL used to display the app's logo.
-	LogoUrl *string `json:"logoUrl,omitempty"`
-	// URL to redirect to after a subscription is created.
-	SetupUrl *string `json:"setupUrl,omitempty"`
-	// Array of permission filter templates that are used to intersect with a user's permissions when using the app.
-	UserPermissionsFilter []string `json:"userPermissionsFilter,omitempty"`
-	// URL that webhook events are sent to.
-	WebhookUrl *string `json:"webhookUrl,omitempty"`
-}
-
-// Required input for creating a web kind app.
-type WebAppPost struct {
-	Kind AppResourceKind `json:"kind"`
 	// App name that is unique within Splunk Cloud Platform.
 	Name string `json:"name"`
 	// Array of URLs that can be used for redirect after logging into the app.

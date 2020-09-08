@@ -28,6 +28,9 @@ func CreateExecution(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CollectService.CreateExecution(jobId)
 	if err != nil {
 		return err
@@ -93,6 +96,9 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 		Scheduled:        scheduled,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CollectService.CreateJob(generated_request_body)
 	if err != nil {
 		return err
@@ -116,6 +122,9 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.CollectService.DeleteJob(jobId)
 	if err != nil {
 		return err
@@ -131,6 +140,9 @@ func DeleteJobs(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CollectService.DeleteJobs()
 	if err != nil {
@@ -160,6 +172,9 @@ func GetExecution(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CollectService.GetExecution(jobId, executionUid)
 	if err != nil {
 		return err
@@ -182,6 +197,9 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CollectService.GetJob(jobId)
 	if err != nil {
@@ -208,6 +226,9 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	// Form query params
 	generated_query := model.ListJobsQueryParams{}
 	generated_query.ConnectorId = connectorId
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CollectService.ListJobs(&generated_query)
 	if err != nil {
@@ -246,6 +267,9 @@ func PatchExecution(cmd *cobra.Command, args []string) error {
 
 		Status: status,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.CollectService.PatchExecution(jobId, executionUid, generated_request_body)
 	if err != nil {
@@ -321,6 +345,9 @@ func PatchJob(cmd *cobra.Command, args []string) error {
 		Scheduled:        scheduled,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.CollectService.PatchJob(jobId, generated_request_body)
 	if err != nil {
 		return err
@@ -377,6 +404,9 @@ func PatchJobs(cmd *cobra.Command, args []string) error {
 		EventExtraFields: eventExtraFields,
 		ScalePolicy:      scalePolicy,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.CollectService.PatchJobs(generated_request_body, &generated_query)
 	if err != nil {

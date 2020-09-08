@@ -40,6 +40,9 @@ func CreateWorkflow(cmd *cobra.Command, args []string) error {
 		Tasks: tasks,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.CreateWorkflow(generated_request_body)
 	if err != nil {
 		return err
@@ -122,6 +125,9 @@ func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
 			Tasks: tasks,
 		},
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.CreateWorkflowBuild(id, generated_request_body)
 	if err != nil {
@@ -220,6 +226,9 @@ func CreateWorkflowDeployment(cmd *cobra.Command, args []string) error {
 		WorkflowBuild: workflowBuild,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.CreateWorkflowDeployment(id, buildId, generated_request_body)
 	if err != nil {
 		return err
@@ -262,6 +271,9 @@ func CreateWorkflowInference(cmd *cobra.Command, args []string) error {
 
 		Input: input,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.CreateWorkflowInference(id, buildId, deploymentId, generated_request_body)
 	if err != nil {
@@ -341,6 +353,9 @@ func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
 		TimeoutSecs:     timeoutSecs,
 		WorkflowBuild:   workflowBuild,
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.CreateWorkflowRun(id, buildId, generated_request_body)
 	if err != nil {
@@ -437,6 +452,9 @@ func CreateWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 		WorkflowBuild: workflowBuild,
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.CreateWorkflowStreamDeployment(id, buildId, generated_request_body)
 	if err != nil {
 		return err
@@ -459,6 +477,9 @@ func DeleteWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.MachineLearningService.DeleteWorkflow(id)
 	if err != nil {
@@ -487,6 +508,9 @@ func DeleteWorkflowBuild(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.MachineLearningService.DeleteWorkflowBuild(id, buildId)
 	if err != nil {
@@ -521,6 +545,9 @@ func DeleteWorkflowDeployment(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.MachineLearningService.DeleteWorkflowDeployment(id, buildId, deploymentId)
 	if err != nil {
 		return err
@@ -553,6 +580,9 @@ func DeleteWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "run-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	err = client.MachineLearningService.DeleteWorkflowRun(id, buildId, runId)
 	if err != nil {
@@ -587,6 +617,9 @@ func DeleteWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "stream-deployment-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	err = client.MachineLearningService.DeleteWorkflowStreamDeployment(id, buildId, streamDeploymentId)
 	if err != nil {
 		return err
@@ -609,6 +642,9 @@ func GetWorkflow(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.GetWorkflow(id)
 	if err != nil {
@@ -638,6 +674,9 @@ func GetWorkflowBuild(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowBuild(id, buildId)
 	if err != nil {
 		return err
@@ -666,6 +705,9 @@ func GetWorkflowBuildError(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowBuildError(id, buildId)
 	if err != nil {
 		return err
@@ -693,6 +735,9 @@ func GetWorkflowBuildLog(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.GetWorkflowBuildLog(id, buildId)
 	if err != nil {
@@ -727,6 +772,9 @@ func GetWorkflowDeployment(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowDeployment(id, buildId, deploymentId)
 	if err != nil {
 		return err
@@ -759,6 +807,9 @@ func GetWorkflowDeploymentError(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.GetWorkflowDeploymentError(id, buildId, deploymentId)
 	if err != nil {
@@ -793,6 +844,9 @@ func GetWorkflowDeploymentLog(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowDeploymentLog(id, buildId, deploymentId)
 	if err != nil {
 		return err
@@ -825,6 +879,9 @@ func GetWorkflowRun(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "run-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.GetWorkflowRun(id, buildId, runId)
 	if err != nil {
@@ -859,6 +916,9 @@ func GetWorkflowRunError(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "run-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowRunError(id, buildId, runId)
 	if err != nil {
 		return err
@@ -891,6 +951,9 @@ func GetWorkflowRunLog(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "run-id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.GetWorkflowRunLog(id, buildId, runId)
 	if err != nil {
@@ -925,6 +988,9 @@ func GetWorkflowStreamDeployment(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "stream-deployment-id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.GetWorkflowStreamDeployment(id, buildId, streamDeploymentId)
 	if err != nil {
 		return err
@@ -947,6 +1013,9 @@ func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.ListWorkflowBuilds(id)
 	if err != nil {
@@ -976,6 +1045,9 @@ func ListWorkflowDeployments(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.ListWorkflowDeployments(id, buildId)
 	if err != nil {
 		return err
@@ -1004,6 +1076,9 @@ func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
 	}
 
+	// Silence Usage
+	cmd.SilenceUsage = true
+
 	resp, err := client.MachineLearningService.ListWorkflowRuns(id, buildId)
 	if err != nil {
 		return err
@@ -1019,6 +1094,9 @@ func ListWorkflows(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
 
 	resp, err := client.MachineLearningService.ListWorkflows()
 	if err != nil {

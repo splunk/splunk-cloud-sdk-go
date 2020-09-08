@@ -211,8 +211,8 @@ func assertDatasetKind(t *testing.T, dataset catalog.DatasetGet) {
 		assert.NotEmpty(t, dataset.LookupDataset().Id)
 	} else if dataset.IsIndexDataset() {
 		assert.NotEmpty(t, dataset.ImportDataset().Id)
-	} else if dataset.IsJobDataset() {
-		assert.NotEmpty(t, dataset.JobDataset().Id)
+	} else if dataset.IsJobDatasetGet() {
+		assert.NotEmpty(t, dataset.JobDatasetGet().Id)
 	} else if dataset.IsMetricDataset() {
 		assert.NotEmpty(t, dataset.MetricDataset().Id)
 	} else if dataset.IsImportDataset() {
@@ -544,7 +544,8 @@ func TestUpdateJobDataset(t *testing.T) {
 	datasets, err := getSdkClient(t).CatalogService.ListDatasets(&query)
 	require.NoError(t, err)
 	require.NotZero(t, len(datasets))
-	jobds := datasets[0].JobDataset()
+	jobds := datasets[0].JobDatasetGet()
+
 	require.NotNil(t, jobds.Id)
 	newstatus := string(search.SearchStatusCanceled)
 

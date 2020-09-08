@@ -166,11 +166,9 @@ components:
         mapping:
           native: '#/components/schemas/NativeAppPOST'
           service: '#/components/schemas/ServiceAppPOST'
-          web: '#/components/schemas/WebAppPOST'
         propertyName: kind
       oneOf:
       - $ref: '#/components/schemas/ServiceAppPOST'
-      - $ref: '#/components/schemas/WebAppPOST'
       - $ref: '#/components/schemas/NativeAppPOST'
     Error:
       properties:
@@ -312,18 +310,6 @@ components:
       - clientSecret
       - createdBy
       - createdAt
-      type: object
-    WebAppPOST:
-      allOf:
-      - $ref: '#/components/schemas/AppMetadataPublic'
-      - $ref: '#/components/schemas/AppResource'
-      - $ref: '#/components/schemas/AppMetadataPrivate'
-      description: Required input for creating a web kind app.
-      required:
-      - name
-      - kind
-      - title
-      - redirectUrls
       type: object
   securitySchemes:
     BearerToken:
@@ -934,4 +920,4 @@ paths:
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit d244b3c0d56b951f4f266e75887eefd699c502de path: app-registry/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: app-registry/v1beta2/openapi.yaml

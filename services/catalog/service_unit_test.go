@@ -97,35 +97,6 @@ const (
 		"sourceName": "myimport",
 		"sourceModule": ""
 	  }`
-	jobDS = `{
-		"owner": "me@example.com",
-		"created": "2018-11-28 09:25:42.000262",
-		"modified": "2018-11-28 09:25:43.000377",
-		"version": 1,
-		"id": "99999aaaabbbbcccc",
-		"module": "",
-		"name": "sid_1234567890_123",
-		"kind": "job",
-		"createdby": "me@example.com",
-		"modifiedby": "me@example.com",
-		"internalname": "sid_1234567890_123",
-		"resourcename": "sid_1234567890_123",
-		"maxTime": 3600,
-		"timeOfSearch": "1543440342",
-		"deleteTime": "2018-11-29T21:25:42.258412+00:00",
-		"query": "| from mylookup",
-		"timeFormat": "%FT%T.%Q%:z",
-		"extractAllFields": false,
-		"percentComplete": 100,
-		"parameters": {
-		  "earliest": "-24h@h",
-		  "latest": "now"
-		},
-		"spl": "| inputlookup mylookup",
-		"resultsAvailable": 2,
-		"sid": "1543440342.234",
-		"status": "done"
-	  }`
 	viewDS = `{
 		"owner": "me@example.com",
 		"created": "2018-11-30 08:13:36.000727",
@@ -220,20 +191,6 @@ func TestParseResponseImport(t *testing.T) {
 	require.NotNil(t, imp.ImportDataset().Id)
 	assert.Equal(t, "myimport", imp.ImportDataset().Name)
 	assert.Equal(t, "myimport", imp.ImportDataset().SourceName)
-}
-
-func TestParseResponseJob(t *testing.T) {
-	var job *Dataset
-	httpResp := &http.Response{
-		Body: ioutil.NopCloser(bytes.NewReader([]byte(jobDS))),
-	}
-	err := util.ParseResponse(&job, httpResp)
-	require.NoError(t, err)
-	assert.Equal(t, JobDatasetKindJob, job.JobDataset().Kind)
-
-	require.NotNil(t, job.JobDataset().Id)
-	assert.Equal(t, "sid_1234567890_123", job.JobDataset().Name)
-	assert.Equal(t, "done", *job.JobDataset().Status)
 }
 
 func TestParseResponseView(t *testing.T) {

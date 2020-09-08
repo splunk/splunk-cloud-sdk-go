@@ -22,13 +22,6 @@ var createAppServiceAppCmd = &cobra.Command{
 	RunE:  impl.CreateAppServiceApp,
 }
 
-// createAppWebApp -- Creates an app.
-var createAppWebAppCmd = &cobra.Command{
-	Use:   "create-app-web-app",
-	Short: "Creates an app.",
-	RunE:  impl.CreateAppWebApp,
-}
-
 // createSubscription -- Creates a subscription.
 var createSubscriptionCmd = &cobra.Command{
 	Use:   "create-subscription",
@@ -181,44 +174,6 @@ func init() {
 
 	var createAppServiceAppWebhookUrl string
 	createAppServiceAppCmd.Flags().StringVar(&createAppServiceAppWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
-
-	appregistryCmd.AddCommand(createAppWebAppCmd)
-	var createAppWebAppAppPrincipalPermissions []string
-	createAppWebAppCmd.Flags().StringSliceVar(&createAppWebAppAppPrincipalPermissions, "app-principal-permissions", nil, "Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.")
-
-	var createAppWebAppDescription string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppDescription, "description", "", "Short paragraph describing the app.")
-
-	var createAppWebAppKind string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppKind, "kind", "", "This is a required parameter. This is a required parameter.  can accept values web, native, service")
-	createAppWebAppCmd.MarkFlagRequired("kind")
-
-	var createAppWebAppLoginUrl string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppLoginUrl, "login-url", "", "The URL used to log in to the app.")
-
-	var createAppWebAppLogoUrl string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppLogoUrl, "logo-url", "", "The URL used to display the app's logo.")
-
-	var createAppWebAppName string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppName, "name", "", "This is a required parameter. This is a required parameter. App name that is unique within Splunk Cloud Platform.")
-	createAppWebAppCmd.MarkFlagRequired("name")
-
-	var createAppWebAppRedirectUrls []string
-	createAppWebAppCmd.Flags().StringSliceVar(&createAppWebAppRedirectUrls, "redirect-urls", nil, "This is a required parameter. Array of URLs that can be used for redirect after logging into the app.")
-	createAppWebAppCmd.MarkFlagRequired("redirectUrls")
-
-	var createAppWebAppSetupUrl string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppSetupUrl, "setup-url", "", "URL to redirect to after a subscription is created.")
-
-	var createAppWebAppTitle string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppTitle, "title", "", "This is a required parameter. Human-readable title for the app.")
-	createAppWebAppCmd.MarkFlagRequired("title")
-
-	var createAppWebAppUserPermissionsFilter []string
-	createAppWebAppCmd.Flags().StringSliceVar(&createAppWebAppUserPermissionsFilter, "user-permissions-filter", nil, "Array of permission filter templates that are used to intersect with a user's permissions when using the app.")
-
-	var createAppWebAppWebhookUrl string
-	createAppWebAppCmd.Flags().StringVar(&createAppWebAppWebhookUrl, "webhook-url", "", "URL that webhook events are sent to.")
 
 	appregistryCmd.AddCommand(createSubscriptionCmd)
 
