@@ -190,12 +190,16 @@ func TestIntegrationDeactivatePipeline(t *testing.T) {
 
 // Test ReactivatePipeline streams endpoint
 func TestIntegrationReactivatePipeline(t *testing.T) {
-	streamsService, _ := streams.NewService(&services.Config{
+	config := &services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
 		Timeout: testutils.LongTestTimeout,
-	})
+	}
+	client, err := services.NewClient(config)
+	require.Empty(t, err)
+
+	streamsService := streams.NewService(client)
 
 	pipelineName := fmt.Sprintf("testPipelined%d", testutils.RunSuffix)
 

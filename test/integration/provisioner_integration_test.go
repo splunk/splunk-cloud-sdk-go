@@ -15,14 +15,15 @@ import (
 
 // TestInvite tests invitation functions in provisioner
 func TestInvite(t *testing.T) {
-	provClient, err := provisioner.NewService(&services.Config{
+	config := &services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
 		Tenant: testutils.TestTenant,
-	})
+	}
+	client, err := services.NewClient(config)
+	require.Emptyf(t, err, "error calling services.NewClient(config): %s", err)
 
-	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
-
+	provClient := provisioner.NewService(client)
 	tenant := testutils.TestTenant
 
 	t.Run("pre: clean up invites", func(t *testing.T) {
@@ -93,19 +94,20 @@ func TestInvite(t *testing.T) {
 
 // TestProvisioner tests provisioner service-specific Splunk Cloud client
 func TestProvisioner(t *testing.T) {
-	client, err := provisioner.NewService(&services.Config{
+	config := &services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
 		Tenant: "system",
-	})
+	}
+	client, err := services.NewClient(config)
+	assert.Emptyf(t, err, "error calling services.NewClient(config): %s", err)
 
-	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
-
+	provclient := provisioner.NewService(client)
 	tenant := testutils.TestTenant
 
 	t.Run("create provision job", func(t *testing.T) {
 		bannedName := "splunk" // this is a banned word and should fail with a 403
-		pJob, err := client.CreateProvisionJob(provisioner.CreateProvisionJobBody{
+		pJob, err := provclient.CreateProvisionJob(provisioner.CreateProvisionJobBody{
 			Apps:   []string{},
 			Tenant: &bannedName,
 		})
@@ -114,25 +116,25 @@ func TestProvisioner(t *testing.T) {
 	})
 
 	t.Run("get provision job", func(t *testing.T) {
-		pJobInfo, err := client.GetProvisionJob("-1")
+		pJobInfo, err := provclient.GetProvisionJob("-1")
 		assert.Equal(t, http.StatusNotFound, err.(*util.HTTPError).HTTPStatusCode, "error calling provisioner.GetProvisionJob(): %s", err)
 		assert.Nil(t, pJobInfo)
 	})
 
 	t.Run("list provision jobs", func(t *testing.T) {
-		pJobs, err := client.ListProvisionJobs()
+		pJobs, err := provclient.ListProvisionJobs()
 		assert.Emptyf(t, err, "error calling provisioner.ListProvisionJobs(): %s", err)
 		assert.NotNil(t, pJobs)
 	})
 
 	t.Run("get tenant", func(t *testing.T) {
-		ten, err := client.GetTenant(tenant)
+		ten, err := provclient.GetTenant(tenant)
 		assert.Emptyf(t, err, "error calling provisioner.GetTenant(): %s", err)
 		assert.Equal(t, tenant, ten.Name)
 	})
 
 	t.Run("list tenants", func(t *testing.T) {
-		tenants, err := client.ListTenants()
+		tenants, err := provclient.ListTenants()
 		assert.Emptyf(t, err, "error calling provisioner.ListTenants(): %s", err)
 		assert.NotNil(t, tenants)
 		found := false

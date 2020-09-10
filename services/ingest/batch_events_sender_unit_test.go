@@ -25,45 +25,74 @@ import (
 )
 
 func TestBatchEventsSenderInitializationWithZeroBatchSizeAndZeroIntervalParameters(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(0, 0, 10)
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
+
+	ingestClient := NewService(client)
+	_, err = ingestClient.NewBatchEventsSender(0, 0, 10)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroBatchSize(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(0, 1000, 10)
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
+
+	ingestClient := NewService(client)
+	_, err = ingestClient.NewBatchEventsSender(0, 1000, 10)
 	assert.EqualError(t, err, "batchSize cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroInterval(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
-	_, err = client.NewBatchEventsSender(5, 0, 10)
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
+
+	ingestClient := NewService(client)
+	_, err = ingestClient.NewBatchEventsSender(5, 0, 10)
 	assert.EqualError(t, err, "interval cannot be 0")
 }
 
 func TestBatchEventsSenderInitializationWithZeroPayloadSize(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
-	collector, _ := client.NewBatchEventsSender(5, 10000, 0)
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
+
+	ingestClient := NewService(client)
+	collector, _ := ingestClient.NewBatchEventsSender(5, 10000, 0)
 	assert.Equal(t, collector.PayLoadBytes, 1040000)
 }
 
 func TestBatchEventsSenderInitializationWithNonZeroPayloadSize(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
-	collector, _ := client.NewBatchEventsSender(5, 1000, 1000)
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
+
+	ingestClient := NewService(client)
+	collector, _ := ingestClient.NewBatchEventsSender(5, 1000, 1000)
 	assert.Equal(t, collector.PayLoadBytes, 1000)
 }
 
 func TestBatchEventsSenderState(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
 
-	collector, err := client.NewBatchEventsSender(5, 1000, 20)
+	ingestClient := NewService(client)
+	collector, err := ingestClient.NewBatchEventsSender(5, 1000, 20)
 	assert.NoError(t, err)
 
 	// Validate initial values
@@ -78,10 +107,14 @@ func TestBatchEventsSenderState(t *testing.T) {
 }
 
 func TestReadEvent(t *testing.T) {
-	client, err := NewService(&services.Config{Token: "EXAMPLE_AUTHENTICATION_TOKEN"})
-	require.Nil(t, err, "error creating ingest service client")
+	config := &services.Config{
+		Token: "EXAMPLE_AUTHENTICATION_TOKEN",
+	}
+	client, err := services.NewClient(config)
+	require.Nil(t, err, "error creating client")
 
-	collector, err := client.NewBatchEventsSender(5, 1000, 20)
+	ingestClient := NewService(client)
+	collector, err := ingestClient.NewBatchEventsSender(5, 1000, 20)
 	assert.NoError(t, err)
 
 	var event Event

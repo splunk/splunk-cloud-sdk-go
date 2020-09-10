@@ -198,14 +198,18 @@ func TestRoundTripperWithSdkClient(t *testing.T) {
 }
 
 func TestRoundTripperWithIdentityClient(t *testing.T) {
-	identityClient, err := identity.NewService(&services.Config{
+	config := &services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
 		Timeout:      testutils.TestTimeOut,
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
-	})
-	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+	}
+	client, err := services.NewClient(config)
+	assert.NotNil(t, err)
+
+	identityClient := identity.NewService(client)
+	require.Nil(t, err, "Error calling NewService(client): %s", err)
 
 	LoggerOutput = LoggerOutput[:0]
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
@@ -215,14 +219,18 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 }
 
 func TestRoundTripperWithInvalidClient(t *testing.T) {
-	identityClient, err := identity.NewService(&services.Config{
+	config := &services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         "invalid.host",
 		Tenant:       testutils.TestTenant,
 		Timeout:      testutils.TestTimeOut,
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
-	})
-	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
+	}
+	client, err := services.NewClient(config)
+	assert.NotNil(t, err)
+
+	identityClient := identity.NewService(client)
+	require.Nil(t, err, "Error calling NewService(client): %s", err)
 
 	LoggerOutput = LoggerOutput[:0]
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
