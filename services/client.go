@@ -172,11 +172,6 @@ type RequestParams struct {
 	Headers map[string]string
 }
 
-// BaseService provides the interface between client and services
-type BaseService struct {
-	Client *BaseClient
-}
-
 // NewRequest creates a new HTTP Request and set proper header
 func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)

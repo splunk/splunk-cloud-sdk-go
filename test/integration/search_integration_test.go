@@ -233,14 +233,17 @@ func TestListTimeBuckets(t *testing.T) {
 
 //TestCreateJobConfigurableBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
-	searchService, _ := search.NewService(&services.Config{
+	config := &services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		Timeout:       testutils.LongTestTimeout,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{ConfigurableRetryConfig: &services.ConfigurableRetryConfig{RetryNum: 5, Interval: 800}},
-	})
+	}
+	client, err := services.NewClient(config)
+	assert.NoError(t, err)
+	searchService := search.NewService(client)
 
 	concurrentSearches := 20
 
@@ -282,14 +285,18 @@ func TestCreateJobConfigurableBackOffRetry(t *testing.T) {
 
 //TestCreateJobDefaultBackOffRetry and validate that all the job requests are created successfully after retries
 func TestCreateJobDefaultBackOffRetry(t *testing.T) {
-	searchService, _ := search.NewService(&services.Config{
+	config := &services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		Timeout:       testutils.LongTestTimeout,
 		RetryRequests: true,
 		RetryConfig:   services.RetryStrategyConfig{DefaultRetryConfig: &services.DefaultRetryConfig{}},
-	})
+	}
+
+	client, err := services.NewClient(config)
+	assert.NoError(t, err)
+	searchService := search.NewService(client)
 
 	concurrentSearches := 15
 
@@ -331,14 +338,16 @@ func TestCreateJobDefaultBackOffRetry(t *testing.T) {
 
 //TestRetryOff and validate that job response is a 429 after certain number of requests
 func TestRetryOff(t *testing.T) {
-	searchService, err := search.NewService(&services.Config{
+	config := &services.Config{
 		Token:         testutils.TestAuthenticationToken,
 		Host:          testutils.TestSplunkCloudHost,
 		Tenant:        testutils.TestTenant,
 		RetryRequests: false,
-	})
+	}
 
+	client, err := services.NewClient(config)
 	require.NoError(t, err)
+	searchService := search.NewService(client)
 
 	concurrentSearches := 50
 	var wg sync.WaitGroup

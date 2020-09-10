@@ -56,17 +56,22 @@ func main() {
 	// Get client
 	logInfo.Print("Creating identity service client")
 
-	client, err := identity.NewService(&services.Config{
+	config := &services.Config{
 		Token:        testutils.TestAuthenticationToken,
 		Host:         testutils.TestSplunkCloudHost,
 		Tenant:       testutils.TestTenant,
 		RoundTripper: util.NewSdkTransport(logInfo),
-	})
+	}
+
+	client, err := services.NewClient(config)
 	exitOnError(err)
+
+	serviceClient := identity.NewService(client)
+
 	logInfo.Print("Validating token")
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 
-	info, err := client.ValidateToken(&input)
+	info, err := serviceClient.ValidateToken(&input)
 	exitOnError(err)
 	logInfo.Print(fmt.Sprintf("Success! Info: %+v", info))
 }

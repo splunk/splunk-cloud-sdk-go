@@ -31,11 +31,16 @@ import (
 
 // TestIdentityClientInit tests initializing an identity service-specific Splunk Cloud client and validating the token provided
 func TestIdentityClientInit(t *testing.T) {
-	identityClient, err := identity.NewService(&services.Config{
+
+	config := &services.Config{
 		Token:  testutils.TestAuthenticationToken,
 		Host:   testutils.TestSplunkCloudHost,
 		Tenant: testutils.TestTenant,
-	})
+	}
+	client, err := services.NewClient(config)
+	require.NoError(t, err)
+
+	identityClient := identity.NewService(client)
 	require.Emptyf(t, err, "error calling services.NewService(): %s", err)
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	info, err := identityClient.ValidateToken(&input)
