@@ -206,7 +206,7 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
 	}
 	client, err := services.NewClient(config)
-	assert.NotNil(t, err)
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	identityClient := identity.NewService(client)
 	require.Nil(t, err, "Error calling NewService(client): %s", err)
@@ -227,7 +227,7 @@ func TestRoundTripperWithInvalidClient(t *testing.T) {
 		RoundTripper: util.NewSdkTransport(&MyLogger{}),
 	}
 	client, err := services.NewClient(config)
-	assert.NotNil(t, err)
+	require.Nil(t, err, "Error calling service.NewClient(): %s", err)
 
 	identityClient := identity.NewService(client)
 	require.Nil(t, err, "Error calling NewService(client): %s", err)

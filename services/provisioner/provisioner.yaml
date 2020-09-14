@@ -815,4 +815,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 0946f4bc226a17b28c46e9494b83fff7a8f8720c path: provisioner/v1beta1/openapi.yaml

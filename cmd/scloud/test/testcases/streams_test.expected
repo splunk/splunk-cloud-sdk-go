@@ -20,7 +20,7 @@ REQUEST BODY:{{"bypassValidation":true,"data":{"edges":[{"sourceNode":"e3f9eb13-
 
 #testcase: streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
 REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f/reactivate
-REQUEST BODY:<nil>
+REQUEST BODY:{{}}
 
 #testcase: streams list-pipelines
 REQUEST URL:streams/v3beta1/pipelines

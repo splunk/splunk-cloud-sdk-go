@@ -64,6 +64,12 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
 	}
+	var extractFieldsDefault string
+	extractFields := &extractFieldsDefault
+	err = flags.ParseFlag(cmd.Flags(), "extract-fields", &extractFields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "extract-fields": ` + err.Error())
+	}
 	var latestDefault string
 	latest := &latestDefault
 	err = flags.ParseFlag(cmd.Flags(), "latest", &latest)
@@ -124,6 +130,7 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 		CollectTimeBuckets:  collectTimeBuckets,
 		EnablePreview:       enablePreview,
 		ExtractAllFields:    extractAllFields,
+		ExtractFields:       extractFields,
 		MaxTime:             maxTime,
 		Messages:            messages,
 		Module:              module,
@@ -170,6 +177,12 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", &extractAllFields)
 	if err != nil {
 		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
+	}
+	var extractFieldsDefault string
+	extractFields := &extractFieldsDefault
+	err = flags.ParseFlag(cmd.Flags(), "extract-fields", &extractFields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "extract-fields": ` + err.Error())
 	}
 	var index string
 	err = flags.ParseFlag(cmd.Flags(), "index", &index)
@@ -224,6 +237,7 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.DeleteSearchJob{
 
 		ExtractAllFields: extractAllFields,
+		ExtractFields:    extractFields,
 		Index:            index,
 		MaxTime:          maxTime,
 		Messages:         messages,
