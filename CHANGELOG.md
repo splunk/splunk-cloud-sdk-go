@@ -1,5 +1,29 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.9.0
+## Go SDK v1.9.0
+
+### Breaking Changes
+*  AppRegistry 
+   *  Removed support for creating app of type `WebApp`, all models and properties pertaining to WebApp have been removed.
+*  Catalog
+   *  Model `Jobdataset` updated to `JobdataSetGet` which includes new field ExtractFields
+*  Service client creation
+   * Service client creation now accepts a Client object instead of a SDK specific config object
+### Features
+*  Search
+   * Model `SearchJob` updated with new field `ExtractFields`
+*  Streams
+   * New endpoints and models added for `CreateRulesPackage`, `GetRulesPackage`, `ListRulesPackage`, `ListCollectJobs`
+
+## SCloud v5.0.0
+### Breaking Changes
+*  Remove AppRegistry command `create-app-web-app` to create `WebApp `
+### Features
+*  New field `extract-fields` added to Search command `create-job`
+*  New commands for `CreateRulesPackage`,` GetRulesPackage`, `ListRulesPackage`, `ListCollectJobs`
+*  Help update - Usage information will not be returned for service specific errors. Short usage information is returned for incorrect command / arguments that are CLI specific, long usage will be reserved for --help
+
 ## Version 1.8.0
 **Breaking Changes**
 
