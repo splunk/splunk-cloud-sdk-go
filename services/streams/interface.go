@@ -61,6 +61,13 @@ type Servicer interface {
 	*/
 	CreatePipeline(pipelineRequest PipelineRequest, resp ...*http.Response) (*PipelineResponse, error)
 	/*
+		CreateRulesPackage - Creates a new RulesPackage
+		Parameters:
+			rulesRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateRulesPackage(rulesRequest RulesRequest, resp ...*http.Response) (*RulesResponse, error)
+	/*
 		CreateTemplate - Creates a template for a tenant.
 		Parameters:
 			templateRequest: Request JSON
@@ -225,6 +232,13 @@ type Servicer interface {
 	*/
 	GetRegistry(query *GetRegistryQueryParams, resp ...*http.Response) (*RegistryModel, error)
 	/*
+		GetRulesPackage - Returns the rules package with specific id
+		Parameters:
+			externalId: RulesPackage ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetRulesPackage(externalId string, resp ...*http.Response) (*RulesResponse, error)
+	/*
 		GetTemplate - Returns an individual template by version.
 		Parameters:
 			templateId: Template ID
@@ -232,6 +246,12 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetTemplate(templateId string, query *GetTemplateQueryParams, resp ...*http.Response) (*TemplateResponse, error)
+	/*
+		ListCollectJobs - Get all collect jobs.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListCollectJobs(resp ...*http.Response) (*PaginatedResponseOfCollectJobResponse, error)
 	/*
 		ListConnections - Returns a list of connections (latest versions only) by tenant ID.
 		Parameters:
@@ -252,6 +272,13 @@ type Servicer interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListPipelines(query *ListPipelinesQueryParams, resp ...*http.Response) (*PaginatedResponseOfPipelineResponse, error)
+	/*
+		ListRulesPackages - Returns all rules packages.
+		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListRulesPackages(query *ListRulesPackagesQueryParams, resp ...*http.Response) (*PaginatedResponseOfRulesResponse, error)
 	/*
 		ListTemplates - Returns a list of all templates.
 		Parameters:
