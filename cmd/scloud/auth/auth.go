@@ -108,7 +108,11 @@ func getEnvironment() *Environment {
 }
 
 // Returns the selected username.
-func getUsername() string {
+func getUsername(cmd *cobra.Command) string {
+	if username, err := cmd.Flags().GetString("uid"); err == nil && len(username) != 0 {
+		return username
+	}
+
 	if username, ok := settings.GetString("username"); ok {
 		return username
 	}
@@ -237,7 +241,7 @@ func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 		return // user creds not needed
 	}
 	if _, ok := profile["username"]; !ok {
-		profile["username"] = getUsername()
+		profile["username"] = getUsername(cmd)
 	}
 
 	if _, ok := profile["password"]; !ok {
