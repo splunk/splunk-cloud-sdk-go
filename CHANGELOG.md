@@ -7,7 +7,7 @@
 *  AppRegistry 
    *  Removed support for creating app of type `WebApp`, all models and properties pertaining to WebApp have been removed.
 *  Catalog
-   *  Model `Jobdataset` updated to `JobdataSetGet` which includes new field ExtractFields
+   *  Model `JobDataset` updated to `JobDatasetGet` which includes new field `ExtractFields`
 *  Service client creation
    * Service client creation now accepts a Client object instead of a SDK specific config object
 ### Features
