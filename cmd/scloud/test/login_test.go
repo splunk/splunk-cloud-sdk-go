@@ -69,6 +69,13 @@ func TestDefaultLoginFlowWithVerbose(t *testing.T) {
 	assert.Equal(t, "", std)
 }
 
+func TestLoginWithUidShouldNotRequireUsername(t *testing.T) {
+	command := "login --uid " + utils.Username + " --pwd " + utils.Password + " --verbose"
+	searchString := "username"
+	resultsContainSearchString := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
+	assert.Equal(t, false, resultsContainSearchString)
+}
+
 func TestAuthLogin(t *testing.T) {
 	setUp(t)
 	auth.LoginSetUp()
