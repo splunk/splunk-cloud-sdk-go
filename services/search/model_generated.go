@@ -45,8 +45,10 @@ type DeleteSearchJob struct {
 	DispatchTime *string `json:"dispatchTime,omitempty"`
 	// This field does not apply to delete search jobs and is defaulted to false.
 	EnablePreview *bool `json:"enablePreview,omitempty"`
-	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.
+	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.
+	ExtractFields *string `json:"extractFields,omitempty"`
 	// The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).
 	MaxTime  *int32    `json:"maxTime,omitempty"`
 	Messages []Message `json:"messages,omitempty"`
@@ -164,8 +166,10 @@ type SearchJob struct {
 	DispatchTime *string `json:"dispatchTime,omitempty"`
 	// Specified whether a search is allowed to collect preview results during the run time.
 	EnablePreview *bool `json:"enablePreview,omitempty"`
-	// Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance.
+	// Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
+	// Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.
+	ExtractFields *string `json:"extractFields,omitempty"`
 	// The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).
 	MaxTime  *int32    `json:"maxTime,omitempty"`
 	Messages []Message `json:"messages,omitempty"`

@@ -105,7 +105,10 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobEnablePreview, "enable-preview", "false", "Specified whether a search is allowed to collect preview results during the run time.")
 
 	var createJobExtractAllFields string
-	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance.")
+	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.")
+
+	var createJobExtractFields string
+	createJobCmd.Flags().StringVar(&createJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.")
 
 	var createJobLatest string
 	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
@@ -149,7 +152,10 @@ func init() {
 	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var deleteJobExtractAllFields string
-	deleteJobCmd.Flags().StringVar(&deleteJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search peformance.")
+	deleteJobCmd.Flags().StringVar(&deleteJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.")
+
+	var deleteJobExtractFields string
+	deleteJobCmd.Flags().StringVar(&deleteJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.")
 
 	var deleteJobLatest string
 	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")

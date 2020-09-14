@@ -48,6 +48,7 @@ components:
         the specified index is invalid
         the event field is missing or empty
         the fields property is invalid
+        the event size is too large
     hecForbiddenError:
       content:
         application/json:
@@ -901,6 +902,8 @@ paths:
           $ref: '#/components/responses/forbiddenError'
         "404":
           $ref: '#/components/responses/notFoundError'
+        "413":
+          $ref: '#/components/responses/badRequestError'
         "422":
           $ref: '#/components/responses/unprocessableEntityError'
         "429":
@@ -1000,6 +1003,8 @@ paths:
           $ref: '#/components/responses/forbiddenError'
         "404":
           $ref: '#/components/responses/notFoundError'
+        "413":
+          $ref: '#/components/responses/badRequestError'
         "429":
           $ref: '#/components/responses/tooManyRequestsError'
         "500":
@@ -1014,4 +1019,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 7db23a1fe90734f414682a1c98651f857984718c path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 0946f4bc226a17b28c46e9494b83fff7a8f8720c path: ingest/v1beta2/openapi.yaml
