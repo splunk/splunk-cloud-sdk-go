@@ -20,7 +20,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
 
 	"github.com/pelletier/go-toml"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
@@ -121,16 +120,11 @@ func PkceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, erro
 	}
 
 	// Override idp_host from config file with -auth_url or auth_url in local settings
-	authURL, _ := cf.GlobalFlags["auth-url"].(string)
+	authURL, _ := localSetting["auth-url"].(string)
 	if authURL != "" {
 		idpHost = authURL
-	} else {
-		if authURL, ok := settings.Get("auth-url").(string); ok {
-			if authURL != "" {
-				idpHost = authURL
-			}
-		}
 	}
+
 	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost)
 
 	// Allow on-prem to use insecure to bypass TLS Verification
