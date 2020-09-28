@@ -48,6 +48,7 @@ const DefaultEnv = "prod"
 
 var ctxCache *fcache.Cache
 var settings *fcache.Cache
+var localSetting map[string]interface{}
 
 // Returns an absolute path. If the given path is not absolute it looks
 // for the environment variable SCLOUD HOME and is joined with that.
@@ -80,7 +81,7 @@ func GetEnvironmentName() string {
 
 	usingEnv := DefaultEnv
 
-	if envName, ok := settings.GetString("env"); ok && envName != "" {
+	if envName, ok := localSetting["env"].(string); ok && envName != "" {
 		usingEnv = envName
 	} else {
 		util.Warning("No \"env\" is set in the config file, using default env instead")
@@ -93,7 +94,7 @@ func GetEnvironmentName() string {
 
 func getEnvironment() *Environment {
 	var name, env string
-	env, _ = cf.GlobalFlags["env"].(string)
+	env, _ = localSetting["env"].(string)
 
 	if env != "" {
 		name = env
@@ -107,13 +108,34 @@ func getEnvironment() *Environment {
 	return envName
 }
 
+func constructLocalSetting() {
+	// copy flag values from settings
+	localSetting = settings.All()
+
+	// iterate global flags to override values
+	for key, value := range cf.GlobalFlags {
+		currentValue := localSetting[key]
+		if currentValue == nil || (isDefaultValue(key, value) && currentValue != value) {
+			localSetting[key] = value
+		}
+	}
+}
+
+func isDefaultValue(key string, value interface{}) bool {
+
+	if key == "timeout" {
+		return value.(uint) != 0
+	}
+	return value != "" && value != false
+}
+
 // Returns the selected username.
 func getUsername(cmd *cobra.Command) string {
 	if username, err := cmd.Flags().GetString("uid"); err == nil && len(username) != 0 {
 		return username
 	}
 
-	if username, ok := settings.GetString("username"); ok {
+	if username, ok := localSetting["username"].(string); ok {
 		return username
 	}
 
@@ -172,11 +194,7 @@ func GetProfileName() string {
 func getTenantName() string {
 	var tenant string
 
-	tenant, _ = cf.GlobalFlags["tenant"].(string)
-	if tenant != "" {
-		return tenant
-	}
-	if tenant, ok := settings.GetString("tenant"); ok {
+	if tenant, ok := localSetting["tenant"].(string); ok {
 		return tenant
 	}
 
@@ -191,42 +209,21 @@ func getTenantName() string {
 // Returns host url from passed-in options or local settings.
 // If host_url is not specified, returns ""
 func getHostURL() string {
-	hostURL, _ := cf.GlobalFlags["host-url"].(string)
-	if hostURL != "" {
-		return hostURL
-	}
-	if setting, ok := settings.GetString("host-url"); ok {
-		return setting
-	}
-
-	return ""
+	hostURL, _ := localSetting["host-url"].(string)
+	return hostURL
 }
 
 // Returns scheme from passed-in options or local settings.
 // If ca-cert is not specified, returns ""
 func getCaCert() string {
-	cacert, _ := cf.GlobalFlags["ca-cert"].(string)
-	if cacert != "" {
-		return cacert
-	}
-	if setting, ok := settings.GetString("ca-cert"); ok {
-		return setting
-	}
-	return ""
+	cacert, _ := localSetting["ca-cert"].(string)
+	return cacert
 }
 
 // Defaults to false, reads from settings first.
 // Overridden by --insecure flag
 func isInsecure() bool {
-	insecure := false
-	insecure, _ = cf.GlobalFlags["insecure"].(bool)
-	if insecure != false {
-		return insecure
-	}
-	// local settings cache default value
-	if insecure, ok := settings.Get("insecure").(bool); ok {
-		return insecure
-	}
+	insecure, _ := localSetting["insecure"].(bool)
 
 	return insecure
 }
@@ -363,6 +360,8 @@ func loadConfigs() error {
 	if err != nil {
 		return err
 	}
+
+	constructLocalSetting()
 
 	ctxCachePath := os.Getenv("SCLOUD_CACHE_PATH")
 
