@@ -160,18 +160,6 @@ type Config struct {
 	ClientVersion string
 }
 
-// RequestParams contains all the optional request URL parameters
-type RequestParams struct {
-	// Method is the HTTP method of the request
-	Method string
-	// URL is the URL of the request
-	URL url.URL
-	// Body is the body of the request
-	Body interface{}
-	// Headers are additional headers to add to the request
-	Headers map[string]string
-}
-
 // NewRequest creates a new HTTP Request and set proper header
 func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers map[string]string) (*Request, error) {
 	request, err := http.NewRequest(httpMethod, url, body)
