@@ -19,3 +19,15 @@ type IClient interface {
 	Put(requestParams RequestParams) (*http.Response, error)
 	Delete(requestParams RequestParams) (*http.Response, error)
 }
+
+// RequestParams contains all the optional request URL parameters
+type RequestParams struct {
+	// Method is the HTTP method of the request
+	Method string
+	// URL is the URL of the request
+	URL url.URL
+	// Body is the body of the request
+	Body interface{}
+	// Headers are additional headers to add to the request
+	Headers map[string]string
+}

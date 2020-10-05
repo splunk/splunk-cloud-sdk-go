@@ -5495,4 +5495,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 0946f4bc226a17b28c46e9494b83fff7a8f8720c path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: streams/v3beta1/openapi.yaml

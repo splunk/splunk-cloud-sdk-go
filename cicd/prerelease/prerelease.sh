@@ -59,9 +59,6 @@ git fetch --all && git pull --all
 # Re-generate the latest interface.go files for each service
 ####################################################################################################
 echo "Preparing v${NEW_VERSION} for release ..."
-echo "Regenerating the services/*/interface.go files ..."
-make generate_interface
-git add services/*/interface.go
 ####################################################################################################
 # Update services/client_info.go using the pre-release tag e.g. 0.9.1 for v0.9.1rc2
 ####################################################################################################
