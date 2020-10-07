@@ -135,5 +135,9 @@ publish:
 publish_scloud:
 	SIGN_PACKAGES=true SCLOUD_SRC_PATH=$(SCLOUD_SRC_PATH) ./cicd/scripts/build_cross_compile_scloud.sh
 	./cicd/publish/scloud/publish_github.sh
+	make publish_homebrew
+
+publish_homebrew:
+	sh ./cicd/publish/scloud/publish_homebrew.sh
 
 .FORCE:
