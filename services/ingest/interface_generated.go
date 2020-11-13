@@ -20,6 +20,7 @@ package ingest
 
 import (
 	"net/http"
+	"os"
 )
 
 // ServicerGenerated represents the interface for implementing all endpoints for this service
@@ -80,4 +81,11 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	PutCollectorToken(tokenName string, hecTokenUpdateRequest HecTokenUpdateRequest, resp ...*http.Response) (*HecTokenAccessResponse, error)
+	/*
+		UploadFiles - Upload a CSV or text file that contains events.
+		Parameters:
+			upfile
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UploadFiles(upfile **os.File, resp ...*http.Response) (*UploadSuccessResponse, error)
 }

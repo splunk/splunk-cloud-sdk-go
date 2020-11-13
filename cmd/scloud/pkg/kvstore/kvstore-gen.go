@@ -453,3 +453,29 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	jsonx.Pprint(cmd, resp)
 	return nil
 }
+
+// TruncateRecords Deletes all the records in a collection.
+func TruncateRecords(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var collection string
+	err = flags.ParseFlag(cmd.Flags(), "collection", &collection)
+	if err != nil {
+		return fmt.Errorf(`error parsing "collection": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.KVStoreService.TruncateRecords(collection)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

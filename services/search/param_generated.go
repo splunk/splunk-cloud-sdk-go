@@ -29,11 +29,11 @@ package search
 type ListEventsSummaryQueryParams struct {
 	// Count : The maximum number of entries to return. Set to 0 to return all available entries.
 	Count *int32 `key:"count"`
-	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Earliest string `key:"earliest"`
 	// Field : A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
 	Field string `key:"field"`
-	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Latest string `key:"latest"`
 	// Offset : Index of first item to return.
 	Offset *int32 `key:"offset"`
@@ -68,9 +68,9 @@ func (q ListEventsSummaryQueryParams) SetOffset(v int32) ListEventsSummaryQueryP
 // For convenience ListFieldsSummaryQueryParams can be formed in a single statement, for example:
 //     `v := ListFieldsSummaryQueryParams{}.SetEarliest(...).SetLatest(...)`
 type ListFieldsSummaryQueryParams struct {
-	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Earliest string `key:"earliest"`
-	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Latest string `key:"latest"`
 }
 

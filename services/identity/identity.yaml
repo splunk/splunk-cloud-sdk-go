@@ -65,6 +65,23 @@ components:
       required: true
       schema:
         type: string
+    email:
+      description: User email address for the authorization request
+      in: query
+      name: email
+      required: false
+      schema:
+        maxLength: 320
+        pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
+        type: string
+    encodeState:
+      description: 1, true or 0, false for encoding state
+      in: query
+      name: encode_state
+      required: false
+      schema:
+        maxLength: 5
+        type: string
     group:
       description: The group name.
       in: path
@@ -81,8 +98,7 @@ components:
       schema:
         type: string
     include:
-      description: Include additional information to return when validating tenant
-        membership. Valid parameters [tenant, principal]
+      description: Include additional information to return when validating tenant membership. Valid parameters [tenant, principal]
       in: query
       name: include
       required: false
@@ -96,15 +112,6 @@ components:
         minItems: 0
         type: array
         uniqueItems: true
-    includeDetails:
-      description: Switch for returning object details in list
-      in: query
-      name: include
-      required: false
-      schema:
-        enum:
-        - details
-        type: string
     inviteId:
       description: The invite ID.
       in: query
@@ -264,6 +271,15 @@ components:
         maxLength: 36
         minLength: 4
         type: string
+    tenantQuery:
+      description: Tenant for the authorization request
+      in: query
+      name: tenant
+      required: false
+      schema:
+        maxLength: 36
+        minLength: 4
+        type: string
     version:
       description: The service API version.
       in: path
@@ -313,37 +329,6 @@ components:
         enum:
         - v3alpha1
         type: string
-  requestBodies:
-    createTokenAuth:
-      content:
-        application/x-www-form-urlencoded:
-          schema:
-            properties:
-              accept_tos:
-                type: string
-              client_assertion:
-                type: string
-              client_assertion_type:
-                type: string
-              client_id:
-                type: string
-              client_secret:
-                type: string
-              code:
-                type: string
-              code_verifier:
-                type: string
-              grant_type:
-                type: string
-              redirect_uri:
-                type: string
-              refresh_token:
-                type: string
-              scope:
-                type: string
-            required:
-            - grant_type
-            type: object
   schemas:
     AddGroupMemberAsAnAdminBody:
       properties:
@@ -375,6 +360,24 @@ components:
       required:
       - name
       type: object
+    AddInvisibleMemberBody:
+      properties:
+        expires_in:
+          description: The expiration time of the member in seconds.
+          format: int32
+          type: integer
+        name:
+          description: The name of the member to be added.
+          minLength: 2
+          type: string
+          x-case-insensitive: true
+        reason:
+          description: The reason you are adding this member.
+          type: string
+      required:
+      - name
+      - reason
+      type: object
     AddMemberBody:
       properties:
         name:
@@ -405,26 +408,6 @@ components:
           type: string
         tenant:
           type: string
-      type: object
-    AppList:
-      description: A list of app.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/App'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
       type: object
     Authn:
       properties:
@@ -661,6 +644,25 @@ components:
       required:
       - token
       type: object
+    DeviceAuthInfo:
+      properties:
+        device_code:
+          type: string
+        expires_in:
+          type: integer
+        interval:
+          type: integer
+        user_code:
+          type: string
+        verification_uri:
+          type: string
+      required:
+      - device_code
+      - user_code
+      - verification_uri
+      - expires_in
+      - interval
+      type: object
     Domain:
       properties:
         createdAt:
@@ -747,26 +749,6 @@ components:
       - memberCount
       - roleCount
       type: object
-    GroupList:
-      description: A list of group.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Group'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     GroupMember:
       description: Represents a member that belongs to a group
       properties:
@@ -828,16 +810,9 @@ components:
     IdentityProviderList:
       description: A list of identity provider.
       properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/IdentityProvider'
-          type: object
-          x-omitempty: true
         items:
           items:
-            type: string
+            $ref: '#/components/schemas/IdentityProvider'
           type: array
         nextLink:
           type: string
@@ -903,26 +878,6 @@ components:
         tenant:
           type: string
       type: object
-    KeyList:
-      description: A list of api key.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Key'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     KeySecret:
       properties:
         clientId:
@@ -960,6 +915,10 @@ components:
           type: string
         addedBy:
           type: string
+        expiresAt:
+          format: date-time
+          nullable: true
+          type: string
         groupCount:
           type: integer
         name:
@@ -968,32 +927,15 @@ components:
           $ref: '#/components/schemas/PrincipalProfile'
         tenant:
           type: string
+        visible:
+          nullable: true
+          type: boolean
       required:
       - tenant
       - name
       - addedAt
       - addedBy
       - groupCount
-      type: object
-    MemberList:
-      description: A list of Members belonging to a particular Tenant.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Member'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
       type: object
     OAuth2Client:
       properties:
@@ -1102,26 +1044,6 @@ components:
       - service_account
       - service
       type: string
-    PrincipalList:
-      description: A list of Principals.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Principal'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     PrincipalProfile:
       description: Profile information for a principal
       properties:
@@ -1197,6 +1119,9 @@ components:
           maxLength: 320
           pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$
           type: string
+        encode_state:
+          maxLength: 5
+          type: string
         invite_id:
           maxLength: 256
           type: string
@@ -1258,26 +1183,6 @@ components:
       - createdAt
       - createdBy
       type: object
-    RoleList:
-      description: A list of role.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Role'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     RolePermission:
       properties:
         addedAt:
@@ -1298,26 +1203,6 @@ components:
       - addedAt
       - addedBy
       type: object
-    RolePermissionList:
-      description: A list of role permissions.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/RolePermission'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     SensitiveTenants:
       items:
         type: string
@@ -1330,8 +1215,6 @@ components:
           type: string
         labels:
           type: object
-        name:
-          type: string
         permissions:
           items:
             type: string
@@ -1348,16 +1231,9 @@ components:
     ServiceAccountList:
       description: A list of service account.
       properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/ServiceAccount'
-          type: object
-          x-omitempty: true
         items:
           items:
-            type: string
+            $ref: '#/components/schemas/ServiceAccount'
           type: array
         nextLink:
           type: string
@@ -1407,26 +1283,6 @@ components:
             type: string
           type: array
       type: object
-    SubscriptionList:
-      description: A list of subscription.
-      properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Subscription'
-          type: object
-          x-omitempty: true
-        items:
-          items:
-            type: string
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
     TakedownPrincipal:
       properties:
         addedAt:
@@ -1453,16 +1309,9 @@ components:
     TakedownPrincipalList:
       description: A list of takedown principals.
       properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/TakedownPrincipal'
-          type: object
-          x-omitempty: true
         items:
           items:
-            type: string
+            $ref: '#/components/schemas/TakedownPrincipal'
           type: array
         nextLink:
           type: string
@@ -1534,16 +1383,9 @@ components:
     TenantList:
       description: A list of tenant.
       properties:
-        count:
-          type: integer
-        details:
-          additionalProperties:
-            $ref: '#/components/schemas/Tenant'
-          type: object
-          x-omitempty: true
         items:
           items:
-            type: string
+            $ref: '#/components/schemas/Tenant'
           type: array
         nextLink:
           type: string
@@ -1607,6 +1449,15 @@ components:
       - title
       - federation_id
       type: object
+    UpdateRoleBody:
+      properties:
+        permissions:
+          items:
+            $ref: '#/components/schemas/PermissionString'
+          type: array
+      required:
+      - permissions
+      type: object
     UpdateTenantBody:
       properties:
         createdBy:
@@ -1663,12 +1514,90 @@ components:
       name: Authorization
       type: apiKey
 info:
-  description: With the Identity service in Splunk Cloud Services, you can authenticate
-    and authorize Splunk Cloud Services users.
+  description: With the Identity service in Splunk Cloud Services, you can authenticate and authorize Splunk Cloud Services users.
   title: Identity
   version: v2beta1.20
 openapi: 3.0.0
 paths:
+  /{tenant}/identity/{version}/admin/escalate:
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/version'
+    post:
+      description: Adds an invisible member in a given tenant.
+      operationId: addInvisibleMember
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddInvisibleMemberBody'
+        description: The invisible member to add to the tenant.
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: The invisible member was successfully added.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The user isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "409":
+          description: Invisible member already exists.
+        "422":
+          description: The provided fields aren't valid.
+        "423":
+          description: The resource is locked.
+      x-authz-scope: identity.admin.members.write
+  /{tenant}/identity/{version}/admin/members/{member}:
+    delete:
+      description: Remove a member in a tenant.
+      operationId: removeMemberAdmin
+      responses:
+        "204":
+          description: Member successfully removed.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The user isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "423":
+          description: The resource is locked.
+      x-authz-scope: identity.admin.members.write
+    get:
+      description: Gets a member in a tenant.
+      operationId: getMemberAdmin
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: Operation was a success.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The user isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "422":
+          description: The provided fields aren't valid.
+        "423":
+          description: The resource is locked.
+      x-authz-scope: identity.admin.members.read
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/version'
+    - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/groups:
     get:
       description: List the groups that exist in a given tenant.
@@ -1855,8 +1784,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupMember'
-          description: The group-to-member relationship details were successfully
-            returned.
+          description: The group-to-member relationship details were successfully returned.
         "400":
           description: The request isn't valid.
         "401":
@@ -1872,8 +1800,7 @@ paths:
     - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/groups/{group}/roles:
     get:
-      description: Returns a list of the roles that are attached to a group within
-        a given tenant.
+      description: Returns a list of the roles that are attached to a group within a given tenant.
       operationId: listGroupRoles
       responses:
         "200":
@@ -2111,8 +2038,7 @@ paths:
           description: The set of permissions was successfully returned.
           headers:
             Cache-Control:
-              description: max-age=<seconds>, specifies the time member permission
-                can be cached.
+              description: max-age=<seconds>, specifies the time member permission can be cached.
               schema:
                 type: string
         "400":
@@ -2390,8 +2316,7 @@ paths:
               schema:
                 type: string
             X-Internal-Cache-Control:
-              description: max-age=<seconds>, specifies the time a token can be cached.
-                This is meant for internal services only.
+              description: max-age=<seconds>, specifies the time a token can be cached. This is meant for internal services only.
               schema:
                 type: string
         "400":
@@ -2408,8 +2333,7 @@ paths:
     - $ref: '#/components/parameters/tenant'
   /system/identity/v2beta1/principals:
     get:
-      description: Returns the list of principals that the Identity service knows
-        about.
+      description: Returns the list of principals that the Identity service knows about.
       operationId: listPrincipals
       responses:
         "200":
@@ -2563,13 +2487,11 @@ paths:
     parameters:
     - $ref: '#/components/parameters/principal'
     post:
-      description: Revoke all existing tokens issued to a principal. Principals can
-        reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+      description: Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
       operationId: revokePrincipalAuthTokens
       responses:
         "204":
-          description: All tokens associated with this principal were successfully
-            revoked.
+          description: All tokens associated with this principal were successfully revoked.
         "400":
           description: The request isn't valid.
         "401":
@@ -2584,4 +2506,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: identity/v2beta1/openapi.yaml

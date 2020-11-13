@@ -1,8 +1,8 @@
-#testcase: action create-action-email-action --kind email --name scloud_test_action_test --members kk@splunk.com --members aa@splunk.com
+#testcase: action create-action-email --name scloud_test_action_test --members kk@splunk.com --members aa@splunk.com
 REQUEST URL:action/v1beta2/actions
 REQUEST BODY:{{"kind":"email","name":"scloud_test_action_test","members":["kk@splunk.com","aa@splunk.com"]}}
 
-#testcase: action update-action-email-action-mutable --action-name scloud_test_action_test --subject "newsubject"
+#testcase: action update-action-email-mutable --action-name scloud_test_action_test --subject "newsubject"
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test
 REQUEST BODY:{{"subject":"newsubject"}}
 
@@ -14,11 +14,11 @@ REQUEST BODY:<nil>
 REQUEST URL:action/v1beta2/webhook/keys
 REQUEST BODY:<nil>
 
-#testcase: action create-action-webhook-action --kind webhook --name scloud_test_action_test_wh --title newtitle --webhook-payload "{{ .name }} is a {{ .species }}" --webhook-url "https://webhook.site/test"
+#testcase: action create-action-webhook --name scloud_test_action_test_wh --title newtitle --webhook-payload "{{ .name }} is a {{ .species }}" --webhook-url "https://webhook.site/test"
 REQUEST URL:action/v1beta2/actions
 REQUEST BODY:{{"kind":"webhook","name":"scloud_test_action_test_wh","webhookPayload":"{{ .name }} is a {{ .species }}","webhookUrl":"https://webhook.site/test","title":"newtitle"}}
 
-#testcase: action update-action-webhook-action-mutable --action-name scloud_test_action_test_wh --title "newtitle"
+#testcase: action update-action-webhook-mutable --action-name scloud_test_action_test_wh --title "newtitle"
 REQUEST URL:action/v1beta2/actions/scloud_test_action_test_wh
 REQUEST BODY:{{"title":"newtitle"}}
 

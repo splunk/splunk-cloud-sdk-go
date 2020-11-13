@@ -8,9 +8,9 @@ components:
       schema:
         pattern: ^Bearer .+
         type: string
-    ECStackName:
+    EcStackName:
       in: path
-      name: ECStackName
+      name: ecStackName
       required: true
       schema:
         maxLength: 200
@@ -508,8 +508,7 @@ components:
         $ref: '#/components/schemas/UpdateTenantStatusJobInfo'
       type: array
 info:
-  description: With the Provisioner service in Splunk Cloud Services, you can provision
-    and manage tenants.
+  description: With the Provisioner service in Splunk Cloud Services, you can provision and manage tenants.
   title: Provisioner
   version: v1beta1.4
 openapi: 3.0.0
@@ -544,8 +543,7 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
     post:
-      description: Creates an invitation for a person to join the tenant using their
-        email address.
+      description: Creates an invitation for a person to join the tenant using their email address.
       operationId: createInvite
       requestBody:
         content:
@@ -695,8 +693,7 @@ paths:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     post:
-      description: Creates a new job that provisions a new tenant and subscribes apps
-        to the tenant.
+      description: Creates a new job that provisions a new tenant and subscribes apps to the tenant.
       operationId: createProvisionJob
       requestBody:
         content:
@@ -815,4 +812,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: provisioner/v1beta1/openapi.yaml

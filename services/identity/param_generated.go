@@ -23,6 +23,26 @@
 
 package identity
 
+// AddInvisibleMemberversion : The service API version.
+type AddInvisibleMemberversion string
+
+// List of AddInvisibleMemberversion values
+const (
+	AddInvisibleMemberversionV2beta1  AddInvisibleMemberversion = "v2beta1"
+	AddInvisibleMemberversionV2alpha1 AddInvisibleMemberversion = "v2alpha1"
+	AddInvisibleMemberversionV3alpha1 AddInvisibleMemberversion = "v3alpha1"
+)
+
+// GetMemberAdminversion : The service API version.
+type GetMemberAdminversion string
+
+// List of GetMemberAdminversion values
+const (
+	GetMemberAdminversionV2beta1  GetMemberAdminversion = "v2beta1"
+	GetMemberAdminversionV2alpha1 GetMemberAdminversion = "v2alpha1"
+	GetMemberAdminversionV3alpha1 GetMemberAdminversion = "v3alpha1"
+)
+
 // ListGroupsQueryParams represents valid query parameters for the ListGroups operation
 // For convenience ListGroupsQueryParams can be formed in a single statement, for example:
 //     `v := ListGroupsQueryParams{}.SetAccess(...)`
@@ -56,6 +76,16 @@ func (q ListMemberPermissionsQueryParams) SetScopeFilter(v string) ListMemberPer
 	q.ScopeFilter = v
 	return q
 }
+
+// RemoveMemberAdminversion : The service API version.
+type RemoveMemberAdminversion string
+
+// List of RemoveMemberAdminversion values
+const (
+	RemoveMemberAdminversionV2beta1  RemoveMemberAdminversion = "v2beta1"
+	RemoveMemberAdminversionV2alpha1 RemoveMemberAdminversion = "v2alpha1"
+	RemoveMemberAdminversionV3alpha1 RemoveMemberAdminversion = "v3alpha1"
+)
 
 // ValidateTokenQueryParams represents valid query parameters for the ValidateToken operation
 // For convenience ValidateTokenQueryParams can be formed in a single statement, for example:

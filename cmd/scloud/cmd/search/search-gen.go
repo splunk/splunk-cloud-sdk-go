@@ -99,19 +99,19 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobCollectTimeBuckets, "collect-time-buckets", "false", "Specified whether a search is allowed to collect Timeline Buckets summary during the run time.")
 
 	var createJobEarliest string
-	createJobCmd.Flags().StringVar(&createJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	createJobCmd.Flags().StringVar(&createJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var createJobEnablePreview string
 	createJobCmd.Flags().StringVar(&createJobEnablePreview, "enable-preview", "false", "Specified whether a search is allowed to collect preview results during the run time.")
 
 	var createJobExtractAllFields string
-	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.")
+	createJobCmd.Flags().StringVar(&createJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.")
 
 	var createJobExtractFields string
 	createJobCmd.Flags().StringVar(&createJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.")
 
 	var createJobLatest string
-	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var createJobMaxTime int32
 	createJobCmd.Flags().Int32Var(&createJobMaxTime, "max-time", 0, "The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).")
@@ -123,7 +123,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobModule, "module", "", "The module to run the search in. The default module is used if a module is not specified.")
 
 	var createJobRelativeTimeAnchor string
-	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
+	createJobCmd.Flags().StringVar(&createJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify. For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '2020-10-05T13:15:30Z' then 'resolvedEarliest' is snapped to '2020-10-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped. If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
 
 	var createJobRequiredFreshness int32
 	createJobCmd.Flags().Int32Var(&createJobRequiredFreshness, "required-freshness", 0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.")
@@ -132,7 +132,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
 
 	var createJobTimezone string
-	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
+	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
 
 	searchCmd.AddCommand(deleteJobCmd)
 
@@ -149,7 +149,7 @@ func init() {
 	deleteJobCmd.MarkFlagRequired("predicate")
 
 	var deleteJobEarliest string
-	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var deleteJobExtractAllFields string
 	deleteJobCmd.Flags().StringVar(&deleteJobExtractAllFields, "extract-all-fields", "false", "Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.")
@@ -158,7 +158,7 @@ func init() {
 	deleteJobCmd.Flags().StringVar(&deleteJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.")
 
 	var deleteJobLatest string
-	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var deleteJobMaxTime int32
 	deleteJobCmd.Flags().Int32Var(&deleteJobMaxTime, "max-time", 0, "The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).")
@@ -167,13 +167,13 @@ func init() {
 	deleteJobCmd.Flags().StringVar(&deleteJobMessages, "messages", "", "")
 
 	var deleteJobRelativeTimeAnchor string
-	deleteJobCmd.Flags().StringVar(&deleteJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
+	deleteJobCmd.Flags().StringVar(&deleteJobRelativeTimeAnchor, "relative-time-anchor", "", "Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify. For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '2020-10-05T13:15:30Z' then 'resolvedEarliest' is snapped to '2020-10-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped. If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.")
 
 	var deleteJobStatus string
 	deleteJobCmd.Flags().StringVar(&deleteJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
 
 	var deleteJobTimezone string
-	deleteJobCmd.Flags().StringVar(&deleteJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
+	deleteJobCmd.Flags().StringVar(&deleteJobTimezone, "timezone", "", "The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
 
 	searchCmd.AddCommand(getJobCmd)
 
@@ -191,13 +191,13 @@ func init() {
 	listEventsSummaryCmd.Flags().Int32Var(&listEventsSummaryCount, "count", 0, "The maximum number of entries to return. Set to 0 to return all available entries.")
 
 	var listEventsSummaryEarliest string
-	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var listEventsSummaryField string
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryField, "field", "", "A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.")
 
 	var listEventsSummaryLatest string
-	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var listEventsSummaryOffset int32
 	listEventsSummaryCmd.Flags().Int32Var(&listEventsSummaryOffset, "offset", 0, "Index of first item to return.")
@@ -209,10 +209,10 @@ func init() {
 	listFieldsSummaryCmd.MarkFlagRequired("sid")
 
 	var listFieldsSummaryEarliest string
-	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var listFieldsSummaryLatest string
-	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	searchCmd.AddCommand(listJobsCmd)
 

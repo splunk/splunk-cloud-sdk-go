@@ -1,8 +1,7 @@
 components:
   parameters:
     authorizationHeaderParam:
-      description: The access token provided by the user (obtained from a known identity
-        provider).
+      description: The access token provided by the user (obtained from a known identity provider).
       in: header
       name: authorization
       required: true
@@ -172,8 +171,7 @@ components:
       content:
         application/json:
           schema:
-            description: List of job summaries i.e. scheduling informations, owner,
-              updates, connector.
+            description: List of job summaries i.e. scheduling informations, owner, updates, connector.
             properties:
               data:
                 items:
@@ -404,8 +402,7 @@ components:
           title: message
           type: string
         moreInfo:
-          description: An optional link to a web page with more information on the
-            error.
+          description: An optional link to a web page with more information on the error.
           title: moreInfo
           type: string
       required:
@@ -610,8 +607,7 @@ components:
       title: requirement
       type: object
     resourceRequirements:
-      description: A struct that contains resource requirement specifications for
-        different components of an execution.
+      description: A struct that contains resource requirement specifications for different components of an execution.
       properties:
         connector:
           $ref: '#/components/schemas/requirement'
@@ -652,8 +648,7 @@ components:
       title: staticScale
       type: object
 info:
-  description: With the Collect service in Splunk Cloud Services, you can manage how
-    data collection jobs ingest event and metric data.
+  description: With the Collect service in Splunk Cloud Services, you can manage how data collection jobs ingest event and metric data.
   title: Collect Service
   version: v1beta1.8
 openapi: 3.0.0
@@ -705,13 +700,7 @@ paths:
       summary: Returns a list of all jobs that belong to a tenant.
       x-authz-scope: collect.jobs.read
     patch:
-      description: This is a non-atomic operation and the results are returned as
-        a list with each job patch result as its element. This API returns `200 OK`
-        regardless of how many jobs were successfully patched. You must read the response
-        body to find out if all jobs are patched. When the API is called, the `jobIDs`
-        or `connectorID` must be specified. Do not specify more than one of them at
-        the same time. This API returns `403` if the number of collect workers is
-        over a certain limit.
+      description: This is a non-atomic operation and the results are returned as a list with each job patch result as its element. This API returns `200 OK` regardless of how many jobs were successfully patched. You must read the response body to find out if all jobs are patched. When the API is called, the `jobIDs` or `connectorID` must be specified. Do not specify more than one of them at the same time. This API returns `403` if the number of collect workers is over a certain limit.
       operationId: patchJobs
       parameters:
       - $ref: '#/components/parameters/authorizationHeaderParam'
@@ -736,10 +725,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-          description: 'The request was invalid because: * `jobIDs` nor `connectorID`
-            were specified * `jobIDs` and `connectorID` were specified at the same
-            time * any ID in `jobIDs` was an invalid UUID * `connectorID` was not
-            a valid connector ID * the JSON object in request body is invalid'
+          description: 'The request was invalid because: * `jobIDs` nor `connectorID` were specified * `jobIDs` and `connectorID` were specified at the same time * any ID in `jobIDs` was an invalid UUID * `connectorID` was not a valid connector ID * the JSON object in request body is invalid'
         "401":
           $ref: '#/components/responses/401'
         "403":
@@ -760,12 +746,10 @@ paths:
           $ref: '#/components/responses/504'
         default:
           $ref: '#/components/responses/500'
-      summary: Finds all jobs that match the query and modifies the with the changes
-        specified in the request.
+      summary: Finds all jobs that match the query and modifies the with the changes specified in the request.
       x-authz-scope: collect.jobs.update
     post:
-      description: This API returns `403` if the number of collect workers is over
-        a certain limit.
+      description: This API returns `403` if the number of collect workers is over a certain limit.
       operationId: createJob
       parameters:
       - $ref: '#/components/parameters/authorizationHeaderParam'
@@ -856,8 +840,7 @@ paths:
       summary: Returns a job based on the job ID.
       x-authz-scope: collect.jobs.read
     patch:
-      description: This API returns `403` if the number of collect workers is over
-        a certain limit.
+      description: This API returns `403` if the number of collect workers is over a certain limit.
       operationId: patchJob
       parameters:
       - $ref: '#/components/parameters/authorizationHeaderParam'
@@ -881,8 +864,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-          description: 'The request was invalid because: * the JSON object in request
-            body is invalid'
+          description: 'The request was invalid because: * the JSON object in request body is invalid'
         "401":
           $ref: '#/components/responses/401'
         "403":
@@ -1016,4 +998,4 @@ paths:
       x-authz-scope: collect.jobs.executions.update
       x-internal: false
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: collect/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: collect/v1beta1/openapi.yaml

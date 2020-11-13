@@ -47,13 +47,6 @@ type Servicer interface {
 	*/
 	NewBatchEventsSender(batchSize int, interval int64, payLoadSize int) (*BatchEventsSender, error)
 	/*
-		UploadFiles - Upload a CSV or text file that contains events.
-		Parameters:
-			filename
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UploadFiles(filename string, resp ...*http.Response) error
-	/*
 		UploadFilesStream - Upload stream of io.Reader.
 		Parameters:
 			stream

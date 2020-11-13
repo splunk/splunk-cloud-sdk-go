@@ -22,6 +22,13 @@ var addGroupRoleCmd = &cobra.Command{
 	RunE:  impl.AddGroupRole,
 }
 
+// addInvisibleMember -- Adds an invisible member in a given tenant.
+var addInvisibleMemberCmd = &cobra.Command{
+	Use:   "add-invisible-member",
+	Short: "Adds an invisible member in a given tenant.",
+	RunE:  impl.AddInvisibleMember,
+}
+
 // addMember -- Adds a member to a given tenant.
 var addMemberCmd = &cobra.Command{
 	Use:   "add-member",
@@ -104,6 +111,13 @@ var getMemberCmd = &cobra.Command{
 	Use:   "get-member",
 	Short: "Returns a member of a given tenant.",
 	RunE:  impl.GetMember,
+}
+
+// getMemberAdmin -- Gets a member in a tenant.
+var getMemberAdminCmd = &cobra.Command{
+	Use:   "get-member-admin",
+	Short: "Gets a member in a tenant.",
+	RunE:  impl.GetMemberAdmin,
 }
 
 // getPrincipal -- Returns the details of a principal, including its tenant membership.
@@ -241,6 +255,13 @@ var removeMemberCmd = &cobra.Command{
 	RunE:  impl.RemoveMember,
 }
 
+// removeMemberAdmin -- Remove a member in a tenant.
+var removeMemberAdminCmd = &cobra.Command{
+	Use:   "remove-member-admin",
+	Short: "Remove a member in a tenant.",
+	RunE:  impl.RemoveMemberAdmin,
+}
+
 // removeRolePermission -- Removes a permission from the role.
 var removeRolePermissionCmd = &cobra.Command{
 	Use:   "remove-role-permission",
@@ -290,6 +311,23 @@ func init() {
 	var addGroupRoleName string
 	addGroupRoleCmd.Flags().StringVar(&addGroupRoleName, "name", "", "This is a required parameter. ")
 	addGroupRoleCmd.MarkFlagRequired("name")
+
+	identityCmd.AddCommand(addInvisibleMemberCmd)
+
+	var addInvisibleMemberName string
+	addInvisibleMemberCmd.Flags().StringVar(&addInvisibleMemberName, "name", "", "This is a required parameter. The name of the member to be added.")
+	addInvisibleMemberCmd.MarkFlagRequired("name")
+
+	var addInvisibleMemberReason string
+	addInvisibleMemberCmd.Flags().StringVar(&addInvisibleMemberReason, "reason", "", "This is a required parameter. The reason you are adding this member.")
+	addInvisibleMemberCmd.MarkFlagRequired("reason")
+
+	var addInvisibleMemberVersion string
+	addInvisibleMemberCmd.Flags().StringVar(&addInvisibleMemberVersion, "version", "", "This is a required parameter. The service API version.")
+	addInvisibleMemberCmd.MarkFlagRequired("version")
+
+	var addInvisibleMemberExpiresIn int32
+	addInvisibleMemberCmd.Flags().Int32Var(&addInvisibleMemberExpiresIn, "expires-in", 0, "The expiration time of the member in seconds.")
 
 	identityCmd.AddCommand(addMemberCmd)
 
@@ -399,6 +437,16 @@ func init() {
 	var getMemberMember string
 	getMemberCmd.Flags().StringVar(&getMemberMember, "member", "", "This is a required parameter. The member name.")
 	getMemberCmd.MarkFlagRequired("member")
+
+	identityCmd.AddCommand(getMemberAdminCmd)
+
+	var getMemberAdminMember string
+	getMemberAdminCmd.Flags().StringVar(&getMemberAdminMember, "member", "", "This is a required parameter. The member name.")
+	getMemberAdminCmd.MarkFlagRequired("member")
+
+	var getMemberAdminVersion string
+	getMemberAdminCmd.Flags().StringVar(&getMemberAdminVersion, "version", "", "This is a required parameter. The service API version.")
+	getMemberAdminCmd.MarkFlagRequired("version")
 
 	identityCmd.AddCommand(getPrincipalCmd)
 
@@ -519,6 +567,16 @@ func init() {
 	var removeMemberMember string
 	removeMemberCmd.Flags().StringVar(&removeMemberMember, "member", "", "This is a required parameter. The member name.")
 	removeMemberCmd.MarkFlagRequired("member")
+
+	identityCmd.AddCommand(removeMemberAdminCmd)
+
+	var removeMemberAdminMember string
+	removeMemberAdminCmd.Flags().StringVar(&removeMemberAdminMember, "member", "", "This is a required parameter. The member name.")
+	removeMemberAdminCmd.MarkFlagRequired("member")
+
+	var removeMemberAdminVersion string
+	removeMemberAdminCmd.Flags().StringVar(&removeMemberAdminVersion, "version", "", "This is a required parameter. The service API version.")
+	removeMemberAdminCmd.MarkFlagRequired("version")
 
 	identityCmd.AddCommand(removeRolePermissionCmd)
 

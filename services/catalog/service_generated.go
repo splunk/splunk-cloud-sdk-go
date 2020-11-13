@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *
- * Metadata Catalog
+ * Metadata Catalog service
  *
  * With the Metadata Catalog in Splunk Cloud Services you can create and manage knowledge objects such as datasets, fields, rules, actions, dashboards, and workflows.
  *
@@ -315,7 +315,7 @@ func (s *Service) CreateDataset(datasetPost DatasetPost, resp ...*http.Response)
 		datasetImportedBy
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error) {
+func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error) {
 	pp := struct {
 		Datasetresourcename string
 	}{
@@ -337,7 +337,7 @@ func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImporte
 	if err != nil {
 		return nil, err
 	}
-	var rb ImportDataset
+	var rb Dataset
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -347,10 +347,10 @@ func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImporte
 	Creates a new dataset import using the ID of the imported dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
-		datasetImportedBy
+		ImportDataset
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error) {
+func (s *Service) CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error) {
 	pp := struct {
 		Datasetid string
 	}{
@@ -372,7 +372,7 @@ func (s *Service) CreateDatasetImportById(datasetid string, datasetImportedBy Da
 	if err != nil {
 		return nil, err
 	}
-	var rb ImportDataset
+	var rb DatasetImportedBy
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

@@ -85,6 +85,55 @@ func AddGroupRole(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// AddInvisibleMember Adds an invisible member in a given tenant.
+func AddInvisibleMember(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var expires_inDefault int32
+	expires_in := &expires_inDefault
+	err = flags.ParseFlag(cmd.Flags(), "expires-in", &expires_in)
+	if err != nil {
+		return fmt.Errorf(`error parsing "expires-in": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var reason string
+	err = flags.ParseFlag(cmd.Flags(), "reason", &reason)
+	if err != nil {
+		return fmt.Errorf(`error parsing "reason": ` + err.Error())
+	}
+	var version model.AddInvisibleMemberversion
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.AddInvisibleMemberBody{
+
+		ExpiresIn: expires_in,
+		Name:      name,
+		Reason:    reason,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.AddInvisibleMember(version, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // AddMember Adds a member to a given tenant.
 func AddMember(cmd *cobra.Command, args []string) error {
 
@@ -480,6 +529,37 @@ func GetMember(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetMember(member)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetMemberAdmin Gets a member in a tenant.
+func GetMemberAdmin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var member string
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
+	if err != nil {
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
+	}
+	var version model.GetMemberAdminversion
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.GetMemberAdmin(version, member)
 	if err != nil {
 		return err
 	}
@@ -990,6 +1070,37 @@ func RemoveMember(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	err = client.IdentityService.RemoveMember(member)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RemoveMemberAdmin Remove a member in a tenant.
+func RemoveMemberAdmin(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var member string
+	err = flags.ParseFlag(cmd.Flags(), "member", &member)
+	if err != nil {
+		return fmt.Errorf(`error parsing "member": ` + err.Error())
+	}
+	var version model.RemoveMemberAdminversion
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.IdentityService.RemoveMemberAdmin(version, member)
 	if err != nil {
 		return err
 	}

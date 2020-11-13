@@ -113,6 +113,11 @@ func CreateCollectJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connector-id": ` + err.Error())
 	}
+	var cron string
+	err = flags.ParseFlag(cmd.Flags(), "cron", &cron)
+	if err != nil {
+		return fmt.Errorf(`error parsing "cron": ` + err.Error())
+	}
 	var description string
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
@@ -128,6 +133,11 @@ func CreateCollectJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "parameters": ` + err.Error())
 	}
+	var workers int32
+	err = flags.ParseFlag(cmd.Flags(), "workers", &workers)
+	if err != nil {
+		return fmt.Errorf(`error parsing "workers": ` + err.Error())
+	}
 	// Form the request body
 	generated_request_body := model.CollectJobRequest{
 
@@ -136,6 +146,10 @@ func CreateCollectJob(cmd *cobra.Command, args []string) error {
 		Description:  description,
 		Name:         name,
 		Parameters:   parameters,
+		Schedule: model.CollectJobSchedule{
+			Cron: cron,
+		},
+		Workers: workers,
 	}
 
 	// Silence Usage
@@ -198,6 +212,53 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// CreateDataStream Creates a data stream for a tenant.
+func CreateDataStream(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var partitionsDefault int32
+	partitions := &partitionsDefault
+	err = flags.ParseFlag(cmd.Flags(), "partitions", &partitions)
+	if err != nil {
+		return fmt.Errorf(`error parsing "partitions": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DataStreamRequest{
+
+		Description: description,
+		Name:        name,
+		Properties: model.DataStreamProperties{
+			Partitions: partitions,
+		},
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.CreateDataStream(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreatePipeline Creates a pipeline.
 func CreatePipeline(cmd *cobra.Command, args []string) error {
 
@@ -248,26 +309,10 @@ func CreateRulesPackage(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var arguments map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "arguments", &arguments)
-	if err != nil {
-		return fmt.Errorf(`error parsing "arguments": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
 	var externalId string
 	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
 	if err != nil {
 		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
-	}
-	var kind string
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
@@ -280,21 +325,10 @@ func CreateRulesPackage(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
 	}
-	var sourcetype string
-	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
+	var sourcetypes map[string]model.RulesPackageSourcetypes
+	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
 	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
-	}
-	var sourcetypeDefinition string
-	err = flags.ParseFlag(cmd.Flags(), "sourcetype-definition", &sourcetypeDefinition)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetype-definition": ` + err.Error())
-	}
-	var sourcetypeDescriptionDefault string
-	sourcetypeDescription := &sourcetypeDescriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "sourcetype-description", &sourcetypeDescription)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetype-description": ` + err.Error())
+		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())
 	}
 	var version string
 	err = flags.ParseFlag(cmd.Flags(), "version", &version)
@@ -304,16 +338,11 @@ func CreateRulesPackage(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.RulesRequest{
 
-		Arguments:             arguments,
-		Description:           description,
-		ExternalId:            externalId,
-		Kind:                  kind,
-		Name:                  name,
-		RulesDescription:      rulesDescription,
-		Sourcetype:            sourcetype,
-		SourcetypeDefinition:  sourcetypeDefinition,
-		SourcetypeDescription: sourcetypeDescription,
-		Version:               version,
+		ExternalId:       externalId,
+		Name:             name,
+		RulesDescription: rulesDescription,
+		Sourcetypes:      sourcetypes,
+		Version:          version,
 	}
 
 	// Silence Usage
@@ -429,25 +458,18 @@ func Decompile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteCollectJob Delete a collect job.
+// DeleteCollectJob Delete all collect jobs.
 func DeleteCollectJob(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.StreamsService.DeleteCollectJob(id)
+	err = client.StreamsService.DeleteCollectJobs()
 	if err != nil {
 		return err
 	}
@@ -474,6 +496,63 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	err = client.StreamsService.DeleteConnection(connectionId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteDataStream Deletes a data stream for a tenant.
+func DeleteDataStream(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.DeleteDataStream(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteEntitlements Delete known entitlements
+func DeleteEntitlements(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appClientId string
+	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
+	}
+	var body []string
+	err = flags.ParseFlag(cmd.Flags(), "body", &body)
+	if err != nil {
+		return fmt.Errorf(`error parsing "body": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.DeleteEntitlements(appClientId, body)
 	if err != nil {
 		return err
 	}
@@ -560,6 +639,32 @@ func DeletePlugin(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeleteRulesPackage Delete a rules package with a specific id
+func DeleteRulesPackage(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var externalId string
+	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.DeleteRulesPackage(externalId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteTemplate Removes a template with a specific ID.
 func DeleteTemplate(cmd *cobra.Command, args []string) error {
 
@@ -583,6 +688,32 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// DescribeDataStream Describes a data stream for a tenant.
+func DescribeDataStream(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.DescribeDataStream(id)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -613,6 +744,32 @@ func GetCollectJob(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetCollectJob(id, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetEntitlements Get known entitlements
+func GetEntitlements(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appClientId string
+	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.GetEntitlements(appClientId)
 	if err != nil {
 		return err
 	}
@@ -1063,8 +1220,8 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRulesPackage Returns the rules package with specific id
-func GetRulesPackage(cmd *cobra.Command, args []string) error {
+// GetRulesPackageById Returns the rules package with specific id
+func GetRulesPackageById(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -1081,7 +1238,7 @@ func GetRulesPackage(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.StreamsService.GetRulesPackage(externalId)
+	resp, err := client.StreamsService.GetRulesPackageById(externalId)
 	if err != nil {
 		return err
 	}
@@ -1241,6 +1398,55 @@ func ListConnectors(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// ListDataStreams Returns a list of datastreams for a tenant.
+func ListDataStreams(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var offsetDefault int32
+	offset := &offsetDefault
+	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "offset": ` + err.Error())
+	}
+	var pageSizeDefault int32
+	pageSize := &pageSizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &pageSize)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var sortDir string
+	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
+	}
+	var sortField string
+	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListDataStreamsQueryParams{}
+	generated_query.Offset = offset
+	generated_query.PageSize = pageSize
+	generated_query.SortDir = sortDir
+	generated_query.SortField = sortField
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ListDataStreams(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // ListPipelines Returns all pipelines.
 func ListPipelines(cmd *cobra.Command, args []string) error {
 
@@ -1309,6 +1515,25 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.ListPipelines(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListRulesKinds Returns all rules kinds.
+func ListRulesKinds(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ListRulesKinds()
 	if err != nil {
 		return err
 	}
@@ -1560,6 +1785,12 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var activateLatestVersionDefault bool
+	activateLatestVersion := &activateLatestVersionDefault
+	err = flags.ParseFlag(cmd.Flags(), "activate-latest-version", &activateLatestVersion)
+	if err != nil {
+		return fmt.Errorf(`error parsing "activate-latest-version": ` + err.Error())
+	}
 	var allowNonRestoredStateDefault bool
 	allowNonRestoredState := &allowNonRestoredStateDefault
 	err = flags.ParseFlag(cmd.Flags(), "allow-non-restored-state", &allowNonRestoredState)
@@ -1580,6 +1811,7 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.ReactivatePipelineRequest{
 
+		ActivateLatestVersion: activateLatestVersion,
 		AllowNonRestoredState: allowNonRestoredState,
 		SkipRestoreState:      skipRestoreState,
 	}
@@ -1626,6 +1858,68 @@ func RegisterPlugin(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.RegisterPlugin(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ReleaseInfo Provides commit sha for release
+func ReleaseInfo(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ReleaseInfo()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// SetEntitlements Create or update entitlements
+func SetEntitlements(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var appClientId string
+	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var value map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "value", &value)
+	if err != nil {
+		return fmt.Errorf(`error parsing "value": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := []model.EntitlementRequest{
+		{
+			Name:  name,
+			Value: value,
+		},
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.SetEntitlements(appClientId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1753,6 +2047,71 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// UpdateCollectJob Patches an existing collect job.
+func UpdateCollectJob(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var cron string
+	err = flags.ParseFlag(cmd.Flags(), "cron", &cron)
+	if err != nil {
+		return fmt.Errorf(`error parsing "cron": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var parameters map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "parameters", &parameters)
+	if err != nil {
+		return fmt.Errorf(`error parsing "parameters": ` + err.Error())
+	}
+	var workersDefault int32
+	workers := &workersDefault
+	err = flags.ParseFlag(cmd.Flags(), "workers", &workers)
+	if err != nil {
+		return fmt.Errorf(`error parsing "workers": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.CollectJobPatchRequest{
+
+		Description: description,
+		Name:        name,
+		Parameters:  parameters,
+		Schedule: &model.CollectJobSchedule{
+			Cron: cron,
+		},
+		Workers: workers,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.UpdateCollectJob(id, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // UpdateConnection Patches an existing DSP connection.
 func UpdateConnection(cmd *cobra.Command, args []string) error {
 
@@ -1796,6 +2155,58 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.UpdateConnection(connectionId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateDataStream Patches an existing data stream for a tenant.
+func UpdateDataStream(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var partitionsDefault int32
+	partitions := &partitionsDefault
+	err = flags.ParseFlag(cmd.Flags(), "partitions", &partitions)
+	if err != nil {
+		return fmt.Errorf(`error parsing "partitions": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DataStreamRequest{
+
+		Description: description,
+		Name:        name,
+		Properties: model.DataStreamProperties{
+			Partitions: partitions,
+		},
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.UpdateDataStream(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1885,6 +2296,62 @@ func UpdatePlugin(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.UpdatePlugin(pluginId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateRulesPackageById Updates the rules package with specific id
+func UpdateRulesPackageById(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var externalId string
+	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var rulesDescriptionDefault string
+	rulesDescription := &rulesDescriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "rules-description", &rulesDescription)
+	if err != nil {
+		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
+	}
+	var sourcetypes map[string]model.RulesPackageSourcetypes
+	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())
+	}
+	var version string
+	err = flags.ParseFlag(cmd.Flags(), "version", &version)
+	if err != nil {
+		return fmt.Errorf(`error parsing "version": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.RulesRequest{
+
+		ExternalId:       externalId,
+		Name:             name,
+		RulesDescription: rulesDescription,
+		Sourcetypes:      sourcetypes,
+		Version:          version,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.UpdateRulesPackageById(externalId, generated_request_body)
 	if err != nil {
 		return err
 	}
