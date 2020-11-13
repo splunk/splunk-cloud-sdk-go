@@ -245,6 +245,40 @@ func (q ListConnectionsQueryParams) SetSortField(v string) ListConnectionsQueryP
 	return q
 }
 
+// ListDataStreamsQueryParams represents valid query parameters for the ListDataStreams operation
+// For convenience ListDataStreamsQueryParams can be formed in a single statement, for example:
+//     `v := ListDataStreamsQueryParams{}.SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
+type ListDataStreamsQueryParams struct {
+	// Offset : offset
+	Offset *int32 `key:"offset"`
+	// PageSize : pageSize
+	PageSize *int32 `key:"pageSize"`
+	// SortDir : sortDir
+	SortDir string `key:"sortDir"`
+	// SortField : sortField
+	SortField string `key:"sortField"`
+}
+
+func (q ListDataStreamsQueryParams) SetOffset(v int32) ListDataStreamsQueryParams {
+	q.Offset = &v
+	return q
+}
+
+func (q ListDataStreamsQueryParams) SetPageSize(v int32) ListDataStreamsQueryParams {
+	q.PageSize = &v
+	return q
+}
+
+func (q ListDataStreamsQueryParams) SetSortDir(v string) ListDataStreamsQueryParams {
+	q.SortDir = v
+	return q
+}
+
+func (q ListDataStreamsQueryParams) SetSortField(v string) ListDataStreamsQueryParams {
+	q.SortField = v
+	return q
+}
+
 // ListPipelinesQueryParams represents valid query parameters for the ListPipelines operation
 // For convenience ListPipelinesQueryParams can be formed in a single statement, for example:
 //     `v := ListPipelinesQueryParams{}.SetActivated(...).SetCreateUserId(...).SetIncludeData(...).SetName(...).SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`

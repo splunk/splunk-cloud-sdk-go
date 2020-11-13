@@ -64,7 +64,7 @@ components:
         pem:
           type: string
       required:
-        - pem
+      - pem
       type: object
     CertificateInfo:
       properties:
@@ -99,8 +99,7 @@ components:
           type: string
       type: object
 info:
-  description: Send data from a Splunk forwarder to the Splunk Forwarder service in
-    Splunk Cloud Services.
+  description: Send data from a Splunk forwarder to the Splunk Forwarder service in Splunk Cloud Services.
   title: Splunk Forwarder Service
   version: v2beta1.4
 openapi: 3.0.0
@@ -234,4 +233,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: forwarders/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: forwarders/v2beta1/openapi.yaml

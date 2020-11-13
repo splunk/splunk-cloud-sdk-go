@@ -53,8 +53,7 @@ components:
     AppMetadataPrivate:
       properties:
         redirectUrls:
-          description: Array of URLs that can be used for redirect after logging into
-            the app.
+          description: Array of URLs that can be used for redirect after logging into the app.
           items:
             format: uri
             type: string
@@ -72,8 +71,7 @@ components:
     AppMetadataPublic:
       properties:
         appPrincipalPermissions:
-          description: Array of permission templates that are used to grant permission
-            to the app principal when a tenant subscribes.
+          description: Array of permission templates that are used to grant permission to the app principal when a tenant subscribes.
           items:
             type: string
           type: array
@@ -95,8 +93,7 @@ components:
           minLength: 1
           type: string
         userPermissionsFilter:
-          description: Array of permission filter templates that are used to intersect
-            with a user's permissions when using the app.
+          description: Array of permission filter templates that are used to intersect with a user's permissions when using the app.
           items:
             type: string
           type: array
@@ -316,8 +313,7 @@ components:
       scheme: bearer
       type: http
 info:
-  description: With the App Registry service in Splunk Cloud Services, you can create,
-    update, and manage your apps.
+  description: With the App Registry service in Splunk Cloud Services, you can create, update, and manage your apps.
   title: App Registry
   version: v1beta2.0
 openapi: 3.0.0
@@ -352,8 +348,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.read
@@ -423,8 +418,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.write
@@ -458,8 +452,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.write
@@ -502,8 +495,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.read
@@ -568,8 +560,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.write
@@ -628,8 +619,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.write
@@ -675,8 +665,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 App Management
       x-authz-scope: appregistry.apps.read
@@ -733,8 +722,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 Subscriptions
       x-authz-scope: appregistry.subscriptions.read
@@ -794,8 +782,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 Subscriptions
       x-authz-scope: appregistry.subscriptions.write
@@ -829,8 +816,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 Subscriptions
       x-authz-scope: appregistry.subscriptions.write
@@ -873,8 +859,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 Subscriptions
       x-authz-scope: appregistry.subscriptions.read
@@ -883,8 +868,7 @@ paths:
     - $ref: '#/components/parameters/AppName'
   /system/app-registry/v1beta2/keys:
     get:
-      description: Returns a list of the public keys used for verifying signed webhook
-        requests.
+      description: Returns a list of the public keys used for verifying signed webhook requests.
       operationId: getKeys
       responses:
         "200":
@@ -912,12 +896,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-          description: The request could not be processed due to an internal server
-            error.
+          description: The request could not be processed due to an internal server error.
       tags:
       - v1beta2 Keys
       x-auth-required: false
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: app-registry/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: app-registry/v1beta2/openapi.yaml

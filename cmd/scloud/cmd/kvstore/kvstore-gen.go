@@ -92,6 +92,13 @@ var queryRecordsCmd = &cobra.Command{
 	RunE:  impl.QueryRecords,
 }
 
+// truncateRecords -- Deletes all the records in a collection.
+var truncateRecordsCmd = &cobra.Command{
+	Use:   "truncate-records",
+	Short: "Deletes all the records in a collection.",
+	RunE:  impl.TruncateRecords,
+}
+
 func init() {
 	kvstoreCmd.AddCommand(createIndexCmd)
 
@@ -232,5 +239,11 @@ func init() {
 
 	var queryRecordsQuery string
 	queryRecordsCmd.Flags().StringVar(&queryRecordsQuery, "query", "", "Query JSON expression.")
+
+	kvstoreCmd.AddCommand(truncateRecordsCmd)
+
+	var truncateRecordsCollection string
+	truncateRecordsCmd.Flags().StringVar(&truncateRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
+	truncateRecordsCmd.MarkFlagRequired("collection")
 
 }

@@ -10,7 +10,7 @@ type BaseService struct {
 	Client IClient
 }
 
-//Client implemenents these methods to become a type of IClient used by the BaseService
+//IClient implements these methods to become a type of IClient used by the BaseService
 type IClient interface {
 	BuildURLFromPathParams(url.Values, string, string, interface{}) (url.URL, error)
 	Get(requestParams RequestParams) (*http.Response, error)

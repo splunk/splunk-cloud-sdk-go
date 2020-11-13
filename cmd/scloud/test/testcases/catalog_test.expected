@@ -1,4 +1,4 @@
-#testcase: catalog create-dataset-view-dataset --id 5e705c169a3bd200010d13b1 --kind view --module scloudtestcatalogmodule --name scloud_test_catalog_name_view --search 'search index=main|stats count()'
+#testcase: catalog create-dataset-view --id 5e705c169a3bd200010d13b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_view --search 'search index=main|stats count()'
 REQUEST URL:catalog/v2beta1/datasets
 REQUEST BODY:{{"kind":"view","name":"scloud_test_catalog_name_view","search":"search index=main|stats count()","id":"5e705c169a3bd200010d13b1","module":"scloudtestcatalogmodule"}}
 
@@ -54,11 +54,11 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1/fields/5e72fb38e425840001f0ebdf
 REQUEST BODY:<nil>
 
-#testcase: catalog update-dataset-by-id-view-dataset --datasetid 5e705c169a3bd200010d13b1 --name scloud_test_catalog_name_updated1 --module scloudtestcatalogmoduleupdated1
+#testcase: catalog update-dataset-by-id-view --datasetid 5e705c169a3bd200010d13b1 --name scloud_test_catalog_name_updated1 --module scloudtestcatalogmoduleupdated1
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated1","name":"scloud_test_catalog_name_updated1"}}
 
-#testcase: catalog update-dataset-view-dataset --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_updated1 --name scloud_test_catalog_name_updated2 --module scloudtestcatalogmoduleupdated2
+#testcase: catalog update-dataset-view --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_updated1 --name scloud_test_catalog_name_updated2 --module scloudtestcatalogmoduleupdated2
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_updated1
 REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated2","name":"scloud_test_catalog_name_updated2"}}
 
@@ -82,23 +82,23 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric1 --frozen-time-period-in-secs 60 --disabled true
+#testcase: catalog create-dataset-metric --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric1 --frozen-time-period-in-secs 60 --disabled true
 REQUEST URL:catalog/v2beta1/datasets
 REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_metric1","frozenTimePeriodInSecs":60,"id":"5e705c169a3bd200010d16b1","module":"scloudtestcatalogmodule"}}
 
-#testcase: catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
+#testcase: catalog update-dataset-by-id-metric --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
 REQUEST BODY:{{"disabled":false,"frozenTimePeriodInSecs":80}}
 
-#testcase: catalog update-dataset-metric-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
+#testcase: catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric
 REQUEST BODY:{{"frozenTimePeriodInSecs":80}}
 
-#testcase: catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+#testcase: catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/imported-by
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
+REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
 
-#testcase: catalog update-dataset-import-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+#testcase: catalog update-dataset-import --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
 
@@ -106,15 +106,15 @@ REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_cat
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+#testcase: catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/imported-by
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
+REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
 
 #testcase: catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import?maxstale=10
 REQUEST BODY:<nil>
 
-#testcase: catalog update-dataset-by-id-import-dataset --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+#testcase: catalog update-dataset-by-id-import --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1
 REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
 
@@ -122,17 +122,17 @@ REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_cat
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import
+#testcase: catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/importedby
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
+REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
 
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name
+#testcase: catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/importedby
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","name":"scloud_test_catalog_name_import"}}
+REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
 
 #testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
@@ -142,15 +142,15 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-kv-collection-dataset --id 5e705c169a3bd200010d13b1 --kind kvcollection --module scloudtestcatalogmodule --name scloud_test_catalog_name_kv
+#testcase: catalog create-dataset-kv-collection --id 5e705c169a3bd200010d13b1 --kind kvcollection --module scloudtestcatalogmodule --name scloud_test_catalog_name_kv
 REQUEST URL:catalog/v2beta1/datasets
 REQUEST BODY:{{"kind":"kvcollection","name":"scloud_test_catalog_name_kv","id":"5e705c169a3bd200010d13b1","module":"scloudtestcatalogmodule"}}
 
-#testcase: catalog update-dataset-by-id-kv-collection-dataset --datasetid 5e705c169a3bd200010d13b1
+#testcase: catalog update-dataset-by-id-kv-collection --datasetid 5e705c169a3bd200010d13b1
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:{{}}
 
-#testcase: catalog update-dataset-kv-collection-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_kv
+#testcase: catalog update-dataset-kv-collection --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_kv
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_kv
 REQUEST BODY:{{}}
 
@@ -158,15 +158,15 @@ REQUEST BODY:{{}}
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-lookup-dataset --id 5e705c169a3bd200010d13b1 --kind lookup --module scloudtestcatalogmodule --name scloud_test_catalog_name_lookup --case-sensitive-match true --external-kind kvcollection --external-name scloud_test_catalog_external_name --filter kind=="lookup"
+#testcase: catalog create-dataset-lookup --id 5e705c169a3bd200010d13b1 --kind lookup --module scloudtestcatalogmodule --name scloud_test_catalog_name_lookup --case-sensitive-match true --external-kind kvcollection --external-name scloud_test_catalog_external_name --filter kind=="lookup"
 REQUEST URL:catalog/v2beta1/datasets
 REQUEST BODY:{{"externalKind":"kvcollection","externalName":"scloud_test_catalog_external_name","kind":"lookup","name":"scloud_test_catalog_name_lookup","caseSensitiveMatch":true,"filter":"kind==\"lookup\"","id":"5e705c169a3bd200010d13b1","module":"scloudtestcatalogmodule"}}
 
-#testcase: catalog update-dataset-by-id-lookup-dataset --datasetid 5e705c169a3bd200010d13b1 --module scloudtestcatalogmoduleupdated1 --name scloud_test_catalog_name_lookup_updated1 --case-sensitive-match false --external-name scloud_test_catalog_external_name_updated1
+#testcase: catalog update-dataset-by-id-lookup --datasetid 5e705c169a3bd200010d13b1 --module scloudtestcatalogmoduleupdated1 --name scloud_test_catalog_name_lookup_updated1 --case-sensitive-match false --external-name scloud_test_catalog_external_name_updated1
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:{{"caseSensitiveMatch":false,"externalName":"scloud_test_catalog_external_name_updated1","module":"scloudtestcatalogmoduleupdated1","name":"scloud_test_catalog_name_lookup_updated1"}}
 
-#testcase: catalog update-dataset-lookup-dataset --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_lookup_updated1 --module scloudtestcatalogmoduleupdated2 --name scloud_test_catalog_name_lookup_updated2 --case-sensitive-match true --external-name scloud_test_catalog_external_name_updated2
+#testcase: catalog update-dataset-lookup --datasetresourcename scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_lookup_updated1 --module scloudtestcatalogmoduleupdated2 --name scloud_test_catalog_name_lookup_updated2 --case-sensitive-match true --external-name scloud_test_catalog_external_name_updated2
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmoduleupdated1.scloud_test_catalog_name_lookup_updated1
 REQUEST BODY:{{"caseSensitiveMatch":true,"externalName":"scloud_test_catalog_external_name_updated2","module":"scloudtestcatalogmoduleupdated2","name":"scloud_test_catalog_name_lookup_updated2"}}
 
@@ -174,7 +174,7 @@ REQUEST BODY:{{"caseSensitiveMatch":true,"externalName":"scloud_test_catalog_ext
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-dataset-metric-dataset --id 5e705c169a3bd200010d13b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
+#testcase: catalog create-dataset-metric --id 5e705c169a3bd200010d13b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric --frozen-time-period-in-secs 60 --disabled true
 REQUEST URL:catalog/v2beta1/datasets
 REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_metric","frozenTimePeriodInSecs":60,"id":"5e705c169a3bd200010d13b1","module":"scloudtestcatalogmodule"}}
 
@@ -182,11 +182,11 @@ REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_
 REQUEST URL:catalog/v2beta1/fields?count=10&offset=2&orderby=name+asc
 REQUEST BODY:<nil>
 
-#testcase: catalog update-dataset-by-id-metric-dataset --datasetid 5e705c169a3bd200010d13b1 --frozen-time-period-in-secs 80 --disabled false
+#testcase: catalog update-dataset-by-id-metric --datasetid 5e705c169a3bd200010d13b1 --frozen-time-period-in-secs 80 --disabled false
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d13b1
 REQUEST BODY:{{"disabled":false,"frozenTimePeriodInSecs":80}}
 
-#testcase: catalog update-dataset-metric-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --frozen-time-period-in-secs 80
+#testcase: catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric --frozen-time-period-in-secs 80
 REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric
 REQUEST BODY:{{"frozenTimePeriodInSecs":80}}
 
@@ -350,11 +350,11 @@ REQUEST BODY:{{"match":"sourcetype::scloud_test_catalog_match","name":"scloud_te
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4
 REQUEST BODY:{{"match":"sourcetype::scloud_test_catalog_match_updated","module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_rule_name_updated"}}
 
-#testcase: catalog create-action-for-rule-alias-action --id 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias --kind ALIAS --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-alias --id 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias --kind ALIAS --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions
 REQUEST BODY:{{"alias":"scloud_test_catalog_alias","field":"scloud_test_catalog_field_name","kind":"ALIAS","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-alias-action --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated
+#testcase: catalog update-action-by-id-for-rule-alias --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"alias":"scloud_test_catalog_alias_updated","field":"scloud_test_catalog_field_name_updated"}}
 
@@ -362,11 +362,11 @@ REQUEST BODY:{{"alias":"scloud_test_catalog_alias_updated","field":"scloud_test_
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-by-id-alias-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind ALIAS --alias scloud_test_catalog_alias --field scloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-by-id-alias --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind ALIAS --alias scloud_test_catalog_alias --field scloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions
 REQUEST BODY:{{"alias":"scloud_test_catalog_alias","field":"scloud_test_catalog_field_name","kind":"ALIAS","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-by-id-alias-action --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --field scloud_test_catalog_field_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4
+#testcase: catalog update-action-by-id-for-rule-by-id-alias --actionid 5d1bdbd77fb3db0001e45ac1 --alias scloud_test_catalog_alias_updated --field scloud_test_catalog_field_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"alias":"scloud_test_catalog_alias_updated","field":"scloud_test_catalog_field_name_updated"}}
 
@@ -374,11 +374,11 @@ REQUEST BODY:{{"alias":"scloud_test_catalog_alias_updated","field":"scloud_test_
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-auto-kv-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
+#testcase: catalog create-action-for-rule-auto-kv --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions
 REQUEST BODY:{{"kind":"AUTOKV","mode":"auto","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-auto-kv-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --mode multi
+#testcase: catalog update-action-by-id-for-rule-auto-kv --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --mode multi
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"mode":"multi"}}
 
@@ -386,11 +386,11 @@ REQUEST BODY:{{"mode":"multi"}}
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-by-id-auto-kv-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
+#testcase: catalog create-action-for-rule-by-id-auto-kv --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind AUTOKV --mode auto
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions
 REQUEST BODY:{{"kind":"AUTOKV","mode":"auto","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-by-id-auto-kv-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --mode none
+#testcase: catalog update-action-by-id-for-rule-by-id-auto-kv --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --mode none
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"mode":"none"}}
 
@@ -398,11 +398,11 @@ REQUEST BODY:{{"mode":"none"}}
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-eval-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-eval --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression","field":"scloud_test_catalog_field_name","kind":"EVAL","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-eval-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
+#testcase: catalog update-action-by-id-for-rule-eval --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated","field":"scloud_test_catalog_field_name_updated"}}
 
@@ -410,11 +410,11 @@ REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated","field":"sc
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-by-id-eval-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-by-id-eval --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind EVAL --expression "scloud_test_catalog_expression" --field scloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression","field":"scloud_test_catalog_field_name","kind":"EVAL","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-by-id-eval-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
+#testcase: catalog update-action-by-id-for-rule-by-id-eval --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated --field scloud_test_catalog_field_name_updated
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated","field":"scloud_test_catalog_field_name_updated"}}
 
@@ -422,11 +422,11 @@ REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated","field":"sc
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-lookup-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
+#testcase: catalog create-action-for-rule-lookup --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression","kind":"LOOKUP","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-lookup-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated
+#testcase: catalog update-action-by-id-for-rule-lookup --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --expression scloud_test_catalog_expression_updated
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated"}}
 
@@ -442,11 +442,11 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-by-id-lookup-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
+#testcase: catalog create-action-for-rule-by-id-lookup --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --kind LOOKUP --expression "scloud_test_catalog_expression"
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression","kind":"LOOKUP","id":"5d1bdbd77fb3db0001e45ac1","ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-by-id-lookup-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated
+#testcase: catalog update-action-by-id-for-rule-by-id-lookup --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --expression scloud_test_catalog_expression_updated
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"expression":"scloud_test_catalog_expression_updated"}}
 
@@ -462,11 +462,11 @@ REQUEST BODY:<nil>
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-regex-action --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-regex --id 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions
 REQUEST BODY:{{"field":"scloud_test_catalog_field_name","kind":"REGEX","pattern":"field=cloud_test_catalog_field_name","id":"5d1bdbd77fb3db0001e45ac1","limit":4,"ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-regex-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
+#testcase: catalog update-action-by-id-for-rule-regex --actionid 5d1bdbd77fb3db0001e45ac1 --ruleresourcename scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"field":"scloud_test_catalog_field_name_updated","limit":6,"pattern":"field=cloud_test_catalog_field_name_updated"}}
 
@@ -474,11 +474,11 @@ REQUEST BODY:{{"field":"scloud_test_catalog_field_name_updated","limit":6,"patte
 REQUEST URL:catalog/v2beta1/rules/scloudtestcatalogmoduleupdated.scloud_test_catalog_rule_name_updated/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:<nil>
 
-#testcase: catalog create-action-for-rule-by-id-regex-action --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
+#testcase: catalog create-action-for-rule-by-id-regex --id 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --ruleid-body 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name --kind REGEX --limit 4 --pattern field=cloud_test_catalog_field_name
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions
 REQUEST BODY:{{"field":"scloud_test_catalog_field_name","kind":"REGEX","pattern":"field=cloud_test_catalog_field_name","id":"5d1bdbd77fb3db0001e45ac1","limit":4,"ruleid":"5d1bdbd77fb3db0001e45ea4"}}
 
-#testcase: catalog update-action-by-id-for-rule-by-id-regex-action --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
+#testcase: catalog update-action-by-id-for-rule-by-id-regex --actionid 5d1bdbd77fb3db0001e45ac1 --ruleid 5d1bdbd77fb3db0001e45ea4 --field scloud_test_catalog_field_name_updated --pattern field=cloud_test_catalog_field_name_updated --limit 6
 REQUEST URL:catalog/v2beta1/rules/5d1bdbd77fb3db0001e45ea4/actions/5d1bdbd77fb3db0001e45ac1
 REQUEST BODY:{{"field":"scloud_test_catalog_field_name_updated","limit":6,"pattern":"field=cloud_test_catalog_field_name_updated"}}
 

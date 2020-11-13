@@ -130,17 +130,40 @@ func PostCollectorTokens(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var ack_enabledDefault bool
+	ack_enabled := &ack_enabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "ack-enabled", &ack_enabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "ack-enabled": ` + err.Error())
+	}
+	var allow_query_string_authDefault bool
+	allow_query_string_auth := &allow_query_string_authDefault
+	err = flags.ParseFlag(cmd.Flags(), "allow-query-string-auth", &allow_query_string_auth)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-query-string-auth": ` + err.Error())
+	}
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
 		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
+	var disabledDefault bool
+	disabled := &disabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
+	}
 	var indexDefault string
 	index := &indexDefault
 	err = flags.ParseFlag(cmd.Flags(), "index", &index)
 	if err != nil {
 		return fmt.Errorf(`error parsing "index": ` + err.Error())
+	}
+	var indexes []string
+	err = flags.ParseFlag(cmd.Flags(), "indexes", &indexes)
+	if err != nil {
+		return fmt.Errorf(`error parsing "indexes": ` + err.Error())
 	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
@@ -162,11 +185,15 @@ func PostCollectorTokens(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.HecTokenCreateRequest{
 
-		Description: description,
-		Index:       index,
-		Name:        name,
-		Source:      source,
-		Sourcetype:  sourcetype,
+		AckEnabled:           ack_enabled,
+		AllowQueryStringAuth: allow_query_string_auth,
+		Description:          description,
+		Disabled:             disabled,
+		Index:                index,
+		Indexes:              indexes,
+		Name:                 name,
+		Source:               source,
+		Sourcetype:           sourcetype,
 	}
 
 	// Silence Usage
@@ -356,17 +383,40 @@ func PutCollectorToken(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var ack_enabledDefault bool
+	ack_enabled := &ack_enabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "ack-enabled", &ack_enabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "ack-enabled": ` + err.Error())
+	}
+	var allow_query_string_authDefault bool
+	allow_query_string_auth := &allow_query_string_authDefault
+	err = flags.ParseFlag(cmd.Flags(), "allow-query-string-auth", &allow_query_string_auth)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-query-string-auth": ` + err.Error())
+	}
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
 		return fmt.Errorf(`error parsing "description": ` + err.Error())
 	}
+	var disabledDefault bool
+	disabled := &disabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
+	}
 	var indexDefault string
 	index := &indexDefault
 	err = flags.ParseFlag(cmd.Flags(), "index", &index)
 	if err != nil {
 		return fmt.Errorf(`error parsing "index": ` + err.Error())
+	}
+	var indexes []string
+	err = flags.ParseFlag(cmd.Flags(), "indexes", &indexes)
+	if err != nil {
+		return fmt.Errorf(`error parsing "indexes": ` + err.Error())
 	}
 	var sourceDefault string
 	source := &sourceDefault
@@ -388,10 +438,14 @@ func PutCollectorToken(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.HecTokenUpdateRequest{
 
-		Description: description,
-		Index:       index,
-		Source:      source,
-		Sourcetype:  sourcetype,
+		AckEnabled:           ack_enabled,
+		AllowQueryStringAuth: allow_query_string_auth,
+		Description:          description,
+		Disabled:             disabled,
+		Index:                index,
+		Indexes:              indexes,
+		Source:               source,
+		Sourcetype:           sourcetype,
 	}
 
 	// Silence Usage

@@ -438,3 +438,31 @@ func (s *Service) QueryRecords(collection string, query *QueryRecordsQueryParams
 	err = util.ParseResponse(&rb, response)
 	return rb, err
 }
+
+/*
+	TruncateRecords - Deletes all the records in a collection.
+	Parameters:
+		collection: The name of the collection.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) TruncateRecords(collection string, resp ...*http.Response) error {
+	pp := struct {
+		Collection string
+	}{
+		Collection: collection,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/kvstore/v1beta1/collections/{{.Collection}}/truncate`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}

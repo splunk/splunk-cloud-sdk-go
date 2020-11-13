@@ -10,70 +10,70 @@ import (
 
 // createActionForRuleAliasAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleAliasActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-alias-action",
+	Use:   "create-action-for-rule-alias",
 	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleAliasAction,
 }
 
 // createActionForRuleAutoKvAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleAutoKvActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-auto-kv-action",
+	Use:   "create-action-for-rule-auto-kv",
 	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleAutoKvAction,
 }
 
 // createActionForRuleByIdAliasAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdAliasActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-alias-action",
+	Use:   "create-action-for-rule-by-id-alias",
 	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdAliasAction,
 }
 
 // createActionForRuleByIdAutoKvAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdAutoKvActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-auto-kv-action",
+	Use:   "create-action-for-rule-by-id-auto-kv",
 	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdAutoKvAction,
 }
 
 // createActionForRuleByIdEvalAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdEvalActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-eval-action",
+	Use:   "create-action-for-rule-by-id-eval",
 	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdEvalAction,
 }
 
 // createActionForRuleByIdLookupAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdLookupActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-lookup-action",
+	Use:   "create-action-for-rule-by-id-lookup",
 	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdLookupAction,
 }
 
 // createActionForRuleByIdRegexAction -- Creates a new action for the specified rule.
 var createActionForRuleByIdRegexActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-regex-action",
+	Use:   "create-action-for-rule-by-id-regex",
 	Short: "Creates a new action for the specified rule.",
 	RunE:  impl.CreateActionForRuleByIdRegexAction,
 }
 
 // createActionForRuleEvalAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleEvalActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-eval-action",
+	Use:   "create-action-for-rule-eval",
 	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleEvalAction,
 }
 
 // createActionForRuleLookupAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleLookupActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-lookup-action",
+	Use:   "create-action-for-rule-lookup",
 	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleLookupAction,
 }
 
 // createActionForRuleRegexAction -- Creates a new action for a rule with the specified resource name.
 var createActionForRuleRegexActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-regex-action",
+	Use:   "create-action-for-rule-regex",
 	Short: "Creates a new action for a rule with the specified resource name.",
 	RunE:  impl.CreateActionForRuleRegexAction,
 }
@@ -150,35 +150,35 @@ var createDatasetImportv1Cmd = &cobra.Command{
 
 // createDatasetIndexDataset -- Creates a new dataset.
 var createDatasetIndexDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-index-dataset",
+	Use:   "create-dataset-index",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetIndexDataset,
 }
 
 // createDatasetKvCollectionDataset -- Creates a new dataset.
 var createDatasetKvCollectionDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-kv-collection-dataset",
+	Use:   "create-dataset-kv-collection",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetKvCollectionDataset,
 }
 
 // createDatasetLookupDataset -- Creates a new dataset.
 var createDatasetLookupDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-lookup-dataset",
+	Use:   "create-dataset-lookup",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetLookupDataset,
 }
 
 // createDatasetMetricDataset -- Creates a new dataset.
 var createDatasetMetricDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-metric-dataset",
+	Use:   "create-dataset-metric",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetMetricDataset,
 }
 
 // createDatasetViewDataset -- Creates a new dataset.
 var createDatasetViewDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-view-dataset",
+	Use:   "create-dataset-view",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetViewDataset,
 }
@@ -591,70 +591,70 @@ var listWorkflowsCmd = &cobra.Command{
 
 // updateActionByIdForRuleAliasAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleAliasActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-alias-action",
+	Use:   "update-action-by-id-for-rule-alias",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleAliasAction,
 }
 
 // updateActionByIdForRuleAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleAutoKvActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-auto-kv-action",
+	Use:   "update-action-by-id-for-rule-auto-kv",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleAutoKvAction,
 }
 
 // updateActionByIdForRuleByIdAliasAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdAliasActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-alias-action",
+	Use:   "update-action-by-id-for-rule-by-id-alias",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdAliasAction,
 }
 
 // updateActionByIdForRuleByIdAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdAutoKvActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-auto-kv-action",
+	Use:   "update-action-by-id-for-rule-by-id-auto-kv",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdAutoKvAction,
 }
 
 // updateActionByIdForRuleByIdEvalAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdEvalActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-eval-action",
+	Use:   "update-action-by-id-for-rule-by-id-eval",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdEvalAction,
 }
 
 // updateActionByIdForRuleByIdLookupAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdLookupActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-lookup-action",
+	Use:   "update-action-by-id-for-rule-by-id-lookup",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdLookupAction,
 }
 
 // updateActionByIdForRuleByIdRegexAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleByIdRegexActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-regex-action",
+	Use:   "update-action-by-id-for-rule-by-id-regex",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleByIdRegexAction,
 }
 
 // updateActionByIdForRuleEvalAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleEvalActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-eval-action",
+	Use:   "update-action-by-id-for-rule-eval",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleEvalAction,
 }
 
 // updateActionByIdForRuleLookupAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleLookupActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-lookup-action",
+	Use:   "update-action-by-id-for-rule-lookup",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleLookupAction,
 }
 
 // updateActionByIdForRuleRegexAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
 var updateActionByIdForRuleRegexActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-regex-action",
+	Use:   "update-action-by-id-for-rule-regex",
 	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
 	RunE:  impl.UpdateActionByIdForRuleRegexAction,
 }
@@ -675,84 +675,84 @@ var updateDashboardByResourceNameCmd = &cobra.Command{
 
 // updateDatasetByIdImportDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdImportDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-import-dataset",
+	Use:   "update-dataset-by-id-import",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdImportDataset,
 }
 
 // updateDatasetByIdIndexDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdIndexDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-index-dataset",
+	Use:   "update-dataset-by-id-index",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdIndexDataset,
 }
 
 // updateDatasetByIdKvCollectionDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdKvCollectionDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-kv-collection-dataset",
+	Use:   "update-dataset-by-id-kv-collection",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdKvCollectionDataset,
 }
 
 // updateDatasetByIdLookupDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdLookupDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-lookup-dataset",
+	Use:   "update-dataset-by-id-lookup",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdLookupDataset,
 }
 
 // updateDatasetByIdMetricDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdMetricDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-metric-dataset",
+	Use:   "update-dataset-by-id-metric",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdMetricDataset,
 }
 
 // updateDatasetByIdViewDataset -- Modifies the dataset with the specified ID.
 var updateDatasetByIdViewDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-view-dataset",
+	Use:   "update-dataset-by-id-view",
 	Short: "Modifies the dataset with the specified ID.",
 	RunE:  impl.UpdateDatasetByIdViewDataset,
 }
 
 // updateDatasetImportDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetImportDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-import-dataset",
+	Use:   "update-dataset-import",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetImportDataset,
 }
 
 // updateDatasetIndexDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetIndexDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-index-dataset",
+	Use:   "update-dataset-index",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetIndexDataset,
 }
 
 // updateDatasetKvCollectionDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetKvCollectionDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-kv-collection-dataset",
+	Use:   "update-dataset-kv-collection",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetKvCollectionDataset,
 }
 
 // updateDatasetLookupDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetLookupDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-lookup-dataset",
+	Use:   "update-dataset-lookup",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetLookupDataset,
 }
 
 // updateDatasetMetricDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetMetricDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-metric-dataset",
+	Use:   "update-dataset-metric",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetMetricDataset,
 }
 
 // updateDatasetViewDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var updateDatasetViewDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-view-dataset",
+	Use:   "update-dataset-view",
 	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetViewDataset,
 }
@@ -828,8 +828,7 @@ func init() {
 	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleAliasActionKind string
-	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionKind, "kind", "", "This is a required parameter. The alias action kind. can accept values ALIAS")
-	createActionForRuleAliasActionCmd.MarkFlagRequired("kind")
+	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionKind, "kind", "ALIAS", "The alias action kind. can accept values ALIAS")
 
 	var createActionForRuleAliasActionRuleid string
 	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionRuleid, "ruleid", "", "The rule that this action is part of.")
@@ -842,8 +841,7 @@ func init() {
 	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleAutoKvActionKind string
-	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionKind, "kind", "", "This is a required parameter. The autokv action kind. can accept values AUTOKV")
-	createActionForRuleAutoKvActionCmd.MarkFlagRequired("kind")
+	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionKind, "kind", "AUTOKV", "The autokv action kind. can accept values AUTOKV")
 
 	var createActionForRuleAutoKvActionMode string
 	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionMode, "mode", "", "This is a required parameter. The autokv action mode.")
@@ -868,8 +866,7 @@ func init() {
 	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleEvalActionKind string
-	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionKind, "kind", "", "This is a required parameter. The eval action kind. can accept values EVAL")
-	createActionForRuleEvalActionCmd.MarkFlagRequired("kind")
+	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionKind, "kind", "EVAL", "The eval action kind. can accept values EVAL")
 
 	var createActionForRuleEvalActionRuleid string
 	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionRuleid, "ruleid", "", "The rule that this action is part of.")
@@ -886,8 +883,7 @@ func init() {
 	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleLookupActionKind string
-	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionKind, "kind", "", "This is a required parameter. The lookup action kind. can accept values LOOKUP")
-	createActionForRuleLookupActionCmd.MarkFlagRequired("kind")
+	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionKind, "kind", "LOOKUP", "The lookup action kind. can accept values LOOKUP")
 
 	var createActionForRuleLookupActionRuleid string
 	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionRuleid, "ruleid", "", "The rule that this action is part of.")
@@ -904,8 +900,7 @@ func init() {
 	createActionForRuleRegexActionCmd.Flags().StringVar(&createActionForRuleRegexActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleRegexActionKind string
-	createActionForRuleRegexActionCmd.Flags().StringVar(&createActionForRuleRegexActionKind, "kind", "", "This is a required parameter. The regex action kind. can accept values REGEX")
-	createActionForRuleRegexActionCmd.MarkFlagRequired("kind")
+	createActionForRuleRegexActionCmd.Flags().StringVar(&createActionForRuleRegexActionKind, "kind", "REGEX", "The regex action kind. can accept values REGEX")
 
 	var createActionForRuleRegexActionLimit int32
 	createActionForRuleRegexActionCmd.Flags().Int32Var(&createActionForRuleRegexActionLimit, "limit", 0, "The maximum number of times per event to attempt to match fields with the regular expression.")
@@ -941,8 +936,7 @@ func init() {
 	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleByIdAliasActionKind string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionKind, "kind", "", "This is a required parameter. The alias action kind. can accept values ALIAS")
-	createActionForRuleByIdAliasActionCmd.MarkFlagRequired("kind")
+	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionKind, "kind", "ALIAS", "The alias action kind. can accept values ALIAS")
 
 	var createActionForRuleByIdAliasActionRuleidBody string
 	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
@@ -955,8 +949,7 @@ func init() {
 	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleByIdAutoKvActionKind string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionKind, "kind", "", "This is a required parameter. The autokv action kind. can accept values AUTOKV")
-	createActionForRuleByIdAutoKvActionCmd.MarkFlagRequired("kind")
+	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionKind, "kind", "AUTOKV", "The autokv action kind. can accept values AUTOKV")
 
 	var createActionForRuleByIdAutoKvActionMode string
 	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionMode, "mode", "", "This is a required parameter. The autokv action mode.")
@@ -981,8 +974,7 @@ func init() {
 	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleByIdEvalActionKind string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionKind, "kind", "", "This is a required parameter. The eval action kind. can accept values EVAL")
-	createActionForRuleByIdEvalActionCmd.MarkFlagRequired("kind")
+	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionKind, "kind", "EVAL", "The eval action kind. can accept values EVAL")
 
 	var createActionForRuleByIdEvalActionRuleidBody string
 	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
@@ -999,8 +991,7 @@ func init() {
 	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleByIdLookupActionKind string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionKind, "kind", "", "This is a required parameter. The lookup action kind. can accept values LOOKUP")
-	createActionForRuleByIdLookupActionCmd.MarkFlagRequired("kind")
+	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionKind, "kind", "LOOKUP", "The lookup action kind. can accept values LOOKUP")
 
 	var createActionForRuleByIdLookupActionRuleidBody string
 	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
@@ -1017,8 +1008,7 @@ func init() {
 	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionId, "id", "", "A unique action ID.")
 
 	var createActionForRuleByIdRegexActionKind string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionKind, "kind", "", "This is a required parameter. The regex action kind. can accept values REGEX")
-	createActionForRuleByIdRegexActionCmd.MarkFlagRequired("kind")
+	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionKind, "kind", "REGEX", "The regex action kind. can accept values REGEX")
 
 	var createActionForRuleByIdRegexActionLimit int32
 	createActionForRuleByIdRegexActionCmd.Flags().Int32Var(&createActionForRuleByIdRegexActionLimit, "limit", 0, "The maximum number of times per event to attempt to match fields with the regular expression.")
@@ -1216,8 +1206,7 @@ func init() {
 	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
 
 	var createDatasetIndexDatasetKind string
-	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values index")
-	createDatasetIndexDatasetCmd.MarkFlagRequired("kind")
+	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetKind, "kind", "index", "The dataset kind. can accept values index")
 
 	var createDatasetIndexDatasetModule string
 	createDatasetIndexDatasetCmd.Flags().StringVar(&createDatasetIndexDatasetModule, "module", "", "The name of the module to create the new dataset in.")
@@ -1234,8 +1223,7 @@ func init() {
 	createDatasetKvCollectionDatasetCmd.Flags().StringVar(&createDatasetKvCollectionDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
 
 	var createDatasetKvCollectionDatasetKind string
-	createDatasetKvCollectionDatasetCmd.Flags().StringVar(&createDatasetKvCollectionDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values kvcollection")
-	createDatasetKvCollectionDatasetCmd.MarkFlagRequired("kind")
+	createDatasetKvCollectionDatasetCmd.Flags().StringVar(&createDatasetKvCollectionDatasetKind, "kind", "kvcollection", "The dataset kind. can accept values kvcollection")
 
 	var createDatasetKvCollectionDatasetModule string
 	createDatasetKvCollectionDatasetCmd.Flags().StringVar(&createDatasetKvCollectionDatasetModule, "module", "", "The name of the module to create the new dataset in.")
@@ -1247,6 +1235,7 @@ func init() {
 	catalogCmd.AddCommand(createDatasetLookupDatasetCmd)
 	var createDatasetLookupDatasetCaseSensitiveMatch string
 	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
+
 	var createDatasetLookupDatasetExternalKind string
 	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetExternalKind, "external-kind", "", "This is a required parameter. The type of the external lookup. can accept values kvcollection")
 	createDatasetLookupDatasetCmd.MarkFlagRequired("externalKind")
@@ -1265,8 +1254,7 @@ func init() {
 	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
 
 	var createDatasetLookupDatasetKind string
-	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values lookup")
-	createDatasetLookupDatasetCmd.MarkFlagRequired("kind")
+	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetKind, "kind", "lookup", "The dataset kind. can accept values lookup")
 
 	var createDatasetLookupDatasetModule string
 	createDatasetLookupDatasetCmd.Flags().StringVar(&createDatasetLookupDatasetModule, "module", "", "The name of the module to create the new dataset in.")
@@ -1289,8 +1277,7 @@ func init() {
 	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
 
 	var createDatasetMetricDatasetKind string
-	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values metric")
-	createDatasetMetricDatasetCmd.MarkFlagRequired("kind")
+	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetKind, "kind", "metric", "The dataset kind. can accept values metric")
 
 	var createDatasetMetricDatasetModule string
 	createDatasetMetricDatasetCmd.Flags().StringVar(&createDatasetMetricDatasetModule, "module", "", "The name of the module to create the new dataset in.")
@@ -1307,8 +1294,7 @@ func init() {
 	createDatasetViewDatasetCmd.Flags().StringVar(&createDatasetViewDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
 
 	var createDatasetViewDatasetKind string
-	createDatasetViewDatasetCmd.Flags().StringVar(&createDatasetViewDatasetKind, "kind", "", "This is a required parameter. The dataset kind. can accept values view")
-	createDatasetViewDatasetCmd.MarkFlagRequired("kind")
+	createDatasetViewDatasetCmd.Flags().StringVar(&createDatasetViewDatasetKind, "kind", "view", "The dataset kind. can accept values view")
 
 	var createDatasetViewDatasetModule string
 	createDatasetViewDatasetCmd.Flags().StringVar(&createDatasetViewDatasetModule, "module", "", "The name of the module to create the new dataset in.")
@@ -1331,9 +1317,12 @@ func init() {
 	createDatasetImportCmd.Flags().StringVar(&createDatasetImportModule, "module", "", "This is a required parameter. The module that is importing the dataset.")
 	createDatasetImportCmd.MarkFlagRequired("module")
 
+	var createDatasetImportOwner string
+	createDatasetImportCmd.Flags().StringVar(&createDatasetImportOwner, "owner", "", "This is a required parameter. The dataset owner.")
+	createDatasetImportCmd.MarkFlagRequired("owner")
+
 	var createDatasetImportName string
-	createDatasetImportCmd.Flags().StringVar(&createDatasetImportName, "name", "", "This is a required parameter. The dataset name.")
-	createDatasetImportCmd.MarkFlagRequired("name")
+	createDatasetImportCmd.Flags().StringVar(&createDatasetImportName, "name", "", "The dataset name.")
 
 	catalogCmd.AddCommand(createDatasetImportByIdCmd)
 
@@ -1345,9 +1334,12 @@ func init() {
 	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdModule, "module", "", "This is a required parameter. The module that is importing the dataset.")
 	createDatasetImportByIdCmd.MarkFlagRequired("module")
 
+	var createDatasetImportByIdOwner string
+	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdOwner, "owner", "", "This is a required parameter. The dataset owner.")
+	createDatasetImportByIdCmd.MarkFlagRequired("owner")
+
 	var createDatasetImportByIdName string
-	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdName, "name", "", "This is a required parameter. The dataset name.")
-	createDatasetImportByIdCmd.MarkFlagRequired("name")
+	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdName, "name", "", "The dataset name.")
 
 	catalogCmd.AddCommand(createDatasetImportByIdv1Cmd)
 
@@ -1359,9 +1351,12 @@ func init() {
 	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Module, "module", "", "This is a required parameter. The module that is importing the dataset.")
 	createDatasetImportByIdv1Cmd.MarkFlagRequired("module")
 
+	var createDatasetImportByIdv1Owner string
+	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Owner, "owner", "", "This is a required parameter. The dataset owner.")
+	createDatasetImportByIdv1Cmd.MarkFlagRequired("owner")
+
 	var createDatasetImportByIdv1Name string
-	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Name, "name", "", "This is a required parameter. The dataset name.")
-	createDatasetImportByIdv1Cmd.MarkFlagRequired("name")
+	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Name, "name", "", "The dataset name.")
 
 	catalogCmd.AddCommand(createDatasetImportv1Cmd)
 
@@ -1373,9 +1368,12 @@ func init() {
 	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Module, "module", "", "This is a required parameter. The module that is importing the dataset.")
 	createDatasetImportv1Cmd.MarkFlagRequired("module")
 
+	var createDatasetImportv1Owner string
+	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Owner, "owner", "", "This is a required parameter. The dataset owner.")
+	createDatasetImportv1Cmd.MarkFlagRequired("owner")
+
 	var createDatasetImportv1Name string
-	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Name, "name", "", "This is a required parameter. The dataset name.")
-	createDatasetImportv1Cmd.MarkFlagRequired("name")
+	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Name, "name", "", "The dataset name.")
 
 	catalogCmd.AddCommand(createFieldForDatasetCmd)
 
@@ -2490,6 +2488,7 @@ func init() {
 	catalogCmd.AddCommand(updateDatasetLookupDatasetCmd)
 	var updateDatasetLookupDatasetCaseSensitiveMatch string
 	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
+
 	var updateDatasetLookupDatasetExternalKind string
 	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
 
@@ -2591,6 +2590,7 @@ func init() {
 	catalogCmd.AddCommand(updateDatasetByIdLookupDatasetCmd)
 	var updateDatasetByIdLookupDatasetCaseSensitiveMatch string
 	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
+
 	var updateDatasetByIdLookupDatasetExternalKind string
 	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
 

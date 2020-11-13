@@ -17,8 +17,7 @@ components:
         format: mongo-object-id
         type: string
     AuthorizationHeader:
-      description: Access token provided by the user (obtained from a known identity
-        provider).
+      description: Access token provided by the user (obtained from a known identity provider).
       in: header
       name: Authorization
       required: true
@@ -34,8 +33,7 @@ components:
         format: mongo-object-id
         type: string
     DashboardResourceName:
-      description: The resource name of a dashvboard. The resource name format is
-        module.dashboardname.
+      description: The resource name of a dashvboard. The resource name format is module.dashboardname.
       in: path
       name: dashboardresourcename
       required: true
@@ -50,8 +48,7 @@ components:
         format: mongo-object-id
         type: string
     DatasetResourceName:
-      description: The resource name of a dataset. For the default module, the resource
-        name format is datasetName. Otherwise, the resource name format is module.datasetName.
+      description: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
       in: path
       name: datasetresourcename
       required: true
@@ -82,8 +79,7 @@ components:
         format: mongo-object-id
         type: string
     RuleResourceName:
-      description: The resource name of a rule. For the default module, the resource
-        name format is ruleName. Otherwise, the resource name format is module.ruleName.
+      description: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
       in: path
       name: ruleresourcename
       required: true
@@ -145,8 +141,7 @@ components:
       - $ref: '#/components/schemas/LookupAction'
       - $ref: '#/components/schemas/RegexAction'
     ActionCommon:
-      description: Properties common across all action kinds as rendered in POST,
-        PATCH, and GET responses and alos for creating a new action using a POST request.
+      description: Properties common across all action kinds as rendered in POST, PATCH, and GET responses and alos for creating a new action using a POST request.
       properties:
         id:
           description: A unique action ID.
@@ -177,12 +172,10 @@ components:
       - $ref: '#/components/schemas/RegexActionPATCH'
       type: object
     ActionPATCHCommon:
-      description: Property values common across action kinds for setting existing
-        actions using a PATCH request.
+      description: Property values common across action kinds for setting existing actions using a PATCH request.
       properties:
         owner:
-          description: The name of the user who owns this action. This value is obtained
-            from the bearer token if not present.
+          description: The name of the user who owns this action. This value is obtained from the bearer token if not present.
           example: janedoe
           type: string
         version:
@@ -191,15 +184,14 @@ components:
           type: integer
       type: object
     ActionPOST:
-      description: Initial property values for creating a new action using a POST
-        request.
+      description: Initial property values for creating a new action using a POST request.
       discriminator:
         mapping:
-          ALIAS: '#/components/schemas/AliasActionPOST'
-          AUTOKV: '#/components/schemas/AutoKVActionPOST'
-          EVAL: '#/components/schemas/EvalActionPOST'
-          LOOKUP: '#/components/schemas/LookupActionPOST'
-          REGEX: '#/components/schemas/RegexActionPOST'
+          ALIAS: '#/components/schemas/AliasAction'
+          AUTOKV: '#/components/schemas/AutoKVAction'
+          EVAL: '#/components/schemas/EvalAction'
+          LOOKUP: '#/components/schemas/LookupAction'
+          REGEX: '#/components/schemas/RegexAction'
         propertyName: kind
       oneOf:
       - $ref: '#/components/schemas/AliasActionPOST'
@@ -231,23 +223,19 @@ components:
       allOf:
       - $ref: '#/components/schemas/ActionPATCHCommon'
       - $ref: '#/components/schemas/AliasActionProperties'
-      description: Property values for setting existing alias actions using a PATCH
-        request.
+      description: Property values for setting existing alias actions using a PATCH request.
     AliasActionPOST:
       allOf:
       - $ref: '#/components/schemas/ActionCommon'
       - $ref: '#/components/schemas/AliasActionProperties'
-      description: Initial property values for creating a new alias action using a
-        POST request.
+      description: Initial property values for creating a new alias action using a POST request.
       required:
       - kind
       - field
       - alias
       type: object
     AliasActionProperties:
-      description: Properties of alias actions which may be read, set, and changed
-        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
-        do not use directly.
+      description: Properties of alias actions which may be read, set, and changed through the API. Implementation detail of ActionPOST, ActionPOST, and Action, do not use directly.
       properties:
         alias:
           description: The alias name.
@@ -276,9 +264,7 @@ components:
             minLength: 24
             type: string
         type: object
-      description: A complete annotation as rendered in POST, PATCH, and GET responses.
-        Key:Value pairs in addition to the defined properties will become annotation
-        tags
+      description: A complete annotation as rendered in POST, PATCH, and GET responses. Key:Value pairs in addition to the defined properties will become annotation tags
       required:
       - id
       - annotationtypeid
@@ -298,24 +284,19 @@ components:
       - $ref: '#/components/schemas/AnnotationTypeResourceName'
       - properties:
           id:
-            description: A unique annotation ID. If not specified, an auto generated
-              ID is created.
+            description: A unique annotation ID. If not specified, an auto generated ID is created.
             example: 5bc1a6fefee0d854a4188125
             format: mongo-object-id
             maxLength: 24
             minLength: 24
             type: string
         type: object
-      description: The properties required to create a new annotation using a POST
-        request. Key:Value pairs in addition to the defined properties will become
-        annotation tags
+      description: The properties required to create a new annotation using a POST request. Key:Value pairs in addition to the defined properties will become annotation tags
       required:
       - annotationtypeid
       type: object
     AnnotationTypeResourceName:
-      description: The resource name of an AnnotationType. For the default module,
-        the resource name format is annotationTypeName. Otherwise, the resource name
-        format is module.annotationTypeName.
+      description: The resource name of an AnnotationType. For the default module, the resource name format is annotationTypeName. Otherwise, the resource name format is module.annotationTypeName.
       properties:
         annotationtyperesourcename:
           description: Resource name of the annotation type
@@ -362,8 +343,7 @@ components:
           type: string
       type: object
     AppClientIDProperties:
-      description: Appclientidcreatedby, appclientidmodifiedby app clientid properties
-        for inclusion in othert objects.
+      description: Appclientidcreatedby, appclientidmodifiedby app clientid properties for inclusion in othert objects.
       properties:
         appclientidcreatedby:
           description: AppClinetId of the creator app of the dataset.
@@ -394,22 +374,18 @@ components:
       allOf:
       - $ref: '#/components/schemas/ActionPATCHCommon'
       - $ref: '#/components/schemas/AutoKVActionProperties'
-      description: Property values for setting existing autokv actions using a PATCH
-        request.
+      description: Property values for setting existing autokv actions using a PATCH request.
     AutoKVActionPOST:
       allOf:
       - $ref: '#/components/schemas/ActionCommon'
       - $ref: '#/components/schemas/AutoKVActionProperties'
-      description: Initial property values for creating a new autokv action using
-        a POST request.
+      description: Initial property values for creating a new autokv action using a POST request.
       required:
       - kind
       - mode
       type: object
     AutoKVActionProperties:
-      description: Properties of auto kv actions which may be read, set, and changed
-        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
-        do not use directly.
+      description: Properties of auto kv actions which may be read, set, and changed through the API. Implementation detail of ActionPOST, ActionPOST, and Action, do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/AutoKVActionKind'
@@ -422,8 +398,7 @@ components:
       - $ref: '#/components/schemas/CatalogDatasetProperties'
       - $ref: '#/components/schemas/MetadataProperties'
       - $ref: '#/components/schemas/DatasetCommon'
-      description: A complete catalog dataset as rendered in POST, PATCH, and GET
-        responses.
+      description: A complete catalog dataset as rendered in POST, PATCH, and GET responses.
       required:
       - kind
       type: object
@@ -433,8 +408,7 @@ components:
       - catalog
       type: string
     CatalogDatasetProperties:
-      description: Properties of catalog datasets which can be read, set, and changed
-        through the API.
+      description: Properties of catalog datasets which can be read, set, and changed through the API.
       properties:
         kind:
           $ref: '#/components/schemas/CatalogDatasetKind'
@@ -467,9 +441,7 @@ components:
       properties:
         definition:
           description: The JSON dashboard definition.
-          example: '{ "dataSources": {}, "inputs": {}, "layout": {}, "title": "Title
-            for dashboard", "description": "Description for dashboard", "visualizations":
-            {} }'
+          example: '{ "dataSources": {}, "inputs": {}, "layout": {}, "title": "Title for dashboard", "description": "Description for dashboard", "visualizations": {} }'
           type: string
         isactive:
           description: Whether the dashboard is active or not.
@@ -481,8 +453,7 @@ components:
           maxLength: 100
           type: string
         name:
-          description: The dashboard name. Dashboard names must be unique within each
-            tenant.
+          description: The dashboard name. Dashboard names must be unique within each tenant.
           example: nameofdashboard
           maxLength: 100
           type: string
@@ -534,8 +505,7 @@ components:
       - $ref: '#/components/schemas/MetricDataset'
       - $ref: '#/components/schemas/KVCollectionDataset'
     DatasetCommon:
-      description: Properties that are common across all Dataset kinds rendered in
-        POST, PATCH, and GET responses.
+      description: Properties that are common across all Dataset kinds rendered in POST, PATCH, and GET responses.
       properties:
         appclientidcreatedby:
           description: AppClinetId of the creator app of the dataset.
@@ -554,10 +524,7 @@ components:
           minLength: 24
           type: string
         internalname:
-          description: The dataset name qualified by the module name, primarily used
-            to distinguish between index/metric versus other datasets. Index/metric
-            datasets have a distinct underscore separator (_____) between name and
-            module. Internal use only.
+          description: The dataset name qualified by the module name, primarily used to distinguish between index/metric versus other datasets. Index/metric datasets have a distinct underscore separator (_____) between name and module. Internal use only.
           example: nameOfModule_____nameOfDataset
           readOnly: true
           type: string
@@ -567,8 +534,7 @@ components:
           maxLength: 100
           type: string
         name:
-          description: The dataset name. Dataset names must be unique within each
-            module.
+          description: The dataset name. Dataset names must be unique within each module.
           example: nameOfDataset
           maxLength: 100
           type: string
@@ -630,13 +596,17 @@ components:
           example: nameOfDataset
           maxLength: 100
           type: string
+        owner:
+          description: The dataset owner.
+          example: janedoe
+          maxLength: 24
+          type: string
       required:
       - module
-      - name
+      - owner
       type: object
     DatasetPATCH:
-      description: Property values to be set in an existing dataset using a PATCH
-        request.
+      description: Property values to be set in an existing dataset using a PATCH request.
       oneOf:
       - $ref: '#/components/schemas/LookupDatasetPATCH'
       - $ref: '#/components/schemas/IndexDatasetPATCH'
@@ -645,8 +615,7 @@ components:
       - $ref: '#/components/schemas/MetricDatasetPATCH'
       - $ref: '#/components/schemas/KVCollectionDatasetPATCH'
     DatasetPATCHCommon:
-      description: Properties that are common across all Dataset kinds to be set in
-        an existing dataset using a PATCH request.
+      description: Properties that are common across all Dataset kinds to be set in an existing dataset using a PATCH request.
       properties:
         module:
           description: The name of module to reassign dataset into.
@@ -654,21 +623,18 @@ components:
           maxLength: 100
           type: string
         name:
-          description: The dataset name. Dataset names must be unique within each
-            module.
+          description: The dataset name. Dataset names must be unique within each module.
           example: nameOfDataset
           maxLength: 100
           type: string
         owner:
-          description: The name of the dataset owner. This value is obtained from
-            the bearer token.
+          description: The name of the dataset owner. This value is obtained from the bearer token.
           example: johndoe
           maxLength: 24
           type: string
       type: object
     DatasetPOST:
-      description: Initial property values for creating a new action using a POST
-        request.
+      description: Initial property values for creating a new action using a POST request.
       discriminator:
         mapping:
           import: '#/components/schemas/ImportDatasetPOST'
@@ -686,8 +652,7 @@ components:
       - $ref: '#/components/schemas/MetricDatasetPOST'
       - $ref: '#/components/schemas/KVCollectionDatasetPOST'
     DatasetPOSTCommon:
-      description: Properties that are common across all Dataset kinds for creating
-        a new dataset using a POST request.
+      description: Properties that are common across all Dataset kinds for creating a new dataset using a POST request.
       properties:
         fields:
           description: The fields to be associated with this dataset.
@@ -707,8 +672,7 @@ components:
           maxLength: 100
           type: string
         name:
-          description: The dataset name. Dataset names must be unique within each
-            module.
+          description: The dataset name. Dataset names must be unique within each module.
           example: nameOfDataset
           maxLength: 100
           type: string
@@ -716,8 +680,7 @@ components:
       - name
       type: object
     DateMetadataProperties:
-      description: Created and Modified date-time properties for inclusion in other
-        objects.
+      description: Created and Modified date-time properties for inclusion in other objects.
       properties:
         created:
           description: The date and time object was created.
@@ -758,30 +721,25 @@ components:
       allOf:
       - $ref: '#/components/schemas/ActionPATCHCommon'
       - $ref: '#/components/schemas/EvalActionProperties'
-      description: Property values for setting existing eval actions using a PATCH
-        request.
+      description: Property values for setting existing eval actions using a PATCH request.
     EvalActionPOST:
       allOf:
       - $ref: '#/components/schemas/ActionCommon'
       - $ref: '#/components/schemas/EvalActionProperties'
-      description: Initial property values for creating a new eval action using a
-        POST request.
+      description: Initial property values for creating a new eval action using a POST request.
       required:
       - kind
       - field
       - expression
       type: object
     EvalActionProperties:
-      description: Properties of eval actions which may be read, set, and changed
-        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
-        do not use directly.
+      description: Properties of eval actions which may be read, set, and changed through the API. Implementation detail of ActionPOST, ActionPOST, and Action, do not use directly.
       properties:
         expression:
           description: The EVAL expression that calculates the field.
           type: string
         field:
-          description: The name of the field that is added or modified by the EVAL
-            expression.
+          description: The name of the field that is added or modified by the EVAL expression.
           example: nameOfNewField
           type: string
         kind:
@@ -841,17 +799,14 @@ components:
       - name
       type: object
     FieldPrevalence:
-      description: How frequent the field appears in the dataset. Must be one of the
-        valid values.
+      description: How frequent the field appears in the dataset. Must be one of the valid values.
       enum:
       - ALL
       - SOME
       - UNKNOWN
       type: string
     FieldProperties:
-      description: Properties of fields which can be read, set, and changed through
-        the API. Implementation detail of FieldPOST, FieldPATCH, and Field, do not
-        use directly.
+      description: Properties of fields which can be read, set, and changed through the API. Implementation detail of FieldPOST, FieldPATCH, and Field, do not use directly.
       properties:
         datatype:
           $ref: '#/components/schemas/FieldDataType'
@@ -901,15 +856,13 @@ components:
       allOf:
       - $ref: '#/components/schemas/ImportDatasetByIdProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new import dataset by sourceId
-        using a POST request.
+      description: Initial property values for creating a new import dataset by sourceId using a POST request.
       required:
       - kind
       - sourceId
       type: object
     ImportDatasetByIdProperties:
-      description: Initial property values for creating a new import dataset by sourceId
-        using a POST request.
+      description: Initial property values for creating a new import dataset by sourceId using a POST request.
       properties:
         kind:
           $ref: '#/components/schemas/ImportDatasetKind'
@@ -925,17 +878,14 @@ components:
       allOf:
       - $ref: '#/components/schemas/ImportDatasetByNameProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new import dataset by sourceName
-        and sourceModule using a POST request.
+      description: Initial property values for creating a new import dataset by sourceName and sourceModule using a POST request.
       required:
       - kind
       - sourceModule
       - sourceName
       type: object
     ImportDatasetByNameProperties:
-      description: Properties of import datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of import datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/ImportDatasetKind'
@@ -956,18 +906,14 @@ components:
     ImportDatasetPATCH:
       allOf:
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing import dataset using a
-        PATCH request.
+      description: Property values to be set in an existing import dataset using a PATCH request.
     ImportDatasetPOST:
-      description: Initial property values for creating a new import dataset using
-        a POST request.
+      description: Initial property values for creating a new import dataset using a POST request.
       oneOf:
       - $ref: '#/components/schemas/ImportDatasetByIdPOST'
       - $ref: '#/components/schemas/ImportDatasetByNamePOST'
     ImportDatasetProperties:
-      description: Properties of import datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of import datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       oneOf:
       - properties:
           sourceModule:
@@ -1019,22 +965,18 @@ components:
       allOf:
       - $ref: '#/components/schemas/IndexDatasetProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing index dataset using a
-        PATCH request.
+      description: Property values to be set in an existing index dataset using a PATCH request.
     IndexDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/IndexDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new index dataset using
-        a POST request.
+      description: Initial property values for creating a new index dataset using a POST request.
       required:
       - kind
       - disabled
       type: object
     IndexDatasetProperties:
-      description: Properties of job datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         disabled:
           description: Specifies whether or not the Splunk index is disabled.
@@ -1046,12 +988,10 @@ components:
           $ref: '#/components/schemas/IndexDatasetKind'
       type: object
     IndexDatasetReadOnlyProperties:
-      description: Properties of index datasets which can only be read through the
-        API.
+      description: Properties of index datasets which can only be read through the API.
       properties:
         earliestEventTime:
-          description: The timestamp, in seconds, of the earliest event. The timestamp
-            is in UNIX time.
+          description: The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
           type: string
         earliestIngestTime:
           description: The earliest index time for any of the events in this index.
@@ -1059,8 +999,7 @@ components:
         kind:
           $ref: '#/components/schemas/IndexDatasetKind'
         latestEventTime:
-          description: The timestamp, in seconds, of the latest event. The timestamp
-            is in UNIX time.
+          description: The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
           type: string
         latestIngestTime:
           description: The latest index time for any of the events in this index.
@@ -1129,8 +1068,7 @@ components:
       description: Properties of job datasets which internal use only.
       properties:
         unresolvedTimeSpl:
-          description: Search without the time range resolved, internal search service
-            use only.
+          description: Search without the time range resolved, internal search service use only.
           type: string
     JobDatasetKind:
       description: The dataset kind.
@@ -1142,15 +1080,13 @@ components:
       - $ref: '#/components/schemas/JobDatasetProperties'
       - $ref: '#/components/schemas/JobDatasetInternalProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing job dataset using a PATCH
-        request.
+      description: Property values to be set in an existing job dataset using a PATCH request.
     JobDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/JobDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
       - $ref: '#/components/schemas/JobDatasetInternalProperties'
-      description: Initial property values for creating a new job dataset using a
-        POST request.
+      description: Initial property values for creating a new job dataset using a POST request.
       required:
       - kind
       - sid
@@ -1164,9 +1100,7 @@ components:
       - parameters
       type: object
     JobDatasetProperties:
-      description: Properties of job datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         collectEventSummary:
           description: Was the event summary requested for this searhc job?
@@ -1187,15 +1121,13 @@ components:
           description: Time that the job was dispatched
           type: string
         enablePreview:
-          description: Specifies whether a search is allowed to collect preview results
-            during the runtime, internal search service use only.
+          description: Specifies whether a search is allowed to collect preview results during the runtime, internal search service use only.
           type: boolean
         executionTime:
           description: The runtime of the search in seconds.
           type: number
         extractAllFields:
-          description: Should the search produce all fields (including those not explicity
-            mentioned in the SPL)?
+          description: Should the search produce all fields (including those not explicity mentioned in the SPL)?
           type: boolean
         extractFields:
           description: The fields to extract. Valid values are all, none, or indexed.
@@ -1209,8 +1141,7 @@ components:
           description: The maximum number of seconds to run this search before finishing.
           type: integer
         parameters:
-          description: Parameters for the search job, mainly earliest, latest, timezone,
-            and relativeTimeAnchor.
+          description: Parameters for the search job, mainly earliest, latest, timezone, and relativeTimeAnchor.
           type: object
         parent:
           description: The parent's ID of the search job.
@@ -1228,8 +1159,7 @@ components:
           description: Resolved latest time for the job
           type: string
         resultsAvailable:
-          description: The instantaneous number of results produced by the search
-            job.
+          description: The instantaneous number of results produced by the search job.
           type: integer
         searchHead:
           description: The search head that started this search job.
@@ -1269,8 +1199,7 @@ components:
       - $ref: '#/components/schemas/KVCollectionDatasetProperties'
       - $ref: '#/components/schemas/MetadataProperties'
       - $ref: '#/components/schemas/DatasetCommon'
-      description: A complete kvcollection dataset as rendered in POST, PATCH, and
-        GET responses.
+      description: A complete kvcollection dataset as rendered in POST, PATCH, and GET responses.
       required:
       - kind
       type: object
@@ -1283,21 +1212,17 @@ components:
       allOf:
       - $ref: '#/components/schemas/KVCollectionDatasetProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing kvcollection dataset using
-        a PATCH request.
+      description: Property values to be set in an existing kvcollection dataset using a PATCH request.
     KVCollectionDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/KVCollectionDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new kvcollection dataset
-        using a POST request.
+      description: Initial property values for creating a new kvcollection dataset using a POST request.
       required:
       - kind
       type: object
     KVCollectionDatasetProperties:
-      description: Properties of kvcollection datasets which may be read, set, and
-        changed through the API. Implementation detail of DatasetPOST, DatasetPATCH,
-        and Dataset, do not use directly.
+      description: Properties of kvcollection datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/KVCollectionDatasetKind'
@@ -1324,22 +1249,18 @@ components:
       allOf:
       - $ref: '#/components/schemas/ActionPATCHCommon'
       - $ref: '#/components/schemas/LookupActionProperties'
-      description: Property values for setting existing lookup actions using a PATCH
-        request.
+      description: Property values for setting existing lookup actions using a PATCH request.
     LookupActionPOST:
       allOf:
       - $ref: '#/components/schemas/ActionCommon'
       - $ref: '#/components/schemas/LookupActionProperties'
-      description: Initial property values for creating a new lookup action using
-        a POST request.
+      description: Initial property values for creating a new lookup action using a POST request.
       required:
       - kind
       - expression
       type: object
     LookupActionProperties:
-      description: Properties of lookup actions which may be read, set, and changed
-        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
-        do not use directly.
+      description: Properties of lookup actions which may be read, set, and changed through the API. Implementation detail of ActionPOST, ActionPOST, and Action, do not use directly.
       properties:
         expression:
           description: The lookup body.
@@ -1372,23 +1293,19 @@ components:
       allOf:
       - $ref: '#/components/schemas/LookupDatasetProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing lookup dataset using a
-        PATCH request.
+      description: Property values to be set in an existing lookup dataset using a PATCH request.
     LookupDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/LookupDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new lookup dataset using
-        a POST request.
+      description: Initial property values for creating a new lookup dataset using a POST request.
       required:
       - kind
       - externalKind
       - externalName
       type: object
     LookupDatasetProperties:
-      description: Properties of lookup datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of lookup datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         caseSensitiveMatch:
           default: true
@@ -1401,8 +1318,7 @@ components:
           example: nameOfKvCollection
           type: string
         filter:
-          description: A query that filters results out of the lookup before those
-            results are returned.
+          description: A query that filters results out of the lookup before those results are returned.
           type: string
         kind:
           $ref: '#/components/schemas/LookupDatasetKind'
@@ -1410,8 +1326,7 @@ components:
       allOf:
       - $ref: '#/components/schemas/DateMetadataProperties'
       - $ref: '#/components/schemas/UserMetadataProperties'
-      description: Created, createdby, modified, modifiedby, and owner properties
-        for inclusion in other objects.
+      description: Created, createdby, modified, modifiedby, and owner properties for inclusion in other objects.
     MetricDataset:
       allOf:
       - $ref: '#/components/schemas/MetricDatasetProperties'
@@ -1432,22 +1347,18 @@ components:
       allOf:
       - $ref: '#/components/schemas/MetricDatasetProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing metric dataset using a
-        PATCH request.
+      description: Property values to be set in an existing metric dataset using a PATCH request.
     MetricDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/MetricDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new metric dataset using
-        a POST request.
+      description: Initial property values for creating a new metric dataset using a POST request.
       required:
       - kind
       - disabled
       type: object
     MetricDatasetProperties:
-      description: Properties of metric datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of metric datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         disabled:
           description: Specifies whether or not the Splunk index is disabled.
@@ -1459,12 +1370,10 @@ components:
           $ref: '#/components/schemas/MetricDatasetKind'
       type: object
     MetricDatasetReadOnlyProperties:
-      description: Properties of metric datasets which can only be read through the
-        API.
+      description: Properties of metric datasets which can only be read through the API.
       properties:
         earliestEventTime:
-          description: The timestamp, in seconds, of the earliest measure. The timestamp
-            is in UNIX time.
+          description: The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
           type: string
         earliestIngestTime:
           description: The earliest index time for any of the measures in this index.
@@ -1472,8 +1381,7 @@ components:
         kind:
           $ref: '#/components/schemas/MetricDatasetKind'
         latestEventTime:
-          description: The timestamp, in seconds, of the latest measure. The timestamp
-            is in UNIX time.
+          description: The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
           type: string
         latestIngestTime:
           description: The earliest index time for any of the measures in this index.
@@ -1518,23 +1426,19 @@ components:
       allOf:
       - $ref: '#/components/schemas/ActionPATCHCommon'
       - $ref: '#/components/schemas/RegexActionProperties'
-      description: Property values for setting existing regex actions using a PATCH
-        request.
+      description: Property values for setting existing regex actions using a PATCH request.
     RegexActionPOST:
       allOf:
       - $ref: '#/components/schemas/ActionCommon'
       - $ref: '#/components/schemas/RegexActionProperties'
-      description: Initial property values for creating a new regex action using a
-        POST request.
+      description: Initial property values for creating a new regex action using a POST request.
       required:
       - kind
       - field
       - pattern
       type: object
     RegexActionProperties:
-      description: Properties of regex actions which may be read, set, and changed
-        through the API. Implementation detail of ActionPOST, ActionPOST, and Action,
-        do not use directly.
+      description: Properties of regex actions which may be read, set, and changed through the API. Implementation detail of ActionPOST, ActionPOST, and Action, do not use directly.
       properties:
         field:
           description: Name of the field that is matched against the regular expression.
@@ -1543,12 +1447,10 @@ components:
         kind:
           $ref: '#/components/schemas/RegexActionKind'
         limit:
-          description: The maximum number of times per event to attempt to match fields
-            with the regular expression.
+          description: The maximum number of times per event to attempt to match fields with the regular expression.
           type: integer
         pattern:
-          description: A regular expression that includes named capture groups for
-            the purpose of field extraction.
+          description: A regular expression that includes named capture groups for the purpose of field extraction.
           type: string
       type: object
     Relationship:
@@ -1590,18 +1492,14 @@ components:
       allOf:
       - $ref: '#/components/schemas/DateMetadataProperties'
       - $ref: '#/components/schemas/RelationshipFieldProperties'
-      description: A complete relationship field as rendered in POST, PATCH, and GET
-        responses.
+      description: A complete relationship field as rendered in POST, PATCH, and GET responses.
       required:
       - sourceid
       - targetid
       - kind
       type: object
     RelationshipFieldKind:
-      description: The type of match between the fields. Must be one of the valid
-        values. The LATEST_BEFORE match type specifies that the datetime field in
-        one dataset binds to the latest time before the datetime field in another
-        dataset.
+      description: The type of match between the fields. Must be one of the valid values. The LATEST_BEFORE match type specifies that the datetime field in one dataset binds to the latest time before the datetime field in another dataset.
       enum:
       - EXACT
       - LATEST_BEFORE
@@ -1609,16 +1507,14 @@ components:
     RelationshipFieldPOST:
       allOf:
       - $ref: '#/components/schemas/RelationshipFieldProperties'
-      description: The properties required to create a new relationship field using
-        a relationship POST request.
+      description: The properties required to create a new relationship field using a relationship POST request.
       required:
       - sourceid
       - targetid
       - kind
       type: object
     RelationshipFieldProperties:
-      description: Properties of relationship fields which are read through the API.
-        Implementation detail of RelationshipFieldPOST. Do not use directly.
+      description: Properties of relationship fields which are read through the API. Implementation detail of RelationshipFieldPOST. Do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/RelationshipFieldKind'
@@ -1672,24 +1568,20 @@ components:
               $ref: '#/components/schemas/RelationshipFieldPOST'
             type: array
           id:
-            description: A unique relationship ID. If not specified, an auto generated
-              ID is created.
+            description: A unique relationship ID. If not specified, an auto generated ID is created.
             example: 5bc1a6fefee0d854a4188125
             format: mongo-object-id
             maxLength: 24
             minLength: 24
             type: string
         type: object
-      description: The properties required to create a new relationship using a POST
-        request.
+      description: The properties required to create a new relationship using a POST request.
       required:
       - name
       - kind
       type: object
     RelationshipProperties:
-      description: Properties of relationships which are read through the API. Implementation
-        detail of RelationshipPOST, RelationshipPATCH and Relationship. Do not use
-        directly.
+      description: Properties of relationships which are read through the API. Implementation detail of RelationshipPOST, RelationshipPATCH and Relationship. Do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/RelationshipKind'
@@ -1705,29 +1597,25 @@ components:
           maxLength: 100
           type: string
         sourceid:
-          description: A unique source dataset ID. Either the sourceid or sourceresourcename
-            property must be specified.
+          description: A unique source dataset ID. Either the sourceid or sourceresourcename property must be specified.
           example: 5bc1a6fefee0d854a4188126
           format: mongo-object-id
           maxLength: 24
           minLength: 24
           type: string
         sourceresourcename:
-          description: The source dataset name qualified by module name. Either the
-            sourceid or sourceresourcename property must be specified.
+          description: The source dataset name qualified by module name. Either the sourceid or sourceresourcename property must be specified.
           example: nameOfModule.nameOfDataset
           type: string
         targetid:
-          description: A unique target dataset ID. Either the targetid or targetresourcename
-            property must be specified.
+          description: A unique target dataset ID. Either the targetid or targetresourcename property must be specified.
           example: 5bc1a6fefee0d854a4188127
           format: mongo-object-id
           maxLength: 24
           minLength: 24
           type: string
         targetresourcename:
-          description: The target dataset name qualified by module name. Either the
-            targetid or targetresourcename property must be specified.
+          description: The target dataset name qualified by module name. Either the targetid or targetresourcename property must be specified.
           example: nameOfModule.nameOfDataset
           type: string
         version:
@@ -1793,8 +1681,7 @@ components:
               $ref: '#/components/schemas/ActionPOST'
             type: array
           id:
-            description: A unique rule ID. The newly created rule object will use
-              this ID value if provided.
+            description: A unique rule ID. The newly created rule object will use this ID value if provided.
             example: 5bc1a6fefee0d854a4188125
             format: mongo-object-id
             maxLength: 24
@@ -1807,9 +1694,7 @@ components:
       - match
       type: object
     RuleProperties:
-      description: Properties of rules which may be read, set, and changed through
-        the API. Implementation detail of RulePOST, RulePATCH, and Rule, do not use
-        directly.
+      description: Properties of rules which may be read, set, and changed through the API. Implementation detail of RulePOST, RulePATCH, and Rule, do not use directly.
       properties:
         match:
           description: The rule match type.
@@ -1847,14 +1732,12 @@ components:
       - splv1sink
       type: string
     Splv1sinkDatasetProperties:
-      description: Properties of splv1sink datasets which can be read through the
-        API.
+      description: Properties of splv1sink datasets which can be read through the API.
       properties:
         kind:
           $ref: '#/components/schemas/Splv1sinkDatasetKind'
         splv1:
-          description: Internal use by common-ast, contains the converted SPL for
-            a SPL2 search query.
+          description: Internal use by common-ast, contains the converted SPL for a SPL2 search query.
           type: string
     Task:
       allOf:
@@ -2050,12 +1933,10 @@ components:
       - timeoutsecs
       type: object
     UserMetadataProperties:
-      description: Owner, createdby, and modifiedby user name properties for inclusion
-        in other objects.
+      description: Owner, createdby, and modifiedby user name properties for inclusion in other objects.
       properties:
         createdby:
-          description: The name of the user who created the object. This value is
-            obtained from the bearer token and may not be changed.
+          description: The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
           example: janedoe
           readOnly: true
           type: string
@@ -2093,22 +1974,18 @@ components:
       allOf:
       - $ref: '#/components/schemas/ViewDatasetProperties'
       - $ref: '#/components/schemas/DatasetPATCHCommon'
-      description: Property values to be set in an existing view dataset using a PATCH
-        request.
+      description: Property values to be set in an existing view dataset using a PATCH request.
     ViewDatasetPOST:
       allOf:
       - $ref: '#/components/schemas/ViewDatasetProperties'
       - $ref: '#/components/schemas/DatasetPOSTCommon'
-      description: Initial property values for creating a new view dataset using a
-        POST request.
+      description: Initial property values for creating a new view dataset using a POST request.
       required:
       - kind
       - search
       type: object
     ViewDatasetProperties:
-      description: Properties of job datasets which may be read, set, and changed
-        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
-        do not use directly.
+      description: Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
       properties:
         kind:
           $ref: '#/components/schemas/ViewDatasetKind'
@@ -2139,8 +2016,7 @@ components:
             minLength: 24
             type: string
           name:
-            description: The workflow name. Workflow names must be unique within each
-              tenant.
+            description: The workflow name. Workflow names must be unique within each tenant.
             example: nameOfWorkflow
             maxLength: 100
             type: string
@@ -2252,16 +2128,14 @@ components:
             minimum: 1
             type: integer
           workflowid:
-            description: A unique workflow ID that is associated with the workflow
-              build.
+            description: A unique workflow ID that is associated with the workflow build.
             example: 5bbf6d876d059d0b9ea8da32
             format: mongo-object-id
             maxLength: 24
             minLength: 24
             type: string
           workflowversion:
-            description: The version of the workflow that is associated with the workflow
-              build.
+            description: The version of the workflow that is associated with the workflow build.
             example: 1
             minimum: 1
             type: integer
@@ -2379,8 +2253,7 @@ components:
           minLength: 24
           type: string
         workflowversion:
-          description: The version of the workflow that is associated with the workflow
-            build.
+          description: The version of the workflow that is associated with the workflow build.
           example: 1
           minimum: 1
           type: integer
@@ -2423,8 +2296,7 @@ components:
           minLength: 24
           type: string
         name:
-          description: The dataset name. Dataset names must be unique within each
-            module.
+          description: The dataset name. Dataset names must be unique within each module.
           example: nameOfDataset
           maxLength: 100
           type: string
@@ -2449,8 +2321,7 @@ components:
           format: date-time
           type: string
         createdby:
-          description: The name of the user who created the workflow run. This value
-            is obtained from the bearer token and may not be changed.
+          description: The name of the user who created the workflow run. This value is obtained from the bearer token and may not be changed.
           example: janedoe
           type: string
         description:
@@ -2507,16 +2378,14 @@ components:
           minimum: 1
           type: integer
         workflowbuildid:
-          description: A unique workflow build ID that is associated with the workflow
-            run.
+          description: A unique workflow build ID that is associated with the workflow run.
           example: 5bbf6d876d059d0b9ea8da32
           format: mongo-object-id
           maxLength: 24
           minLength: 24
           type: string
         workflowbuildversion:
-          description: The version of the workflow build that is associated with the
-            workflow run.
+          description: The version of the workflow build that is associated with the workflow run.
           example: 1
           minimum: 1
           type: integer
@@ -2556,14 +2425,12 @@ components:
           example: Description of workflow run.
           type: string
         ended:
-          description: The date and time the workflow run ended for specified workflow
-            build ID.
+          description: The date and time the workflow run ended for specified workflow build ID.
           example: "2018-10-14 10:18:53.000417"
           format: date-time
           type: string
         failuremessage:
-          description: The failure message of the workflow run for specified workflow
-            build ID.
+          description: The failure message of the workflow run for specified workflow build ID.
           example: Algorithm not recognized.
           type: string
         id:
@@ -2574,8 +2441,7 @@ components:
           minLength: 24
           type: string
         inputdata:
-          description: The input data of the workflow run for specified workflow build
-            ID.
+          description: The input data of the workflow run for specified workflow build ID.
           items:
             type: string
           type: array
@@ -2585,39 +2451,33 @@ components:
           maxLength: 100
           type: string
         outputdata:
-          description: The output data of the workflow run for specified workflow
-            build ID.
+          description: The output data of the workflow run for specified workflow build ID.
           items:
             type: string
           type: array
         started:
-          description: The date and time the workflow run started for specified workflow
-            build ID.
+          description: The date and time the workflow run started for specified workflow build ID.
           example: "2018-10-14 10:18:53.000417"
           format: date-time
           type: string
         status:
-          description: The status of the workflow run for specified workflow build
-            ID.
+          description: The status of the workflow run for specified workflow build ID.
           example: success
           type: string
         timeoutsecs:
-          description: The timeout in seconds of the workflow run for specified workflow
-            build ID.
+          description: The timeout in seconds of the workflow run for specified workflow build ID.
           example: 600
           minimum: 1
           type: integer
         workflowbuildid:
-          description: A unique workflow build ID that is associated with the workflow
-            run.
+          description: A unique workflow build ID that is associated with the workflow run.
           example: 5bbf6d876d059d0b9ea8da32
           format: mongo-object-id
           maxLength: 24
           minLength: 24
           type: string
         workflowbuildversion:
-          description: The version of the workflow build that is assocaited with the
-            workflow run.
+          description: The version of the workflow build that is assocaited with the workflow run.
           example: 1
           minimum: 1
           type: integer
@@ -2627,10 +2487,8 @@ components:
       - timeoutsecs
       type: object
 info:
-  description: With the Metadata Catalog in Splunk Cloud Services you can create and
-    manage knowledge objects such as datasets, fields, rules, actions, dashboards,
-    and workflows.
-  title: Metadata Catalog
+  description: With the Metadata Catalog in Splunk Cloud Services you can create and manage knowledge objects such as datasets, fields, rules, actions, dashboards, and workflows.
+  title: Metadata Catalog service
   version: v2beta1.4
 openapi: 3.0.0
 paths:
@@ -2639,8 +2497,7 @@ paths:
       description: Returns the set of annotations across all objects.
       operationId: listAnnotations
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -2661,9 +2518,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -2694,8 +2549,7 @@ paths:
       description: Returns a list of dashboards.
       operationId: listDashboards
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -2716,9 +2570,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -2738,8 +2590,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested dashboards were not found, or the requesting
-            user lacks catalog.dashboards.read permission for them.
+          description: The requested dashboards were not found, or the requesting user lacks catalog.dashboards.read permission for them.
       x-authz-scope:
       - catalog.dashboards.read
     parameters:
@@ -2797,8 +2648,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A dashboard with the specified ID was not found, or the requesting
-            user lacks catalog.dashboards.read permission for it.
+          description: A dashboard with the specified ID was not found, or the requesting user lacks catalog.dashboards.read permission for it.
       x-authz-scope:
       - catalog.dashboards.read
     parameters:
@@ -2831,8 +2681,7 @@ paths:
       - catalog.dashboards.read
   /{tenant}/catalog/v2beta1/dashboards/{dashboardid}/annotations:
     get:
-      description: Returns the set of annotations that are associated with the specified
-        dashboard.
+      description: Returns the set of annotations that are associated with the specified dashboard.
       operationId: listAnnotationsForDashboardById
       parameters:
       - description: A filter query to apply to the annotations.
@@ -2856,8 +2705,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested annotations were not found, or the requesting
-            user lacks catalog.annotations.read permission for them.
+          description: The requested annotations were not found, or the requesting user lacks catalog.annotations.read permission for them.
       x-authz-scope:
       - catalog.annotations.read
     parameters:
@@ -2889,8 +2737,7 @@ paths:
       - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/dashboards/{dashboardid}/annotations/{annotationid}:
     delete:
-      description: Deletes the annotation with the speciifed ID that is associted
-        with the specified dashboard.
+      description: Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
       operationId: deleteAnnotationOfDashboardById
       responses:
         "204":
@@ -2922,8 +2769,7 @@ paths:
       - catalog.dashboards.delete
       - catalog.dashboards.read
     get:
-      description: Returns information about the dashboard with the specified resource
-        name.
+      description: Returns information about the dashboard with the specified resource name.
       operationId: getDashboardByResourceName
       responses:
         "200":
@@ -2931,13 +2777,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dashboard'
-          description: Information about a dashboard with the specified resource name
-            was returned.
+          description: Information about a dashboard with the specified resource name was returned.
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A dashboard with the specified ID was not found, or the requesting
-            user lacks catalog.dashboards.read permission for it.
+          description: A dashboard with the specified ID was not found, or the requesting user lacks catalog.dashboards.read permission for it.
       x-authz-scope:
       - catalog.dashboards.read
     parameters:
@@ -2966,8 +2810,7 @@ paths:
       - catalog.dashboards.read
   /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}/annotations:
     get:
-      description: Returns the set of annotations that are associated with the specified
-        dashboard resource name.
+      description: Returns the set of annotations that are associated with the specified dashboard resource name.
       operationId: listAnnotationsForDashboardByResourceName
       parameters:
       - description: A filter query to apply to the annotations.
@@ -2991,8 +2834,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested annotations were not found, or the requesting
-            user lacks catalog.annotations.read permission for them.
+          description: The requested annotations were not found, or the requesting user lacks catalog.annotations.read permission for them.
       x-authz-scope:
       - catalog.annotations.read
     parameters:
@@ -3026,8 +2868,7 @@ paths:
       - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/dashboards/{dashboardresourcename}/annotations/{annotationid}:
     delete:
-      description: Deletes the annotation with the specified ID that is associated
-        with the specified dashboard resource name.
+      description: Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
       operationId: deleteAnnotationOfDashboardByResourceName
       responses:
         "204":
@@ -3046,12 +2887,10 @@ paths:
     - $ref: '#/components/parameters/AnnotationID'
   /{tenant}/catalog/v2beta1/datasets:
     get:
-      description: Returns a list of all datasets. Use a filter to return a specific
-        list of datasets.
+      description: Returns a list of all datasets. Use a filter to return a specific list of datasets.
       operationId: listDatasets
       parameters:
-      - description: A filter to apply to the dataset list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the dataset list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3072,9 +2911,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc".  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc".  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3101,8 +2938,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested datasets were not found, or you lack catalog.datasets.read
-            permission for the datasets.
+          description: The requested datasets were not found, or you lack catalog.datasets.read permission for the datasets.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3137,8 +2973,7 @@ paths:
       - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetid}:
     delete:
-      description: Deletes the dataset with the specified ID. Deleting a dataset also
-        deletes its dependent objects, such as fields.
+      description: Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
       operationId: deleteDatasetById
       responses:
         "204":
@@ -3148,8 +2983,7 @@ paths:
         "404":
           description: A dataset with the specified ID was not found.
         "405":
-          description: The dataset with the specified ID cannot be deleted because
-            there are external objects dependent on the dataset.
+          description: The dataset with the specified ID cannot be deleted because there are external objects dependent on the dataset.
       x-authz-scope:
       - catalog.datasets.delete
       - catalog.datasets.read
@@ -3174,8 +3008,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A dataset with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for it.
+          description: A dataset with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for it.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3200,19 +3033,16 @@ paths:
                 $ref: '#/components/schemas/Dataset'
           description: The dataset with the specified ID was updated.
         "404":
-          description: The dataset with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for it.
+          description: The dataset with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for it.
       x-authz-scope:
       - catalog.datasets.update
       - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations:
     get:
-      description: Returns the set of annotations that are associated with the specified
-        dataset.
+      description: Returns the set of annotations that are associated with the specified dataset.
       operationId: listAnnotationsForDatasetById
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3233,9 +3063,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3257,8 +3085,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested annotations were not found, or the requesting
-            user lacks catalog.annotations.read permission for them.
+          description: The requested annotations were not found, or the requesting user lacks catalog.annotations.read permission for them.
       x-authz-scope:
       - catalog.annotations.read
     parameters:
@@ -3290,8 +3117,7 @@ paths:
       - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/annotations/{annotationid}:
     delete:
-      description: Deletes the annotation with the specified ID that is associated
-        with the specified dataset.
+      description: Deletes the annotation with the specified ID that is associated with the specified dataset.
       operationId: deleteAnnotationOfDatasetById
       responses:
         "204":
@@ -3313,8 +3139,7 @@ paths:
       description: Returns the set of fields for the dataset with the specified ID.
       operationId: listFieldsForDatasetById
       parameters:
-      - description: A filter to apply to the dataset list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the dataset list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3335,9 +3160,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by. You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by. You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3359,8 +3182,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested fields were not found, or the requesting user
-            lacks catalog.datasets.read permission for them.
+          description: The requested fields were not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3395,8 +3217,7 @@ paths:
       - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetid}/fields/{fieldid}:
     delete:
-      description: Deletes the field with the specified ID that is part of the specified
-        dataset.
+      description: Deletes the field with the specified ID that is part of the specified dataset.
       operationId: deleteFieldByIdForDatasetById
       responses:
         "204":
@@ -3404,14 +3225,12 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The field with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for them.
+          description: The field with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.update
       - catalog.datasets.read
     get:
-      description: Returns the field with the specified ID that is part of the specified
-        dataset.
+      description: Returns the field with the specified ID that is part of the specified dataset.
       operationId: getFieldByIdForDatasetById
       responses:
         "200":
@@ -3423,8 +3242,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A field with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for it.
+          description: A field with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for it.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3433,16 +3251,14 @@ paths:
     - $ref: '#/components/parameters/DatasetID'
     - $ref: '#/components/parameters/FieldID'
     patch:
-      description: Modifies the field with the specified ID that is part of the specified
-        dataset.
+      description: Modifies the field with the specified ID that is part of the specified dataset.
       operationId: updateFieldByIdForDatasetById
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/FieldPATCH'
-        description: The properties to update in the specified field, or the requesting
-          user lacks catalog.datasets.read permission for them.
+        description: The properties to update in the specified field, or the requesting user lacks catalog.datasets.read permission for them.
         required: true
       responses:
         "200":
@@ -3452,8 +3268,7 @@ paths:
                 $ref: '#/components/schemas/Field'
           description: The field with the specified ID was updated.
         "404":
-          description: The field with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for them.
+          description: The field with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.update
       - catalog.datasets.read
@@ -3475,7 +3290,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImportDataset'
+                $ref: '#/components/schemas/DatasetImportedBy'
           description: The dataset import was created.
         "400":
           description: The dataset import is invalid.
@@ -3519,9 +3334,7 @@ paths:
       - catalog.datasets.create
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}:
     delete:
-      description: Deletes the dataset with the specified resource name, along with
-        its dependencies. For the default module, the resource name format is datasetName.
-        Otherwise, the resource name format is module.datasetName.
+      description: Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
       operationId: deleteDataset
       responses:
         "204":
@@ -3531,15 +3344,12 @@ paths:
         "404":
           description: A dataset with the specified resource name was not found.
         "405":
-          description: The dataset with the specified ID cannot be deleted because
-            there are external objects dependent on the dataset.
+          description: The dataset with the specified ID cannot be deleted because there are external objects dependent on the dataset.
       x-authz-scope:
       - catalog.datasets.delete
       - catalog.datasets.read
     get:
-      description: Returns the dataset with the specified resource name. For the default
-        module, the resource name format is datasetName. Otherwise, the resource name
-        format is module.datasetName.
+      description: Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
       operationId: getDataset
       parameters:
       - description: The number of seconds beyond which we will refresh index metadata.
@@ -3559,8 +3369,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A dataset with the specified resource name was not found, or
-            the requesting user lacks catalog.datasets.read permission for it.
+          description: A dataset with the specified resource name was not found, or the requesting user lacks catalog.datasets.read permission for it.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3568,9 +3377,7 @@ paths:
     - $ref: '#/components/parameters/Tenant'
     - $ref: '#/components/parameters/DatasetResourceName'
     patch:
-      description: Modifies the dataset with the specified resource name. For the
-        default module, the resource name format is datasetName. Otherwise, the resource
-        name format is module.datasetName.
+      description: Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
       operationId: updateDataset
       requestBody:
         content:
@@ -3593,12 +3400,10 @@ paths:
       - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations:
     get:
-      description: Returns the set of annotations that are associated with the specified
-        dataset resource name.
+      description: Returns the set of annotations that are associated with the specified dataset resource name.
       operationId: listAnnotationsForDatasetByResourceName
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3619,9 +3424,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3643,8 +3446,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested annotations were not found, or the requesting
-            user lacks catalog.annotations.read permission for them.
+          description: The requested annotations were not found, or the requesting user lacks catalog.annotations.read permission for them.
       x-authz-scope:
       - catalog.annotations.read
     parameters:
@@ -3678,8 +3480,7 @@ paths:
       - catalog.annotationtypes.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/annotations/{annotationid}:
     delete:
-      description: Deletes the annotation with the specified iD that is associated
-        with the specified dataset resource name.
+      description: Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
       operationId: deleteAnnotationOfDatasetByResourceName
       responses:
         "204":
@@ -3701,8 +3502,7 @@ paths:
       description: Returns the list of fields in the specified dataset.
       operationId: listFieldsForDataset
       parameters:
-      - description: A filter to apply to the dataset list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the dataset list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3723,9 +3523,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by. You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by. You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3748,8 +3546,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested fields were not found, or the requesting user
-            lacks catalog.datasets.read permission for them.
+          description: The requested fields were not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3757,8 +3554,7 @@ paths:
     - $ref: '#/components/parameters/Tenant'
     - $ref: '#/components/parameters/DatasetResourceName'
     post:
-      description: Creates a new field in the dataset with the specified resource
-        name.
+      description: Creates a new field in the dataset with the specified resource name.
       operationId: createFieldForDataset
       requestBody:
         content:
@@ -3785,8 +3581,7 @@ paths:
       - catalog.datasets.read
   /{tenant}/catalog/v2beta1/datasets/{datasetresourcename}/fields/{fieldid}:
     delete:
-      description: Deletes the field with the specified ID that is part of the specified
-        dataset.
+      description: Deletes the field with the specified ID that is part of the specified dataset.
       operationId: deleteFieldByIdForDataset
       responses:
         "204":
@@ -3794,14 +3589,12 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The field with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for them.
+          description: The field with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.update
       - catalog.datasets.read
     get:
-      description: Returns the field with the specified ID that is part of the specified
-        dataset.
+      description: Returns the field with the specified ID that is part of the specified dataset.
       operationId: getFieldByIdForDataset
       responses:
         "200":
@@ -3813,8 +3606,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The specified field was not found, or the requesting user lacks
-            catalog.datasets.read permission for it.
+          description: The specified field was not found, or the requesting user lacks catalog.datasets.read permission for it.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3823,8 +3615,7 @@ paths:
     - $ref: '#/components/parameters/FieldID'
     - $ref: '#/components/parameters/DatasetResourceName'
     patch:
-      description: Modifies the field with the specified ID that is part of the specified
-        dataset.
+      description: Modifies the field with the specified ID that is part of the specified dataset.
       operationId: updateFieldByIdForDataset
       requestBody:
         content:
@@ -3851,8 +3642,7 @@ paths:
     - $ref: '#/components/parameters/Tenant'
     - $ref: '#/components/parameters/DatasetResourceName'
     post:
-      description: Creates a new dataset import using the resource name of the imported
-        dataset.
+      description: Creates a new dataset import using the resource name of the imported dataset.
       operationId: createDatasetImport
       requestBody:
         content:
@@ -3864,7 +3654,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImportDataset'
+                $ref: '#/components/schemas/Dataset'
           description: The dataset import was created.
         "400":
           description: The dataset import is invalid.
@@ -3882,8 +3672,7 @@ paths:
     - $ref: '#/components/parameters/Tenant'
     - $ref: '#/components/parameters/DatasetResourceName'
     post:
-      description: Creates a new dataset import using the resource name of the imported
-        dataset.
+      description: Creates a new dataset import using the resource name of the imported dataset.
       operationId: createDatasetImportv1
       requestBody:
         content:
@@ -3912,8 +3701,7 @@ paths:
       description: Returns a list of all of the fields in the Metadata Catalog.
       operationId: listFields
       parameters:
-      - description: A filter to apply to the dataset list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the dataset list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -3934,9 +3722,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -3956,8 +3742,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested fields were not found, or the requesting user
-            lacks catalog.datasets.read permission for them.
+          description: The requested fields were not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3977,8 +3762,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The field with the specified ID was not found, or the requesting
-            user lacks catalog.datasets.read permission for them.
+          description: The field with the specified ID was not found, or the requesting user lacks catalog.datasets.read permission for them.
       x-authz-scope:
       - catalog.datasets.read
     parameters:
@@ -3987,8 +3771,7 @@ paths:
     - $ref: '#/components/parameters/FieldID'
   /{tenant}/catalog/v2beta1/modules:
     get:
-      description: Returns a list of all modules. Use a filter to return a specific
-        list of modules.
+      description: Returns a list of all modules. Use a filter to return a specific list of modules.
       operationId: listModules
       parameters:
       - description: A filter to apply to the modules.
@@ -4010,8 +3793,7 @@ paths:
         "401":
           description: Unauthorized operation.
         "404":
-          description: The requested modules were not found, or the requesting user
-            lacks catalog.datasets.read/catalog.rules.read permission for them.
+          description: The requested modules were not found, or the requesting user lacks catalog.datasets.read/catalog.rules.read permission for them.
       x-authz-scope:
       - catalog.datasets.read
       - catalog.rules.read
@@ -4020,12 +3802,10 @@ paths:
     - $ref: '#/components/parameters/Tenant'
   /{tenant}/catalog/v2beta1/relationships:
     get:
-      description: Returns a list of all relationships. Use a filter to return a specific
-        list of relationships.
+      description: Returns a list of all relationships. Use a filter to return a specific list of relationships.
       operationId: listRelationships
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4046,9 +3826,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4097,9 +3875,7 @@ paths:
           description: The relationship is already present.
   /{tenant}/catalog/v2beta1/relationships/{relationshipid}:
     delete:
-      description: Deletes the relationship with the specified relationship ID. Deleting
-        a relationship also deletes any objects that are dependents of that relationship,
-        such as relationship fields.
+      description: Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
       operationId: deleteRelationshipById
       responses:
         "204":
@@ -4147,12 +3923,10 @@ paths:
           description: A relationship matching the specified ID was not found.
   /{tenant}/catalog/v2beta1/rules:
     get:
-      description: Returns a list of rules that match a filter, if specified, otherwise
-        returns all rules.
+      description: Returns a list of rules that match a filter, if specified, otherwise returns all rules.
       operationId: listRules
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4173,9 +3947,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4195,8 +3967,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested rules were not found, or the requesting user
-            lacks catalog.rules.read permission for them.
+          description: The requested rules were not found, or the requesting user lacks catalog.rules.read permission for them.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4229,8 +4000,7 @@ paths:
       - catalog.rules.create
   /{tenant}/catalog/v2beta1/rules/{ruleid}:
     delete:
-      description: Deletes the rule with the specfied ID. Deleting a rule also deleletes
-        any objects that are dependents of that rule, such as rule actions.
+      description: Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
       operationId: deleteRuleById
       responses:
         "204":
@@ -4257,8 +4027,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A rule with the specified rule ID was not found, or the requesting
-            user lacks catalog.rules.read permission for it.
+          description: A rule with the specified rule ID was not found, or the requesting user lacks catalog.rules.read permission for it.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4292,8 +4061,7 @@ paths:
       description: Returns the set of actions that are part of the specified rule.
       operationId: listActionsForRuleById
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4314,9 +4082,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4338,8 +4104,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested actions were not found, or the requesting user
-            lacks catalog.rules.read permission for them.
+          description: The requested actions were not found, or the requesting user lacks catalog.rules.read permission for them.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4374,8 +4139,7 @@ paths:
       - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleid}/actions/{actionid}:
     delete:
-      description: Deletes the action with the specified ID that is associated with
-        the specified rule.
+      description: Deletes the action with the specified ID that is associated with the specified rule.
       operationId: deleteActionByIdForRuleById
       responses:
         "204":
@@ -4388,8 +4152,7 @@ paths:
       - catalog.rules.update
       - catalog.rules.read
     get:
-      description: Returns information about the action with the specified ID that
-        is associated with the specified rule.
+      description: Returns information about the action with the specified ID that is associated with the specified rule.
       operationId: getActionByIdForRuleById
       responses:
         "200":
@@ -4401,8 +4164,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A action with the specified ID was not found, or the requesting
-            user lacks catalog.rules.read permission for it.
+          description: A action with the specified ID was not found, or the requesting user lacks catalog.rules.read permission for it.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4411,8 +4173,7 @@ paths:
     - $ref: '#/components/parameters/RuleID'
     - $ref: '#/components/parameters/ActionID'
     patch:
-      description: Modifies the action with the specified ID that is associated with
-        the specified rule.
+      description: Modifies the action with the specified ID that is associated with the specified rule.
       operationId: updateActionByIdForRuleById
       requestBody:
         content:
@@ -4439,15 +4200,13 @@ paths:
       operationId: deleteRule
       responses:
         "204":
-          description: The rule with the specified resource name was deleted, along
-            with its dependencies.
+          description: The rule with the specified resource name was deleted, along with its dependencies.
         "401":
           description: The operation isn't authorized.
         "404":
           description: A rule with the specified resource name was not found.
         "405":
-          description: The rule with the specified resource name cannot be deleted
-            because of dependencies.
+          description: The rule with the specified resource name cannot be deleted because of dependencies.
       x-authz-scope:
       - catalog.rules.delete
       - catalog.rules.read
@@ -4464,8 +4223,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A rule with the specified resource name was not found, or the
-            requesting user lacks catalog.rules.read permission for it.
+          description: A rule with the specified resource name was not found, or the requesting user lacks catalog.rules.read permission for it.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4496,12 +4254,10 @@ paths:
       - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions:
     get:
-      description: Returns the list of actions that are associated with the specified
-        rule.
+      description: Returns the list of actions that are associated with the specified rule.
       operationId: listActionsForRule
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4522,9 +4278,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4540,15 +4294,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Action'
                 type: array
-          description: An array of actions that match the specified rule have been
-            retrieved.
+          description: An array of actions that match the specified rule have been retrieved.
         "400":
           description: The filter query is invalid.
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The requested actions were not found, or the requesting user
-            lacks catalog.rules.read permission for them.
+          description: The requested actions were not found, or the requesting user lacks catalog.rules.read permission for them.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4583,8 +4335,7 @@ paths:
       - catalog.rules.read
   /{tenant}/catalog/v2beta1/rules/{ruleresourcename}/actions/{actionid}:
     delete:
-      description: Deletes the action with the specified ID that is associated with
-        the specified rule resource name.
+      description: Deletes the action with the specified ID that is associated with the specified rule resource name.
       operationId: deleteActionByIdForRule
       responses:
         "204":
@@ -4597,8 +4348,7 @@ paths:
       - catalog.rules.update
       - catalog.rules.read
     get:
-      description: Returns the action with the specified ID that is associated with
-        the specified rule resource name.
+      description: Returns the action with the specified ID that is associated with the specified rule resource name.
       operationId: getActionByIdForRule
       responses:
         "200":
@@ -4610,8 +4360,7 @@ paths:
         "401":
           description: The operation isn't authorized.
         "404":
-          description: A action with the specified ID was not found, or the requesting
-            user lacks catalog.rules.read permission for it.
+          description: A action with the specified ID was not found, or the requesting user lacks catalog.rules.read permission for it.
       x-authz-scope:
       - catalog.rules.read
     parameters:
@@ -4620,8 +4369,7 @@ paths:
     - $ref: '#/components/parameters/RuleResourceName'
     - $ref: '#/components/parameters/ActionID'
     patch:
-      description: Modifies the action with the specified ID that is associated with
-        the specified rule resource name.
+      description: Modifies the action with the specified ID that is associated with the specified rule resource name.
       operationId: updateActionByIdForRule
       requestBody:
         content:
@@ -4647,8 +4395,7 @@ paths:
       description: Return a list of Machine Learning workflow configurations.
       operationId: listWorkflows
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4669,9 +4416,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4730,8 +4475,7 @@ paths:
         "404":
           description: The workflow was not found.
     get:
-      description: Returns information about the workflow with the specified workflow
-        ID.
+      description: Returns information about the workflow with the specified workflow ID.
       operationId: getWorkflowById
       responses:
         "200":
@@ -4739,8 +4483,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workflow'
-          description: Information about a workflow with the specified workflow ID
-            was returned.
+          description: Information about a workflow with the specified workflow ID was returned.
         "401":
           description: The operation isn't authorized.
         "404":
@@ -4771,8 +4514,7 @@ paths:
       description: Returns a list of Machine Learning workflow builds.
       operationId: listWorkflowBuilds
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4793,9 +4535,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4855,8 +4595,7 @@ paths:
         "404":
           description: The workflow build was not found.
     get:
-      description: Returns information about the workflow build with the specified
-        workflow build ID.
+      description: Returns information about the workflow build with the specified workflow build ID.
       operationId: getWorkflowBuildById
       responses:
         "200":
@@ -4864,8 +4603,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowBuild'
-          description: A workflow build that matches the specified workflow build
-            ID was returned.
+          description: A workflow build that matches the specified workflow build ID was returned.
         "401":
           description: The operation isn't authorized.
         "404":
@@ -4894,12 +4632,10 @@ paths:
           description: The workflow build was not found.
   /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds/{workflowbuildid}/runs:
     get:
-      description: Returns a list of Machine Learning workflow runs for specified
-        workflow build ID.
+      description: Returns a list of Machine Learning workflow runs for specified workflow build ID.
       operationId: listWorkflowRuns
       parameters:
-      - description: A filter to apply to the results list. The filter must be a SPL
-          predicate expression.
+      - description: A filter to apply to the results list. The filter must be a SPL predicate expression.
         in: query
         name: filter
         required: false
@@ -4920,9 +4656,7 @@ paths:
         schema:
           minimum: 0
           type: integer
-      - description: A list of fields to order the results by.  You can specify either
-          ascending or descending order using "<field> asc" or "<field> desc.  Ascending
-          order is the default.
+      - description: A list of fields to order the results by.  You can specify either ascending or descending order using "<field> asc" or "<field> desc.  Ascending order is the default.
         in: query
         name: orderby
         required: false
@@ -4964,31 +4698,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowRun'
-          description: The workflow run was created for the specified workflow build
-            ID.
+          description: The workflow run was created for the specified workflow build ID.
         "400":
           description: The workflow run is invalid for specified workflow build ID.
         "401":
           description: The operation isn't authorized.
         "409":
-          description: The workflow run is already present for specified workflow
-            build ID.
+          description: The workflow run is already present for specified workflow build ID.
   /{tenant}/catalog/v2beta1/workflows/{workflowid}/builds/{workflowbuildid}/runs/{workflowrunid}:
     delete:
       description: Deletes the workflow run with the specified workflow run ID.
       operationId: deleteWorkflowRunById
       responses:
         "204":
-          description: The workflow run was deleted for the specified workflow build
-            ID.
+          description: The workflow run was deleted for the specified workflow build ID.
         "401":
           description: The operation isn't authorized.
         "404":
-          description: The workflow run was not found for the specified workflow run
-            ID.
+          description: The workflow run was not found for the specified workflow run ID.
     get:
-      description: Returns information about the workflow run with the specified workflow
-        build ID.
+      description: Returns information about the workflow run with the specified workflow build ID.
       operationId: getWorkflowRunById
       responses:
         "200":
@@ -4996,8 +4725,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkflowRun'
-          description: Information about the workflow run that matches the specified
-            workflow run ID was returned.
+          description: Information about the workflow run that matches the specified workflow run ID was returned.
         "401":
           description: The operation isn't authorized.
         "404":
@@ -5026,4 +4754,4 @@ paths:
         "404":
           description: The workflow run was not found.
 
-# Retrieved from scp-openapi commit 5dd410ef95f2c81f30182054353d100c9fe29536 path: catalog/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: catalog/v2beta1/openapi.yaml

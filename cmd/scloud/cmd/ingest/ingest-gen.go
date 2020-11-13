@@ -100,11 +100,23 @@ func init() {
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensName, "name", "", "This is a required parameter. name is the name of the token (unique within the tenant that it belongs to).  type: string")
 	postCollectorTokensCmd.MarkFlagRequired("name")
 
+	var postCollectorTokensAckEnabled string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensAckEnabled, "ack-enabled", "false", "ack_enabled is set to true if events sent with the auth token should support indexer acknowledgement  type: bool")
+
+	var postCollectorTokensAllowQueryStringAuth string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensAllowQueryStringAuth, "allow-query-string-auth", "false", "allow_query_string_auth is set to true if this token can be passed into the ingest endpoint's query parameter for auth  type: bool")
+
 	var postCollectorTokensDescription string
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensDescription, "description", "", "description is an optional description of the token.  type: string")
 
+	var postCollectorTokensDisabled string
+	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensDisabled, "disabled", "false", "disabled is set to true if this auth token has been disabled and cannot be used to send events to HECv1  type: bool")
+
 	var postCollectorTokensIndex string
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensIndex, "index", "", "index is the default value of the index field for records collected using this token.  type: string")
+
+	var postCollectorTokensIndexes []string
+	postCollectorTokensCmd.Flags().StringSliceVar(&postCollectorTokensIndexes, "indexes", nil, "indexes is a list of index names that this token is allowed to send events to  type: []string")
 
 	var postCollectorTokensSource string
 	postCollectorTokensCmd.Flags().StringVar(&postCollectorTokensSource, "source", "", "source is the default value of the source field for records collected using this token.  type: string")
@@ -173,17 +185,29 @@ func init() {
 	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenTokenName, "token-name", "", "This is a required parameter. ")
 	putCollectorTokenCmd.MarkFlagRequired("token-name")
 
+	var putCollectorTokenAckEnabled string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenAckEnabled, "ack-enabled", "false", "ack_enabled is set to true if events sent with the auth token should support indexer acknowledgement  type: *bool")
+
+	var putCollectorTokenAllowQueryStringAuth string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenAllowQueryStringAuth, "allow-query-string-auth", "false", "allow_query_string_auth is set to true if this token can be passed into the ingest endpoint's query parameter for auth  type: *bool")
+
 	var putCollectorTokenDescription string
-	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenDescription, "description", "", "description is an optional description of the token.  type: string")
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenDescription, "description", "", "description is an optional description of the token.  type: *string")
+
+	var putCollectorTokenDisabled string
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenDisabled, "disabled", "false", "disabled is set to true if this auth token has been disabled and cannot be used to send events to HECv1  type: *bool")
 
 	var putCollectorTokenIndex string
-	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenIndex, "index", "", "index is the default value of the index field for records collected using this token  type: string")
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenIndex, "index", "", "index is the default value of the index field for records collected using this token  type: *string")
+
+	var putCollectorTokenIndexes []string
+	putCollectorTokenCmd.Flags().StringSliceVar(&putCollectorTokenIndexes, "indexes", nil, "indexes is a list of index names that this token is allowed to send events to  type: []string")
 
 	var putCollectorTokenSource string
-	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSource, "source", "", "source is the default value of the source field for records collected using this token  type: string")
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSource, "source", "", "source is the default value of the source field for records collected using this token  type: *string")
 
 	var putCollectorTokenSourcetype string
-	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSourcetype, "sourcetype", "", "sourcetype is the default value of the sourcetype field for records collected using this token  type: string")
+	putCollectorTokenCmd.Flags().StringVar(&putCollectorTokenSourcetype, "sourcetype", "", "sourcetype is the default value of the sourcetype field for records collected using this token  type: *string")
 
 	ingestCmd.AddCommand(uploadFilesCmd)
 

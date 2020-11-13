@@ -102,7 +102,7 @@ type ServicerGenerated interface {
 			datasetImportedBy
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error)
+	CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error)
 	/*
 		CreateDatasetImportById - catalog service endpoint
 		Creates a new dataset import using the ID of the imported dataset.
@@ -111,7 +111,7 @@ type ServicerGenerated interface {
 			datasetImportedBy
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*ImportDataset, error)
+	CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
 	/*
 		CreateDatasetImportByIdv1 - catalog service endpoint
 		Creates a new dataset import using the ID of the imported dataset.

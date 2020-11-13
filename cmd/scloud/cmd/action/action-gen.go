@@ -10,14 +10,14 @@ import (
 
 // createActionEmailAction -- Creates an action template.
 var createActionEmailActionCmd = &cobra.Command{
-	Use:   "create-action-email-action",
+	Use:   "create-action-email",
 	Short: "Creates an action template.",
 	RunE:  impl.CreateActionEmailAction,
 }
 
 // createActionWebhookAction -- Creates an action template.
 var createActionWebhookActionCmd = &cobra.Command{
-	Use:   "create-action-webhook-action",
+	Use:   "create-action-webhook",
 	Short: "Creates an action template.",
 	RunE:  impl.CreateActionWebhookAction,
 }
@@ -73,14 +73,14 @@ var triggerActionCmd = &cobra.Command{
 
 // updateActionEmailActionMutable -- Modifies an action template.
 var updateActionEmailActionMutableCmd = &cobra.Command{
-	Use:   "update-action-email-action-mutable",
+	Use:   "update-action-email-mutable",
 	Short: "Modifies an action template.",
 	RunE:  impl.UpdateActionEmailActionMutable,
 }
 
 // updateActionWebhookActionMutable -- Modifies an action template.
 var updateActionWebhookActionMutableCmd = &cobra.Command{
-	Use:   "update-action-webhook-action-mutable",
+	Use:   "update-action-webhook-mutable",
 	Short: "Modifies an action template.",
 	RunE:  impl.UpdateActionWebhookActionMutable,
 }
@@ -101,8 +101,7 @@ func init() {
 	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionFromName, "from-name", "", "Optional text providing a human-friendly name for the sender. Must be less than or equal to 81 characters. You can use a template in this field.")
 
 	var createActionEmailActionKind string
-	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionKind, "kind", "", "This is a required parameter.  can accept values webhook, email")
-	createActionEmailActionCmd.MarkFlagRequired("kind")
+	createActionEmailActionCmd.Flags().StringVar(&createActionEmailActionKind, "kind", "email", " can accept values webhook, email")
 
 	var createActionEmailActionMembers []string
 	createActionEmailActionCmd.Flags().StringSliceVar(&createActionEmailActionMembers, "members", nil, "An array of tenant member names, whose profile email addresses will be included as recipients.")
@@ -119,8 +118,7 @@ func init() {
 
 	actionCmd.AddCommand(createActionWebhookActionCmd)
 	var createActionWebhookActionKind string
-	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionKind, "kind", "", "This is a required parameter.  can accept values webhook, email")
-	createActionWebhookActionCmd.MarkFlagRequired("kind")
+	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionKind, "kind", "webhook", " can accept values webhook, email")
 
 	var createActionWebhookActionName string
 	createActionWebhookActionCmd.Flags().StringVar(&createActionWebhookActionName, "name", "", "This is a required parameter. The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.")

@@ -93,24 +93,15 @@ type FieldsSummary struct {
 
 // The structure of the response body for the preview search results that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. The isPreviewStable property indicates whether the returned preview results stucture is stable or not. Truncated preview results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
 type ListPreviewResultsResponse struct {
-	IsPreviewStable bool                              `json:"isPreviewStable"`
-	Results         []map[string]interface{}          `json:"results"`
-	Fields          []ListSearchResultsResponseFields `json:"fields,omitempty"`
-	Messages        []Message                         `json:"messages,omitempty"`
-	NextLink        *string                           `json:"nextLink,omitempty"`
-	Wait            *string                           `json:"wait,omitempty"`
+	IsPreviewStable bool                               `json:"isPreviewStable"`
+	Results         []map[string]interface{}           `json:"results"`
+	Fields          []ListPreviewResultsResponseFields `json:"fields,omitempty"`
+	Messages        []Message                          `json:"messages,omitempty"`
+	NextLink        *string                            `json:"nextLink,omitempty"`
+	Wait            *string                            `json:"wait,omitempty"`
 }
 
-// The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of results.
-type ListSearchResultsResponse struct {
-	Results  []map[string]interface{}          `json:"results"`
-	Fields   []ListSearchResultsResponseFields `json:"fields,omitempty"`
-	Messages []Message                         `json:"messages,omitempty"`
-	NextLink *string                           `json:"nextLink,omitempty"`
-	Wait     *string                           `json:"wait,omitempty"`
-}
-
-type ListSearchResultsResponseFields struct {
+type ListPreviewResultsResponseFields struct {
 	Name           string  `json:"name"`
 	DataSource     *string `json:"dataSource,omitempty"`
 	GroupbyRank    *string `json:"groupbyRank,omitempty"`
@@ -118,6 +109,15 @@ type ListSearchResultsResponseFields struct {
 	SplitValue     *string `json:"splitValue,omitempty"`
 	SplitbySpecial *string `json:"splitbySpecial,omitempty"`
 	TypeSpecial    *string `json:"typeSpecial,omitempty"`
+}
+
+// The structure of the  search results or events metadata that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. Incomplete search results occur when a search has not completed. Wait until search completes for full result set. Truncated search results occur because the number of requested results exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of results.
+type ListSearchResultsResponse struct {
+	Results  []map[string]interface{}           `json:"results"`
+	Fields   []ListPreviewResultsResponseFields `json:"fields,omitempty"`
+	Messages []Message                          `json:"messages,omitempty"`
+	NextLink *string                            `json:"nextLink,omitempty"`
+	Wait     *string                            `json:"wait,omitempty"`
 }
 
 // The message field in search results or search jobs. The types of messages are INFO, DEBUG, FATAL, and ERROR.
@@ -138,13 +138,13 @@ const (
 
 // Represents parameters on the search job such as 'earliest' and 'latest'.
 type QueryParameters struct {
-	// The earliest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Earliest *string `json:"earliest,omitempty"`
-	// The latest time, in absolute or relative format, to retrieve events.  When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format.  For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Latest *string `json:"latest,omitempty"`
-	// Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify.  For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '1994-11-05T13:15:30Z'  then 'resolvedEarliest' is snapped to '1994-11-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped.  If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.
+	// Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify. For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '2020-10-05T13:15:30Z' then 'resolvedEarliest' is snapped to '2020-10-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped. If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.
 	RelativeTimeAnchor *string `json:"relativeTimeAnchor,omitempty"`
-	// The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals  for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: \"GMT\"
+	// The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: \"GMT\"
 	Timezone interface{} `json:"timezone,omitempty"`
 }
 
@@ -166,7 +166,7 @@ type SearchJob struct {
 	DispatchTime *string `json:"dispatchTime,omitempty"`
 	// Specified whether a search is allowed to collect preview results during the run time.
 	EnablePreview *bool `json:"enablePreview,omitempty"`
-	// Specifies whether the Search service should extract all of the available fields in the data,  including fields not mentioned in the SPL for the search job.  Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
+	// Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
 	ExtractAllFields *bool `json:"extractAllFields,omitempty"`
 	// Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.
 	ExtractFields *string `json:"extractFields,omitempty"`

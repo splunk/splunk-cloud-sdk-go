@@ -38,6 +38,18 @@ type ArgumentModel struct {
 	Type     *string `json:"type,omitempty"`
 }
 
+type CollectJobPatchRequest struct {
+	// The description of the collect job.
+	Description *string `json:"description,omitempty"`
+	// The name of the collect job.
+	Name *string `json:"name,omitempty"`
+	// The key-value pairs of configurations for this collect job.
+	Parameters map[string]interface{} `json:"parameters,omitempty"`
+	Schedule   *CollectJobSchedule    `json:"schedule,omitempty"`
+	// The number of workers for collecting data.
+	Workers *int32 `json:"workers,omitempty"`
+}
+
 type CollectJobRequest struct {
 	// The ID of the connection that is assigned to this collect job.
 	ConnectionId string `json:"connectionId"`
@@ -49,6 +61,9 @@ type CollectJobRequest struct {
 	Name string `json:"name"`
 	// The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
 	Parameters map[string]interface{} `json:"parameters"`
+	Schedule   CollectJobSchedule     `json:"schedule"`
+	// The number of workers for collecting data.
+	Workers int32 `json:"workers"`
 }
 
 type CollectJobResponse struct {
@@ -63,8 +78,15 @@ type CollectJobResponse struct {
 	LastUpdateUserId     *string                  `json:"lastUpdateUserId,omitempty"`
 	Name                 *string                  `json:"name,omitempty"`
 	Parameters           map[string]interface{}   `json:"parameters,omitempty"`
+	Schedule             *CollectJobSchedule      `json:"schedule,omitempty"`
 	Status               *string                  `json:"status,omitempty"`
 	Version              *int64                   `json:"version,omitempty"`
+	Workers              *int32                   `json:"workers,omitempty"`
+}
+
+type CollectJobSchedule struct {
+	// The CRON expression.
+	Cron string `json:"cron"`
 }
 
 type CollectJobStartStopResponse struct {
@@ -120,6 +142,7 @@ type ConnectionSaveResponse struct {
 	Data         map[string]interface{} `json:"data,omitempty"`
 	Description  *string                `json:"description,omitempty"`
 	Id           *string                `json:"id,omitempty"`
+	Messages     []string               `json:"messages,omitempty"`
 	Name         *string                `json:"name,omitempty"`
 	Version      *int64                 `json:"version,omitempty"`
 }
@@ -145,6 +168,40 @@ type ConnectorResponse struct {
 	Tag           *string                  `json:"tag,omitempty"`
 }
 
+type DataStream struct {
+	CreateDate     *string `json:"createDate,omitempty"`
+	CreateUserId   *string `json:"createUserId,omitempty"`
+	CurrentVersion *int32  `json:"currentVersion,omitempty"`
+	Description    *string `json:"description,omitempty"`
+	Id             *string `json:"id,omitempty"`
+	LastUpdateDate *string `json:"lastUpdateDate,omitempty"`
+	Name           *string `json:"name,omitempty"`
+	Partitions     *int32  `json:"partitions,omitempty"`
+	TenantId       *string `json:"tenantId,omitempty"`
+	TopicName      *string `json:"topicName,omitempty"`
+}
+
+type DataStreamProperties struct {
+	// Partitions, up to the partition count of the firehose
+	Partitions *int32 `json:"partitions,omitempty"`
+}
+
+type DataStreamRequest struct {
+	// The name of the data stream.
+	Name       string               `json:"name"`
+	Properties DataStreamProperties `json:"properties"`
+	// The description of the data stream. Defaults to null.
+	Description *string `json:"description,omitempty"`
+}
+
+type DataStreamResponse struct {
+	ActivePipelinesUsing []string              `json:"activePipelinesUsing,omitempty"`
+	Description          *string               `json:"description,omitempty"`
+	Id                   *string               `json:"id,omitempty"`
+	Name                 *string               `json:"name,omitempty"`
+	Properties           *DataStreamProperties `json:"properties,omitempty"`
+}
+
 type DeactivatePipelineRequest struct {
 	// Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.
 	SkipSavepoint *bool `json:"skipSavepoint,omitempty"`
@@ -156,6 +213,20 @@ type DecompileRequest struct {
 
 type DecompileResponse struct {
 	Spl *string `json:"spl,omitempty"`
+}
+
+type EntitlementRequest struct {
+	// The name of the entitlement
+	Name string `json:"name"`
+	// The key-value pairs values
+	Value map[string]interface{} `json:"value"`
+}
+
+type EntitlementResponse struct {
+	AppClientId *string                `json:"appClientId,omitempty"`
+	Name        *string                `json:"name,omitempty"`
+	Status      *string                `json:"status,omitempty"`
+	Value       map[string]interface{} `json:"value,omitempty"`
 }
 
 type ErrorResponse struct {
@@ -238,6 +309,11 @@ type PaginatedResponseOfPipelineResponse struct {
 type PaginatedResponseOfPlugin struct {
 	Items []Plugin `json:"items,omitempty"`
 	Total *int64   `json:"total,omitempty"`
+}
+
+type PaginatedResponseOfRulesKind struct {
+	Items []RulesKind `json:"items,omitempty"`
+	Total *int64      `json:"total,omitempty"`
 }
 
 type PaginatedResponseOfRulesResponse struct {
@@ -338,6 +414,7 @@ type PipelineResponse struct {
 	ActivatedDate            *int64                  `json:"activatedDate,omitempty"`
 	ActivatedUserId          *string                 `json:"activatedUserId,omitempty"`
 	ActivatedVersion         *int64                  `json:"activatedVersion,omitempty"`
+	Complexity               *float32                `json:"complexity,omitempty"`
 	CreateDate               *int64                  `json:"createDate,omitempty"`
 	CreateUserId             *string                 `json:"createUserId,omitempty"`
 	CurrentVersion           *int64                  `json:"currentVersion,omitempty"`
@@ -390,6 +467,16 @@ type PluginRequest struct {
 	Name string `json:"name"`
 }
 
+type PluginResponse struct {
+	CreateDate   *int64  `json:"createDate,omitempty"`
+	CreateUserId *string `json:"createUserId,omitempty"`
+	Description  *string `json:"description,omitempty"`
+	JarLocation  *string `json:"jarLocation,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	PluginId     *string `json:"pluginId,omitempty"`
+	Version      *int64  `json:"version,omitempty"`
+}
+
 type PreviewData struct {
 	CurrentNumberOfRecords *int32                 `json:"currentNumberOfRecords,omitempty"`
 	Nodes                  map[string]PreviewNode `json:"nodes,omitempty"`
@@ -428,6 +515,8 @@ type PreviewState struct {
 }
 
 type ReactivatePipelineRequest struct {
+	// Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.
+	ActivateLatestVersion *bool `json:"activateLatestVersion,omitempty"`
 	// Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.
 	AllowNonRestoredState *bool `json:"allowNonRestoredState,omitempty"`
 	// Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
@@ -453,50 +542,56 @@ type RuleMetrics struct {
 	Name            *string `json:"name,omitempty"`
 }
 
-type RulesActionsResponse struct {
-	Arguments map[string]interface{} `json:"arguments,omitempty"`
-	Kind      *string                `json:"kind,omitempty"`
+type RulesKind struct {
+	RuleKindName  *string `json:"ruleKindName,omitempty"`
+	RuleKindValue *string `json:"ruleKindValue,omitempty"`
+}
+
+type RulesPackageActions struct {
+	// The arguments for the rules
+	Arguments map[string]interface{} `json:"arguments"`
+	// Rules kind
+	Kind string `json:"kind"`
+}
+
+type RulesPackageSourcetypes struct {
+	// List of actions for the sourcetype
+	Actions []RulesPackageActions `json:"actions"`
+	// Sourcetype definition
+	Definition string `json:"definition"`
+	// Sourcetype description
+	Description *string `json:"description,omitempty"`
 }
 
 type RulesRequest struct {
-	// The arguments for the rules
-	Arguments map[string]interface{} `json:"arguments"`
 	// Unique id of the rules package
 	ExternalId string `json:"externalId"`
-	// Rules kind
-	Kind string `json:"kind"`
 	// The name of the rules
 	Name string `json:"name"`
 	// The sourcetype that the rules has to be applied
-	Sourcetype string `json:"sourcetype"`
-	// Sourcetype definition
-	SourcetypeDefinition string `json:"sourcetypeDefinition"`
+	Sourcetypes map[string]RulesPackageSourcetypes `json:"sourcetypes"`
 	// The version of the rules
-	Version     string  `json:"version"`
-	Description *string `json:"description,omitempty"`
+	Version string `json:"version"`
 	// The description of the rules. Defaults to null.
 	RulesDescription *string `json:"rulesDescription,omitempty"`
-	// Sourcetype description
-	SourcetypeDescription *string `json:"sourcetypeDescription,omitempty"`
 }
 
 type RulesResponse struct {
-	CreateDate       *int64                              `json:"createDate,omitempty"`
-	CreateUserId     *string                             `json:"createUserId,omitempty"`
-	Description      *string                             `json:"description,omitempty"`
-	ExternalId       *string                             `json:"externalId,omitempty"`
-	LastUpdateDate   *int64                              `json:"lastUpdateDate,omitempty"`
-	LastUpdateUserId *string                             `json:"lastUpdateUserId,omitempty"`
-	Name             *string                             `json:"name,omitempty"`
-	Sourcetypes      map[string]RulesSourcetypesResponse `json:"sourcetypes,omitempty"`
-	TenantId         *string                             `json:"tenantId,omitempty"`
-	Version          *string                             `json:"version,omitempty"`
-}
-
-type RulesSourcetypesResponse struct {
-	Actions     []RulesActionsResponse `json:"actions,omitempty"`
-	Definition  *string                `json:"definition,omitempty"`
-	Description *string                `json:"description,omitempty"`
+	// Unique id of the rules package
+	ExternalId string `json:"externalId"`
+	// The name of the rules
+	Name string `json:"name"`
+	// The sourcetype that the rules has to be applied
+	Sourcetypes map[string]RulesPackageSourcetypes `json:"sourcetypes"`
+	// The version of the rules
+	Version          string  `json:"version"`
+	CreateDate       *int64  `json:"createDate,omitempty"`
+	CreateUserId     *string `json:"createUserId,omitempty"`
+	LastUpdateDate   *int64  `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserId *string `json:"lastUpdateUserId,omitempty"`
+	// The description of the rules. Defaults to null.
+	RulesDescription *string `json:"rulesDescription,omitempty"`
+	TenantId         *string `json:"tenantId,omitempty"`
 }
 
 type SplCompileRequest struct {

@@ -120,4 +120,11 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	QueryRecords(collection string, query *QueryRecordsQueryParams, resp ...*http.Response) ([]map[string]interface{}, error)
+	/*
+		TruncateRecords - Deletes all the records in a collection.
+		Parameters:
+			collection: The name of the collection.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	TruncateRecords(collection string, resp ...*http.Response) error
 }

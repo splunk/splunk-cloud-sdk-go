@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *
- * Metadata Catalog
+ * Metadata Catalog service
  *
  * With the Metadata Catalog in Splunk Cloud Services you can create and manage knowledge objects such as datasets, fields, rules, actions, dashboards, and workflows.
  *
@@ -1278,8 +1278,10 @@ func (m DatasetGet) MarshalJSON() ([]byte, error) {
 type DatasetImportedBy struct {
 	// The module that is importing the dataset.
 	Module string `json:"module"`
+	// The dataset owner.
+	Owner string `json:"owner"`
 	// The dataset name.
-	Name string `json:"name"`
+	Name *string `json:"name,omitempty"`
 }
 
 // DatasetPatch : Property values to be set in an existing dataset using a PATCH request.

@@ -36,6 +36,13 @@ var createConnectionCmd = &cobra.Command{
 	RunE:  impl.CreateConnection,
 }
 
+// createDataStream -- Creates a data stream for a tenant.
+var createDataStreamCmd = &cobra.Command{
+	Use:   "create-data-stream",
+	Short: "Creates a data stream for a tenant.",
+	RunE:  impl.CreateDataStream,
+}
+
 // createPipeline -- Creates a pipeline.
 var createPipelineCmd = &cobra.Command{
 	Use:   "create-pipeline",
@@ -71,10 +78,10 @@ var decompileCmd = &cobra.Command{
 	RunE:  impl.Decompile,
 }
 
-// deleteCollectJob -- Delete a collect job.
+// deleteCollectJob -- Delete all collect jobs.
 var deleteCollectJobCmd = &cobra.Command{
 	Use:   "delete-collect-job",
-	Short: "Delete a collect job.",
+	Short: "Delete all collect jobs.",
 	RunE:  impl.DeleteCollectJob,
 }
 
@@ -83,6 +90,20 @@ var deleteConnectionCmd = &cobra.Command{
 	Use:   "delete-connection",
 	Short: "Delete all versions of a connection by its id.",
 	RunE:  impl.DeleteConnection,
+}
+
+// deleteDataStream -- Deletes a data stream for a tenant.
+var deleteDataStreamCmd = &cobra.Command{
+	Use:   "delete-data-stream",
+	Short: "Deletes a data stream for a tenant.",
+	RunE:  impl.DeleteDataStream,
+}
+
+// deleteEntitlements -- Delete known entitlements
+var deleteEntitlementsCmd = &cobra.Command{
+	Use:   "delete-entitlements",
+	Short: "Delete known entitlements",
+	RunE:  impl.DeleteEntitlements,
 }
 
 // deleteFile -- Delete file.
@@ -106,6 +127,13 @@ var deletePluginCmd = &cobra.Command{
 	RunE:  impl.DeletePlugin,
 }
 
+// deleteRulesPackage -- Delete a rules package with a specific id
+var deleteRulesPackageCmd = &cobra.Command{
+	Use:   "delete-rules-package",
+	Short: "Delete a rules package with a specific id",
+	RunE:  impl.DeleteRulesPackage,
+}
+
 // deleteTemplate -- Removes a template with a specific ID.
 var deleteTemplateCmd = &cobra.Command{
 	Use:   "delete-template",
@@ -113,11 +141,25 @@ var deleteTemplateCmd = &cobra.Command{
 	RunE:  impl.DeleteTemplate,
 }
 
+// describeDataStream -- Describes a data stream for a tenant.
+var describeDataStreamCmd = &cobra.Command{
+	Use:   "describe-data-stream",
+	Short: "Describes a data stream for a tenant.",
+	RunE:  impl.DescribeDataStream,
+}
+
 // getCollectJob -- Get a collect job.
 var getCollectJobCmd = &cobra.Command{
 	Use:   "get-collect-job",
 	Short: "Get a collect job.",
 	RunE:  impl.GetCollectJob,
+}
+
+// getEntitlements -- Get known entitlements
+var getEntitlementsCmd = &cobra.Command{
+	Use:   "get-entitlements",
+	Short: "Get known entitlements",
+	RunE:  impl.GetEntitlements,
 }
 
 // getFileMetadata -- Get file metadata.
@@ -211,11 +253,11 @@ var getRegistryCmd = &cobra.Command{
 	RunE:  impl.GetRegistry,
 }
 
-// getRulesPackage -- Returns the rules package with specific id
-var getRulesPackageCmd = &cobra.Command{
-	Use:   "get-rules-package",
+// getRulesPackageById -- Returns the rules package with specific id
+var getRulesPackageByIdCmd = &cobra.Command{
+	Use:   "get-rules-package-by-id",
 	Short: "Returns the rules package with specific id",
-	RunE:  impl.GetRulesPackage,
+	RunE:  impl.GetRulesPackageById,
 }
 
 // getTemplate -- Returns an individual template by version.
@@ -246,11 +288,25 @@ var listConnectorsCmd = &cobra.Command{
 	RunE:  impl.ListConnectors,
 }
 
+// listDataStreams -- Returns a list of datastreams for a tenant.
+var listDataStreamsCmd = &cobra.Command{
+	Use:   "list-data-streams",
+	Short: "Returns a list of datastreams for a tenant.",
+	RunE:  impl.ListDataStreams,
+}
+
 // listPipelines -- Returns all pipelines.
 var listPipelinesCmd = &cobra.Command{
 	Use:   "list-pipelines",
 	Short: "Returns all pipelines.",
 	RunE:  impl.ListPipelines,
+}
+
+// listRulesKinds -- Returns all rules kinds.
+var listRulesKindsCmd = &cobra.Command{
+	Use:   "list-rules-kinds",
+	Short: "Returns all rules kinds.",
+	RunE:  impl.ListRulesKinds,
 }
 
 // listRulesPackages -- Returns all rules packages.
@@ -309,6 +365,20 @@ var registerPluginCmd = &cobra.Command{
 	RunE:  impl.RegisterPlugin,
 }
 
+// releaseInfo -- Provides commit sha for release
+var releaseInfoCmd = &cobra.Command{
+	Use:   "release-info",
+	Short: "Provides commit sha for release",
+	RunE:  impl.ReleaseInfo,
+}
+
+// setEntitlements -- Create or update entitlements
+var setEntitlementsCmd = &cobra.Command{
+	Use:   "set-entitlements",
+	Short: "Create or update entitlements",
+	RunE:  impl.SetEntitlements,
+}
+
 // startCollectJob -- Start a collect job.
 var startCollectJobCmd = &cobra.Command{
 	Use:   "start-collect-job",
@@ -337,11 +407,25 @@ var stopPreviewCmd = &cobra.Command{
 	RunE:  impl.StopPreview,
 }
 
+// updateCollectJob -- Patches an existing collect job.
+var updateCollectJobCmd = &cobra.Command{
+	Use:   "update-collect-job",
+	Short: "Patches an existing collect job.",
+	RunE:  impl.UpdateCollectJob,
+}
+
 // updateConnection -- Patches an existing DSP connection.
 var updateConnectionCmd = &cobra.Command{
 	Use:   "update-connection",
 	Short: "Patches an existing DSP connection.",
 	RunE:  impl.UpdateConnection,
+}
+
+// updateDataStream -- Patches an existing data stream for a tenant.
+var updateDataStreamCmd = &cobra.Command{
+	Use:   "update-data-stream",
+	Short: "Patches an existing data stream for a tenant.",
+	RunE:  impl.UpdateDataStream,
 }
 
 // updatePipeline -- Updates an existing pipeline.
@@ -356,6 +440,13 @@ var updatePluginCmd = &cobra.Command{
 	Use:   "update-plugin",
 	Short: "Update admin plugin info.",
 	RunE:  impl.UpdatePlugin,
+}
+
+// updateRulesPackageById -- Updates the rules package with specific id
+var updateRulesPackageByIdCmd = &cobra.Command{
+	Use:   "update-rules-package-by-id",
+	Short: "Updates the rules package with specific id",
+	RunE:  impl.UpdateRulesPackageById,
 }
 
 // updateTemplate -- Patches an existing template.
@@ -420,6 +511,10 @@ func init() {
 	createCollectJobCmd.Flags().StringVar(&createCollectJobConnectorId, "connector-id", "", "This is a required parameter. The ID of the connector this collect job uses.")
 	createCollectJobCmd.MarkFlagRequired("connector-id")
 
+	var createCollectJobCron string
+	createCollectJobCmd.Flags().StringVar(&createCollectJobCron, "cron", "", "This is a required parameter. The CRON expression.")
+	createCollectJobCmd.MarkFlagRequired("cron")
+
 	var createCollectJobDescription string
 	createCollectJobCmd.Flags().StringVar(&createCollectJobDescription, "description", "", "This is a required parameter. The description of the collect job.")
 	createCollectJobCmd.MarkFlagRequired("description")
@@ -431,6 +526,10 @@ func init() {
 	var createCollectJobParameters string
 	createCollectJobCmd.Flags().StringVar(&createCollectJobParameters, "parameters", "", "This is a required parameter. The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
 	createCollectJobCmd.MarkFlagRequired("parameters")
+
+	var createCollectJobWorkers int32
+	createCollectJobCmd.Flags().Int32Var(&createCollectJobWorkers, "workers", 0, "This is a required parameter. The number of workers for collecting data.")
+	createCollectJobCmd.MarkFlagRequired("workers")
 
 	streamsCmd.AddCommand(createConnectionCmd)
 
@@ -450,6 +549,18 @@ func init() {
 	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
 
+	streamsCmd.AddCommand(createDataStreamCmd)
+
+	var createDataStreamName string
+	createDataStreamCmd.Flags().StringVar(&createDataStreamName, "name", "", "This is a required parameter. The name of the data stream.")
+	createDataStreamCmd.MarkFlagRequired("name")
+
+	var createDataStreamDescription string
+	createDataStreamCmd.Flags().StringVar(&createDataStreamDescription, "description", "", "The description of the data stream. Defaults to null.")
+
+	var createDataStreamPartitions int32
+	createDataStreamCmd.Flags().Int32Var(&createDataStreamPartitions, "partitions", 0, "Partitions, up to the partition count of the firehose")
+
 	streamsCmd.AddCommand(createPipelineCmd)
 
 	var createPipelineName string
@@ -467,42 +578,24 @@ func init() {
 
 	streamsCmd.AddCommand(createRulesPackageCmd)
 
-	var createRulesPackageArguments string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageArguments, "arguments", "", "This is a required parameter. The arguments for the rules")
-	createRulesPackageCmd.MarkFlagRequired("arguments")
-
 	var createRulesPackageExternalId string
 	createRulesPackageCmd.Flags().StringVar(&createRulesPackageExternalId, "external-id", "", "This is a required parameter. Unique id of the rules package")
 	createRulesPackageCmd.MarkFlagRequired("external-id")
-
-	var createRulesPackageKind string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageKind, "kind", "", "This is a required parameter. Rules kind")
-	createRulesPackageCmd.MarkFlagRequired("kind")
 
 	var createRulesPackageName string
 	createRulesPackageCmd.Flags().StringVar(&createRulesPackageName, "name", "", "This is a required parameter. The name of the rules")
 	createRulesPackageCmd.MarkFlagRequired("name")
 
-	var createRulesPackageSourcetype string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetype, "sourcetype", "", "This is a required parameter. The sourcetype that the rules has to be applied")
-	createRulesPackageCmd.MarkFlagRequired("sourcetype")
-
-	var createRulesPackageSourcetypeDefinition string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetypeDefinition, "sourcetype-definition", "", "This is a required parameter. Sourcetype definition")
-	createRulesPackageCmd.MarkFlagRequired("sourcetype-definition")
+	var createRulesPackageSourcetypes string
+	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetypes, "sourcetypes", "", "This is a required parameter. The sourcetype that the rules has to be applied")
+	createRulesPackageCmd.MarkFlagRequired("sourcetypes")
 
 	var createRulesPackageVersion string
 	createRulesPackageCmd.Flags().StringVar(&createRulesPackageVersion, "version", "", "This is a required parameter. The version of the rules")
 	createRulesPackageCmd.MarkFlagRequired("version")
 
-	var createRulesPackageDescription string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageDescription, "description", "", "")
-
 	var createRulesPackageRulesDescription string
 	createRulesPackageCmd.Flags().StringVar(&createRulesPackageRulesDescription, "rules-description", "", "The description of the rules. Defaults to null.")
-
-	var createRulesPackageSourcetypeDescription string
-	createRulesPackageCmd.Flags().StringVar(&createRulesPackageSourcetypeDescription, "sourcetype-description", "", "Sourcetype description")
 
 	streamsCmd.AddCommand(createTemplateCmd)
 
@@ -534,15 +627,27 @@ func init() {
 
 	streamsCmd.AddCommand(deleteCollectJobCmd)
 
-	var deleteCollectJobId string
-	deleteCollectJobCmd.Flags().StringVar(&deleteCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
-	deleteCollectJobCmd.MarkFlagRequired("id")
-
 	streamsCmd.AddCommand(deleteConnectionCmd)
 
 	var deleteConnectionConnectionId string
 	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	deleteConnectionCmd.MarkFlagRequired("connection-id")
+
+	streamsCmd.AddCommand(deleteDataStreamCmd)
+
+	var deleteDataStreamId string
+	deleteDataStreamCmd.Flags().StringVar(&deleteDataStreamId, "id", "", "This is a required parameter. ID")
+	deleteDataStreamCmd.MarkFlagRequired("id")
+
+	streamsCmd.AddCommand(deleteEntitlementsCmd)
+
+	var deleteEntitlementsAppClientId string
+	deleteEntitlementsCmd.Flags().StringVar(&deleteEntitlementsAppClientId, "app-client-id", "", "This is a required parameter. App Client ID")
+	deleteEntitlementsCmd.MarkFlagRequired("app-client-id")
+
+	var deleteEntitlementsBody []string
+	deleteEntitlementsCmd.Flags().StringSliceVar(&deleteEntitlementsBody, "body", nil, "The request body")
+	deleteEntitlementsCmd.MarkFlagRequired("body")
 
 	streamsCmd.AddCommand(deleteFileCmd)
 
@@ -562,11 +667,23 @@ func init() {
 	deletePluginCmd.Flags().StringVar(&deletePluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
 	deletePluginCmd.MarkFlagRequired("plugin-id")
 
+	streamsCmd.AddCommand(deleteRulesPackageCmd)
+
+	var deleteRulesPackageExternalId string
+	deleteRulesPackageCmd.Flags().StringVar(&deleteRulesPackageExternalId, "external-id", "", "This is a required parameter. Rules Package ID")
+	deleteRulesPackageCmd.MarkFlagRequired("external-id")
+
 	streamsCmd.AddCommand(deleteTemplateCmd)
 
 	var deleteTemplateTemplateId string
 	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
+
+	streamsCmd.AddCommand(describeDataStreamCmd)
+
+	var describeDataStreamId string
+	describeDataStreamCmd.Flags().StringVar(&describeDataStreamId, "id", "", "This is a required parameter. ID")
+	describeDataStreamCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(getCollectJobCmd)
 
@@ -576,6 +693,12 @@ func init() {
 
 	var getCollectJobVersion string
 	getCollectJobCmd.Flags().StringVar(&getCollectJobVersion, "version", "", "version")
+
+	streamsCmd.AddCommand(getEntitlementsCmd)
+
+	var getEntitlementsAppClientId string
+	getEntitlementsCmd.Flags().StringVar(&getEntitlementsAppClientId, "app-client-id", "", "This is a required parameter. App Client ID")
+	getEntitlementsCmd.MarkFlagRequired("app-client-id")
 
 	streamsCmd.AddCommand(getFileMetadataCmd)
 
@@ -698,11 +821,11 @@ func init() {
 	var getRegistryLocal string
 	getRegistryCmd.Flags().StringVar(&getRegistryLocal, "local", "true", "local")
 
-	streamsCmd.AddCommand(getRulesPackageCmd)
+	streamsCmd.AddCommand(getRulesPackageByIdCmd)
 
-	var getRulesPackageExternalId string
-	getRulesPackageCmd.Flags().StringVar(&getRulesPackageExternalId, "external-id", "", "This is a required parameter. RulesPackage ID")
-	getRulesPackageCmd.MarkFlagRequired("external-id")
+	var getRulesPackageByIdExternalId string
+	getRulesPackageByIdCmd.Flags().StringVar(&getRulesPackageByIdExternalId, "external-id", "", "This is a required parameter. RulesPackage ID")
+	getRulesPackageByIdCmd.MarkFlagRequired("external-id")
 
 	streamsCmd.AddCommand(getTemplateCmd)
 
@@ -746,6 +869,20 @@ func init() {
 
 	streamsCmd.AddCommand(listConnectorsCmd)
 
+	streamsCmd.AddCommand(listDataStreamsCmd)
+
+	var listDataStreamsOffset int32
+	listDataStreamsCmd.Flags().Int32Var(&listDataStreamsOffset, "offset", 0, "offset")
+
+	var listDataStreamsPageSize int32
+	listDataStreamsCmd.Flags().Int32Var(&listDataStreamsPageSize, "page-size", 0, "pageSize")
+
+	var listDataStreamsSortDir string
+	listDataStreamsCmd.Flags().StringVar(&listDataStreamsSortDir, "sort-dir", "", "sortDir")
+
+	var listDataStreamsSortField string
+	listDataStreamsCmd.Flags().StringVar(&listDataStreamsSortField, "sort-field", "", "sortField")
+
 	streamsCmd.AddCommand(listPipelinesCmd)
 
 	var listPipelinesActivated string
@@ -771,6 +908,8 @@ func init() {
 
 	var listPipelinesSortField string
 	listPipelinesCmd.Flags().StringVar(&listPipelinesSortField, "sort-field", "", "sortField")
+
+	streamsCmd.AddCommand(listRulesKindsCmd)
 
 	streamsCmd.AddCommand(listRulesPackagesCmd)
 
@@ -872,6 +1011,9 @@ func init() {
 	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	reactivatePipelineCmd.MarkFlagRequired("id")
 
+	var reactivatePipelineActivateLatestVersion string
+	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineActivateLatestVersion, "activate-latest-version", "false", "Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.")
+
 	var reactivatePipelineAllowNonRestoredState string
 	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineAllowNonRestoredState, "allow-non-restored-state", "false", "Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.")
 
@@ -887,6 +1029,22 @@ func init() {
 	var registerPluginName string
 	registerPluginCmd.Flags().StringVar(&registerPluginName, "name", "", "This is a required parameter. Plugin name")
 	registerPluginCmd.MarkFlagRequired("name")
+
+	streamsCmd.AddCommand(releaseInfoCmd)
+
+	streamsCmd.AddCommand(setEntitlementsCmd)
+
+	var setEntitlementsAppClientId string
+	setEntitlementsCmd.Flags().StringVar(&setEntitlementsAppClientId, "app-client-id", "", "This is a required parameter. App Client ID")
+	setEntitlementsCmd.MarkFlagRequired("app-client-id")
+
+	var setEntitlementsName string
+	setEntitlementsCmd.Flags().StringVar(&setEntitlementsName, "name", "", "This is a required parameter. The name of the entitlement")
+	setEntitlementsCmd.MarkFlagRequired("name")
+
+	var setEntitlementsValue string
+	setEntitlementsCmd.Flags().StringVar(&setEntitlementsValue, "value", "", "This is a required parameter. The key-value pairs values")
+	setEntitlementsCmd.MarkFlagRequired("value")
 
 	streamsCmd.AddCommand(startCollectJobCmd)
 
@@ -920,6 +1078,28 @@ func init() {
 	stopPreviewCmd.Flags().Int64Var(&stopPreviewPreviewSessionId, "preview-session-id", 0, "This is a required parameter. Preview Session ID")
 	stopPreviewCmd.MarkFlagRequired("preview-session-id")
 
+	streamsCmd.AddCommand(updateCollectJobCmd)
+
+	var updateCollectJobCron string
+	updateCollectJobCmd.Flags().StringVar(&updateCollectJobCron, "cron", "", "This is a required parameter. The CRON expression.")
+	updateCollectJobCmd.MarkFlagRequired("cron")
+
+	var updateCollectJobId string
+	updateCollectJobCmd.Flags().StringVar(&updateCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	updateCollectJobCmd.MarkFlagRequired("id")
+
+	var updateCollectJobDescription string
+	updateCollectJobCmd.Flags().StringVar(&updateCollectJobDescription, "description", "", "The description of the collect job.")
+
+	var updateCollectJobName string
+	updateCollectJobCmd.Flags().StringVar(&updateCollectJobName, "name", "", "The name of the collect job.")
+
+	var updateCollectJobParameters string
+	updateCollectJobCmd.Flags().StringVar(&updateCollectJobParameters, "parameters", "", "The key-value pairs of configurations for this collect job.")
+
+	var updateCollectJobWorkers int32
+	updateCollectJobCmd.Flags().Int32Var(&updateCollectJobWorkers, "workers", 0, "The number of workers for collecting data.")
+
 	streamsCmd.AddCommand(updateConnectionCmd)
 
 	var updateConnectionConnectionId string
@@ -934,6 +1114,22 @@ func init() {
 
 	var updateConnectionName string
 	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
+
+	streamsCmd.AddCommand(updateDataStreamCmd)
+
+	var updateDataStreamId string
+	updateDataStreamCmd.Flags().StringVar(&updateDataStreamId, "id", "", "This is a required parameter. ID")
+	updateDataStreamCmd.MarkFlagRequired("id")
+
+	var updateDataStreamName string
+	updateDataStreamCmd.Flags().StringVar(&updateDataStreamName, "name", "", "This is a required parameter. The name of the data stream.")
+	updateDataStreamCmd.MarkFlagRequired("name")
+
+	var updateDataStreamDescription string
+	updateDataStreamCmd.Flags().StringVar(&updateDataStreamDescription, "description", "", "The description of the data stream. Defaults to null.")
+
+	var updateDataStreamPartitions int32
+	updateDataStreamCmd.Flags().Int32Var(&updateDataStreamPartitions, "partitions", 0, "Partitions, up to the partition count of the firehose")
 
 	streamsCmd.AddCommand(updatePipelineCmd)
 
@@ -967,6 +1163,27 @@ func init() {
 	var updatePluginPluginId string
 	updatePluginCmd.Flags().StringVar(&updatePluginPluginId, "plugin-id", "", "This is a required parameter. Plugin ID")
 	updatePluginCmd.MarkFlagRequired("plugin-id")
+
+	streamsCmd.AddCommand(updateRulesPackageByIdCmd)
+
+	var updateRulesPackageByIdExternalId string
+	updateRulesPackageByIdCmd.Flags().StringVar(&updateRulesPackageByIdExternalId, "external-id", "", "This is a required parameter. RulesPackage ID")
+	updateRulesPackageByIdCmd.MarkFlagRequired("external-id")
+
+	var updateRulesPackageByIdName string
+	updateRulesPackageByIdCmd.Flags().StringVar(&updateRulesPackageByIdName, "name", "", "This is a required parameter. The name of the rules")
+	updateRulesPackageByIdCmd.MarkFlagRequired("name")
+
+	var updateRulesPackageByIdSourcetypes string
+	updateRulesPackageByIdCmd.Flags().StringVar(&updateRulesPackageByIdSourcetypes, "sourcetypes", "", "This is a required parameter. The sourcetype that the rules has to be applied")
+	updateRulesPackageByIdCmd.MarkFlagRequired("sourcetypes")
+
+	var updateRulesPackageByIdVersion string
+	updateRulesPackageByIdCmd.Flags().StringVar(&updateRulesPackageByIdVersion, "version", "", "This is a required parameter. The version of the rules")
+	updateRulesPackageByIdCmd.MarkFlagRequired("version")
+
+	var updateRulesPackageByIdRulesDescription string
+	updateRulesPackageByIdCmd.Flags().StringVar(&updateRulesPackageByIdRulesDescription, "rules-description", "", "The description of the rules. Defaults to null.")
 
 	streamsCmd.AddCommand(updateTemplateCmd)
 

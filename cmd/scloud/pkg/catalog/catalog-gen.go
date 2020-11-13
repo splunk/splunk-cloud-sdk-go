@@ -796,16 +796,23 @@ func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
 	}
-	var name string
+	var nameDefault string
+	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var owner string
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
 	// Form the request body
 	generated_request_body := model.DatasetImportedBy{
 
 		Module: module,
 		Name:   name,
+		Owner:  owner,
 	}
 
 	// Silence Usage
@@ -838,16 +845,23 @@ func CreateDatasetImportById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
 	}
-	var name string
+	var nameDefault string
+	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var owner string
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
 	// Form the request body
 	generated_request_body := model.DatasetImportedBy{
 
 		Module: module,
 		Name:   name,
+		Owner:  owner,
 	}
 
 	// Silence Usage
@@ -880,16 +894,23 @@ func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
 	}
-	var name string
+	var nameDefault string
+	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var owner string
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
 	// Form the request body
 	generated_request_body := model.DatasetImportedBy{
 
 		Module: module,
 		Name:   name,
+		Owner:  owner,
 	}
 
 	// Silence Usage
@@ -944,16 +965,23 @@ func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "module": ` + err.Error())
 	}
-	var name string
+	var nameDefault string
+	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var owner string
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
 	// Form the request body
 	generated_request_body := model.DatasetImportedBy{
 
 		Module: module,
 		Name:   name,
+		Owner:  owner,
 	}
 
 	// Silence Usage

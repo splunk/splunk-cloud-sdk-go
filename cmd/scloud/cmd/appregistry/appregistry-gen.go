@@ -10,14 +10,14 @@ import (
 
 // createAppNativeApp -- Creates an app.
 var createAppNativeAppCmd = &cobra.Command{
-	Use:   "create-app-native-app",
+	Use:   "create-app-native",
 	Short: "Creates an app.",
 	RunE:  impl.CreateAppNativeApp,
 }
 
 // createAppServiceApp -- Creates an app.
 var createAppServiceAppCmd = &cobra.Command{
-	Use:   "create-app-service-app",
+	Use:   "create-app-service",
 	Short: "Creates an app.",
 	RunE:  impl.CreateAppServiceApp,
 }
@@ -109,8 +109,7 @@ func init() {
 	createAppNativeAppCmd.Flags().StringVar(&createAppNativeAppDescription, "description", "", "Short paragraph describing the app.")
 
 	var createAppNativeAppKind string
-	createAppNativeAppCmd.Flags().StringVar(&createAppNativeAppKind, "kind", "", "This is a required parameter. This is a required parameter.  can accept values web, native, service")
-	createAppNativeAppCmd.MarkFlagRequired("kind")
+	createAppNativeAppCmd.Flags().StringVar(&createAppNativeAppKind, "kind", "native", " can accept values web, native, service")
 
 	var createAppNativeAppLoginUrl string
 	createAppNativeAppCmd.Flags().StringVar(&createAppNativeAppLoginUrl, "login-url", "", "The URL used to log in to the app.")
@@ -146,8 +145,7 @@ func init() {
 	createAppServiceAppCmd.Flags().StringVar(&createAppServiceAppDescription, "description", "", "Short paragraph describing the app.")
 
 	var createAppServiceAppKind string
-	createAppServiceAppCmd.Flags().StringVar(&createAppServiceAppKind, "kind", "", "This is a required parameter. This is a required parameter.  can accept values web, native, service")
-	createAppServiceAppCmd.MarkFlagRequired("kind")
+	createAppServiceAppCmd.Flags().StringVar(&createAppServiceAppKind, "kind", "service", " can accept values web, native, service")
 
 	var createAppServiceAppLoginUrl string
 	createAppServiceAppCmd.Flags().StringVar(&createAppServiceAppLoginUrl, "login-url", "", "The URL used to log in to the app.")
