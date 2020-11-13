@@ -1,5 +1,170 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.10.0
+#### Breaking Changes
+##### Features
+* Catalog v2beta1:
+    * `CreateDatasetImport` returns datatype of `Dataset` (replaced 'ImportDataset')
+    * `CreateDatasetImportById` returns `DatasetImportedby` (replaced 'ImportDataset')
+    * `DatasetImportedBy` has a new property `Owner` and property `Name` is now optional
+
+* Provisioner v1beta1:
+    * Model `ECStackName` renamed to `EcStackName`
+
+* Search v2beta1:
+    * Model `ListSearchResultsResponseFields` renamed to `ListPreiviewResultsResponseFields`
+
+* Search v3alpha1:
+    * Model `ListSearchResultsResponseFields` renamed to `ListPreiviewResultsResponseFields`
+
+* Stream v3beta1: 
+    * Model `RulesSourcetypesResponse` renamed to `RulesPackageSourcetypes`
+    * Model `RulesActionsResponse` renamed to `RulesPackageActions`
+    
+#### Non-Breaking Changes
+##### Features
+
+* Auth 
+    * `ServicePrincipalAuthManager` added to Auth service
+
+* Identity v2beta1:
+    * New model `AddInvisibleMemberBody` added
+    * New endpoints `AddInvisibleMember`, `GetMemberAdmin` and `RemoveMemberAdmin` added
+    * New properties `ExpiresAt` and `Visible` added to `Member` model
+    * New models `DeviceAuthInfo` and `UpdateRoleBody` added
+
+* Identity v3alpha1: 
+    * New version introduced
+
+* Ingest v1beta2: 
+    * New models `UploadSuccessResponse` and `FileUploadDetails`  added
+
+* KVStore v1beta1:
+    * New endpoint `TruncateRecords` added
+
+* Search v3alpha1:
+    * New models `SearchModule`, `StatementDispatchStatus`, and `SingleSatatementQueryParamters` added
+    * New endpoints `createMultiSearchMethod` and `createSearchStatements` added
+
+* Streams v2beta1:
+    * New property `Messages` added to model `ConnectionSaveResponse`
+    * New property `Complexity` added to model `PipelineResponse`
+    * New property `ActivateLatestVersion` added to model `ReactivatePipelineRequest`
+
+* Streams v3beta1:
+    * New models `CollectJobPatchRequest`, `DataStream`, `DataStreamRequest`, `DataStreamResponse`, `EntitlementRequest`,
+     `EntitlementResponse`, `PaginatedResponseOfRuleKind`, `RulesKind` and `PluginResponse`
+    * New endpoints `CreateDataStream`, `DeleteCollectJob`, `Deletedatastream`, `DeleteEntitlements`, `DeleteRulesPackage`, 
+     `DescribeDataStream`, `GetEntitlements`, `GetRulesPackageById`, `ListDataStreams`, `ListRuleKinds`, `ReleaseInfo`, 
+     `SetEntitlements`, `UpdateCollectJob`, `UpdateDataStream` and `UpdateRulesPackageById` added
+ 
+## SCloud v6.0.0
+### Breaking Changes
+* Action Command
+    * create-action-email-action replaced by  create-action-email
+    * create-action-webhook-action replaced by  create-action-webhook
+    * update-action-email-action-mutable replaced by update-action-email-mutable
+    * update-action-webhook-action-mutable replaced by update-action-webhook-mutable
+* AppRegistry Command
+    * create-app-native-app replaced by create-app-native
+    * create-app-service-app replaced by  create-app-service
+* Catalog Command
+    * create-action-for-rule-alias-action replaced by create-action-for-rule-alias
+    * create-action-for-rule-auto-kv-action  replaced by create-action-for-rule-auto-kv
+    * create-action-for-rule-by-id-alias-action replaced by  create-action-for-rule-by-id-alias
+    * create-action-for-rule-by-id-auto-kv-action  replaced by create-action-for-rule-by-id-auto-kv
+    * create-action-for-rule-by-id-eval-action  replaced by create-action-for-rule-by-id-eval
+    * create-action-for-rule-by-id-lookup-action  replaced by create-action-for-rule-by-id-lookup
+    * create-action-for-rule-by-id-regex-action  replaced by create-action-for-rule-by-id-regex
+    * create-action-for-rule-eval-action  replaced by create-action-for-rule-eval
+    * create-action-for-rule-lookup-action  replaced by create-action-for-rule-lookup
+    * create-action-for-rule-regex-action  replaced by create-action-for-rule-regex
+    * create-dataset-index-dataset replaced by create-dataset-index
+    * create-dataset-kv-collection-dataset replaced by create-dataset-kv-collection
+    * create-dataset-lookup-dataset replaced by create-dataset-lookup
+    * create-dataset-metric-dataset  replaced by create-dataset-metric
+    * create-dataset-view-dataset replaced by create-dataset-view
+    * update-action-by-id-for-rule-alias-action replaced by update-action-by-id-for-rule-alias
+    * update-action-by-id-for-rule-auto-kv-action replaced by update-action-by-id-for-rule-auto-kv
+    * update-action-by-id-for-rule-by-id-alias-action replaced by update-action-by-id-for-rule-by-id-alias
+    * update-action-by-id-for-rule-by-id-auto-kv-action replaced by update-action-by-id-for-rule-by-id-auto-kv
+    * update-action-by-id-for-rule-by-id-eval-action replaced by update-action-by-id-for-rule-by-id-eval
+    * Update-action-by-id-for-rule-by-id-lookup-action replaced by update-action-by-id-for-rule-by-id-lookup
+    * update-action-by-id-for-rule-by-id-regex-action replaced by update-action-by-id-for-rule-by-id-regex
+    * update-action-by-id-for-rule-eval-action replaced by update-action-by-id-for-rule-eval
+    * update-action-by-id-for-rule-lookup-action replaced by update-action-by-id-for-rule-lookup
+    * update-action-by-id-for-rule-regex-action  replaced by update-action-by-id-for-rule-regex
+    * update-dataset-by-id-import-dataset  replaced by update-dataset-by-id-import
+    * update-dataset-by-id-index-dataset replaced by update-dataset-by-id-index
+    * update-dataset-by-id-kv-collection-dataset replaced by update-dataset-by-id-kv-collection
+    * update-dataset-by-id-lookup-dataset replaced by update-dataset-by-id-lookup
+    * update-dataset-by-id-metric-dataset replaced by update-dataset-by-id-metric
+    * update-dataset-by-id-view-dataset replaced by update-dataset-by-id-view
+    * update-dataset-import-dataset replaced by update-dataset-import
+    * update-dataset-index-dataset replaced by update-dataset-index
+    * update-dataset-kv-collection-dataset replaced by update-dataset-kv-collection
+    * update-dataset-lookup-dataset replaced by update-dataset-lookup
+    * update-dataset-metric-dataset replaced by update-dataset-metric
+    * update-dataset-view-dataset replaced by update-dataset-view
+    * create-dataset-import 
+        * requires "owner"
+        * name is NOT required
+    * create-dataset-import-by-id 
+        * requires "owner" 
+        * name is NOT required
+    * create-dataset-import-by-idv-1 
+        * requires "owner" 
+        * name NOT required
+    * create-dataset-importv-1
+        * requires "owner" 
+        * name NOT required
+* Streams
+    * get-rules-package is replaced by get-rules-package-by-id
+* create-collect-job
+    *  requires new parameters: cron & workers
+    
+### Non-Breaking Changes
+* Identity Command
+    * Added :
+        * add-invisible-member 
+        * get-member-admin
+        * remove-member-admin
+* Ingest Command
+    * post-collector-tokens
+        * New parameters
+            * ack-enabled 
+            * allow-query-string-auth
+            * disabled 
+            * index 
+    * put-collector-token
+        * New parameters
+            * ark-enabled
+            * allow-query-string-auth
+            * description
+            * disabled
+            * indexes
+* KVStore
+    * Added
+        * truncate-records
+* Streams
+    * Added
+        * create-data-stream
+        * delete-collect-job (all jobs)
+        * delete-data-stream
+        * delete-entitlements
+        * delete-rules-packages
+        * describe-data-stream
+        * get-entitlements
+        * list-data-streams
+        * list-rules-kinds
+        * release-info
+        * set-entitlements
+        * update-collect-job
+        * update-data-stream
+        * update-rules-package-by-id
+    * Modified
+        * create-rules-package - `arguments` and `kind` are no longer used
+
 ## Version 1.9.0
 ## Go SDK v1.9.0
 
