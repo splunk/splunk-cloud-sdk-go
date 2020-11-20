@@ -280,6 +280,13 @@ components:
         maxLength: 36
         minLength: 4
         type: string
+    userCode:
+      description: userCode
+      in: path
+      name: userCode
+      required: true
+      schema:
+        type: string
     version:
       description: The service API version.
       in: path
@@ -1486,6 +1493,30 @@ components:
       required:
       - state
       type: object
+    UserCodeValidateInfo:
+      properties:
+        country:
+          type: string
+        device:
+          type: string
+        ip_address:
+          type: string
+        principal:
+          type: string
+        scope:
+          type: string
+        tenant:
+          type: string
+        user_code:
+          type: string
+      required:
+      - device
+      - user_code
+      - scope
+      - tenant
+      - ip_address
+      - country
+      - principal
     ValidateInfo:
       properties:
         clientId:
@@ -1519,85 +1550,6 @@ info:
   version: v2beta1.20
 openapi: 3.0.0
 paths:
-  /{tenant}/identity/{version}/admin/escalate:
-    parameters:
-    - $ref: '#/components/parameters/tenant'
-    - $ref: '#/components/parameters/version'
-    post:
-      description: Adds an invisible member in a given tenant.
-      operationId: addInvisibleMember
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddInvisibleMemberBody'
-        description: The invisible member to add to the tenant.
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Member'
-          description: The invisible member was successfully added.
-        "400":
-          description: The request isn't valid.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The user isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "409":
-          description: Invisible member already exists.
-        "422":
-          description: The provided fields aren't valid.
-        "423":
-          description: The resource is locked.
-      x-authz-scope: identity.admin.members.write
-  /{tenant}/identity/{version}/admin/members/{member}:
-    delete:
-      description: Remove a member in a tenant.
-      operationId: removeMemberAdmin
-      responses:
-        "204":
-          description: Member successfully removed.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The user isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "423":
-          description: The resource is locked.
-      x-authz-scope: identity.admin.members.write
-    get:
-      description: Gets a member in a tenant.
-      operationId: getMemberAdmin
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Member'
-          description: Operation was a success.
-        "400":
-          description: The request isn't valid.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The user isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "422":
-          description: The provided fields aren't valid.
-        "423":
-          description: The resource is locked.
-      x-authz-scope: identity.admin.members.read
-    parameters:
-    - $ref: '#/components/parameters/tenant'
-    - $ref: '#/components/parameters/version'
-    - $ref: '#/components/parameters/member'
   /{tenant}/identity/v2beta1/groups:
     get:
       description: List the groups that exist in a given tenant.
@@ -2506,4 +2458,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: identity/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit e356ae94d40158658c06a523a8a8d24cef4c26db path: identity/v2beta1/openapi.yaml

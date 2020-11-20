@@ -31,15 +31,6 @@ type AddGroupRoleBody struct {
 	Name string `json:"name"`
 }
 
-type AddInvisibleMemberBody struct {
-	// The name of the member to be added.
-	Name string `json:"name"`
-	// The reason you are adding this member.
-	Reason string `json:"reason"`
-	// The expiration time of the member in seconds.
-	ExpiresIn *int32 `json:"expires_in,omitempty"`
-}
-
 type AddMemberBody struct {
 	Name string `json:"name"`
 }

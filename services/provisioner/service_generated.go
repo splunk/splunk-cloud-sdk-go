@@ -26,8 +26,8 @@ package provisioner
 import (
 	"net/http"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/go-dependencies/services"
+	"github.com/splunk/go-dependencies/util"
 )
 
 const serviceCluster = "api"

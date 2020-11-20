@@ -186,11 +186,12 @@ func (q GetTemplateQueryParams) SetVersion(v int64) GetTemplateQueryParams {
 
 // ListConnectionsQueryParams represents valid query parameters for the ListConnections operation
 // For convenience ListConnectionsQueryParams can be formed in a single statement, for example:
-//     `v := ListConnectionsQueryParams{}.SetConnectorId(...).SetCreateUserId(...).SetFunctionId(...).SetName(...).SetOffset(...).SetPageSize(...).SetShowSecretNames(...).SetSortDir(...).SetSortField(...)`
+//     `v := ListConnectionsQueryParams{}.SetConnectorId(...).SetCreateUserId(...).SetFunctionId(...).SetFunctionOp(...).SetName(...).SetOffset(...).SetPageSize(...).SetShowSecretNames(...).SetSortDir(...).SetSortField(...)`
 type ListConnectionsQueryParams struct {
 	ConnectorId     []string `key:"connectorId"`
 	CreateUserId    string   `key:"createUserId"`
 	FunctionId      string   `key:"functionId"`
+	FunctionOp      string   `key:"functionOp"`
 	Name            string   `key:"name"`
 	Offset          *int32   `key:"offset"`
 	PageSize        *int32   `key:"pageSize"`
@@ -212,6 +213,11 @@ func (q ListConnectionsQueryParams) SetCreateUserId(v string) ListConnectionsQue
 
 func (q ListConnectionsQueryParams) SetFunctionId(v string) ListConnectionsQueryParams {
 	q.FunctionId = v
+	return q
+}
+
+func (q ListConnectionsQueryParams) SetFunctionOp(v string) ListConnectionsQueryParams {
+	q.FunctionOp = v
 	return q
 }
 

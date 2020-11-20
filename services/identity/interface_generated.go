@@ -43,15 +43,6 @@ type ServicerGenerated interface {
 	*/
 	AddGroupRole(group string, addGroupRoleBody AddGroupRoleBody, resp ...*http.Response) (*GroupRole, error)
 	/*
-		AddInvisibleMember - identity service endpoint
-		Adds an invisible member in a given tenant.
-		Parameters:
-			version: The service API version.
-			addInvisibleMemberBody: The invisible member to add to the tenant.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	AddInvisibleMember(version AddInvisibleMemberversion, addInvisibleMemberBody AddInvisibleMemberBody, resp ...*http.Response) (*Member, error)
-	/*
 		AddMember - identity service endpoint
 		Adds a member to a given tenant.
 		Parameters:
@@ -152,15 +143,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetMember(member string, resp ...*http.Response) (*Member, error)
-	/*
-		GetMemberAdmin - identity service endpoint
-		Gets a member in a tenant.
-		Parameters:
-			version: The service API version.
-			member: The member name.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetMemberAdmin(version GetMemberAdminversion, member string, resp ...*http.Response) (*Member, error)
 	/*
 		GetPrincipal - identity service endpoint
 		Returns the details of a principal, including its tenant membership.
@@ -315,15 +297,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RemoveMember(member string, resp ...*http.Response) error
-	/*
-		RemoveMemberAdmin - identity service endpoint
-		Remove a member in a tenant.
-		Parameters:
-			version: The service API version.
-			member: The member name.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	RemoveMemberAdmin(version RemoveMemberAdminversion, member string, resp ...*http.Response) error
 	/*
 		RemoveRolePermission - identity service endpoint
 		Removes a permission from the role.

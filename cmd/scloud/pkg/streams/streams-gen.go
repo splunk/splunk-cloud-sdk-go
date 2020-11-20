@@ -325,7 +325,7 @@ func CreateRulesPackage(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
 	}
-	var sourcetypes map[string]model.RulesPackageSourcetypes
+	var sourcetypes []model.MapOfstringAndRulesPackageSourcetypes
 	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
 	if err != nil {
 		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())
@@ -458,18 +458,25 @@ func Decompile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteCollectJob Delete all collect jobs.
+// DeleteCollectJob Delete a collect job.
 func DeleteCollectJob(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
 		return err
 	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.StreamsService.DeleteCollectJobs()
+	err = client.StreamsService.DeleteCollectJob(id)
 	if err != nil {
 		return err
 	}
@@ -1324,6 +1331,11 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "function-id": ` + err.Error())
 	}
+	var functionOp string
+	err = flags.ParseFlag(cmd.Flags(), "function-op", &functionOp)
+	if err != nil {
+		return fmt.Errorf(`error parsing "function-op": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
@@ -1361,6 +1373,7 @@ func ListConnections(cmd *cobra.Command, args []string) error {
 	generated_query.ConnectorId = connectorId
 	generated_query.CreateUserId = createUserId
 	generated_query.FunctionId = functionId
+	generated_query.FunctionOp = functionOp
 	generated_query.Name = name
 	generated_query.Offset = offset
 	generated_query.PageSize = pageSize
@@ -2328,7 +2341,7 @@ func UpdateRulesPackageById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
 	}
-	var sourcetypes map[string]model.RulesPackageSourcetypes
+	var sourcetypes []model.MapOfstringAndRulesPackageSourcetypes
 	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
 	if err != nil {
 		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())

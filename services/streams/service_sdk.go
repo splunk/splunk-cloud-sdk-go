@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	gdepservices "github.com/splunk/go-dependencies/services"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
 )
 
@@ -61,7 +62,7 @@ func (s *Service) uploadFileStream(u url.URL, stream io.Reader, filename string,
 
 	form := services.FormData{Filename: filename, Stream: stream, Key: "upfile"}
 
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
+	response, err := s.Client.Post(gdepservices.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
 
 	if response != nil {
 		defer response.Body.Close()
