@@ -26,8 +26,8 @@ package identity
 import (
 	"net/http"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/go-dependencies/services"
+	"github.com/splunk/go-dependencies/util"
 )
 
 const serviceCluster = "api"
@@ -105,41 +105,6 @@ func (s *Service) AddGroupRole(group string, addGroupRoleBody AddGroupRoleBody, 
 		return nil, err
 	}
 	var rb GroupRole
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
-	AddInvisibleMember - identity service endpoint
-	Adds an invisible member in a given tenant.
-	Parameters:
-		version: The service API version.
-		addInvisibleMemberBody: The invisible member to add to the tenant.
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) AddInvisibleMember(version AddInvisibleMemberversion, addInvisibleMemberBody AddInvisibleMemberBody, resp ...*http.Response) (*Member, error) {
-	pp := struct {
-		Version AddInvisibleMemberversion
-	}{
-		Version: version,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/{{.Version}}/admin/escalate`, pp)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: addInvisibleMemberBody})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb Member
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -513,43 +478,6 @@ func (s *Service) GetMember(member string, resp ...*http.Response) (*Member, err
 		Member: member,
 	}
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v2beta1/members/{{.Member}}`, pp)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Get(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb Member
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
-	GetMemberAdmin - identity service endpoint
-	Gets a member in a tenant.
-	Parameters:
-		version: The service API version.
-		member: The member name.
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) GetMemberAdmin(version GetMemberAdminversion, member string, resp ...*http.Response) (*Member, error) {
-	pp := struct {
-		Version GetMemberAdminversion
-		Member  string
-	}{
-		Version: version,
-		Member:  member,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/{{.Version}}/admin/members/{{.Member}}`, pp)
 	if err != nil {
 		return nil, err
 	}
@@ -1178,38 +1106,6 @@ func (s *Service) RemoveMember(member string, resp ...*http.Response) error {
 		Member: member,
 	}
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v2beta1/members/{{.Member}}`, pp)
-	if err != nil {
-		return err
-	}
-	response, err := s.Client.Delete(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	return err
-}
-
-/*
-	RemoveMemberAdmin - identity service endpoint
-	Remove a member in a tenant.
-	Parameters:
-		version: The service API version.
-		member: The member name.
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) RemoveMemberAdmin(version RemoveMemberAdminversion, member string, resp ...*http.Response) error {
-	pp := struct {
-		Version RemoveMemberAdminversion
-		Member  string
-	}{
-		Version: version,
-		Member:  member,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/{{.Version}}/admin/members/{{.Member}}`, pp)
 	if err != nil {
 		return err
 	}

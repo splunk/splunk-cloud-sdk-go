@@ -26,8 +26,8 @@ package catalog
 import (
 	"net/http"
 
-	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/util"
+	"github.com/splunk/go-dependencies/services"
+	"github.com/splunk/go-dependencies/util"
 )
 
 const serviceCluster = "api"
@@ -347,7 +347,7 @@ func (s *Service) CreateDatasetImport(datasetresourcename string, datasetImporte
 	Creates a new dataset import using the ID of the imported dataset.
 	Parameters:
 		datasetid: ID of a Dataset.
-		ImportDataset
+		datasetImportedBy
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
 func (s *Service) CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error) {

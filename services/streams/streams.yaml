@@ -518,6 +518,11 @@ components:
             type: string
           type: object
       type: object
+    MapOfstringAndRulesPackageSourcetypes:
+      additionalProperties:
+        $ref: '#/components/schemas/RulesPackageSourcetypes'
+      description: ""
+      type: object
     MapOfstringAndobject:
       description: ""
       type: object
@@ -771,6 +776,10 @@ components:
           - rolledBack
           - rolledBackError
           type: string
+        statusDescription:
+          additionalProperties:
+            type: string
+          type: object
       type: object
     PipelineRequest:
       description: ""
@@ -1107,11 +1116,11 @@ components:
           example: ""
           type: string
         sourcetypes:
-          additionalProperties:
-            $ref: '#/components/schemas/RulesPackageSourcetypes'
           description: The sourcetype that the rules has to be applied
           example: ""
-          type: object
+          items:
+            $ref: '#/components/schemas/MapOfstringAndRulesPackageSourcetypes'
+          type: array
         version:
           description: The version of the rules
           example: ""
@@ -1148,11 +1157,11 @@ components:
           example: ""
           type: string
         sourcetypes:
-          additionalProperties:
-            $ref: '#/components/schemas/RulesPackageSourcetypes'
           description: The sourcetype that the rules has to be applied
           example: ""
-          type: object
+          items:
+            $ref: '#/components/schemas/MapOfstringAndRulesPackageSourcetypes'
+          type: array
         tenantId:
           type: string
         version:
@@ -2183,6 +2192,10 @@ paths:
         style: form
       - in: query
         name: functionId
+        schema:
+          type: string
+      - in: query
+        name: functionOp
         schema:
           type: string
       - in: query
@@ -6761,4 +6774,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 2a83a71fc5f034d6a6308d40793cf42658bfbf9a path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit e356ae94d40158658c06a523a8a8d24cef4c26db path: streams/v3beta1/openapi.yaml

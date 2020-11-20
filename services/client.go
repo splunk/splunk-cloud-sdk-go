@@ -35,6 +35,7 @@ import (
 	"text/template"
 	"time"
 
+	gdepservices "github.com/splunk/go-dependencies/services"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/splunk/splunk-cloud-sdk-go/util"
 )
@@ -283,19 +284,19 @@ func (c *BaseClient) Do(req *Request) (*http.Response, error) {
 }
 
 // Get implements HTTP Get call
-func (c *BaseClient) Get(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Get(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodGet
 	return c.DoRequest(requestParams)
 }
 
 // Post implements HTTP POST call
-func (c *BaseClient) Post(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Post(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPost
 	return c.DoRequest(requestParams)
 }
 
 // Put implements HTTP PUT call
-func (c *BaseClient) Put(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Put(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPut
 	return c.DoRequest(requestParams)
 }
@@ -303,19 +304,19 @@ func (c *BaseClient) Put(requestParams RequestParams) (*http.Response, error) {
 // Delete implements HTTP DELETE call
 // RFC2616 does not explicitly forbid it but in practice some versions of server implementations (tomcat,
 // netty etc) ignore bodies in DELETE requests
-func (c *BaseClient) Delete(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Delete(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodDelete
 	return c.DoRequest(requestParams)
 }
 
 // Patch implements HTTP Patch call
-func (c *BaseClient) Patch(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) Patch(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	requestParams.Method = http.MethodPatch
 	return c.DoRequest(requestParams)
 }
 
 // DoRequest creates and execute a new request
-func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, error) {
+func (c *BaseClient) DoRequest(requestParams gdepservices.RequestParams) (*http.Response, error) {
 	var request *Request
 	var err error
 	now := time.Now().Add(c.tokenExpireWindow)
@@ -377,7 +378,7 @@ func (c *BaseClient) DoRequest(requestParams RequestParams) (*http.Response, err
 	return util.ParseHTTPStatusCodeInResponse(response)
 }
 
-func (c *BaseClient) makeFormRequest(requestParams RequestParams) (*Request, error) {
+func (c *BaseClient) makeFormRequest(requestParams gdepservices.RequestParams) (*Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	forms, ok := requestParams.Body.(FormData)

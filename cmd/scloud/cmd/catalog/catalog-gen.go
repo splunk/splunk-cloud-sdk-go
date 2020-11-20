@@ -136,7 +136,7 @@ var createDatasetImportByIdv1Cmd = &cobra.Command{
 
 // createDatasetImportDataset -- Creates a new dataset.
 var createDatasetImportDatasetCmd = &cobra.Command{
-	Use:   "create-dataset-import-dataset",
+	Use:   "create-dataset-import",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetImportDataset,
 }

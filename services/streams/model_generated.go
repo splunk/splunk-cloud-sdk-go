@@ -269,6 +269,8 @@ type LookupTableResponse struct {
 	Types map[string]string        `json:"types,omitempty"`
 }
 
+type MapOfstringAndRulesPackageSourcetypes map[string]interface{}
+
 type MapOfstringAndobject map[string]interface{}
 
 type MapOfstringAndstring map[string]interface{}
@@ -386,6 +388,7 @@ type PipelineReactivateResponse struct {
 	CurrentlyActiveVersion     *int64                                                `json:"currentlyActiveVersion,omitempty"`
 	PipelineId                 *string                                               `json:"pipelineId,omitempty"`
 	PipelineReactivationStatus *PipelineReactivateResponsePipelineReactivationStatus `json:"pipelineReactivationStatus,omitempty"`
+	StatusDescription          map[string]string                                     `json:"statusDescription,omitempty"`
 }
 
 type PipelineReactivateResponsePipelineReactivationStatus string
@@ -569,7 +572,7 @@ type RulesRequest struct {
 	// The name of the rules
 	Name string `json:"name"`
 	// The sourcetype that the rules has to be applied
-	Sourcetypes map[string]RulesPackageSourcetypes `json:"sourcetypes"`
+	Sourcetypes []MapOfstringAndRulesPackageSourcetypes `json:"sourcetypes"`
 	// The version of the rules
 	Version string `json:"version"`
 	// The description of the rules. Defaults to null.
@@ -582,7 +585,7 @@ type RulesResponse struct {
 	// The name of the rules
 	Name string `json:"name"`
 	// The sourcetype that the rules has to be applied
-	Sourcetypes map[string]RulesPackageSourcetypes `json:"sourcetypes"`
+	Sourcetypes []MapOfstringAndRulesPackageSourcetypes `json:"sourcetypes"`
 	// The version of the rules
 	Version          string  `json:"version"`
 	CreateDate       *int64  `json:"createDate,omitempty"`

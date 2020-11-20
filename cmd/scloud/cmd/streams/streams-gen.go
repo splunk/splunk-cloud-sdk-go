@@ -78,10 +78,10 @@ var decompileCmd = &cobra.Command{
 	RunE:  impl.Decompile,
 }
 
-// deleteCollectJob -- Delete all collect jobs.
+// deleteCollectJob -- Delete a collect job.
 var deleteCollectJobCmd = &cobra.Command{
 	Use:   "delete-collect-job",
-	Short: "Delete all collect jobs.",
+	Short: "Delete a collect job.",
 	RunE:  impl.DeleteCollectJob,
 }
 
@@ -627,6 +627,10 @@ func init() {
 
 	streamsCmd.AddCommand(deleteCollectJobCmd)
 
+	var deleteCollectJobId string
+	deleteCollectJobCmd.Flags().StringVar(&deleteCollectJobId, "id", "", "This is a required parameter. Collect Job ID")
+	deleteCollectJobCmd.MarkFlagRequired("id")
+
 	streamsCmd.AddCommand(deleteConnectionCmd)
 
 	var deleteConnectionConnectionId string
@@ -848,6 +852,9 @@ func init() {
 
 	var listConnectionsFunctionId string
 	listConnectionsCmd.Flags().StringVar(&listConnectionsFunctionId, "function-id", "", "")
+
+	var listConnectionsFunctionOp string
+	listConnectionsCmd.Flags().StringVar(&listConnectionsFunctionOp, "function-op", "", "")
 
 	var listConnectionsName string
 	listConnectionsCmd.Flags().StringVar(&listConnectionsName, "name", "", "")
