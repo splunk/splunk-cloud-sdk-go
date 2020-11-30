@@ -290,3 +290,31 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 	require.True(t, ok, "Expected err to be util.HTTPError")
 	assert.True(t, httpErr.HTTPStatusCode == 401, "Expected error code 401 for multiple attempts with expired access tokens")
 }
+
+// TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of invalid device code
+// TODO more test cases in SCP-33667
+func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, "", 60, 5, IdpHost)
+	result, err := tr.Client.GetDeviceCodes(NativeClientID, testutils.TestTenant, "offline_access profile email")
+	assert.Nil(t, err)
+	tr.DeviceCode = result.DeviceCode + "invalid"
+	tr.ExpiresIn = result.ExpiresIn
+	tr.Interval = result.Interval
+	ctx, err := tr.GetTokenContext()
+	require.Nil(t, ctx)
+	require.NotNil(t, err)
+	assert.Contains(t, err.Error(), "failed to get token in Device flow: code expired: 400")
+}
+
+// TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of timeout
+// TODO more test cases in SCP-33667
+func TestIntegrationDeviceWorkflowPolling(t *testing.T) {
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, "", 2, 1, IdpHost)
+	result, err := tr.Client.GetDeviceCodes(NativeClientID, testutils.TestTenant, "offline_access profile email")
+	assert.Nil(t, err)
+	tr.DeviceCode = result.DeviceCode
+	ctx, err := tr.GetTokenContext()
+	require.Nil(t, ctx)
+	require.NotNil(t, err)
+	assert.Contains(t, err.Error(), "failed to get token in Device flow: code expired: 400")
+}

@@ -51,7 +51,9 @@ func makeClient(idpHost string, insecure bool) *Client {
 		defaultAuthnPath,
 		defaultAuthorizePath,
 		defaultTokenPath,
+		defaultTenantTokenPath,
 		defaultCsrfTokenPath,
+		defaultDevicePath,
 		insecure)
 }
 
@@ -153,6 +155,44 @@ func (tr *PKCERetriever) GetTokenContext() (*Context, error) {
 	ctx, err := tr.PKCEFlow(tr.ClientID, tr.RedirectURI, tr.Scope, tr.Username, tr.Password.ClearText())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get token in PKCE flow")
+	}
+	return ctx, nil
+}
+
+// DeviceFlowRetriever retries a request after getting a new access token from the identity provider using the Device Authorization Flow
+type DeviceFlowRetriever struct {
+	*Client
+	// ClientID corresponding to a Device flow supported IdP client
+	ClientID string
+	// Tenant to request an access token for
+	Tenant string
+	// DeviceCode to poll for the token with
+	DeviceCode string
+	// ExpiresIn indicates the expiry of the DeviceCode in seconds
+	ExpiresIn int
+	// Interval indicates the polling interval
+	Interval int
+}
+
+// NewDeviceFlowRetriever initializes a new token context retriever
+//   idpURL: should be of the form https://example.com or optionally https://example.com:port
+//     - if "" is specified then SplunkCloudIdpURL will be used.
+func NewDeviceFlowRetriever(clientID string, tenant string, deviceCode string, expiresIn int, interval int, idpHost string) *DeviceFlowRetriever {
+	return &DeviceFlowRetriever{
+		Client:     makeClient(idpHost, false),
+		ClientID:   clientID,
+		Tenant:     tenant,
+		DeviceCode: deviceCode,
+		ExpiresIn:  expiresIn,
+		Interval:   interval,
+	}
+}
+
+// GetTokenContext gets a new access token context from the identity provider
+func (tr *DeviceFlowRetriever) GetTokenContext() (*Context, error) {
+	ctx, err := tr.DeviceFlow(tr.ClientID, tr.Tenant, tr.DeviceCode, tr.ExpiresIn, tr.Interval)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get token in Device flow")
 	}
 	return ctx, nil
 }
