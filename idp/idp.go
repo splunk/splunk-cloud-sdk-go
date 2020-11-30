@@ -127,26 +127,48 @@ type Context struct {
 	StartTime    int64
 }
 
+// DeviceCodeInfo captures codes, verification URI and polling parameters for device flow.
+type DeviceCodeInfo struct {
+	DeviceCode      string `json:"device_code"`
+	UserCode        string `json:"user_code"`
+	ExpiresIn       int    `json:"expires_in"`
+	Interval        int    `json:"interval"`
+	VerificationURI string `json:"verification_uri"`
+}
+
 const (
-	defaultAuthnPath     = "authn"
-	defaultAuthorizePath = "authorize"
-	defaultTokenPath     = "token"
-	defaultCsrfTokenPath = "csrfToken"
+	defaultAuthnPath           = "authn"
+	defaultAuthorizePath       = "authorize"
+	defaultTokenPath           = "token"
+	defaultTenantTokenPath     = "system/token"
+	defaultTenantTokenTemplate = "%s/token"
+	defaultCsrfTokenPath       = "csrfToken"
+	defaultDevicePath          = "system/device"
+	defaultDevicePathTemplate  = "%s/device"
 )
 
 // Client captures url and route information for the IdP endpoints
 type Client struct {
-	ProviderHost  string
-	AuthnPath     string
-	AuthorizePath string
-	TokenPath     string
-	CsrfTokenPath string
-	Insecure      bool
+	ProviderHost    string
+	AuthnPath       string
+	AuthorizePath   string
+	TokenPath       string
+	TenantTokenPath string
+	DevicePath      string
+	CsrfTokenPath   string
+	Insecure        bool
 }
 
 // NewClient Returns a new IdP client object.
 //   providerURL: should be of the form https://example.com or optionally https://example.com:port
-func NewClient(providerURL string, authnPath string, authorizePath string, tokenPath string, csrfTokenPath string, insecure bool) *Client {
+func NewClient(providerURL string,
+	authnPath string,
+	authorizePath string,
+	tokenPath string,
+	tenantTokenPath string,
+	csrfTokenPath string,
+	devicePath string,
+	insecure bool) *Client {
 	// Add a trailing slash if none
 	if providerURL[len(providerURL)-1:] != "/" {
 		providerURL = providerURL + "/"
@@ -160,16 +182,24 @@ func NewClient(providerURL string, authnPath string, authorizePath string, token
 	if tokenPath == "" {
 		tokenPath = defaultTokenPath
 	}
+	if tenantTokenPath == "" {
+		tenantTokenPath = defaultTenantTokenPath
+	}
 	if csrfTokenPath == "" {
 		csrfTokenPath = defaultCsrfTokenPath
 	}
+	if devicePath == "" {
+		devicePath = defaultDevicePath
+	}
 	return &Client{
-		ProviderHost:  providerURL,
-		AuthnPath:     authnPath,
-		AuthorizePath: authorizePath,
-		TokenPath:     tokenPath,
-		CsrfTokenPath: csrfTokenPath,
-		Insecure:      insecure,
+		ProviderHost:    providerURL,
+		AuthnPath:       authnPath,
+		AuthorizePath:   authorizePath,
+		TokenPath:       tokenPath,
+		TenantTokenPath: tenantTokenPath,
+		CsrfTokenPath:   csrfTokenPath,
+		DevicePath:      devicePath,
+		Insecure:        insecure,
 	}
 }
 
@@ -496,4 +526,80 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from token endpoint")
 	}
 	return decode(response)
+}
+
+// GetDeviceCodes will get info for the device flow.
+func (c *Client) GetDeviceCodes(clientID, tenant, scope string) (*DeviceCodeInfo, error) {
+	form := url.Values{
+		"client_id": {clientID},
+		"scope":     {scope}}
+	if c.DevicePath == defaultDevicePath && tenant != "system" {
+		c.DevicePath = fmt.Sprintf(defaultDevicePathTemplate, tenant)
+	}
+	response, err := formPost(c.makeURL(c.DevicePath), form, c.Insecure)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get valid response from device endpoint")
+	}
+	if response.StatusCode != http.StatusOK {
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from device endpoint")
+	}
+
+	var info DeviceCodeInfo
+	if err := json.NewDecoder(response.Body).Decode(&info); err != nil {
+		return nil, err
+	}
+	return &info, nil
+}
+
+// DeviceFlow will authenticate using the device flow.
+func (c *Client) DeviceFlow(clientID, tenant, deviceCode string, expiresIn, interval int) (*Context, error) {
+	var response *http.Response
+	var err error
+	codeExpiration := time.Now().Add(time.Duration(expiresIn) * time.Second)
+	pollingInterval := time.Duration(interval) * time.Second
+	form := url.Values{
+		"client_id":   {clientID},
+		"grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
+		"device_code": {deviceCode}}
+
+	if c.TenantTokenPath == defaultTenantTokenPath && tenant != "system" {
+		c.TenantTokenPath = fmt.Sprintf(defaultTenantTokenTemplate, tenant)
+	}
+
+	for time.Now().Before(codeExpiration) {
+		response, err = formPost(c.makeURL(c.TenantTokenPath), form, c.Insecure)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get valid response from tenant token endpoint")
+		}
+		if response.StatusCode == http.StatusBadRequest {
+			defer response.Body.Close()
+			data, err := load(response.Body)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse response body from tenant token endpoint")
+			}
+			switch data["error_description"] {
+			case "authorization_pending":
+				time.Sleep(pollingInterval)
+				continue
+			case "slow_down":
+				// add 5 seconds to polling interval on "slow_down" error
+				pollingInterval += 5
+				time.Sleep(pollingInterval)
+				continue
+			case "expired_token":
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "code expired")
+			case "access_denied":
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "access denied")
+			default:
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from tenant token endpoint")
+			}
+		} else if response.StatusCode != http.StatusOK {
+			return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from tenant token endpoint")
+		} else {
+			// return decoded response if response.StatusCode = 200
+			return decode(response)
+		}
+	}
+	// return "code expired" on timeout
+	return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", http.StatusBadRequest)), "code expired")
 }

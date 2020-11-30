@@ -28,17 +28,21 @@ import (
 
 func TestNewClient(t *testing.T) {
 	const providerHost = "https://myhost.net/"
-	client := NewClient(providerHost, "custom/authn", "custom/authz", "custom/token", "custom/csrfToken", false)
+	client := NewClient(providerHost, "custom/authn", "custom/authz", "custom/token", "custom/system/token", "custom/csrfToken", "custom/system/device", false)
 	assert.Equal(t, client.ProviderHost, providerHost)
 	assert.Equal(t, client.AuthnPath, "custom/authn")
 	assert.Equal(t, client.AuthorizePath, "custom/authz")
 	assert.Equal(t, client.TokenPath, "custom/token")
+	assert.Equal(t, client.TenantTokenPath, "custom/system/token")
+	assert.Equal(t, client.DevicePath, "custom/system/device")
 	assert.Equal(t, client.CsrfTokenPath, "custom/csrfToken")
-	clientEmptyParams := NewClient(providerHost, "", "", "", "", false)
+	clientEmptyParams := NewClient(providerHost, "", "", "", "", "", "", false)
 	assert.Equal(t, clientEmptyParams.ProviderHost, providerHost)
 	assert.Equal(t, clientEmptyParams.AuthnPath, defaultAuthnPath)
 	assert.Equal(t, clientEmptyParams.AuthorizePath, defaultAuthorizePath)
 	assert.Equal(t, clientEmptyParams.TokenPath, defaultTokenPath)
+	assert.Equal(t, clientEmptyParams.TenantTokenPath, defaultTenantTokenPath)
+	assert.Equal(t, clientEmptyParams.DevicePath, defaultDevicePath)
 	assert.Equal(t, clientEmptyParams.CsrfTokenPath, defaultCsrfTokenPath)
 }
 
