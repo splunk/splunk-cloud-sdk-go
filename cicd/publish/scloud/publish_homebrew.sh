@@ -37,29 +37,47 @@ echo "MAC_URL is: $MAC_URL"
 LINUX_URL='\"https:\/\/github.com\/splunk\/splunk-cloud-sdk-go\/releases\/download\/'${RELEASE_TAG}'\/scloud_v'${SCLOUD_VERSION}'_linux_amd64.tar.gz\"'
 echo "LINUX_URL is: $LINUX_URL"
 
-# SHA
-MAC_RESOURCE="$(curl -s https://github.com/splunk/splunk-cloud-sdk-go/releases/download/${RELEASE_TAG}/scloud_v${SCLOUD_VERSION}_darwin_amd64.tar.gz)"
-LINUX_RESOURCE="$(curl -s https://github.com/splunk/splunk-cloud-sdk-go/releases/download/${RELEASE_TAG}/scloud_v${SCLOUD_VERSION}_linux_amd64.tar.gz)"
-
-if [[ "$MAC_RESOURCE" == *"Not Found"* ]] ; then
-    echo "scloud_v${SCLOUD_VERSION}_darwin_amd64.tar.gz does not exist"
-    exit 1
+# Ensure resources are uploaded before running SHA. Otherwise wait 5 minutes and check
+i=0
+while [ $i -le 1 ]
+do
+echo "Checking for resources..."
+status=$(curl --head --silent https://github.com/splunk/splunk-cloud-sdk-go/releases/download/${RELEASE_TAG}/scloud_v${SCLOUD_VERSION}_darwin_amd64.tar.gz | head -n 1)
+if [ "$i" -lt 1 ] && echo "$status" | grep -q 404
+then
+  echo "Resources hasn't been uploaded"
+  echo "Sleeping for 5 minutes"
+  sleep 5m
+  i= $(( i++ ))
+elif echo "$status" | grep -q 404
+then
+  echo "Cannot find resources"
+  exit 1
+else
+  echo "Resources uploaded"
+  i=$[$i+2]
 fi
+done
 
-if [[ "$LINUX_RESOURCE" == *"Not Found"* ]] ; then
-    echo "scloud_v${SCLOUD_VERSION}_linux_amd64.tar.gz does not exist"
-    exit 1
-fi
+# Download Resource
+"$(wget https://github.com/splunk/splunk-cloud-sdk-go/releases/download/${RELEASE_TAG}/scloud_v${SCLOUD_VERSION}_darwin_amd64.tar.gz)"
+"$(wget https://github.com/splunk/splunk-cloud-sdk-go/releases/download/${RELEASE_TAG}/scloud_v${SCLOUD_VERSION}_linux_amd64.tar.gz)"
 
-MAC_SHA="$(${MAC_RESOURCE}|sha256sum -b)"
-LINUX_SHA="$(${LINUX_RESOURCE}|sha256sum -b)"
+MAC_SHA="$(sha256sum -b scloud_v${SCLOUD_VERSION}_darwin_amd64.tar.gz)"
+LINUX_SHA="$(sha256sum -b scloud_v${SCLOUD_VERSION}_linux_amd64.tar.gz)"
 
-# Trim SHA
-MAC_SHA=${MAC_SHA::${#MAC_SHA}-3}
-LINUX_SHA=${LINUX_SHA::${#LINUX_SHA}-3}
+# Binary is in 0th position
+MAC_SHA="$(echo $MAC_SHA | head -n1 | sed -e 's/\s.*$//')"
+LINUX_SHA="$(echo $LINUX_SHA | head -n1 | sed -e 's/\s.*$//')"
 
 echo "MAC_SHA is: $MAC_SHA"
 echo "LINUX_SHA is: $LINUX_SHA"
+
+if [[ "$MAC_SHA" == "$LINUX_SHA" ]]
+then
+    echo "Invalid SHA"
+    exit 1
+fi
 
 ####################################################################################################
 # Clone homebrew-tap repo
