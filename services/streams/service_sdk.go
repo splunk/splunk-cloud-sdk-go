@@ -60,7 +60,7 @@ func (s *Service) UploadFilesStream(stream io.Reader, resp ...*http.Response) er
 
 func (s *Service) uploadFileStream(u url.URL, stream io.Reader, filename string, resp *http.Response) error {
 
-	form := services.FormData{Filename: filename, Stream: stream, Key: "upfile"}
+	form := services.FormData{Filename: filename, Stream: stream, Key: "file"}
 
 	response, err := s.Client.Post(gdepservices.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
 
