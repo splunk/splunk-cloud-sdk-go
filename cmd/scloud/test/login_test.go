@@ -21,8 +21,36 @@ func TestRefreshLoginFlow(t *testing.T) {
 
 	identityCommand := "identity list-groups"
 	identityResults, err, std := utils.ExecuteCmd(identityCommand, t)
-	assert.False(t, strings.Contains(identityResults, "401"))
-	assert.False(t, strings.Contains(identityResults, "404"))
+	assert.NotEmpty(t, identityResults)
+	assert.False(t, strings.Contains(std, "401 Unauthorized"))
+	assert.False(t, strings.Contains(std, "404 Not Found"))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+}
+
+func TestKCLoginFlow(t *testing.T) {
+	//set config of the user enabled with Keycloak
+	setConfig("username", utils.Username2, t)
+	setConfig("env", utils.Env3, t)
+	setConfig("tenant", utils.TestTenant2, t)
+
+	//validate login
+	loginCommand := "login  --pwd " + utils.Password2
+	results, err, std := utils.ExecuteCmd(loginCommand, t)
+	assert.Equal(t, "", results)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+	//reset config settings
+	setConfig("username", utils.Username, t)
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
+
+	//reset login
+	loginCommand = "login  --pwd " + utils.Password
+	results, err, std = utils.ExecuteCmd(loginCommand, t)
+
+	assert.Equal(t, "", results)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
@@ -37,8 +65,10 @@ func TestDefaultLoginFlow(t *testing.T) {
 
 	identityCommand := "identity list-groups"
 	identityResults, err, std := utils.ExecuteCmd(identityCommand, t)
-	assert.False(t, strings.Contains(identityResults, "401"))
-	assert.False(t, strings.Contains(identityResults, "404"))
+
+	assert.NotEmpty(t, identityResults)
+	assert.False(t, strings.Contains(std, "401 Unauthorized"))
+	assert.False(t, strings.Contains(std, "404 Not Found"))
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
@@ -91,6 +121,14 @@ func TestAuthLogin(t *testing.T) {
 	assert.Equal(t, int64(0), context.StartTime)
 
 	tearDown(t)
+}
+
+func setConfig(key string, value string, t *testing.T) {
+	configCommand := "config set --key " + key + " --value " + strings.TrimSpace(value)
+	results, err, std := utils.ExecuteCmd(configCommand, t)
+	assert.Equal(t, "", results)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
 }
 
 func mockedAuthFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {

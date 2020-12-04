@@ -244,10 +244,15 @@ func newFormPost(reqURL string, data url.Values) (*http.Request, error) {
 	return request, nil
 }
 
-func get(reqURL string, params url.Values, insecure bool) (*http.Response, error) {
+func get(reqURL string, params url.Values, cookies []*http.Cookie, insecure bool) (*http.Response, error) {
 	request, err := newGet(reqURL, params)
 	if err != nil {
 		return nil, err
+	}
+	if cookies != nil {
+		for _, cookie := range cookies {
+			request.AddCookie(cookie)
+		}
 	}
 	return newHTTPClient(insecure).Do(request)
 }
@@ -351,7 +356,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 }
 
 func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
-	response, err := get(c.makeURL(c.CsrfTokenPath), nil, c.Insecure)
+	response, err := get(c.makeURL(c.CsrfTokenPath), nil, nil, c.Insecure)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
 	}
@@ -371,10 +376,10 @@ func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
 
 // GetSessionToken Returns a one-time session token by authenticating using a
 // "primary" endpoint (/authn).
-func (c *Client) GetSessionToken(username, password string) (string, error) {
+func (c *Client) GetSessionToken(username, password string) (string, []*http.Cookie, error) {
 	csrfToken, cookies, err := c.GetCsrfToken()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
+		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
 	}
 
 	body := map[string]string{
@@ -384,12 +389,12 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 
 	response, err := post(c.makeURL(c.AuthnPath), body, c.Insecure, cookies...)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to get valid response from authn endpoint")
+		return "", nil, errors.Wrap(err, "failed to get valid response from authn endpoint")
 	}
 	defer response.Body.Close()
 	data, err := load(response.Body)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to parse response body from authn endpoint")
+		return "", nil, errors.Wrap(err, "failed to parse response body from authn endpoint")
 	}
 	if response.StatusCode != http.StatusOK {
 		msg := response.Status
@@ -399,20 +404,32 @@ func (c *Client) GetSessionToken(username, password string) (string, error) {
 				msg += fmt.Sprintf("%s:%s \n", k, v)
 			}
 		}
-		return "", errors.Wrap(errors.New(msg), "unexpected status response from authn endpoint")
+		return "", nil, errors.Wrap(errors.New(msg), "unexpected status response from authn endpoint")
 	}
 	status, err := gets(data, "status")
 	if err != nil {
-		return "", errors.Wrap(err, "unable to get status data from authn endpoint")
+		return "", nil, errors.Wrap(err, "unable to get status data from authn endpoint")
 	}
 	if status != "SUCCESS" { // eg: LOCKED_OUT
-		return "", errors.Wrap(errors.New(status), "unexpected status data from authn endpoint")
+		return "", nil, errors.Wrap(errors.New(status), "unexpected status data from authn endpoint")
 	}
-	sessionToken, err := gets(data, "sessionToken")
-	if err != nil {
-		return "", errors.Wrap(err, "failed to parse session token data from authn endpoint response")
+	// get session token from the cookies (Keycloak session tokens are passed as cookies)
+	var sessionToken string
+	var sessionCookies []*http.Cookie
+	for _, cookie := range response.Cookies() {
+		if cookie.Name == "sessionToken" {
+			sessionCookies = []*http.Cookie{cookie}
+			break
+		}
 	}
-	return sessionToken, nil
+	if sessionCookies == nil {
+		// try data (OKTA session token)
+		sessionToken, err = gets(data, "sessionToken")
+		if err != nil {
+			return "", nil, errors.Wrap(err, "failed to parse session token data from authn endpoint response")
+		}
+	}
+	return sessionToken, sessionCookies, nil
 }
 
 // Returns a codeVerfier and codeChallenge for use in a PKCE flow.
@@ -439,7 +456,7 @@ func createCodeChallenge(n int) (string, string, error) {
 // PKCEFlow will authenticate using the "proof key for code exchange" flow.
 func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password string) (*Context, error) {
 	// retrieve one-time session token
-	sessionToken, err := c.GetSessionToken(username, password)
+	sessionToken, sessionCookies, err := c.GetSessionToken(username, password)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get session token")
 	}
@@ -461,7 +478,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"scope":                 {scope},
 		"session_token":         {sessionToken},
 		"state":                 {state()}}
-	response, err := get(c.makeURL(c.AuthorizePath), params, c.Insecure)
+	response, err := get(c.makeURL(c.AuthorizePath), params, sessionCookies, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from authorize endpoint")
 	}
