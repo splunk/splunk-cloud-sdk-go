@@ -38,62 +38,6 @@ type ArgumentModel struct {
 	Type     *string `json:"type,omitempty"`
 }
 
-type CollectJobPatchRequest struct {
-	// The description of the collect job.
-	Description *string `json:"description,omitempty"`
-	// The name of the collect job.
-	Name *string `json:"name,omitempty"`
-	// The key-value pairs of configurations for this collect job.
-	Parameters map[string]interface{} `json:"parameters,omitempty"`
-	Schedule   *CollectJobSchedule    `json:"schedule,omitempty"`
-	// The number of workers for collecting data.
-	Workers *int32 `json:"workers,omitempty"`
-}
-
-type CollectJobRequest struct {
-	// The ID of the connection that is assigned to this collect job.
-	ConnectionId string `json:"connectionId"`
-	// The ID of the connector this collect job uses.
-	ConnectorId string `json:"connectorId"`
-	// The description of the collect job.
-	Description string `json:"description"`
-	// The name of the collect job.
-	Name string `json:"name"`
-	// The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
-	Parameters map[string]interface{} `json:"parameters"`
-	Schedule   CollectJobSchedule     `json:"schedule"`
-	// The number of workers for collecting data.
-	Workers int32 `json:"workers"`
-}
-
-type CollectJobResponse struct {
-	ActivePipelinesUsing []map[string]interface{} `json:"activePipelinesUsing,omitempty"`
-	ConnectionId         *string                  `json:"connectionId,omitempty"`
-	ConnectorId          *string                  `json:"connectorId,omitempty"`
-	CreateDate           *int64                   `json:"createDate,omitempty"`
-	CreateUserId         *string                  `json:"createUserId,omitempty"`
-	Description          *string                  `json:"description,omitempty"`
-	Id                   *string                  `json:"id,omitempty"`
-	LastUpdateDate       *int64                   `json:"lastUpdateDate,omitempty"`
-	LastUpdateUserId     *string                  `json:"lastUpdateUserId,omitempty"`
-	Name                 *string                  `json:"name,omitempty"`
-	Parameters           map[string]interface{}   `json:"parameters,omitempty"`
-	Schedule             *CollectJobSchedule      `json:"schedule,omitempty"`
-	Status               *string                  `json:"status,omitempty"`
-	Version              *int64                   `json:"version,omitempty"`
-	Workers              *int32                   `json:"workers,omitempty"`
-}
-
-type CollectJobSchedule struct {
-	// The CRON expression.
-	Cron string `json:"cron"`
-}
-
-type CollectJobStartStopResponse struct {
-	Id     *string `json:"id,omitempty"`
-	Status *string `json:"status,omitempty"`
-}
-
 type ConnectionPatchRequest struct {
 	// The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
 	Data map[string]interface{} `json:"data,omitempty"`
@@ -157,6 +101,7 @@ type ConnectionVersionResponse struct {
 }
 
 type ConnectorResponse struct {
+	Attributes    map[string]interface{}   `json:"attributes,omitempty"`
 	Config        map[string]interface{}   `json:"config,omitempty"`
 	ConnectorType *string                  `json:"connectorType,omitempty"`
 	Description   *string                  `json:"description,omitempty"`
@@ -215,20 +160,6 @@ type DecompileResponse struct {
 	Spl *string `json:"spl,omitempty"`
 }
 
-type EntitlementRequest struct {
-	// The name of the entitlement
-	Name string `json:"name"`
-	// The key-value pairs values
-	Value map[string]interface{} `json:"value"`
-}
-
-type EntitlementResponse struct {
-	AppClientId *string                `json:"appClientId,omitempty"`
-	Name        *string                `json:"name,omitempty"`
-	Status      *string                `json:"status,omitempty"`
-	Value       map[string]interface{} `json:"value,omitempty"`
-}
-
 type ErrorResponse struct {
 	Code     *string                `json:"code,omitempty"`
 	Details  []MapOfstringAndstring `json:"details,omitempty"`
@@ -237,7 +168,7 @@ type ErrorResponse struct {
 }
 
 type FilesMetaDataResponse struct {
-	Files []UploadFile `json:"files,omitempty"`
+	Files []UploadFileResponse `json:"files,omitempty"`
 }
 
 type FunctionModel struct {
@@ -269,8 +200,6 @@ type LookupTableResponse struct {
 	Types map[string]string        `json:"types,omitempty"`
 }
 
-type MapOfstringAndRulesPackageSourcetypes map[string]interface{}
-
 type MapOfstringAndobject map[string]interface{}
 
 type MapOfstringAndstring map[string]interface{}
@@ -281,11 +210,6 @@ type MetricsResponse struct {
 
 type NodeMetrics struct {
 	Metrics map[string]interface{} `json:"metrics,omitempty"`
-}
-
-type PaginatedResponseOfCollectJobResponse struct {
-	Items []CollectJobResponse `json:"items,omitempty"`
-	Total *int64               `json:"total,omitempty"`
 }
 
 type PaginatedResponseOfConnectionResponse struct {
@@ -306,21 +230,6 @@ type PaginatedResponseOfPipelineJobStatus struct {
 type PaginatedResponseOfPipelineResponse struct {
 	Items []PipelineResponse `json:"items,omitempty"`
 	Total *int64             `json:"total,omitempty"`
-}
-
-type PaginatedResponseOfPlugin struct {
-	Items []Plugin `json:"items,omitempty"`
-	Total *int64   `json:"total,omitempty"`
-}
-
-type PaginatedResponseOfRulesKind struct {
-	Items []RulesKind `json:"items,omitempty"`
-	Total *int64      `json:"total,omitempty"`
-}
-
-type PaginatedResponseOfRulesResponse struct {
-	Items []RulesResponse `json:"items,omitempty"`
-	Total *int64          `json:"total,omitempty"`
 }
 
 type PaginatedResponseOfTemplateResponse struct {
@@ -446,40 +355,6 @@ const (
 	PipelineResponseStatusFinished   PipelineResponseStatus = "FINISHED"
 )
 
-type Plugin struct {
-	Description      *string `json:"description,omitempty"`
-	IsDeleted        *bool   `json:"isDeleted,omitempty"`
-	LastUpdateDate   *int64  `json:"lastUpdateDate,omitempty"`
-	LastUpdateUserId *string `json:"lastUpdateUserId,omitempty"`
-	Name             *string `json:"name,omitempty"`
-	PluginId         *string `json:"pluginId,omitempty"`
-	TenantId         *string `json:"tenantId,omitempty"`
-}
-
-type PluginPatchRequest struct {
-	// Plugin description
-	Description *string `json:"description,omitempty"`
-	// Plugin name
-	Name *string `json:"name,omitempty"`
-}
-
-type PluginRequest struct {
-	// Plugin description
-	Description string `json:"description"`
-	// Plugin name
-	Name string `json:"name"`
-}
-
-type PluginResponse struct {
-	CreateDate   *int64  `json:"createDate,omitempty"`
-	CreateUserId *string `json:"createUserId,omitempty"`
-	Description  *string `json:"description,omitempty"`
-	JarLocation  *string `json:"jarLocation,omitempty"`
-	Name         *string `json:"name,omitempty"`
-	PluginId     *string `json:"pluginId,omitempty"`
-	Version      *int64  `json:"version,omitempty"`
-}
-
 type PreviewData struct {
 	CurrentNumberOfRecords *int32                 `json:"currentNumberOfRecords,omitempty"`
 	Nodes                  map[string]PreviewNode `json:"nodes,omitempty"`
@@ -545,58 +420,6 @@ type RuleMetrics struct {
 	Name            *string `json:"name,omitempty"`
 }
 
-type RulesKind struct {
-	RuleKindName  *string `json:"ruleKindName,omitempty"`
-	RuleKindValue *string `json:"ruleKindValue,omitempty"`
-}
-
-type RulesPackageActions struct {
-	// The arguments for the rules
-	Arguments map[string]interface{} `json:"arguments"`
-	// Rules kind
-	Kind string `json:"kind"`
-}
-
-type RulesPackageSourcetypes struct {
-	// List of actions for the sourcetype
-	Actions []RulesPackageActions `json:"actions"`
-	// Sourcetype definition
-	Definition string `json:"definition"`
-	// Sourcetype description
-	Description *string `json:"description,omitempty"`
-}
-
-type RulesRequest struct {
-	// Unique id of the rules package
-	ExternalId string `json:"externalId"`
-	// The name of the rules
-	Name string `json:"name"`
-	// The sourcetype that the rules has to be applied
-	Sourcetypes []MapOfstringAndRulesPackageSourcetypes `json:"sourcetypes"`
-	// The version of the rules
-	Version string `json:"version"`
-	// The description of the rules. Defaults to null.
-	RulesDescription *string `json:"rulesDescription,omitempty"`
-}
-
-type RulesResponse struct {
-	// Unique id of the rules package
-	ExternalId string `json:"externalId"`
-	// The name of the rules
-	Name string `json:"name"`
-	// The sourcetype that the rules has to be applied
-	Sourcetypes []MapOfstringAndRulesPackageSourcetypes `json:"sourcetypes"`
-	// The version of the rules
-	Version          string  `json:"version"`
-	CreateDate       *int64  `json:"createDate,omitempty"`
-	CreateUserId     *string `json:"createUserId,omitempty"`
-	LastUpdateDate   *int64  `json:"lastUpdateDate,omitempty"`
-	LastUpdateUserId *string `json:"lastUpdateUserId,omitempty"`
-	// The description of the rules. Defaults to null.
-	RulesDescription *string `json:"rulesDescription,omitempty"`
-	TenantId         *string `json:"tenantId,omitempty"`
-}
-
 type SplCompileRequest struct {
 	// The SPL2 representation of a pipeline or function parameters.
 	Spl string `json:"spl"`
@@ -645,7 +468,7 @@ type UplType struct {
 	Type       *string   `json:"type,omitempty"`
 }
 
-type UploadFile struct {
+type UploadFileResponse struct {
 	CreatedDate   *int64  `json:"createdDate,omitempty"`
 	CreatedUserId *string `json:"createdUserId,omitempty"`
 	Filename      *string `json:"filename,omitempty"`

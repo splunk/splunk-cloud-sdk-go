@@ -33,14 +33,6 @@ type ServicerGenerated interface {
 	*/
 	CreateInvite(inviteBody InviteBody, resp ...*http.Response) (*InviteInfo, error)
 	/*
-		CreateProvisionJob - provisioner service endpoint
-		Creates a new job that provisions a new tenant and subscribes apps to the tenant.
-		Parameters:
-			createProvisionJobBody
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateProvisionJob(createProvisionJobBody CreateProvisionJobBody, resp ...*http.Response) (*ProvisionJobInfo, error)
-	/*
 		DeleteInvite - provisioner service endpoint
 		Removes an invitation in the given tenant.
 		Parameters:
@@ -57,14 +49,6 @@ type ServicerGenerated interface {
 	*/
 	GetInvite(inviteId string, resp ...*http.Response) (*InviteInfo, error)
 	/*
-		GetProvisionJob - provisioner service endpoint
-		Returns details of a specific provision job.
-		Parameters:
-			jobId
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetProvisionJob(jobId string, resp ...*http.Response) (*ProvisionJobInfo, error)
-	/*
 		GetTenant - provisioner service endpoint
 		Returns a specific tenant.
 		Parameters:
@@ -79,13 +63,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListInvites(resp ...*http.Response) (*Invites, error)
-	/*
-		ListProvisionJobs - provisioner service endpoint
-		Returns a list of all provision jobs created by the user.
-		Parameters:
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListProvisionJobs(resp ...*http.Response) (*ProvisionJobs, error)
 	/*
 		ListTenants - provisioner service endpoint
 		Returns all tenants that the user can read.

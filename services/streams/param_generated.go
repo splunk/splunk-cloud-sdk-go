@@ -23,19 +23,6 @@
 
 package streams
 
-// GetCollectJobQueryParams represents valid query parameters for the GetCollectJob operation
-// For convenience GetCollectJobQueryParams can be formed in a single statement, for example:
-//     `v := GetCollectJobQueryParams{}.SetVersion(...)`
-type GetCollectJobQueryParams struct {
-	// Version : version
-	Version string `key:"version"`
-}
-
-func (q GetCollectJobQueryParams) SetVersion(v string) GetCollectJobQueryParams {
-	q.Version = v
-	return q
-}
-
 // GetLookupTableQueryParams represents valid query parameters for the GetLookupTable operation
 // For convenience GetLookupTableQueryParams can be formed in a single statement, for example:
 //     `v := GetLookupTableQueryParams{}.SetOffset(...).SetSize(...)`
@@ -120,40 +107,6 @@ func (q GetPipelinesStatusQueryParams) SetSortDir(v string) GetPipelinesStatusQu
 }
 
 func (q GetPipelinesStatusQueryParams) SetSortField(v string) GetPipelinesStatusQueryParams {
-	q.SortField = v
-	return q
-}
-
-// GetPluginsQueryParams represents valid query parameters for the GetPlugins operation
-// For convenience GetPluginsQueryParams can be formed in a single statement, for example:
-//     `v := GetPluginsQueryParams{}.SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
-type GetPluginsQueryParams struct {
-	// Offset : offset
-	Offset *int32 `key:"offset"`
-	// PageSize : pageSize
-	PageSize *int32 `key:"pageSize"`
-	// SortDir : sortDir
-	SortDir string `key:"sortDir"`
-	// SortField : sortField
-	SortField string `key:"sortField"`
-}
-
-func (q GetPluginsQueryParams) SetOffset(v int32) GetPluginsQueryParams {
-	q.Offset = &v
-	return q
-}
-
-func (q GetPluginsQueryParams) SetPageSize(v int32) GetPluginsQueryParams {
-	q.PageSize = &v
-	return q
-}
-
-func (q GetPluginsQueryParams) SetSortDir(v string) GetPluginsQueryParams {
-	q.SortDir = v
-	return q
-}
-
-func (q GetPluginsQueryParams) SetSortField(v string) GetPluginsQueryParams {
 	q.SortField = v
 	return q
 }
@@ -343,26 +296,6 @@ func (q ListPipelinesQueryParams) SetSortDir(v string) ListPipelinesQueryParams 
 }
 
 func (q ListPipelinesQueryParams) SetSortField(v string) ListPipelinesQueryParams {
-	q.SortField = v
-	return q
-}
-
-// ListRulesPackagesQueryParams represents valid query parameters for the ListRulesPackages operation
-// For convenience ListRulesPackagesQueryParams can be formed in a single statement, for example:
-//     `v := ListRulesPackagesQueryParams{}.SetSortDir(...).SetSortField(...)`
-type ListRulesPackagesQueryParams struct {
-	// SortDir : sortDir
-	SortDir string `key:"sortDir"`
-	// SortField : sortField
-	SortField string `key:"sortField"`
-}
-
-func (q ListRulesPackagesQueryParams) SetSortDir(v string) ListRulesPackagesQueryParams {
-	q.SortDir = v
-	return q
-}
-
-func (q ListRulesPackagesQueryParams) SetSortField(v string) ListRulesPackagesQueryParams {
 	q.SortField = v
 	return q
 }

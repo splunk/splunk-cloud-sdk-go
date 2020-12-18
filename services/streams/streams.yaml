@@ -289,6 +289,9 @@ components:
     ConnectorResponse:
       description: ""
       properties:
+        attributes:
+          properties: {}
+          type: object
         config:
           properties: {}
           type: object
@@ -449,7 +452,7 @@ components:
       properties:
         files:
           items:
-            $ref: '#/components/schemas/UploadFile'
+            $ref: '#/components/schemas/UploadFileResponse'
           type: array
       type: object
     FunctionModel:
@@ -1271,7 +1274,7 @@ components:
         type:
           type: string
       type: object
-    UploadFile:
+    UploadFileResponse:
       description: ""
       properties:
         createdDate:
@@ -1316,10 +1319,10 @@ info:
   version: v3beta1.1
 openapi: 3.0.1
 paths:
-  /{tenantId}/streams/v3beta1/collect-jobs:
-    delete:
+  /{tenantId}/streams/v3beta1/connections:
+    get:
       deprecated: false
-      operationId: deleteCollectJob
+      operationId: listConnections
       parameters:
       - description: Tenant ID
         in: path
@@ -1327,71 +1330,51 @@ paths:
         required: true
         schema:
           type: string
-      responses:
-        "204":
-          content: {}
-          description: The collect jobs were deleted successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete all collect jobs.
-      tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.delete
-      x-internal: "true"
-    get:
-      deprecated: false
-      operationId: listCollectJobs
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
+      - explode: true
+        in: query
+        name: connectorId
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      - in: query
+        name: functionId
+        schema:
+          type: string
+      - in: query
+        name: functionOp
+        schema:
+          type: string
+      - in: query
+        name: createUserId
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - in: query
+        name: sortField
+        schema:
+          type: string
+      - description: Specify either ascending ('asc') or descending ('desc') sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to 'asc'.
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - in: query
+        name: showSecretNames
         schema:
           type: string
       responses:
@@ -1399,8 +1382,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedResponseOfCollectJobResponse'
-          description: Returns a list of collect jobs.
+                $ref: '#/components/schemas/PaginatedResponseOfConnectionResponse'
+          description: Returns a list of connections.
         "400":
           content:
             application/json:
@@ -1449,14 +1432,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Get all collect jobs.
+      summary: Returns a list of connections (latest versions only) by tenant ID.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.read
-      x-internal: "true"
+      - connectors
+      x-authz-scope: streams.connections.read
     post:
       deprecated: false
-      operationId: createCollectJob
+      operationId: createConnection
       parameters:
       - description: Tenant ID
         in: path
@@ -1468,7 +1450,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectJobRequest'
+              $ref: '#/components/schemas/ConnectionRequest'
         description: Request JSON
         required: true
       responses:
@@ -1476,8 +1458,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectJobResponse'
-          description: The collect job was created successfully.
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: The connection was created successfully.
         "400":
           content:
             application/json:
@@ -1526,15 +1508,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Create a new collect job.
+      summary: Create a new DSP connection.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.create
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/collect-jobs/{id}:
+      - connectors
+      x-authz-scope: streams.connections.create
+  /{tenantId}/streams/v3beta1/connections/{connectionId}:
     delete:
       deprecated: false
-      operationId: deleteCollectJob
+      operationId: deleteConnection
       parameters:
       - description: Tenant ID
         in: path
@@ -1542,16 +1523,16 @@ paths:
         required: true
         schema:
           type: string
-      - description: Collect Job ID
+      - description: Connection ID
         in: path
-        name: id
+        name: connectionId
         required: true
         schema:
           type: string
       responses:
         "204":
           content: {}
-          description: The collect job was deleted successfully.
+          description: The connection was deleted successfully.
         "400":
           content:
             application/json:
@@ -1600,95 +1581,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Delete a collect job.
+      summary: Delete all versions of a connection by its id.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.delete
-      x-internal: "true"
-    get:
-      deprecated: false
-      operationId: getCollectJob
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Collect Job ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      - description: version
-        in: query
-        name: version
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CollectJobResponse'
-          description: Returns the collect job for the specified id.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Get a collect job.
-      tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.read
-      x-internal: "true"
+      - connectors
+      x-authz-scope: streams.connections.delete
     patch:
       deprecated: false
-      operationId: updateCollectJob
+      operationId: updateConnection
       parameters:
       - description: Tenant ID
         in: path
@@ -1696,9 +1595,9 @@ paths:
         required: true
         schema:
           type: string
-      - description: Collect Job ID
+      - description: Connection ID
         in: path
-        name: id
+        name: connectionId
         required: true
         schema:
           type: string
@@ -1706,7 +1605,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectJobPatchRequest'
+              $ref: '#/components/schemas/ConnectionPatchRequest'
         description: Request JSON
         required: true
       responses:
@@ -1714,8 +1613,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectJobResponse'
-          description: The collect job was modified successfully.
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: The connection was modified successfully.
         "400":
           content:
             application/json:
@@ -1764,15 +1663,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Patches an existing collect job.
+      summary: Patches an existing DSP connection.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.update
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/collect-jobs/{id}/start:
-    post:
+      - connectors
+      x-authz-scope: streams.connections.update
+    put:
       deprecated: false
-      operationId: startCollectJob
+      operationId: putConnection
       parameters:
       - description: Tenant ID
         in: path
@@ -1780,9 +1677,86 @@ paths:
         required: true
         schema:
           type: string
-      - description: Collect Job ID
+      - description: Connection ID
         in: path
-        name: id
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionPutRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSaveResponse'
+          description: The connection was updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Updates an existing DSP connection.
+      tags:
+      - connectors
+      x-authz-scope: streams.connections.update
+  /{tenantId}/streams/v3beta1/connectors:
+    get:
+      deprecated: false
+      operationId: listConnectors
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
         required: true
         schema:
           type: string
@@ -1791,8 +1765,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectJobStartStopResponse'
-          description: The collect job was started successfully.
+                $ref: '#/components/schemas/PaginatedResponseOfConnectorResponse'
+          description: Returns a list of connectors.
         "400":
           content:
             application/json:
@@ -1841,25 +1815,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Start a collect job.
+      summary: Returns a list of the available connectors.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.start
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/collect-jobs/{id}/stop:
-    post:
+      - connectors
+      x-authz-scope: streams.connections.read
+  /{tenantId}/streams/v3beta1/files:
+    get:
       deprecated: false
-      operationId: stopCollectJob
+      operationId: getFilesMetadata
       parameters:
       - description: Tenant ID
         in: path
         name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Collect Job ID
-        in: path
-        name: id
         required: true
         schema:
           type: string
@@ -1868,8 +1835,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectJobStartStopResponse'
-          description: The collect job was stopped successfully.
+                $ref: '#/components/schemas/FilesMetaDataResponse'
+          description: Returns files metadata.
         "400":
           content:
             application/json:
@@ -1918,15 +1885,92 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Stop a collect job.
+      summary: Returns files metadata.
       tags:
-      - collectJobs
-      x-authz-scope: streams.collectjobs.stop
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/commerce/subscribed-apps/{appClientId}/entitlements:
+      - files
+      x-authz-scope: streams.files.read
+    post:
+      deprecated: false
+      operationId: uploadFile
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  description: Upload file
+                  format: binary
+                  type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Upload a file.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Upload new file.
+      tags:
+      - files
+      x-authz-scope: streams.files.create
+  /{tenantId}/streams/v3beta1/files/{fileId}:
     delete:
       deprecated: false
-      operationId: deleteEntitlements
+      operationId: deleteFile
       parameters:
       - description: Tenant ID
         in: path
@@ -1934,81 +1978,71 @@ paths:
         required: true
         schema:
           type: string
-      - description: App Client ID
+      - description: File ID
         in: path
-        name: appClientId
+        name: fileId
         required: true
         schema:
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                type: string
-              type: array
-        description: Request JSON
-        required: true
       responses:
         "204":
           content: {}
-          description: The entitlement was deleted successfully
+          description: File deleted successfully
         "400":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The request isn't well-formed or is incorrect.
         "401":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The user isn?t authenticated.
         "403":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The operation isn?t authorized.
         "404":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The resource wasn?t found.
         "409":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: There is a conflict with the existing state of your resource.
         "415":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The media type isn't supported.
         "422":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: The provided fields aren't valid
         "500":
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
-      summary: Delete known entitlements
+      summary: Delete file.
       tags:
-      - entitlements
-      x-authz-scope: streams.entitlements.delete
-      x-internal: "true"
+      - files
+      x-authz-scope: streams.files.delete
     get:
       deprecated: false
-      operationId: getEntitlements
+      operationId: getFileMetadata
       parameters:
       - description: Tenant ID
         in: path
@@ -2016,9 +2050,9 @@ paths:
         required: true
         schema:
           type: string
-      - description: App Client ID
+      - description: File ID
         in: path
-        name: appClientId
+        name: fileId
         required: true
         schema:
           type: string
@@ -2027,97 +2061,8 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/EntitlementResponse'
-                type: array
-          description: Returns list of entitlement task with latest status
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Get known entitlements
-      tags:
-      - entitlements
-      x-authz-scope: streams.entitlements.read
-      x-internal: "true"
-    put:
-      deprecated: false
-      operationId: setEntitlements
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: App Client ID
-        in: path
-        name: appClientId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                $ref: '#/components/schemas/EntitlementRequest'
-              type: array
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/EntitlementResponse'
-                type: array
-          description: Returns list of entitlement task with latest status
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Returns files metadata.
         "400":
           content:
             application/json:
@@ -3182,7 +3127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadFile'
+                $ref: '#/components/schemas/UploadFileResponse'
           description: Upload a file.
         "400":
           content:
@@ -3331,7 +3276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UploadFile'
+                $ref: '#/components/schemas/UploadFileResponse'
           description: Returns files metadata.
         "400":
           content:
@@ -3475,6 +3420,1360 @@ paths:
       tags:
       - lookup
       x-authz-scope: streams.lookups.read
+  /{tenantId}/streams/v3beta1/lookups/files:
+    get:
+      deprecated: false
+      operationId: getLookupFilesMetadata
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilesMetaDataResponse'
+          description: Returns lookups/files metadata.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns lookup files metadata.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.read
+    post:
+      deprecated: false
+      operationId: uploadLookupFile
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  description: Upload file
+                  format: binary
+                  type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Upload a lookup file.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Upload new lookup file.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.create
+  /{tenantId}/streams/v3beta1/lookups/files/{fileId}:
+    delete:
+      deprecated: false
+      operationId: deleteLookupFile
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: File deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Delete lookup file.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.delete
+    get:
+      deprecated: false
+      operationId: getLookupFileMetadata
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Returns lookup file metadata.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get lookup file metadata.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.read
+  /{tenantId}/streams/v3beta1/pipelines:
+    get:
+      deprecated: false
+      operationId: listPipelines
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: offset
+        in: query
+        name: offset
+        schema:
+          format: int32
+          type: integer
+      - description: pageSize
+        in: query
+        name: pageSize
+        schema:
+          format: int32
+          type: integer
+      - description: sortField
+        in: query
+        name: sortField
+        schema:
+          type: string
+      - description: sortDir
+        in: query
+        name: sortDir
+        schema:
+          type: string
+      - description: activated
+        in: query
+        name: activated
+        schema:
+          type: boolean
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
+      - description: name
+        in: query
+        name: name
+        schema:
+          type: string
+      - description: includeData
+        in: query
+        name: includeData
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponseOfPipelineResponse'
+          description: Returns a list of pipelines.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns all pipelines.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.read
+    post:
+      deprecated: false
+      operationId: createPipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: The pipeline was created successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Creates a pipeline.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.create
+  /{tenantId}/streams/v3beta1/pipelines/{id}:
+    delete:
+      deprecated: false
+      operationId: deletePipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: The pipeline was deleted successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Removes a pipeline.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.delete
+    get:
+      deprecated: false
+      operationId: getPipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: version
+        in: query
+        name: version
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: Returns the pipeline with the specified id.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns an individual pipeline by version.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.read
+    patch:
+      deprecated: false
+      operationId: patchPipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelinePatchRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: The pipeline was modified successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Patches an existing pipeline.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.update
+    put:
+      deprecated: false
+      operationId: updatePipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineResponse'
+          description: The pipeline was updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Updates an existing pipeline.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.update
+  /{tenantId}/streams/v3beta1/pipelines/{id}/activate:
+    post:
+      deprecated: false
+      operationId: activatePipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivatePipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: The pipeline was activated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Activates an existing pipeline.
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.activate
+  /{tenantId}/streams/v3beta1/pipelines/{id}/deactivate:
+    post:
+      deprecated: false
+      operationId: deactivatePipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeactivatePipelineRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+          description: The pipeline was deactivated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Deactivates an existing pipeline.
+      tags:
+      - files
+      x-authz-scope: streams.files.read
+  /{tenantId}/streams/v3beta1/lookups/{connectionId}:
+    get:
+      deprecated: false
+      operationId: getLookupTable
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Connection ID
+        in: path
+        name: connectionId
+        required: true
+        schema:
+          type: string
+      - description: size
+        in: query
+        name: size
+        required: true
+        schema:
+          format: int32
+          type: integer
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LookupTableResponse'
+          description: Returns lookup table results.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns lookup table results.
+      tags:
+      - lookup
+      x-authz-scope: streams.lookups.read
+  /{tenantId}/streams/v3beta1/lookups/files:
+    get:
+      deprecated: false
+      operationId: getLookupFilesMetadata
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilesMetaDataResponse'
+          description: Returns lookups/files metadata.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Returns lookup files metadata.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.read
+    post:
+      deprecated: false
+      operationId: uploadLookupFile
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  description: Upload file
+                  format: binary
+                  type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Upload a lookup file.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Upload new lookup file.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.create
+  /{tenantId}/streams/v3beta1/lookups/files/{fileId}:
+    delete:
+      deprecated: false
+      operationId: deleteLookupFile
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: File deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Delete lookup file.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.delete
+    get:
+      deprecated: false
+      operationId: getLookupFileMetadata
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadFileResponse'
+          description: Returns lookup file metadata.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get lookup file metadata.
+      tags:
+      - lookups/files
+      x-authz-scope: streams.files.read
   /{tenantId}/streams/v3beta1/pipelines:
     get:
       deprecated: false
@@ -5257,540 +6556,6 @@ paths:
       tags:
       - preview
       x-authz-scope: streams.pipelines.preview
-  /{tenantId}/streams/v3beta1/releaseInfo:
-    get:
-      deprecated: false
-      operationId: releaseInfo
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                additionalProperties:
-                  type: string
-                type: object
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Provides commit sha for release
-      tags:
-      - info
-      x-hidden: "true"
-  /{tenantId}/streams/v3beta1/rules:
-    get:
-      deprecated: false
-      operationId: listRulesPackages
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: sortField
-        in: query
-        name: sortField
-        schema:
-          type: string
-      - description: sortDir
-        in: query
-        name: sortDir
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfRulesResponse'
-          description: Returns a list of rules packages.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns all rules packages.
-      tags:
-      - rules
-      x-authz-scope: streams.rules.read
-      x-internal: "true"
-    post:
-      deprecated: false
-      operationId: createRulesPackage
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RulesRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RulesResponse'
-          description: The rules package was created successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Creates a new RulesPackage
-      tags:
-      - rules
-      x-authz-scope: streams.rules.create
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/rules/{externalId}:
-    delete:
-      deprecated: false
-      operationId: deleteRulesPackage
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Rules Package ID
-        in: path
-        name: externalId
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          content: {}
-          description: The rules package was deleted successfully.
-        "400":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete a rules package with a specific id
-      tags:
-      - rules
-      x-authz-scope: streams.rules.delete
-      x-internal: "true"
-    get:
-      deprecated: false
-      operationId: getRulesPackageById
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: RulesPackage ID
-        in: path
-        name: externalId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RulesResponse'
-          description: Returns the rules packages with the specified id.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns the rules package with specific id
-      tags:
-      - rules
-      x-authz-scope: streams.rules.read
-      x-internal: "true"
-    put:
-      deprecated: false
-      operationId: updateRulesPackageById
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: RulesPackage ID
-        in: path
-        name: externalId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RulesRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RulesResponse'
-          description: The rules package was updated successfully
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Updates the rules package with specific id
-      tags:
-      - rules
-      x-authz-scope: streams.rules.update
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/rules/kinds:
-    get:
-      deprecated: false
-      operationId: listRulesKinds
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfRulesKind'
-          description: Returns a list of rules kinds.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns all rules kinds.
-      tags:
-      - rules
-      x-authz-scope: streams.rules.read
-      x-internal: "true"
   /{tenantId}/streams/v3beta1/templates:
     get:
       deprecated: false
@@ -6281,467 +7046,6 @@ paths:
           description: An internal service error has occurred.
       summary: Updates an existing template.
       tags:
-      - templates
-      x-authz-scope: streams.templates.update
-  /system/streams/v3beta1/plugins:
-    get:
-      deprecated: false
-      operationId: getPlugins
-      parameters:
-      - description: offset
-        in: query
-        name: offset
-        schema:
-          format: int32
-          type: integer
-      - description: pageSize
-        in: query
-        name: pageSize
-        schema:
-          format: int32
-          type: integer
-      - description: sortField
-        in: query
-        name: sortField
-        schema:
-          type: string
-      - description: sortDir
-        in: query
-        name: sortDir
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfPlugin'
-          description: Returns all the plugins.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns all the plugins that are available for all tenants.
-      tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.read
-    post:
-      deprecated: false
-      operationId: registerPlugin
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PluginRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Plugin'
-          description: The plugin was registered successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Register a new plugin that's available for all tenants.
-      tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.create
-  /system/streams/v3beta1/plugins/{pluginId}:
-    delete:
-      deprecated: false
-      operationId: deletePlugin
-      parameters:
-      - description: Plugin ID
-        in: path
-        name: pluginId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                type: string
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete an admin plugin
-      tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.delete
-    patch:
-      deprecated: false
-      operationId: patchPlugin
-      parameters:
-      - description: Plugin ID
-        in: path
-        name: pluginId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PluginPatchRequest'
-        description: PluginRequest JSON
-        required: false
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Plugin'
-          description: The plugin was modified successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Patch an existing admin plugin.
-      tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.update
-    put:
-      deprecated: false
-      operationId: updatePlugin
-      parameters:
-      - description: Plugin ID
-        in: path
-        name: pluginId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PluginRequest'
-        description: PluginRequest JSON
-        required: false
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Plugin'
-          description: The plugin was updated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Update admin plugin info.
-      tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.update
-  /system/streams/v3beta1/plugins/{pluginId}/upload:
-    post:
-      deprecated: false
-      operationId: uploadPlugin
-      parameters:
-      - description: Plugin ID
-        in: path
-        name: pluginId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                pluginJar:
-                  description: Plugin JAR
-                  format: binary
-                  type: string
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PluginResponse'
-          description: The plugin was uploaded successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Upload a new plugin that's available for all tenants.
-      tags:
       - apiv-3-beta-1-admin-controller
       x-admin: "true"
       x-authz-scope: streams.plugins.create
@@ -6749,18 +7053,20 @@ paths:
 servers:
 - url: /
 tags:
-- description: V3Beta1 Connectors and Connections Endpoints
-  name: connectors
 - description: V3Beta1 Release Info API Endpoints
   name: info
-- description: V3Beta1 Template API Endpoints
-  name: templates
 - description: V3Beta1 Collect Job Endpoints
   name: collectJobs
 - description: Entitlements API Endpoints
   name: entitlements
 - description: Files API Endpoints
   name: files
+- description: V3Beta1 Connectors and Connections Endpoints
+  name: connectors
+- description: Lookup Files API Endpoints
+  name: lookups/files
+- description: V3Beta1 Template API Endpoints
+  name: templates
 - description: Lookups API Endpoints
   name: lookup
 - description: Services Endpoint
@@ -6774,4 +7080,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit e356ae94d40158658c06a523a8a8d24cef4c26db path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: streams/v3beta1/openapi.yaml

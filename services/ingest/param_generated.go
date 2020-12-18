@@ -40,3 +40,85 @@ func (q ListCollectorTokensQueryParams) SetOffset(v int64) ListCollectorTokensQu
 	q.Offset = &v
 	return q
 }
+
+// PostCollectorRawQueryParams represents valid query parameters for the PostCollectorRaw operation
+// For convenience PostCollectorRawQueryParams can be formed in a single statement, for example:
+//     `v := PostCollectorRawQueryParams{}.SetHost(...).SetIndex(...).SetSource(...).SetSourcetype(...).SetTime(...)`
+type PostCollectorRawQueryParams struct {
+	// Host : Sets a default host field value for all events in the request.
+	Host string `key:"host"`
+	// Index : Sets a default index field value for all events in the request.
+	Index string `key:"index"`
+	// Source : Sets a default source field value for all events in the request.
+	Source string `key:"source"`
+	// Sourcetype : Sets a default sourcetype field value for all events in the request.
+	Sourcetype string `key:"sourcetype"`
+	// Time : Sets a default time field value for all events in the request.
+	Time string `key:"time"`
+}
+
+func (q PostCollectorRawQueryParams) SetHost(v string) PostCollectorRawQueryParams {
+	q.Host = v
+	return q
+}
+
+func (q PostCollectorRawQueryParams) SetIndex(v string) PostCollectorRawQueryParams {
+	q.Index = v
+	return q
+}
+
+func (q PostCollectorRawQueryParams) SetSource(v string) PostCollectorRawQueryParams {
+	q.Source = v
+	return q
+}
+
+func (q PostCollectorRawQueryParams) SetSourcetype(v string) PostCollectorRawQueryParams {
+	q.Sourcetype = v
+	return q
+}
+
+func (q PostCollectorRawQueryParams) SetTime(v string) PostCollectorRawQueryParams {
+	q.Time = v
+	return q
+}
+
+// PostCollectorRawV1QueryParams represents valid query parameters for the PostCollectorRawV1 operation
+// For convenience PostCollectorRawV1QueryParams can be formed in a single statement, for example:
+//     `v := PostCollectorRawV1QueryParams{}.SetHost(...).SetIndex(...).SetSource(...).SetSourcetype(...).SetTime(...)`
+type PostCollectorRawV1QueryParams struct {
+	// Host : Sets a default host field value for all events in the request.
+	Host string `key:"host"`
+	// Index : Sets a default index field value for all events in the request.
+	Index string `key:"index"`
+	// Source : Sets a default source field value for all events in the request.
+	Source string `key:"source"`
+	// Sourcetype : Sets a default sourcetype field value for all events in the request.
+	Sourcetype string `key:"sourcetype"`
+	// Time : Sets a default time field value for all events in the request.
+	Time string `key:"time"`
+}
+
+func (q PostCollectorRawV1QueryParams) SetHost(v string) PostCollectorRawV1QueryParams {
+	q.Host = v
+	return q
+}
+
+func (q PostCollectorRawV1QueryParams) SetIndex(v string) PostCollectorRawV1QueryParams {
+	q.Index = v
+	return q
+}
+
+func (q PostCollectorRawV1QueryParams) SetSource(v string) PostCollectorRawV1QueryParams {
+	q.Source = v
+	return q
+}
+
+func (q PostCollectorRawV1QueryParams) SetSourcetype(v string) PostCollectorRawV1QueryParams {
+	q.Sourcetype = v
+	return q
+}
+
+func (q PostCollectorRawV1QueryParams) SetTime(v string) PostCollectorRawV1QueryParams {
+	q.Time = v
+	return q
+}

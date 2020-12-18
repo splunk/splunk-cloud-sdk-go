@@ -23,11 +23,6 @@
 
 package provisioner
 
-type CreateProvisionJobBody struct {
-	Apps   []string `json:"apps,omitempty"`
-	Tenant *string  `json:"tenant,omitempty"`
-}
-
 type Error struct {
 	// Service error code
 	Code string `json:"code"`
@@ -79,36 +74,6 @@ type InviteInfoErrorsItems struct {
 }
 
 type Invites []InviteInfo
-
-type ProvisionJobInfo struct {
-	Apps      []string               `json:"apps"`
-	CreatedAt string                 `json:"createdAt"`
-	CreatedBy string                 `json:"createdBy"`
-	Errors    ProvisionJobInfoErrors `json:"errors"`
-	JobID     string                 `json:"jobID"`
-	Status    ProvisionJobInfoStatus `json:"status"`
-	Tenant    string                 `json:"tenant"`
-}
-
-type ProvisionJobInfoStatus string
-
-// List of ProvisionJobInfoStatus
-const (
-	ProvisionJobInfoStatusCreated   ProvisionJobInfoStatus = "created"
-	ProvisionJobInfoStatusRunning   ProvisionJobInfoStatus = "running"
-	ProvisionJobInfoStatusCompleted ProvisionJobInfoStatus = "completed"
-)
-
-type ProvisionJobInfoErrors []ProvisionJobInfoErrorsItems
-
-type ProvisionJobInfoErrorsItems struct {
-	Code     string  `json:"code"`
-	JobStage string  `json:"job_stage"`
-	Message  string  `json:"message"`
-	App      *string `json:"app,omitempty"`
-}
-
-type ProvisionJobs []ProvisionJobInfo
 
 type TenantInfo struct {
 	CreatedAt string `json:"createdAt"`

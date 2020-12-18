@@ -94,75 +94,6 @@ func Compile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateCollectJob Create a new collect job.
-func CreateCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var connectionId string
-	err = flags.ParseFlag(cmd.Flags(), "connection-id", &connectionId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "connection-id": ` + err.Error())
-	}
-	var connectorId string
-	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "connector-id": ` + err.Error())
-	}
-	var cron string
-	err = flags.ParseFlag(cmd.Flags(), "cron", &cron)
-	if err != nil {
-		return fmt.Errorf(`error parsing "cron": ` + err.Error())
-	}
-	var description string
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var parameters map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "parameters", &parameters)
-	if err != nil {
-		return fmt.Errorf(`error parsing "parameters": ` + err.Error())
-	}
-	var workers int32
-	err = flags.ParseFlag(cmd.Flags(), "workers", &workers)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workers": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.CollectJobRequest{
-
-		ConnectionId: connectionId,
-		ConnectorId:  connectorId,
-		Description:  description,
-		Name:         name,
-		Parameters:   parameters,
-		Schedule: model.CollectJobSchedule{
-			Cron: cron,
-		},
-		Workers: workers,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.CreateCollectJob(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // CreateConnection Create a new DSP connection.
 func CreateConnection(cmd *cobra.Command, args []string) error {
 
@@ -300,62 +231,6 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateRulesPackage Creates a new RulesPackage
-func CreateRulesPackage(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var externalId string
-	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var rulesDescriptionDefault string
-	rulesDescription := &rulesDescriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "rules-description", &rulesDescription)
-	if err != nil {
-		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
-	}
-	var sourcetypes []model.MapOfstringAndRulesPackageSourcetypes
-	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())
-	}
-	var version string
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.RulesRequest{
-
-		ExternalId:       externalId,
-		Name:             name,
-		RulesDescription: rulesDescription,
-		Sourcetypes:      sourcetypes,
-		Version:          version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.CreateRulesPackage(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // CreateTemplate Creates a template for a tenant.
 func CreateTemplate(cmd *cobra.Command, args []string) error {
 
@@ -458,32 +333,6 @@ func Decompile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteCollectJob Delete a collect job.
-func DeleteCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.StreamsService.DeleteCollectJob(id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // DeleteConnection Delete all versions of a connection by its id.
 func DeleteConnection(cmd *cobra.Command, args []string) error {
 
@@ -536,37 +385,6 @@ func DeleteDataStream(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteEntitlements Delete known entitlements
-func DeleteEntitlements(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var appClientId string
-	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
-	}
-	var body []string
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
-	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.StreamsService.DeleteEntitlements(appClientId, body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // DeleteFile Delete file.
 func DeleteFile(cmd *cobra.Command, args []string) error {
 
@@ -593,6 +411,32 @@ func DeleteFile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeleteLookupFile Delete lookup file.
+func DeleteLookupFile(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var fileId string
+	err = flags.ParseFlag(cmd.Flags(), "file-id", &fileId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.DeleteLookupFile(fileId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeletePipeline Removes a pipeline.
 func DeletePipeline(cmd *cobra.Command, args []string) error {
 
@@ -612,59 +456,6 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	err = client.StreamsService.DeletePipeline(id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeletePlugin Delete an admin plugin
-func DeletePlugin(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var pluginId string
-	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.DeletePlugin(pluginId)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// DeleteRulesPackage Delete a rules package with a specific id
-func DeleteRulesPackage(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var externalId string
-	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.StreamsService.DeleteRulesPackage(externalId)
 	if err != nil {
 		return err
 	}
@@ -717,66 +508,6 @@ func DescribeDataStream(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.DescribeDataStream(id)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetCollectJob Get a collect job.
-func GetCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var version string
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.GetCollectJobQueryParams{}
-	generated_query.Version = version
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.GetCollectJob(id, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetEntitlements Get known entitlements
-func GetEntitlements(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var appClientId string
-	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.GetEntitlements(appClientId)
 	if err != nil {
 		return err
 	}
@@ -856,6 +587,51 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := GetInputSchemaOverride(nodeUuid, targetPortName, inputDatafile)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetLookupFileMetadata Get lookup file metadata.
+func GetLookupFileMetadata(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var fileId string
+	err = flags.ParseFlag(cmd.Flags(), "file-id", &fileId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "file-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.GetLookupFileMetadata(fileId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetLookupFilesMetadata Returns lookup files metadata.
+func GetLookupFilesMetadata(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.GetLookupFilesMetadata()
 	if err != nil {
 		return err
 	}
@@ -1069,56 +845,6 @@ func GetPipelinesStatus(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetPlugins Returns all the plugins that are available for all tenants.
-func GetPlugins(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var pageSizeDefault int32
-	pageSize := &pageSizeDefault
-	err = flags.ParseFlag(cmd.Flags(), "page-size", &pageSize)
-	if err != nil {
-		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
-	}
-	var sortDir string
-	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
-	}
-	var sortField string
-	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.GetPluginsQueryParams{}
-	generated_query.Offset = offset
-	generated_query.PageSize = pageSize
-	generated_query.SortDir = sortDir
-	generated_query.SortField = sortField
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.GetPlugins(&generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // GetPreviewData Returns the preview data for a session.
 func GetPreviewData(cmd *cobra.Command, args []string) error {
 
@@ -1227,32 +953,6 @@ func GetRegistry(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRulesPackageById Returns the rules package with specific id
-func GetRulesPackageById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var externalId string
-	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.GetRulesPackageById(externalId)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // GetTemplate Returns an individual template by version.
 func GetTemplate(cmd *cobra.Command, args []string) error {
 
@@ -1281,25 +981,6 @@ func GetTemplate(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.StreamsService.GetTemplate(templateId, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListCollectJobs Get all collect jobs.
-func ListCollectJobs(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.ListCollectJobs()
 	if err != nil {
 		return err
 	}
@@ -1535,60 +1216,6 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListRulesKinds Returns all rules kinds.
-func ListRulesKinds(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.ListRulesKinds()
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListRulesPackages Returns all rules packages.
-func ListRulesPackages(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var sortDir string
-	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
-	}
-	var sortField string
-	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListRulesPackagesQueryParams{}
-	generated_query.SortDir = sortDir
-	generated_query.SortField = sortField
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.ListRulesPackages(&generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // ListTemplates Returns a list of all templates.
 func ListTemplates(cmd *cobra.Command, args []string) error {
 
@@ -1684,51 +1311,6 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := PatchPipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// PatchPlugin Patch an existing admin plugin.
-func PatchPlugin(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var pluginId string
-	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PluginPatchRequest{
-
-		Description: description,
-		Name:        name,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.PatchPlugin(pluginId, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1840,132 +1422,6 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RegisterPlugin Register a new plugin that's available for all tenants.
-func RegisterPlugin(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var description string
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PluginRequest{
-
-		Description: description,
-		Name:        name,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.RegisterPlugin(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ReleaseInfo Provides commit sha for release
-func ReleaseInfo(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.ReleaseInfo()
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// SetEntitlements Create or update entitlements
-func SetEntitlements(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var appClientId string
-	err = flags.ParseFlag(cmd.Flags(), "app-client-id", &appClientId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "app-client-id": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var value map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "value", &value)
-	if err != nil {
-		return fmt.Errorf(`error parsing "value": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := []model.EntitlementRequest{
-		{
-			Name:  name,
-			Value: value,
-		},
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.SetEntitlements(appClientId, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// StartCollectJob Start a collect job.
-func StartCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.StartCollectJob(id)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // StartPreview Creates a preview session for a pipeline.
 func StartPreview(cmd *cobra.Command, args []string) error {
 
@@ -2008,32 +1464,6 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// StopCollectJob Stop a collect job.
-func StopCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.StopCollectJob(id)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // StopPreview Stops a preview session.
 func StopPreview(cmd *cobra.Command, args []string) error {
 
@@ -2057,71 +1487,6 @@ func StopPreview(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return nil
-}
-
-// UpdateCollectJob Patches an existing collect job.
-func UpdateCollectJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var cron string
-	err = flags.ParseFlag(cmd.Flags(), "cron", &cron)
-	if err != nil {
-		return fmt.Errorf(`error parsing "cron": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var parameters map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "parameters", &parameters)
-	if err != nil {
-		return fmt.Errorf(`error parsing "parameters": ` + err.Error())
-	}
-	var workersDefault int32
-	workers := &workersDefault
-	err = flags.ParseFlag(cmd.Flags(), "workers", &workers)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workers": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.CollectJobPatchRequest{
-
-		Description: description,
-		Name:        name,
-		Parameters:  parameters,
-		Schedule: &model.CollectJobSchedule{
-			Cron: cron,
-		},
-		Workers: workers,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.UpdateCollectJob(id, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -2273,105 +1638,6 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdatePlugin Update admin plugin info.
-func UpdatePlugin(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var description string
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var pluginId string
-	err = flags.ParseFlag(cmd.Flags(), "plugin-id", &pluginId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "plugin-id": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.PluginRequest{
-
-		Description: description,
-		Name:        name,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.UpdatePlugin(pluginId, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateRulesPackageById Updates the rules package with specific id
-func UpdateRulesPackageById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var externalId string
-	err = flags.ParseFlag(cmd.Flags(), "external-id", &externalId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-id": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var rulesDescriptionDefault string
-	rulesDescription := &rulesDescriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "rules-description", &rulesDescription)
-	if err != nil {
-		return fmt.Errorf(`error parsing "rules-description": ` + err.Error())
-	}
-	var sourcetypes []model.MapOfstringAndRulesPackageSourcetypes
-	err = flags.ParseFlag(cmd.Flags(), "sourcetypes", &sourcetypes)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetypes": ` + err.Error())
-	}
-	var version string
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.RulesRequest{
-
-		ExternalId:       externalId,
-		Name:             name,
-		RulesDescription: rulesDescription,
-		Sourcetypes:      sourcetypes,
-		Version:          version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.UpdateRulesPackageById(externalId, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // UpdateTemplate Patches an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
@@ -2435,11 +1701,6 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 	}
 	jsonx.Pprint(cmd, resp)
 	return nil
-}
-
-// UploadPlugin Upload a new plugin that's available for all tenants.
-func UploadPlugin(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
 }
 
 // ValidatePipeline Verifies whether the Streams JSON is valid.

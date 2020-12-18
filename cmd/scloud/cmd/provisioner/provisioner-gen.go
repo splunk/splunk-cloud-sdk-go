@@ -15,13 +15,6 @@ var createInviteCmd = &cobra.Command{
 	RunE:  impl.CreateInvite,
 }
 
-// createProvisionJob -- Creates a new job that provisions a new tenant and subscribes apps to the tenant.
-var createProvisionJobCmd = &cobra.Command{
-	Use:   "create-provision-job",
-	Short: "Creates a new job that provisions a new tenant and subscribes apps to the tenant.",
-	RunE:  impl.CreateProvisionJob,
-}
-
 // deleteInvite -- Removes an invitation in the given tenant.
 var deleteInviteCmd = &cobra.Command{
 	Use:   "delete-invite",
@@ -36,13 +29,6 @@ var getInviteCmd = &cobra.Command{
 	RunE:  impl.GetInvite,
 }
 
-// getProvisionJob -- Returns details of a specific provision job.
-var getProvisionJobCmd = &cobra.Command{
-	Use:   "get-provision-job",
-	Short: "Returns details of a specific provision job.",
-	RunE:  impl.GetProvisionJob,
-}
-
 // getTenant -- Returns a specific tenant.
 var getTenantCmd = &cobra.Command{
 	Use:   "get-tenant",
@@ -55,13 +41,6 @@ var listInvitesCmd = &cobra.Command{
 	Use:   "list-invites",
 	Short: "Returns a list of invitations in a given tenant.",
 	RunE:  impl.ListInvites,
-}
-
-// listProvisionJobs -- Returns a list of all provision jobs created by the user.
-var listProvisionJobsCmd = &cobra.Command{
-	Use:   "list-provision-jobs",
-	Short: "Returns a list of all provision jobs created by the user.",
-	RunE:  impl.ListProvisionJobs,
 }
 
 // listTenants -- Returns all tenants that the user can read.
@@ -91,14 +70,6 @@ func init() {
 	var createInviteGroups []string
 	createInviteCmd.Flags().StringSliceVar(&createInviteGroups, "groups", nil, "")
 
-	provisionerCmd.AddCommand(createProvisionJobCmd)
-
-	var createProvisionJobApps []string
-	createProvisionJobCmd.Flags().StringSliceVar(&createProvisionJobApps, "apps", nil, "")
-
-	var createProvisionJobTenant string
-	createProvisionJobCmd.Flags().StringVar(&createProvisionJobTenant, "tenant", "", "")
-
 	provisionerCmd.AddCommand(deleteInviteCmd)
 
 	var deleteInviteInviteId string
@@ -111,12 +82,6 @@ func init() {
 	getInviteCmd.Flags().StringVar(&getInviteInviteId, "invite-id", "", "This is a required parameter. ")
 	getInviteCmd.MarkFlagRequired("invite-id")
 
-	provisionerCmd.AddCommand(getProvisionJobCmd)
-
-	var getProvisionJobJobId string
-	getProvisionJobCmd.Flags().StringVar(&getProvisionJobJobId, "job-id", "", "This is a required parameter. ")
-	getProvisionJobCmd.MarkFlagRequired("job-id")
-
 	provisionerCmd.AddCommand(getTenantCmd)
 
 	var getTenantTenantName string
@@ -124,8 +89,6 @@ func init() {
 	getTenantCmd.MarkFlagRequired("tenant-name")
 
 	provisionerCmd.AddCommand(listInvitesCmd)
-
-	provisionerCmd.AddCommand(listProvisionJobsCmd)
 
 	provisionerCmd.AddCommand(listTenantsCmd)
 

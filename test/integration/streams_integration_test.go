@@ -97,7 +97,7 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	assert.NotEmpty(t, op)
 	assert.NotEmpty(t, resolvedId)
 	assert.Equal(t, "read_splunk_firehose", op)
-	assert.Equal(t, "read_splunk_firehose:string", *resolvedId)
+	assert.Equal(t, "read_splunk_firehose", *resolvedId)
 
 	op = pipeline.Data.Nodes[1].Op
 	assert.NotEmpty(t, op)

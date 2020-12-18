@@ -156,7 +156,7 @@ func TestSubscriptions(t *testing.T) {
 	require.NotEmpty(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
-	require.Equal(t, 404, httpErr.HTTPStatusCode)
+	require.Equal(t, 503, httpErr.HTTPStatusCode)
 
 	// List all subscriptions
 	// create the 2nd subscription

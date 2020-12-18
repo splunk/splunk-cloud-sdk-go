@@ -69,35 +69,6 @@ func (s *Service) CreateInvite(inviteBody InviteBody, resp ...*http.Response) (*
 }
 
 /*
-	CreateProvisionJob - provisioner service endpoint
-	Creates a new job that provisions a new tenant and subscribes apps to the tenant.
-	Parameters:
-		createProvisionJobBody
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) CreateProvisionJob(createProvisionJobBody CreateProvisionJobBody, resp ...*http.Response) (*ProvisionJobInfo, error) {
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/provisioner/v1beta1/jobs/tenants/provision`, nil)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: createProvisionJobBody})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb ProvisionJobInfo
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
 	DeleteInvite - provisioner service endpoint
 	Removes an invitation in the given tenant.
 	Parameters:
@@ -161,40 +132,6 @@ func (s *Service) GetInvite(inviteId string, resp ...*http.Response) (*InviteInf
 }
 
 /*
-	GetProvisionJob - provisioner service endpoint
-	Returns details of a specific provision job.
-	Parameters:
-		jobId
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) GetProvisionJob(jobId string, resp ...*http.Response) (*ProvisionJobInfo, error) {
-	pp := struct {
-		JobId string
-	}{
-		JobId: jobId,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/provisioner/v1beta1/jobs/tenants/provision/{{.JobId}}`, pp)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Get(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb ProvisionJobInfo
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
 	GetTenant - provisioner service endpoint
 	Returns a specific tenant.
 	Parameters:
@@ -252,34 +189,6 @@ func (s *Service) ListInvites(resp ...*http.Response) (*Invites, error) {
 		return nil, err
 	}
 	var rb Invites
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
-	ListProvisionJobs - provisioner service endpoint
-	Returns a list of all provision jobs created by the user.
-	Parameters:
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) ListProvisionJobs(resp ...*http.Response) (*ProvisionJobs, error) {
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/system/provisioner/v1beta1/jobs/tenants/provision`, nil)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Get(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb ProvisionJobs
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

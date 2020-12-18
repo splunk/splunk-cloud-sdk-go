@@ -50,6 +50,13 @@ var createGroupCmd = &cobra.Command{
 	RunE:  impl.CreateGroup,
 }
 
+// createPrincipal -- Create a new principal
+var createPrincipalCmd = &cobra.Command{
+	Use:   "create-principal",
+	Short: "Create a new principal",
+	RunE:  impl.CreatePrincipal,
+}
+
 // createRole -- Creates a new authorization role in a given tenant.
 var createRoleCmd = &cobra.Command{
 	Use:   "create-role",
@@ -106,10 +113,11 @@ var getMemberCmd = &cobra.Command{
 	RunE:  impl.GetMember,
 }
 
-// getPrincipal -- Returns the details of a principal, including its tenant membership.
+// getPrincipal -- Returns the details of a principal, including its tenant membership and any relevant profile information.
+
 var getPrincipalCmd = &cobra.Command{
 	Use:   "get-principal",
-	Short: "Returns the details of a principal, including its tenant membership.",
+	Short: "Returns the details of a principal, including its tenant membership and any relevant profile information.",
 	RunE:  impl.GetPrincipal,
 }
 
@@ -193,6 +201,7 @@ var listMembersCmd = &cobra.Command{
 }
 
 // listPrincipals -- Returns the list of principals that the Identity service knows about.
+
 var listPrincipalsCmd = &cobra.Command{
 	Use:   "list-principals",
 	Short: "Returns the list of principals that the Identity service knows about.",
@@ -248,10 +257,11 @@ var removeRolePermissionCmd = &cobra.Command{
 	RunE:  impl.RemoveRolePermission,
 }
 
-// revokePrincipalAuthTokens -- Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+// revokePrincipalAuthTokens -- Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+
 var revokePrincipalAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-principal-auth-tokens",
-	Short: "Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password",
+	Short: "Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password",
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
@@ -326,9 +336,9 @@ func init() {
 
 	identityCmd.AddCommand(addRolePermissionCmd)
 
-	var addRolePermissionBody string
-	addRolePermissionCmd.Flags().StringVar(&addRolePermissionBody, "body", "", "The request body")
-	addRolePermissionCmd.MarkFlagRequired("body")
+	var addRolePermissionPermission string
+	addRolePermissionCmd.Flags().StringVar(&addRolePermissionPermission, "permission", "", "This is a required parameter. ")
+	addRolePermissionCmd.MarkFlagRequired("permission")
 
 	var addRolePermissionRole string
 	addRolePermissionCmd.Flags().StringVar(&addRolePermissionRole, "role", "", "This is a required parameter. The role name.")
@@ -339,6 +349,57 @@ func init() {
 	var createGroupName string
 	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter. ")
 	createGroupCmd.MarkFlagRequired("name")
+
+	identityCmd.AddCommand(createPrincipalCmd)
+
+	var createPrincipalEmail string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalEmail, "email", "", "This is a required parameter. ")
+	createPrincipalCmd.MarkFlagRequired("email")
+
+	var createPrincipalFirstName string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalFirstName, "first-name", "", "This is a required parameter. ")
+	createPrincipalCmd.MarkFlagRequired("first-name")
+
+	var createPrincipalKind string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalKind, "kind", "", "This is a required parameter.  can accept values user, service_account, service")
+	createPrincipalCmd.MarkFlagRequired("kind")
+
+	var createPrincipalLastName string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalLastName, "last-name", "", "This is a required parameter. ")
+	createPrincipalCmd.MarkFlagRequired("last-name")
+
+	var createPrincipalAlg string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalAlg, "alg", "", " can accept values ES256, ES384, ES512")
+
+	var createPrincipalCredentials string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalCredentials, "credentials", "", "List of credentials")
+
+	var createPrincipalCrv string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalCrv, "crv", "", "")
+
+	var createPrincipalD string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalD, "d", "", "")
+
+	var createPrincipalEnabled string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalEnabled, "enabled", "false", "")
+
+	var createPrincipalInviteId string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalInviteId, "invite-id", "", "The invite ID.")
+
+	var createPrincipalKid string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalKid, "kid", "", "")
+
+	var createPrincipalKty string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalKty, "kty", "", " can accept values EC")
+
+	var createPrincipalName string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalName, "name", "", "")
+
+	var createPrincipalX string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalX, "x", "", "")
+
+	var createPrincipalY string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalY, "y", "", "")
 
 	identityCmd.AddCommand(createRoleCmd)
 
@@ -444,16 +505,43 @@ func init() {
 	listGroupMembersCmd.Flags().StringVar(&listGroupMembersGroup, "group", "", "This is a required parameter. The group name.")
 	listGroupMembersCmd.MarkFlagRequired("group")
 
+	var listGroupMembersOrderby string
+	listGroupMembersCmd.Flags().StringVar(&listGroupMembersOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listGroupMembersPageSize int32
+	listGroupMembersCmd.Flags().Int32Var(&listGroupMembersPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listGroupMembersPageToken string
+	listGroupMembersCmd.Flags().StringVar(&listGroupMembersPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listGroupRolesCmd)
 
 	var listGroupRolesGroup string
 	listGroupRolesCmd.Flags().StringVar(&listGroupRolesGroup, "group", "", "This is a required parameter. The group name.")
 	listGroupRolesCmd.MarkFlagRequired("group")
 
+	var listGroupRolesOrderby string
+	listGroupRolesCmd.Flags().StringVar(&listGroupRolesOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listGroupRolesPageSize int32
+	listGroupRolesCmd.Flags().Int32Var(&listGroupRolesPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listGroupRolesPageToken string
+	listGroupRolesCmd.Flags().StringVar(&listGroupRolesPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listGroupsCmd)
 
 	var listGroupsAccess string
 	listGroupsCmd.Flags().StringVar(&listGroupsAccess, "access", "", "List only the groups with specified access permission.")
+
+	var listGroupsOrderby string
+	listGroupsCmd.Flags().StringVar(&listGroupsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listGroupsPageSize int32
+	listGroupsCmd.Flags().Int32Var(&listGroupsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listGroupsPageToken string
+	listGroupsCmd.Flags().StringVar(&listGroupsPageToken, "page-token", "", "The cursor to then next page.")
 
 	identityCmd.AddCommand(listMemberGroupsCmd)
 
@@ -461,11 +549,29 @@ func init() {
 	listMemberGroupsCmd.Flags().StringVar(&listMemberGroupsMember, "member", "", "This is a required parameter. The member name.")
 	listMemberGroupsCmd.MarkFlagRequired("member")
 
+	var listMemberGroupsOrderby string
+	listMemberGroupsCmd.Flags().StringVar(&listMemberGroupsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listMemberGroupsPageSize int32
+	listMemberGroupsCmd.Flags().Int32Var(&listMemberGroupsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listMemberGroupsPageToken string
+	listMemberGroupsCmd.Flags().StringVar(&listMemberGroupsPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listMemberPermissionsCmd)
 
 	var listMemberPermissionsMember string
 	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsMember, "member", "", "This is a required parameter. The member name.")
 	listMemberPermissionsCmd.MarkFlagRequired("member")
+
+	var listMemberPermissionsOrderby string
+	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listMemberPermissionsPageSize int32
+	listMemberPermissionsCmd.Flags().Int32Var(&listMemberPermissionsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listMemberPermissionsPageToken string
+	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsPageToken, "page-token", "", "The cursor to then next page.")
 
 	var listMemberPermissionsScopeFilter string
 	listMemberPermissionsCmd.Flags().StringVar(&listMemberPermissionsScopeFilter, "scope-filter", "", "List only the permissions matching the scope filter.")
@@ -476,9 +582,39 @@ func init() {
 	listMemberRolesCmd.Flags().StringVar(&listMemberRolesMember, "member", "", "This is a required parameter. The member name.")
 	listMemberRolesCmd.MarkFlagRequired("member")
 
+	var listMemberRolesOrderby string
+	listMemberRolesCmd.Flags().StringVar(&listMemberRolesOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listMemberRolesPageSize int32
+	listMemberRolesCmd.Flags().Int32Var(&listMemberRolesPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listMemberRolesPageToken string
+	listMemberRolesCmd.Flags().StringVar(&listMemberRolesPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listMembersCmd)
 
+	var listMembersKind string
+	listMembersCmd.Flags().StringVar(&listMembersKind, "kind", "", "Kind of member, one of: [user, service_account, service]")
+
+	var listMembersOrderby string
+	listMembersCmd.Flags().StringVar(&listMembersOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listMembersPageSize int32
+	listMembersCmd.Flags().Int32Var(&listMembersPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listMembersPageToken string
+	listMembersCmd.Flags().StringVar(&listMembersPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listPrincipalsCmd)
+
+	var listPrincipalsOrderby string
+	listPrincipalsCmd.Flags().StringVar(&listPrincipalsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listPrincipalsPageSize int32
+	listPrincipalsCmd.Flags().Int32Var(&listPrincipalsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listPrincipalsPageToken string
+	listPrincipalsCmd.Flags().StringVar(&listPrincipalsPageToken, "page-token", "", "The cursor to then next page.")
 
 	identityCmd.AddCommand(listRoleGroupsCmd)
 
@@ -486,13 +622,40 @@ func init() {
 	listRoleGroupsCmd.Flags().StringVar(&listRoleGroupsRole, "role", "", "This is a required parameter. The role name.")
 	listRoleGroupsCmd.MarkFlagRequired("role")
 
+	var listRoleGroupsOrderby string
+	listRoleGroupsCmd.Flags().StringVar(&listRoleGroupsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listRoleGroupsPageSize int32
+	listRoleGroupsCmd.Flags().Int32Var(&listRoleGroupsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listRoleGroupsPageToken string
+	listRoleGroupsCmd.Flags().StringVar(&listRoleGroupsPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listRolePermissionsCmd)
 
 	var listRolePermissionsRole string
 	listRolePermissionsCmd.Flags().StringVar(&listRolePermissionsRole, "role", "", "This is a required parameter. The role name.")
 	listRolePermissionsCmd.MarkFlagRequired("role")
 
+	var listRolePermissionsOrderby string
+	listRolePermissionsCmd.Flags().StringVar(&listRolePermissionsOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listRolePermissionsPageSize int32
+	listRolePermissionsCmd.Flags().Int32Var(&listRolePermissionsPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listRolePermissionsPageToken string
+	listRolePermissionsCmd.Flags().StringVar(&listRolePermissionsPageToken, "page-token", "", "The cursor to then next page.")
+
 	identityCmd.AddCommand(listRolesCmd)
+
+	var listRolesOrderby string
+	listRolesCmd.Flags().StringVar(&listRolesOrderby, "orderby", "", "The sorting order for returning list.")
+
+	var listRolesPageSize int32
+	listRolesCmd.Flags().Int32Var(&listRolesPageSize, "page-size", 0, "The maximize return items count of a list.")
+
+	var listRolesPageToken string
+	listRolesCmd.Flags().StringVar(&listRolesPageToken, "page-token", "", "The cursor to then next page.")
 
 	identityCmd.AddCommand(removeGroupMemberCmd)
 
