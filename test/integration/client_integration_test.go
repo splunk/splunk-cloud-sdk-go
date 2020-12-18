@@ -215,7 +215,7 @@ func TestRoundTripperWithIdentityClient(t *testing.T) {
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	_, err = identityClient.ValidateToken(&input)
 	assert.Equal(t, 4, len(LoggerOutput))
-	assert.Contains(t, LoggerOutput[1], fmt.Sprintf("GET /%s/identity/v2beta1/validate?include=principal%stenant HTTP/1.1", testutils.TestTenant, "%2C"))
+	assert.Contains(t, LoggerOutput[1], fmt.Sprintf("GET /%s/identity/v3/validate?include=principal%stenant HTTP/1.1", testutils.TestTenant, "%2C"))
 }
 
 func TestRoundTripperWithInvalidClient(t *testing.T) {

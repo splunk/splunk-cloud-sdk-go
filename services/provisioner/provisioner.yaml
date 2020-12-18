@@ -669,91 +669,6 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: The reason for the error
       x-authz-scope: identity.invites.write
-  /system/provisioner/v1beta1/jobs/tenants/provision:
-    get:
-      description: Returns a list of all provision jobs created by the user.
-      operationId: listProvisionJobs
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProvisionJobs'
-          description: The list of provision jobs was returned successfully.
-        "401":
-          description: The user isn't authenticated.
-        "429":
-          description: Too many requests were sent.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The reason for the error
-    parameters:
-    - $ref: '#/components/parameters/AuthorizationHeader'
-    post:
-      description: Creates a new job that provisions a new tenant and subscribes apps to the tenant.
-      operationId: createProvisionJob
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProvisionJobBody'
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProvisionJobInfo'
-          description: The job was created successfully.
-        "400":
-          description: The request isn't valid.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The operation isn't authorized.
-        "409":
-          description: The job already exists.
-        "422":
-          description: The provided fields aren't valid.
-        "429":
-          description: Too many requests were sent.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The reason for the error
-  /system/provisioner/v1beta1/jobs/tenants/provision/{jobId}:
-    get:
-      description: Returns details of a specific provision job.
-      operationId: getProvisionJob
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProvisionJobInfo'
-          description: The details of the provision job was returned successfully.
-        "401":
-          description: The user isn't authenticated.
-        "403":
-          description: The operation isn't authorized.
-        "404":
-          description: The resource wasn't found.
-        "429":
-          description: Too many requests were sent.
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The reason for the error
-    parameters:
-    - $ref: '#/components/parameters/AuthorizationHeader'
-    - $ref: '#/components/parameters/JobId'
   /system/provisioner/v1beta1/tenants:
     get:
       description: Returns all tenants that the user can read.
@@ -812,4 +727,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit e356ae94d40158658c06a523a8a8d24cef4c26db path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: provisioner/v1beta1/openapi.yaml

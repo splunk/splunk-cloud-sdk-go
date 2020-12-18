@@ -162,6 +162,66 @@ func (s *Service) ListCollectorTokens(query *ListCollectorTokensQueryParams, res
 }
 
 /*
+	PostCollectorRaw - Sends collector raw events.
+	Parameters:
+		body: The payload uses concatenated JSON format. See https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for more information.
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) PostCollectorRaw(body *string, query *PostCollectorRawQueryParams, resp ...*http.Response) (*HecResponse, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/ingest/v1beta2/collector/raw`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb HecResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	PostCollectorRawV1 - Sends collector raw events.
+	Parameters:
+		body: The payload uses concatenated JSON format. See https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for more information.
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) PostCollectorRawV1(body *string, query *PostCollectorRawV1QueryParams, resp ...*http.Response) (*HecResponse, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/ingest/v1beta2/collector/raw/1.0`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb HecResponse
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	PostCollectorTokens - Creates dsphec tokens.
 	Parameters:
 		hecTokenCreateRequest: The API request schema for the token.

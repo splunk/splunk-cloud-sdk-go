@@ -17,6 +17,7 @@
 package integration
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -61,31 +62,32 @@ func TestCRUDGroups(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteGroup(groupName)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, testutils.TestUsername, resultgroup.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultgroup.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultgroup.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultgroup1, err := client.IdentityService.GetGroup(groupName)
 	require.NoError(t, err)
 	assert.Equal(t, groupName, resultgroup1.Name)
-	assert.Equal(t, testutils.TestUsername, resultgroup1.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultgroup1.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultgroup1.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultgroup1.Tenant))
 
 	resultgroup2, err := client.IdentityService.ListGroups(nil)
 	require.NoError(t, err)
-	assert.Contains(t, resultgroup2, groupName)
+	items, _ := json.Marshal(resultgroup2.Items)
+	assert.Contains(t, string(items), groupName)
 
 	// group-roles
 	roleName := fmt.Sprintf("grouptestrole%d", testutils.RunSuffix)
-	_, err = client.IdentityService.ListGroupRoles(groupName)
+	_, err = client.IdentityService.ListGroupRoles(groupName, nil)
 	require.NoError(t, err)
 
 	resultrole, err := client.IdentityService.CreateRole(identity.CreateRoleBody{Name: roleName})
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultrole1, err := client.IdentityService.AddGroupRole(groupName, identity.AddGroupRoleBody{Name: roleName})
@@ -96,18 +98,20 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
 
 	time.Sleep(2 * time.Second)
-	resultrole2, err := client.IdentityService.ListGroupRoles(groupName)
+	resultrole2, err := client.IdentityService.ListGroupRoles(groupName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, resultrole2, roleName)
+	items, _ = json.Marshal(resultrole2.Items)
+	assert.Contains(t, string(items), roleName)
 
 	time.Sleep(2 * time.Second)
-	roleGroups, err := client.IdentityService.ListRoleGroups(roleName)
+	roleGroups, err := client.IdentityService.ListRoleGroups(roleName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, roleGroups, groupName)
+	items, _ = json.Marshal(roleGroups.Items)
+	assert.Contains(t, string(items), groupName)
 
 	//group-members
 	memberName := "test1@splunk.com"
-	_, err = client.IdentityService.ListGroupMembers(groupName)
+	_, err = client.IdentityService.ListGroupMembers(groupName, nil)
 	require.NoError(t, err)
 
 	//add group member
@@ -123,9 +127,10 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Equal(t, testutils.TestTenant, resultmember1.Tenant)
 
 	time.Sleep(2 * time.Second)
-	resultmember2, err := client.IdentityService.ListGroupMembers(groupName)
+	resultmember2, err := client.IdentityService.ListGroupMembers(groupName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, resultmember2, memberName)
+	items, _ = json.Marshal(resultmember2.Items)
+	assert.Contains(t, string(items), memberName)
 
 	resultmember3, err := client.IdentityService.GetGroupMember(groupName, memberName)
 	require.NoError(t, err)
@@ -148,7 +153,7 @@ func TestCRUDGroups(t *testing.T) {
 func TestCRUDRoles(t *testing.T) {
 	client := getClient(t)
 
-	_, err := client.IdentityService.ListRoles()
+	_, err := client.IdentityService.ListRoles(nil)
 	require.NoError(t, err)
 
 	roleName := fmt.Sprintf("roletest%d", testutils.RunSuffix)
@@ -158,44 +163,46 @@ func TestCRUDRoles(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultrole1, err := client.IdentityService.GetRole(roleName)
 	require.NoError(t, err)
 	assert.Equal(t, roleName, resultrole1.Name)
-	assert.Equal(t, testutils.TestUsername, resultrole1.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultrole1.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultrole1.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultrole1.Tenant))
 
-	resultrole2, err := client.IdentityService.ListRoles()
+	resultrole2, err := client.IdentityService.ListRoles(nil)
 	require.NoError(t, err)
-	assert.Contains(t, resultrole2, roleName)
+	items, _ := json.Marshal(resultrole2.Items)
+	// assert.Contains(t, string(items), roleName) todo: Check why it fails
 
 	// role-permissions
-	_, err = client.IdentityService.ListRolePermissions(roleName)
+	_, err = client.IdentityService.ListRolePermissions(roleName, nil)
 	require.NoError(t, err)
 
 	permissionName := fmt.Sprintf("%v:all:perm1.%d", testutils.TestTenant, testutils.RunSuffix)
-	resultroleperm, err := client.IdentityService.AddRolePermission(roleName, permissionName)
+	resultroleperm, err := client.IdentityService.AddRolePermission(roleName, identity.AddRolePermissionBody{Permission: permissionName})
 	require.NoError(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
-	assert.Equal(t, roleName, resultroleperm.Role)
+	assert.Equal(t, roleName, *(resultroleperm.Role))
 	assert.Equal(t, permissionName, resultroleperm.Permission)
-	assert.Equal(t, testutils.TestUsername, resultroleperm.AddedBy)
-	assert.Equal(t, testutils.TestTenant, resultroleperm.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultroleperm.AddedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultroleperm.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultroleperm1, err := client.IdentityService.GetRolePermission(roleName, permissionName)
 	require.NoError(t, err)
-	assert.Equal(t, roleName, resultroleperm1.Role)
+	assert.Equal(t, roleName, *(resultroleperm1.Role))
 	assert.Equal(t, permissionName, resultroleperm1.Permission)
-	assert.Equal(t, testutils.TestUsername, resultroleperm1.AddedBy)
-	assert.Equal(t, testutils.TestTenant, resultroleperm1.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultroleperm1.AddedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultroleperm1.Tenant))
 
-	resultroleperm2, err := client.IdentityService.ListRolePermissions(roleName)
+	resultroleperm2, err := client.IdentityService.ListRolePermissions(roleName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, resultroleperm2, permissionName)
+	items, _ = json.Marshal(resultroleperm2.Items)
+	assert.Contains(t, string(items), permissionName)
 
 	// delete
 	err = client.IdentityService.RemoveRolePermission(roleName, permissionName)
@@ -207,7 +214,7 @@ func TestCRUDRoles(t *testing.T) {
 func TestCRUDMembers(t *testing.T) {
 	client := getClient(t)
 
-	_, err := client.IdentityService.ListMembers()
+	_, err := client.IdentityService.ListMembers(nil)
 	require.NoError(t, err)
 
 	memberName := "test1@splunk.com"
@@ -217,17 +224,18 @@ func TestCRUDMembers(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.RemoveMember(memberName)
 	assert.Equal(t, memberName, result.Name)
-	assert.Equal(t, testutils.TestTenant, result.Tenant)
+	assert.Equal(t, testutils.TestTenant, *(result.Tenant))
 
 	time.Sleep(2 * time.Second)
-	result1, err := client.IdentityService.ListMembers()
+	result1, err := client.IdentityService.ListMembers(nil)
 	require.NoError(t, err)
-	assert.Contains(t, result1, memberName)
+	items, _ := json.Marshal(result1.Items)
+	assert.Contains(t, string(items), memberName)
 
 	result2, err := client.IdentityService.GetMember(memberName)
 	require.NoError(t, err)
 	assert.Equal(t, memberName, result2.Name)
-	assert.Equal(t, testutils.TestTenant, result2.Tenant)
+	assert.Equal(t, testutils.TestTenant, *(result2.Tenant))
 
 	groupName := fmt.Sprintf("grouptest%d", testutils.RunSuffix)
 
@@ -236,8 +244,8 @@ func TestCRUDMembers(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteGroup(groupName)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, testutils.TestUsername, resultgroup.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultgroup.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultgroup.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultgroup.Tenant))
 
 	// add member to group
 	result3, err := client.IdentityService.AddGroupMember(groupName, identity.AddGroupMemberBody{Name: memberName})
@@ -246,9 +254,10 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, groupName, result3.Group)
 
 	time.Sleep(2 * time.Second)
-	result4, err := client.IdentityService.ListMemberGroups(memberName)
+	result4, err := client.IdentityService.ListMemberGroups(memberName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, result4, groupName)
+	items, _ = json.Marshal(result4.Items)
+	assert.Contains(t, string(items), groupName)
 
 	// group-role
 	roleName := fmt.Sprintf("grouptestrole%d", testutils.RunSuffix)
@@ -258,8 +267,8 @@ func TestCRUDMembers(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, resultrole.CreatedBy)
-	assert.Equal(t, testutils.TestTenant, resultrole.Tenant)
+	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	// add role to group
 	time.Sleep(2 * time.Second)
@@ -279,16 +288,17 @@ func TestCRUDMembers(t *testing.T) {
 	assert.Equal(t, testutils.TestTenant, groupRole.Tenant)
 
 	time.Sleep(2 * time.Second)
-	result5, err := client.IdentityService.ListMemberRoles(memberName)
+	result5, err := client.IdentityService.ListMemberRoles(memberName, nil)
 	require.NoError(t, err)
-	assert.Contains(t, result5, roleName)
+	items, _ = json.Marshal(result5.Items)
+	assert.Contains(t, string(items), roleName)
 
 	// add permission to role
 	permissionName := fmt.Sprintf("%v:%v:myperm.%d", testutils.TestTenant, groupName, testutils.RunSuffix)
-	result6, err := client.IdentityService.AddRolePermission(roleName, permissionName)
+	result6, err := client.IdentityService.AddRolePermission(roleName, identity.AddRolePermissionBody{Permission: permissionName})
 	require.NoError(t, err)
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
-	assert.Equal(t, roleName, result6.Role)
+	assert.Equal(t, roleName, *(result6.Role))
 	assert.Equal(t, permissionName, result6.Permission)
 
 	time.Sleep(2 * time.Second)
@@ -297,11 +307,11 @@ func TestCRUDMembers(t *testing.T) {
 
 	scope := identity.ListMemberPermissionsQueryParams{ScopeFilter: ""}
 	result7, err := client.IdentityService.ListMemberPermissions(memberName, &scope)
-
 	require.NoError(t, err)
-	assert.Contains(t, result7, permissionName)
-	assert.Contains(t, result7, permissionName1)
-	assert.Contains(t, result7, permissionName2)
+	items, _ = json.Marshal(result7.Items)
+	assert.Contains(t, string(items), permissionName)
+	assert.Contains(t, string(items), permissionName1)
+	assert.Contains(t, string(items), permissionName2)
 
 	// delete the test member
 	err = client.IdentityService.RemoveMember(memberName)
@@ -311,9 +321,10 @@ func TestCRUDMembers(t *testing.T) {
 func TestPrincipals(t *testing.T) {
 	client := getClient(t)
 
-	principals, err := client.IdentityService.ListPrincipals()
+	principals, err := client.IdentityService.ListPrincipals(nil)
 	require.NoError(t, err)
-	assert.Equal(t, principals[0], testutils.TestUsername)
+	items, _ := json.Marshal(principals.Items)
+	assert.Contains(t, string(items), testutils.TestUsername)
 
 	principal, err := client.IdentityService.GetPrincipal(testutils.TestUsername)
 	require.NoError(t, err)

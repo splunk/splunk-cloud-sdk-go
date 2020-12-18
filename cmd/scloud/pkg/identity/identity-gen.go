@@ -205,21 +205,26 @@ func AddRolePermission(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var body string
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
+	var permission string
+	err = flags.ParseFlag(cmd.Flags(), "permission", &permission)
 	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
+		return fmt.Errorf(`error parsing "permission": ` + err.Error())
 	}
 	var role string
 	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
+	// Form the request body
+	generated_request_body := model.AddRolePermissionBody{
+
+		Permission: permission,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.AddRolePermission(role, body)
+	resp, err := client.IdentityService.AddRolePermission(role, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -251,6 +256,138 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.CreateGroup(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// CreatePrincipal Create a new principal
+func CreatePrincipal(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var algDefault model.EcJwkAlg
+	alg := &algDefault
+	err = flags.ParseFlag(cmd.Flags(), "alg", &alg)
+	if err != nil {
+		return fmt.Errorf(`error parsing "alg": ` + err.Error())
+	}
+	var credentials []model.Credential
+	err = flags.ParseFlag(cmd.Flags(), "credentials", &credentials)
+	if err != nil {
+		return fmt.Errorf(`error parsing "credentials": ` + err.Error())
+	}
+	var crvDefault string
+	crv := &crvDefault
+	err = flags.ParseFlag(cmd.Flags(), "crv", &crv)
+	if err != nil {
+		return fmt.Errorf(`error parsing "crv": ` + err.Error())
+	}
+	var dDefault string
+	d := &dDefault
+	err = flags.ParseFlag(cmd.Flags(), "d", &d)
+	if err != nil {
+		return fmt.Errorf(`error parsing "d": ` + err.Error())
+	}
+	var email string
+	err = flags.ParseFlag(cmd.Flags(), "email", &email)
+	if err != nil {
+		return fmt.Errorf(`error parsing "email": ` + err.Error())
+	}
+	var enabledDefault bool
+	enabled := &enabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "enabled", &enabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enabled": ` + err.Error())
+	}
+	var firstName string
+	err = flags.ParseFlag(cmd.Flags(), "first-name", &firstName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "first-name": ` + err.Error())
+	}
+	var inviteId string
+	err = flags.ParseFlag(cmd.Flags(), "invite-id", &inviteId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "invite-id": ` + err.Error())
+	}
+	var kidDefault string
+	kid := &kidDefault
+	err = flags.ParseFlag(cmd.Flags(), "kid", &kid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kid": ` + err.Error())
+	}
+	var kind model.PrincipalKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var ktyDefault model.EcJwkKty
+	kty := &ktyDefault
+	err = flags.ParseFlag(cmd.Flags(), "kty", &kty)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kty": ` + err.Error())
+	}
+	var lastName string
+	err = flags.ParseFlag(cmd.Flags(), "last-name", &lastName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "last-name": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var xDefault string
+	x := &xDefault
+	err = flags.ParseFlag(cmd.Flags(), "x", &x)
+	if err != nil {
+		return fmt.Errorf(`error parsing "x": ` + err.Error())
+	}
+	var yDefault string
+	y := &yDefault
+	err = flags.ParseFlag(cmd.Flags(), "y", &y)
+	if err != nil {
+		return fmt.Errorf(`error parsing "y": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.CreatePrincipalQueryParams{}
+	generated_query.InviteId = inviteId
+
+	// Form the request body
+	generated_request_body := model.CreatePrincipalBody{
+
+		Credentials: credentials,
+		Enabled:     enabled,
+		Key: &model.EcJwk{
+			Alg: alg,
+			Crv: crv,
+			D:   d,
+			Kid: kid,
+			Kty: kty,
+			X:   x,
+			Y:   y,
+		},
+		Kind: kind,
+		Name: name,
+		Profile: &model.CreatePrincipalProfile{
+			Email:     email,
+			FirstName: firstName,
+			LastName:  lastName,
+		},
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.CreatePrincipal(generated_request_body, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -487,7 +624,8 @@ func GetMember(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetPrincipal Returns the details of a principal, including its tenant membership.
+// GetPrincipal Returns the details of a principal, including its tenant membership and any relevant profile information.
+
 func GetPrincipal(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
@@ -644,11 +782,32 @@ func ListGroupMembers(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListGroupMembersQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListGroupMembers(group)
+	resp, err := client.IdentityService.ListGroupMembers(group, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -670,11 +829,32 @@ func ListGroupRoles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "group": ` + err.Error())
 	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListGroupRolesQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListGroupRoles(group)
+	resp, err := client.IdentityService.ListGroupRoles(group, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -696,9 +876,28 @@ func ListGroups(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "access": ` + err.Error())
 	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
 	// Form query params
 	generated_query := model.ListGroupsQueryParams{}
 	generated_query.Access = access
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
@@ -725,11 +924,32 @@ func ListMemberGroups(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListMemberGroupsQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListMemberGroups(member)
+	resp, err := client.IdentityService.ListMemberGroups(member, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -752,14 +972,33 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
-	var scopeFilter string
-	err = flags.ParseFlag(cmd.Flags(), "scope-filter", &scopeFilter)
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	var scope_filter string
+	err = flags.ParseFlag(cmd.Flags(), "scope-filter", &scope_filter)
 	if err != nil {
 		return fmt.Errorf(`error parsing "scope-filter": ` + err.Error())
 	}
 	// Form query params
 	generated_query := model.ListMemberPermissionsQueryParams{}
-	generated_query.ScopeFilter = scopeFilter
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
+	generated_query.ScopeFilter = scope_filter
 
 	// Silence Usage
 	cmd.SilenceUsage = true
@@ -787,11 +1026,32 @@ func ListMemberRoles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "member": ` + err.Error())
 	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListMemberRolesQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListMemberRoles(member)
+	resp, err := client.IdentityService.ListMemberRoles(member, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -806,11 +1066,40 @@ func ListMembers(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	// Parse all flags
+
+	var kind model.ListMemberskind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListMembersQueryParams{}
+	generated_query.Kind = kind
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListMembers()
+	resp, err := client.IdentityService.ListMembers(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -819,6 +1108,7 @@ func ListMembers(cmd *cobra.Command, args []string) error {
 }
 
 // ListPrincipals Returns the list of principals that the Identity service knows about.
+
 func ListPrincipals(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
@@ -826,11 +1116,34 @@ func ListPrincipals(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	// Parse all flags
+
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListPrincipalsQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListPrincipals()
+	resp, err := client.IdentityService.ListPrincipals(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -847,16 +1160,37 @@ func ListRoleGroups(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
 	var role string
 	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
+	// Form query params
+	generated_query := model.ListRoleGroupsQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListRoleGroups(role)
+	resp, err := client.IdentityService.ListRoleGroups(role, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -873,16 +1207,37 @@ func ListRolePermissions(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
 	var role string
 	err = flags.ParseFlag(cmd.Flags(), "role", &role)
 	if err != nil {
 		return fmt.Errorf(`error parsing "role": ` + err.Error())
 	}
+	// Form query params
+	generated_query := model.ListRolePermissionsQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListRolePermissions(role)
+	resp, err := client.IdentityService.ListRolePermissions(role, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -897,11 +1252,34 @@ func ListRoles(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	// Parse all flags
+
+	var orderby string
+	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
+	if err != nil {
+		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
+	}
+	var page_sizeDefault int32
+	page_size := &page_sizeDefault
+	err = flags.ParseFlag(cmd.Flags(), "page-size", &page_size)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
+	}
+	var page_token string
+	err = flags.ParseFlag(cmd.Flags(), "page-token", &page_token)
+	if err != nil {
+		return fmt.Errorf(`error parsing "page-token": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ListRolesQueryParams{}
+	generated_query.Orderby = orderby
+	generated_query.PageSize = page_size
+	generated_query.PageToken = page_token
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.IdentityService.ListRoles()
+	resp, err := client.IdentityService.ListRoles(&generated_query)
 	if err != nil {
 		return err
 	}
@@ -1028,7 +1406,8 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// RevokePrincipalAuthTokens Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+// RevokePrincipalAuthTokens Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+
 func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()

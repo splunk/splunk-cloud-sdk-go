@@ -57,45 +57,6 @@ func CreateInvite(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateProvisionJob Creates a new job that provisions a new tenant and subscribes apps to the tenant.
-func CreateProvisionJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var apps []string
-	err = flags.ParseFlag(cmd.Flags(), "apps", &apps)
-	if err != nil {
-		return fmt.Errorf(`error parsing "apps": ` + err.Error())
-	}
-	var tenantDefault string
-	tenant := &tenantDefault
-	err = flags.ParseFlag(cmd.Flags(), "tenant", &tenant)
-	if err != nil {
-		return fmt.Errorf(`error parsing "tenant": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.CreateProvisionJobBody{
-
-		Apps:   apps,
-		Tenant: tenant,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.ProvisionerService.CreateProvisionJob(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // DeleteInvite Removes an invitation in the given tenant.
 func DeleteInvite(cmd *cobra.Command, args []string) error {
 
@@ -148,33 +109,6 @@ func GetInvite(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetProvisionJob Returns details of a specific provision job.
-func GetProvisionJob(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var jobId string
-	err = flags.ParseFlag(cmd.Flags(), "job-id", &jobId)
-	if err != nil {
-		return fmt.Errorf(`error parsing "job-id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.ProvisionerService.GetProvisionJob(jobId)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // GetTenant Returns a specific tenant.
 func GetTenant(cmd *cobra.Command, args []string) error {
 
@@ -214,26 +148,6 @@ func ListInvites(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.ProvisionerService.ListInvites()
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListProvisionJobs Returns a list of all provision jobs created by the user.
-func ListProvisionJobs(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClientSystemTenant()
-
-	if err != nil {
-		return err
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.ProvisionerService.ListProvisionJobs()
 	if err != nil {
 		return err
 	}

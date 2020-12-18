@@ -36,6 +36,20 @@ var listCollectorTokensCmd = &cobra.Command{
 	RunE:  impl.ListCollectorTokens,
 }
 
+// postCollectorRaw -- Sends collector raw events.
+var postCollectorRawCmd = &cobra.Command{
+	Use:   "post-collector-raw",
+	Short: "Sends collector raw events.",
+	RunE:  impl.PostCollectorRaw,
+}
+
+// postCollectorRawV1 -- Sends collector raw events.
+var postCollectorRawV1Cmd = &cobra.Command{
+	Use:   "post-collector-raw-v-1",
+	Short: "Sends collector raw events.",
+	RunE:  impl.PostCollectorRawV1,
+}
+
 // postCollectorTokens -- Creates dsphec tokens.
 var postCollectorTokensCmd = &cobra.Command{
 	Use:   "post-collector-tokens",
@@ -93,6 +107,48 @@ func init() {
 
 	var listCollectorTokensOffset int64
 	listCollectorTokensCmd.Flags().Int64Var(&listCollectorTokensOffset, "offset", 0, "")
+
+	ingestCmd.AddCommand(postCollectorRawCmd)
+
+	var postCollectorRawBody string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawBody, "body", "", "The request body")
+	postCollectorRawCmd.MarkFlagRequired("body")
+
+	var postCollectorRawHost string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawHost, "host", "", "Sets a default host field value for all events in the request.")
+
+	var postCollectorRawIndex string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawIndex, "index", "", "Sets a default index field value for all events in the request.")
+
+	var postCollectorRawSource string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawSource, "source", "", "Sets a default source field value for all events in the request.")
+
+	var postCollectorRawSourcetype string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawSourcetype, "sourcetype", "", "Sets a default sourcetype field value for all events in the request.")
+
+	var postCollectorRawTime string
+	postCollectorRawCmd.Flags().StringVar(&postCollectorRawTime, "time", "", "Sets a default time field value for all events in the request.")
+
+	ingestCmd.AddCommand(postCollectorRawV1Cmd)
+
+	var postCollectorRawV1Body string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Body, "body", "", "The request body")
+	postCollectorRawV1Cmd.MarkFlagRequired("body")
+
+	var postCollectorRawV1Host string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Host, "host", "", "Sets a default host field value for all events in the request.")
+
+	var postCollectorRawV1Index string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Index, "index", "", "Sets a default index field value for all events in the request.")
+
+	var postCollectorRawV1Source string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Source, "source", "", "Sets a default source field value for all events in the request.")
+
+	var postCollectorRawV1Sourcetype string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Sourcetype, "sourcetype", "", "Sets a default sourcetype field value for all events in the request.")
+
+	var postCollectorRawV1Time string
+	postCollectorRawV1Cmd.Flags().StringVar(&postCollectorRawV1Time, "time", "", "Sets a default time field value for all events in the request.")
 
 	ingestCmd.AddCommand(postCollectorTokensCmd)
 

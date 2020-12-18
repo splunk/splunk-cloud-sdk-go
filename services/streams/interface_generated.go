@@ -41,13 +41,6 @@ type ServicerGenerated interface {
 	*/
 	Compile(splCompileRequest SplCompileRequest, resp ...*http.Response) (*Pipeline, error)
 	/*
-		CreateCollectJob - Create a new collect job.
-		Parameters:
-			collectJobRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateCollectJob(collectJobRequest CollectJobRequest, resp ...*http.Response) (*CollectJobResponse, error)
-	/*
 		CreateConnection - Create a new DSP connection.
 		Parameters:
 			connectionRequest: Request JSON
@@ -68,13 +61,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreatePipeline(pipelineRequest PipelineRequest, resp ...*http.Response) (*PipelineResponse, error)
-	/*
-		CreateRulesPackage - Creates a new RulesPackage
-		Parameters:
-			rulesRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateRulesPackage(rulesRequest RulesRequest, resp ...*http.Response) (*RulesResponse, error)
 	/*
 		CreateTemplate - Creates a template for a tenant.
 		Parameters:
@@ -98,19 +84,6 @@ type ServicerGenerated interface {
 	*/
 	Decompile(decompileRequest DecompileRequest, resp ...*http.Response) (*DecompileResponse, error)
 	/*
-		DeleteCollectJob - Delete all collect jobs.
-		Parameters:
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteCollectJobs(resp ...*http.Response) error
-	/*
-		DeleteCollectJob_0 - Delete a collect job.
-		Parameters:
-			id: Collect Job ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteCollectJob(id string, resp ...*http.Response) error
-	/*
 		DeleteConnection - Delete all versions of a connection by its id.
 		Parameters:
 			connectionId: Connection ID
@@ -125,14 +98,6 @@ type ServicerGenerated interface {
 	*/
 	DeleteDataStream(id string, resp ...*http.Response) error
 	/*
-		DeleteEntitlements - Delete known entitlements
-		Parameters:
-			appClientId: App Client ID
-			requestBody: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteEntitlements(appClientId string, requestBody []string, resp ...*http.Response) error
-	/*
 		DeleteFile - Delete file.
 		Parameters:
 			fileId: File ID
@@ -140,26 +105,19 @@ type ServicerGenerated interface {
 	*/
 	DeleteFile(fileId string, resp ...*http.Response) error
 	/*
+		DeleteLookupFile - Delete lookup file.
+		Parameters:
+			fileId: File ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteLookupFile(fileId string, resp ...*http.Response) error
+	/*
 		DeletePipeline - Removes a pipeline.
 		Parameters:
 			id: Pipeline ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeletePipeline(id string, resp ...*http.Response) error
-	/*
-		DeletePlugin - Delete an admin plugin
-		Parameters:
-			pluginId: Plugin ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeletePlugin(pluginId string, resp ...*http.Response) (*string, error)
-	/*
-		DeleteRulesPackage - Delete a rules package with a specific id
-		Parameters:
-			externalId: Rules Package ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteRulesPackage(externalId string, resp ...*http.Response) error
 	/*
 		DeleteTemplate - Removes a template with a specific ID.
 		Parameters:
@@ -175,27 +133,12 @@ type ServicerGenerated interface {
 	*/
 	DescribeDataStream(id string, resp ...*http.Response) (*DataStreamResponse, error)
 	/*
-		GetCollectJob - Get a collect job.
-		Parameters:
-			id: Collect Job ID
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetCollectJob(id string, query *GetCollectJobQueryParams, resp ...*http.Response) (*CollectJobResponse, error)
-	/*
-		GetEntitlements - Get known entitlements
-		Parameters:
-			appClientId: App Client ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetEntitlements(appClientId string, resp ...*http.Response) ([]EntitlementResponse, error)
-	/*
 		GetFileMetadata - Get file metadata.
 		Parameters:
 			fileId: File ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetFileMetadata(fileId string, resp ...*http.Response) (*UploadFile, error)
+	GetFileMetadata(fileId string, resp ...*http.Response) (*UploadFileResponse, error)
 	/*
 		GetFilesMetadata - Returns files metadata.
 		Parameters:
@@ -209,6 +152,19 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetInputSchema(getInputSchemaRequest GetInputSchemaRequest, resp ...*http.Response) (*UplType, error)
+	/*
+		GetLookupFileMetadata - Get lookup file metadata.
+		Parameters:
+			fileId: File ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetLookupFileMetadata(fileId string, resp ...*http.Response) (*UploadFileResponse, error)
+	/*
+		GetLookupFilesMetadata - Returns lookup files metadata.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetLookupFilesMetadata(resp ...*http.Response) (*FilesMetaDataResponse, error)
 	/*
 		GetLookupTable - Returns lookup table results.
 		Parameters:
@@ -247,13 +203,6 @@ type ServicerGenerated interface {
 	*/
 	GetPipelinesStatus(query *GetPipelinesStatusQueryParams, resp ...*http.Response) (*PaginatedResponseOfPipelineJobStatus, error)
 	/*
-		GetPlugins - Returns all the plugins that are available for all tenants.
-		Parameters:
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetPlugins(query *GetPluginsQueryParams, resp ...*http.Response) (*PaginatedResponseOfPlugin, error)
-	/*
 		GetPreviewData - Returns the preview data for a session.
 		Parameters:
 			previewSessionId: Preview Session ID
@@ -282,13 +231,6 @@ type ServicerGenerated interface {
 	*/
 	GetRegistry(query *GetRegistryQueryParams, resp ...*http.Response) (*RegistryModel, error)
 	/*
-		GetRulesPackageById - Returns the rules package with specific id
-		Parameters:
-			externalId: RulesPackage ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetRulesPackageById(externalId string, resp ...*http.Response) (*RulesResponse, error)
-	/*
 		GetTemplate - Returns an individual template by version.
 		Parameters:
 			templateId: Template ID
@@ -296,12 +238,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetTemplate(templateId string, query *GetTemplateQueryParams, resp ...*http.Response) (*TemplateResponse, error)
-	/*
-		ListCollectJobs - Get all collect jobs.
-		Parameters:
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListCollectJobs(resp ...*http.Response) (*PaginatedResponseOfCollectJobResponse, error)
 	/*
 		ListConnections - Returns a list of connections (latest versions only) by tenant ID.
 		Parameters:
@@ -330,19 +266,6 @@ type ServicerGenerated interface {
 	*/
 	ListPipelines(query *ListPipelinesQueryParams, resp ...*http.Response) (*PaginatedResponseOfPipelineResponse, error)
 	/*
-		ListRulesKinds - Returns all rules kinds.
-		Parameters:
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListRulesKinds(resp ...*http.Response) (*PaginatedResponseOfRulesKind, error)
-	/*
-		ListRulesPackages - Returns all rules packages.
-		Parameters:
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListRulesPackages(query *ListRulesPackagesQueryParams, resp ...*http.Response) (*PaginatedResponseOfRulesResponse, error)
-	/*
 		ListTemplates - Returns a list of all templates.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -357,14 +280,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	PatchPipeline(id string, pipelinePatchRequest PipelinePatchRequest, resp ...*http.Response) (*PipelineResponse, error)
-	/*
-		PatchPlugin - Patch an existing admin plugin.
-		Parameters:
-			pluginId: Plugin ID
-			pluginPatchRequest: PluginRequest JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	PatchPlugin(pluginId string, pluginPatchRequest PluginPatchRequest, resp ...*http.Response) (*Plugin, error)
 	/*
 		PutConnection - Updates an existing DSP connection.
 		Parameters:
@@ -390,34 +305,6 @@ type ServicerGenerated interface {
 	*/
 	ReactivatePipeline(id string, reactivatePipelineRequest ReactivatePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponse, error)
 	/*
-		RegisterPlugin - Register a new plugin that's available for all tenants.
-		Parameters:
-			pluginRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	RegisterPlugin(pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error)
-	/*
-		ReleaseInfo - Provides commit sha for release
-		Parameters:
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ReleaseInfo(resp ...*http.Response) (map[string]string, error)
-	/*
-		SetEntitlements - Create or update entitlements
-		Parameters:
-			appClientId: App Client ID
-			entitlementRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	SetEntitlements(appClientId string, entitlementRequest []EntitlementRequest, resp ...*http.Response) ([]EntitlementResponse, error)
-	/*
-		StartCollectJob - Start a collect job.
-		Parameters:
-			id: Collect Job ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	StartCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error)
-	/*
 		StartPreview - Creates a preview session for a pipeline.
 		Parameters:
 			previewSessionStartRequest: Parameters to start a new Preview session
@@ -425,27 +312,12 @@ type ServicerGenerated interface {
 	*/
 	StartPreview(previewSessionStartRequest PreviewSessionStartRequest, resp ...*http.Response) (*PreviewStartResponse, error)
 	/*
-		StopCollectJob - Stop a collect job.
-		Parameters:
-			id: Collect Job ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	StopCollectJob(id string, resp ...*http.Response) (*CollectJobStartStopResponse, error)
-	/*
 		StopPreview - Stops a preview session.
 		Parameters:
 			previewSessionId: Preview Session ID
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	StopPreview(previewSessionId int64, resp ...*http.Response) error
-	/*
-		UpdateCollectJob - Patches an existing collect job.
-		Parameters:
-			id: Collect Job ID
-			collectJobPatchRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateCollectJob(id string, collectJobPatchRequest CollectJobPatchRequest, resp ...*http.Response) (*CollectJobResponse, error)
 	/*
 		UpdateConnection - Patches an existing DSP connection.
 		Parameters:
@@ -471,22 +343,6 @@ type ServicerGenerated interface {
 	*/
 	UpdatePipeline(id string, pipelineRequest PipelineRequest, resp ...*http.Response) (*PipelineResponse, error)
 	/*
-		UpdatePlugin - Update admin plugin info.
-		Parameters:
-			pluginId: Plugin ID
-			pluginRequest: PluginRequest JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdatePlugin(pluginId string, pluginRequest PluginRequest, resp ...*http.Response) (*Plugin, error)
-	/*
-		UpdateRulesPackageById - Updates the rules package with specific id
-		Parameters:
-			externalId: RulesPackage ID
-			rulesRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateRulesPackageById(externalId string, rulesRequest RulesRequest, resp ...*http.Response) (*RulesResponse, error)
-	/*
 		UpdateTemplate - Patches an existing template.
 		Parameters:
 			templateId: Template ID
@@ -500,15 +356,7 @@ type ServicerGenerated interface {
 			file: Upload file
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UploadFile(file **os.File, resp ...*http.Response) (*UploadFile, error)
-	/*
-		UploadPlugin - Upload a new plugin that's available for all tenants.
-		Parameters:
-			pluginId: Plugin ID
-			pluginJar: Plugin JAR
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UploadPlugin(pluginId string, pluginJar **os.File, resp ...*http.Response) (*PluginResponse, error)
+	UploadFile(file **os.File, resp ...*http.Response) (*UploadFileResponse, error)
 	/*
 		ValidatePipeline - Verifies whether the Streams JSON is valid.
 		Parameters:

@@ -724,6 +724,148 @@ info:
   version: v1beta2.16
 openapi: 3.0.0
 paths:
+  /{tenant}/ingest/v1beta2/collector/raw:
+    post:
+      operationId: postCollectorRaw
+      parameters:
+      - description: Sets a default source field value for all events in the request.
+        in: query
+        name: source
+        schema:
+          type: string
+        x-go-name: Source
+      - description: Sets a default sourcetype field value for all events in the request.
+        in: query
+        name: sourcetype
+        schema:
+          type: string
+        x-go-name: Sourcetype
+      - description: Sets a default index field value for all events in the request.
+        in: query
+        name: index
+        schema:
+          type: string
+        x-go-name: Index
+      - description: Sets a default host field value for all events in the request.
+        in: query
+        name: host
+        schema:
+          type: string
+        x-go-name: Host
+      - description: Sets a default time field value for all events in the request.
+        in: query
+        name: time
+        schema:
+          type: string
+        x-go-name: Time
+      - description: The DSP HEC token provided by the user.
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^(Splunk|Basic) .+
+          type: string
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      requestBody:
+        $ref: '#/components/requestBodies/postCollectorPayload'
+      responses:
+        "200":
+          $ref: '#/components/responses/hecSuccessResponse'
+        "400":
+          $ref: '#/components/responses/hecBadRequestError'
+        "401":
+          $ref: '#/components/responses/hecUnauthorizedError'
+        "403":
+          $ref: '#/components/responses/hecForbiddenError'
+        "413":
+          $ref: '#/components/responses/hecBadRequestError'
+        "500":
+          $ref: '#/components/responses/hecInternalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/hecInternalError'
+      summary: Sends collector raw events.
+      tags:
+      - Collector
+      x-auth-required: false
+      x-authz-scope: ingest.collector.write
+  /{tenant}/ingest/v1beta2/collector/raw/1.0:
+    post:
+      operationId: postCollectorRawV1
+      parameters:
+      - description: Sets a default source field value for all events in the request.
+        in: query
+        name: source
+        schema:
+          type: string
+        x-go-name: Source
+      - description: Sets a default sourcetype field value for all events in the request.
+        in: query
+        name: sourcetype
+        schema:
+          type: string
+        x-go-name: Sourcetype
+      - description: Sets a default index field value for all events in the request.
+        in: query
+        name: index
+        schema:
+          type: string
+        x-go-name: Index
+      - description: Sets a default host field value for all events in the request.
+        in: query
+        name: host
+        schema:
+          type: string
+        x-go-name: Host
+      - description: Sets a default time field value for all events in the request.
+        in: query
+        name: time
+        schema:
+          type: string
+        x-go-name: Time
+      - description: The DSP HEC token provided by the user.
+        in: header
+        name: Authorization
+        required: true
+        schema:
+          pattern: ^(Splunk|Basic) .+
+          type: string
+      - in: path
+        name: tenant
+        required: true
+        schema:
+          type: string
+        x-go-name: Tenant
+      requestBody:
+        $ref: '#/components/requestBodies/postCollectorPayload'
+      responses:
+        "200":
+          $ref: '#/components/responses/hecSuccessResponse'
+        "400":
+          $ref: '#/components/responses/hecBadRequestError'
+        "401":
+          $ref: '#/components/responses/hecUnauthorizedError'
+        "403":
+          $ref: '#/components/responses/hecForbiddenError'
+        "413":
+          $ref: '#/components/responses/hecBadRequestError'
+        "500":
+          $ref: '#/components/responses/hecInternalError'
+        "503":
+          $ref: '#/components/responses/serverBusyError'
+        default:
+          $ref: '#/components/responses/hecInternalError'
+      summary: Sends collector raw events.
+      tags:
+      - Collector
+      x-auth-required: false
+      x-authz-scope: ingest.collector.write
   /{tenant}/ingest/v1beta2/collector/tokens:
     delete:
       operationId: deleteAllCollectorTokens
@@ -1116,4 +1258,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit e356ae94d40158658c06a523a8a8d24cef4c26db path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: ingest/v1beta2/openapi.yaml

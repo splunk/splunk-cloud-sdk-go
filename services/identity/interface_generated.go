@@ -64,10 +64,10 @@ type ServicerGenerated interface {
 		Adds permissions to a role in a given tenant.
 		Parameters:
 			role: The role name.
-			body: The permission to add to a role.
+			addRolePermissionBody: The permission to add to a role.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	AddRolePermission(role string, body string, resp ...*http.Response) (*RolePermission, error)
+	AddRolePermission(role string, addRolePermissionBody AddRolePermissionBody, resp ...*http.Response) (*RolePermission, error)
 	/*
 		CreateGroup - identity service endpoint
 		Creates a new group in a given tenant.
@@ -76,6 +76,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateGroup(createGroupBody CreateGroupBody, resp ...*http.Response) (*Group, error)
+	/*
+		CreatePrincipal - identity service endpoint
+		Create a new principal
+		Parameters:
+			createPrincipalBody: The new principal to add to the system.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreatePrincipal(createPrincipalBody CreatePrincipalBody, query *CreatePrincipalQueryParams, resp ...*http.Response) (*Principal, error)
 	/*
 		CreateRole - identity service endpoint
 		Creates a new authorization role in a given tenant.
@@ -145,7 +154,7 @@ type ServicerGenerated interface {
 	GetMember(member string, resp ...*http.Response) (*Member, error)
 	/*
 		GetPrincipal - identity service endpoint
-		Returns the details of a principal, including its tenant membership.
+		Returns the details of a principal, including its tenant membership and any relevant profile information.
 		Parameters:
 			principal: The principal name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -190,17 +199,19 @@ type ServicerGenerated interface {
 		Returns a list of the members within a given group.
 		Parameters:
 			group: The group name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListGroupMembers(group string, resp ...*http.Response) ([]string, error)
+	ListGroupMembers(group string, query *ListGroupMembersQueryParams, resp ...*http.Response) (*GroupMemberList, error)
 	/*
 		ListGroupRoles - identity service endpoint
 		Returns a list of the roles that are attached to a group within a given tenant.
 		Parameters:
 			group: The group name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListGroupRoles(group string, resp ...*http.Response) ([]string, error)
+	ListGroupRoles(group string, query *ListGroupRolesQueryParams, resp ...*http.Response) (*GroupRoleList, error)
 	/*
 		ListGroups - identity service endpoint
 		List the groups that exist in a given tenant.
@@ -208,15 +219,16 @@ type ServicerGenerated interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListGroups(query *ListGroupsQueryParams, resp ...*http.Response) ([]string, error)
+	ListGroups(query *ListGroupsQueryParams, resp ...*http.Response) (*GroupList, error)
 	/*
 		ListMemberGroups - identity service endpoint
 		Returns a list of groups that a member belongs to within a tenant.
 		Parameters:
 			member: The member name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListMemberGroups(member string, resp ...*http.Response) ([]string, error)
+	ListMemberGroups(member string, query *ListMemberGroupsQueryParams, resp ...*http.Response) (*GroupList, error)
 	/*
 		ListMemberPermissions - identity service endpoint
 		Returns a set of permissions granted to the member within the tenant.
@@ -225,52 +237,58 @@ type ServicerGenerated interface {
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListMemberPermissions(member string, query *ListMemberPermissionsQueryParams, resp ...*http.Response) ([]string, error)
+	ListMemberPermissions(member string, query *ListMemberPermissionsQueryParams, resp ...*http.Response) (*PermissionList, error)
 	/*
 		ListMemberRoles - identity service endpoint
 		Returns a set of roles that a given member holds within the tenant.
 		Parameters:
 			member: The member name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListMemberRoles(member string, resp ...*http.Response) ([]string, error)
+	ListMemberRoles(member string, query *ListMemberRolesQueryParams, resp ...*http.Response) (*RoleList, error)
 	/*
 		ListMembers - identity service endpoint
 		Returns a list of members in a given tenant.
 		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListMembers(resp ...*http.Response) ([]string, error)
+	ListMembers(query *ListMembersQueryParams, resp ...*http.Response) (*MemberList, error)
 	/*
 		ListPrincipals - identity service endpoint
 		Returns the list of principals that the Identity service knows about.
 		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListPrincipals(resp ...*http.Response) ([]string, error)
+	ListPrincipals(query *ListPrincipalsQueryParams, resp ...*http.Response) (*PrincipalList, error)
 	/*
 		ListRoleGroups - identity service endpoint
 		Gets a list of groups for a role in a given tenant.
 		Parameters:
 			role: The role name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListRoleGroups(role string, resp ...*http.Response) ([]string, error)
+	ListRoleGroups(role string, query *ListRoleGroupsQueryParams, resp ...*http.Response) (*GroupList, error)
 	/*
 		ListRolePermissions - identity service endpoint
 		Gets the permissions for a role in a given tenant.
 		Parameters:
 			role: The role name.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListRolePermissions(role string, resp ...*http.Response) ([]string, error)
+	ListRolePermissions(role string, query *ListRolePermissionsQueryParams, resp ...*http.Response) (*RolePermissionList, error)
 	/*
 		ListRoles - identity service endpoint
 		Returns all roles for a given tenant.
 		Parameters:
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListRoles(resp ...*http.Response) ([]string, error)
+	ListRoles(query *ListRolesQueryParams, resp ...*http.Response) (*RoleList, error)
 	/*
 		RemoveGroupMember - identity service endpoint
 		Removes the member from a given group.
@@ -308,7 +326,7 @@ type ServicerGenerated interface {
 	RemoveRolePermission(role string, permission string, resp ...*http.Response) error
 	/*
 		RevokePrincipalAuthTokens - identity service endpoint
-		Revoke all existing tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
+		Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 		Parameters:
 			principal: The principal name.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
