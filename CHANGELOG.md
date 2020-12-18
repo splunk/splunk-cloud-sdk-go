@@ -26,6 +26,8 @@
 
 ##### Features
 
+* Added Device flow token retriever support
+
 * Ingest v1beta2: 
     * New endpoints `PostCollectorRaw` and `PostCollectorRawV1` added
 
@@ -72,6 +74,8 @@
         * upload-plugin
 
 ### Non-Breaking Changes
+* Added support for Keycloak authorization flow to enable scloud to get and set session token from the cookies
+
 * Identity Command
     * Added :
         * create-principal
