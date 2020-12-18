@@ -1,5 +1,105 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.11.0
+### Services
+
+#### Breaking Changes
+
+##### Features
+
+* Identity v2beta1:
+    * Version `v2beta1` replaced by new version `v3`
+
+* Provisioner v1beta1
+    * Models `CreateProvisionJobBody`, `ProvisionJobInfo`, `ProvisionJobInfoErrors`, `ProvisionJobInfoErrors` and 'ProvisionJobs' removed
+    * Endpoints `CreateProvisionJob`, `GetProvisionJob` and `ListProvisionJobs` removed
+
+* Streams v3beta1:
+    * Models `CollectJobPatchRequest`, `CollectJobRequest`, `CollectJobResponse`, `CollectJobStartStopResponse`, `EntitlementRequest`, `EntitlementResponse`, `PaginatedResponseOfCollectJobResponse`, `PaginatedResponseOfPlugin`, `PaginatedResponseOfRulesResponse`,  `PaginatedResponseOfRuleKind`, `Plugin`, `PluginPatchRequest`, `PluginRequest`, `PluginResponse`, `RulesRequest` and `RulesResponse` removed
+
+    * Model `UploadFile` renamed to `UploadFileResponse`
+
+    * Endpoints `CreateCollectJob`, `CreateRulesPackage`, `DeleteCollectJobs`, `DeleteCollectJob`, `DeleteEntitlements`, `DeletePlugin`, `DeleteRulesPackage`, `GetCollectJob`, `GetEntitlements`, `GetPlugins`, `GetRulesPackageById`, 
+    `ListCollectJobs`, `ListRulesKinds`, `ListRulesPackages`, `PatchPlugin`, `RegisterPlugin`, `ReleaseInfo`, `SetEntitlements`, `StartCollectJob`, `StopCollectJob`, `UpdateCollectJob`, `UpdatePlugin` and `UpdateRulesPackageById`   
+
+#### Non-Breaking Changes
+
+##### Features
+
+* Ingest v1beta2: 
+    * New endpoints `PostCollectorRaw` and `PostCollectorRawV1` added
+
+* Streams v2beta1:
+    * New property `Attributes` added to `ConnectorResponse`
+    * New property `StatusDescription` added to `PipelineReactivateResponse`
+    * New parameter `functionOp` added to `listConnections`
+
+* Streams v3beta1
+    * New model `UploadFileResponse` added
+    * New endpoint `DeleteLookupFile`, `GetLookupFileMetadata` and `GetLookupFilesMetadata` added
+
+## SCloud v7.0.0
+### Breaking Changes
+* Provisioner Command
+    * Removed :
+        * create-provision-job
+        * get-provision-job
+        * list-provision-job
+* Streams Command
+    * Removed :
+        * create-collect-job
+        * create-rules-package
+        * delete-collect-job
+        * delete-entitlements
+        * delete-plugin
+        * delete-rules-package
+        * get-collect-job
+        * get-entitlements
+        * get-plugins
+        * get-rules-package-by-id
+        * list-collect-job
+        * list-rules-kinds
+        * list-rules-packages
+        * patch-plugin
+        * register-plugin
+        * release-info
+        * set-entitlements
+        * start-collect-job
+        * stop-collect-job
+        * update-collect-job
+        * update-plugin
+        * update-rules-package-by-id
+        * upload-plugin
+
+### Non-Breaking Changes
+* Identity Command
+    * Added :
+        * create-principal
+    * New parameters orderby, page-size and page-token added :
+        * list-group-members 
+        * list-group-roles
+        * list-groups
+        * list-member-groups
+        * list-member-permissions
+        * list-member-roles
+        * list-principals
+        * list-role-groups
+        * list-role-permissions
+        * list-roles
+    * New parameters kind, orderby, page-size and page-token added :
+        * list-members
+
+* Ingest Command
+    * Added :
+        * post-collector-raw
+        * post-collector-raw-v-1
+
+* Streams Command
+    * Added :
+        * delete-lookup-file
+        * get-lookup-file-metadata
+        * get-lookup-files-metadata
+
 ## Version 1.10.0
 #### Breaking Changes
 ##### Features
