@@ -294,7 +294,7 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of invalid device code
 // TODO more test cases in SCP-33667
 func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
-	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, "", 60, 5, IdpHost)
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, IdpHost)
 	result, err := tr.Client.GetDeviceCodes(NativeClientID, testutils.TestTenant, "offline_access profile email")
 	assert.Nil(t, err)
 	tr.DeviceCode = result.DeviceCode + "invalid"
@@ -309,7 +309,7 @@ func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of timeout
 // TODO more test cases in SCP-33667
 func TestIntegrationDeviceWorkflowPolling(t *testing.T) {
-	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, "", 2, 1, IdpHost)
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, testutils.TestTenant, IdpHost)
 	result, err := tr.Client.GetDeviceCodes(NativeClientID, testutils.TestTenant, "offline_access profile email")
 	assert.Nil(t, err)
 	tr.DeviceCode = result.DeviceCode

@@ -23,7 +23,11 @@ func init() {
 	loginCmd.Flags().StringP("uid", "u", "", "Your username")
 	loginCmd.Flags().StringP("pwd", "p", "", "Your password")
 	loginCmd.Flags().BoolP("verbose", "", false, "Whether to display your access token")
+
+	// Auth flow flags
 	loginCmd.Flags().BoolP("use-refresh-token", "", false, "Whether to use refresh token authentication flow")
+	loginCmd.Flags().BoolP("use-pkce", "", false, "use PKCE authentication flow")
+	loginCmd.Flags().BoolP("use-device", "", false, "use device authentication flow")
 
 	loginCmd.SetUsageTemplate(usageUtil.UsageTemplate)
 	loginCmd.SetHelpTemplate(usageUtil.HelpTemplate)

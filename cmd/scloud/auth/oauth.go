@@ -161,6 +161,47 @@ func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, e
 	return tr.Refresh(clientID, scope, refreshToken)
 }
 
+func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {
+
+	// TODO: obtain scope from profile when profile is updated
+	// currently IAC does not support openid
+	const defaultScope = "offline_access email profile"
+
+	clientID, err := gets(profile, "client_id")
+	if err != nil {
+		return nil, err
+	}
+
+	tenant := getTenantName()
+
+	idpHost, err := gets(profile, "idp_host")
+	if err != nil {
+		return nil, err
+	}
+
+	// Override idp_host from config file with -auth_url or auth_url in local settings
+	authURL, _ := localSetting["auth-url"].(string)
+	if authURL != "" {
+		idpHost = authURL
+	}
+
+	tr := idp.NewDeviceFlowRetriever(clientID, tenant, idpHost)
+	tr.Insecure = isInsecure()
+
+	deviceCodeInfo, err := tr.GetDeviceCodes(clientID, tenant, defaultScope)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	// Print userCode & verification uri  information
+	fmt.Println("Please validate user code in browser!")
+	fmt.Printf("Verification URL: %v \n", deviceCodeInfo.VerificationURI)
+	fmt.Printf("User Code: %v \n", deviceCodeInfo.UserCode)
+
+	return tr.DeviceFlow(clientID, tenant, deviceCodeInfo.DeviceCode, deviceCodeInfo.ExpiresIn, deviceCodeInfo.Interval)
+}
+
 // Return the correct flow function
 func GetFlow(kind string) (func(map[string]string, *cobra.Command) (*idp.Context, error), error) {
 	switch kind {
@@ -168,6 +209,8 @@ func GetFlow(kind string) (func(map[string]string, *cobra.Command) (*idp.Context
 		return PkceFlow, nil
 	case "refresh":
 		return RefreshFlow, nil
+	case "device":
+		return DeviceFlow, nil
 	}
 	return nil, fmt.Errorf("bad profile kind: '%s'", kind)
 }
