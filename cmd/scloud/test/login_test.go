@@ -142,3 +142,73 @@ func mockedAuthFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context
 		IDToken:      "TestingIDToken",
 	}, nil
 }
+
+func TestDeviceFlow(t *testing.T) {
+	// Step 1: Setup test env file + mock server
+	setUp(t)
+	server := utils.MockedIdentityServer()
+	defer server.Close()
+
+	// Step 2: Override auth-url and execute device flow login
+	loginCommand := "login  --use-device --auth-url " + server.URL + " --tenant " + utils.TestTenant
+	results, err, std := utils.ExecuteCmd(loginCommand, t)
+
+	// Step 3: Assert results
+	assert.True(t, strings.Contains(results, "Verification URL: "+utils.TEST_VERIFICATION_URL))
+	assert.True(t, strings.Contains(results, "User Code: "+utils.TEST_USER_CODE))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+	// Step 4 Tear down testing environment
+	tearDown(t)
+}
+
+func TestDeviceFlowDeviceEndpointError(t *testing.T) {
+	// Step 1: Setup test env file + mock server
+	setUp(t)
+	server := utils.MockedIdentityServer()
+	defer server.Close()
+
+	// Step 2: Set authorized to be false
+	utils.DEVICE_HANDLER_AUTHORIZED = false
+	utils.TOKEN_HANDLER_AUTHORIZED = true
+
+	// Step 3: Override auth-url and execute device flow login
+	loginCommand := "login  --use-device --auth-url " + server.URL + " --tenant " + utils.TestTenant
+	results, err, std := utils.ExecuteCmd(loginCommand, t)
+
+	// Step 4: Assert results
+	assert.False(t, strings.Contains(results, "Verification URL: "+utils.TEST_VERIFICATION_URL))
+	assert.False(t, strings.Contains(results, "User Code: "+utils.TEST_USER_CODE))
+	assert.True(t, strings.Contains(results, "401"))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+	// Step 5: Tear down testing environment
+	tearDown(t)
+}
+
+func TestDeviceFlowTokenEndpointError(t *testing.T) {
+	// Step 1: Setup test env file + mock server
+	setUp(t)
+	server := utils.MockedIdentityServer()
+	defer server.Close()
+
+	// Step 2: Set authorized to be false
+	utils.DEVICE_HANDLER_AUTHORIZED = true
+	utils.TOKEN_HANDLER_AUTHORIZED = false
+
+	// Step 3: Override auth-url and execute device flow login
+	loginCommand := "login  --use-device --auth-url " + server.URL + " --tenant " + utils.TestTenant
+	results, err, std := utils.ExecuteCmd(loginCommand, t)
+
+	// Step 4: Assert results
+	assert.True(t, strings.Contains(results, "Verification URL: "+utils.TEST_VERIFICATION_URL))
+	assert.True(t, strings.Contains(results, "User Code: "+utils.TEST_USER_CODE))
+	assert.True(t, strings.Contains(results, "401"))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+	// Step 5: Tear down testing environment
+	tearDown(t)
+}

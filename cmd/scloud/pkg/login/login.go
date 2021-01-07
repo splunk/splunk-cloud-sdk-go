@@ -11,6 +11,8 @@ import (
 )
 
 const refreshFlow = "refresh"
+const pkceFlow = "pkce"
+const deviceFlow = "device"
 
 // TODO: Adding password handling
 type Options struct {
@@ -87,10 +89,24 @@ func parseLoginOption(cmd *cobra.Command) (*Options, error) {
 		return nil, errors.New(`error parsing "use-refresh-token": ` + err.Error())
 	}
 
+	isPKCEFlow, err := cmd.Flags().GetBool("use-pkce")
+	if err != nil {
+		return nil, errors.New(`error parsing "use-pkce": ` + err.Error())
+	}
+
+	isDeviceFlow, err := cmd.Flags().GetBool("use-device")
+	if err != nil {
+		return nil, errors.New(`error parsing "use-device": ` + err.Error())
+	}
+
 	var authKind string
 
 	if isRefreshFlow {
 		authKind = refreshFlow
+	} else if isPKCEFlow {
+		authKind = pkceFlow
+	} else if isDeviceFlow {
+		authKind = deviceFlow
 	} else {
 		authKind, err = getAuthKindFromProfile()
 

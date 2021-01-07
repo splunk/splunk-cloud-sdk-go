@@ -177,14 +177,11 @@ type DeviceFlowRetriever struct {
 // NewDeviceFlowRetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewDeviceFlowRetriever(clientID string, tenant string, deviceCode string, expiresIn int, interval int, idpHost string) *DeviceFlowRetriever {
+func NewDeviceFlowRetriever(clientID string, tenant string, idpHost string) *DeviceFlowRetriever {
 	return &DeviceFlowRetriever{
-		Client:     makeClient(idpHost, false),
-		ClientID:   clientID,
-		Tenant:     tenant,
-		DeviceCode: deviceCode,
-		ExpiresIn:  expiresIn,
-		Interval:   interval,
+		Client:   makeClient(idpHost, false),
+		ClientID: clientID,
+		Tenant:   tenant,
 	}
 }
 
