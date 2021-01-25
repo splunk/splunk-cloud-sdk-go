@@ -131,11 +131,13 @@ func isDefaultValue(key string, value interface{}) bool {
 
 // Returns the selected username.
 func getUsername(cmd *cobra.Command) string {
-	if username, err := cmd.Flags().GetString("uid"); err == nil && len(username) != 0 {
-		return username
+	if cmd != nil {
+		if username, err := cmd.Flags().GetString("uid"); err == nil && len(username) != 0 {
+			return username
+		}
 	}
 
-	if username, ok := localSetting["username"].(string); ok {
+	if username, ok := localSetting["username"].(string); ok && username != "" {
 		return username
 	}
 
