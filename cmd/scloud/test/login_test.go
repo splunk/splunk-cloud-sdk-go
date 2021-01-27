@@ -24,6 +24,27 @@ func TestLoginWithNoUsername(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(std)
 
+	configCommand = "config list "
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
+	configCommand = "config reset"
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
+	configCommand = "config list "
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
 	configCommand = "config get --key \"username\""
 	result1, err, std = utils.ExecuteCmd(configCommand, t)
 	fmt.Println("===================" + configCommand)
