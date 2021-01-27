@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -16,12 +17,41 @@ func TestLoginWithNoUsername(t *testing.T) {
 	tearDown(t)
 
 	//set username to be empty
-	configCommand := " config set --key \"username\" --value \"\""
-	utils.ExecuteCmd(configCommand, t)
+	configCommand := "config set --key \"username\" --value \"\""
+	result1, err, std := utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
+	configCommand = "config get --key \"username\""
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
+	configCommand = "config list "
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
+
+	configCommand = "context list "
+	result1, err, std = utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
 
 	//execute a command, and this should prompt to input username
 	configCommand = "action list-actions"
-	results, _, _ := utils.ExecuteCmd(configCommand, t)
+	results, err, std := utils.ExecuteCmd(configCommand, t)
+	fmt.Println("===================" + configCommand)
+	fmt.Println(result1)
+	fmt.Println(err)
+	fmt.Println(std)
 	assert.Equal(t, "Username: ", results)
 }
 
