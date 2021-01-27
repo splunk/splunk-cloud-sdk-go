@@ -17,36 +17,8 @@ func TestLoginWithNoUsername(t *testing.T) {
 	tearDown(t)
 
 	//set username to be empty
-	configCommand := "config set --key \"username\" --value \"\""
+	configCommand := "config reset"
 	result1, err, std := utils.ExecuteCmd(configCommand, t)
-	fmt.Println("===================" + configCommand)
-	fmt.Println(result1)
-	fmt.Println(err)
-	fmt.Println(std)
-
-	configCommand = "config list "
-	result1, err, std = utils.ExecuteCmd(configCommand, t)
-	fmt.Println("===================" + configCommand)
-	fmt.Println(result1)
-	fmt.Println(err)
-	fmt.Println(std)
-
-	configCommand = "config reset"
-	result1, err, std = utils.ExecuteCmd(configCommand, t)
-	fmt.Println("===================" + configCommand)
-	fmt.Println(result1)
-	fmt.Println(err)
-	fmt.Println(std)
-
-	configCommand = "config list "
-	result1, err, std = utils.ExecuteCmd(configCommand, t)
-	fmt.Println("===================" + configCommand)
-	fmt.Println(result1)
-	fmt.Println(err)
-	fmt.Println(std)
-
-	configCommand = "config get --key \"username\""
-	result1, err, std = utils.ExecuteCmd(configCommand, t)
 	fmt.Println("===================" + configCommand)
 	fmt.Println(result1)
 	fmt.Println(err)
@@ -68,11 +40,7 @@ func TestLoginWithNoUsername(t *testing.T) {
 
 	//execute a command, and this should prompt to input username
 	configCommand = "action list-actions"
-	results, err, std := utils.ExecuteCmd(configCommand, t)
-	fmt.Println("===================" + configCommand)
-	fmt.Println(result1)
-	fmt.Println(err)
-	fmt.Println(std)
+	results, _, _ := utils.ExecuteCmd(configCommand, t)
 	assert.Equal(t, "Username: ", results)
 }
 
