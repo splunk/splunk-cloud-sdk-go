@@ -11,6 +11,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+//login without username specified should return prompt asking for input of username
+func TestLoginWithNoUsername(t *testing.T) {
+	configCommand := "login"
+	results, err, _ := utils.ExecuteCmd(configCommand, t)
+	assert.Equal(t, "Username: ", results)
+	assert.Equal(t, nil, err)
+	tearDown(t)
+}
+
 func TestRefreshLoginFlow(t *testing.T) {
 	loginCommand := "login  --pwd " + utils.Password + " --use-refresh-token"
 	results, err, std := utils.ExecuteCmd(loginCommand, t)
