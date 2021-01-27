@@ -1,7 +1,6 @@
 package test
 
 import (
-	"os"
 	"strings"
 	"testing"
 
@@ -14,10 +13,14 @@ import (
 
 //login without username specified should return prompt asking for input of username
 func TestLoginWithNoUsername(t *testing.T) {
-	scloudConfigFile := auth.Abspath(os.Getenv("~/.scloud.toml"))
-	os.Remove(scloudConfigFile)
+	tearDown(t)
 
-	configCommand := "login"
+	//set username to be empty
+	configCommand := " config set --key \"username\" --value \"\""
+	utils.ExecuteCmd(configCommand, t)
+
+	//execute a command, and this should prompt to input username
+	configCommand = "action list-actions"
 	results, _, _ := utils.ExecuteCmd(configCommand, t)
 	assert.Equal(t, "Username: ", results)
 }
