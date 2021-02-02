@@ -12,7 +12,8 @@ import (
 
 const refreshFlow = "refresh"
 const pkceFlow = "pkce"
-const deviceFlow = "device"
+
+// const deviceFlow = "device"
 
 // TODO: Adding password handling
 type Options struct {
