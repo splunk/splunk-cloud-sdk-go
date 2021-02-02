@@ -1,7 +1,6 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.11.1
-## Version 1.11.0
 
 ### Bugfix
  * Bugfix in scloud
