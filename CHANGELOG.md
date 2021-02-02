@@ -1,5 +1,16 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.11.1
+## Version 1.11.0
+
+### Bugfix
+ * Bugfix in scloud
+
+## SCloud v7.1.0
+
+### Bugfix
+ * Fixed scloud panic when ~/.scloud_context file is missing
+
 ## Version 1.11.0
 ### Services
 
