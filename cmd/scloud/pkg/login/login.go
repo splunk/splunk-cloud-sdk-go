@@ -94,10 +94,10 @@ func parseLoginOption(cmd *cobra.Command) (*Options, error) {
 		return nil, errors.New(`error parsing "use-pkce": ` + err.Error())
 	}
 
-	isDeviceFlow, err := cmd.Flags().GetBool("use-device")
-	if err != nil {
-		return nil, errors.New(`error parsing "use-device": ` + err.Error())
-	}
+	// isDeviceFlow, err := cmd.Flags().GetBool("use-device")
+	// if err != nil {
+	// 	return nil, errors.New(`error parsing "use-device": ` + err.Error())
+	// }
 
 	var authKind string
 
@@ -105,8 +105,6 @@ func parseLoginOption(cmd *cobra.Command) (*Options, error) {
 		authKind = refreshFlow
 	} else if isPKCEFlow {
 		authKind = pkceFlow
-	} else if isDeviceFlow {
-		authKind = deviceFlow
 	} else {
 		authKind, err = getAuthKindFromProfile()
 

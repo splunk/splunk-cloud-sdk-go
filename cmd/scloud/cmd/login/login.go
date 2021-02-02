@@ -27,7 +27,7 @@ func init() {
 	// Auth flow flags
 	loginCmd.Flags().BoolP("use-refresh-token", "", false, "Whether to use refresh token authentication flow")
 	loginCmd.Flags().BoolP("use-pkce", "", false, "use PKCE authentication flow")
-	loginCmd.Flags().BoolP("use-device", "", false, "use device authentication flow")
+	// loginCmd.Flags().BoolP("use-device", "", false, "use device authentication flow")
 
 	loginCmd.SetUsageTemplate(usageUtil.UsageTemplate)
 	loginCmd.SetHelpTemplate(usageUtil.HelpTemplate)
