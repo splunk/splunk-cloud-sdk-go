@@ -37,8 +37,15 @@ var list = &cobra.Command{
 	Use:   "list",
 	Short: "Display the token context details, including the access token and expiration",
 	Run: func(cmd *cobra.Command, args []string) {
-		context := auth.GetContext(cmd)
-		jsonx.Pprint(cmd, context)
+		tenant, _ := cmd.Flags().GetString("tenant")
+
+		if tenant == "" {
+			context := auth.GetAllContext(cmd)
+			jsonx.Pprint(cmd, context)
+		} else {
+			context := auth.GetContext(cmd, tenant)
+			jsonx.Pprint(cmd, context)
+		}
 	},
 }
 
@@ -50,6 +57,7 @@ var set = &cobra.Command{
 		// Extract flag values
 		key, _ := cmd.Flags().GetString("key")
 		value, _ := cmd.Flags().GetString("value")
+		tenant, _ := cmd.Flags().GetString("tenant")
 
 		// Validate Key
 		var isValidKey = funk.Contains(ValidKeys, key)
@@ -72,7 +80,7 @@ var set = &cobra.Command{
 			return
 		}
 
-		currentContext := auth.GetCurrentContext(clientID)
+		currentContext := auth.GetCurrentContext(clientID, tenant)
 		var context map[string]interface{}
 
 		if currentContext == nil {
@@ -87,7 +95,7 @@ var set = &cobra.Command{
 		context[key] = value
 		context["expires_in"] = expirationToUse
 
-		auth.SetContext(cmd, context)
+		auth.SetContext(cmd, tenant, context)
 	},
 }
 
@@ -97,9 +105,13 @@ func init() {
 
 	set.Flags().StringP("key", "k", "", "The key stored in the context file")
 	set.Flags().StringP("value", "p", "", "The value stored in the context file")
+	set.Flags().StringP("tenant", "", "", "The tenant associated with the context")
 
+	_ = set.MarkFlagRequired("tenant")
 	_ = set.MarkFlagRequired("key")
 	_ = set.MarkFlagRequired("value")
+
+	list.LocalFlags().StringP("tenant", "", "", "Optional flag to list context for a given tenant")
 
 	contextCmd.SetUsageTemplate(usageUtil.UsageTemplate)
 	contextCmd.SetHelpTemplate(usageUtil.HelpTemplate)

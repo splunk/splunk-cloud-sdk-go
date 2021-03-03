@@ -137,25 +137,30 @@ func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, e
 	if err != nil {
 		return nil, err
 	}
-	scope, err := getsd(profile, "scope", "openid")
-	if err != nil {
-		return nil, err
-	}
+
 	idpHost, err := gets(profile, "idp_host")
 	if err != nil {
 		return nil, err
 	}
 
 	var refreshToken string
-	context := GetCurrentContext(clientID)
+	var scope string
+	context := GetCurrentContext(clientID, getTenantName())
 
 	if context == nil {
 		refreshToken = ""
+		scope, err = getsd(profile, "scope", "openid")
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		refreshToken = context.RefreshToken
+		scope = context.Scope
 	}
 
-	tr := idp.NewRefreshTokenRetriever(clientID, scope, refreshToken, idpHost)
+	tenant := getTenantName()
+
+	tr := idp.NewRefreshTokenRetriever(clientID, scope, tenant, refreshToken, idpHost)
 
 	tr.Insecure = isInsecure()
 	return tr.Refresh(clientID, scope, refreshToken)

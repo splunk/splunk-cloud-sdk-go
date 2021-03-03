@@ -18,6 +18,7 @@ package auth
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -196,7 +197,7 @@ func GetProfileName() string {
 func getTenantName() string {
 	var tenant string
 
-	if tenant, ok := localSetting["tenant"].(string); ok {
+	if tenant, ok := localSetting["tenant"].(string); ok && tenant != "" {
 		return tenant
 	}
 
@@ -204,7 +205,7 @@ func getTenantName() string {
 	if _, err := fmt.Scanln(&tenant); err != nil {
 		util.Fatal(err.Error())
 	}
-
+	localSetting["tenant"] = tenant
 	return tenant
 }
 
@@ -249,20 +250,35 @@ func ensureCredentials(profile map[string]string, cmd *cobra.Command) {
 }
 
 // Returns the cached authorization context associated with the given clientID.
-func GetCurrentContext(clientID string) *idp.Context {
+func GetCurrentContext(clientID string, tenant string) *idp.Context {
+
+	// check if ctxCache is loaded
 	if ctxCache == nil {
+		fmt.Println("nil cache")
 		return nil
 	}
-	v := ctxCache.Get(clientID)
-	m, ok := v.(*toml.Tree)
+
+	// Get all the contexts that is associated with the clientID
+	ctxCacheByClientID := ctxCache.Get(clientID)
+
+	// Convert context to toml
+	tomlContexts, ok := ctxCacheByClientID.(*toml.Tree)
 	if !ok {
 		util.Warning("Deleting context cache")
 		// bad cache entry
 		ctxCache.Delete(clientID) //nolint:errcheck
 		return nil
 	}
+
+	// obtain tenant-scoped context
+	tenantContext, ok := tomlContexts.Get(tenant).(*toml.Tree)
+	if !ok {
+		return nil
+	}
+
+	// convert toml to Context struct
 	context := &idp.Context{}
-	if err := FromToml(context, m); err != nil {
+	if err := FromToml(context, tenantContext); err != nil {
 		util.Error(err.Error())
 		// bad cache entry
 		ctxCache.Delete(clientID) //nolint:errcheck
@@ -286,7 +302,7 @@ func getContext(cmd *cobra.Command) *idp.Context {
 		util.Fatal("bad app profile: no client_id")
 		return nil
 	}
-	context := GetCurrentContext(clientID)
+	context := GetCurrentContext(clientID, getTenantName())
 	if context != nil {
 		// todo: re-authenticate if token has expired
 		return context
@@ -310,7 +326,7 @@ func getContext(cmd *cobra.Command) *idp.Context {
 		return nil
 	}
 
-	ctxCache.Set(clientID, ToMap(context))
+	SetContext(cmd, getTenantName(), ToMap(context))
 	return context
 }
 
@@ -338,14 +354,14 @@ func Login(cmd *cobra.Command, authFlow func(map[string]string, *cobra.Command) 
 		return nil, err
 	}
 
-	clientID := profile["client_id"]
 	glog.CopyStandardLogTo("INFO")
 
 	context, err := authFlow(profile, cmd)
 	if err != nil {
 		return nil, err
 	}
-	ctxCache.Set(clientID, ToMap(context))
+
+	SetContext(cmd, getTenantName(), ToMap(context))
 	return context, nil
 }
 
@@ -377,6 +393,15 @@ func loadConfigs() error {
 		return err
 	}
 
+	if !isSupportedStruture(ctxCache) {
+		err = ctxCache.Backup()
+		if err != nil {
+			return err
+		}
+		ctxCache.Clear()
+		return errors.New("Context file is no longer supported. Tokens are backed up in .scloud_context_backup file. Please re-login or use the Context command to set a new token")
+	}
+
 	return nil
 }
 
@@ -392,6 +417,24 @@ func loadConfig() error {
 		return err
 	}
 	return nil
+}
+
+// Check if context is in the supported structure
+func isSupportedStruture(cache *fcache.Cache) bool {
+	if cache.IsEmpty() {
+		return true
+	}
+
+	mapOfCache := cache.All()
+	for clientID := range mapOfCache {
+		value := cache.Get(clientID)
+		tomlTree, _ := value.(*toml.Tree)
+		if tomlTree.Has("access_token") {
+			return false
+		}
+	}
+
+	return true
 }
 
 type Service struct {
@@ -442,9 +485,43 @@ func GetProfile(name string) (map[string]string, error) {
 	return profile, nil
 }
 
-// Returns the context from .scloud_context
-func GetContext(cmd *cobra.Command) *idp.Context {
-	return getContext(cmd)
+// Returns the context for a given tenant from .scloud_context
+func GetContext(cmd *cobra.Command, tenant string) *idp.Context {
+	clientID, err := GetClientID(cmd)
+	if err != nil {
+		return nil
+	}
+	context := GetCurrentContext(clientID, tenant)
+	if context != nil {
+		return context
+	}
+	return nil
+}
+
+// Return all the contexts associated with the current environment
+func GetAllContext(cmd *cobra.Command) map[string]interface{} {
+	// Get ClientID
+	clientID, err := GetClientID(cmd)
+	if err != nil {
+		return nil
+	}
+
+	// Get all the contexts that is associated with the clientID
+	ctxCacheByClientID := ctxCache.Get(clientID)
+
+	// Convert context to toml
+	tomlContext, ok := ctxCacheByClientID.(*toml.Tree)
+	if !ok {
+		util.Warning("Deleting context cache")
+		// bad cache entry
+		ctxCache.Delete(clientID) //nolint:errcheck
+		return nil
+	}
+
+	// Convert toml to map
+	allContext := tomlContext.ToMap()
+
+	return allContext
 }
 
 // Return client id
@@ -465,19 +542,40 @@ func GetClientID(cmd *cobra.Command) (string, error) {
 }
 
 // Set context in .scloud_context
-func SetContext(cmd *cobra.Command, context map[string]interface{}) {
-	profile, err := getProfile()
+func SetContext(cmd *cobra.Command, tenant string, context map[string]interface{}) {
+	clientID, err := GetClientID(cmd)
 	if err != nil {
-		util.Fatal(err.Error())
 		return
 	}
 
-	clientID, ok := profile["client_id"]
+	allContexts := ctxCache.Get(clientID)
+	var tomlContext *toml.Tree
+	ok := true
+
+	if allContexts == nil {
+		tomlContext, _ = toml.TreeFromMap(make(map[string]interface{}))
+	} else {
+		tomlContext, ok = allContexts.(*toml.Tree)
+	}
+
 	if !ok {
-		util.Fatal("bad app profile: no client_id")
+		util.Warning("Deleting context cache")
+		// bad cache entry
+		ctxCache.Delete(clientID) //nolint:errcheck
 		return
 	}
-	ctxCache.Set(clientID, context)
+
+	treeContext, err := toml.TreeFromMap(context)
+
+	if err != nil {
+		util.Warning(err.Error())
+		return
+	}
+	// set context tree as the value and the key will be the tenant name
+	tomlContext.Set(tenant, treeContext)
+
+	// update ctxCache
+	ctxCache.Set(clientID, tomlContext)
 }
 
 // Open the named static file asset.
