@@ -92,7 +92,7 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 	require.NotNil(t, ctx)
 
-	tr_refresh := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHost)
+	tr_refresh := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, testutils.TestTenant, ctx.RefreshToken, IdpHost)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr_refresh,
 		Host:           testutils.TestSplunkCloudHost,
@@ -115,7 +115,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 	require.NotNil(t, ctx)
 
-	tr_refresh := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHost)}
+	tr_refresh := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, testutils.TestTenant, ctx.RefreshToken, IdpHost)}
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr_refresh,
 		Host:           testutils.TestSplunkCloudHost,

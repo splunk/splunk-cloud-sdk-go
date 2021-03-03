@@ -31,7 +31,7 @@ func TestLoginWithNoUsername(t *testing.T) {
 	fmt.Println(err)
 	fmt.Println(std)
 
-	configCommand = "context list "
+	configCommand = "context list --tenant " + utils.TestTenant
 	result1, err, std = utils.ExecuteCmd(configCommand, t)
 	fmt.Println("===================" + configCommand)
 	fmt.Println(result1)
@@ -39,26 +39,9 @@ func TestLoginWithNoUsername(t *testing.T) {
 	fmt.Println(std)
 
 	//execute a command, and this should prompt to input username
-	configCommand = "action list-actions"
+	configCommand = "action list-actions  --tenant " + utils.TestTenant
 	results, _, _ := utils.ExecuteCmd(configCommand, t)
 	assert.Equal(t, "Username: ", results)
-}
-
-func TestRefreshLoginFlow(t *testing.T) {
-	loginCommand := "login  --pwd " + utils.Password + " --use-refresh-token"
-	results, err, std := utils.ExecuteCmd(loginCommand, t)
-
-	assert.Equal(t, "", results)
-	assert.Equal(t, nil, err)
-	assert.Equal(t, "", std)
-
-	identityCommand := "identity list-groups"
-	identityResults, err, std := utils.ExecuteCmd(identityCommand, t)
-	assert.NotEmpty(t, identityResults)
-	assert.False(t, strings.Contains(std, "401 Unauthorized"))
-	assert.False(t, strings.Contains(std, "404 Not Found"))
-	assert.Equal(t, nil, err)
-	assert.Equal(t, "", std)
 }
 
 func TestKCLoginFlow(t *testing.T) {
@@ -89,6 +72,9 @@ func TestKCLoginFlow(t *testing.T) {
 }
 
 func TestDefaultLoginFlow(t *testing.T) {
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
+
 	loginCommand := "login --pwd " + utils.Password
 	results, err, std := utils.ExecuteCmd(loginCommand, t)
 
@@ -105,8 +91,29 @@ func TestDefaultLoginFlow(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
+func TestRefreshLoginFlow(t *testing.T) {
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
 
+	refreshLoginCommand := "login  --pwd " + utils.Password + " --use-refresh-token"
+	results, err, std := utils.ExecuteCmd(refreshLoginCommand, t)
+
+	assert.Equal(t, "", results)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+
+	identityCommand := "identity list-groups"
+	identityResults, err, std := utils.ExecuteCmd(identityCommand, t)
+	assert.NotEmpty(t, identityResults)
+	assert.False(t, strings.Contains(std, "401 Unauthorized"))
+	assert.False(t, strings.Contains(std, "404 Not Found"))
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+}
 func TestRefreshLoginFlowWithVerbose(t *testing.T) {
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
+
 	loginCommand := "login  --pwd " + utils.Password + " --use-refresh-token --verbose"
 	results, err, std := utils.ExecuteCmd(loginCommand, t)
 
@@ -120,6 +127,9 @@ func TestRefreshLoginFlowWithVerbose(t *testing.T) {
 }
 
 func TestDefaultLoginFlowWithVerbose(t *testing.T) {
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
+
 	command := "login --pwd " + utils.Password + " --verbose"
 	results, err, std := utils.ExecuteCmd(command, t)
 
@@ -133,6 +143,9 @@ func TestDefaultLoginFlowWithVerbose(t *testing.T) {
 }
 
 func TestLoginWithUidShouldNotRequireUsername(t *testing.T) {
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
+
 	command := "login --uid " + utils.Username + " --pwd " + utils.Password + " --verbose"
 	searchString := "username"
 	resultsContainSearchString := utils.Execute_cmd_with_global_flags(command, searchString, t, false)

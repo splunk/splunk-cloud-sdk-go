@@ -64,6 +64,8 @@ type RefreshTokenRetriever struct {
 	ClientID string
 	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
 	Scope string
+	// Tenant
+	Tenant string
 	// RefreshToken to use to authenticate in order to generate an access token
 	RefreshToken *util.Credential
 }
@@ -71,11 +73,12 @@ type RefreshTokenRetriever struct {
 // NewRefreshTokenRetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string, idpHost string) *RefreshTokenRetriever {
+func NewRefreshTokenRetriever(clientID string, scope string, tenant string, refreshToken string, idpHost string) *RefreshTokenRetriever {
 	return &RefreshTokenRetriever{
 		Client:       makeClient(idpHost, false),
 		ClientID:     clientID,
 		Scope:        scope,
+		Tenant:       tenant,
 		RefreshToken: util.NewCredential(refreshToken),
 	}
 }

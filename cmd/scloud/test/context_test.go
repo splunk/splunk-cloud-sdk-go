@@ -16,6 +16,10 @@ import (
 )
 
 func TestContextCmdWithoutSubCmd(t *testing.T) {
+	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	_, err, _ := utils.ExecuteCmd(loginCmd, t)
+	assert.Equal(t, nil, err)
+
 	command := "context"
 	searchString := "Bearer"
 	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
@@ -23,7 +27,22 @@ func TestContextCmdWithoutSubCmd(t *testing.T) {
 }
 
 func TestContextListCmd(t *testing.T) {
+	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	_, err, _ := utils.ExecuteCmd(loginCmd, t)
+	assert.Equal(t, nil, err)
+
 	command := "context list"
+	searchString := utils.TestTenant
+	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
+	assert.Equal(t, true, success)
+}
+
+func TestContextListCmdWithTenant(t *testing.T) {
+	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	_, err, _ := utils.ExecuteCmd(loginCmd, t)
+	assert.Equal(t, nil, err)
+
+	command := "context list --tenant " + utils.TestTenant
 	searchString := "Bearer"
 	success := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
 	assert.Equal(t, true, success)
@@ -31,7 +50,7 @@ func TestContextListCmd(t *testing.T) {
 
 func TestContextSetCmd(t *testing.T) {
 	setUp(t)
-	setCommand := "context set --key access_token --value abc123"
+	setCommand := "context set --key access_token --value abc123 --tenant " + utils.TestTenant
 	results, _, std := utils.ExecuteCmd(setCommand, t)
 
 	assert.Equal(t, "", results)
@@ -51,21 +70,30 @@ func TestContextSetCmd(t *testing.T) {
 
 func TestContextSetCmdWithInvalidKey(t *testing.T) {
 	setUp(t)
-	setCommand := "context set --key accesstoken --value abc123"
+	setCommand := "context set --key accesstoken --value abc123 --tenant " + utils.TestTenant
 	results, _, std := utils.ExecuteCmd(setCommand, t)
 
 	assert.Equal(t, "", results)
 	assert.Equal(t, true, strings.Contains(std, "Here are the keys you can set"))
 
-	listCommand := "context list"
+	listCommand := "context list --tenant " + utils.TestTenant
 	res, _, std2 := utils.ExecuteCmd(listCommand, t)
 
-	assert.Equal(t, true, strings.Contains(res, "Password"))
 	assert.Equal(t, false, strings.Contains(res, "43200"))
 	assert.Equal(t, false, strings.Contains(res, "abc123"))
 	assert.Equal(t, false, strings.Contains(res, "Bearer"))
 	assert.Equal(t, false, strings.Contains(res, "offline_access openid email profile"))
-	assert.NotEqual(t, "", std2)
+	assert.Equal(t, "", std2)
+
+	tearDown(t)
+}
+
+func TestContextSetCmdWithoutTenant(t *testing.T) {
+	setUp(t)
+	setCommand := "context set --key access_token --value abc123"
+	results, _, _ := utils.ExecuteCmd(setCommand, t)
+
+	assert.Equal(t, "required flag(s) \"tenant\" not set\n", results)
 
 	tearDown(t)
 }

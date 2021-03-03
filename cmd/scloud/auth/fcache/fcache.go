@@ -148,6 +148,23 @@ func (cache *Cache) Set(key string, value interface{}) {
 	}
 }
 
+func (cache *Cache) Backup() error {
+	file, err := openWrite(cache.filename + "_backup")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = cache.data.WriteTo(file)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cache *Cache) IsEmpty() bool {
+	return len(cache.data.Keys()) == 0
+}
+
 func isValid(key string) bool {
 	if strings.ToLower(key) == "password" || strings.ToLower(key) == "pass" {
 		log.Fatal("Storing passords is not allowed.")
