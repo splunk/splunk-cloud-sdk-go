@@ -314,7 +314,7 @@ func UploadFileOverride(arg string) (*HttpResponse, error) {
 		return nil, err
 	}
 
-	err = client.StreamsService.UploadFiles(fileName)
+	err = client.StreamsService.UploadFile(fileName)
 	if err != nil {
 		return nil, err
 	}

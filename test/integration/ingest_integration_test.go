@@ -17,7 +17,6 @@
 package integration
 
 import (
-	"bufio"
 	"net/http"
 	"os"
 	"path"
@@ -169,7 +168,7 @@ func TestIntegrationCreateMetrics(t *testing.T) {
 	assert.Empty(t, err1)
 }
 
-func TestIntegrationUploadFile(t *testing.T) {
+func TestIntegrationUploadFiles(t *testing.T) {
 	client := getClient(t)
 
 	dir, err := os.Getwd()
@@ -183,26 +182,7 @@ func TestIntegrationUploadFile(t *testing.T) {
 	require.Equal(t, 201, resp.StatusCode)
 }
 
-func TestIntegrationUploadFileStream(t *testing.T) {
-	client := getClient(t)
-
-	dir, err := os.Getwd()
-	require.NoError(t, err)
-
-	filename := path.Join(dir, "ingest_integration_test.go")
-	file, err := os.Open(filename)
-	require.NoError(t, err)
-	defer file.Close()
-
-	var resp http.Response
-	stream := bufio.NewReader(file)
-
-	err = client.IngestService.UploadFilesStream(stream, &resp)
-	require.NoError(t, err)
-	require.Equal(t, 201, resp.StatusCode)
-}
-
-func TestIntegrationUploadFileStreamNonexistfile(t *testing.T) {
+func TestIntegrationUploadFilesNonexistfile(t *testing.T) {
 	client := getClient(t)
 
 	err := client.IngestService.UploadFiles("nonexit")

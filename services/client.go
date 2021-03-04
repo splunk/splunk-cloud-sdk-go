@@ -46,7 +46,7 @@ import (
 //go:generate go run ../util/gen_interface.go -svc=collect -p=collect -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=forwarders -p=forwarders -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=identity -p=identity -sf=service_generated.go
-//go:generate go run ../util/gen_interface.go -svc=ingest -p=ingest -sf=service_sdk.go -sf=service_generated.go
+//go:generate go run ../util/gen_interface.go -svc=ingest -p=ingest -sf=new_batch_events_sender.go -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=kvstore -p=kvstore -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=ml -p=ml -sf=service_generated.go
 //go:generate go run ../util/gen_interface.go -svc=search -p=search -sf=service.go -sf=service_generated.go
@@ -107,12 +107,6 @@ type DefaultRetryConfig struct {
 type RetryStrategyConfig struct {
 	DefaultRetryConfig      *DefaultRetryConfig
 	ConfigurableRetryConfig *ConfigurableRetryConfig
-}
-
-type FormData struct {
-	Key      string
-	Filename string
-	Stream   io.Reader
 }
 
 // GetNumErrorsByResponseCode returns number of attempts for a given response code >= 400
@@ -381,7 +375,7 @@ func (c *BaseClient) DoRequest(requestParams gdepservices.RequestParams) (*http.
 func (c *BaseClient) makeFormRequest(requestParams gdepservices.RequestParams) (*Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	forms, ok := requestParams.Body.(FormData)
+	forms, ok := requestParams.Body.(gdepservices.FormData)
 	if !ok {
 		return nil, errors.New("bad request of form data")
 	}
