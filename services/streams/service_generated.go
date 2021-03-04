@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Splunk, Inc.
+ * Copyright © 2021 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -26,6 +26,7 @@ package streams
 import (
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/splunk/go-dependencies/services"
 	"github.com/splunk/go-dependencies/util"
@@ -1420,31 +1421,91 @@ func (s *Service) UpdateTemplate(templateId string, templatePatchRequest Templat
 }
 
 /*
-	UploadFile - Upload new file.
-	Parameters:
-		file: Upload file
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+   UploadFile - Upload new file.
+   Parameters:
+       filename
+       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) UploadFile(file **os.File, resp ...*http.Response) (*UploadFileResponse, error) {
+func (s *Service) UploadFile(filename string, resp ...*http.Response) error {
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/files`, nil)
+
 	if err != nil {
-		return nil, err
+		return err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	var response *http.Response
+	if len(resp) > 0 && resp[0] != nil {
+		response = resp[0]
+	}
+
+	form := services.FormData{Filename: filepath.Base(filename), Stream: file, Key: "file"}
+
+	multipartResp, err := s.Client.Post(services.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
+
+	if multipartResp != nil {
+		defer multipartResp.Body.Close()
 
 		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
+		if response != nil {
+			*response = *multipartResp
 		}
 	}
+
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var rb UploadFileResponse
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
+
+	return nil
+}
+
+/*
+   UploadLookupFile - Upload new lookup file.
+   Parameters:
+       filename
+       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UploadLookupFile(filename string, resp ...*http.Response) error {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/lookups/files`, nil)
+
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	var response *http.Response
+	if len(resp) > 0 && resp[0] != nil {
+		response = resp[0]
+	}
+
+	form := services.FormData{Filename: filepath.Base(filename), Stream: file, Key: "file"}
+
+	multipartResp, err := s.Client.Post(services.RequestParams{URL: u, Body: form, Headers: map[string]string{"Content-Type": "multipart/form-data"}})
+
+	if multipartResp != nil {
+		defer multipartResp.Body.Close()
+
+		// populate input *http.Response if provided
+		if response != nil {
+			*response = *multipartResp
+		}
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 /*

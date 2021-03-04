@@ -2,7 +2,10 @@ package integration
 
 import (
 	"fmt"
+	"net/http"
 	"net/url"
+	"os"
+	"path"
 	"strconv"
 	"testing"
 	"time"
@@ -1024,4 +1027,46 @@ func cleanupTemplate(t *testing.T, id string) {
 	if err != nil {
 		fmt.Printf("WARN: error deleting template: id:%s, err: %s", id, err)
 	}
+}
+
+func TestIntegrationUploadFile(t *testing.T) {
+	client := getClient(t)
+
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+
+	var resp http.Response
+	filename := path.Join(dir, "streams_integration_test.go")
+
+	err = client.StreamsService.UploadFile(filename, &resp)
+	require.NoError(t, err)
+	require.Equal(t, 201, resp.StatusCode)
+}
+
+func TestIntegrationUploadLookupFile(t *testing.T) {
+	client := getClient(t)
+
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+
+	var resp http.Response
+	filename := path.Join(dir, "streams_integration_test.go")
+
+	err = client.StreamsService.UploadLookupFile(filename, &resp)
+	require.NoError(t, err)
+	require.Equal(t, 201, resp.StatusCode)
+}
+
+func TestIntegrationUploadFileNonexistfile(t *testing.T) {
+	client := getClient(t)
+
+	err := client.StreamsService.UploadFile("nonexit")
+	require.NotNil(t, err)
+}
+
+func TestIntegrationUploadLookupFileNonexistfile(t *testing.T) {
+	client := getClient(t)
+
+	err := client.StreamsService.UploadLookupFile("nonexit")
+	require.NotNil(t, err)
 }
