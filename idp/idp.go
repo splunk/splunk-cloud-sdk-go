@@ -529,13 +529,18 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 }
 
 // Refresh will authenticate using a refresh token.
-func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error) {
+func (c *Client) Refresh(clientID, scope, tenant, refreshToken string) (*Context, error) {
 	form := url.Values{
 		"client_id":     {clientID},
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
-	response, err := formPost(c.makeURL(c.TokenPath), form, c.Insecure)
+
+	if c.TenantTokenPath == defaultTenantTokenPath && tenant != "system" {
+		c.TenantTokenPath = fmt.Sprintf(defaultTenantTokenTemplate, tenant)
+	}
+
+	response, err := formPost(c.makeURL(c.TenantTokenPath), form, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}

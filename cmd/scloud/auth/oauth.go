@@ -163,7 +163,7 @@ func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, e
 	tr := idp.NewRefreshTokenRetriever(clientID, scope, tenant, refreshToken, idpHost)
 
 	tr.Insecure = isInsecure()
-	return tr.Refresh(clientID, scope, refreshToken)
+	return tr.Refresh(clientID, scope, tenant, refreshToken)
 }
 
 func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {

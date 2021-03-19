@@ -85,7 +85,7 @@ func NewRefreshTokenRetriever(clientID string, scope string, tenant string, refr
 
 // GetTokenContext gets a new access token context from the identity provider
 func (tr *RefreshTokenRetriever) GetTokenContext() (*Context, error) {
-	ctx, err := tr.Refresh(tr.ClientID, tr.Scope, tr.RefreshToken.ClearText())
+	ctx, err := tr.Refresh(tr.ClientID, tr.Scope, tr.Tenant, tr.RefreshToken.ClearText())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get token in refresh token flow")
 	}
