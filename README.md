@@ -116,6 +116,49 @@ Initialize your project using Go modules for dependency support. Your project ca
     tenant name: <mytenant>
     ```
 
+## scloud login using device flow with access to environments: `playground`, `staging`, `prod`, `staging-scs` (gstage) and `prod-scs` (gprod1)
+To gain access to the environments through scloud cli, set the following config variables:
+- `username` associated with the environment you are intending to use, example: 
+   ```bash
+   $ scloud config set --key username --value <your_username>
+   ```
+   
+- `tenant` associated with the environment you are intending to use, example: 
+   ```bash
+   $ scloud config set --key tenant --value <your_tenant>
+   ``` 
+
+- `env` (envrionment), example:
+   ```bash
+   $ scloud config set --key env --value <any of the five available environments: `playground`, `staging`, `prod`, `staging-scs` (gstage) or `prod-scs` (gprod1)>
+   ```
+
+Once the environment variables are set, you can login using the command below:
+```bash
+$ scloud login --use-device
+```
+
+If the environment variables - tenant, username and env are set correctly, you will see the message given below prompting
+you to follow the verification browser link and to use the given code in that browser page to complete the login process.
+```bash
+$ scloud login --use-device
+Please validate user code in browser!
+Verification URL: https://auth.staging.scs.splunk.com/verify?tenant=<your_set_tenant> 
+User Code: <random_code>
+```
+
+An example command to access core services using scloud cli once the `scloud login --use-device` above has succeeded:
+```bash
+$ scloud appreg list-subscriptions
+```
+
+If the environment variables are not set correctly, you may see the following error:
+```bash 
+$ scloud login --use-device
+failed to get successful response from device endpoint: 401
+ Try again using the --logtostderr flag to show details about the error.
+```
+
 ## Documentation
 For general documentation, see the [Splunk Developer Portal](https://dev.splunk.com/scs/).
 

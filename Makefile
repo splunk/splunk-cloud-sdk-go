@@ -140,4 +140,8 @@ publish_scloud:
 publish_homebrew:
 	sh ./cicd/publish/scloud/publish_homebrew.sh
 
+statik:
+	@echo "Generate static assets .."
+	@statik -src=$(CURDIR)/cmd/scloud/cli/static -dest $(CURDIR)/cmd/scloud/auth
+
 .FORCE:
