@@ -252,6 +252,120 @@ func TestNewTokenClient(t *testing.T) {
 	assert.Equal(t, clusterAPIHost, testURL.Host)
 }
 
+func TestBuildURLWithTenantScopedEndpointClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	host := "myenv.scs.splunk.com"
+	tenant := "non-system"
+	cluster := "api"
+	client, err := NewClient(&Config{
+		Token:        token,
+		Tenant:       tenant,
+		TenantScoped: true,
+		Host:         host,
+	})
+	require.NoError(t, err)
+	testService := "myservice"
+	testVersion := "v2beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURLFromPathParams(nil, "api", `/myservice/v2beta1/widgets`, nil)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://%s.%s.%s/%s/%s/%s/%s", tenant, cluster, host, tenant, testService, testVersion, testEndpoint)
+	fmt.Println("Actual URL")
+	fmt.Println(testURL.String())
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
+func TestBuildURLWithRegionScopedSystemEndpointClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	host := "myenv.scs.splunk.com"
+	tenant := "system"
+	cluster := "api"
+	region := "region10"
+	client, err := NewClient(&Config{
+		Token:        token,
+		Tenant:       tenant,
+		TenantScoped: true,
+		Host:         host,
+		Region:       region,
+	})
+	require.NoError(t, err)
+	testService := "myservice"
+	testVersion := "v2beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURLFromPathParams(nil, "api", `/system/myservice/v2beta1/widgets`, nil)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://region-%s.%s.%s/%s/%s/%s/%s", region, cluster, host, tenant, testService, testVersion, testEndpoint)
+	fmt.Println("Actual URL")
+	fmt.Println(testURL.String())
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
+func TestBuildURLWithMissingRegionSystemEndpointClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	host := "myenv.scs.splunk.com"
+	tenant := "system"
+	client, err := NewClient(&Config{
+		Token:        token,
+		Tenant:       tenant,
+		TenantScoped: true,
+		Host:         host,
+	})
+	require.NoError(t, err)
+	_, err = client.BuildURLFromPathParams(nil, "api", `/system/myservice/v2beta1/widgets`, nil)
+	fmt.Print(err)
+	require.Error(t, err)
+}
+
+func TestBuildURLWitOverrideHostClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	host := "custom.scp.splunk.com"
+	tenant := "non-system"
+	client, err := NewClient(&Config{
+		Token:        token,
+		Tenant:       tenant,
+		TenantScoped: true,
+		OverrideHost: host,
+	})
+	require.NoError(t, err)
+	testService := "myservice"
+	testVersion := "v2beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURLFromPathParams(nil, "api", `/myservice/v2beta1/widgets`, nil)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://%s/%s/%s/%s/%s", host, tenant, testService, testVersion, testEndpoint)
+	fmt.Println("Actual URL")
+	fmt.Println(testURL.String())
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
+func TestBuildURLWithDefaultTenantScopedClient(t *testing.T) {
+	token := "EXAMPLE_AUTHENTICATION_TOKEN"
+	tenant := "non-system"
+	client, err := NewClient(&Config{
+		Token:        token,
+		Tenant:       tenant,
+		TenantScoped: true,
+	})
+	require.NoError(t, err)
+	testService := "myservice"
+	testVersion := "v2beta1"
+	testEndpoint := "widgets"
+	testURL, err := client.BuildURLFromPathParams(nil, "api", `/myservice/v2beta1/widgets`, nil)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://%s.%s/%s/%s/%s/%s", tenant, "api.scp.splunk.com", tenant, testService, testVersion, testEndpoint)
+	fmt.Println("Actual URL")
+	fmt.Println(testURL.String())
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, testURL.String(), expectedURL)
+}
+
 type tRet struct{}
 
 const xyzToken = "X.Y.Z"

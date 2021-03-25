@@ -22,13 +22,16 @@ import (
 	"net/http"
 	"testing"
 
+	"fmt"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNewClient(t *testing.T) {
 	const providerHost = "https://myhost.net/"
-	client := NewClient(providerHost, "custom/authn", "custom/authz", "custom/token", "custom/system/token", "custom/csrfToken", "custom/system/device", false)
+	hostURL := HostURLConfig{}
+	client := NewClient(providerHost, "", "custom/authn", "custom/authz", "custom/token", "custom/system/token", "custom/csrfToken", "custom/system/device", false, hostURL)
 	assert.Equal(t, client.ProviderHost, providerHost)
 	assert.Equal(t, client.AuthnPath, "custom/authn")
 	assert.Equal(t, client.AuthorizePath, "custom/authz")
@@ -36,7 +39,7 @@ func TestNewClient(t *testing.T) {
 	assert.Equal(t, client.TenantTokenPath, "custom/system/token")
 	assert.Equal(t, client.DevicePath, "custom/system/device")
 	assert.Equal(t, client.CsrfTokenPath, "custom/csrfToken")
-	clientEmptyParams := NewClient(providerHost, "", "", "", "", "", "", false)
+	clientEmptyParams := NewClient(providerHost, "", "", "", "", "", "", "", false, hostURL)
 	assert.Equal(t, clientEmptyParams.ProviderHost, providerHost)
 	assert.Equal(t, clientEmptyParams.AuthnPath, defaultAuthnPath)
 	assert.Equal(t, clientEmptyParams.AuthorizePath, defaultAuthorizePath)
@@ -76,4 +79,35 @@ func TestDecode(t *testing.T) {
 	assert.Equal(t, ctx.IDToken, "my.id.token")
 	assert.Equal(t, ctx.RefreshToken, "my.refresh.token")
 	assert.True(t, ctx.StartTime > 0)
+}
+
+func TestGetTenantScopedHost(t *testing.T) {
+	tenant := "test-tenant"
+	hostURL := "https://testauth.mycompany.com"
+	hostName := "testauth.mycompany.com"
+
+	hostURL, err := getTenantScopedHost(true, tenant, hostURL)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://%s.%s/", tenant, hostName)
+	fmt.Println("Actual URL")
+	fmt.Println(hostURL)
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, hostURL, expectedURL)
+}
+
+func TestGetRegionScopedHost(t *testing.T) {
+	hostURL := "https://testauth.mycompany.com"
+	hostName := "testauth.mycompany.com"
+	tokenPath := "csrfToken"
+	region := "reg10"
+
+	hostURL, err := getRegionScopedHost(true, region, hostURL)
+	require.NoError(t, err)
+	expectedURL := fmt.Sprintf("https://region-%s.%s/%s", region, hostName, tokenPath)
+	fmt.Println("Actual URL")
+	fmt.Println(hostURL)
+	fmt.Println("Expected URL")
+	fmt.Println(expectedURL)
+	require.Equal(t, hostURL+tokenPath, expectedURL)
 }

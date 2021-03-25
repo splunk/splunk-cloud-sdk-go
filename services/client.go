@@ -83,6 +83,10 @@ type BaseClient struct {
 	tokenMux sync.Mutex
 	// clientVersion contains the client name and its current version in string format
 	clientVersion string
+	//tenantScoped is bool True if the hostnames are scoped to a specific tenant/region
+	tenantScoped bool
+	//region is the name of the region that the tenant is contained in
+	region string
 }
 
 // Request extends net/http.Request to track number of total attempts and error
@@ -153,6 +157,10 @@ type Config struct {
 	TokenExpireWindow time.Duration
 	// ClientVersion contains the client name and its current version in string format
 	ClientVersion string
+	//TenantScoped is bool True if the hostnames are scoped to a specific tenant/region
+	TenantScoped bool
+	//Region is the name of the region that the tenant is contained in
+	Region string
 }
 
 // NewRequest creates a new HTTP Request and set proper header
@@ -182,25 +190,29 @@ func (c *BaseClient) NewRequest(httpMethod, url string, body io.Reader, headers 
 }
 
 // BuildHost returns host including serviceCluster
-func (c *BaseClient) BuildHost(serviceCluster string) string {
+func (c *BaseClient) BuildHost(serviceCluster string, appendToHost string) string {
+	if appendToHost != "" {
+		appendToHost = appendToHost + "."
+	}
 	// If overrideHost is specified, always use that
 	if c.overrideHost != "" {
 		return c.overrideHost
 	}
 	// Otherwise form using <serviceCluster>.<rootDomain>
 	if serviceCluster != "" {
-		return fmt.Sprintf("%s.%s", serviceCluster, c.rootDomain)
+		return fmt.Sprintf("%s%s.%s", appendToHost, serviceCluster, c.rootDomain)
 	}
-	return fmt.Sprintf("api.%s", c.rootDomain)
+
+	return fmt.Sprintf("%sapi.%s", appendToHost, c.rootDomain)
 }
 
 // BuildURL creates full Splunk Cloud URL using the client's defaultTenant
 func (c *BaseClient) BuildURL(queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
-	return c.BuildURLWithTenant(c.defaultTenant, queryValues, serviceCluster, urlPathParts...)
+	return c.BuildURLWithTenant(c.defaultTenant, c.tenantScoped, c.region, queryValues, serviceCluster, urlPathParts...)
 }
 
 // BuildURLWithTenant creates full Splunk Cloud URL with tenant
-func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
+func (c *BaseClient) BuildURLWithTenant(tenant string, tenantScoped bool, region string, queryValues url.Values, serviceCluster string, urlPathParts ...string) (url.URL, error) {
 	var u url.URL
 	if len(tenant) == 0 {
 		return u, errors.New("a non-empty tenant must be specified")
@@ -208,8 +220,15 @@ func (c *BaseClient) BuildURLWithTenant(tenant string, queryValues url.Values, s
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	host := c.BuildHost(serviceCluster)
 	pathWithTenant := path.Join(append([]string{tenant}, urlPathParts...)...)
+
+	appendToHost := ""
+	if tenantScoped == true && region != "" && strings.Contains(pathWithTenant, "system") {
+		appendToHost = region
+	} else if tenantScoped == true && !strings.Contains(pathWithTenant, "system") {
+		appendToHost = tenant
+	}
+	host := c.BuildHost(serviceCluster, appendToHost)
 
 	u = url.URL{
 		Scheme:   c.scheme,
@@ -240,7 +259,18 @@ func (c *BaseClient) BuildURLFromPathParams(queryValues url.Values, serviceClust
 	if queryValues == nil {
 		queryValues = url.Values{}
 	}
-	host := c.BuildHost(serviceCluster)
+	appendToHost := ""
+	// Enforce that region must be specified
+	if c.tenantScoped == true && c.region == "" && strings.HasPrefix(path, "/system/") {
+		return u, errors.New("region cannot be empty")
+	}
+
+	if c.tenantScoped == true && c.region != "" && strings.HasPrefix(path, "/system/") {
+		appendToHost = "region-" + c.region
+	} else if c.tenantScoped == true && !strings.HasPrefix(path, "/system/") {
+		appendToHost = c.defaultTenant
+	}
+	host := c.BuildHost(serviceCluster, appendToHost)
 	u = url.URL{
 		Scheme:   c.scheme,
 		Host:     host,
@@ -422,7 +452,11 @@ func (c *BaseClient) SetOverrideHost(host string) {
 
 // GetURL returns the Splunk Cloud scheme/host formed as URL
 func (c *BaseClient) GetURL(serviceCluster string) *url.URL {
-	host := c.BuildHost(serviceCluster)
+	appendToHost := ""
+	if c.tenantScoped == true {
+		appendToHost = c.defaultTenant
+	}
+	host := c.BuildHost(serviceCluster, appendToHost)
 	return &url.URL{
 		Scheme: c.scheme,
 		Host:   host,
@@ -436,6 +470,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 		return nil, errors.New("either config.Host or config.OverrideHost may be set, setting both is invalid")
 	}
 	rootDomain := "scp.splunk.com"
+
 	if config.Host != "" {
 		rootDomain = config.Host
 	}
@@ -500,6 +535,8 @@ func NewClient(config *Config) (*BaseClient, error) {
 		responseHandlers:  handlers,
 		tokenExpireWindow: tokenExpireWindow,
 		clientVersion:     clientVersion,
+		tenantScoped:      config.TenantScoped,
+		region:            config.Region,
 	}
 
 	if config.RoundTripper != nil {

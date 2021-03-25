@@ -25,6 +25,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"syscall"
 
 	"github.com/golang/glog"
@@ -221,6 +222,19 @@ func getHostURL() string {
 func getCaCert() string {
 	cacert, _ := localSetting["ca-cert"].(string)
 	return cacert
+}
+
+// Return region from passed-in options or local settings.
+func getRegion() string {
+	region, _ := localSetting["region"].(string)
+	return region
+}
+
+// Return tenant-scoped from passed-in options or local settings.
+func getTenantScoped() bool {
+	tenantScopedString, _ := localSetting["tenant-scoped"].(string)
+	tenantScoped, _ := strconv.ParseBool(tenantScopedString)
+	return tenantScoped
 }
 
 // Defaults to false, reads from settings first.

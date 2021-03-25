@@ -119,3 +119,11 @@ func TestGetSystemTenantWithoutGlobalEnv(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
+
+func TestGlobalRegionFlag(t *testing.T) {
+	command := "identity list-principals --region iad10"
+	_, err, std := utils.ExecuteCmd(command, t)
+
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "", std)
+}

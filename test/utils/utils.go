@@ -48,7 +48,13 @@ func init() {
 	TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
 	TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
 
+	TestSplunkCloudHostTenantScoped = os.Getenv("SPLUNK_CLOUD_HOST_TENANT_SCOPED")
+
 	TestTenant = os.Getenv("TENANT_ID")
+
+	TestTenantScoped = os.Getenv("TEST_TENANT_SCOPED")
+
+	TestRegion = os.Getenv("REGION")
 
 	TestMLTenant = os.Getenv("ML_TENANT_ID")
 
@@ -69,11 +75,17 @@ var RunSuffix = time.Now().Unix()
 // TestSplunkCloudHost - the url for the test api to be used
 var TestSplunkCloudHost string
 
+// TestSplunkCloudHost - the url for the tenantscoped api to be used
+var TestSplunkCloudHostTenantScoped string
+
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
 var TestAuthenticationToken string
 
 // TestTenant - the tenant to be used for the API
 var TestTenant string
+
+// TestTenant - the tenantscoped tenant to be used for the API
+var TestTenantScoped string
 
 // TestMLTenant - the tenant to be used for the API
 var TestMLTenant string
@@ -110,6 +122,9 @@ var LongTestTimeout = time.Second * 600
 
 // TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
 var TenantCreationOn bool
+
+//Region which correlates to the tenant, used to formulate tenant scoped hostnames
+var TestRegion string
 
 // PKCE
 const NativeAppRedirectURI = "https://login.splunkbeta.com"

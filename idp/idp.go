@@ -150,6 +150,7 @@ const (
 // Client captures url and route information for the IdP endpoints
 type Client struct {
 	ProviderHost    string
+	OverrideAuthURL string
 	AuthnPath       string
 	AuthorizePath   string
 	TokenPath       string
@@ -157,18 +158,25 @@ type Client struct {
 	DevicePath      string
 	CsrfTokenPath   string
 	Insecure        bool
+	hostURLConfig   HostURLConfig
 }
 
 // NewClient Returns a new IdP client object.
 //   providerURL: should be of the form https://example.com or optionally https://example.com:port
 func NewClient(providerURL string,
+	overrideAuthURL string,
 	authnPath string,
 	authorizePath string,
 	tokenPath string,
 	tenantTokenPath string,
 	csrfTokenPath string,
 	devicePath string,
-	insecure bool) *Client {
+	insecure bool,
+	hostURLConfig HostURLConfig) *Client {
+	// Add a trailing slash if none
+	if overrideAuthURL != "" && overrideAuthURL[len(overrideAuthURL)-1:] != "/" {
+		overrideAuthURL = overrideAuthURL + "/"
+	}
 	// Add a trailing slash if none
 	if providerURL[len(providerURL)-1:] != "/" {
 		providerURL = providerURL + "/"
@@ -193,6 +201,7 @@ func NewClient(providerURL string,
 	}
 	return &Client{
 		ProviderHost:    providerURL,
+		OverrideAuthURL: overrideAuthURL,
 		AuthnPath:       authnPath,
 		AuthorizePath:   authorizePath,
 		TokenPath:       tokenPath,
@@ -200,6 +209,7 @@ func NewClient(providerURL string,
 		CsrfTokenPath:   csrfTokenPath,
 		DevicePath:      devicePath,
 		Insecure:        insecure,
+		hostURLConfig:   hostURLConfig,
 	}
 }
 
@@ -310,8 +320,8 @@ func state() string {
 }
 
 // Return a full URL based on the given host and path template.
-func (c *Client) makeURL(path string) string {
-	return fmt.Sprintf("%s%s", c.ProviderHost, path)
+func (c *Client) makeURL(hostURL string, path string) string {
+	return fmt.Sprintf("%s%s", hostURL, path)
 }
 
 func getCookie(cookies []*http.Cookie, name string) *http.Cookie {
@@ -323,12 +333,73 @@ func getCookie(cookies []*http.Cookie, name string) *http.Cookie {
 	return nil
 }
 
+// If tenantScoped is true, return tenant.hostname
+func getTenantScopedHost(tenantScoped bool, tenant string, hostURL string) (string, error) {
+	//check tenant scoped, tenant is not empty
+	var err error
+	if tenantScoped == true && tenant == "" {
+		return "", errors.New("Tenant needs to be specified to get token")
+	}
+	//check tenant scoped, append tenant to idp host, so hostname is tenant scoped
+	if tenantScoped == true {
+		u, err := url.Parse(hostURL)
+		if err != nil {
+			return "", errors.New("Host url specified is not in the correct format")
+		}
+		hostURL = fmt.Sprintf("%s://%s.%s/", u.Scheme, tenant, u.Host)
+	}
+
+	return hostURL, err
+}
+
+// If tenantScoped is true, return region-region.hostname
+func getRegionScopedHost(tenantScoped bool, region string, hostURL string) (string, error) {
+	//check tenant scoped, region is not empty
+	var err error
+	if tenantScoped == true && region == "" {
+		return "", errors.New("Region needs to be specified to get token")
+	}
+	//check tenant scoped, append region to idp host
+	if tenantScoped == true {
+		u, err := url.Parse(hostURL)
+		if err != nil {
+			return "", errors.New("Host url specified is not in the correct format")
+		}
+		hostURL = fmt.Sprintf("%s://region-%s.%s/", u.Scheme, region, u.Host)
+	}
+	return hostURL, err
+}
+
 // ClientFlow will authenticate using the "client credentials" flow.
 func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, error) {
 	form := url.Values{
 		"grant_type": {"client_credentials"},
 		"scope":      {scope}}
-	request, err := newFormPost(c.makeURL(c.TokenPath), form)
+
+	var err error
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+	//Tenant scoped or region scoped hostname based on non-system or system tenant
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+			c.TokenPath = fmt.Sprintf(defaultTenantTokenTemplate, c.hostURLConfig.Tenant)
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+			c.TokenPath = defaultTenantTokenPath
+		}
+	}
+
+	request, err := newFormPost(c.makeURL(hostURL, c.TokenPath), form)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request to token endpoint")
 	}
@@ -356,7 +427,21 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 }
 
 func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
-	response, err := get(c.makeURL(c.CsrfTokenPath), nil, nil, c.Insecure)
+	var err error
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+		if err != nil {
+			return "", nil, errors.Wrap(err, "error in creating region scoped url")
+		}
+	}
+
+	response, err := get(c.makeURL(hostURL, c.CsrfTokenPath), nil, nil, c.Insecure)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
 	}
@@ -387,7 +472,20 @@ func (c *Client) GetSessionToken(username, password string) (string, []*http.Coo
 		"password":  password,
 		"csrfToken": csrfToken}
 
-	response, err := post(c.makeURL(c.AuthnPath), body, c.Insecure, cookies...)
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+		if err != nil {
+			return "", nil, errors.Wrap(err, "error in creating region scoped url")
+		}
+	}
+
+	response, err := post(c.makeURL(hostURL, c.AuthnPath), body, c.Insecure, cookies...)
 	if err != nil {
 		return "", nil, errors.Wrap(err, "failed to get valid response from authn endpoint")
 	}
@@ -478,7 +576,28 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"scope":                 {scope},
 		"session_token":         {sessionToken},
 		"state":                 {state()}}
-	response, err := get(c.makeURL(c.AuthorizePath), params, sessionCookies, c.Insecure)
+
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+		}
+	}
+
+	response, err := get(c.makeURL(hostURL, c.AuthorizePath), params, sessionCookies, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from authorize endpoint")
 	}
@@ -505,7 +624,29 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		"code_verifier": {cv},
 		"grant_type":    {"authorization_code"},
 		"redirect_uri":  {redirectURI}}
-	response, err = formPost(c.makeURL(c.TokenPath), form, c.Insecure)
+
+	hostURL = c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+			c.TokenPath = fmt.Sprintf(defaultTenantTokenTemplate, c.hostURLConfig.Tenant)
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+			c.TokenPath = defaultTenantTokenPath
+		}
+	}
+
+	response, err = formPost(c.makeURL(hostURL, c.TokenPath), form, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}
@@ -529,18 +670,41 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 }
 
 // Refresh will authenticate using a refresh token.
-func (c *Client) Refresh(clientID, scope, tenant, refreshToken string) (*Context, error) {
+func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error) {
 	form := url.Values{
 		"client_id":     {clientID},
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 		"scope":         {scope}}
 
-	if c.TenantTokenPath == defaultTenantTokenPath && tenant != "system" {
-		c.TenantTokenPath = fmt.Sprintf(defaultTenantTokenTemplate, tenant)
+	var err error
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
 	}
 
-	response, err := formPost(c.makeURL(c.TenantTokenPath), form, c.Insecure)
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+		}
+	}
+	// tenant/token path if non-system tenant, else system/token
+	if c.hostURLConfig.Tenant != "system" {
+		c.TokenPath = fmt.Sprintf(defaultTenantTokenTemplate, c.hostURLConfig.Tenant)
+	} else if c.hostURLConfig.Tenant == "system" {
+		c.TokenPath = defaultTenantTokenPath
+	}
+	response, err := formPost(c.makeURL(hostURL, c.TokenPath), form, c.Insecure)
+
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
 	}
@@ -551,14 +715,40 @@ func (c *Client) Refresh(clientID, scope, tenant, refreshToken string) (*Context
 }
 
 // GetDeviceCodes will get info for the device flow.
-func (c *Client) GetDeviceCodes(clientID, tenant, scope string) (*DeviceCodeInfo, error) {
+func (c *Client) GetDeviceCodes(clientID, scope string) (*DeviceCodeInfo, error) {
 	form := url.Values{
 		"client_id": {clientID},
 		"scope":     {scope}}
-	if c.DevicePath == defaultDevicePath && tenant != "system" {
-		c.DevicePath = fmt.Sprintf(defaultDevicePathTemplate, tenant)
+
+	var err error
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
 	}
-	response, err := formPost(c.makeURL(c.DevicePath), form, c.Insecure)
+
+	//Tenant scoped or region scoped hostname based on non-system or system tenant
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.DevicePath == defaultDevicePath && c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+		}
+	}
+	// tenant/token path if non-system tenant, else system/token
+	if c.hostURLConfig.Tenant != "system" {
+		c.DevicePath = fmt.Sprintf(defaultDevicePathTemplate, c.hostURLConfig.Tenant)
+	} else if c.hostURLConfig.Tenant == "system" {
+		c.DevicePath = defaultDevicePath
+	}
+
+	response, err := formPost(c.makeURL(hostURL, c.DevicePath), form, c.Insecure)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get valid response from device endpoint")
 	}
@@ -574,9 +764,8 @@ func (c *Client) GetDeviceCodes(clientID, tenant, scope string) (*DeviceCodeInfo
 }
 
 // DeviceFlow will authenticate using the device flow.
-func (c *Client) DeviceFlow(clientID, tenant, deviceCode string, expiresIn, interval int) (*Context, error) {
+func (c *Client) DeviceFlow(clientID, deviceCode string, expiresIn, interval int) (*Context, error) {
 	var response *http.Response
-	var err error
 	codeExpiration := time.Now().Add(time.Duration(expiresIn) * time.Second)
 	pollingInterval := time.Duration(interval) * time.Second
 	form := url.Values{
@@ -584,12 +773,35 @@ func (c *Client) DeviceFlow(clientID, tenant, deviceCode string, expiresIn, inte
 		"grant_type":  {"urn:ietf:params:oauth:grant-type:device_code"},
 		"device_code": {deviceCode}}
 
-	if c.TenantTokenPath == defaultTenantTokenPath && tenant != "system" {
-		c.TenantTokenPath = fmt.Sprintf(defaultTenantTokenTemplate, tenant)
+	var err error
+	hostURL := c.ProviderHost
+
+	if c.OverrideAuthURL != "" {
+		hostURL = c.OverrideAuthURL
+	}
+	//Tenant scoped or region scoped hostname based on non-system or system tenant
+	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+		if c.hostURLConfig.Tenant != "system" {
+			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating tenant scoped url")
+			}
+		} else if c.hostURLConfig.Tenant == "system" {
+			hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error in creating region scoped url")
+			}
+		}
 	}
 
+	// tenant/token path if non-system tenant, else system/token
+	if c.hostURLConfig.Tenant != "system" {
+		c.TenantTokenPath = fmt.Sprintf(defaultTenantTokenTemplate, c.hostURLConfig.Tenant)
+	} else if c.hostURLConfig.Tenant == "system" {
+		c.TenantTokenPath = defaultTenantTokenPath
+	}
 	for time.Now().Before(codeExpiration) {
-		response, err = formPost(c.makeURL(c.TenantTokenPath), form, c.Insecure)
+		response, err = formPost(c.makeURL(hostURL, c.TenantTokenPath), form, c.Insecure)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to get valid response from tenant token endpoint")
 		}
