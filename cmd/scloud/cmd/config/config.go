@@ -27,6 +27,8 @@ var GlobalFlags = map[string]interface{}{
 	"testhookdryrun": false,
 	"testhook":       false,
 	"timeout":        0,
+	"region":         "",
+	"tenant-scoped":  false,
 }
 
 // Cmd -- used to connection to rootCmd

@@ -119,13 +119,20 @@ func PkceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, erro
 		return nil, err
 	}
 
-	// Override idp_host from config file with -auth_url or auth_url in local settings
-	authURL, _ := localSetting["auth-url"].(string)
-	if authURL != "" {
-		idpHost = authURL
-	}
+	// tenantScoped = true for multi-region hostnames
+	tenantScoped := enableTenantScope
+	tenant := getTenantName()
+	region := getRegion()
 
-	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost)
+	tenantScopedSetting := getTenantScoped()
+	if tenantScopedSetting != false {
+		tenantScoped = tenantScopedSetting
+	}
+	// Override idp_host from config file with -auth_url or auth_url in local settings
+	overrideAuthURL, _ := localSetting["auth-url"].(string)
+
+	hostURL := idp.HostURLConfig{TenantScoped: tenantScoped, Tenant: tenant, Region: region}
+	tr := idp.NewPKCERetriever(clientID, redirectURI, idp.DefaultOIDCScopes, username, password, idpHost, overrideAuthURL, hostURL)
 
 	// Allow on-prem to use insecure to bypass TLS Verification
 	tr.Insecure = isInsecure()
@@ -158,12 +165,25 @@ func RefreshFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, e
 		scope = context.Scope
 	}
 
+	// tenantScoped = true for multi-region hostnames
+	tenantScoped := enableTenantScope
 	tenant := getTenantName()
+	region := getRegion()
 
-	tr := idp.NewRefreshTokenRetriever(clientID, scope, tenant, refreshToken, idpHost)
+	tenantScopedSetting := getTenantScoped()
+	if tenantScopedSetting != false {
+		tenantScoped = tenantScopedSetting
+	}
+
+	// Override idp_host from config file with -auth_url or auth_url in local settings
+	overrideAuthURL, _ := localSetting["auth-url"].(string)
+
+	hostURL := idp.HostURLConfig{TenantScoped: tenantScoped, Tenant: tenant, Region: region}
+
+	tr := idp.NewRefreshTokenRetriever(clientID, scope, refreshToken, idpHost, overrideAuthURL, hostURL)
 
 	tr.Insecure = isInsecure()
-	return tr.Refresh(clientID, scope, tenant, refreshToken)
+	return tr.Refresh(clientID, scope, refreshToken)
 }
 
 func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, error) {
@@ -177,7 +197,15 @@ func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, er
 		return nil, err
 	}
 
+	// tenantScoped = true for multi-region hostnames
+	tenantScoped := enableTenantScope
 	tenant := getTenantName()
+	region := getRegion()
+
+	tenantScopedSetting := getTenantScoped()
+	if tenantScopedSetting != false {
+		tenantScoped = tenantScopedSetting
+	}
 
 	idpHost, err := gets(profile, "idp_host")
 	if err != nil {
@@ -185,15 +213,14 @@ func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, er
 	}
 
 	// Override idp_host from config file with -auth_url or auth_url in local settings
-	authURL, _ := localSetting["auth-url"].(string)
-	if authURL != "" {
-		idpHost = authURL
-	}
+	overrideAuthURL, _ := localSetting["auth-url"].(string)
 
-	tr := idp.NewDeviceFlowRetriever(clientID, tenant, idpHost)
+	hostURL := idp.HostURLConfig{TenantScoped: tenantScoped, Tenant: tenant, Region: region}
+
+	tr := idp.NewDeviceFlowRetriever(clientID, idpHost, overrideAuthURL, hostURL)
 	tr.Insecure = isInsecure()
 
-	deviceCodeInfo, err := tr.GetDeviceCodes(clientID, tenant, defaultScope)
+	deviceCodeInfo, err := tr.GetDeviceCodes(clientID, defaultScope)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -204,7 +231,7 @@ func DeviceFlow(profile map[string]string, cmd *cobra.Command) (*idp.Context, er
 	fmt.Printf("Verification URL: %v \n", deviceCodeInfo.VerificationURI)
 	fmt.Printf("User Code: %v \n", deviceCodeInfo.UserCode)
 
-	return tr.DeviceFlow(clientID, tenant, deviceCodeInfo.DeviceCode, deviceCodeInfo.ExpiresIn, deviceCodeInfo.Interval)
+	return tr.DeviceFlow(clientID, deviceCodeInfo.DeviceCode, deviceCodeInfo.ExpiresIn, deviceCodeInfo.Interval)
 }
 
 // Return the correct flow function

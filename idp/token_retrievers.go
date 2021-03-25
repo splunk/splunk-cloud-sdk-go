@@ -42,19 +42,21 @@ func (tr *NoOpTokenRetriever) GetTokenContext() (*Context, error) {
 }
 
 // makeClient creates an *idp.Client
-func makeClient(idpHost string, insecure bool) *Client {
+func makeClient(idpHost string, overrideAuthURL string, insecure bool, hostURLConfig HostURLConfig) *Client {
 	if idpHost == "" {
 		idpHost = SplunkCloudIdpHost
 	}
 	return NewClient(
 		idpHost,
+		overrideAuthURL,
 		defaultAuthnPath,
 		defaultAuthorizePath,
 		defaultTokenPath,
 		defaultTenantTokenPath,
 		defaultCsrfTokenPath,
 		defaultDevicePath,
-		insecure)
+		insecure,
+		hostURLConfig)
 }
 
 // RefreshTokenRetriever retries a request after getting a new access token from the identity provider using a RefreshToken
@@ -64,28 +66,35 @@ type RefreshTokenRetriever struct {
 	ClientID string
 	// Scope(s) to request, separated by spaces -- "openid email profile" is recommended for individual users
 	Scope string
-	// Tenant
-	Tenant string
 	// RefreshToken to use to authenticate in order to generate an access token
 	RefreshToken *util.Credential
+}
+
+//Host config
+type HostURLConfig struct {
+	//Tenant name
+	Tenant string
+	//Region name associated with tenant
+	Region string
+	//Flag TenantScoped true to enable tenant/region scoped hostnames
+	TenantScoped bool
 }
 
 // NewRefreshTokenRetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewRefreshTokenRetriever(clientID string, scope string, tenant string, refreshToken string, idpHost string) *RefreshTokenRetriever {
+func NewRefreshTokenRetriever(clientID string, scope string, refreshToken string, idpHost string, overrideAuthURL string, hostURLConfig HostURLConfig) *RefreshTokenRetriever {
 	return &RefreshTokenRetriever{
-		Client:       makeClient(idpHost, false),
+		Client:       makeClient(idpHost, overrideAuthURL, false, hostURLConfig),
 		ClientID:     clientID,
 		Scope:        scope,
-		Tenant:       tenant,
 		RefreshToken: util.NewCredential(refreshToken),
 	}
 }
 
 // GetTokenContext gets a new access token context from the identity provider
 func (tr *RefreshTokenRetriever) GetTokenContext() (*Context, error) {
-	ctx, err := tr.Refresh(tr.ClientID, tr.Scope, tr.Tenant, tr.RefreshToken.ClearText())
+	ctx, err := tr.Refresh(tr.ClientID, tr.Scope, tr.RefreshToken.ClearText())
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get token in refresh token flow")
 	}
@@ -106,9 +115,9 @@ type ClientCredentialsRetriever struct {
 // NewClientCredentialsRetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewClientCredentialsRetriever(clientID string, clientSecret string, scope string, idpHost string) *ClientCredentialsRetriever {
+func NewClientCredentialsRetriever(clientID string, clientSecret string, scope string, idpHost string, overrideAuthURL string, hostURLConfig HostURLConfig) *ClientCredentialsRetriever {
 	return &ClientCredentialsRetriever{
-		Client:       makeClient(idpHost, false),
+		Client:       makeClient(idpHost, overrideAuthURL, false, hostURLConfig),
 		ClientID:     clientID,
 		ClientSecret: util.NewCredential(clientSecret),
 		Scope:        scope,
@@ -142,9 +151,9 @@ type PKCERetriever struct {
 // NewPKCERetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewPKCERetriever(clientID string, redirectURI string, scope string, username string, password string, idpHost string) *PKCERetriever {
+func NewPKCERetriever(clientID string, redirectURI string, scope string, username string, password string, idpHost string, overrideAuthURL string, hostURLConfig HostURLConfig) *PKCERetriever {
 	return &PKCERetriever{
-		Client:      makeClient(idpHost, false),
+		Client:      makeClient(idpHost, overrideAuthURL, false, hostURLConfig),
 		ClientID:    clientID,
 		RedirectURI: redirectURI,
 		Scope:       scope,
@@ -180,17 +189,17 @@ type DeviceFlowRetriever struct {
 // NewDeviceFlowRetriever initializes a new token context retriever
 //   idpURL: should be of the form https://example.com or optionally https://example.com:port
 //     - if "" is specified then SplunkCloudIdpURL will be used.
-func NewDeviceFlowRetriever(clientID string, tenant string, idpHost string) *DeviceFlowRetriever {
+func NewDeviceFlowRetriever(clientID string, idpHost string, overrideAuthURL string, hostURLConfig HostURLConfig) *DeviceFlowRetriever {
 	return &DeviceFlowRetriever{
-		Client:   makeClient(idpHost, false),
+		Client:   makeClient(idpHost, overrideAuthURL, false, hostURLConfig),
 		ClientID: clientID,
-		Tenant:   tenant,
+		Tenant:   hostURLConfig.Tenant,
 	}
 }
 
 // GetTokenContext gets a new access token context from the identity provider
 func (tr *DeviceFlowRetriever) GetTokenContext() (*Context, error) {
-	ctx, err := tr.DeviceFlow(tr.ClientID, tr.Tenant, tr.DeviceCode, tr.ExpiresIn, tr.Interval)
+	ctx, err := tr.DeviceFlow(tr.ClientID, tr.DeviceCode, tr.ExpiresIn, tr.Interval)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get token in Device flow")
 	}

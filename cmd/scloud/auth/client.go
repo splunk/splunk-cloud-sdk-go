@@ -27,6 +27,8 @@ const (
 	defaultTimeout = 10
 	// use ScloudTestDone to indicate the scloud test command is done when using testhook-dryrun flag
 	ScloudTestDone = "Test Command is done\n"
+	//Switch to turn on and off tenant scoped hostname for auth and api domains
+	enableTenantScope bool = false
 )
 
 var sdkClient *sdk.Client
@@ -85,6 +87,9 @@ func getTimeoutForConfig() time.Duration {
 
 // Returns a service client ( points to the new SDK Client) based on the given service config.
 func newClient(svc *Service) *sdk.Client {
+	// enable multi-region hostnames
+	var tenantScoped = enableTenantScope
+
 	var serviceURL *url.URL
 	var hostURL = getHostURL()
 	serviceURL, err := url.Parse(hostURL)
@@ -102,14 +107,25 @@ func newClient(svc *Service) *sdk.Client {
 		}
 	}
 
-	host := serviceURL.Hostname()
-	if host == "" {
-		util.Warning("No host-url specified in config file, using default host")
-		host = svc.Host
+	// hostname obtained from default.yaml contains api. prefix that GoSDK client will append
+	host := strings.TrimPrefix(svc.Host, "api.")
+	overrideHost := serviceURL.Hostname()
+
+	var overrideHostPort string
+	var hostPort string
+	if overrideHost != "" {
+		overrideHostPort = overrideHost + ":" + port
+	} else {
+		hostPort = host + ":" + port
 	}
 
-	hostPort := host + ":" + port
 	tlsConfig := &tls.Config{InsecureSkipVerify: isInsecure()}
+
+	region := getRegion()
+	tenantScopedSetting := getTenantScoped()
+	if tenantScopedSetting != false {
+		tenantScoped = tenantScopedSetting
+	}
 
 	// Load client cert
 	caCert := getCaCert()
@@ -153,12 +169,15 @@ func newClient(svc *Service) *sdk.Client {
 
 	clientConfig := &services.Config{
 		Token:            getToken(),
-		OverrideHost:     hostPort,
+		Host:             hostPort,
+		OverrideHost:     overrideHostPort,
 		Scheme:           scheme,
 		Timeout:          getTimeoutForConfig(),
 		ResponseHandlers: []services.ResponseHandler{&services.DefaultRetryResponseHandler{}},
 		RoundTripper:     roundTripper,
 		ClientVersion:    scloudVersion,
+		TenantScoped:     tenantScoped,
+		Region:           region,
 	}
 
 	result, err := sdk.NewClient(clientConfig)

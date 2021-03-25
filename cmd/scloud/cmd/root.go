@@ -41,6 +41,8 @@ var (
 	testhookDryrun bool
 	testhook       bool
 	timeout        uint
+	region         string
+	tenantScoped   bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -90,6 +92,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolVar(&insecure, "insecure", false, "Specify whether to skip TLS validation. The default is \"false\" to enable TLS certificate validation")
 	rootCmd.PersistentFlags().StringVar(&cacert, "ca-cert", "", "Set the public cert file to use for a local host using HTTPS with TLScertificate validation enabled")
 	rootCmd.PersistentFlags().UintVar(&timeout, "timeout", 0, "Set HTTPS timeout (in seconds)")
+	rootCmd.PersistentFlags().StringVar(&region, "region", "", "Set region for hostname")
+	rootCmd.PersistentFlags().BoolVar(&tenantScoped, "tenant-scoped", false, "Specify whether to use tenantscoped hostnames in the api calls")
 	// add hidden test flags
 	rootCmd.PersistentFlags().BoolVar(&testhookDryrun, "testhook-dryrun", false, "a string flag")
 	err := rootCmd.PersistentFlags().MarkHidden("testhook-dryrun")
@@ -164,4 +168,7 @@ func initConfig() {
 
 	config.GlobalFlags["timeout"] = timeout
 
+	config.GlobalFlags["region"] = region
+
+	config.GlobalFlags["tenant-scoped"] = tenantScoped
 }

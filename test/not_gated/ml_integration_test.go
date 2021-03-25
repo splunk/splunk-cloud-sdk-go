@@ -38,7 +38,7 @@ var source = "go-tests"
 var sourceType = "json"
 
 var PkceTokenRetriver = idp.NewPKCERetriever(testutils.PkceClientID, testutils.NativeAppRedirectURI,
-	idp.DefaultOIDCScopes, testutils.Username, testutils.Password, testutils.IdpHost)
+	idp.DefaultOIDCScopes, testutils.Username, testutils.Password, testutils.IdpHost, "", idp.HostURLConfig{Tenant: testutils.TestMLTenant, TenantScoped: false})
 
 var sdkClient, sdkErr = testutils.MakeSdkClient(PkceTokenRetriver, testutils.TestMLTenant)
 
