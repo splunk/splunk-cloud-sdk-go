@@ -9,7 +9,7 @@
 	- To enable tenantScoped(multi-cell), set tenantScoped to True
   	- Enabling tenantScoped setting in the auth client will only generate tenant scoped tokens
 
-## SCloud v7.2.0-beta.1
+## SCloud v8.0.0-beta.1
 * Multi-cell support:
     - New flag --region to specify region for system scoped api calls
     - New flag --tenant-scoped to enable tenant/region scoping of the hostnames to support multi-celll (by default tenantScoped is set to False currently in scloud)
@@ -26,6 +26,14 @@
 		scloud login -—use-pkce
 	- To login using refresh-flow (once logged in via one of the above flows)
 		scloud login -—use-refresh-token
+* Added required flag `tenant` to the context set command
+    - To set a context
+        scloud context set --key access_token --value <token> --tenant <tenantName>
+* Added support to list contexts
+    - To list all the contexts
+        scloud context list
+    - To list context specific to a given tenant
+        scloud context list --tenant <tenantName>
 
 ## Version 1.11.1
 
