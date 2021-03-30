@@ -1,7 +1,6 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.12.0-beta.1
-## Version 1.12.0-beta.1
 * Added support for multipart/form data endpoints
 * Multi-cell support:
 	- Added support for tenant/region scoped hostnames to invoke tenant and system based api, auth domain endpoints 
