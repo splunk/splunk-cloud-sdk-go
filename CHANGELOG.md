@@ -26,7 +26,7 @@
 		scloud login -—use-pkce
 	- To login using refresh-flow (once logged in via one of the above flows)
 		scloud login -—use-refresh-token
-* Added required flag `tenant` to the context set command
+* BREAKING change: Added required flag `tenant` to the context set command
     - To set a context
         scloud context set --key access_token --value <token> --tenant <tenantName>
 * Added support to list contexts
