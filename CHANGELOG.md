@@ -1,5 +1,33 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.1
+## Version 1.12.0-beta.1
+* Added support for multipart/form data endpoints
+* Multi-cell support:
+	- Added support for tenant/region scoped hostnames to invoke tenant and system based api, auth domain endpoints 
+ 	- New config settings to create SDK/Auth client -> tenantScoped bool, region, tenant
+	- BREAKING change: IDP TokenRetrievers such as NewClientCredentialsRetriever now accept hostURL config which consists of tenantScoped, region, tenant parameters
+	- To enable tenantScoped(multi-cell), set tenantScoped to True
+  	- Enabling tenantScoped setting in the auth client will only generate tenant scoped tokens
+
+## SCloud v7.2.0-beta.1
+* Multi-cell support:
+    - New flag --region to specify region for system scoped api calls
+    - New flag --tenant-scoped to enable tenant/region scoping of the hostnames to support multi-celll (by default tenantScoped is set to False currently in scloud)
+* Support SCS environments gstage and prod:
+	New environments staging-scs and prod-scs can be specified to target gstage and gprod environments out-of-the-box
+* Support Device flow authentication:
+	- scloud login by default points to device-flow for the staging-scs and prod-scs environments
+	- To login using device-flow 
+		scloud config set -—key username -—value <user>
+		scloud config set -—key tenant -—value <tenantName>
+		scloud config set -—key env -—value staging-scs
+		scloud login -—use-device or scloud login
+	- To login using pkce-flow
+		scloud login -—use-pkce
+	- To login using refresh-flow (once logged in via one of the above flows)
+		scloud login -—use-refresh-token
+
 ## Version 1.11.1
 
 ### Bugfix
