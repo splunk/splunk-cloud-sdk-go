@@ -90,53 +90,9 @@ REQUEST BODY:{{"disabled":true,"kind":"metric","name":"scloud_test_catalog_name_
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1
 REQUEST BODY:{{"disabled":false,"frozenTimePeriodInSecs":80}}
 
-#testcase: catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric
+#testcase: catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric1  --frozen-time-period-in-secs 80
+REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_metric1
 REQUEST BODY:{{"frozenTimePeriodInSecs":80}}
-
-#testcase: catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/imported-by
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
-
-#testcase: catalog update-dataset-import --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
-
-#testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST BODY:<nil>
-
-#testcase: catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/imported-by
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
-
-#testcase: catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import?maxstale=10
-REQUEST BODY:<nil>
-
-#testcase: catalog update-dataset-by-id-import --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1
-REQUEST BODY:{{"module":"scloudtestcatalogmoduleupdated","name":"scloud_test_catalog_name_import_updated"}}
-
-#testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST BODY:<nil>
-
-#testcase: catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
-REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d19b1/importedby
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
-
-#testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST BODY:<nil>
-
-#testcase: catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name/importedby
-REQUEST BODY:{{"module":"scloudtestcatalogmodule","owner":"testSCloud","name":"scloud_test_catalog_name_import"}}
-
-#testcase: catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST URL:catalog/v2beta1/datasets/scloudtestcatalogmodule.scloud_test_catalog_name_import
-REQUEST BODY:<nil>
 
 #testcase: catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
 REQUEST URL:catalog/v2beta1/datasets/5e705c169a3bd200010d16b1

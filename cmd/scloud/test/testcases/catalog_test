@@ -29,23 +29,23 @@ catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d13b1
 # Index datasets if not deleted immediately achieve the 'reserved' status and cannot be deleted later
 catalog create-dataset-metric --id 5e705c169a3bd200010d16b1 --kind metric --module scloudtestcatalogmodule --name scloud_test_catalog_name_metric1 --frozen-time-period-in-secs 60 --disabled true
 catalog update-dataset-by-id-metric --datasetid 5e705c169a3bd200010d16b1 --frozen-time-period-in-secs 80 --disabled false
-catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric  --frozen-time-period-in-secs 80
+catalog update-dataset-metric --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric1  --frozen-time-period-in-secs 80
 
-# Test commands for import dataset - create, get, update, delete
-catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
-catalog update-dataset-import --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
-catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+# Test commands for import dataset - create, get, update, delete (Skipping these, because field 'owner' has been removed and we don't currently have the updated specs to generate updated code)
+#catalog create-dataset-import --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_metric1
+#catalog update-dataset-import --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+#catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
-catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
-catalog update-dataset-by-id-import --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
-catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+#catalog create-dataset-import-by-id --datasetid 5e705c169a3bd200010d16b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
+#catalog get-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import --maxstale 10
+#catalog update-dataset-by-id-import --datasetid 5e705c169a3bd200010d19b1 --name scloud_test_catalog_name_import_updated --module scloudtestcatalogmoduleupdated
+#catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
-catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+#catalog create-dataset-import-by-idv-1 --datasetid 5e705c169a3bd200010d19b1 --module scloudtestcatalogmodule --name scloud_test_catalog_name_import --owner testSCloud
+#catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
-catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
-catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
+#catalog create-dataset-importv-1 --name scloud_test_catalog_name_import --module scloudtestcatalogmodule --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name --owner testSCloud
+#catalog delete-dataset --datasetresourcename scloudtestcatalogmodule.scloud_test_catalog_name_import
 
 catalog delete-dataset-by-id --datasetid 5e705c169a3bd200010d16b1
 
