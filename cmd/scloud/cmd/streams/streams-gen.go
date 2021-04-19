@@ -773,6 +773,9 @@ func init() {
 
 	streamsCmd.AddCommand(uploadLookupFileCmd)
 
+	var uploadLookupFileFileName string
+	uploadFileCmd.Flags().StringVar(&uploadLookupFileFileName, "lookup-file-name", "", "Lookup File to upload.")
+
 	streamsCmd.AddCommand(validatePipelineCmd)
 
 	var validatePipelineInputDatafile string

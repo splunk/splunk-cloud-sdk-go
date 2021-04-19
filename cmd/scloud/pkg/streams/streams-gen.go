@@ -1511,14 +1511,22 @@ func UploadLookupFile(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	// Parse all flags
+
+	var lookupfileName string
+	err = flags.ParseFlag(cmd.Flags(), "lookup-file-name", &lookupfileName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "lookup-file-name": ` + err.Error())
+	}
+
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.StreamsService.UploadLookupFile()
+	err = client.StreamsService.UploadLookupFile(lookupfileName)
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
+	jsonx.Pprint(cmd, nil)
 	return nil
 }
 
