@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Splunk, Inc.
+ * Copyright © 2021 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -69,6 +69,7 @@ type ConnectionRequest struct {
 
 type ConnectionResponse struct {
 	ActivePipelinesUsing []map[string]interface{}    `json:"activePipelinesUsing,omitempty"`
+	ActiveSourcesUsing   []Source                    `json:"activeSourcesUsing,omitempty"`
 	ConnectorId          *string                     `json:"connectorId,omitempty"`
 	ConnectorName        *string                     `json:"connectorName,omitempty"`
 	CreateDate           *int64                      `json:"createDate,omitempty"`
@@ -111,40 +112,6 @@ type ConnectorResponse struct {
 	Name          *string                  `json:"name,omitempty"`
 	PanelUrl      *string                  `json:"panelUrl,omitempty"`
 	Tag           *string                  `json:"tag,omitempty"`
-}
-
-type DataStream struct {
-	CreateDate     *string `json:"createDate,omitempty"`
-	CreateUserId   *string `json:"createUserId,omitempty"`
-	CurrentVersion *int32  `json:"currentVersion,omitempty"`
-	Description    *string `json:"description,omitempty"`
-	Id             *string `json:"id,omitempty"`
-	LastUpdateDate *string `json:"lastUpdateDate,omitempty"`
-	Name           *string `json:"name,omitempty"`
-	Partitions     *int32  `json:"partitions,omitempty"`
-	TenantId       *string `json:"tenantId,omitempty"`
-	TopicName      *string `json:"topicName,omitempty"`
-}
-
-type DataStreamProperties struct {
-	// Partitions, up to the partition count of the firehose
-	Partitions *int32 `json:"partitions,omitempty"`
-}
-
-type DataStreamRequest struct {
-	// The name of the data stream.
-	Name       string               `json:"name"`
-	Properties DataStreamProperties `json:"properties"`
-	// The description of the data stream. Defaults to null.
-	Description *string `json:"description,omitempty"`
-}
-
-type DataStreamResponse struct {
-	ActivePipelinesUsing []string              `json:"activePipelinesUsing,omitempty"`
-	Description          *string               `json:"description,omitempty"`
-	Id                   *string               `json:"id,omitempty"`
-	Name                 *string               `json:"name,omitempty"`
-	Properties           *DataStreamProperties `json:"properties,omitempty"`
 }
 
 type DeactivatePipelineRequest struct {
@@ -418,6 +385,11 @@ type RuleMetrics struct {
 	MatchCount      *int64  `json:"matchCount,omitempty"`
 	MatchPercentage *int64  `json:"matchPercentage,omitempty"`
 	Name            *string `json:"name,omitempty"`
+}
+
+type Source struct {
+	Node            *string `json:"node,omitempty"`
+	PipelineVersion *string `json:"pipelineVersion,omitempty"`
 }
 
 type SplCompileRequest struct {

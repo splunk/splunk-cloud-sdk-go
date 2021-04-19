@@ -56,7 +56,7 @@ components:
       required: true
       schema:
         maxLength: 36
-        minLength: 4
+        minLength: 2
         type: string
   requestBodies:
     SetEntitlement:
@@ -95,8 +95,8 @@ components:
           type: array
         tenant:
           maxLength: 36
-          minLength: 4
-          pattern: ^[a-z][a-z0-9]*$
+          minLength: 2
+          pattern: ^[a-z0-9][a-z0-9\-]*[a-z0-9]$
           type: string
       type: object
     CreateUpdateTenantStatusJobBody:
@@ -508,7 +508,8 @@ components:
         $ref: '#/components/schemas/UpdateTenantStatusJobInfo'
       type: array
 info:
-  description: With the Provisioner service in Splunk Cloud Services, you can provision and manage tenants.
+  description: With the Provisioner service in Splunk Cloud Services, you can provision
+    and manage tenants.
   title: Provisioner
   version: v1beta1.4
 openapi: 3.0.0
@@ -543,7 +544,8 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/Tenant'
     post:
-      description: Creates an invitation for a person to join the tenant using their email address.
+      description: Creates an invitation for a person to join the tenant using their
+        email address.
       operationId: createInvite
       requestBody:
         content:
@@ -727,4 +729,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: provisioner/v1beta1/openapi.yaml

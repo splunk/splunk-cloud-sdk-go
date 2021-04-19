@@ -143,53 +143,6 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDataStream Creates a data stream for a tenant.
-func CreateDataStream(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var partitionsDefault int32
-	partitions := &partitionsDefault
-	err = flags.ParseFlag(cmd.Flags(), "partitions", &partitions)
-	if err != nil {
-		return fmt.Errorf(`error parsing "partitions": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DataStreamRequest{
-
-		Description: description,
-		Name:        name,
-		Properties: model.DataStreamProperties{
-			Partitions: partitions,
-		},
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.CreateDataStream(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // CreatePipeline Creates a pipeline.
 func CreatePipeline(cmd *cobra.Command, args []string) error {
 
@@ -359,32 +312,6 @@ func DeleteConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteDataStream Deletes a data stream for a tenant.
-func DeleteDataStream(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.StreamsService.DeleteDataStream(id)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // DeleteFile Delete file.
 func DeleteFile(cmd *cobra.Command, args []string) error {
 
@@ -486,32 +413,6 @@ func DeleteTemplate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return nil
-}
-
-// DescribeDataStream Describes a data stream for a tenant.
-func DescribeDataStream(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.DescribeDataStream(id)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -1092,55 +993,6 @@ func ListConnectors(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListDataStreams Returns a list of datastreams for a tenant.
-func ListDataStreams(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var pageSizeDefault int32
-	pageSize := &pageSizeDefault
-	err = flags.ParseFlag(cmd.Flags(), "page-size", &pageSize)
-	if err != nil {
-		return fmt.Errorf(`error parsing "page-size": ` + err.Error())
-	}
-	var sortDir string
-	err = flags.ParseFlag(cmd.Flags(), "sort-dir", &sortDir)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-dir": ` + err.Error())
-	}
-	var sortField string
-	err = flags.ParseFlag(cmd.Flags(), "sort-field", &sortField)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sort-field": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListDataStreamsQueryParams{}
-	generated_query.Offset = offset
-	generated_query.PageSize = pageSize
-	generated_query.SortDir = sortDir
-	generated_query.SortField = sortField
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.ListDataStreams(&generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // ListPipelines Returns all pipelines.
 func ListPipelines(cmd *cobra.Command, args []string) error {
 
@@ -1540,58 +1392,6 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDataStream Patches an existing data stream for a tenant.
-func UpdateDataStream(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var id string
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var partitionsDefault int32
-	partitions := &partitionsDefault
-	err = flags.ParseFlag(cmd.Flags(), "partitions", &partitions)
-	if err != nil {
-		return fmt.Errorf(`error parsing "partitions": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DataStreamRequest{
-
-		Description: description,
-		Name:        name,
-		Properties: model.DataStreamProperties{
-			Partitions: partitions,
-		},
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.StreamsService.UpdateDataStream(id, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // UpdatePipeline Updates an existing pipeline.
 func UpdatePipeline(cmd *cobra.Command, args []string) error {
 
@@ -1696,6 +1496,25 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := UploadFileOverride(fileName)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UploadLookupFile Upload new lookup file.
+func UploadLookupFile(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.UploadLookupFile()
 	if err != nil {
 		return err
 	}

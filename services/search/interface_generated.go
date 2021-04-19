@@ -41,8 +41,17 @@ type ServicerGenerated interface {
 	*/
 	DeleteJob(deleteSearchJob DeleteSearchJob, resp ...*http.Response) (*DeleteSearchJob, error)
 	/*
+		ExportResults - search service endpoint
+		Exports the search results for the job with the specified search ID (SID). Export the results as a CSV file or JSON file.
+		Parameters:
+			sid: The search ID.
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ExportResults(sid string, query *ExportResultsQueryParams, resp ...*http.Response) (*map[string]interface{}, error)
+	/*
 		GetJob - search service endpoint
-		Return the search job with the specified search ID (SID).
+		Returns the search job with the specified search ID (SID).
 		Parameters:
 			sid: The search ID.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -50,7 +59,7 @@ type ServicerGenerated interface {
 	GetJob(sid string, resp ...*http.Response) (*SearchJob, error)
 	/*
 		ListEventsSummary - search service endpoint
-		Return events summary, for search ID (SID) search.
+		Returns an events summary for search ID (SID) search.
 		Parameters:
 			sid: The search ID.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -59,7 +68,7 @@ type ServicerGenerated interface {
 	ListEventsSummary(sid string, query *ListEventsSummaryQueryParams, resp ...*http.Response) (*ListSearchResultsResponse, error)
 	/*
 		ListFieldsSummary - search service endpoint
-		Return fields stats summary of the events to-date, for search ID (SID) search.
+		Returns a fields stats summary of the events to-date, for search ID (SID) search.
 		Parameters:
 			sid: The search ID.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -68,7 +77,7 @@ type ServicerGenerated interface {
 	ListFieldsSummary(sid string, query *ListFieldsSummaryQueryParams, resp ...*http.Response) (*FieldsSummary, error)
 	/*
 		ListJobs - search service endpoint
-		Return the matching list of search jobs.
+		Returns the matching list of search jobs.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -76,7 +85,7 @@ type ServicerGenerated interface {
 	ListJobs(query *ListJobsQueryParams, resp ...*http.Response) ([]SearchJob, error)
 	/*
 		ListPreviewResults - search service endpoint
-		Return the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
+		Returns the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
 		Parameters:
 			sid: The search ID.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -85,7 +94,7 @@ type ServicerGenerated interface {
 	ListPreviewResults(sid string, query *ListPreviewResultsQueryParams, resp ...*http.Response) (*ListPreviewResultsResponse, error)
 	/*
 		ListResults - search service endpoint
-		Return the search results for the job with the specified search ID (SID).
+		Returns the search results for the job with the specified search ID (SID).
 		Parameters:
 			sid: The search ID.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -94,7 +103,7 @@ type ServicerGenerated interface {
 	ListResults(sid string, query *ListResultsQueryParams, resp ...*http.Response) (*ListSearchResultsResponse, error)
 	/*
 		ListTimeBuckets - search service endpoint
-		Return event distribution over time of the untransformed events read to-date, for search ID(SID) search.
+		Returns the event distribution over time of the untransformed events read to-date, for search ID(SID) search.
 		Parameters:
 			sid: The search ID.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
@@ -102,7 +111,7 @@ type ServicerGenerated interface {
 	ListTimeBuckets(sid string, resp ...*http.Response) (*TimeBucketsSummary, error)
 	/*
 		UpdateJob - search service endpoint
-		Update the search job with the specified search ID (SID) with an action.
+		Updates the search job with the specified search ID (SID) with an action.
 		Parameters:
 			sid: The search ID.
 			updateJob

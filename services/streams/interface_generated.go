@@ -20,7 +20,6 @@ package streams
 
 import (
 	"net/http"
-	"os"
 )
 
 // ServicerGenerated represents the interface for implementing all endpoints for this service
@@ -47,13 +46,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateConnection(connectionRequest ConnectionRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
-	/*
-		CreateDataStream - Creates a data stream for a tenant.
-		Parameters:
-			dataStreamRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateDataStream(dataStreamRequest DataStreamRequest, resp ...*http.Response) (*DataStreamResponse, error)
 	/*
 		CreatePipeline - Creates a pipeline.
 		Parameters:
@@ -91,13 +83,6 @@ type ServicerGenerated interface {
 	*/
 	DeleteConnection(connectionId string, resp ...*http.Response) error
 	/*
-		DeleteDataStream - Deletes a data stream for a tenant.
-		Parameters:
-			id: ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteDataStream(id string, resp ...*http.Response) error
-	/*
 		DeleteFile - Delete file.
 		Parameters:
 			fileId: File ID
@@ -125,13 +110,6 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteTemplate(templateId string, resp ...*http.Response) error
-	/*
-		DescribeDataStream - Describes a data stream for a tenant.
-		Parameters:
-			id: ID
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DescribeDataStream(id string, resp ...*http.Response) (*DataStreamResponse, error)
 	/*
 		GetFileMetadata - Get file metadata.
 		Parameters:
@@ -252,13 +230,6 @@ type ServicerGenerated interface {
 	*/
 	ListConnectors(resp ...*http.Response) (*PaginatedResponseOfConnectorResponse, error)
 	/*
-		ListDataStreams - Returns a list of datastreams for a tenant.
-		Parameters:
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListDataStreams(query *ListDataStreamsQueryParams, resp ...*http.Response) ([]DataStreamResponse, error)
-	/*
 		ListPipelines - Returns all pipelines.
 		Parameters:
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -327,14 +298,6 @@ type ServicerGenerated interface {
 	*/
 	UpdateConnection(connectionId string, connectionPatchRequest ConnectionPatchRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
 	/*
-		UpdateDataStream - Patches an existing data stream for a tenant.
-		Parameters:
-			id: ID
-			dataStreamRequest: Request JSON
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateDataStream(id string, dataStreamRequest DataStreamRequest, resp ...*http.Response) (*DataStream, error)
-	/*
 		UpdatePipeline - Updates an existing pipeline.
 		Parameters:
 			id: Pipeline ID
@@ -351,12 +314,19 @@ type ServicerGenerated interface {
 	*/
 	UpdateTemplate(templateId string, templatePatchRequest TemplatePatchRequest, resp ...*http.Response) (*TemplateResponse, error)
 	/*
-		UploadFile - Upload new file.
-		Parameters:
-			file: Upload file
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	   UploadFile - Upload new file.
+	   Parameters:
+	       filename
+	       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UploadFile(file **os.File, resp ...*http.Response) (*UploadFileResponse, error)
+	UploadFile(filename string, resp ...*http.Response) error
+	/*
+	   UploadLookupFile - Upload new lookup file.
+	   Parameters:
+	       filename
+	       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UploadLookupFile(filename string, resp ...*http.Response) error
 	/*
 		ValidatePipeline - Verifies whether the Streams JSON is valid.
 		Parameters:

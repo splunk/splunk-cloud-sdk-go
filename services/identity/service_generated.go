@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Splunk, Inc.
+ * Copyright © 2021 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -238,6 +238,35 @@ func (s *Service) CreateGroup(createGroupBody CreateGroupBody, resp ...*http.Res
 }
 
 /*
+	CreateIdentityProvider - identity service endpoint
+	Create an Identity Provider.
+	Parameters:
+		identityProviderConfigBody: The Identity Provider to create.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateIdentityProvider(identityProviderConfigBody IdentityProviderConfigBody, resp ...*http.Response) (*IdentityProviderBody, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/identityproviders`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: identityProviderConfigBody})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb IdentityProviderBody
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	CreatePrincipal - identity service endpoint
 	Create a new principal
 	Parameters:
@@ -311,6 +340,35 @@ func (s *Service) DeleteGroup(group string, resp ...*http.Response) error {
 		Group: group,
 	}
 	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/groups/{{.Group}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
+	DeleteIdentityProvider - identity service endpoint
+	Deletes the Identity Provider.
+	Parameters:
+		idp: The Identity Provider name.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteIdentityProvider(idp string, resp ...*http.Response) error {
+	pp := struct {
+		Idp string
+	}{
+		Idp: idp,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/identityproviders/{{.Idp}}`, pp)
 	if err != nil {
 		return err
 	}
@@ -491,6 +549,40 @@ func (s *Service) GetGroupRole(group string, role string, resp ...*http.Response
 		return nil, err
 	}
 	var rb GroupRole
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetIdentityProvider - identity service endpoint
+	Returns the Identity Provider for the given tenant.
+	Parameters:
+		idp: The Identity Provider name.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetIdentityProvider(idp string, resp ...*http.Response) (*IdentityProviderBody, error) {
+	pp := struct {
+		Idp string
+	}{
+		Idp: idp,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/identityproviders/{{.Idp}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb IdentityProviderBody
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -805,6 +897,34 @@ func (s *Service) ListGroups(query *ListGroupsQueryParams, resp ...*http.Respons
 	var rb GroupList
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
+}
+
+/*
+	ListIdentityProvider - identity service endpoint
+	Returns the list of Identity Providers for the given tenant.
+	Parameters:
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListIdentityProvider(resp ...*http.Response) ([]IdentityProviderBody, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/identityproviders`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb []IdentityProviderBody
+	err = util.ParseResponse(&rb, response)
+	return rb, err
 }
 
 /*
@@ -1229,6 +1349,41 @@ func (s *Service) RevokePrincipalAuthTokens(principal string, resp ...*http.Resp
 		}
 	}
 	return err
+}
+
+/*
+	UpdateIdentityProvider - identity service endpoint
+	Update the configuration for an Identity Provider.
+	Parameters:
+		idp: The Identity Provider name.
+		identityProviderConfigBody: The properties to update the Identity Provider with.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UpdateIdentityProvider(idp string, identityProviderConfigBody IdentityProviderConfigBody, resp ...*http.Response) (*IdentityProviderBody, error) {
+	pp := struct {
+		Idp string
+	}{
+		Idp: idp,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/identity/v3/identityproviders/{{.Idp}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: u, Body: identityProviderConfigBody})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb IdentityProviderBody
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
 }
 
 /*

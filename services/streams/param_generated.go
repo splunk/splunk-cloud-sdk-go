@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Splunk, Inc.
+ * Copyright © 2021 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -200,40 +200,6 @@ func (q ListConnectionsQueryParams) SetSortDir(v string) ListConnectionsQueryPar
 }
 
 func (q ListConnectionsQueryParams) SetSortField(v string) ListConnectionsQueryParams {
-	q.SortField = v
-	return q
-}
-
-// ListDataStreamsQueryParams represents valid query parameters for the ListDataStreams operation
-// For convenience ListDataStreamsQueryParams can be formed in a single statement, for example:
-//     `v := ListDataStreamsQueryParams{}.SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
-type ListDataStreamsQueryParams struct {
-	// Offset : offset
-	Offset *int32 `key:"offset"`
-	// PageSize : pageSize
-	PageSize *int32 `key:"pageSize"`
-	// SortDir : sortDir
-	SortDir string `key:"sortDir"`
-	// SortField : sortField
-	SortField string `key:"sortField"`
-}
-
-func (q ListDataStreamsQueryParams) SetOffset(v int32) ListDataStreamsQueryParams {
-	q.Offset = &v
-	return q
-}
-
-func (q ListDataStreamsQueryParams) SetPageSize(v int32) ListDataStreamsQueryParams {
-	q.PageSize = &v
-	return q
-}
-
-func (q ListDataStreamsQueryParams) SetSortDir(v string) ListDataStreamsQueryParams {
-	q.SortDir = v
-	return q
-}
-
-func (q ListDataStreamsQueryParams) SetSortField(v string) ListDataStreamsQueryParams {
 	q.SortField = v
 	return q
 }

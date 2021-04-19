@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Splunk, Inc.
+ * Copyright © 2021 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -46,7 +46,8 @@ type CreateGroupBody struct {
 // Payload when creating a principal
 type CreatePrincipalBody struct {
 	Kind        PrincipalKind           `json:"kind"`
-	Credentials CredentialList          `json:"credentials,omitempty"`
+	AcceptTos   *bool                   `json:"acceptTos,omitempty"`
+	Credentials *CredentialList         `json:"credentials,omitempty"`
 	Enabled     *bool                   `json:"enabled,omitempty"`
 	Key         *EcJwk                  `json:"key,omitempty"`
 	Name        *string                 `json:"name,omitempty"`
@@ -150,6 +151,76 @@ type GroupRoleList struct {
 	Items    []GroupRole `json:"items"`
 	NextLink string      `json:"nextLink"`
 }
+
+type IdentityProviderBody struct {
+	Config      IdentityProviderBodyConfig `json:"config"`
+	Id          string                     `json:"id"`
+	Kind        IdentityProviderBodyKind   `json:"kind"`
+	Title       string                     `json:"title"`
+	CreatedAt   *string                    `json:"createdAt,omitempty"`
+	CreatedBy   *string                    `json:"createdBy,omitempty"`
+	Description *string                    `json:"description,omitempty"`
+	Enabled     *bool                      `json:"enabled,omitempty"`
+}
+
+type IdentityProviderBodyKind string
+
+// List of IdentityProviderBodyKind
+const (
+	IdentityProviderBodyKindSaml IdentityProviderBodyKind = "saml"
+)
+
+type IdentityProviderBodyConfig struct {
+	Certificate            string                           `json:"certificate"`
+	EmailAttribute         string                           `json:"email_attribute"`
+	EntityDescriptor       string                           `json:"entity_descriptor"`
+	Method                 IdentityProviderBodyConfigMethod `json:"method"`
+	SingleSignOnServiceUrl string                           `json:"single_sign_on_service_url"`
+	FirstNameAttribute     *string                          `json:"first_name_attribute,omitempty"`
+	LastNameAttribute      *string                          `json:"last_name_attribute,omitempty"`
+}
+
+type IdentityProviderBodyConfigMethod string
+
+// List of IdentityProviderBodyConfigMethod
+const (
+	IdentityProviderBodyConfigMethodPost     IdentityProviderBodyConfigMethod = "post"
+	IdentityProviderBodyConfigMethodRedirect IdentityProviderBodyConfigMethod = "redirect"
+)
+
+type IdentityProviderConfigBody struct {
+	Config      IdentityProviderConfigBodyConfig `json:"config"`
+	Id          string                           `json:"id"`
+	Kind        IdentityProviderConfigBodyKind   `json:"kind"`
+	Description *string                          `json:"description,omitempty"`
+	Enabled     *bool                            `json:"enabled,omitempty"`
+	Title       *string                          `json:"title,omitempty"`
+}
+
+type IdentityProviderConfigBodyKind string
+
+// List of IdentityProviderConfigBodyKind
+const (
+	IdentityProviderConfigBodyKindSaml IdentityProviderConfigBodyKind = "saml"
+)
+
+type IdentityProviderConfigBodyConfig struct {
+	Certificate            *string                                 `json:"certificate,omitempty"`
+	EmailAttribute         *string                                 `json:"email_attribute,omitempty"`
+	EntityDescriptor       *string                                 `json:"entity_descriptor,omitempty"`
+	FirstNameAttribute     *string                                 `json:"first_name_attribute,omitempty"`
+	LastNameAttribute      *string                                 `json:"last_name_attribute,omitempty"`
+	Method                 *IdentityProviderConfigBodyConfigMethod `json:"method,omitempty"`
+	SingleSignOnServiceUrl *string                                 `json:"single_sign_on_service_url,omitempty"`
+}
+
+type IdentityProviderConfigBodyConfigMethod string
+
+// List of IdentityProviderConfigBodyConfigMethod
+const (
+	IdentityProviderConfigBodyConfigMethodPost     IdentityProviderConfigBodyConfigMethod = "post"
+	IdentityProviderConfigBodyConfigMethodRedirect IdentityProviderConfigBodyConfigMethod = "redirect"
+)
 
 // Represents a member that belongs to a tenant.
 type Member struct {
@@ -274,11 +345,10 @@ type RolePermissionList struct {
 }
 
 type Tenant struct {
-	Name          string        `json:"name"`
-	CreatedAt     *string       `json:"createdAt,omitempty"`
-	CreatedBy     *string       `json:"createdBy,omitempty"`
-	Status        *TenantStatus `json:"status,omitempty"`
-	UseDefaultIdp *bool         `json:"useDefaultIdp,omitempty"`
+	Name      string        `json:"name"`
+	CreatedAt *string       `json:"createdAt,omitempty"`
+	CreatedBy *string       `json:"createdBy,omitempty"`
+	Status    *TenantStatus `json:"status,omitempty"`
 }
 
 type TenantName string

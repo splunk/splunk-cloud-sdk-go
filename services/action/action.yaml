@@ -1,7 +1,9 @@
 components:
   parameters:
     ActionName:
-      description: The name of the action as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.
+      description: The name of the action as one or more identifier strings separated
+        by periods. Each identifier string consists of lowercase letters, digits,
+        and underscores, and cannot start with a digit.
       in: path
       name: action_name
       required: true
@@ -67,7 +69,8 @@ components:
     ActionImmutable:
       properties:
         createdAt:
-          description: The date and time this action template was created (ISO-8601 date/time with zone).
+          description: The date and time this action template was created (ISO-8601
+            date/time with zone).
           format: date-time
           readOnly: true
           type: string
@@ -78,11 +81,14 @@ components:
         kind:
           $ref: '#/components/schemas/ActionKind'
         name:
-          description: The name of the action, as one or more identifier strings separated by periods. Each identifier string consists of lowercase letters, digits, and underscores, and cannot start with a digit.
+          description: The name of the action, as one or more identifier strings separated
+            by periods. Each identifier string consists of lowercase letters, digits,
+            and underscores, and cannot start with a digit.
           pattern: ^[_a-z][_a-z0-9]*(?:\.[_a-z][_a-z0-9]*)*$
           type: string
         updatedAt:
-          description: The date and time this action template was updated (ISO-8601 date/time with zone).
+          description: The date and time this action template was updated (ISO-8601
+            date/time with zone).
           format: date-time
           readOnly: true
           type: string
@@ -145,18 +151,25 @@ components:
             type: string
           type: array
         body:
-          description: HTML content to send as the body of the email. You can use a template in this field.
+          description: HTML content to send as the body of the email. You can use
+            a template in this field.
           example: <html><body>Hello, this is my test email.</body></html>
           type: string
         bodyPlainText:
-          description: Optional text to send as the text/plain part of the email. If this field is not set for an email action, the Action service converts the value from the body field to text and sends that as the text/plain part when invoking the action. You can use a template in this field.
+          description: Optional text to send as the text/plain part of the email.
+            If this field is not set for an email action, the Action service converts
+            the value from the body field to text and sends that as the text/plain
+            part when invoking the action. You can use a template in this field.
           example: Hello, this is my test email.
           type: string
         fromName:
-          description: Optional text providing a human-friendly name for the sender. Must be less than or equal to 81 characters. You can use a template in this field.
+          description: Optional text providing a human-friendly name for the sender.
+            Must be less than or equal to 81 characters. You can use a template in
+            this field.
           type: string
         members:
-          description: An array of tenant member names, whose profile email addresses will be included as recipients.
+          description: An array of tenant member names, whose profile email addresses
+            will be included as recipients.
           items:
             type: string
           type: array
@@ -164,7 +177,8 @@ components:
           description: The subject of the email. You can use a template in this field.
           type: string
         title:
-          description: A human-readable title for the action. Must be less than or equal to 128 characters.
+          description: A human-readable title for the action. Must be less than or
+            equal to 128 characters.
           type: string
       type: object
     PublicWebhookKey:
@@ -211,7 +225,8 @@ components:
                 type: string
               type: array
             members:
-              description: An array of tenant member names, whose profile email addresses will be included as recipients.
+              description: An array of tenant member names, whose profile email addresses
+                will be included as recipients.
               items:
                 type: string
               type: array
@@ -225,7 +240,8 @@ components:
           readOnly: true
           type: string
         id:
-          description: A unique identifier for this trigger event. Generated from a hash of all recursively-sorted event field values.
+          description: A unique identifier for this trigger event. Generated from
+            a hash of all recursively-sorted event field values.
           readOnly: true
           type: string
         kind:
@@ -246,7 +262,8 @@ components:
           type: string
         ttlSeconds:
           default: 3600
-          description: A time to live (TTL), expressed as seconds after createdAt, after which the trigger event will no longer be acted upon.
+          description: A time to live (TTL), expressed as seconds after createdAt,
+            after which the trigger event will no longer be acted upon.
           format: int32
           minimum: 1
           type: integer
@@ -266,7 +283,8 @@ components:
     WebhookActionMutable:
       properties:
         title:
-          description: A human-readable title for the action. Must be less than 128 characters.
+          description: A human-readable title for the action. Must be less than 128
+            characters.
           type: string
         webhookHeaders:
           additionalProperties:
@@ -514,14 +532,17 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TriggerEvent'
-        description: The action payload, which should include values for any templated fields.
+        description: The action payload, which should include values for any templated
+          fields.
         required: true
       responses:
         "201":
           description: The trigger event was received successfully.
           headers:
             Location:
-              description: The URL of the run status, with the format "{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}". Send a GET request to this URL to check the status, which will be available for 4 days.
+              description: The URL of the run status, with the format "{tenant}/action/v1beta2/actions/{action_name}/status/{status_id}".
+                Send a GET request to this URL to check the status, which will be
+                available for 4 days.
               schema:
                 type: string
         "400":
@@ -580,7 +601,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status of an action that was invoked. The status is available for 4 days after the last status change.
+      summary: Returns the status of an action that was invoked. The status is available
+        for 4 days after the last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -625,7 +647,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns the status details of the invoked email action. The status is available for 4 days after the last status change.
+      summary: Returns the status details of the invoked email action. The status
+        is available for 4 days after the last status change.
       tags:
       - Actions
       x-authz-scope: action.actions.read
@@ -652,9 +675,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServiceError'
           description: An error occurred.
-      summary: Returns an array of one or two webhook keys. The first key is active. The second key, if present, is expired.
+      summary: Returns an array of one or two webhook keys. The first key is active.
+        The second key, if present, is expired.
       tags:
       - Webhook Keys
       x-auth-required: false
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: action/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: action/v1beta2/openapi.yaml
