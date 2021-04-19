@@ -394,7 +394,7 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "alg": ` + err.Error())
 	}
-	var credentials []model.Credential
+	var credentials model.CredentialList
 	err = flags.ParseFlag(cmd.Flags(), "credentials", &credentials)
 	if err != nil {
 		return fmt.Errorf(`error parsing "credentials": ` + err.Error())
@@ -480,7 +480,7 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.CreatePrincipalBody{
 
 		AcceptTos:   acceptTos,
-		Credentials: credentials,
+		Credentials: &credentials,
 		Enabled:     enabled,
 		Key: &model.EcJwk{
 			Alg: alg,
