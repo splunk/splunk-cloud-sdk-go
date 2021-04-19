@@ -77,6 +77,14 @@ type ServicerGenerated interface {
 	*/
 	CreateGroup(createGroupBody CreateGroupBody, resp ...*http.Response) (*Group, error)
 	/*
+		CreateIdentityProvider - identity service endpoint
+		Create an Identity Provider.
+		Parameters:
+			identityProviderConfigBody: The Identity Provider to create.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateIdentityProvider(identityProviderConfigBody IdentityProviderConfigBody, resp ...*http.Response) (*IdentityProviderBody, error)
+	/*
 		CreatePrincipal - identity service endpoint
 		Create a new principal
 		Parameters:
@@ -101,6 +109,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteGroup(group string, resp ...*http.Response) error
+	/*
+		DeleteIdentityProvider - identity service endpoint
+		Deletes the Identity Provider.
+		Parameters:
+			idp: The Identity Provider name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteIdentityProvider(idp string, resp ...*http.Response) error
 	/*
 		DeletePrincipalPublicKey - identity service endpoint
 		Deletes principal public key
@@ -144,6 +160,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetGroupRole(group string, role string, resp ...*http.Response) (*GroupRole, error)
+	/*
+		GetIdentityProvider - identity service endpoint
+		Returns the Identity Provider for the given tenant.
+		Parameters:
+			idp: The Identity Provider name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetIdentityProvider(idp string, resp ...*http.Response) (*IdentityProviderBody, error)
 	/*
 		GetMember - identity service endpoint
 		Returns a member of a given tenant.
@@ -220,6 +244,13 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListGroups(query *ListGroupsQueryParams, resp ...*http.Response) (*GroupList, error)
+	/*
+		ListIdentityProvider - identity service endpoint
+		Returns the list of Identity Providers for the given tenant.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListIdentityProvider(resp ...*http.Response) ([]IdentityProviderBody, error)
 	/*
 		ListMemberGroups - identity service endpoint
 		Returns a list of groups that a member belongs to within a tenant.
@@ -332,6 +363,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
+	/*
+		UpdateIdentityProvider - identity service endpoint
+		Update the configuration for an Identity Provider.
+		Parameters:
+			idp: The Identity Provider name.
+			identityProviderConfigBody: The properties to update the Identity Provider with.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateIdentityProvider(idp string, identityProviderConfigBody IdentityProviderConfigBody, resp ...*http.Response) (*IdentityProviderBody, error)
 	/*
 		UpdatePrincipalPublicKey - identity service endpoint
 		Update principal public key

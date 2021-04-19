@@ -171,14 +171,17 @@ components:
       properties:
         attributes:
           additionalProperties: {}
-          description: Specifies a JSON object that contains explicit custom fields to be defined at index time.
+          description: Specifies a JSON object that contains explicit custom fields
+            to be defined at index time.
           type: object
           x-go-name: Attributes
         body:
-          description: The raw event content. It can be a string, number, string array, number array, JSON object, map, list, a JSON array, or a byte array.
+          description: The raw event content. It can be a string, number, string array,
+            number array, JSON object, map, list, a JSON array, or a byte array.
           x-go-name: Body
         host:
-          description: The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.
+          description: The host value assigned to the event data. Typically, this
+            is the hostname of the client from which you are sending data.
           type: string
           x-go-name: Host
         id:
@@ -219,12 +222,14 @@ components:
     HECResponse:
       properties:
         code:
-          description: code defines the status of the response. For a complete list of the possible error codes, see https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
+          description: code defines the status of the response. For a complete list
+            of the possible error codes, see https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
           format: int64
           type: integer
           x-go-name: Code
         invalid-event-number:
-          description: invalid-event-number defines the index of the first event in error.
+          description: invalid-event-number defines the index of the first event in
+            error.
           format: int64
           type: integer
           x-go-name: EventErrorIndex
@@ -345,7 +350,8 @@ components:
           pattern: '''[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*"'''
           type: string
           x-go-name: Tenant
-      title: 'HECTokenAccessResponse defines the response body returned from the HTTP Event Collector token access endpoints:'
+      title: 'HECTokenAccessResponse defines the response body returned from the HTTP
+        Event Collector token access endpoints:'
       type: object
     HECTokenCreateRequest:
       description: POST  /collector/tokens
@@ -418,7 +424,8 @@ components:
           x-go-name: Sourcetype
       required:
       - name
-      title: 'HECTokenCreateRequest defines the request body accepted by the HTTP Event Collector token create endpoint:'
+      title: 'HECTokenCreateRequest defines the request body accepted by the HTTP
+        Event Collector token create endpoint:'
       type: object
     HECTokenCreateResponse:
       description: POST /collector/tokens
@@ -536,11 +543,13 @@ components:
             type: string
           type: string
           x-go-name: Token
-      title: 'HECTokenCreateResponse defines the response body returned from the HTTP Event Collector token create endpoint:'
+      title: 'HECTokenCreateResponse defines the response body returned from the HTTP
+        Event Collector token create endpoint:'
       type: object
     HECTokenDeleteResponse:
       description: DELETE /collector/tokens/{tokenName}
-      title: 'HECTokenDeleteResponse defines the response body returned from the HTTP Event Collector token delete endpoint:'
+      title: 'HECTokenDeleteResponse defines the response body returned from the HTTP
+        Event Collector token delete endpoint:'
       type: object
     HECTokenUpdateRequest:
       description: PUT  /collector/tokens/{tokenName}
@@ -603,7 +612,8 @@ components:
             type: *string
           type: string
           x-go-name: Sourcetype
-      title: 'HECTokenUpdateRequest defines the request body accepted by the HTTP Event Collector token update endpoint:'
+      title: 'HECTokenUpdateRequest defines the request body accepted by the HTTP
+        Event Collector token update endpoint:'
       type: object
     HTTPResponse:
       properties:
@@ -622,7 +632,8 @@ components:
         dimensions:
           additionalProperties:
             type: string
-          description: Dimensions allow metrics to be classified e.g. {"Server":"nginx", "Region":"us-west-1", ...}
+          description: Dimensions allow metrics to be classified e.g. {"Server":"nginx",
+            "Region":"us-west-1", ...}
           type: object
           x-go-name: Dimensions
         name:
@@ -638,7 +649,8 @@ components:
           type: string
           x-go-name: Unit
         value:
-          description: Value of the metric. If not specified, it will be defaulted to 0.
+          description: Value of the metric. If not specified, it will be defaulted
+            to 0.
           format: double
           type: number
           x-go-name: Value
@@ -651,15 +663,18 @@ components:
         defaultDimensions:
           additionalProperties:
             type: string
-          description: Optional. If set, individual metrics inherit these dimensions and can override any and/or all of them.
+          description: Optional. If set, individual metrics inherit these dimensions
+            and can override any and/or all of them.
           type: object
           x-go-name: DefaultDimensions
         defaultType:
-          description: Optional. If set, individual metrics inherit this type and can optionally override.
+          description: Optional. If set, individual metrics inherit this type and
+            can optionally override.
           type: string
           x-go-name: DefaultType
         defaultUnit:
-          description: Optional. If set, individual metrics inherit this unit and can optionally override.
+          description: Optional. If set, individual metrics inherit this unit and
+            can optionally override.
           type: string
           x-go-name: DefaultUnit
       title: Default attributes for the metric.
@@ -675,7 +690,8 @@ components:
           type: array
           x-go-name: Body
         host:
-          description: The host value assigned to the event data. Typically, this is the hostname of the client from which you are sending data.
+          description: The host value assigned to the event data. Typically, this
+            is the hostname of the client from which you are sending data.
           type: string
           x-go-name: Host
         id:
@@ -719,153 +735,12 @@ components:
           x-go-name: Message
       type: object
 info:
-  description: Use the Ingest service in Splunk Cloud Services to send event and metrics data, or upload a static file, to Splunk Cloud Services.
+  description: Use the Ingest service in Splunk Cloud Services to send event and metrics
+    data, or upload a static file, to Splunk Cloud Services.
   title: Ingest API
-  version: v1beta2.16
+  version: v1beta2.17
 openapi: 3.0.0
 paths:
-  /{tenant}/ingest/v1beta2/collector/raw:
-    post:
-      operationId: postCollectorRaw
-      parameters:
-      - description: Sets a default source field value for all events in the request.
-        in: query
-        name: source
-        schema:
-          type: string
-        x-go-name: Source
-      - description: Sets a default sourcetype field value for all events in the request.
-        in: query
-        name: sourcetype
-        schema:
-          type: string
-        x-go-name: Sourcetype
-      - description: Sets a default index field value for all events in the request.
-        in: query
-        name: index
-        schema:
-          type: string
-        x-go-name: Index
-      - description: Sets a default host field value for all events in the request.
-        in: query
-        name: host
-        schema:
-          type: string
-        x-go-name: Host
-      - description: Sets a default time field value for all events in the request.
-        in: query
-        name: time
-        schema:
-          type: string
-        x-go-name: Time
-      - description: The DSP HEC token provided by the user.
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          pattern: ^(Splunk|Basic) .+
-          type: string
-      - in: path
-        name: tenant
-        required: true
-        schema:
-          type: string
-        x-go-name: Tenant
-      requestBody:
-        $ref: '#/components/requestBodies/postCollectorPayload'
-      responses:
-        "200":
-          $ref: '#/components/responses/hecSuccessResponse'
-        "400":
-          $ref: '#/components/responses/hecBadRequestError'
-        "401":
-          $ref: '#/components/responses/hecUnauthorizedError'
-        "403":
-          $ref: '#/components/responses/hecForbiddenError'
-        "413":
-          $ref: '#/components/responses/hecBadRequestError'
-        "500":
-          $ref: '#/components/responses/hecInternalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
-        default:
-          $ref: '#/components/responses/hecInternalError'
-      summary: Sends collector raw events.
-      tags:
-      - Collector
-      x-auth-required: false
-      x-authz-scope: ingest.collector.write
-  /{tenant}/ingest/v1beta2/collector/raw/1.0:
-    post:
-      operationId: postCollectorRawV1
-      parameters:
-      - description: Sets a default source field value for all events in the request.
-        in: query
-        name: source
-        schema:
-          type: string
-        x-go-name: Source
-      - description: Sets a default sourcetype field value for all events in the request.
-        in: query
-        name: sourcetype
-        schema:
-          type: string
-        x-go-name: Sourcetype
-      - description: Sets a default index field value for all events in the request.
-        in: query
-        name: index
-        schema:
-          type: string
-        x-go-name: Index
-      - description: Sets a default host field value for all events in the request.
-        in: query
-        name: host
-        schema:
-          type: string
-        x-go-name: Host
-      - description: Sets a default time field value for all events in the request.
-        in: query
-        name: time
-        schema:
-          type: string
-        x-go-name: Time
-      - description: The DSP HEC token provided by the user.
-        in: header
-        name: Authorization
-        required: true
-        schema:
-          pattern: ^(Splunk|Basic) .+
-          type: string
-      - in: path
-        name: tenant
-        required: true
-        schema:
-          type: string
-        x-go-name: Tenant
-      requestBody:
-        $ref: '#/components/requestBodies/postCollectorPayload'
-      responses:
-        "200":
-          $ref: '#/components/responses/hecSuccessResponse'
-        "400":
-          $ref: '#/components/responses/hecBadRequestError'
-        "401":
-          $ref: '#/components/responses/hecUnauthorizedError'
-        "403":
-          $ref: '#/components/responses/hecForbiddenError'
-        "413":
-          $ref: '#/components/responses/hecBadRequestError'
-        "500":
-          $ref: '#/components/responses/hecInternalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
-        default:
-          $ref: '#/components/responses/hecInternalError'
-      summary: Sends collector raw events.
-      tags:
-      - Collector
-      x-auth-required: false
-      x-authz-scope: ingest.collector.write
   /{tenant}/ingest/v1beta2/collector/tokens:
     delete:
       operationId: deleteAllCollectorTokens
@@ -895,7 +770,8 @@ paths:
     get:
       operationId: listCollectorTokens
       parameters:
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -950,7 +826,8 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -996,7 +873,8 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -1074,7 +952,8 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -1168,7 +1047,8 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -1202,11 +1082,11 @@ paths:
           $ref: '#/components/responses/internalError'
         default:
           $ref: '#/components/responses/errorResponse'
-      summary: Upload a CSV or text file that contains events.
+      summary: Upload a CSV or text file that contains events. The file limit is 1MB
+        or an error is returned.
       tags:
       - Files
       x-authz-scope: ingest.files.write
-      x-hidden: "true"
   /{tenant}/ingest/v1beta2/metrics:
     post:
       operationId: postMetrics
@@ -1217,7 +1097,8 @@ paths:
         schema:
           type: string
         x-go-name: Tenant
-      - description: The access token provided by the user (obtained from a known identity provider).
+      - description: The access token provided by the user (obtained from a known
+          identity provider).
         in: header
         name: Authorization
         required: true
@@ -1258,4 +1139,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: ingest/v1beta2/openapi.yaml

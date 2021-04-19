@@ -263,6 +263,115 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// CreateIdentityProvider Create an Identity Provider.
+func CreateIdentityProvider(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var certificateDefault string
+	certificate := &certificateDefault
+	err = flags.ParseFlag(cmd.Flags(), "certificate", &certificate)
+	if err != nil {
+		return fmt.Errorf(`error parsing "certificate": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var email_attributeDefault string
+	email_attribute := &email_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "email-attribute", &email_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "email-attribute": ` + err.Error())
+	}
+	var enabledDefault bool
+	enabled := &enabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "enabled", &enabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enabled": ` + err.Error())
+	}
+	var entity_descriptorDefault string
+	entity_descriptor := &entity_descriptorDefault
+	err = flags.ParseFlag(cmd.Flags(), "entity-descriptor", &entity_descriptor)
+	if err != nil {
+		return fmt.Errorf(`error parsing "entity-descriptor": ` + err.Error())
+	}
+	var first_name_attributeDefault string
+	first_name_attribute := &first_name_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "first-name-attribute", &first_name_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "first-name-attribute": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var kind model.IdentityProviderConfigBodyKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var last_name_attributeDefault string
+	last_name_attribute := &last_name_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "last-name-attribute", &last_name_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "last-name-attribute": ` + err.Error())
+	}
+	var methodDefault model.IdentityProviderConfigBodyConfigMethod
+	method := &methodDefault
+	err = flags.ParseFlag(cmd.Flags(), "method", &method)
+	if err != nil {
+		return fmt.Errorf(`error parsing "method": ` + err.Error())
+	}
+	var single_sign_on_service_urlDefault string
+	single_sign_on_service_url := &single_sign_on_service_urlDefault
+	err = flags.ParseFlag(cmd.Flags(), "single-sign-on-service-url", &single_sign_on_service_url)
+	if err != nil {
+		return fmt.Errorf(`error parsing "single-sign-on-service-url": ` + err.Error())
+	}
+	var titleDefault string
+	title := &titleDefault
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
+	if err != nil {
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.IdentityProviderConfigBody{
+
+		Config: model.IdentityProviderConfigBodyConfig{
+			Certificate:            certificate,
+			EmailAttribute:         email_attribute,
+			EntityDescriptor:       entity_descriptor,
+			FirstNameAttribute:     first_name_attribute,
+			LastNameAttribute:      last_name_attribute,
+			Method:                 method,
+			SingleSignOnServiceUrl: single_sign_on_service_url,
+		},
+		Description: description,
+		Enabled:     enabled,
+		Id:          id,
+		Kind:        kind,
+		Title:       title,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.CreateIdentityProvider(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreatePrincipal Create a new principal
 func CreatePrincipal(cmd *cobra.Command, args []string) error {
 
@@ -273,6 +382,12 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var acceptTosDefault bool
+	acceptTos := &acceptTosDefault
+	err = flags.ParseFlag(cmd.Flags(), "accept-tos", &acceptTos)
+	if err != nil {
+		return fmt.Errorf(`error parsing "accept-tos": ` + err.Error())
+	}
 	var algDefault model.EcJwkAlg
 	alg := &algDefault
 	err = flags.ParseFlag(cmd.Flags(), "alg", &alg)
@@ -364,6 +479,7 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.CreatePrincipalBody{
 
+		AcceptTos:   acceptTos,
 		Credentials: credentials,
 		Enabled:     enabled,
 		Key: &model.EcJwk{
@@ -445,6 +561,32 @@ func DeleteGroup(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	err = client.IdentityService.DeleteGroup(group)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteIdentityProvider Deletes the Identity Provider.
+func DeleteIdentityProvider(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var idp string
+	err = flags.ParseFlag(cmd.Flags(), "idp", &idp)
+	if err != nil {
+		return fmt.Errorf(`error parsing "idp": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.IdentityService.DeleteIdentityProvider(idp)
 	if err != nil {
 		return err
 	}
@@ -591,6 +733,32 @@ func GetGroupRole(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetGroupRole(group, role)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetIdentityProvider Returns the Identity Provider for the given tenant.
+func GetIdentityProvider(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var idp string
+	err = flags.ParseFlag(cmd.Flags(), "idp", &idp)
+	if err != nil {
+		return fmt.Errorf(`error parsing "idp": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.GetIdentityProvider(idp)
 	if err != nil {
 		return err
 	}
@@ -903,6 +1071,25 @@ func ListGroups(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.ListGroups(&generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListIdentityProvider Returns the list of Identity Providers for the given tenant.
+func ListIdentityProvider(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.ListIdentityProvider()
 	if err != nil {
 		return err
 	}
@@ -1431,6 +1618,120 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// UpdateIdentityProvider Update the configuration for an Identity Provider.
+func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var certificateDefault string
+	certificate := &certificateDefault
+	err = flags.ParseFlag(cmd.Flags(), "certificate", &certificate)
+	if err != nil {
+		return fmt.Errorf(`error parsing "certificate": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var email_attributeDefault string
+	email_attribute := &email_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "email-attribute", &email_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "email-attribute": ` + err.Error())
+	}
+	var enabledDefault bool
+	enabled := &enabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "enabled", &enabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enabled": ` + err.Error())
+	}
+	var entity_descriptorDefault string
+	entity_descriptor := &entity_descriptorDefault
+	err = flags.ParseFlag(cmd.Flags(), "entity-descriptor", &entity_descriptor)
+	if err != nil {
+		return fmt.Errorf(`error parsing "entity-descriptor": ` + err.Error())
+	}
+	var first_name_attributeDefault string
+	first_name_attribute := &first_name_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "first-name-attribute", &first_name_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "first-name-attribute": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var idp string
+	err = flags.ParseFlag(cmd.Flags(), "idp", &idp)
+	if err != nil {
+		return fmt.Errorf(`error parsing "idp": ` + err.Error())
+	}
+	var kind model.IdentityProviderConfigBodyKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var last_name_attributeDefault string
+	last_name_attribute := &last_name_attributeDefault
+	err = flags.ParseFlag(cmd.Flags(), "last-name-attribute", &last_name_attribute)
+	if err != nil {
+		return fmt.Errorf(`error parsing "last-name-attribute": ` + err.Error())
+	}
+	var methodDefault model.IdentityProviderConfigBodyConfigMethod
+	method := &methodDefault
+	err = flags.ParseFlag(cmd.Flags(), "method", &method)
+	if err != nil {
+		return fmt.Errorf(`error parsing "method": ` + err.Error())
+	}
+	var single_sign_on_service_urlDefault string
+	single_sign_on_service_url := &single_sign_on_service_urlDefault
+	err = flags.ParseFlag(cmd.Flags(), "single-sign-on-service-url", &single_sign_on_service_url)
+	if err != nil {
+		return fmt.Errorf(`error parsing "single-sign-on-service-url": ` + err.Error())
+	}
+	var titleDefault string
+	title := &titleDefault
+	err = flags.ParseFlag(cmd.Flags(), "title", &title)
+	if err != nil {
+		return fmt.Errorf(`error parsing "title": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.IdentityProviderConfigBody{
+
+		Config: model.IdentityProviderConfigBodyConfig{
+			Certificate:            certificate,
+			EmailAttribute:         email_attribute,
+			EntityDescriptor:       entity_descriptor,
+			FirstNameAttribute:     first_name_attribute,
+			LastNameAttribute:      last_name_attribute,
+			Method:                 method,
+			SingleSignOnServiceUrl: single_sign_on_service_url,
+		},
+		Description: description,
+		Enabled:     enabled,
+		Id:          id,
+		Kind:        kind,
+		Title:       title,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.UpdateIdentityProvider(idp, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 

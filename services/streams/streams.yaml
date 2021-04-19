@@ -4,13 +4,20 @@ components:
       description: ""
       properties:
         activateLatestVersion:
-          description: Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.
+          description: Set to true to activate the latest version of the pipeline.
+            Set to false to use the previously activated version of the pipeline.
+            Defaults to true.
           type: boolean
         allowNonRestoredState:
-          description: Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to activate a pipeline in this state. Defaults to false.
+          description: Set to true to allow the pipeline to ignore any unused progress
+            states. In some cases, when a data pipeline is changed, the progress state
+            will be stored for functions that no longer exist, so this must be set
+            to activate a pipeline in this state. Defaults to false.
           type: boolean
         skipRestoreState:
-          description: Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
+          description: Set to true to start reading from the latest input rather than
+            from where the pipeline's previous run left off, which can cause data
+            loss. Defaults to false.
           type: boolean
       type: object
     ArgumentModel:
@@ -68,7 +75,10 @@ components:
           example: ""
           type: string
         parameters:
-          description: The key-value pairs of parameters for this collect job. Collect jobs may have some configurations that are required, which all collect jobs must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+          description: The key-value pairs of parameters for this collect job. Collect
+            jobs may have some configurations that are required, which all collect
+            jobs must provide values for. For configuration values of type BYTES,
+            the provided values must be Base64 encoded.
           example: ""
           properties: {}
           type: object
@@ -152,7 +162,10 @@ components:
       description: ""
       properties:
         data:
-          description: The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
           example: ""
           properties: {}
           type: object
@@ -169,7 +182,10 @@ components:
       description: ""
       properties:
         data:
-          description: The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
           example: ""
           properties: {}
           type: object
@@ -194,7 +210,10 @@ components:
           example: ""
           type: string
         data:
-          description: The key-value pairs of configurations for this connection. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+          description: The key-value pairs of configurations for this connection.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
           example: ""
           properties: {}
           type: object
@@ -218,6 +237,10 @@ components:
         activePipelinesUsing:
           items:
             $ref: '#/components/schemas/MapOfstringAndobject'
+          type: array
+        activeSourcesUsing:
+          items:
+            $ref: '#/components/schemas/Source'
           type: array
         connectorId:
           type: string
@@ -314,33 +337,49 @@ components:
         tag:
           type: string
       type: object
-    DataStream:
+    CreateSourceRequest:
       description: ""
       properties:
-        createDate:
-          format: date-time
+        configs:
+          description: The key-value pairs for configuration for this source.
+          example: ""
+          properties: {}
+          type: object
+        connectionId:
+          description: The ID of the connection that is assigned to this source.
+          example: ""
           type: string
-        createUserId:
+        connectorId:
+          description: The ID of the connector this source uses.
+          example: ""
           type: string
-        currentVersion:
-          format: int32
-          type: integer
+        dataStreamId:
+          description: The ID of the data stream this source sends data to.
+          example: ""
+          type: string
         description:
+          description: The description of the source.
+          example: ""
           type: string
-        id:
-          type: string
-        lastUpdateDate:
-          format: date-time
-          type: string
+        enabled:
+          description: If the source should be enabled immediately after creation.
+          type: boolean
         name:
+          description: The name of the source.
+          example: ""
           type: string
-        partitions:
+        parallelism:
+          description: The number of instances to run.
+          example: 1
           format: int32
           type: integer
-        tenantId:
-          type: string
-        topicName:
-          type: string
+      required:
+      - configs
+      - connectionId
+      - connectorId
+      - dataStreamId
+      - enabled
+      - name
       type: object
     DataStreamProperties:
       description: ""
@@ -374,6 +413,10 @@ components:
           items:
             type: string
           type: array
+        activeSourcesUsing:
+          items:
+            $ref: '#/components/schemas/Source'
+          type: array
         description:
           type: string
         id:
@@ -387,7 +430,10 @@ components:
       description: ""
       properties:
         skipSavepoint:
-          description: Set to true to skip saving the state of a deactivated pipeline. When the pipeline is later activated, it will start with the newest data and skip any data that arrived after this deactivation, which can cause data loss. Defaults to false.
+          description: Set to true to skip saving the state of a deactivated pipeline.
+            When the pipeline is later activated, it will start with the newest data
+            and skip any data that arrived after this deactivation, which can cause
+            data loss. Defaults to false.
           type: boolean
       type: object
     DecompileRequest:
@@ -403,6 +449,18 @@ components:
       properties:
         spl:
           type: string
+      type: object
+    EnableDisableSourcesRequest:
+      description: ""
+      properties:
+        sourceIds:
+          description: A list of source IDs.
+          example: ""
+          items:
+            type: string
+          type: array
+      required:
+      - sourceIds
       type: object
     EntitlementRequest:
       description: ""
@@ -496,7 +554,8 @@ components:
       description: ""
       properties:
         nodeUuid:
-          description: The function ID. If omitted, returns the output schema for all functions.
+          description: The function ID. If omitted, returns the output schema for
+            all functions.
           example: ""
           type: string
         sourcePortName:
@@ -521,11 +580,6 @@ components:
             type: string
           type: object
       type: object
-    MapOfstringAndRulesPackageSourcetypes:
-      additionalProperties:
-        $ref: '#/components/schemas/RulesPackageSourcetypes'
-      description: ""
-      type: object
     MapOfstringAndobject:
       description: ""
       type: object
@@ -548,6 +602,20 @@ components:
         metrics:
           properties: {}
           type: object
+      type: object
+    PaginatedPipelineNotificationsResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/PipelineNotificationsResponse'
+          type: array
+        nextSinceMarker:
+          format: int64
+          type: integer
+        total:
+          format: int64
+          type: integer
       type: object
     PaginatedResponseOfCollectJobResponse:
       description: ""
@@ -615,23 +683,23 @@ components:
           format: int64
           type: integer
       type: object
-    PaginatedResponseOfRulesKind:
+    PaginatedResponseOfSourceResponse:
       description: ""
       properties:
         items:
           items:
-            $ref: '#/components/schemas/RulesKind'
+            $ref: '#/components/schemas/SourceResponse'
           type: array
         total:
           format: int64
           type: integer
       type: object
-    PaginatedResponseOfRulesResponse:
+    PaginatedResponseOfTaInfoResponse:
       description: ""
       properties:
         items:
           items:
-            $ref: '#/components/schemas/RulesResponse'
+            $ref: '#/components/schemas/TaInfoResponse'
           type: array
         total:
           format: int64
@@ -652,12 +720,14 @@ components:
       description: ""
       properties:
         attributes:
-          description: Optional metadata specified by client. Not to be interpreted by the platform
+          description: Optional metadata specified by client. Not to be interpreted
+            by the platform
           example: ""
           properties: {}
           type: object
         edges:
-          description: A list of links between the output of one pipeline function and the input of another pipeline function.
+          description: A list of links between the output of one pipeline function
+            and the input of another pipeline function.
           example: ""
           items:
             $ref: '#/components/schemas/PipelineEdge'
@@ -665,7 +735,8 @@ components:
         migrationInfo:
           $ref: '#/components/schemas/PipelineMigrationInfo'
         nodes:
-          description: The functions in your entire pipeline, including each function's operations, attributes, and properties.
+          description: The functions in your entire pipeline, including each function's
+            operations, attributes, and properties.
           example: ""
           items:
             $ref: '#/components/schemas/PipelineNode'
@@ -730,22 +801,49 @@ components:
           example: ""
           type: string
         resolvedId:
-          description: The identifier describing the operation name and required argument types. This field is ignored.
+          description: The identifier describing the operation name and required argument
+            types. This field is ignored.
           example: ""
           type: string
         statementName:
-          description: If present, creates a named statement when decompiling to SPL2. For example, "$events = | from splunk_firehose();".
+          description: If present, creates a named statement when decompiling to SPL2.
+            For example, "$events = | from splunk_firehose();".
           example: ""
           type: string
       required:
       - id
       - op
       type: object
+    PipelineNotificationsResponse:
+      description: ""
+      properties:
+        details:
+          items:
+            type: string
+          type: array
+        eventTimestamp:
+          format: int64
+          type: integer
+        id:
+          type: string
+        message:
+          type: string
+        severity:
+          enum:
+          - ERROR
+          - WARN
+          - INFO
+          type: string
+        source:
+          $ref: '#/components/schemas/Source'
+      type: object
     PipelinePatchRequest:
       description: ""
       properties:
         bypassValidation:
-          description: Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.
+          description: Set to true to bypass initial pipeline validation upon creation.
+            The pipeline still needs to be validated before activation. Defaults to
+            false.
           type: boolean
         createUserId:
           description: The user that created the pipeline. Deprecated.
@@ -788,7 +886,9 @@ components:
       description: ""
       properties:
         bypassValidation:
-          description: Set to true to bypass initial pipeline validation upon creation. The pipeline still needs to be validated before activation. Defaults to false.
+          description: Set to true to bypass initial pipeline validation upon creation.
+            The pipeline still needs to be validated before activation. Defaults to
+            false.
           type: boolean
         data:
           $ref: '#/components/schemas/Pipeline'
@@ -861,6 +961,28 @@ components:
         version:
           format: int64
           type: integer
+      type: object
+    PipelineUpgradeResponse:
+      description: ""
+      properties:
+        flinkVersion:
+          type: string
+        pipelineId:
+          type: string
+        pipelineUpgradeError:
+          type: string
+        pipelineUpgradeStatus:
+          enum:
+          - upgraded
+          - not upgraded, restored back on old cluster
+          - not upgraded because it's not active
+          - not upgraded, couldn't restore back on old cluster, send help
+          - already upgraded
+          - not upgraded, pipeline version is not supported
+          - Couldn't be stopped on old cluster
+          type: string
+        tenantId:
+          type: string
       type: object
     Plugin:
       description: ""
@@ -973,7 +1095,8 @@ components:
           format: int32
           type: integer
         sessionLifetimeMs:
-          description: The maximum lifetime of a session, in milliseconds. Defaults to 300,000.
+          description: The maximum lifetime of a session, in milliseconds. Defaults
+            to 300,000.
           format: int64
           type: integer
         upl:
@@ -1013,13 +1136,20 @@ components:
       description: ""
       properties:
         activateLatestVersion:
-          description: Set to true to activate the latest version of the pipeline. Set to false to use the previously activated version of the pipeline. Defaults to true.
+          description: Set to true to activate the latest version of the pipeline.
+            Set to false to use the previously activated version of the pipeline.
+            Defaults to true.
           type: boolean
         allowNonRestoredState:
-          description: Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.
+          description: Set to true to allow the pipeline to ignore any unused progress
+            states. In some cases, when a data pipeline is changed, the progress state
+            will be stored for functions that no longer exist, so this must be set
+            to reactivate a pipeline in this state. Defaults to false.
           type: boolean
         skipRestoreState:
-          description: Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
+          description: Set to true to start reading from the latest input rather than
+            from where the pipeline's previous run left off, which can cause data
+            loss. Defaults to false.
           type: boolean
       type: object
     RegistryModel:
@@ -1058,93 +1188,34 @@ components:
         name:
           type: string
       type: object
-    RulesKind:
+    Source:
       description: ""
       properties:
-        ruleKindName:
+        node:
           type: string
-        ruleKindValue:
+        pipelineVersion:
           type: string
       type: object
-    RulesPackageActions:
+    SourceResponse:
       description: ""
       properties:
-        arguments:
-          description: The arguments for the rules
-          example: ""
+        configs:
           properties: {}
           type: object
-        kind:
-          description: Rules kind
-          example: ""
+        connectionId:
           type: string
-      required:
-      - arguments
-      - kind
-      type: object
-    RulesPackageSourcetypes:
-      description: ""
-      properties:
-        actions:
-          description: List of actions for the sourcetype
-          example: ""
-          items:
-            $ref: '#/components/schemas/RulesPackageActions'
-          type: array
-        definition:
-          description: Sourcetype definition
-          example: ""
+        connectorId:
           type: string
-        description:
-          description: Sourcetype description
-          example: ""
-          type: string
-      required:
-      - actions
-      - definition
-      type: object
-    RulesRequest:
-      description: ""
-      properties:
-        externalId:
-          description: Unique id of the rules package
-          example: ""
-          type: string
-        name:
-          description: The name of the rules
-          example: ""
-          type: string
-        rulesDescription:
-          description: The description of the rules. Defaults to null.
-          example: ""
-          type: string
-        sourcetypes:
-          description: The sourcetype that the rules has to be applied
-          example: ""
-          items:
-            $ref: '#/components/schemas/MapOfstringAndRulesPackageSourcetypes'
-          type: array
-        version:
-          description: The version of the rules
-          example: ""
-          type: string
-      required:
-      - externalId
-      - name
-      - sourcetypes
-      - version
-      type: object
-    RulesResponse:
-      description: ""
-      properties:
         createDate:
           format: int64
           type: integer
         createUserId:
           type: string
-        externalId:
-          description: Unique id of the rules package
-          example: ""
+        dataStreamId:
+          type: string
+        description:
+          type: string
+        id:
           type: string
         lastUpdateDate:
           format: int64
@@ -1152,30 +1223,22 @@ components:
         lastUpdateUserId:
           type: string
         name:
-          description: The name of the rules
-          example: ""
           type: string
-        rulesDescription:
-          description: The description of the rules. Defaults to null.
-          example: ""
-          type: string
-        sourcetypes:
-          description: The sourcetype that the rules has to be applied
-          example: ""
-          items:
-            $ref: '#/components/schemas/MapOfstringAndRulesPackageSourcetypes'
-          type: array
-        tenantId:
+        parallelism:
+          format: int32
+          type: integer
+        status:
+          enum:
+          - DISABLED
+          - ENABLED
+          - FAILED
+          - FETCH_ERROR
+          - RESTARTING
+          - RUNNING
           type: string
         version:
-          description: The version of the rules
-          example: ""
-          type: string
-      required:
-      - externalId
-      - name
-      - sourcetypes
-      - version
+          format: int64
+          type: integer
       type: object
     SplCompileRequest:
       description: ""
@@ -1189,6 +1252,46 @@ components:
           type: boolean
       required:
       - spl
+      type: object
+    TaInfoConfig:
+      description: ""
+      properties:
+        conf:
+          enum:
+          - props
+          - transform
+          - appmanifest
+          type: string
+        file:
+          type: string
+        folderPath:
+          type: string
+      type: object
+    TaInfoConfigResponse:
+      description: ""
+      properties:
+        lastUpdateDate:
+          format: int64
+          type: integer
+        name:
+          type: string
+        taInfoConfigs:
+          items:
+            $ref: '#/components/schemas/TaInfoConfig'
+          type: array
+        version:
+          type: string
+      type: object
+    TaInfoResponse:
+      description: ""
+      properties:
+        lastUpdateDate:
+          format: int64
+          type: integer
+        name:
+          type: string
+        version:
+          type: string
       type: object
     TemplatePatchRequest:
       description: ""
@@ -1262,6 +1365,36 @@ components:
           format: int64
           type: integer
       type: object
+    UpdateSourceRequest:
+      description: ""
+      properties:
+        configs:
+          description: The key-value pairs for configuration for this source.
+          example: ""
+          properties: {}
+          type: object
+        connectionId:
+          description: The ID of the connection that is assigned to this source.
+          example: ""
+          type: string
+        dataStreamId:
+          description: The ID of the data stream this source sends data to.
+          example: ""
+          type: string
+        description:
+          description: The description of the source.
+          example: ""
+          type: string
+        name:
+          description: The name of the source.
+          example: ""
+          type: string
+        parallelism:
+          description: The number of instances to run.
+          example: 1
+          format: int32
+          type: integer
+      type: object
     UplType:
       description: ""
       properties:
@@ -1314,7 +1447,9 @@ components:
           type: array
       type: object
 info:
-  description: Use the Streams service to perform create, read, update, and delete (CRUD) operations on your data pipeline. The Streams service also has metrics and preview session endpoints and gives you full control over your data pipeline.
+  description: Use the Streams service to perform create, read, update, and delete
+    (CRUD) operations on your data pipeline. The Streams service also has metrics
+    and preview session endpoints and gives you full control over your data pipeline.
   title: Data Stream Processing REST API
   version: v3beta1.1
 openapi: 3.0.1
@@ -1368,7 +1503,9 @@ paths:
         name: sortField
         schema:
           type: string
-      - description: Specify either ascending ('asc') or descending ('desc') sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to 'asc'.
+      - description: Specify either ascending ('asc') or descending ('desc') sort
+          order for a given field (sortField), which must be set for sortDir to apply.
+          Defaults to 'asc'.
         in: query
         name: sortDir
         schema:
@@ -1821,7 +1958,7 @@ paths:
       x-authz-scope: streams.connections.read
   /{tenantId}/streams/v3beta1/files:
     get:
-      deprecated: false
+      deprecated: true
       operationId: getFilesMetadata
       parameters:
       - description: Tenant ID
@@ -1890,7 +2027,7 @@ paths:
       - files
       x-authz-scope: streams.files.read
     post:
-      deprecated: false
+      deprecated: true
       operationId: uploadFile
       parameters:
       - description: Tenant ID
@@ -1969,7 +2106,7 @@ paths:
       x-authz-scope: streams.files.create
   /{tenantId}/streams/v3beta1/files/{fileId}:
     delete:
-      deprecated: false
+      deprecated: true
       operationId: deleteFile
       parameters:
       - description: Tenant ID
@@ -2041,1222 +2178,7 @@ paths:
       - files
       x-authz-scope: streams.files.delete
     get:
-      deprecated: false
-      operationId: getFileMetadata
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: File ID
-        in: path
-        name: fileId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadFileResponse'
-          description: Returns files metadata.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Create or update entitlements
-      tags:
-      - entitlements
-      x-authz-scope: streams.entitlements.write
-      x-internal: "true"
-  /{tenantId}/streams/v3beta1/connections:
-    get:
-      deprecated: false
-      operationId: listConnections
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - explode: true
-        in: query
-        name: connectorId
-        schema:
-          items:
-            type: string
-          type: array
-        style: form
-      - in: query
-        name: functionId
-        schema:
-          type: string
-      - in: query
-        name: functionOp
-        schema:
-          type: string
-      - in: query
-        name: createUserId
-        schema:
-          type: string
-      - in: query
-        name: name
-        schema:
-          type: string
-      - in: query
-        name: offset
-        schema:
-          format: int32
-          type: integer
-      - in: query
-        name: pageSize
-        schema:
-          format: int32
-          type: integer
-      - in: query
-        name: sortField
-        schema:
-          type: string
-      - description: Specify either ascending ('asc') or descending ('desc') sort order for a given field (sortField), which must be set for sortDir to apply. Defaults to 'asc'.
-        in: query
-        name: sortDir
-        schema:
-          type: string
-      - in: query
-        name: showSecretNames
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfConnectionResponse'
-          description: Returns a list of connections.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns a list of connections (latest versions only) by tenant ID.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.read
-    post:
-      deprecated: false
-      operationId: createConnection
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConnectionRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionSaveResponse'
-          description: The connection was created successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Create a new DSP connection.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.create
-  /{tenantId}/streams/v3beta1/connections/{connectionId}:
-    delete:
-      deprecated: false
-      operationId: deleteConnection
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Connection ID
-        in: path
-        name: connectionId
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          content: {}
-          description: The connection was deleted successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete all versions of a connection by its id.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.delete
-    patch:
-      deprecated: false
-      operationId: updateConnection
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Connection ID
-        in: path
-        name: connectionId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConnectionPatchRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionSaveResponse'
-          description: The connection was modified successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Patches an existing DSP connection.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.update
-    put:
-      deprecated: false
-      operationId: putConnection
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Connection ID
-        in: path
-        name: connectionId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConnectionPutRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionSaveResponse'
-          description: The connection was updated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Updates an existing DSP connection.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.update
-  /{tenantId}/streams/v3beta1/connectors:
-    get:
-      deprecated: false
-      operationId: listConnectors
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfConnectorResponse'
-          description: Returns a list of connectors.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns a list of the available connectors.
-      tags:
-      - connectors
-      x-authz-scope: streams.connections.read
-  /{tenantId}/streams/v3beta1/datastreams:
-    get:
-      deprecated: false
-      operationId: listDataStreams
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: offset
-        in: query
-        name: offset
-        schema:
-          default: 0
-          format: int32
-          type: integer
-      - description: pageSize
-        in: query
-        name: pageSize
-        schema:
-          format: int32
-          type: integer
-      - description: sortField
-        in: query
-        name: sortField
-        schema:
-          default: name
-          type: string
-      - description: sortDir
-        in: query
-        name: sortDir
-        schema:
-          default: ASC
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/DataStreamResponse'
-                type: array
-          description: Returns a list of datastreams.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns a list of datastreams for a tenant.
-      tags:
-      - datastreams
-      x-authz-scope: streams.datastreams.read
-      x-hidden: "true"
-    post:
-      deprecated: false
-      operationId: createDataStream
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DataStreamRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataStreamResponse'
-          description: The data stream was created successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Creates a data stream for a tenant.
-      tags:
-      - datastreams
-      x-authz-scope: streams.datastreams.create
-      x-hidden: "true"
-  /{tenantId}/streams/v3beta1/datastreams/{id}:
-    delete:
-      deprecated: false
-      operationId: deleteDataStream
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content: {}
-          description: The data stream was deleted successfully.
-        "204":
-          content: {}
-          description: The data stream did not exist or was deleted by a preceding request.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The data stream could not be deleted because it was in active use by one or more pipelines.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Deletes a data stream for a tenant.
-      tags:
-      - datastreams
-      x-authz-scope: streams.datastreams.delete
-      x-hidden: "true"
-    get:
-      deprecated: false
-      operationId: describeDataStream
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataStreamResponse'
-          description: Returns the data stream with the specified id.
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataStreamResponse'
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Describes a data stream for a tenant.
-      tags:
-      - datastreams
-      x-authz-scope: streams.datastreams.read
-      x-hidden: "true"
-    patch:
-      deprecated: false
-      operationId: updateDataStream
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DataStreamRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DataStream'
-          description: The data stream was updated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The data stream did not exist.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The data stream could not be updated because it was in active use by one or more pipelines.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Patches an existing data stream for a tenant.
-      tags:
-      - datastreams
-      x-authz-scope: streams.datastreams.update
-      x-hidden: "true"
-  /{tenantId}/streams/v3beta1/files:
-    get:
-      deprecated: false
-      operationId: getFilesMetadata
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FilesMetaDataResponse'
-          description: Returns files metadata.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns files metadata.
-      tags:
-      - files
-      x-authz-scope: streams.files.read
-    post:
-      deprecated: false
-      operationId: uploadFile
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  description: Upload file
-                  format: binary
-                  type: string
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadFileResponse'
-          description: Upload a file.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Upload new file.
-      tags:
-      - files
-      x-authz-scope: streams.files.create
-      x-hidden: "true"
-  /{tenantId}/streams/v3beta1/files/{fileId}:
-    delete:
-      deprecated: false
-      operationId: deleteFile
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: File ID
-        in: path
-        name: fileId
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          content: {}
-          description: File deleted successfully
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete file.
-      tags:
-      - files
-      x-authz-scope: streams.files.delete
-    get:
-      deprecated: false
+      deprecated: true
       operationId: getFileMetadata
       parameters:
       - description: Tenant ID
@@ -3327,1064 +2249,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: An internal service error has occurred.
       summary: Get file metadata.
-      tags:
-      - files
-      x-authz-scope: streams.files.read
-  /{tenantId}/streams/v3beta1/lookups/{connectionId}:
-    get:
-      deprecated: false
-      operationId: getLookupTable
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Connection ID
-        in: path
-        name: connectionId
-        required: true
-        schema:
-          type: string
-      - description: size
-        in: query
-        name: size
-        required: true
-        schema:
-          format: int32
-          type: integer
-      - description: offset
-        in: query
-        name: offset
-        required: true
-        schema:
-          format: int32
-          type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LookupTableResponse'
-          description: Returns lookup table results.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns lookup table results.
-      tags:
-      - lookup
-      x-authz-scope: streams.lookups.read
-  /{tenantId}/streams/v3beta1/lookups/files:
-    get:
-      deprecated: false
-      operationId: getLookupFilesMetadata
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FilesMetaDataResponse'
-          description: Returns lookups/files metadata.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns lookup files metadata.
-      tags:
-      - lookups/files
-      x-authz-scope: streams.files.read
-    post:
-      deprecated: false
-      operationId: uploadLookupFile
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  description: Upload file
-                  format: binary
-                  type: string
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadFileResponse'
-          description: Upload a lookup file.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Upload new lookup file.
-      tags:
-      - lookups/files
-      x-authz-scope: streams.files.create
-  /{tenantId}/streams/v3beta1/lookups/files/{fileId}:
-    delete:
-      deprecated: false
-      operationId: deleteLookupFile
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: File ID
-        in: path
-        name: fileId
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          content: {}
-          description: File deleted successfully
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Delete lookup file.
-      tags:
-      - lookups/files
-      x-authz-scope: streams.files.delete
-    get:
-      deprecated: false
-      operationId: getLookupFileMetadata
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: File ID
-        in: path
-        name: fileId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadFileResponse'
-          description: Returns lookup file metadata.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Get lookup file metadata.
-      tags:
-      - lookups/files
-      x-authz-scope: streams.files.read
-  /{tenantId}/streams/v3beta1/pipelines:
-    get:
-      deprecated: false
-      operationId: listPipelines
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: offset
-        in: query
-        name: offset
-        schema:
-          format: int32
-          type: integer
-      - description: pageSize
-        in: query
-        name: pageSize
-        schema:
-          format: int32
-          type: integer
-      - description: sortField
-        in: query
-        name: sortField
-        schema:
-          type: string
-      - description: sortDir
-        in: query
-        name: sortDir
-        schema:
-          type: string
-      - description: activated
-        in: query
-        name: activated
-        schema:
-          type: boolean
-      - description: createUserId
-        in: query
-        name: createUserId
-        schema:
-          type: string
-      - description: name
-        in: query
-        name: name
-        schema:
-          type: string
-      - description: includeData
-        in: query
-        name: includeData
-        schema:
-          default: false
-          type: boolean
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedResponseOfPipelineResponse'
-          description: Returns a list of pipelines.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns all pipelines.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.read
-    post:
-      deprecated: false
-      operationId: createPipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PipelineRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PipelineResponse'
-          description: The pipeline was created successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Creates a pipeline.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.create
-  /{tenantId}/streams/v3beta1/pipelines/{id}:
-    delete:
-      deprecated: false
-      operationId: deletePipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      responses:
-        "204":
-          content: {}
-          description: The pipeline was deleted successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Removes a pipeline.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.delete
-    get:
-      deprecated: false
-      operationId: getPipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      - description: version
-        in: query
-        name: version
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PipelineResponse'
-          description: Returns the pipeline with the specified id.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Returns an individual pipeline by version.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.read
-    patch:
-      deprecated: false
-      operationId: patchPipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PipelinePatchRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PipelineResponse'
-          description: The pipeline was modified successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Patches an existing pipeline.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.update
-    put:
-      deprecated: false
-      operationId: updatePipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PipelineRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PipelineResponse'
-          description: The pipeline was updated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Updates an existing pipeline.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.update
-  /{tenantId}/streams/v3beta1/pipelines/{id}/activate:
-    post:
-      deprecated: false
-      operationId: activatePipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ActivatePipelineRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: The pipeline was activated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Activates an existing pipeline.
-      tags:
-      - pipelines
-      x-authz-scope: streams.pipelines.activate
-  /{tenantId}/streams/v3beta1/pipelines/{id}/deactivate:
-    post:
-      deprecated: false
-      operationId: deactivatePipeline
-      parameters:
-      - description: Tenant ID
-        in: path
-        name: tenantId
-        required: true
-        schema:
-          type: string
-      - description: Pipeline ID
-        in: path
-        name: id
-        required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeactivatePipelineRequest'
-        description: Request JSON
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-          description: The pipeline was deactivated successfully.
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The request isn't well-formed or is incorrect.
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The user isn?t authenticated.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The operation isn?t authorized.
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The resource wasn?t found.
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: There is a conflict with the existing state of your resource.
-        "415":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The media type isn't supported.
-        "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: The provided fields aren't valid
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: An internal service error has occurred.
-      summary: Deactivates an existing pipeline.
       tags:
       - files
       x-authz-scope: streams.files.read
@@ -7046,38 +4910,38 @@ paths:
           description: An internal service error has occurred.
       summary: Updates an existing template.
       tags:
-      - apiv-3-beta-1-admin-controller
-      x-admin: "true"
-      x-authz-scope: streams.plugins.create
-      x-hidden: "true"
+      - templates
+      x-authz-scope: streams.templates.update
 servers:
 - url: /
 tags:
 - description: V3Beta1 Release Info API Endpoints
   name: info
+- description: Files API Endpoints Deprecated Use Lookup Files API Endpoints
+  name: files
 - description: V3Beta1 Collect Job Endpoints
   name: collectJobs
 - description: Entitlements API Endpoints
   name: entitlements
-- description: Files API Endpoints
-  name: files
+- description: Services Endpoint
+  name: admin
 - description: V3Beta1 Connectors and Connections Endpoints
   name: connectors
+- description: V3Beta1 TA Config API Endpoints
+  name: taconfig
 - description: Lookup Files API Endpoints
   name: lookups/files
 - description: V3Beta1 Template API Endpoints
   name: templates
 - description: Lookups API Endpoints
   name: lookup
-- description: Services Endpoint
-  name: apiv-3-beta-1-admin-controller
-- description: V3Beta1 Rules API Endpoints
-  name: rules
 - description: V3Beta1 Pipeline API Endpoints
   name: pipelines
+- description: V3Beta1 Sources Endpoints
+  name: sources
 - description: V3Beta1 Data Streams Endpoints
   name: datastreams
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: streams/v3beta1/openapi.yaml

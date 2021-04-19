@@ -1,13 +1,21 @@
 components:
   parameters:
     AuthorizationHeaderParam:
-      description: Access token provided by the user (obtained from a known identity provider).
+      description: Access token provided by the user (obtained from a known identity
+        provider).
       in: header
       name: Authorization
       required: false
       schema:
         pattern: ^Bearer .+
         type: string
+    BatchSizeParam:
+      description: Number of bytes to return (in MB).
+      in: query
+      name: batchsize
+      required: false
+      schema:
+        type: integer
     CollectionParam:
       description: The name of the collection.
       in: path
@@ -69,7 +77,8 @@ components:
       schema:
         type: integer
     OrderByParam:
-      description: Sort order. Format is `<field>:<sort order>`. Valid sort orders are 1 for ascending, -1 for descending.
+      description: Sort order. Format is `<field>:<sort order>`. Valid sort orders
+        are 1 for ascending, -1 for descending.
       in: query
       name: orderby
       required: false
@@ -340,7 +349,8 @@ components:
       - lookupValues
       type: object
     LookupValues:
-      description: Corresponding list of tuples for lookupFields (must match ordering in keyHeaders).
+      description: Corresponding list of tuples for lookupFields (must match ordering
+        in keyHeaders).
       items:
         items:
           type: object
@@ -407,14 +417,17 @@ components:
           type: string
       type: object
 info:
-  description: With the Splunk Cloud KV store service in Splunk Cloud Services, you can save and retrieve data within your Splunk Cloud apps, enabling you to manage and maintain state in your application.
+  description: With the Splunk Cloud KV store service in Splunk Cloud Services, you
+    can save and retrieve data within your Splunk Cloud apps, enabling you to manage
+    and maintain state in your application.
   title: KV Store API
   version: v1beta1.2
 openapi: 3.0.0
 paths:
   /{tenant}/kvstore/v1beta1/collections/{collection}:
     get:
-      description: Use key-value query parameters to filter fields. Fields are implicitly ANDed and values for the same field are implicitly ORed.
+      description: Use key-value query parameters to filter fields. Fields are implicitly
+        ANDed and values for the same field are implicitly ORed.
       operationId: listRecords
       parameters:
       - $ref: '#/components/parameters/FieldsParam'
@@ -452,7 +465,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultError'
-      summary: Returns a list of records in a collection with basic filtering, sorting, pagination and field projection.
+      summary: Returns a list of records in a collection with basic filtering, sorting,
+        pagination and field projection.
       x-authz-scope: kvstore.records.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeaderParam'
@@ -497,7 +511,8 @@ paths:
     post:
       operationId: insertRecords
       parameters:
-      - description: Allow records with keys included to update their respective records in the database
+      - description: Allow records with keys included to update their respective records
+          in the database
         in: query
         name: allow_updates
         required: false
@@ -514,7 +529,8 @@ paths:
                 items:
                   type: string
                 type: array
-          description: Successfully returned a list of the keys of the inserted/updated records.
+          description: Successfully returned a list of the keys of the inserted/updated
+            records.
         "201":
           content:
             application/json:
@@ -806,7 +822,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultError'
-      summary: Updates the record with a given key, either by inserting or replacing the record.
+      summary: Updates the record with a given key, either by inserting or replacing
+        the record.
       x-authz-scope: kvstore.records.update
   /{tenant}/kvstore/v1beta1/collections/{collection}/truncate:
     delete:
@@ -868,4 +885,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: kvstore/v1beta1/openapi.yaml

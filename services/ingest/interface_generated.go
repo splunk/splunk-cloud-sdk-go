@@ -20,7 +20,6 @@ package ingest
 
 import (
 	"net/http"
-	"os"
 )
 
 // ServicerGenerated represents the interface for implementing all endpoints for this service
@@ -53,22 +52,6 @@ type ServicerGenerated interface {
 	*/
 	ListCollectorTokens(query *ListCollectorTokensQueryParams, resp ...*http.Response) ([]HecTokenAccessResponse, error)
 	/*
-		PostCollectorRaw - Sends collector raw events.
-		Parameters:
-			body: The payload uses concatenated JSON format. See https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for more information.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	PostCollectorRaw(body *string, query *PostCollectorRawQueryParams, resp ...*http.Response) (*HecResponse, error)
-	/*
-		PostCollectorRawV1 - Sends collector raw events.
-		Parameters:
-			body: The payload uses concatenated JSON format. See https://docs.splunk.com/Documentation/Splunk/latest/Data/FormateventsforHTTPEventCollector#Event_data for more information.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	PostCollectorRawV1(body *string, query *PostCollectorRawV1QueryParams, resp ...*http.Response) (*HecResponse, error)
-	/*
 		PostCollectorTokens - Creates dsphec tokens.
 		Parameters:
 			hecTokenCreateRequest: The API request schema for the token.
@@ -98,10 +81,10 @@ type ServicerGenerated interface {
 	*/
 	PutCollectorToken(tokenName string, hecTokenUpdateRequest HecTokenUpdateRequest, resp ...*http.Response) (*HecTokenAccessResponse, error)
 	/*
-		UploadFiles - Upload a CSV or text file that contains events.
-		Parameters:
-			upfile
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	   UploadFiles - Upload a CSV or text file that contains events. The file limit is 1MB or an error is returned.
+	   Parameters:
+	       filename
+	       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UploadFiles(upfile **os.File, resp ...*http.Response) (*UploadSuccessResponse, error)
+	UploadFiles(filename string, resp ...*http.Response) error
 }

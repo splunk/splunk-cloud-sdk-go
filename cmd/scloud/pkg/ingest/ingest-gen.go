@@ -121,122 +121,6 @@ func ListCollectorTokens(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// PostCollectorRaw Sends collector raw events.
-func PostCollectorRaw(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var body string
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
-	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
-	}
-	var host string
-	err = flags.ParseFlag(cmd.Flags(), "host", &host)
-	if err != nil {
-		return fmt.Errorf(`error parsing "host": ` + err.Error())
-	}
-	var index string
-	err = flags.ParseFlag(cmd.Flags(), "index", &index)
-	if err != nil {
-		return fmt.Errorf(`error parsing "index": ` + err.Error())
-	}
-	var source string
-	err = flags.ParseFlag(cmd.Flags(), "source", &source)
-	if err != nil {
-		return fmt.Errorf(`error parsing "source": ` + err.Error())
-	}
-	var sourcetype string
-	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
-	}
-	var time string
-	err = flags.ParseFlag(cmd.Flags(), "time", &time)
-	if err != nil {
-		return fmt.Errorf(`error parsing "time": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.PostCollectorRawQueryParams{}
-	generated_query.Host = host
-	generated_query.Index = index
-	generated_query.Source = source
-	generated_query.Sourcetype = sourcetype
-	generated_query.Time = time
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.IngestService.PostCollectorRaw(&body, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// PostCollectorRawV1 Sends collector raw events.
-func PostCollectorRawV1(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var body string
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
-	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
-	}
-	var host string
-	err = flags.ParseFlag(cmd.Flags(), "host", &host)
-	if err != nil {
-		return fmt.Errorf(`error parsing "host": ` + err.Error())
-	}
-	var index string
-	err = flags.ParseFlag(cmd.Flags(), "index", &index)
-	if err != nil {
-		return fmt.Errorf(`error parsing "index": ` + err.Error())
-	}
-	var source string
-	err = flags.ParseFlag(cmd.Flags(), "source", &source)
-	if err != nil {
-		return fmt.Errorf(`error parsing "source": ` + err.Error())
-	}
-	var sourcetype string
-	err = flags.ParseFlag(cmd.Flags(), "sourcetype", &sourcetype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "sourcetype": ` + err.Error())
-	}
-	var time string
-	err = flags.ParseFlag(cmd.Flags(), "time", &time)
-	if err != nil {
-		return fmt.Errorf(`error parsing "time": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.PostCollectorRawV1QueryParams{}
-	generated_query.Host = host
-	generated_query.Index = index
-	generated_query.Source = source
-	generated_query.Sourcetype = sourcetype
-	generated_query.Time = time
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.IngestService.PostCollectorRawV1(&body, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
 // PostCollectorTokens Creates dsphec tokens.
 func PostCollectorTokens(cmd *cobra.Command, args []string) error {
 
@@ -575,7 +459,7 @@ func PutCollectorToken(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UploadFiles Upload a CSV or text file that contains events.
+// UploadFiles Upload a CSV or text file that contains events. The file limit is 1MB or an error is returned.
 func UploadFiles(cmd *cobra.Command, args []string) error {
 
 	var err error

@@ -9,38 +9,30 @@ components:
       schema:
         pattern: ^Bearer .+
         type: string
-    Count:
-      description: |
-        The maximum number of jobs that you want to return the status entries for.
-      in: query
-      name: count
-      schema:
-        default: 1000
-        type: integer
     Earliest:
       description: |
-        The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+        The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
       in: query
       name: earliest
       schema:
         type: string
     Field:
       description: |
-        A field to return for the result set. You can specify multiple fields of comma-separated values if multiple fields are required.
+        One or more fields to return for the result set. Use a comma-separated list of field names to specify multiple fields.
       in: query
       name: field
       schema:
         type: string
     Latest:
       description: |
-        The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+        The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
       in: query
       name: latest
       schema:
         type: string
     SidFilter:
       description: |
-        Filter the list of jobs by sid. Valid format is  `sid IN ({comma separated list of SIDs in quotes})`. A maximum of 50 SIDs can be specified in one query.
+        Filter the list of jobs by 'sid'. Valid format is  `sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})`. A maximum of 50 SIDs can be specified in one query.
       in: query
       name: filter
       schema:
@@ -54,19 +46,36 @@ components:
         $ref: '#/components/schemas/SearchStatus'
     count:
       description: |
-        The maximum number of entries to return. Set to 0 to return all available entries.
+        The maximum number of jobs that you want to return the status entries for.
       in: query
       name: count
       schema:
-        default: 30
+        default: 1000
         type: integer
+    filename:
+      description: |
+        The export results filename. Default: exportResults
+      in: query
+      name: filename
+      schema:
+        type: string
     offset:
-      description: Index of first item to return.
+      description: Index number identifying the location of the first item to return.
       in: query
       name: offset
       schema:
         default: 0
         type: integer
+    outputMode:
+      description: |
+        Specifies the format for the returned output.
+      in: query
+      name: outputMode
+      schema:
+        enum:
+        - csv
+        - json
+        type: string
     sid:
       description: The search ID.
       in: path
@@ -83,30 +92,31 @@ components:
         type: string
   schemas:
     DeleteSearchJob:
-      description: A fully-constructed delete search job, including read-only fields.
+      description: A delete search job, including read-only fields that includes the
+        required properties.
       properties:
         allowSideEffects:
           default: true
           description: |
-            Specifies that the delete search job will contain side effects, with possible security risks.
+            Specifies that the delete search job contains side effects, with possible security risks.
           readOnly: true
           type: boolean
         collectEventSummary:
           default: false
           description: |
-            This field does not apply to delete search jobs and is defaulted to false.
+            This property does not apply to delete search jobs endpoint and is set to false by default.
           readOnly: true
           type: boolean
         collectFieldSummary:
           default: false
           description: |
-            This field does not apply to delete search jobs and is defaulted to false.
+            This property does not apply to delete search jobs endpoint and is set to false by default.
           readOnly: true
           type: boolean
         collectTimeBuckets:
           default: false
           description: |
-            This field does not apply to delete search jobs and is defaulted to false.
+            This property does not apply to delete search jobs endpoint and is set to false by default.
           readOnly: true
           type: boolean
         completionTime:
@@ -122,21 +132,16 @@ components:
         enablePreview:
           default: false
           description: |
-            This field does not apply to delete search jobs and is defaulted to false.
+            This property does not apply to delete search jobs endpoint and is set to false by default.
           readOnly: true
           type: boolean
-        extractAllFields:
-          default: false
-          description: |
-            Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
-          type: boolean
         extractFields:
-          default: ""
+          default: none
           description: |
             Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.
           type: string
         index:
-          description: The index to delete events from.
+          description: The index to delete the events from.
           type: string
         maxTime:
           default: 3600
@@ -150,43 +155,50 @@ components:
             $ref: '#/components/schemas/Message'
           type: array
         module:
-          description: The module to run the delete search job in. The default module is used if module field is empty.
+          description: The module to run the delete search job in. The default module
+            is used if the module field is empty.
           type: string
         name:
-          description: The name of the created search job.
+          description: The name of the search job.
           maxLength: 100
           readOnly: true
           type: string
         percentComplete:
           default: 0
-          description: An estimate of the percent of time remaining before the delete search job completes.
+          description: An estimate of the percent of time remaining before the delete
+            search job completes.
           readOnly: true
           type: integer
         predicate:
-          description: The predicate expression that identifies the events to delete from the index. This expression must return true or false. To delete all events from the index, specify "true" instead of an expression.
+          description: The predicate expression that identifies the events to delete
+            from the index. This expression must return true or false. To delete all
+            events from the index, specify "true" instead of an expression.
           type: string
         previewAvailable:
           default: false
-          description: This field does not apply to delete search jobs and is defaulted to false.
+          description: This property does not apply to delete search jobs endpoint
+            and is set to false by default.
           readOnly: true
           type: string
         query:
-          description: The SPL search string that is generated based on index, module and predicate that are specified.
+          description: The SPL search string that includes the index, module, and
+            predicate that you specify.
           readOnly: true
           type: string
         queryParameters:
           allOf:
           - $ref: '#/components/schemas/QueryParameters'
-          description: Represents parameters on the search job such as 'earliest' and 'latest'.
+          description: Represents parameters on the search job such as 'earliest'
+            and 'latest'.
         requiredFreshness:
           default: 0
           description: |
-            This field does not apply to delete search jobs and is set to 0.
+            This property does not apply to delete search jobs endpoint and is set to 0 by default.
           readOnly: true
           type: integer
         resolvedEarliest:
           description: |
-            The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+            The earliest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
           readOnly: true
           type: string
         resolvedLatest:
@@ -196,12 +208,14 @@ components:
           type: string
         resultsAvailable:
           default: 0
-          description: The number of results produced so far by the delete search job that are going to be deleted.
+          description: The number of results produced so far by the delete search
+            job that are going to be deleted.
           readOnly: true
           type: integer
         resultsPreviewAvailable:
           default: 0
-          description: This field does not apply to delete search jobs and is defaulted to 0.
+          description: This property does not apply to delete search jobs endpoint
+            and is set to 0 by default.
           readOnly: true
           type: integer
         sid:
@@ -227,29 +241,38 @@ components:
           type: string
       type: object
     FieldsSummary:
-      description: Fields statistics summary model of the events to-date, for search ID (sid).
+      description: A  statistical summary of the fields in the events to date, for
+        the search ID (SID).
       properties:
         duration:
-          description: The amount of time, in seconds, that a time bucket spans from the earliest to the latest time.
+          description: The amount of time, in seconds, that a time bucket spans from
+            the earliest to the latest time.
           format: double
           type: number
         earliestTime:
-          description: If specified, the earliest timestamp, in UTC format, of the events to process.
+          description: The earliest timestamp, in UTC format, of the events to process.
           type: string
         eventCount:
-          description: The total number of events for all fields returned in the time range (earliestTime and latestTime) specified.
+          description: The total number of events for all fields returned in the time
+            range (earliestTime and latestTime) specified.
           type: integer
         fields:
           additionalProperties:
             $ref: '#/components/schemas/SingleFieldSummary'
-          description: A map of the fields in the time range specified.
+          description: A list of the fields in the time range specified.
           type: object
         latestTime:
-          description: If specified, the latest timestamp, in UTC format, of the events to process.
+          description: The latest timestamp, in UTC format, of the events to process.
           type: string
       type: object
     ListPreviewResultsResponse:
-      description: The structure of the response body for the preview search results that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. The isPreviewStable property indicates whether the returned preview results stucture is stable or not. Truncated preview results occur because the number of requested results exceeds the page limit. Follow the 'nextLink' URL to retrieve the next page of results.
+      description: The structure of the response body for the preview search results
+        that is returned for the job with the specified search ID (SID). When search
+        is running, it might return incomplete or truncated search results. The isPreviewStable
+        property indicates whether the returned preview results stucture is stable
+        or not. Truncated preview results occur because the number of requested results
+        exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of
+        results.
       properties:
         fields:
           items:
@@ -331,7 +354,8 @@ components:
       - results
       type: object
     Message:
-      description: The message field in search results or search jobs. The types of messages are INFO, DEBUG, FATAL, and ERROR.
+      description: The message field in search results or search jobs. The types of
+        messages are INFO, DEBUG, FATAL, and ERROR.
       properties:
         text:
           type: string
@@ -343,30 +367,32 @@ components:
           - ERROR
           type: string
     QueryParameters:
-      description: Represents parameters on the search job such as 'earliest' and 'latest'.
+      description: Represents parameters on the search job such as 'earliest' and
+        'latest'.
       properties:
         earliest:
           default: -24h@h
           description: |
-            The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+            The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
           type: string
         latest:
           default: now
           description: |
-            The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2019-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+            The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
           type: string
         relativeTimeAnchor:
           default: The system time when the search job is created.
           description: |
-            Relative values for the 'earliest' and 'latest' parameters snap to the unit that you specify. For example, if 'earliest' is set to -d@d, the unit is day. If the 'relativeTimeAnchor' is is set to '2020-10-05T13:15:30Z' then 'resolvedEarliest' is snapped to '2020-10-05T00:00:00Z', which is the day. Hours, minutes, and seconds are dropped. If no 'relativeTimeAnchor' is specified, the default value is set to the time the search job was created.
+            Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time. You can specify a relative time modifier ('earliest' or 'latest') for this parameter.  For example, if 'earliest' is set to -d and  the 'relativeTimeAnchor' is set to '2021-01-05T13:15:30Z' then 'resolvedEarliest' is '2021-01-04T13:15:30Z'.
           format: date-time
           type: string
         timezone:
           description: |
-            The timezone that relative time specifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: "GMT"
+            The timezone that relative time modifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: "GMT"
       type: object
     SearchJob:
-      description: A fully-constructed search job, including read-only fields.
+      description: A search job, including read-only fields that includes the required
+        properties.
       properties:
         allowSideEffects:
           default: false
@@ -376,17 +402,17 @@ components:
         collectEventSummary:
           default: false
           description: |
-            Specified whether a search is allowed to collect events summary during the run time.
+            Specifies whether a search is allowed to collect event summary information during the run time.
           type: boolean
         collectFieldSummary:
           default: false
           description: |
-            Specified whether a search is allowed to collect Fields summary during the run time.
+            Specifies whether a search is allowed to collect field summary information during the run time.
           type: boolean
         collectTimeBuckets:
           default: false
           description: |
-            Specified whether a search is allowed to collect Timeline Buckets summary during the run time.
+            Specifies whether a search is allowed to collect timeline bucket summary information during the run time.
           type: boolean
         completionTime:
           description: |
@@ -401,17 +427,17 @@ components:
         enablePreview:
           default: false
           description: |
-            Specified whether a search is allowed to collect preview results during the run time.
+            Specifies whether a search is allowed to collect preview results during the run time.
           type: boolean
         extractAllFields:
           default: false
           description: |
-            Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
+            Specifies whether the Search service should extract all of the available fields in the data, including fields not mentioned in the SPL, for the search job. Set to 'false' for better search performance. The 'extractAllFields' parameter is deprecated as of version v3alpha1. Although this parameter continues to function, it might be removed in a future version. Use the 'extractFields' parameter instead.
           type: boolean
         extractFields:
-          default: ""
+          default: none
           description: |
-            Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.
+            Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'.  Use 'all' to extract all fields. Use 'indexed' to extract only indexed fields. Use 'none' to extract only the default fields.
           type: string
         maxTime:
           default: 3600
@@ -426,21 +452,25 @@ components:
           type: array
         module:
           default: ""
-          description: The module to run the search in. The default module is used if a module is not specified.
+          description: The module to run the search in. The default module is used
+            if a module is not specified.
           type: string
         name:
-          description: The name of the created search job.
+          description: The name of the search job.
           maxLength: 100
           readOnly: true
           type: string
         percentComplete:
           default: 0
-          description: An estimate of the percent of time remaining before the job completes.
+          description: An estimate of the percent of time remaining before the job
+            completes.
           readOnly: true
           type: integer
         previewAvailable:
           default: false
-          description: Specifies if preview results for the search job are available. The valid status values are 'unknown', 'true', and 'false'.
+          description: Specifies if preview results for the search job are available.
+            The valid status values are 'unknown', 'true', and 'false'. You must set
+            the 'enablePreview=true' parameter to return preview search results.
           readOnly: true
           type: string
         query:
@@ -450,17 +480,18 @@ components:
         queryParameters:
           allOf:
           - $ref: '#/components/schemas/QueryParameters'
-          description: Represents parameters on the search job such as 'earliest' and 'latest'.
+          description: Represents parameters on the search job such as 'earliest'
+            and 'latest'.
         requiredFreshness:
           default: 0
           description: |
-            Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the resolvedEarliest and resolvedLatest parameters. If an existing search has the same exact criteria as this search and the resolvedEarliest and resolvedLatest values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the requiredFreshness parameter is set to 0 which means that the platform does not attempt to use an existing search.
+            Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the 'resolvedEarliest' and 'resolvedLatest' parameters. If an existing search has the same exact criteria as this search and the 'resolvedEarliest' and 'resolvedLatest' values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the 'requiredFreshness' parameter is set to 0 which means that the platform does not attempt to use an existing search. The maximum value for the 'requiredFreshness' parameter is 259200 seconds (72 hours).
           maximum: 259200
           minimum: 0
           type: integer
         resolvedEarliest:
           description: |
-            The earliest time speciifed as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
+            The earliest time specified as an absolute value in GMT. The time is computed based on the values you specify for the 'timezone' and 'earliest' queryParameters.
           readOnly: true
           type: string
         resolvedLatest:
@@ -475,7 +506,9 @@ components:
           type: integer
         resultsPreviewAvailable:
           default: 0
-          description: The number of the preview search results for the job with the specified search ID (SID)
+          description: The number of the preview search results for the job with the
+            specified search ID (SID). You must set the 'enablePreview=true' parameter
+            to return preview search results.
           readOnly: true
           type: integer
         sid:
@@ -500,24 +533,24 @@ components:
       description: Summary of each field.
       properties:
         count:
-          description: The total number of events that contain the field.
+          description: The total number of events that the field appears in.
           type: integer
         distinctCount:
           description: The total number of unique values in the field.
           type: integer
         isExact:
           description: |
-            Specifies if the distinctCount is accurate. The isExact property is FALSE when the distinctCount exceeds the maximum count and an exact count is not available.
+            Specifies if the 'distinctCount' is accurate. When the count exceeds the maximum count, an approximate count is computed instead and the 'isExact' property is FALSE.
           type: boolean
         max:
-          description: The maximum numeric values in the field.
+          description: The maximum numeric value in the field.
           type: string
         mean:
-          description: The mean (average) for the numeric values in the field.
+          description: The mean (average) for the numeric value in the field.
           format: double
           type: number
         min:
-          description: The minimum numeric values in the field.
+          description: The minimum numeric value in the field.
           type: string
         modes:
           description: An array of the values in the field.
@@ -537,23 +570,29 @@ components:
           type: number
       type: object
     SingleTimeBucket:
-      description: Events summary in single time bucket.
+      description: The summary of events for a single time bucket.
       properties:
         availableCount:
-          description: Count of available events. Not all events in a bucket are retrievable. Typically this count is capped at 10000.
+          description: Count of available events. Not all events in a bucket are retrievable.
+            Typically this count is capped at 10000.
           type: integer
         duration:
           format: double
           type: number
         earliestTime:
-          description: The timestamp of the earliest event in the current bucket, in UNIX format. This is the same time as 'earliestTimeStrfTime' in UNIX format.
+          description: The timestamp of the earliest event in the current bucket,
+            in UNIX format. This is the same time as 'earliestTimeStrfTime' in UNIX
+            format.
           format: double
           type: number
         earliestTimeStrfTime:
-          description: The timestamp of the earliest event in the current bucket, in UTC format with seconds. For example 2019-01-25T13:15:30Z, which follows the ISO-8601 (%FT%T.%Q) format.
+          description: The timestamp of the earliest event in the current bucket,
+            in UTC format with seconds. For example 2021-01-25T13:15:30Z, which follows
+            the ISO-8601 (%FT%T.%Q) format.
           type: string
         isFinalized:
-          description: Specifies if all of the events in the current bucket have been finalized.
+          description: Specifies if all of the events in the current bucket have been
+            finalized.
           type: boolean
         totalCount:
           description: The total count of the events in the current bucket.
@@ -561,14 +600,14 @@ components:
       readOnly: true
       type: object
     SingleValueMode:
-      description: Single value summary of the field.
+      description: Summary of the value in a field.
       properties:
         count:
-          description: The number of occurences that the value appears in a field.
+          description: The number of occurrences that the value appears in a field.
           type: integer
         isExact:
           description: |
-            Specifies if the count is accurate. The isExact property is FALSE when the count exceeds the maximum count and an exact count is not available.
+            Specifies if the count is accurate. When the count exceeds the maximum count, an approximate count is computed instead and the 'isExact' property is FALSE.
           type: boolean
         value:
           description: The value in the field.
@@ -576,7 +615,7 @@ components:
       type: object
     TimeBucketsSummary:
       description: |
-        A timeline metadata model of the event distribution. The model shows the untransformed events that are read to date for a specific for search ID (sid).
+        A timeline metadata model of the event distribution. The model shows the untransformed events that are read to date for a specific for search ID (SID).
       properties:
         IsTimeCursored:
           description: Specifies if the events are returned in time order.
@@ -587,17 +626,22 @@ components:
             - $ref: '#/components/schemas/SingleTimeBucket'
           type: array
         cursorTime:
-          description: Identifies where the cursor is in processing the events. The cursorTime is a timestamp specified in UNIX time.
+          description: Identifies where the cursor is in processing the events. The
+            'cursorTime' is a timestamp specified in UNIX time.
           type: number
         eventCount:
-          description: The number of events processed at the cursorTime.
+          description: The number of events processed at the 'cursorTime'.
           type: integer
       type: object
     UpdateJob:
-      description: Update a search job with a status.
+      description: Updates a search job with a status.
       properties:
         status:
-          description: The status to PATCH to an existing search job. The only status values you can PATCH are 'canceled' and 'finalized'. You can PATCH the 'canceled' status only to a search job that is running.
+          description: "Modify the status of an existing search job using PATCH. The
+            only status values you can PATCH are 'canceled' and 'finalized'.  You
+            can PATCH the 'canceled' status only to a search job that is running.
+            'finalize' means to terminate the search job, and the status will be set
+            to 'failed'. \n"
           enum:
           - canceled
           - finalized
@@ -610,17 +654,20 @@ components:
       scheme: basic
       type: http
 info:
-  description: Use the Search service in Splunk Cloud Services to dispatch, review, and manage searches and search jobs. You can finalize or cancel jobs, retrieve search results, and request search-related configurations from the Metadata Catalog service in Splunk Cloud Services.
+  description: Use the Search service in Splunk Cloud Services to dispatch, review,
+    and manage searches and search jobs. You can finalize or cancel jobs, retrieve
+    search results, and request search-related configurations from the Metadata Catalog
+    service in Splunk Cloud Services.
   title: Splunk Search service
-  version: v2beta1.1
+  version: v2
 openapi: 3.0.0
 paths:
-  /{tenant}/search/v2beta1/jobs:
+  /{tenant}/search/v2/jobs:
     get:
-      description: Return the matching list of search jobs.
+      description: Returns the matching list of search jobs.
       operationId: listJobs
       parameters:
-      - $ref: '#/components/parameters/Count'
+      - $ref: '#/components/parameters/count'
       - $ref: '#/components/parameters/StatusFilter'
       - $ref: '#/components/parameters/SidFilter'
       responses:
@@ -665,14 +712,17 @@ paths:
         "403":
           description: The operation isn't authorized.
         "412":
-          description: The precondition check failed. The search query contains commands, thru or into, that have side effects. However, the 'allowSideEffects' query parameter is set to false.
+          description: The precondition check failed. The search query contains commands,
+            thru or into, that have side effects. However, the 'allowSideEffects'
+            query parameter is set to false.
         "429":
-          description: Too many requests were sent. The limit for the maximum number of concurrent searches was reached.
+          description: Too many requests were sent. The limit for the maximum number
+            of concurrent searches was reached.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}:
+  /{tenant}/search/v2/jobs/{sid}:
     get:
-      description: Return the search job with the specified search ID (SID).
+      description: Returns the search job with the specified search ID (SID).
       operationId: getJob
       responses:
         "200":
@@ -680,7 +730,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchJob'
-          description: The search job information for the specified search ID (SID) was returned successfully.
+          description: The search job information for the specified search ID (SID)
+            was returned successfully.
         "400":
           description: The request isn't valid.
         "401":
@@ -696,7 +747,8 @@ paths:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/sid'
     patch:
-      description: Update the search job with the specified search ID (SID) with an action.
+      description: Updates the search job with the specified search ID (SID) with
+        an action.
       operationId: updateJob
       requestBody:
         content:
@@ -720,9 +772,41 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}/results:
+  /{tenant}/search/v2/jobs/{sid}/export:
     get:
-      description: Return the search results for the job with the specified search ID (SID).
+      description: Exports the search results for the job with the specified search
+        ID (SID). Export the results as a CSV file or JSON file.
+      operationId: exportResults
+      parameters:
+      - $ref: '#/components/parameters/tenant'
+      - $ref: '#/components/parameters/sid'
+      - $ref: '#/components/parameters/count'
+      - $ref: '#/components/parameters/filename'
+      - $ref: '#/components/parameters/outputMode'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+            text/csv:
+              schema:
+                type: string
+          description: The search results were exported in CSV or JSON format successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn’t authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/jobs/{sid}/results:
+    get:
+      description: Returns the search results for the job with the specified search
+        ID (SID).
       operationId: listResults
       parameters:
       - $ref: '#/components/parameters/tenant'
@@ -736,7 +820,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListSearchResultsResponse'
-          description: The list of search results was returned successfully. Any results that are ready have been returned. If there are additional results, a 'nextLink' URL is provided.
+          description: The list of search results was returned successfully. Any results
+            that are ready have been returned. If there are additional results, a
+            'nextLink' URL is provided.
         "400":
           description: The request isn't valid.
         "401":
@@ -747,9 +833,10 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}/results-preview:
+  /{tenant}/search/v2/jobs/{sid}/results-preview:
     get:
-      description: Return the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
+      description: Returns the preview search results for the job with the specified
+        search ID (SID). Can be used when a job is running to return interim results.
       operationId: listPreviewResults
       parameters:
       - $ref: '#/components/parameters/tenant'
@@ -762,9 +849,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListPreviewResultsResponse'
-          description: The results preview was returned successfully. If there are additional results, a 'nextLink' URL is provided.
+          description: The results preview was returned successfully. If there are
+            additional results, a 'nextLink' URL is provided.
         "204":
-          description: The results preview was returned successfully, but there is no response content.
+          description: The results preview was returned successfully, but there is
+            no response content.
         "400":
           description: The request isn't valid.
         "401":
@@ -775,9 +864,9 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/events-summary:
+  /{tenant}/search/v2/jobs/{sid}/timeline-metadata/auto/events-summary:
     get:
-      description: Return events summary, for search ID (SID) search.
+      description: Returns an events summary for search ID (SID) search.
       operationId: listEventsSummary
       parameters:
       - $ref: '#/components/parameters/tenant'
@@ -795,7 +884,8 @@ paths:
                 $ref: '#/components/schemas/ListSearchResultsResponse'
           description: The events summary was returned successfully.
         "204":
-          description: The events summary was returned successfully, but there is no response content.
+          description: The events summary was returned successfully, but there is
+            no response content.
         "400":
           description: The request isn't valid.
         "401":
@@ -806,9 +896,10 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/fields-summary:
+  /{tenant}/search/v2/jobs/{sid}/timeline-metadata/auto/fields-summary:
     get:
-      description: Return fields stats summary of the events to-date, for search ID (SID) search.
+      description: Returns a fields stats summary of the events to-date, for search
+        ID (SID) search.
       operationId: listFieldsSummary
       parameters:
       - $ref: '#/components/parameters/tenant'
@@ -823,7 +914,8 @@ paths:
                 $ref: '#/components/schemas/FieldsSummary'
           description: The fields summary was returned successfully.
         "204":
-          description: The fields summary was returned successfully, but there is no response content.
+          description: The fields summary was returned successfully, but there is
+            no response content.
         "400":
           description: The request isn't valid.
         "401":
@@ -834,9 +926,10 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/{sid}/timeline-metadata/auto/time-buckets:
+  /{tenant}/search/v2/jobs/{sid}/timeline-metadata/auto/time-buckets:
     get:
-      description: Return event distribution over time of the untransformed events read to-date, for search ID(SID) search.
+      description: Returns the event distribution over time of the untransformed events
+        read to-date, for search ID(SID) search.
       operationId: listTimeBuckets
       parameters:
       - $ref: '#/components/parameters/tenant'
@@ -849,7 +942,8 @@ paths:
                 $ref: '#/components/schemas/TimeBucketsSummary'
           description: The timeline buckets were returned successfully.
         "204":
-          description: The timeline buckets were returned successfully, but there is no response content.
+          description: The timeline buckets were returned successfully, but there
+            is no response content.
         "400":
           description: The request isn't valid.
         "401":
@@ -860,7 +954,7 @@ paths:
           description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
-  /{tenant}/search/v2beta1/jobs/delete:
+  /{tenant}/search/v2/jobs/delete:
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeader'
     - $ref: '#/components/parameters/tenant'
@@ -891,4 +985,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 75824d71791e0b0bdf66dbcce7dd9dc1e7061407 path: search/v2beta1/openapi.yaml
+# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: search/v2/openapi.yaml

@@ -172,12 +172,6 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "earliest": ` + err.Error())
 	}
-	var extractAllFieldsDefault bool
-	extractAllFields := &extractAllFieldsDefault
-	err = flags.ParseFlag(cmd.Flags(), "extract-all-fields", &extractAllFields)
-	if err != nil {
-		return fmt.Errorf(`error parsing "extract-all-fields": ` + err.Error())
-	}
 	var extractFieldsDefault string
 	extractFields := &extractFieldsDefault
 	err = flags.ParseFlag(cmd.Flags(), "extract-fields", &extractFields)
@@ -236,13 +230,12 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.DeleteSearchJob{
 
-		ExtractAllFields: extractAllFields,
-		ExtractFields:    extractFields,
-		Index:            index,
-		MaxTime:          maxTime,
-		Messages:         messages,
-		Module:           module,
-		Predicate:        predicate,
+		ExtractFields: extractFields,
+		Index:         index,
+		MaxTime:       maxTime,
+		Messages:      messages,
+		Module:        module,
+		Predicate:     predicate,
 		QueryParameters: &model.QueryParameters{
 			Earliest:           earliest,
 			Latest:             latest,
@@ -263,7 +256,54 @@ func DeleteJob(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetJob Return the search job with the specified search ID (SID).
+// ExportResults Exports the search results for the job with the specified search ID (SID). Export the results as a CSV file or JSON file.
+func ExportResults(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var countDefault int32
+	count := &countDefault
+	err = flags.ParseFlag(cmd.Flags(), "count", &count)
+	if err != nil {
+		return fmt.Errorf(`error parsing "count": ` + err.Error())
+	}
+	var filename string
+	err = flags.ParseFlag(cmd.Flags(), "filename", &filename)
+	if err != nil {
+		return fmt.Errorf(`error parsing "filename": ` + err.Error())
+	}
+	var outputMode model.ExportResultsoutputMode
+	err = flags.ParseFlag(cmd.Flags(), "output-mode", &outputMode)
+	if err != nil {
+		return fmt.Errorf(`error parsing "output-mode": ` + err.Error())
+	}
+	var sid string
+	err = flags.ParseFlag(cmd.Flags(), "sid", &sid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sid": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.ExportResultsQueryParams{}
+	generated_query.Count = count
+	generated_query.Filename = filename
+	generated_query.OutputMode = outputMode
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.ExportResults(sid, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetJob Returns the search job with the specified search ID (SID).
 func GetJob(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -289,7 +329,7 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListEventsSummary Return events summary, for search ID (SID) search.
+// ListEventsSummary Returns an events summary for search ID (SID) search.
 func ListEventsSummary(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -349,7 +389,7 @@ func ListEventsSummary(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFieldsSummary Return fields stats summary of the events to-date, for search ID (SID) search.
+// ListFieldsSummary Returns a fields stats summary of the events to-date, for search ID (SID) search.
 func ListFieldsSummary(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -389,7 +429,7 @@ func ListFieldsSummary(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListJobs Return the matching list of search jobs.
+// ListJobs Returns the matching list of search jobs.
 func ListJobs(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -431,7 +471,7 @@ func ListJobs(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListPreviewResults Return the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
+// ListPreviewResults Returns the preview search results for the job with the specified search ID (SID). Can be used when a job is running to return interim results.
 func ListPreviewResults(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -473,7 +513,7 @@ func ListPreviewResults(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListResults Return the search results for the job with the specified search ID (SID).
+// ListResults Returns the search results for the job with the specified search ID (SID).
 func ListResults(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -521,7 +561,7 @@ func ListResults(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListTimeBuckets Return event distribution over time of the untransformed events read to-date, for search ID(SID) search.
+// ListTimeBuckets Returns the event distribution over time of the untransformed events read to-date, for search ID(SID) search.
 func ListTimeBuckets(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -547,7 +587,7 @@ func ListTimeBuckets(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateJob Update the search job with the specified search ID (SID) with an action.
+// UpdateJob Updates the search job with the specified search ID (SID) with an action.
 func UpdateJob(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

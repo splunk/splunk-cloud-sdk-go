@@ -132,34 +132,6 @@ func (s *Service) CreateConnection(connectionRequest ConnectionRequest, resp ...
 }
 
 /*
-	CreateDataStream - Creates a data stream for a tenant.
-	Parameters:
-		dataStreamRequest: Request JSON
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) CreateDataStream(dataStreamRequest DataStreamRequest, resp ...*http.Response) (*DataStreamResponse, error) {
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/datastreams`, nil)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: dataStreamRequest})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb DataStreamResponse
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
 	CreatePipeline - Creates a pipeline.
 	Parameters:
 		pipelineRequest: Request JSON
@@ -306,34 +278,6 @@ func (s *Service) DeleteConnection(connectionId string, resp ...*http.Response) 
 }
 
 /*
-	DeleteDataStream - Deletes a data stream for a tenant.
-	Parameters:
-		id: ID
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) DeleteDataStream(id string, resp ...*http.Response) error {
-	pp := struct {
-		Id string
-	}{
-		Id: id,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/datastreams/{{.Id}}`, pp)
-	if err != nil {
-		return err
-	}
-	response, err := s.Client.Delete(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	return err
-}
-
-/*
 	DeleteFile - Delete file.
 	Parameters:
 		fileId: File ID
@@ -443,39 +387,6 @@ func (s *Service) DeleteTemplate(templateId string, resp ...*http.Response) erro
 		}
 	}
 	return err
-}
-
-/*
-	DescribeDataStream - Describes a data stream for a tenant.
-	Parameters:
-		id: ID
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) DescribeDataStream(id string, resp ...*http.Response) (*DataStreamResponse, error) {
-	pp := struct {
-		Id string
-	}{
-		Id: id,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/datastreams/{{.Id}}`, pp)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Get(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb DataStreamResponse
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
 }
 
 /*
@@ -1006,35 +917,6 @@ func (s *Service) ListConnectors(resp ...*http.Response) (*PaginatedResponseOfCo
 }
 
 /*
-	ListDataStreams - Returns a list of datastreams for a tenant.
-	Parameters:
-		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) ListDataStreams(query *ListDataStreamsQueryParams, resp ...*http.Response) ([]DataStreamResponse, error) {
-	values := util.ParseURLParams(query)
-	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/streams/v3beta1/datastreams`, nil)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Get(services.RequestParams{URL: u})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb []DataStreamResponse
-	err = util.ParseResponse(&rb, response)
-	return rb, err
-}
-
-/*
 	ListPipelines - Returns all pipelines.
 	Parameters:
 		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
@@ -1314,40 +1196,6 @@ func (s *Service) UpdateConnection(connectionId string, connectionPatchRequest C
 		return nil, err
 	}
 	var rb ConnectionSaveResponse
-	err = util.ParseResponse(&rb, response)
-	return &rb, err
-}
-
-/*
-	UpdateDataStream - Patches an existing data stream for a tenant.
-	Parameters:
-		id: ID
-		dataStreamRequest: Request JSON
-		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-*/
-func (s *Service) UpdateDataStream(id string, dataStreamRequest DataStreamRequest, resp ...*http.Response) (*DataStream, error) {
-	pp := struct {
-		Id string
-	}{
-		Id: id,
-	}
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/datastreams/{{.Id}}`, pp)
-	if err != nil {
-		return nil, err
-	}
-	response, err := s.Client.Patch(services.RequestParams{URL: u, Body: dataStreamRequest})
-	if response != nil {
-		defer response.Body.Close()
-
-		// populate input *http.Response if provided
-		if len(resp) > 0 && resp[0] != nil {
-			*resp[0] = *response
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	var rb DataStream
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }

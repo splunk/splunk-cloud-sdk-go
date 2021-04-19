@@ -29,13 +29,6 @@ var createConnectionCmd = &cobra.Command{
 	RunE:  impl.CreateConnection,
 }
 
-// createDataStream -- Creates a data stream for a tenant.
-var createDataStreamCmd = &cobra.Command{
-	Use:   "create-data-stream",
-	Short: "Creates a data stream for a tenant.",
-	RunE:  impl.CreateDataStream,
-}
-
 // createPipeline -- Creates a pipeline.
 var createPipelineCmd = &cobra.Command{
 	Use:   "create-pipeline",
@@ -71,13 +64,6 @@ var deleteConnectionCmd = &cobra.Command{
 	RunE:  impl.DeleteConnection,
 }
 
-// deleteDataStream -- Deletes a data stream for a tenant.
-var deleteDataStreamCmd = &cobra.Command{
-	Use:   "delete-data-stream",
-	Short: "Deletes a data stream for a tenant.",
-	RunE:  impl.DeleteDataStream,
-}
-
 // deleteFile -- Delete file.
 var deleteFileCmd = &cobra.Command{
 	Use:   "delete-file",
@@ -104,13 +90,6 @@ var deleteTemplateCmd = &cobra.Command{
 	Use:   "delete-template",
 	Short: "Removes a template with a specific ID.",
 	RunE:  impl.DeleteTemplate,
-}
-
-// describeDataStream -- Describes a data stream for a tenant.
-var describeDataStreamCmd = &cobra.Command{
-	Use:   "describe-data-stream",
-	Short: "Describes a data stream for a tenant.",
-	RunE:  impl.DescribeDataStream,
 }
 
 // getFileMetadata -- Get file metadata.
@@ -232,13 +211,6 @@ var listConnectorsCmd = &cobra.Command{
 	RunE:  impl.ListConnectors,
 }
 
-// listDataStreams -- Returns a list of datastreams for a tenant.
-var listDataStreamsCmd = &cobra.Command{
-	Use:   "list-data-streams",
-	Short: "Returns a list of datastreams for a tenant.",
-	RunE:  impl.ListDataStreams,
-}
-
 // listPipelines -- Returns all pipelines.
 var listPipelinesCmd = &cobra.Command{
 	Use:   "list-pipelines",
@@ -302,13 +274,6 @@ var updateConnectionCmd = &cobra.Command{
 	RunE:  impl.UpdateConnection,
 }
 
-// updateDataStream -- Patches an existing data stream for a tenant.
-var updateDataStreamCmd = &cobra.Command{
-	Use:   "update-data-stream",
-	Short: "Patches an existing data stream for a tenant.",
-	RunE:  impl.UpdateDataStream,
-}
-
 // updatePipeline -- Updates an existing pipeline.
 var updatePipelineCmd = &cobra.Command{
 	Use:   "update-pipeline",
@@ -328,6 +293,13 @@ var uploadFileCmd = &cobra.Command{
 	Use:   "upload-file",
 	Short: "Upload new file.",
 	RunE:  impl.UploadFile,
+}
+
+// uploadLookupFile -- Upload new lookup file.
+var uploadLookupFileCmd = &cobra.Command{
+	Use:   "upload-lookup-file",
+	Short: "Upload new lookup file.",
+	RunE:  impl.UploadLookupFile,
 }
 
 // validatePipeline -- Verifies whether the Streams JSON is valid.
@@ -379,18 +351,6 @@ func init() {
 	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
 
-	streamsCmd.AddCommand(createDataStreamCmd)
-
-	var createDataStreamName string
-	createDataStreamCmd.Flags().StringVar(&createDataStreamName, "name", "", "This is a required parameter. The name of the data stream.")
-	createDataStreamCmd.MarkFlagRequired("name")
-
-	var createDataStreamDescription string
-	createDataStreamCmd.Flags().StringVar(&createDataStreamDescription, "description", "", "The description of the data stream. Defaults to null.")
-
-	var createDataStreamPartitions int32
-	createDataStreamCmd.Flags().Int32Var(&createDataStreamPartitions, "partitions", 0, "Partitions, up to the partition count of the firehose")
-
 	streamsCmd.AddCommand(createPipelineCmd)
 
 	var createPipelineName string
@@ -440,12 +400,6 @@ func init() {
 	deleteConnectionCmd.Flags().StringVar(&deleteConnectionConnectionId, "connection-id", "", "This is a required parameter. Connection ID")
 	deleteConnectionCmd.MarkFlagRequired("connection-id")
 
-	streamsCmd.AddCommand(deleteDataStreamCmd)
-
-	var deleteDataStreamId string
-	deleteDataStreamCmd.Flags().StringVar(&deleteDataStreamId, "id", "", "This is a required parameter. ID")
-	deleteDataStreamCmd.MarkFlagRequired("id")
-
 	streamsCmd.AddCommand(deleteFileCmd)
 
 	var deleteFileFileId string
@@ -469,12 +423,6 @@ func init() {
 	var deleteTemplateTemplateId string
 	deleteTemplateCmd.Flags().StringVar(&deleteTemplateTemplateId, "template-id", "", "This is a required parameter. Template ID")
 	deleteTemplateCmd.MarkFlagRequired("template-id")
-
-	streamsCmd.AddCommand(describeDataStreamCmd)
-
-	var describeDataStreamId string
-	describeDataStreamCmd.Flags().StringVar(&describeDataStreamId, "id", "", "This is a required parameter. ID")
-	describeDataStreamCmd.MarkFlagRequired("id")
 
 	streamsCmd.AddCommand(getFileMetadataCmd)
 
@@ -634,20 +582,6 @@ func init() {
 
 	streamsCmd.AddCommand(listConnectorsCmd)
 
-	streamsCmd.AddCommand(listDataStreamsCmd)
-
-	var listDataStreamsOffset int32
-	listDataStreamsCmd.Flags().Int32Var(&listDataStreamsOffset, "offset", 0, "offset")
-
-	var listDataStreamsPageSize int32
-	listDataStreamsCmd.Flags().Int32Var(&listDataStreamsPageSize, "page-size", 0, "pageSize")
-
-	var listDataStreamsSortDir string
-	listDataStreamsCmd.Flags().StringVar(&listDataStreamsSortDir, "sort-dir", "", "sortDir")
-
-	var listDataStreamsSortField string
-	listDataStreamsCmd.Flags().StringVar(&listDataStreamsSortField, "sort-field", "", "sortField")
-
 	streamsCmd.AddCommand(listPipelinesCmd)
 
 	var listPipelinesActivated string
@@ -798,22 +732,6 @@ func init() {
 	var updateConnectionName string
 	updateConnectionCmd.Flags().StringVar(&updateConnectionName, "name", "", "The name of the connection.")
 
-	streamsCmd.AddCommand(updateDataStreamCmd)
-
-	var updateDataStreamId string
-	updateDataStreamCmd.Flags().StringVar(&updateDataStreamId, "id", "", "This is a required parameter. ID")
-	updateDataStreamCmd.MarkFlagRequired("id")
-
-	var updateDataStreamName string
-	updateDataStreamCmd.Flags().StringVar(&updateDataStreamName, "name", "", "This is a required parameter. The name of the data stream.")
-	updateDataStreamCmd.MarkFlagRequired("name")
-
-	var updateDataStreamDescription string
-	updateDataStreamCmd.Flags().StringVar(&updateDataStreamDescription, "description", "", "The description of the data stream. Defaults to null.")
-
-	var updateDataStreamPartitions int32
-	updateDataStreamCmd.Flags().Int32Var(&updateDataStreamPartitions, "partitions", 0, "Partitions, up to the partition count of the firehose")
-
 	streamsCmd.AddCommand(updatePipelineCmd)
 
 	var updatePipelineId string
@@ -852,6 +770,8 @@ func init() {
 
 	var uploadFileFileName string
 	uploadFileCmd.Flags().StringVar(&uploadFileFileName, "file-name", "", "File to upload.")
+
+	streamsCmd.AddCommand(uploadLookupFileCmd)
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

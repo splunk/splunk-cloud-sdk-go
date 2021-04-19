@@ -50,6 +50,13 @@ var createGroupCmd = &cobra.Command{
 	RunE:  impl.CreateGroup,
 }
 
+// createIdentityProvider -- Create an Identity Provider.
+var createIdentityProviderCmd = &cobra.Command{
+	Use:   "create-identity-provider",
+	Short: "Create an Identity Provider.",
+	RunE:  impl.CreateIdentityProvider,
+}
+
 // createPrincipal -- Create a new principal
 var createPrincipalCmd = &cobra.Command{
 	Use:   "create-principal",
@@ -69,6 +76,13 @@ var deleteGroupCmd = &cobra.Command{
 	Use:   "delete-group",
 	Short: "Deletes a group in a given tenant.",
 	RunE:  impl.DeleteGroup,
+}
+
+// deleteIdentityProvider -- Deletes the Identity Provider.
+var deleteIdentityProviderCmd = &cobra.Command{
+	Use:   "delete-identity-provider",
+	Short: "Deletes the Identity Provider.",
+	RunE:  impl.DeleteIdentityProvider,
 }
 
 // deletePrincipalPublicKey -- Deletes principal public key
@@ -104,6 +118,13 @@ var getGroupRoleCmd = &cobra.Command{
 	Use:   "get-group-role",
 	Short: "Returns information about a given role within a given group.",
 	RunE:  impl.GetGroupRole,
+}
+
+// getIdentityProvider -- Returns the Identity Provider for the given tenant.
+var getIdentityProviderCmd = &cobra.Command{
+	Use:   "get-identity-provider",
+	Short: "Returns the Identity Provider for the given tenant.",
+	RunE:  impl.GetIdentityProvider,
 }
 
 // getMember -- Returns a member of a given tenant.
@@ -168,6 +189,13 @@ var listGroupsCmd = &cobra.Command{
 	Use:   "list-groups",
 	Short: "List the groups that exist in a given tenant.",
 	RunE:  impl.ListGroups,
+}
+
+// listIdentityProvider -- Returns the list of Identity Providers for the given tenant.
+var listIdentityProviderCmd = &cobra.Command{
+	Use:   "list-identity-provider",
+	Short: "Returns the list of Identity Providers for the given tenant.",
+	RunE:  impl.ListIdentityProvider,
 }
 
 // listMemberGroups -- Returns a list of groups that a member belongs to within a tenant.
@@ -265,6 +293,13 @@ var revokePrincipalAuthTokensCmd = &cobra.Command{
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
+// updateIdentityProvider -- Update the configuration for an Identity Provider.
+var updateIdentityProviderCmd = &cobra.Command{
+	Use:   "update-identity-provider",
+	Short: "Update the configuration for an Identity Provider.",
+	RunE:  impl.UpdateIdentityProvider,
+}
+
 // updatePrincipalPublicKey -- Update principal public key
 var updatePrincipalPublicKeyCmd = &cobra.Command{
 	Use:   "update-principal-public-key",
@@ -350,6 +385,46 @@ func init() {
 	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter. ")
 	createGroupCmd.MarkFlagRequired("name")
 
+	identityCmd.AddCommand(createIdentityProviderCmd)
+
+	var createIdentityProviderId string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderId, "id", "", "This is a required parameter. ")
+	createIdentityProviderCmd.MarkFlagRequired("id")
+
+	var createIdentityProviderKind string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderKind, "kind", "", "This is a required parameter.  can accept values saml")
+	createIdentityProviderCmd.MarkFlagRequired("kind")
+
+	var createIdentityProviderCertificate string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderCertificate, "certificate", "", "")
+
+	var createIdentityProviderDescription string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderDescription, "description", "", "")
+
+	var createIdentityProviderEmailAttribute string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEmailAttribute, "email-attribute", "", "")
+
+	var createIdentityProviderEnabled string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEnabled, "enabled", "false", "")
+
+	var createIdentityProviderEntityDescriptor string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEntityDescriptor, "entity-descriptor", "", "")
+
+	var createIdentityProviderFirstNameAttribute string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderFirstNameAttribute, "first-name-attribute", "", "")
+
+	var createIdentityProviderLastNameAttribute string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderLastNameAttribute, "last-name-attribute", "", "")
+
+	var createIdentityProviderMethod string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderMethod, "method", "", " can accept values post, redirect")
+
+	var createIdentityProviderSingleSignOnServiceUrl string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderSingleSignOnServiceUrl, "single-sign-on-service-url", "", "")
+
+	var createIdentityProviderTitle string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderTitle, "title", "", "")
+
 	identityCmd.AddCommand(createPrincipalCmd)
 
 	var createPrincipalEmail string
@@ -367,6 +442,9 @@ func init() {
 	var createPrincipalLastName string
 	createPrincipalCmd.Flags().StringVar(&createPrincipalLastName, "last-name", "", "This is a required parameter. ")
 	createPrincipalCmd.MarkFlagRequired("last-name")
+
+	var createPrincipalAcceptTos string
+	createPrincipalCmd.Flags().StringVar(&createPrincipalAcceptTos, "accept-tos", "false", "")
 
 	var createPrincipalAlg string
 	createPrincipalCmd.Flags().StringVar(&createPrincipalAlg, "alg", "", " can accept values ES256, ES384, ES512")
@@ -413,6 +491,12 @@ func init() {
 	deleteGroupCmd.Flags().StringVar(&deleteGroupGroup, "group", "", "This is a required parameter. The group name.")
 	deleteGroupCmd.MarkFlagRequired("group")
 
+	identityCmd.AddCommand(deleteIdentityProviderCmd)
+
+	var deleteIdentityProviderIdp string
+	deleteIdentityProviderCmd.Flags().StringVar(&deleteIdentityProviderIdp, "idp", "", "This is a required parameter. The Identity Provider name.")
+	deleteIdentityProviderCmd.MarkFlagRequired("idp")
+
 	identityCmd.AddCommand(deletePrincipalPublicKeyCmd)
 
 	var deletePrincipalPublicKeyKeyId string
@@ -454,6 +538,12 @@ func init() {
 	var getGroupRoleRole string
 	getGroupRoleCmd.Flags().StringVar(&getGroupRoleRole, "role", "", "This is a required parameter. The role name.")
 	getGroupRoleCmd.MarkFlagRequired("role")
+
+	identityCmd.AddCommand(getIdentityProviderCmd)
+
+	var getIdentityProviderIdp string
+	getIdentityProviderCmd.Flags().StringVar(&getIdentityProviderIdp, "idp", "", "This is a required parameter. The Identity Provider name.")
+	getIdentityProviderCmd.MarkFlagRequired("idp")
 
 	identityCmd.AddCommand(getMemberCmd)
 
@@ -542,6 +632,8 @@ func init() {
 
 	var listGroupsPageToken string
 	listGroupsCmd.Flags().StringVar(&listGroupsPageToken, "page-token", "", "The cursor to then next page.")
+
+	identityCmd.AddCommand(listIdentityProviderCmd)
 
 	identityCmd.AddCommand(listMemberGroupsCmd)
 
@@ -698,6 +790,50 @@ func init() {
 	var revokePrincipalAuthTokensPrincipal string
 	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(updateIdentityProviderCmd)
+
+	var updateIdentityProviderId string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderId, "id", "", "This is a required parameter. ")
+	updateIdentityProviderCmd.MarkFlagRequired("id")
+
+	var updateIdentityProviderIdp string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderIdp, "idp", "", "This is a required parameter. The Identity Provider name.")
+	updateIdentityProviderCmd.MarkFlagRequired("idp")
+
+	var updateIdentityProviderKind string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderKind, "kind", "", "This is a required parameter.  can accept values saml")
+	updateIdentityProviderCmd.MarkFlagRequired("kind")
+
+	var updateIdentityProviderCertificate string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderCertificate, "certificate", "", "")
+
+	var updateIdentityProviderDescription string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderDescription, "description", "", "")
+
+	var updateIdentityProviderEmailAttribute string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEmailAttribute, "email-attribute", "", "")
+
+	var updateIdentityProviderEnabled string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEnabled, "enabled", "false", "")
+
+	var updateIdentityProviderEntityDescriptor string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEntityDescriptor, "entity-descriptor", "", "")
+
+	var updateIdentityProviderFirstNameAttribute string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderFirstNameAttribute, "first-name-attribute", "", "")
+
+	var updateIdentityProviderLastNameAttribute string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderLastNameAttribute, "last-name-attribute", "", "")
+
+	var updateIdentityProviderMethod string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderMethod, "method", "", " can accept values post, redirect")
+
+	var updateIdentityProviderSingleSignOnServiceUrl string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderSingleSignOnServiceUrl, "single-sign-on-service-url", "", "")
+
+	var updateIdentityProviderTitle string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderTitle, "title", "", "")
 
 	identityCmd.AddCommand(updatePrincipalPublicKeyCmd)
 
