@@ -1,5 +1,8 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.2
+update scloud version to 8.0.0-beta.2
+
 ## Version 1.12.0-beta.1
 * Added support for multipart/form data endpoints
 * Multi-cell support:
