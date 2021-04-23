@@ -1,7 +1,34 @@
 # Splunk Cloud SDK for Go Changelog
 
 ## Version 1.12.0-beta.2
-update scloud version to 8.0.0-beta.2
+#### Breaking Changes
+* Identity service: `UseDefaultIdp` optional property was removed from `Tenant` in model
+* Ingest service: `PostCollectorRaw` and `PostCollectorRawV1` APIs were removed
+* Streams service: `CreateDataStream`, `DeleteDataStream`, `DescribeDataStream`, `ListDataStreams`, and `UpdateDataStream` APIs were removed
+
+
+#### Non-Breaking Changes
+* Search service: updated to target v2 endpoints (previously v2beta1) including new endpoint: `ExportResults`
+* Identity service: added new APIs of `CreateIdentityProvider`, `DeleteIdentityProvider`, `GetIdentityProvider`, `ListIdentityProvider`, and `UpdateIdentityProvider`; 
+New optional property `AcceptTos` for `CreatePrincipalBody` was added in model
+  
+* Streams service: Added a new API of `UploadLookupFile` 
+
+ 
+
+
+## SCloud v8.0.0-beta.2
+
+#### Breaking Changes
+* Ingest command: removed `post-collector-raw` and `post-collector-raw-v-1` commands
+* Streams command: removed commands of `create-data-stream`, `delete-data-stream`, `describe-data-stream`, `list-data-streams`, `update-data-stream`
+
+#### Non-Breaking Changes
+* Search command: updated to v2 endpoints (previously v2beta1) including new commmand: `export-results`
+* Identity commmand: new commands of `create-identity-provider`, `delete-identity-provider`, `get-identity-provider`, `update-identity-provider` were added; new `--accept-tos` flag for identity `create-principal` commmand
+* Streams command: new command of  `upload-lookup-file` was added
+
+
 
 ## Version 1.12.0-beta.1
 * Added support for multipart/form data endpoints
