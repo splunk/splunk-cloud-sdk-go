@@ -17,14 +17,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 	"os"
+	"path"
 	"time"
+
+	"github.com/splunk/splunk-cloud-sdk-go/util"
 
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
-	"github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 	testutils "github.com/splunk/splunk-cloud-sdk-go/test/utils"
@@ -37,29 +39,53 @@ func main() {
 
 	index := "main"
 
+	// An example showing UploadFiles functionality of ingest service
+	demoIngestServiceUploadFile(client)
+
 	//Ingest data
-	fmt.Println("Ingest event data")
-	host, source := ingestEvent(client, index)
+	host, source := demoIngestServiceIngestEvents(client)
 
 	//Ingest metrics data
-	fmt.Println("Ingest metrics data")
-	metricHost := ingestMetric(client, index)
+	metricHost := demoIngestServiceIngestMetric(client)
 
 	//Do search and verify results
 	fmt.Println("Search event data")
 	query := fmt.Sprintf("|from  index:%v where host=\"%v\" and source=\"%v\"", index, host, source)
 	fmt.Println(query)
-	performSearch(client, query, 3)
+	demoSearchServiceSearchResults(client, query, 3, false)
 
 	//Search metrics data and verify
 	fmt.Println("Search metric data")
 	query = fmt.Sprintf("| from metrics group by host SELECT sum(CPU) as cpu,host |search host=\"%v\" AND cpu > 0", metricHost)
 	fmt.Println(query)
-	performSearch(client, query, 1)
+	demoSearchServiceSearchResults(client, query, 1, false)
 }
 
-func exitOnError(err error) {
+func demoIngestServiceUploadFile(client *sdk.Client) {
+	dir, err := os.Getwd()
+
+	var resp http.Response
+	filename := path.Join(dir, "examples/ingestSearch/ingestSearch.go")
+	err = client.IngestService.UploadFiles(filename, &resp)
 	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println("INFO: File upload using ingest service successfully completed")
+}
+
+// Based on 'shouldFailOnAnyError' flag value, it decides whether 429 or 500 errors that indicate that the service is overloaded should fail the example or not
+// Setting this to true will exit the program run if any error is encountered
+// Setting this to false will exit the program run on all errors except 429 or 500 errors
+func handleError(err error, shouldFailOnAnyError bool) {
+	if shouldFailOnAnyError == false {
+		httpErr, _ := err.(*util.HTTPError)
+		fmt.Println("http Error: ", httpErr)
+		if httpErr.HTTPStatusCode == 429 || httpErr.HTTPStatusCode == 500 {
+			fmt.Printf("INFO: Skipping example - Service is overloaded. Error message received is: %s, "+
+				"Error status Code is: %d, Error Status is: %s, Error code is: %s", httpErr.Message, httpErr.HTTPStatusCode, httpErr.HTTPStatus, httpErr.Code)
+		}
+	} else {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -72,36 +98,18 @@ func getClient() *sdk.Client {
 		Tenant: testutils.TestTenant,
 	})
 
-	exitOnError(err)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	return client
 }
 
-func createIndex(client *sdk.Client) (string, string) {
-	//index := fmt.Sprintf("goexample%v", float64(time.Now().Second()))
-	index := "main"
-	disabled := false
-	indexmodel := catalog.IndexDatasetPost{
-		Name:     index,
-		Kind:     catalog.IndexDatasetKindIndex,
-		Disabled: disabled,
-	}
-
-	if index == "main" {
-		return index, ""
-	}
-
-	result, err := client.CatalogService.CreateDataset(catalog.MakeDatasetPostFromIndexDatasetPost(indexmodel))
-	exitOnError(err)
-
-	// it will take some time for the new index to finish the provisioning
-	// todo: user dataset endpoint to check the readyness
-	time.Sleep(30 * time.Second)
-	return index, string(result.IndexDataset().Id)
-}
-
-func ingestMetric(client *sdk.Client, index string) string {
+func demoIngestServiceIngestMetric(client *sdk.Client) string {
+	fmt.Println("Ingest metrics data")
 	host := fmt.Sprintf("gohost%v", time.Now().Unix())
+	fmt.Println("Ingest metric Host: ", host)
 	value := float64(100)
 	unit := "percentage"
 	value1 := float64(20.27)
@@ -145,14 +153,20 @@ func ingestMetric(client *sdk.Client, index string) string {
 
 	// Use the Ingest Service send metrics
 	_, err := client.IngestService.PostMetrics([]ingest.MetricEvent{metricEvent1, metricEvent1, metricEvent1})
-	exitOnError(err)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	return host
 }
 
-func ingestEvent(client *sdk.Client, index string) (string, string) {
+func demoIngestServiceIngestEvents(client *sdk.Client) (string, string) {
+	fmt.Println("Ingest event data")
 	source := fmt.Sprintf("mysource-%v", time.Now().Unix())
+	fmt.Println("Ingest events Source: ", source)
 	host := fmt.Sprintf("myhost-%v", time.Now().Unix())
+	fmt.Println("Ingest events Host: ", host)
 	body := make(map[string]interface{})
 	body["event"] = fmt.Sprintf("device_id=aa1 haha0 my new event %v,%v", host, source)
 
@@ -188,43 +202,57 @@ func ingestEvent(client *sdk.Client, index string) (string, string) {
 
 	// Use the Ingest endpoint to send multiple events
 	_, err := client.IngestService.PostEvents([]ingest.Event{event1, event2, event3})
-	exitOnError(err)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	return host, source
 }
 
-func performSearch(client *sdk.Client, query string, expected int) {
+// Query
+func demoSearchServiceSearchResults(client *sdk.Client, query string, expected int, shouldFailOnAnyError bool) {
 	start := time.Now()
-	timeout := 240 * time.Second
+	timeout := 160 * time.Second
 	for {
 		if time.Now().Sub(start) > timeout {
-			exitOnError(errors.New(fmt.Sprintf("Search failed due to timeout, spend %v", timeout)))
+			fmt.Printf("INFO: Unable to fetch the search results, Search exceeded the timeout period, Wait longer before fetching the data, spend %v \n", timeout)
+			break
 		}
 
+		fmt.Println("INFO: Creating a new job")
 		job, err := client.SearchService.CreateJob(search.SearchJob{Query: query})
-		exitOnError(err)
+		if err != nil {
+			handleError(err, shouldFailOnAnyError)
+			break
+		}
 
+		fmt.Println("INFO: Waiting for job until it completes")
 		_, err = client.SearchService.WaitForJob(*job.Sid, 1000*time.Millisecond)
-		exitOnError(err)
+		if err != nil {
+			handleError(err, shouldFailOnAnyError)
+			break
+		}
 
+		fmt.Printf("INFO: Fetching results for the job with job ID: %s \n", *job.Sid)
 		query := search.ListResultsQueryParams{}.SetCount(100).SetOffset(0)
 		resp, err := client.SearchService.ListResults(*job.Sid, &query)
-		exitOnError(err)
+		if err != nil {
+			handleError(err, shouldFailOnAnyError)
+			break
+		}
 
 		results := (*resp).Results
 		fmt.Printf("expect %d, now get %d results\n", expected, len(results))
 
 		if len(results) >= expected {
-			fmt.Println("Search succeed")
+			fmt.Println("INFO: Search succeed")
 			return
 		}
 
-		// TODO: Duplicates occurring when ingesting new data. Known issue (SSC-4179). Should follow up with ingest team.
 		if len(results) < expected {
-			fmt.Println("Not found all yet, keep searching")
-			time.Sleep(20 * time.Second)
-		} /*else {
-			exitOnError(errors.New("Search failed: Get more results than expected"))
-		}*/
+			fmt.Println("Not found all yet, keep searching, data takes a while to appear")
+			time.Sleep(40 * time.Second)
+		}
 	}
 }
