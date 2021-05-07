@@ -116,7 +116,7 @@ Initialize your project using Go modules for dependency support. Your project ca
     tenant name: <mytenant>
     ```
 
-## scloud login using device flow with access to environments: `playground`, `staging`, `prod`, `staging-scs` (gstage) and `prod-scs` (gprod1)
+## scloud login using device flow with access to environments: `playground`, `staging`, `prod`, `playground-scs`, `staging-scs` (gstage) and `prod-scs` (gprod1)
 To gain access to the environments through scloud cli, set the following config variables:
 - `username` associated with the environment you are intending to use, example: 
    ```bash
@@ -130,7 +130,7 @@ To gain access to the environments through scloud cli, set the following config 
 
 - `env` (envrionment), example:
    ```bash
-   $ scloud config set --key env --value <any of the five available environments: `playground`, `staging`, `prod`, `staging-scs` (gstage) or `prod-scs` (gprod1)>
+   $ scloud config set --key env --value <any of the five available environments: `playground`, `staging`, `prod`, `playground-scs`, `staging-scs` (gstage) or `prod-scs` (gprod1)>
    ```
 
 Once the environment variables are set, you can login using the command below:
