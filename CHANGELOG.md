@@ -1,5 +1,15 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.3
+#### Non-Breaking Changes
+* Modified ingestSearch example to not fail on receiving 429 or 500 http error
+
+## SCloud v8.0.0-beta.2
+
+#### Non-Breaking Changes
+* Support SCS environments gstage and prod:
+   New environment `playground-scs` can be specified to target `api.playground.scs.splunk.com` environment out-of-the-box
+
 ## Version 1.12.0-beta.2
 #### Breaking Changes
 * Identity service: `UseDefaultIdp` optional property was removed from `Tenant` in model
