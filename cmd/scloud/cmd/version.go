@@ -21,7 +21,7 @@ func init() {
 
 func execVersionCmd(cmd *cobra.Command, args []string) error {
 
-	err := fmt.Sprintf("scloud version %s-%s\n", version.Version, version.Commit)
+	err := fmt.Sprintf("scloud version %s\n", version.Version)
 	jsonx.Pprint(cmd, err)
 	return nil
 }
