@@ -34,14 +34,12 @@ const (
     BuildBranch = "{{ .Branch }}"
     BuildTime int64 = {{ .EpochSec }}
     Version = ScloudVersion
-    Commit = "{{ .Commit }}"
 )
 `))
 
 type templateArgs struct {
 	Branch   string
 	EpochSec int64
-	Commit   string
 }
 
 // Prints an error message and exits.
@@ -52,24 +50,14 @@ func fatal(msg string, args ...interface{}) {
 }
 
 func main() {
-	// determine commit
-	cmd := exec.Command("git", "rev-parse", "--short", "HEAD")
+	// check the git status
+	cmd := exec.Command("git", "status", "-s")
 	out, err := cmd.Output()
-	if err != nil {
-		fatal("error running git rev-parse: %v", err)
-	}
-	commit := strings.Trim(fmt.Sprintf("%s", out), "\n\r")
-
-	// determine if git status is dirty
-	cmd = exec.Command("git", "status", "-s")
-	out, err = cmd.Output()
 	if err != nil {
 		fatal("error running git status: %v", err)
 	}
 	status := strings.Trim(fmt.Sprintf("%s", out), "\n\r")
-	if status != "" {
-		status = "-dirty"
-	}
+	fmt.Printf("The git status is: \n%s\n", status)
 
 	cmd = exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	out, err = cmd.Output()
@@ -89,7 +77,6 @@ func main() {
 	err = versionTemplate.Execute(f, templateArgs{
 		Branch:   branch,
 		EpochSec: time.Now().Unix(),
-		Commit:   commit + status,
 	})
 	if err != nil {
 		fatal("error executing template to write version.go: %v", err)
