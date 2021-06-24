@@ -43,7 +43,7 @@ var recordThree = map[string]interface{}{
 	"TEST_KEY_03": "B",
 }
 
-func createRecord(t *testing.T, collection string, record map[string]interface{}) (kvstore.Key, error) {
+func createRecord(t *testing.T, collection string, record map[string]interface{}) (kvstore.Record, error) {
 	// Insert a new record into the kvstore
 	key, err := getClient(t).KVStoreService.InsertRecord(
 		collection,
@@ -282,15 +282,16 @@ func TestKVStoreCollectionsListRecordsOrderByValidInput(t *testing.T) {
 	// Insert the first record into the kvstore
 	key, _ := createRecord(t, kvCollection, recordOne)
 	assert.NotEmpty(t, key.Key)
+	time.Sleep(2 * time.Second)
 
 	// Insert the second record into the kvstore
 	key, _ = createRecord(t, kvCollection, recordTwo)
 	assert.NotEmpty(t, key.Key)
+	time.Sleep(2 * time.Second)
 
 	// Insert the third record into the kvstore
 	key, _ = createRecord(t, kvCollection, recordThree)
 	assert.NotEmpty(t, key.Key)
-
 	time.Sleep(2 * time.Second)
 
 	query := kvstore.ListRecordsQueryParams{}.SetFields([]string{"TEST_KEY_02"})

@@ -585,7 +585,7 @@ func TestIntegrationCRUEConnections(t *testing.T) {
 	data["splunk-url"] = "https://hostname.port"
 	data["token"] = "mytoken"
 	connectionName := fmt.Sprintf("testConnection%d", testutils.RunSuffix)
-	connection, err := getSdkClient(t).StreamsService.CreateConnection(streams.ConnectionRequest{ConnectorId: connectorId, Data: data, Name: connectionName})
+	connection, err := getSdkClient(t).StreamsService.CreateConnection(streams.ConnectionRequest{ConnectorId: connectorId, Data: data, Name: connectionName}, nil)
 	require.NoError(t, err)
 	assert.NotEmpty(t, connection)
 	defer getSdkClient(t).StreamsService.DeleteConnection(*connection.Id)

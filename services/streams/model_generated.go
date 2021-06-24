@@ -109,6 +109,7 @@ type ConnectorResponse struct {
 	Functions     []map[string]interface{} `json:"functions,omitempty"`
 	Hidden        *bool                    `json:"hidden,omitempty"`
 	Id            *string                  `json:"id,omitempty"`
+	Metadata      map[string]interface{}   `json:"metadata,omitempty"`
 	Name          *string                  `json:"name,omitempty"`
 	PanelUrl      *string                  `json:"panelUrl,omitempty"`
 	Tag           *string                  `json:"tag,omitempty"`
@@ -256,6 +257,8 @@ type PipelinePatchRequest struct {
 	Data         *Pipeline `json:"data,omitempty"`
 	// The description of the pipeline. Defaults to null.
 	Description *string `json:"description,omitempty"`
+	// Optional labels in associated with the pipeline. A label is represented by a key and a value.
+	Labels map[string]string `json:"labels,omitempty"`
 	// The name of the pipeline.
 	Name *string `json:"name,omitempty"`
 }
@@ -279,6 +282,65 @@ const (
 	PipelineReactivateResponsePipelineReactivationStatusRolledBackError                  PipelineReactivateResponsePipelineReactivationStatus = "rolledBackError"
 )
 
+type PipelineReactivateResponseAsync struct {
+	PipelineId            *string                                         `json:"pipelineId,omitempty"`
+	ReactivationRequestId *string                                         `json:"reactivationRequestId,omitempty"`
+	RequestedAction       *PipelineReactivateResponseAsyncRequestedAction `json:"requestedAction,omitempty"`
+}
+
+type PipelineReactivateResponseAsyncRequestedAction string
+
+// List of PipelineReactivateResponseAsyncRequestedAction
+const (
+	PipelineReactivateResponseAsyncRequestedActionActivate   PipelineReactivateResponseAsyncRequestedAction = "ACTIVATE"
+	PipelineReactivateResponseAsyncRequestedActionDeactivate PipelineReactivateResponseAsyncRequestedAction = "DEACTIVATE"
+	PipelineReactivateResponseAsyncRequestedActionReactivate PipelineReactivateResponseAsyncRequestedAction = "REACTIVATE"
+)
+
+type PipelineReactivationStatus struct {
+	CreateDate               *int64                                              `json:"createDate,omitempty"`
+	CurrentUberJar           *string                                             `json:"currentUberJar,omitempty"`
+	ExitStatus               *PipelineReactivationStatusExitStatus               `json:"exitStatus,omitempty"`
+	FlinkJobStatus           *string                                             `json:"flinkJobStatus,omitempty"`
+	Id                       *string                                             `json:"id,omitempty"`
+	Message                  *string                                             `json:"message,omitempty"`
+	PipelineDeploymentStatus *PipelineReactivationStatusPipelineDeploymentStatus `json:"pipelineDeploymentStatus,omitempty"`
+	PipelineId               *string                                             `json:"pipelineId,omitempty"`
+	RequestedAction          *PipelineReactivationStatusRequestedAction          `json:"requestedAction,omitempty"`
+	RequestedUberJar         *string                                             `json:"requestedUberJar,omitempty"`
+}
+
+type PipelineReactivationStatusExitStatus string
+
+// List of PipelineReactivationStatusExitStatus
+const (
+	PipelineReactivationStatusExitStatusSuccess PipelineReactivationStatusExitStatus = "SUCCESS"
+	PipelineReactivationStatusExitStatusFailed  PipelineReactivationStatusExitStatus = "FAILED"
+	PipelineReactivationStatusExitStatusPending PipelineReactivationStatusExitStatus = "PENDING"
+)
+
+type PipelineReactivationStatusPipelineDeploymentStatus string
+
+// List of PipelineReactivationStatusPipelineDeploymentStatus
+const (
+	PipelineReactivationStatusPipelineDeploymentStatusCreated      PipelineReactivationStatusPipelineDeploymentStatus = "CREATED"
+	PipelineReactivationStatusPipelineDeploymentStatusActivated    PipelineReactivationStatusPipelineDeploymentStatus = "ACTIVATED"
+	PipelineReactivationStatusPipelineDeploymentStatusFailed       PipelineReactivationStatusPipelineDeploymentStatus = "FAILED"
+	PipelineReactivationStatusPipelineDeploymentStatusRestarting   PipelineReactivationStatusPipelineDeploymentStatus = "RESTARTING"
+	PipelineReactivationStatusPipelineDeploymentStatusFinished     PipelineReactivationStatusPipelineDeploymentStatus = "FINISHED"
+	PipelineReactivationStatusPipelineDeploymentStatusActivating   PipelineReactivationStatusPipelineDeploymentStatus = "ACTIVATING"
+	PipelineReactivationStatusPipelineDeploymentStatusDeactivating PipelineReactivationStatusPipelineDeploymentStatus = "DEACTIVATING"
+)
+
+type PipelineReactivationStatusRequestedAction string
+
+// List of PipelineReactivationStatusRequestedAction
+const (
+	PipelineReactivationStatusRequestedActionActivate   PipelineReactivationStatusRequestedAction = "ACTIVATE"
+	PipelineReactivationStatusRequestedActionDeactivate PipelineReactivationStatusRequestedAction = "DEACTIVATE"
+	PipelineReactivationStatusRequestedActionReactivate PipelineReactivationStatusRequestedAction = "REACTIVATE"
+)
+
 type PipelineRequest struct {
 	Data Pipeline `json:"data"`
 	// The name of the pipeline.
@@ -287,6 +349,8 @@ type PipelineRequest struct {
 	BypassValidation *bool `json:"bypassValidation,omitempty"`
 	// The description of the pipeline. Defaults to null.
 	Description *string `json:"description,omitempty"`
+	// Optional labels in associated with the pipeline. A label is represented by a key and a value.
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type PipelineResponse struct {
@@ -300,6 +364,7 @@ type PipelineResponse struct {
 	Data                     *Pipeline               `json:"data,omitempty"`
 	Description              *string                 `json:"description,omitempty"`
 	Id                       *string                 `json:"id,omitempty"`
+	Labels                   map[string]string       `json:"labels,omitempty"`
 	LastUpdateDate           *int64                  `json:"lastUpdateDate,omitempty"`
 	LastUpdateUserId         *string                 `json:"lastUpdateUserId,omitempty"`
 	Name                     *string                 `json:"name,omitempty"`
@@ -307,19 +372,23 @@ type PipelineResponse struct {
 	StatusMessage            *string                 `json:"statusMessage,omitempty"`
 	StreamingConfigurationId *int64                  `json:"streamingConfigurationId,omitempty"`
 	TenantId                 *string                 `json:"tenantId,omitempty"`
-	ValidationMessages       []string                `json:"validationMessages,omitempty"`
-	Version                  *int64                  `json:"version,omitempty"`
+	// Null prior to initial activation. After deactivation, this field will be set to the SHA at the time of the last activation.
+	UberJarSha256      *string  `json:"uberJarSha256,omitempty"`
+	ValidationMessages []string `json:"validationMessages,omitempty"`
+	Version            *int64   `json:"version,omitempty"`
 }
 
 type PipelineResponseStatus string
 
 // List of PipelineResponseStatus
 const (
-	PipelineResponseStatusCreated    PipelineResponseStatus = "CREATED"
-	PipelineResponseStatusActivated  PipelineResponseStatus = "ACTIVATED"
-	PipelineResponseStatusFailed     PipelineResponseStatus = "FAILED"
-	PipelineResponseStatusRestarting PipelineResponseStatus = "RESTARTING"
-	PipelineResponseStatusFinished   PipelineResponseStatus = "FINISHED"
+	PipelineResponseStatusCreated      PipelineResponseStatus = "CREATED"
+	PipelineResponseStatusActivated    PipelineResponseStatus = "ACTIVATED"
+	PipelineResponseStatusFailed       PipelineResponseStatus = "FAILED"
+	PipelineResponseStatusRestarting   PipelineResponseStatus = "RESTARTING"
+	PipelineResponseStatusFinished     PipelineResponseStatus = "FINISHED"
+	PipelineResponseStatusActivating   PipelineResponseStatus = "ACTIVATING"
+	PipelineResponseStatusDeactivating PipelineResponseStatus = "DEACTIVATING"
 )
 
 type PreviewData struct {
@@ -388,8 +457,24 @@ type RuleMetrics struct {
 }
 
 type Source struct {
-	Node            *string `json:"node,omitempty"`
-	PipelineVersion *string `json:"pipelineVersion,omitempty"`
+	Arguments         map[string]interface{} `json:"arguments,omitempty"`
+	ConnectionId      *string                `json:"connectionId,omitempty"`
+	ConnectionVersion *int64                 `json:"connectionVersion,omitempty"`
+	ConnectorId       *string                `json:"connectorId,omitempty"`
+	CreateDate        *int64                 `json:"createDate,omitempty"`
+	CreateUserId      *string                `json:"createUserId,omitempty"`
+	DataStreamId      *string                `json:"dataStreamId,omitempty"`
+	Description       *string                `json:"description,omitempty"`
+	Enabled           *bool                  `json:"enabled,omitempty"`
+	EventAttributes   map[string]interface{} `json:"eventAttributes,omitempty"`
+	Id                *string                `json:"id,omitempty"`
+	LastUpdateDate    *int64                 `json:"lastUpdateDate,omitempty"`
+	LastUpdateUserId  *string                `json:"lastUpdateUserId,omitempty"`
+	Name              *string                `json:"name,omitempty"`
+	Parallelism       *int32                 `json:"parallelism,omitempty"`
+	Schedule          *string                `json:"schedule,omitempty"`
+	TenantId          *string                `json:"tenantId,omitempty"`
+	Version           *int64                 `json:"version,omitempty"`
 }
 
 type SplCompileRequest struct {
@@ -424,14 +509,24 @@ type TemplateRequest struct {
 }
 
 type TemplateResponse struct {
-	CreateDate    *int64    `json:"createDate,omitempty"`
-	CreateUserId  *string   `json:"createUserId,omitempty"`
-	Data          *Pipeline `json:"data,omitempty"`
-	Description   *string   `json:"description,omitempty"`
-	Name          *string   `json:"name,omitempty"`
-	OwnerTenantId *string   `json:"ownerTenantId,omitempty"`
-	TemplateId    *string   `json:"templateId,omitempty"`
-	Version       *int64    `json:"version,omitempty"`
+	CreateDate        *int64    `json:"createDate,omitempty"`
+	CreateUserId      *string   `json:"createUserId,omitempty"`
+	Data              *Pipeline `json:"data,omitempty"`
+	Description       *string   `json:"description,omitempty"`
+	LearnMoreLocation *string   `json:"learnMoreLocation,omitempty"`
+	Name              *string   `json:"name,omitempty"`
+	OwnerTenantId     *string   `json:"ownerTenantId,omitempty"`
+	TemplateId        *string   `json:"templateId,omitempty"`
+	Version           *int64    `json:"version,omitempty"`
+}
+
+type UpgradePipelineRequest struct {
+	// Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.
+	AllowNonRestoredState *bool `json:"allowNonRestoredState,omitempty"`
+	// Set to true to deactivate a pipeline with a savepoint. Defaults to false.
+	CancelWithSavePoint *bool `json:"cancelWithSavePoint,omitempty"`
+	// Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
+	SkipRestoreState *bool `json:"skipRestoreState,omitempty"`
 }
 
 type UplType struct {
@@ -447,6 +542,13 @@ type UploadFileResponse struct {
 	Id            *string `json:"id,omitempty"`
 	Sha256        *string `json:"sha256,omitempty"`
 	TenantId      *string `json:"tenantId,omitempty"`
+}
+
+type ValidateConnectionRequest struct {
+	// The ID of the parent connector.
+	ConnectorId string `json:"connectorId"`
+	// The key-value pairs of connection configurations to be validated. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.
+	Data map[string]interface{} `json:"data"`
 }
 
 type ValidateRequest struct {

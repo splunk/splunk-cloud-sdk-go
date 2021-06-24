@@ -120,14 +120,6 @@ components:
       required: false
       schema:
         type: string
-    key:
-      description: The API key name.
-      in: path
-      name: key
-      required: true
-      schema:
-        type: string
-      x-case-insensitive: true
     keyId:
       description: Identifier of a public key.
       in: path
@@ -261,7 +253,7 @@ components:
       required: true
       schema:
         maxLength: 36
-        minLength: 4
+        minLength: 2
         type: string
     tenantName:
       description: The tenant name.
@@ -270,7 +262,7 @@ components:
       required: true
       schema:
         maxLength: 36
-        minLength: 4
+        minLength: 2
         type: string
     tenantQuery:
       description: Tenant for the authorization request
@@ -279,7 +271,7 @@ components:
       required: false
       schema:
         maxLength: 36
-        minLength: 4
+        minLength: 2
         type: string
     userCode:
       description: userCode
@@ -296,39 +288,17 @@ components:
       schema:
         enum:
         - v2beta1
-        - v2alpha1
         - v3alpha1
         - v3
         type: string
     version2:
-      description: Service API v2alpha1 and v2beta1.
+      description: Service API v2beta1.
       in: path
       name: version2
       required: true
       schema:
         enum:
-        - v2alpha1
         - v2beta1
-        type: string
-    version2alpha1:
-      description: Service API version 2 alpha 1.
-      in: path
-      name: version2alpha1
-      required: true
-      schema:
-        enum:
-        - v2alpha1
-        type: string
-    version2beta1:
-      description: Service API version 2 beta 1 and higher.
-      in: path
-      name: version2beta1
-      required: true
-      schema:
-        enum:
-        - v2beta1
-        - v3alpha1
-        - v3
         type: string
   schemas:
     AddGroupMemberAsAnAdminBody:
@@ -461,17 +431,6 @@ components:
       - password
       - csrfToken
       type: object
-    ChangeKeyBody:
-      properties:
-        permissions:
-          items:
-            minLength: 4
-            type: string
-            x-case-insensitive: true
-          type: array
-      required:
-      - permissions
-      type: object
     ChangeSubscriptionBody:
       properties:
         appPermissions:
@@ -522,6 +481,16 @@ components:
       type: object
     CreateGroupBody:
       properties:
+        description:
+          description: A description for a group or role
+          maxLength: 1024
+          minLength: 1
+          type: string
+        displayName:
+          description: Represents a display name for a group or role
+          maxLength: 128
+          minLength: 2
+          type: string
         name:
           maxLength: 128
           minLength: 4
@@ -560,27 +529,6 @@ components:
           type: string
       required:
       - idp
-      type: object
-    CreateKeyBody:
-      properties:
-        expiresAt:
-          format: date-time
-          type: string
-        name:
-          maxLength: 36
-          minLength: 4
-          pattern: ^[_a-z][_.a-z0-9]*$
-          type: string
-        permissions:
-          items:
-            minLength: 4
-            type: string
-            x-case-insensitive: true
-          type: array
-      required:
-      - name
-      - permissions
-      - expiresAt
       type: object
     CreatePrincipalBody:
       description: Payload when creating a principal
@@ -627,6 +575,16 @@ components:
       type: object
     CreateRoleBody:
       properties:
+        description:
+          description: A description for a role.
+          maxLength: 1024
+          minLength: 1
+          type: string
+        displayName:
+          description: Represents a display name for a role.
+          maxLength: 128
+          minLength: 2
+          type: string
         name:
           maxLength: 128
           minLength: 4
@@ -802,6 +760,12 @@ components:
           nullable: true
           type: string
         createdBy:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        displayName:
           nullable: true
           type: string
         memberCount:
@@ -1126,47 +1090,6 @@ components:
       required:
       - name
       type: object
-    KeyList:
-      description: A list of api key.
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Key'
-          type: array
-        nextLink:
-          type: string
-      required:
-      - items
-      - nextLink
-      type: object
-    KeySecret:
-      properties:
-        clientId:
-          type: string
-        createdAt:
-          format: date-time
-          type: string
-        createdBy:
-          type: string
-        expiresAt:
-          format: date-time
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        permissions:
-          items:
-            type: string
-          type: array
-        rotatedAt:
-          format: date-time
-          type: string
-        tenant:
-          type: string
-        token:
-          type: string
-      type: object
     Member:
       description: Represents a member that belongs to a tenant.
       properties:
@@ -1251,6 +1174,11 @@ components:
     OktaApp:
       description: Represents an Okta App (https://developer.okta.com/docs/reference/api/apps/#application-model)
       type: object
+    OktaAppList:
+      description: Represents a list of Okta Apps
+      items:
+        $ref: '#/components/schemas/OktaApp'
+      type: array
     PermissionList:
       description: A list of permissions.
       properties:
@@ -1407,6 +1335,14 @@ components:
       - principal
       - hasAccepted
       type: object
+    ResetPasswordBody:
+      properties:
+        name:
+          minLength: 2
+          type: string
+          x-case-insensitive: true
+      required:
+      - name
     ResolveBody:
       properties:
         client_id:
@@ -1472,6 +1408,12 @@ components:
           nullable: true
           type: string
         createdBy:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        displayName:
           nullable: true
           type: string
         name:
@@ -1696,6 +1638,10 @@ components:
       type: object
     TenantAsAdmin:
       properties:
+        cells:
+          items:
+            type: string
+          type: array
         createdAt:
           format: date-time
           type: string
@@ -1748,8 +1694,8 @@ components:
       type: object
     TenantName:
       maxLength: 36
-      minLength: 4
-      pattern: ^[a-z][a-z0-9]*$
+      minLength: 2
+      pattern: ^[a-z0-9][a-z0-9\-]*[a-z0-9]$
       type: string
     TenantState:
       enum:
@@ -1787,6 +1733,19 @@ components:
           description: Must be Bearer type
           type: string
       type: object
+    UpdateGroupBody:
+      properties:
+        description:
+          description: A description for a group or role
+          maxLength: 1024
+          minLength: 1
+          type: string
+        displayName:
+          description: Represents a display name for a group or role
+          maxLength: 128
+          minLength: 2
+          type: string
+      type: object
     UpdateIdpBody:
       properties:
         description:
@@ -1802,7 +1761,33 @@ components:
       - title
       - federation_id
       type: object
+    UpdatePasswordBody:
+      properties:
+        code:
+          maxLength: 256
+          type: string
+        current_password:
+          maxLength: 256
+          type: string
+        password:
+          maxLength: 256
+          type: string
+      required:
+      - password
     UpdateRoleBody:
+      properties:
+        description:
+          description: A description for a role
+          maxLength: 1024
+          minLength: 1
+          type: string
+        displayName:
+          description: Represents a display name for a role
+          maxLength: 128
+          minLength: 2
+          type: string
+      type: object
+    UpdateRolePermissionsBody:
       properties:
         permissions:
           items:
@@ -1811,8 +1796,21 @@ components:
       required:
       - permissions
       type: object
+    UpdateTenantAsAdminBody:
+      properties:
+        cells:
+          items:
+            maxLength: 50
+            minLength: 1
+            type: string
+          maxItems: 10
+          type: array
+      type: object
     UpdateTenantBody:
       properties:
+        isLightweight:
+          default: false
+          type: boolean
         status:
           enum:
           - provisioning
@@ -1880,7 +1878,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v3.1
+  version: v3.3
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v3/groups:
@@ -1986,6 +1984,32 @@ paths:
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/group'
+    patch:
+      description: Updates a group's display name or description.
+      operationId: updateGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupBody'
+        description: The updated group information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+          description: The group was successfully updated.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+      x-authz-scope: identity.groups.write
   /{tenant}/identity/v3/groups/{group}/members:
     get:
       description: Returns a list of the members within a given group.
@@ -2574,6 +2598,8 @@ paths:
           description: The operation isn't authorized.
         "404":
           description: The resource wasn't found.
+        "422":
+          description: Unprocessable entity in request.
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
@@ -2600,6 +2626,36 @@ paths:
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/role'
+    patch:
+      description: Update a role's display name or description for a given tenant.
+      operationId: updateRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleBody'
+        description: The updated role information
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: The role was successfully updated.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The user isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "422":
+          description: Unprocessable entity in request.
+        "423":
+          description: The resource is locked.
+      x-authz-scope: identity.roles.write
   /{tenant}/identity/v3/roles/{role}/groups:
     get:
       description: Gets a list of groups for a role in a given tenant.
@@ -2698,6 +2754,8 @@ paths:
           description: The operation isn't authorized.
         "404":
           description: The resource wasn't found.
+        "422":
+          description: Unprocessable entity in request.
         "423":
           description: The resource is locked.
       x-authz-scope: identity.roles.write
@@ -2947,6 +3005,32 @@ paths:
         "404":
           description: The resource wasn't found.
       x-authz-scope: identity.principalkeys.write
+  /system/identity/v3/principals/{principal}/password:
+    parameters:
+    - $ref: '#/components/parameters/principal'
+    patch:
+      description: Update principal password
+      operationId: updatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePasswordBody'
+        description: The new password to set for the principal.
+        required: true
+      responses:
+        "204":
+          description: The password was successfully updated.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+      security: []
+      x-auth-required: false
   /system/identity/v3/principals/{principal}/revoke:
     parameters:
     - $ref: '#/components/parameters/principal'
@@ -2967,9 +3051,31 @@ paths:
         "404":
           description: The resource wasn't found.
       x-authz-scope: identity.principals.revoke
+  /system/identity/v3/reset-password:
+    post:
+      description: Sends an email which allows a principal to reset a forgotten password.
+      operationId: resetPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordBody'
+        description: The principal information to recover password.
+        required: true
+      responses:
+        "202":
+          description: Request accepted. Email will be sent if principal exists.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+      security: []
+      x-auth-required: false
 security:
 - Bearer: []
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: identity/v3/openapi.yaml
+# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: identity/v3/openapi.yaml

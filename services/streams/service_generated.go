@@ -107,10 +107,12 @@ func (s *Service) Compile(splCompileRequest SplCompileRequest, resp ...*http.Res
 	CreateConnection - Create a new DSP connection.
 	Parameters:
 		connectionRequest: Request JSON
+		query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) CreateConnection(connectionRequest ConnectionRequest, resp ...*http.Response) (*ConnectionSaveResponse, error) {
-	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/connections`, nil)
+func (s *Service) CreateConnection(connectionRequest ConnectionRequest, query *CreateConnectionQueryParams, resp ...*http.Response) (*ConnectionSaveResponse, error) {
+	values := util.ParseURLParams(query)
+	u, err := s.Client.BuildURLFromPathParams(values, serviceCluster, `/streams/v3beta1/connections`, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1111,6 +1113,42 @@ func (s *Service) ReactivatePipeline(id string, reactivatePipelineRequest Reacti
 }
 
 /*
+	ReactivationStatus - Get pipeline reactivation status
+	Parameters:
+		id: Pipeline ID
+		upgradeId: Pipeline Upgrade ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ReactivationStatus(id string, upgradeId string, resp ...*http.Response) (*PipelineReactivationStatus, error) {
+	pp := struct {
+		Id        string
+		UpgradeId string
+	}{
+		Id:        id,
+		UpgradeId: upgradeId,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/pipelines/{{.Id}}/upgrade/{{.UpgradeId}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PipelineReactivationStatus
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	StartPreview - Creates a preview session for a pipeline.
 	Parameters:
 		previewSessionStartRequest: Parameters to start a new Preview session
@@ -1269,6 +1307,40 @@ func (s *Service) UpdateTemplate(templateId string, templatePatchRequest Templat
 }
 
 /*
+	UpgradePipeline - Upgrades a pipeline async
+	Parameters:
+		id: Pipeline ID
+		upgradePipelineRequest: Request JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UpgradePipeline(id string, upgradePipelineRequest UpgradePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponseAsync, error) {
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/pipelines/{{.Id}}/upgrade`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: upgradePipelineRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb PipelineReactivateResponseAsync
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
    UploadFile - Upload new file.
    Parameters:
        filename
@@ -1354,6 +1426,29 @@ func (s *Service) UploadLookupFile(filename string, resp ...*http.Response) erro
 	}
 
 	return nil
+}
+
+/*
+	ValidateConnection - Validates the configuration of a DSP connection.
+	Parameters:
+		validateConnectionRequest: Request JSON
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ValidateConnection(validateConnectionRequest ValidateConnectionRequest, resp ...*http.Response) error {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/connections/validate`, nil)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: validateConnectionRequest})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
 }
 
 /*

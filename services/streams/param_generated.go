@@ -23,6 +23,19 @@
 
 package streams
 
+// CreateConnectionQueryParams represents valid query parameters for the CreateConnection operation
+// For convenience CreateConnectionQueryParams can be formed in a single statement, for example:
+//     `v := CreateConnectionQueryParams{}.SetSkipValidation(...)`
+type CreateConnectionQueryParams struct {
+	// SkipValidation : Skip validation
+	SkipValidation *bool `key:"skipValidation"`
+}
+
+func (q CreateConnectionQueryParams) SetSkipValidation(v bool) CreateConnectionQueryParams {
+	q.SkipValidation = &v
+	return q
+}
+
 // GetLookupTableQueryParams represents valid query parameters for the GetLookupTable operation
 // For convenience GetLookupTableQueryParams can be formed in a single statement, for example:
 //     `v := GetLookupTableQueryParams{}.SetOffset(...).SetSize(...)`
@@ -268,8 +281,10 @@ func (q ListPipelinesQueryParams) SetSortField(v string) ListPipelinesQueryParam
 
 // ListTemplatesQueryParams represents valid query parameters for the ListTemplates operation
 // For convenience ListTemplatesQueryParams can be formed in a single statement, for example:
-//     `v := ListTemplatesQueryParams{}.SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
+//     `v := ListTemplatesQueryParams{}.SetCreateUserId(...).SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
 type ListTemplatesQueryParams struct {
+	// CreateUserId : createUserId
+	CreateUserId string `key:"createUserId"`
 	// Offset : offset
 	Offset *int32 `key:"offset"`
 	// PageSize : pageSize
@@ -278,6 +293,11 @@ type ListTemplatesQueryParams struct {
 	SortDir string `key:"sortDir"`
 	// SortField : sortField
 	SortField string `key:"sortField"`
+}
+
+func (q ListTemplatesQueryParams) SetCreateUserId(v string) ListTemplatesQueryParams {
+	q.CreateUserId = v
+	return q
 }
 
 func (q ListTemplatesQueryParams) SetOffset(v int32) ListTemplatesQueryParams {

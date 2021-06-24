@@ -356,6 +356,14 @@ type ServicerGenerated interface {
 	*/
 	RemoveRolePermission(role string, permission string, resp ...*http.Response) error
 	/*
+		ResetPassword - identity service endpoint
+		Sends an email which allows a principal to reset a forgotten password.
+		Parameters:
+			resetPasswordBody: The principal information to recover password.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ResetPassword(resetPasswordBody ResetPasswordBody, resp ...*http.Response) error
+	/*
 		RevokePrincipalAuthTokens - identity service endpoint
 		Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 		Parameters:
@@ -363,6 +371,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
+	/*
+		UpdateGroup - identity service endpoint
+		Updates a group&#39;s display name or description.
+		Parameters:
+			group: The group name.
+			updateGroupBody: The updated group information
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateGroup(group string, updateGroupBody UpdateGroupBody, resp ...*http.Response) (*Group, error)
 	/*
 		UpdateIdentityProvider - identity service endpoint
 		Update the configuration for an Identity Provider.
@@ -373,6 +390,15 @@ type ServicerGenerated interface {
 	*/
 	UpdateIdentityProvider(idp string, identityProviderConfigBody IdentityProviderConfigBody, resp ...*http.Response) (*IdentityProviderBody, error)
 	/*
+		UpdatePassword - identity service endpoint
+		Update principal password
+		Parameters:
+			principal: The principal name.
+			updatePasswordBody: The new password to set for the principal.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdatePassword(principal string, updatePasswordBody UpdatePasswordBody, resp ...*http.Response) error
+	/*
 		UpdatePrincipalPublicKey - identity service endpoint
 		Update principal public key
 		Parameters:
@@ -382,6 +408,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdatePrincipalPublicKey(principal string, keyId string, principalPublicKeyStatusBody PrincipalPublicKeyStatusBody, resp ...*http.Response) (*PrincipalPublicKey, error)
+	/*
+		UpdateRole - identity service endpoint
+		Update a role&#39;s display name or description for a given tenant.
+		Parameters:
+			role: The role name.
+			updateRoleBody: The updated role information
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateRole(role string, updateRoleBody UpdateRoleBody, resp ...*http.Response) (*Role, error)
 	/*
 		ValidateToken - identity service endpoint
 		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.

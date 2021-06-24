@@ -315,25 +315,6 @@ func readBatch(r *bufio.Reader) ([]string, error) {
 	return batch, nil
 }
 
-func UploadFilesOverride(arg string) (*model.HttpResponse, error) {
-	client, err := auth.GetClient()
-	if err != nil {
-		return nil, err
-	}
-
-	fileName := arg
-
-	if _, err := os.Stat(fileName); err != nil {
-		return nil, err
-	}
-
-	err = client.IngestService.UploadFiles(fileName)
-	if err != nil {
-		return nil, err
-	}
-	return nil, nil
-}
-
 // Loads a json "object" from the given string.
 func loads(value string) (interface{}, error) {
 	var result interface{}

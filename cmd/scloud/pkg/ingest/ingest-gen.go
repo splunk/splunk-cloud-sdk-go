@@ -462,10 +462,12 @@ func PutCollectorToken(cmd *cobra.Command, args []string) error {
 // UploadFiles Upload a CSV or text file that contains events. The file limit is 1MB or an error is returned.
 func UploadFiles(cmd *cobra.Command, args []string) error {
 
-	var err error
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 
 	// Parse all flags
-
 	var fileName string
 	err = flags.ParseFlag(cmd.Flags(), "file-name", &fileName)
 	if err != nil {
@@ -475,10 +477,10 @@ func UploadFiles(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := UploadFilesOverride(fileName)
+	err = client.IngestService.UploadFiles(fileName)
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
+	jsonx.Pprint(cmd, nil)
 	return nil
 }

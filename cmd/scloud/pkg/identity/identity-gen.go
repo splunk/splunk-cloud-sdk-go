@@ -241,6 +241,18 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
@@ -249,7 +261,9 @@ func CreateGroup(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.CreateGroupBody{
 
-		Name: name,
+		Description: description,
+		DisplayName: displayName,
+		Name:        name,
 	}
 
 	// Silence Usage
@@ -394,7 +408,8 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "alg": ` + err.Error())
 	}
-	var credentials model.CredentialList
+	var credentialsDefault model.CredentialList
+	credentials := &credentialsDefault
 	err = flags.ParseFlag(cmd.Flags(), "credentials", &credentials)
 	if err != nil {
 		return fmt.Errorf(`error parsing "credentials": ` + err.Error())
@@ -480,7 +495,7 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	generated_request_body := model.CreatePrincipalBody{
 
 		AcceptTos:   acceptTos,
-		Credentials: &credentials,
+		Credentials: credentials,
 		Enabled:     enabled,
 		Key: &model.EcJwk{
 			Alg: alg,
@@ -520,6 +535,18 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
@@ -528,7 +555,9 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.CreateRoleBody{
 
-		Name: name,
+		Description: description,
+		DisplayName: displayName,
+		Name:        name,
 	}
 
 	// Silence Usage
@@ -1593,6 +1622,38 @@ func RemoveRolePermission(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// ResetPassword Sends an email which allows a principal to reset a forgotten password.
+func ResetPassword(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ResetPasswordBody{
+
+		Name: name,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.IdentityService.ResetPassword(generated_request_body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // RevokePrincipalAuthTokens Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 
 func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
@@ -1618,6 +1679,50 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// UpdateGroup Updates a group's display name or description.
+func UpdateGroup(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
+	var group string
+	err = flags.ParseFlag(cmd.Flags(), "group", &group)
+	if err != nil {
+		return fmt.Errorf(`error parsing "group": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.UpdateGroupBody{
+
+		Description: description,
+		DisplayName: displayName,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.UpdateGroup(group, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -1735,6 +1840,57 @@ func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// UpdatePassword Update principal password
+func UpdatePassword(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClientSystemTenant()
+
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var codeDefault string
+	code := &codeDefault
+	err = flags.ParseFlag(cmd.Flags(), "code", &code)
+	if err != nil {
+		return fmt.Errorf(`error parsing "code": ` + err.Error())
+	}
+	var current_passwordDefault string
+	current_password := &current_passwordDefault
+	err = flags.ParseFlag(cmd.Flags(), "current-password", &current_password)
+	if err != nil {
+		return fmt.Errorf(`error parsing "current-password": ` + err.Error())
+	}
+	var password string
+	err = flags.ParseFlag(cmd.Flags(), "password", &password)
+	if err != nil {
+		return fmt.Errorf(`error parsing "password": ` + err.Error())
+	}
+	var principal string
+	err = flags.ParseFlag(cmd.Flags(), "principal", &principal)
+	if err != nil {
+		return fmt.Errorf(`error parsing "principal": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.UpdatePasswordBody{
+
+		Code:            code,
+		CurrentPassword: current_password,
+		Password:        password,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.IdentityService.UpdatePassword(principal, generated_request_body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // UpdatePrincipalPublicKey Update principal public key
 func UpdatePrincipalPublicKey(cmd *cobra.Command, args []string) error {
 
@@ -1770,6 +1926,50 @@ func UpdatePrincipalPublicKey(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.UpdatePrincipalPublicKey(principal, keyId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateRole Update a role's display name or description for a given tenant.
+func UpdateRole(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
+	var role string
+	err = flags.ParseFlag(cmd.Flags(), "role", &role)
+	if err != nil {
+		return fmt.Errorf(`error parsing "role": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.UpdateRoleBody{
+
+		Description: description,
+		DisplayName: displayName,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.UpdateRole(role, generated_request_body)
 	if err != nil {
 		return err
 	}

@@ -71,7 +71,7 @@ type ServicerGenerated interface {
 			body: Record to add to the collection, formatted as a JSON object.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	InsertRecord(collection string, body map[string]interface{}, resp ...*http.Response) (*Key, error)
+	InsertRecord(collection string, body map[string]interface{}, resp ...*http.Response) (*Record, error)
 	/*
 		InsertRecords - Inserts multiple records in a single request.
 		Parameters:
@@ -111,7 +111,7 @@ type ServicerGenerated interface {
 			body: Record to add to the collection, formatted as a JSON object.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	PutRecord(collection string, key string, body map[string]interface{}, resp ...*http.Response) (*Key, error)
+	PutRecord(collection string, key string, body map[string]interface{}, resp ...*http.Response) (*Record, error)
 	/*
 		QueryRecords - Returns a list of query records in a collection.
 		Parameters:

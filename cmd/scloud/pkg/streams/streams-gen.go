@@ -4,7 +4,9 @@
 package streams
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
@@ -67,8 +69,10 @@ func ActivatePipeline(cmd *cobra.Command, args []string) error {
 // Compile Compiles SPL2 and returns streams JSON.
 func Compile(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -76,17 +80,33 @@ func Compile(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var spl string
 	var validateDefault bool
 	validate := &validateDefault
 	err = flags.ParseFlag(cmd.Flags(), "validate", &validate)
 	if err != nil {
 		return fmt.Errorf(`error parsing "validate": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &spl)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.SplCompileRequest{
+
+		Spl:      spl,
+		Validate: validate,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := CompileOverride(validate, inputDatafile)
+	resp, err := client.StreamsService.Compile(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -123,6 +143,16 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+	var skipValidationDefault bool
+	skipValidation := &skipValidationDefault
+	err = flags.ParseFlag(cmd.Flags(), "skip-validation", &skipValidation)
+	if err != nil {
+		return fmt.Errorf(`error parsing "skip-validation": ` + err.Error())
+	}
+	// Form query params
+	generated_query := model.CreateConnectionQueryParams{}
+	generated_query.SkipValidation = skipValidation
+
 	// Form the request body
 	generated_request_body := model.ConnectionRequest{
 
@@ -135,7 +165,7 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.StreamsService.CreateConnection(generated_request_body)
+	resp, err := client.StreamsService.CreateConnection(generated_request_body, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -146,8 +176,10 @@ func CreateConnection(cmd *cobra.Command, args []string) error {
 // CreatePipeline Creates a pipeline.
 func CreatePipeline(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var bypassValidationDefault bool
@@ -156,6 +188,7 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
+	var data model.Pipeline
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -167,16 +200,39 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var labels map[string]string
+	err = flags.ParseFlag(cmd.Flags(), "labels", &labels)
+	if err != nil {
+		return fmt.Errorf(`error parsing "labels": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.PipelineRequest{
+
+		BypassValidation: bypassValidation,
+		Data:             data,
+		Description:      description,
+		Labels:           labels,
+		Name:             name,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := CreatePipelineOverride(bypassValidation, description, name, inputDatafile)
+	resp, err := client.StreamsService.CreatePipeline(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -187,10 +243,13 @@ func CreatePipeline(cmd *cobra.Command, args []string) error {
 // CreateTemplate Creates a template for a tenant.
 func CreateTemplate(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
+	var data model.Pipeline
 	var description string
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
 	if err != nil {
@@ -206,11 +265,27 @@ func CreateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.TemplateRequest{
+
+		Data:        data,
+		Description: description,
+		Name:        name,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := CreateTemplateOverride(description, name, inputDatafile)
+	resp, err := client.StreamsService.CreateTemplate(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -464,8 +539,10 @@ func GetFilesMetadata(cmd *cobra.Command, args []string) error {
 // GetInputSchema Returns the input schema for a function in a pipeline.
 func GetInputSchema(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -483,11 +560,28 @@ func GetInputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "target-port-name": ` + err.Error())
 	}
+	var uplJson model.Pipeline
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &uplJson)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.GetInputSchemaRequest{
+
+		NodeUuid:       nodeUuid,
+		TargetPortName: targetPortName,
+		UplJson:        uplJson,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := GetInputSchemaOverride(nodeUuid, targetPortName, inputDatafile)
+	resp, err := client.StreamsService.GetInputSchema(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -585,8 +679,10 @@ func GetLookupTable(cmd *cobra.Command, args []string) error {
 // GetOutputSchema Returns the output schema for a specified function in a pipeline.
 func GetOutputSchema(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -606,11 +702,28 @@ func GetOutputSchema(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "source-port-name": ` + err.Error())
 	}
+	var uplJson model.Pipeline
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &uplJson)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.GetOutputSchemaRequest{
+
+		NodeUuid:       nodeUuid,
+		SourcePortName: sourcePortName,
+		UplJson:        uplJson,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := GetOutputSchemaOverride(nodeUuid, sourcePortName, inputDatafile)
+	resp, err := client.StreamsService.GetOutputSchema(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1077,6 +1190,11 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
+	var createUserId string
+	err = flags.ParseFlag(cmd.Flags(), "create-user-id", &createUserId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
+	}
 	var offsetDefault int32
 	offset := &offsetDefault
 	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
@@ -1101,6 +1219,7 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 	}
 	// Form query params
 	generated_query := model.ListTemplatesQueryParams{}
+	generated_query.CreateUserId = createUserId
 	generated_query.Offset = offset
 	generated_query.PageSize = pageSize
 	generated_query.SortDir = sortDir
@@ -1120,8 +1239,10 @@ func ListTemplates(cmd *cobra.Command, args []string) error {
 // PatchPipeline Patches an existing pipeline.
 func PatchPipeline(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var bypassValidationDefault bool
@@ -1136,6 +1257,8 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "create-user-id": ` + err.Error())
 	}
+	var dataDefault model.Pipeline
+	data := &dataDefault
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1152,17 +1275,41 @@ func PatchPipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var labels map[string]string
+	err = flags.ParseFlag(cmd.Flags(), "labels", &labels)
+	if err != nil {
+		return fmt.Errorf(`error parsing "labels": ` + err.Error())
+	}
 	var nameDefault string
 	name := &nameDefault
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.PipelinePatchRequest{
+
+		BypassValidation: bypassValidation,
+		CreateUserId:     createUserId,
+		Data:             data,
+		Description:      description,
+		Labels:           labels,
+		Name:             name,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := PatchPipelineOverride(id, bypassValidation, createUserId, description, name, inputDatafile)
+	resp, err := client.StreamsService.PatchPipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1274,11 +1421,44 @@ func ReactivatePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// ReactivationStatus Get pipeline reactivation status
+func ReactivationStatus(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var upgradeId string
+	err = flags.ParseFlag(cmd.Flags(), "upgrade-id", &upgradeId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "upgrade-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.ReactivationStatus(id, upgradeId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // StartPreview Creates a preview session for a pipeline.
 func StartPreview(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -1304,11 +1484,29 @@ func StartPreview(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "session-lifetime-ms": ` + err.Error())
 	}
+	var upl model.Pipeline
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &upl)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.PreviewSessionStartRequest{
+
+		RecordsLimit:       recordsLimit,
+		RecordsPerPipeline: recordsPerPipeline,
+		SessionLifetimeMs:  sessionLifetimeMs,
+		Upl:                upl,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := StartPreviewOverride(recordsLimit, recordsPerPipeline, sessionLifetimeMs, inputDatafile)
+	resp, err := client.StreamsService.StartPreview(generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1395,8 +1593,10 @@ func UpdateConnection(cmd *cobra.Command, args []string) error {
 // UpdatePipeline Updates an existing pipeline.
 func UpdatePipeline(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var bypassValidationDefault bool
@@ -1405,6 +1605,7 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "bypass-validation": ` + err.Error())
 	}
+	var data model.Pipeline
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1421,16 +1622,39 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var labels map[string]string
+	err = flags.ParseFlag(cmd.Flags(), "labels", &labels)
+	if err != nil {
+		return fmt.Errorf(`error parsing "labels": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.PipelineRequest{
+
+		BypassValidation: bypassValidation,
+		Data:             data,
+		Description:      description,
+		Labels:           labels,
+		Name:             name,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := UpdatePipelineOverride(id, bypassValidation, description, name, inputDatafile)
+	resp, err := client.StreamsService.UpdatePipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1441,10 +1665,14 @@ func UpdatePipeline(cmd *cobra.Command, args []string) error {
 // UpdateTemplate Patches an existing template.
 func UpdateTemplate(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
+	var dataDefault model.Pipeline
+	data := &dataDefault
 	var descriptionDefault string
 	description := &descriptionDefault
 	err = flags.ParseFlag(cmd.Flags(), "description", &description)
@@ -1467,11 +1695,78 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "template-id": ` + err.Error())
 	}
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.TemplatePatchRequest{
+
+		Data:        data,
+		Description: description,
+		Name:        name,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := UpdateTemplateOverride(templateId, description, name, inputDatafile)
+	resp, err := client.StreamsService.UpdateTemplate(templateId, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpgradePipeline Upgrades a pipeline async
+func UpgradePipeline(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var allowNonRestoredStateDefault bool
+	allowNonRestoredState := &allowNonRestoredStateDefault
+	err = flags.ParseFlag(cmd.Flags(), "allow-non-restored-state", &allowNonRestoredState)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allow-non-restored-state": ` + err.Error())
+	}
+	var cancelWithSavePointDefault bool
+	cancelWithSavePoint := &cancelWithSavePointDefault
+	err = flags.ParseFlag(cmd.Flags(), "cancel-with-save-point", &cancelWithSavePoint)
+	if err != nil {
+		return fmt.Errorf(`error parsing "cancel-with-save-point": ` + err.Error())
+	}
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var skipRestoreStateDefault bool
+	skipRestoreState := &skipRestoreStateDefault
+	err = flags.ParseFlag(cmd.Flags(), "skip-restore-state", &skipRestoreState)
+	if err != nil {
+		return fmt.Errorf(`error parsing "skip-restore-state": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.UpgradePipelineRequest{
+
+		AllowNonRestoredState: allowNonRestoredState,
+		CancelWithSavePoint:   cancelWithSavePoint,
+		SkipRestoreState:      skipRestoreState,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.StreamsService.UpgradePipeline(id, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1482,10 +1777,12 @@ func UpdateTemplate(cmd *cobra.Command, args []string) error {
 // UploadFile Upload new file.
 func UploadFile(cmd *cobra.Command, args []string) error {
 
-	var err error
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 
 	// Parse all flags
-
 	var fileName string
 	err = flags.ParseFlag(cmd.Flags(), "file-name", &fileName)
 	if err != nil {
@@ -1495,11 +1792,11 @@ func UploadFile(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := UploadFileOverride(fileName)
+	err = client.StreamsService.UploadFile(fileName)
 	if err != nil {
 		return err
 	}
-	jsonx.Pprint(cmd, resp)
+	jsonx.Pprint(cmd, nil)
 	return nil
 }
 
@@ -1512,17 +1809,16 @@ func UploadLookupFile(cmd *cobra.Command, args []string) error {
 	}
 
 	// Parse all flags
-
-	var lookupfileName string
-	err = flags.ParseFlag(cmd.Flags(), "lookup-file-name", &lookupfileName)
+	var fileName string
+	err = flags.ParseFlag(cmd.Flags(), "file-name", &fileName)
 	if err != nil {
-		return fmt.Errorf(`error parsing "lookup-file-name": ` + err.Error())
+		return fmt.Errorf(`error parsing "file-name": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.StreamsService.UploadLookupFile(lookupfileName)
+	err = client.StreamsService.UploadLookupFile(fileName)
 	if err != nil {
 		return err
 	}
@@ -1530,11 +1826,50 @@ func UploadLookupFile(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// ValidateConnection Validates the configuration of a DSP connection.
+func ValidateConnection(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectorId string
+	err = flags.ParseFlag(cmd.Flags(), "connector-id", &connectorId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connector-id": ` + err.Error())
+	}
+	var data map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "data", &data)
+	if err != nil {
+		return fmt.Errorf(`error parsing "data": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.ValidateConnectionRequest{
+
+		ConnectorId: connectorId,
+		Data:        data,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.ValidateConnection(generated_request_body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ValidatePipeline Verifies whether the Streams JSON is valid.
 func ValidatePipeline(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -1542,11 +1877,26 @@ func ValidatePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var upl model.Pipeline
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &upl)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.ValidateRequest{
+
+		Upl: upl,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := ValidatePipelineOverride(inputDatafile)
+	resp, err := client.StreamsService.ValidatePipeline(generated_request_body)
 	if err != nil {
 		return err
 	}

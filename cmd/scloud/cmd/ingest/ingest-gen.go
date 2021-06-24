@@ -212,6 +212,6 @@ func init() {
 	ingestCmd.AddCommand(uploadFilesCmd)
 
 	var uploadFilesFileName string
-	uploadFilesCmd.Flags().StringVar(&uploadFilesFileName, "file-name", "", "File to ingest data from.")
+	uploadFilesCmd.Flags().StringVar(&uploadFilesFileName, "file-name", "", "File to upload.")
 
 }

@@ -30,132 +30,16 @@ components:
         type:
           type: string
       type: object
-    CollectJobPatchRequest:
+    ConnectionMigrateResponse:
       description: ""
       properties:
-        description:
-          description: The description of the collect job.
-          example: ""
+        oldConnectionId:
           type: string
-        name:
-          description: The name of the collect job.
-          example: ""
+        sinkConnectionId:
           type: string
-        parameters:
-          description: The key-value pairs of configurations for this collect job.
-          example: ""
-          properties: {}
-          type: object
-        schedule:
-          $ref: '#/components/schemas/CollectJobSchedule'
-        workers:
-          description: The number of workers for collecting data.
-          format: int32
-          maximum: 128
-          minimum: 1
-          type: integer
-      type: object
-    CollectJobRequest:
-      description: ""
-      properties:
-        connectionId:
-          description: The ID of the connection that is assigned to this collect job.
-          example: ""
+        sourceConnectionId:
           type: string
-        connectorId:
-          description: The ID of the connector this collect job uses.
-          example: ""
-          type: string
-        description:
-          description: The description of the collect job.
-          example: ""
-          type: string
-        name:
-          description: The name of the collect job.
-          example: ""
-          type: string
-        parameters:
-          description: The key-value pairs of parameters for this collect job. Collect
-            jobs may have some configurations that are required, which all collect
-            jobs must provide values for. For configuration values of type BYTES,
-            the provided values must be Base64 encoded.
-          example: ""
-          properties: {}
-          type: object
-        schedule:
-          $ref: '#/components/schemas/CollectJobSchedule'
-        workers:
-          description: The number of workers for collecting data.
-          format: int32
-          maximum: 128
-          minimum: 1
-          type: integer
-      required:
-      - connectionId
-      - connectorId
-      - description
-      - name
-      - parameters
-      - schedule
-      - workers
-      type: object
-    CollectJobResponse:
-      description: ""
-      properties:
-        activePipelinesUsing:
-          items:
-            $ref: '#/components/schemas/MapOfstringAndobject'
-          type: array
-        connectionId:
-          type: string
-        connectorId:
-          type: string
-        createDate:
-          format: int64
-          type: integer
-        createUserId:
-          type: string
-        description:
-          type: string
-        id:
-          type: string
-        lastUpdateDate:
-          format: int64
-          type: integer
-        lastUpdateUserId:
-          type: string
-        name:
-          type: string
-        parameters:
-          properties: {}
-          type: object
-        schedule:
-          $ref: '#/components/schemas/CollectJobSchedule'
-        status:
-          type: string
-        version:
-          format: int64
-          type: integer
-        workers:
-          format: int32
-          type: integer
-      type: object
-    CollectJobSchedule:
-      description: ""
-      properties:
-        cron:
-          description: The CRON expression.
-          example: ""
-          type: string
-      required:
-      - cron
-      type: object
-    CollectJobStartStopResponse:
-      description: ""
-      properties:
-        id:
-          type: string
-        status:
+        tenantId:
           type: string
       type: object
     ConnectionPatchRequest:
@@ -330,6 +214,9 @@ components:
           type: boolean
         id:
           type: string
+        metadata:
+          properties: {}
+          type: object
         name:
           type: string
         panelUrl:
@@ -353,8 +240,8 @@ components:
           description: The ID of the connector this source uses.
           example: ""
           type: string
-        dataStreamId:
-          description: The ID of the data stream this source sends data to.
+        dataStreamName:
+          description: The name of the data stream that this source sends data to.
           example: ""
           type: string
         description:
@@ -364,6 +251,12 @@ components:
         enabled:
           description: If the source should be enabled immediately after creation.
           type: boolean
+        eventAttributes:
+          description: The key-value pairs to be added to every event emitted by this
+            source. Maximum 4 attributes are allowed.
+          example: ""
+          properties: {}
+          type: object
         name:
           description: The name of the source.
           example: ""
@@ -373,23 +266,18 @@ components:
           example: 1
           format: int32
           type: integer
+        schedule:
+          description: A CRON schedule expression for the discovery scheduler.
+          example: '*/10 * * * * *'
+          type: string
       required:
       - configs
       - connectionId
       - connectorId
-      - dataStreamId
       - enabled
       - name
       type: object
-    DataStreamProperties:
-      description: ""
-      properties:
-        partitions:
-          description: Partitions, up to the partition count of the firehose
-          format: int32
-          type: integer
-      type: object
-    DataStreamRequest:
+    DataStreamCreateRequest:
       description: ""
       properties:
         description:
@@ -400,22 +288,33 @@ components:
           description: The name of the data stream.
           example: ""
           type: string
-        properties:
-          $ref: '#/components/schemas/DataStreamProperties'
+        partitions:
+          description: Partitions, up to the partition count of the firehose
+          format: int32
+          type: integer
       required:
       - name
-      - properties
+      type: object
+    DataStreamResourceUser:
+      description: ""
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
       type: object
     DataStreamResponse:
       description: ""
       properties:
-        activePipelinesUsing:
+        activeReaders:
           items:
-            type: string
+            $ref: '#/components/schemas/DataStreamResourceUser'
           type: array
-        activeSourcesUsing:
+        activeWriters:
           items:
-            $ref: '#/components/schemas/Source'
+            $ref: '#/components/schemas/DataStreamResourceUser'
           type: array
         description:
           type: string
@@ -423,8 +322,21 @@ components:
           type: string
         name:
           type: string
-        properties:
-          $ref: '#/components/schemas/DataStreamProperties'
+        partitions:
+          format: int32
+          type: integer
+      type: object
+    DataStreamUpdateRequest:
+      description: ""
+      properties:
+        description:
+          description: The description of the data stream. Defaults to null.
+          example: ""
+          type: string
+        partitions:
+          description: Partitions, up to the partition count of the firehose
+          format: int32
+          type: integer
       type: object
     DeactivatePipelineRequest:
       description: ""
@@ -580,6 +492,11 @@ components:
             type: string
           type: object
       type: object
+    MapOfstringAndboolean:
+      additionalProperties:
+        type: boolean
+      description: ""
+      type: object
     MapOfstringAndobject:
       description: ""
       type: object
@@ -603,31 +520,6 @@ components:
           properties: {}
           type: object
       type: object
-    PaginatedPipelineNotificationsResponse:
-      description: ""
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/PipelineNotificationsResponse'
-          type: array
-        nextSinceMarker:
-          format: int64
-          type: integer
-        total:
-          format: int64
-          type: integer
-      type: object
-    PaginatedResponseOfCollectJobResponse:
-      description: ""
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/CollectJobResponse'
-          type: array
-        total:
-          format: int64
-          type: integer
-      type: object
     PaginatedResponseOfConnectionResponse:
       description: ""
       properties:
@@ -650,6 +542,17 @@ components:
           format: int64
           type: integer
       type: object
+    PaginatedResponseOfDataStreamResponse:
+      description: ""
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/DataStreamResponse'
+          type: array
+        total:
+          format: int64
+          type: integer
+      type: object
     PaginatedResponseOfPipelineJobStatus:
       description: ""
       properties:
@@ -667,17 +570,6 @@ components:
         items:
           items:
             $ref: '#/components/schemas/PipelineResponse'
-          type: array
-        total:
-          format: int64
-          type: integer
-      type: object
-    PaginatedResponseOfPlugin:
-      description: ""
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Plugin'
           type: array
         total:
           format: int64
@@ -814,29 +706,6 @@ components:
       - id
       - op
       type: object
-    PipelineNotificationsResponse:
-      description: ""
-      properties:
-        details:
-          items:
-            type: string
-          type: array
-        eventTimestamp:
-          format: int64
-          type: integer
-        id:
-          type: string
-        message:
-          type: string
-        severity:
-          enum:
-          - ERROR
-          - WARN
-          - INFO
-          type: string
-        source:
-          $ref: '#/components/schemas/Source'
-      type: object
     PipelinePatchRequest:
       description: ""
       properties:
@@ -855,6 +724,13 @@ components:
           description: The description of the pipeline. Defaults to null.
           example: ""
           type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: Optional labels in associated with the pipeline. A label is
+            represented by a key and a value.
+          example: ""
+          type: object
         name:
           description: The name of the pipeline.
           example: ""
@@ -882,6 +758,61 @@ components:
             type: string
           type: object
       type: object
+    PipelineReactivateResponseAsync:
+      description: ""
+      properties:
+        pipelineId:
+          type: string
+        reactivationRequestId:
+          type: string
+        requestedAction:
+          enum:
+          - ACTIVATE
+          - DEACTIVATE
+          - REACTIVATE
+          type: string
+      type: object
+    PipelineReactivationStatus:
+      description: ""
+      properties:
+        createDate:
+          format: int64
+          type: integer
+        currentUberJar:
+          type: string
+        exitStatus:
+          enum:
+          - SUCCESS
+          - FAILED
+          - PENDING
+          type: string
+        flinkJobStatus:
+          type: string
+        id:
+          type: string
+        message:
+          type: string
+        pipelineDeploymentStatus:
+          enum:
+          - CREATED
+          - ACTIVATED
+          - FAILED
+          - RESTARTING
+          - FINISHED
+          - ACTIVATING
+          - DEACTIVATING
+          type: string
+        pipelineId:
+          type: string
+        requestedAction:
+          enum:
+          - ACTIVATE
+          - DEACTIVATE
+          - REACTIVATE
+          type: string
+        requestedUberJar:
+          type: string
+      type: object
     PipelineRequest:
       description: ""
       properties:
@@ -896,6 +827,13 @@ components:
           description: The description of the pipeline. Defaults to null.
           example: ""
           type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: Optional labels in associated with the pipeline. A label is
+            represented by a key and a value.
+          example: ""
+          type: object
         name:
           description: The name of the pipeline.
           example: ""
@@ -932,6 +870,10 @@ components:
           type: string
         id:
           type: string
+        labels:
+          additionalProperties:
+            type: string
+          type: object
         lastUpdateDate:
           format: int64
           type: integer
@@ -946,6 +888,8 @@ components:
           - FAILED
           - RESTARTING
           - FINISHED
+          - ACTIVATING
+          - DEACTIVATING
           type: string
         statusMessage:
           type: string
@@ -953,6 +897,11 @@ components:
           format: int64
           type: integer
         tenantId:
+          type: string
+        uberJarSha256:
+          description: Null prior to initial activation. After deactivation, this
+            field will be set to the SHA at the time of the last activation.
+          example: ""
           type: string
         validationMessages:
           items:
@@ -983,72 +932,6 @@ components:
           type: string
         tenantId:
           type: string
-      type: object
-    Plugin:
-      description: ""
-      properties:
-        description:
-          type: string
-        isDeleted:
-          type: boolean
-        lastUpdateDate:
-          format: int64
-          type: integer
-        lastUpdateUserId:
-          type: string
-        name:
-          type: string
-        pluginId:
-          type: string
-        tenantId:
-          type: string
-      type: object
-    PluginPatchRequest:
-      description: ""
-      properties:
-        description:
-          description: Plugin description
-          example: ""
-          type: string
-        name:
-          description: Plugin name
-          example: ""
-          type: string
-      type: object
-    PluginRequest:
-      description: ""
-      properties:
-        description:
-          description: Plugin description
-          example: ""
-          type: string
-        name:
-          description: Plugin name
-          example: ""
-          type: string
-      required:
-      - description
-      - name
-      type: object
-    PluginResponse:
-      description: ""
-      properties:
-        createDate:
-          format: int64
-          type: integer
-        createUserId:
-          type: string
-        description:
-          type: string
-        jarLocation:
-          type: string
-        name:
-          type: string
-        pluginId:
-          type: string
-        version:
-          format: int64
-          type: integer
       type: object
     PreviewData:
       description: ""
@@ -1191,19 +1074,14 @@ components:
     Source:
       description: ""
       properties:
-        node:
-          type: string
-        pipelineVersion:
-          type: string
-      type: object
-    SourceResponse:
-      description: ""
-      properties:
-        configs:
+        arguments:
           properties: {}
           type: object
         connectionId:
           type: string
+        connectionVersion:
+          format: int64
+          type: integer
         connectorId:
           type: string
         createDate:
@@ -1215,6 +1093,11 @@ components:
           type: string
         description:
           type: string
+        enabled:
+          type: boolean
+        eventAttributes:
+          properties: {}
+          type: object
         id:
           type: string
         lastUpdateDate:
@@ -1227,6 +1110,53 @@ components:
         parallelism:
           format: int32
           type: integer
+        schedule:
+          type: string
+        tenantId:
+          type: string
+        version:
+          format: int64
+          type: integer
+      type: object
+    SourceResponse:
+      description: ""
+      properties:
+        configs:
+          properties: {}
+          type: object
+        connectionId:
+          type: string
+        connectionVersion:
+          format: int64
+          type: integer
+        connectorId:
+          type: string
+        createDate:
+          format: int64
+          type: integer
+        createUserId:
+          type: string
+        dataStreamName:
+          type: string
+        description:
+          type: string
+        eventAttributes:
+          properties: {}
+          type: object
+        id:
+          type: string
+        lastUpdateDate:
+          format: int64
+          type: integer
+        lastUpdateUserId:
+          type: string
+        name:
+          type: string
+        parallelism:
+          format: int32
+          type: integer
+        schedule:
+          type: string
         status:
           enum:
           - DISABLED
@@ -1235,7 +1165,10 @@ components:
           - FETCH_ERROR
           - RESTARTING
           - RUNNING
+          - CREATED
           type: string
+        usingLatestConnectionVersion:
+          type: boolean
         version:
           format: int64
           type: integer
@@ -1355,6 +1288,8 @@ components:
           $ref: '#/components/schemas/Pipeline'
         description:
           type: string
+        learnMoreLocation:
+          type: string
         name:
           type: string
         ownerTenantId:
@@ -1364,6 +1299,16 @@ components:
         version:
           format: int64
           type: integer
+      type: object
+    UIFlagResponse:
+      description: ""
+      properties:
+        uiFlags:
+          additionalProperties:
+            additionalProperties:
+              type: boolean
+            type: object
+          type: object
       type: object
     UpdateSourceRequest:
       description: ""
@@ -1377,14 +1322,22 @@ components:
           description: The ID of the connection that is assigned to this source.
           example: ""
           type: string
-        dataStreamId:
-          description: The ID of the data stream this source sends data to.
+        dataStreamName:
+          description: The name of the data stream that this source sends data to.
           example: ""
           type: string
         description:
           description: The description of the source.
           example: ""
           type: string
+        eventAttributes:
+          description: The key-value pairs to be added to every event emitted by this
+            source. Maximum 4 attributes are allowed. If no update is intended on
+            the event attributes set this attribute to null. If an empty map is provided
+            it will remove the preexisting event attributes.
+          example: ""
+          properties: {}
+          type: object
         name:
           description: The name of the source.
           example: ""
@@ -1394,6 +1347,29 @@ components:
           example: 1
           format: int32
           type: integer
+        schedule:
+          description: A CRON schedule expression for the discovery scheduler.
+          example: '*/10 * * * * *'
+          type: string
+      type: object
+    UpgradePipelineRequest:
+      description: ""
+      properties:
+        allowNonRestoredState:
+          description: Set to true to allow the pipeline to ignore any unused progress
+            states. In some cases, when a data pipeline is changed, the progress state
+            will be stored for functions that no longer exist, so this must be set
+            to reactivate a pipeline in this state. Defaults to false.
+          type: boolean
+        cancelWithSavePoint:
+          description: Set to true to deactivate a pipeline with a savepoint. Defaults
+            to false.
+          type: boolean
+        skipRestoreState:
+          description: Set to true to start reading from the latest input rather than
+            from where the pipeline's previous run left off, which can cause data
+            loss. Defaults to false.
+          type: boolean
       type: object
     UplType:
       description: ""
@@ -1424,6 +1400,25 @@ components:
         tenantId:
           type: string
       type: object
+    ValidateConnectionRequest:
+      description: ""
+      properties:
+        connectorId:
+          description: The ID of the parent connector.
+          example: ""
+          type: string
+        data:
+          description: The key-value pairs of connection configurations to be validated.
+            Connectors may have some configurations that are required, which all connections
+            must provide values for. For configuration values of type BYTES, the provided
+            values must be Base64 encoded.
+          example: ""
+          properties: {}
+          type: object
+      required:
+      - connectorId
+      - data
+      type: object
     ValidateRequest:
       description: ""
       properties:
@@ -1445,6 +1440,21 @@ components:
           items:
             type: string
           type: array
+      type: object
+    ValidateSourceRequest:
+      description: ""
+      properties:
+        configs:
+          description: The key-value pairs for configuration for the source.
+          example: ""
+          properties: {}
+          type: object
+        connectorId:
+          description: The ID of the connector for the source.
+          example: ""
+          type: string
+      required:
+      - connectorId
       type: object
 info:
   description: Use the Streams service to perform create, read, update, and delete
@@ -1583,6 +1593,12 @@ paths:
         required: true
         schema:
           type: string
+      - description: Skip validation
+        in: query
+        name: skipValidation
+        schema:
+          default: false
+          type: boolean
       requestBody:
         content:
           application/json:
@@ -1886,6 +1902,80 @@ paths:
       tags:
       - connectors
       x-authz-scope: streams.connections.update
+  /{tenantId}/streams/v3beta1/connections/validate:
+    post:
+      deprecated: false
+      operationId: validateConnection
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateConnectionRequest'
+        description: Request JSON
+        required: true
+      responses:
+        "204":
+          content: {}
+          description: The connection configuration is valid.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The resource wasn?t found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid connection configuration.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Validates the configuration of a DSP connection.
+      tags:
+      - connectors
+      x-authz-scope: streams.connections.create
   /{tenantId}/streams/v3beta1/connectors:
     get:
       deprecated: false
@@ -3469,6 +3559,177 @@ paths:
       tags:
       - pipelines
       x-authz-scope: streams.pipelines.activate
+  /{tenantId}/streams/v3beta1/pipelines/{id}/upgrade:
+    post:
+      deprecated: false
+      operationId: upgradePipeline
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpgradePipelineRequest'
+        description: Request JSON
+        required: false
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineReactivateResponseAsync'
+          description: OK
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineReactivateResponseAsync'
+          description: Upgrade request received.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unknown pipeline.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Pending upgrade request already exists.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal Server Error.
+      summary: Upgrades a pipeline async
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.activate
+  /{tenantId}/streams/v3beta1/pipelines/{id}/upgrade/{upgradeId}:
+    get:
+      deprecated: false
+      operationId: reactivationStatus
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Pipeline ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - description: Pipeline Upgrade ID
+        in: path
+        name: upgradeId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineReactivationStatus'
+          description: Upgrade status returned.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unknown upgrade id.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Get pipeline reactivation status
+      tags:
+      - pipelines
+      x-authz-scope: streams.pipelines.activate
   /{tenantId}/streams/v3beta1/pipelines/compile:
     post:
       deprecated: false
@@ -4453,6 +4714,11 @@ paths:
         name: sortDir
         schema:
           type: string
+      - description: createUserId
+        in: query
+        name: createUserId
+        schema:
+          type: string
       responses:
         "200":
           content:
@@ -4915,12 +5181,12 @@ paths:
 servers:
 - url: /
 tags:
+- description: V3Beta1 UIFlags API Endpoints
+  name: uiflags
 - description: V3Beta1 Release Info API Endpoints
   name: info
 - description: Files API Endpoints Deprecated Use Lookup Files API Endpoints
   name: files
-- description: V3Beta1 Collect Job Endpoints
-  name: collectJobs
 - description: Entitlements API Endpoints
   name: entitlements
 - description: Services Endpoint
@@ -4944,4 +5210,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: streams/v3beta1/openapi.yaml
