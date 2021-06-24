@@ -4,19 +4,24 @@
 package forwarders
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/flags"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/jsonx"
+	model "github.com/splunk/splunk-cloud-sdk-go/services/forwarders"
 )
 
 // AddCertificate Adds a certificate to a vacant slot on a tenant.
 func AddCertificate(cmd *cobra.Command, args []string) error {
 
-	var err error
-
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
 	// Parse all flags
 
 	var inputDatafile string
@@ -24,11 +29,26 @@ func AddCertificate(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "input-datafile": ` + err.Error())
 	}
+	var pem string
+	//porcess customized FileInput
+	bytes, err := ioutil.ReadFile(inputDatafile)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, &pem)
+	if err != nil {
+		return err
+	}
+	// Form the request body
+	generated_request_body := model.Certificate{
+
+		Pem: pem,
+	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := AddCertificateOverride(inputDatafile)
+	resp, err := client.ForwardersService.AddCertificate(generated_request_body)
 	if err != nil {
 		return err
 	}

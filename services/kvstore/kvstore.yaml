@@ -47,14 +47,13 @@ components:
       schema:
         type: object
       style: form
-    # TODO: in our backlog as "Add support for request header params in code generation"
-    #IfMatchHeaderParam:
-    #  description: Record version identifier.
-    #  in: header
-    #  name: If-Match
-    #  required: false
-    #  schema:
-    #    type: string
+    IfMatchHeaderParam:
+      description: Record version identifier.
+      in: header
+      name: If-Match
+      required: false
+      schema:
+        type: string
     IndexParam:
       description: The name of the index.
       in: path
@@ -107,6 +106,14 @@ components:
       required: true
       schema:
         type: string
+    UserHeaderParam:
+      description: Name of the record(s) owner.
+      in: header
+      name: Splunk-User-Id
+      required: false
+      schema:
+        default: nobody
+        type: string
   requestBodies:
     insertRecordRecord:
       content:
@@ -122,6 +129,7 @@ components:
             items:
               type: object
             maxItems: 10000
+            minItems: 1
             type: array
       description: Array of records to insert.
       required: true
@@ -224,6 +232,9 @@ components:
         indexSizes:
           description: Map of index name to index size in bytes.
           type: object
+        lastModifiedTime:
+          description: Timestamp when collection was last modified.
+          type: string
         nindexes:
           description: Number of indexes on collection.
           type: integer
@@ -237,6 +248,7 @@ components:
       - collection
       - count
       - size
+      - lastModifiedTime
       - nindexes
       - totalIndexSize
       - indexSizes
@@ -307,14 +319,6 @@ components:
       required:
       - field
       - direction
-      type: object
-    Key:
-      properties:
-        _key:
-          description: Key of the inserted document.
-          type: string
-      required:
-      - _key
       type: object
     LookupRequest:
       description: Request payload for lookup query.
@@ -405,6 +409,18 @@ components:
           description: Query JSON expression.
           type: object
       type: object
+    Record:
+      properties:
+        _key:
+          description: Key of the resulting record.
+          type: string
+        _user:
+          description: User of the resulting record.
+          type: string
+      required:
+      - _user
+      - _key
+      type: object
     TenantDescription:
       properties:
         collections:
@@ -430,6 +446,7 @@ paths:
         ANDed and values for the same field are implicitly ORed.
       operationId: listRecords
       parameters:
+      - $ref: '#/components/parameters/UserHeaderParam'
       - $ref: '#/components/parameters/FieldsParam'
       - $ref: '#/components/parameters/CountParam'
       - $ref: '#/components/parameters/OffsetParam'
@@ -474,6 +491,8 @@ paths:
     - $ref: '#/components/parameters/CollectionParam'
     post:
       operationId: insertRecord
+      parameters:
+      - $ref: '#/components/parameters/UserHeaderParam'
       requestBody:
         $ref: '#/components/requestBodies/insertRecordRecord'
       responses:
@@ -481,7 +500,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Key'
+                $ref: '#/components/schemas/Record'
           description: The record was inserted successfully.
         "400":
           $ref: '#/components/responses/BadRequestError'
@@ -508,6 +527,7 @@ paths:
     - $ref: '#/components/parameters/AuthorizationHeaderParam'
     - $ref: '#/components/parameters/TenantParam'
     - $ref: '#/components/parameters/CollectionParam'
+    - $ref: '#/components/parameters/UserHeaderParam'
     post:
       operationId: insertRecords
       parameters:
@@ -725,6 +745,7 @@ paths:
     - $ref: '#/components/parameters/TenantParam'
     - $ref: '#/components/parameters/CollectionParam'
     - $ref: '#/components/parameters/QueryParam'
+    - $ref: '#/components/parameters/UserHeaderParam'
   /{tenant}/kvstore/v1beta1/collections/{collection}/records/{key}:
     delete:
       operationId: deleteRecordByKey
@@ -781,14 +802,14 @@ paths:
       x-authz-scope: kvstore.records.read
     parameters:
     - $ref: '#/components/parameters/AuthorizationHeaderParam'
+    - $ref: '#/components/parameters/UserHeaderParam'
     - $ref: '#/components/parameters/TenantParam'
     - $ref: '#/components/parameters/CollectionParam'
     - $ref: '#/components/parameters/KeyParam'
     put:
       operationId: putRecord
-      # TODO: in our backlog as "Add support for request header params in code generation" 
-      # parameters:
-      #- $ref: '#/components/parameters/IfMatchHeaderParam'
+      parameters:
+      - $ref: '#/components/parameters/IfMatchHeaderParam'
       requestBody:
         $ref: '#/components/requestBodies/insertRecordRecord'
       responses:
@@ -796,14 +817,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Key'
-          description: The record with the given key was updated successfully.
+                $ref: '#/components/schemas/Record'
+          description: The record was updated successfully.
         "201":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Key'
-          description: The record with the given key was inserted successfully.
+                $ref: '#/components/schemas/Record'
+          description: The record was inserted successfully.
         "400":
           $ref: '#/components/responses/BadRequestError'
         "401":
@@ -885,4 +906,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: kvstore/v1beta1/openapi.yaml

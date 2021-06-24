@@ -285,12 +285,26 @@ var removeRolePermissionCmd = &cobra.Command{
 	RunE:  impl.RemoveRolePermission,
 }
 
+// resetPassword -- Sends an email which allows a principal to reset a forgotten password.
+var resetPasswordCmd = &cobra.Command{
+	Use:   "reset-password",
+	Short: "Sends an email which allows a principal to reset a forgotten password.",
+	RunE:  impl.ResetPassword,
+}
+
 // revokePrincipalAuthTokens -- Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
 
 var revokePrincipalAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-principal-auth-tokens",
 	Short: "Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password",
 	RunE:  impl.RevokePrincipalAuthTokens,
+}
+
+// updateGroup -- Updates a group's display name or description.
+var updateGroupCmd = &cobra.Command{
+	Use:   "update-group",
+	Short: "Updates a group's display name or description.",
+	RunE:  impl.UpdateGroup,
 }
 
 // updateIdentityProvider -- Update the configuration for an Identity Provider.
@@ -300,11 +314,25 @@ var updateIdentityProviderCmd = &cobra.Command{
 	RunE:  impl.UpdateIdentityProvider,
 }
 
+// updatePassword -- Update principal password
+var updatePasswordCmd = &cobra.Command{
+	Use:   "update-password",
+	Short: "Update principal password",
+	RunE:  impl.UpdatePassword,
+}
+
 // updatePrincipalPublicKey -- Update principal public key
 var updatePrincipalPublicKeyCmd = &cobra.Command{
 	Use:   "update-principal-public-key",
 	Short: "Update principal public key",
 	RunE:  impl.UpdatePrincipalPublicKey,
+}
+
+// updateRole -- Update a role's display name or description for a given tenant.
+var updateRoleCmd = &cobra.Command{
+	Use:   "update-role",
+	Short: "Update a role's display name or description for a given tenant.",
+	RunE:  impl.UpdateRole,
 }
 
 // validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
@@ -384,6 +412,12 @@ func init() {
 	var createGroupName string
 	createGroupCmd.Flags().StringVar(&createGroupName, "name", "", "This is a required parameter. ")
 	createGroupCmd.MarkFlagRequired("name")
+
+	var createGroupDescription string
+	createGroupCmd.Flags().StringVar(&createGroupDescription, "description", "", "A description for a group or role")
+
+	var createGroupDisplayName string
+	createGroupCmd.Flags().StringVar(&createGroupDisplayName, "display-name", "", "Represents a display name for a group or role")
 
 	identityCmd.AddCommand(createIdentityProviderCmd)
 
@@ -484,6 +518,12 @@ func init() {
 	var createRoleName string
 	createRoleCmd.Flags().StringVar(&createRoleName, "name", "", "This is a required parameter. ")
 	createRoleCmd.MarkFlagRequired("name")
+
+	var createRoleDescription string
+	createRoleCmd.Flags().StringVar(&createRoleDescription, "description", "", "A description for a role.")
+
+	var createRoleDisplayName string
+	createRoleCmd.Flags().StringVar(&createRoleDisplayName, "display-name", "", "Represents a display name for a role.")
 
 	identityCmd.AddCommand(deleteGroupCmd)
 
@@ -785,11 +825,29 @@ func init() {
 	removeRolePermissionCmd.Flags().StringVar(&removeRolePermissionRole, "role", "", "This is a required parameter. The role name.")
 	removeRolePermissionCmd.MarkFlagRequired("role")
 
+	identityCmd.AddCommand(resetPasswordCmd)
+
+	var resetPasswordName string
+	resetPasswordCmd.Flags().StringVar(&resetPasswordName, "name", "", "This is a required parameter. ")
+	resetPasswordCmd.MarkFlagRequired("name")
+
 	identityCmd.AddCommand(revokePrincipalAuthTokensCmd)
 
 	var revokePrincipalAuthTokensPrincipal string
 	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(updateGroupCmd)
+
+	var updateGroupGroup string
+	updateGroupCmd.Flags().StringVar(&updateGroupGroup, "group", "", "This is a required parameter. The group name.")
+	updateGroupCmd.MarkFlagRequired("group")
+
+	var updateGroupDescription string
+	updateGroupCmd.Flags().StringVar(&updateGroupDescription, "description", "", "A description for a group or role")
+
+	var updateGroupDisplayName string
+	updateGroupCmd.Flags().StringVar(&updateGroupDisplayName, "display-name", "", "Represents a display name for a group or role")
 
 	identityCmd.AddCommand(updateIdentityProviderCmd)
 
@@ -835,6 +893,22 @@ func init() {
 	var updateIdentityProviderTitle string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderTitle, "title", "", "")
 
+	identityCmd.AddCommand(updatePasswordCmd)
+
+	var updatePasswordPassword string
+	updatePasswordCmd.Flags().StringVar(&updatePasswordPassword, "password", "", "This is a required parameter. ")
+	updatePasswordCmd.MarkFlagRequired("password")
+
+	var updatePasswordPrincipal string
+	updatePasswordCmd.Flags().StringVar(&updatePasswordPrincipal, "principal", "", "This is a required parameter. The principal name.")
+	updatePasswordCmd.MarkFlagRequired("principal")
+
+	var updatePasswordCode string
+	updatePasswordCmd.Flags().StringVar(&updatePasswordCode, "code", "", "")
+
+	var updatePasswordCurrentPassword string
+	updatePasswordCmd.Flags().StringVar(&updatePasswordCurrentPassword, "current-password", "", "")
+
 	identityCmd.AddCommand(updatePrincipalPublicKeyCmd)
 
 	var updatePrincipalPublicKeyKeyId string
@@ -848,6 +922,18 @@ func init() {
 	var updatePrincipalPublicKeyStatus string
 	updatePrincipalPublicKeyCmd.Flags().StringVar(&updatePrincipalPublicKeyStatus, "status", "", "This is a required parameter.  can accept values active, inactive")
 	updatePrincipalPublicKeyCmd.MarkFlagRequired("status")
+
+	identityCmd.AddCommand(updateRoleCmd)
+
+	var updateRoleRole string
+	updateRoleCmd.Flags().StringVar(&updateRoleRole, "role", "", "This is a required parameter. The role name.")
+	updateRoleCmd.MarkFlagRequired("role")
+
+	var updateRoleDescription string
+	updateRoleCmd.Flags().StringVar(&updateRoleDescription, "description", "", "A description for a role")
+
+	var updateRoleDisplayName string
+	updateRoleCmd.Flags().StringVar(&updateRoleDisplayName, "display-name", "", "Represents a display name for a role")
 
 	identityCmd.AddCommand(validateTokenCmd)
 

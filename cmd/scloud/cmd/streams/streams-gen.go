@@ -253,6 +253,13 @@ var reactivatePipelineCmd = &cobra.Command{
 	RunE:  impl.ReactivatePipeline,
 }
 
+// reactivationStatus -- Get pipeline reactivation status
+var reactivationStatusCmd = &cobra.Command{
+	Use:   "reactivation-status",
+	Short: "Get pipeline reactivation status",
+	RunE:  impl.ReactivationStatus,
+}
+
 // startPreview -- Creates a preview session for a pipeline.
 var startPreviewCmd = &cobra.Command{
 	Use:   "start-preview",
@@ -288,6 +295,13 @@ var updateTemplateCmd = &cobra.Command{
 	RunE:  impl.UpdateTemplate,
 }
 
+// upgradePipeline -- Upgrades a pipeline async
+var upgradePipelineCmd = &cobra.Command{
+	Use:   "upgrade-pipeline",
+	Short: "Upgrades a pipeline async",
+	RunE:  impl.UpgradePipeline,
+}
+
 // uploadFile -- Upload new file.
 var uploadFileCmd = &cobra.Command{
 	Use:   "upload-file",
@@ -300,6 +314,13 @@ var uploadLookupFileCmd = &cobra.Command{
 	Use:   "upload-lookup-file",
 	Short: "Upload new lookup file.",
 	RunE:  impl.UploadLookupFile,
+}
+
+// validateConnection -- Validates the configuration of a DSP connection.
+var validateConnectionCmd = &cobra.Command{
+	Use:   "validate-connection",
+	Short: "Validates the configuration of a DSP connection.",
+	RunE:  impl.ValidateConnection,
 }
 
 // validatePipeline -- Verifies whether the Streams JSON is valid.
@@ -351,6 +372,9 @@ func init() {
 	createConnectionCmd.Flags().StringVar(&createConnectionName, "name", "", "This is a required parameter. The name of the connection.")
 	createConnectionCmd.MarkFlagRequired("name")
 
+	var createConnectionSkipValidation string
+	createConnectionCmd.Flags().StringVar(&createConnectionSkipValidation, "skip-validation", "false", "Skip validation")
+
 	streamsCmd.AddCommand(createPipelineCmd)
 
 	var createPipelineName string
@@ -365,6 +389,9 @@ func init() {
 
 	var createPipelineInputDatafile string
 	createPipelineCmd.Flags().StringVar(&createPipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
+
+	var createPipelineLabels string
+	createPipelineCmd.Flags().StringVar(&createPipelineLabels, "labels", "", "Optional labels in associated with the pipeline. A label is represented by a key and a value.")
 
 	streamsCmd.AddCommand(createTemplateCmd)
 
@@ -610,6 +637,9 @@ func init() {
 
 	streamsCmd.AddCommand(listTemplatesCmd)
 
+	var listTemplatesCreateUserId string
+	listTemplatesCmd.Flags().StringVar(&listTemplatesCreateUserId, "create-user-id", "", "createUserId")
+
 	var listTemplatesOffset int32
 	listTemplatesCmd.Flags().Int32Var(&listTemplatesOffset, "offset", 0, "offset")
 
@@ -639,6 +669,9 @@ func init() {
 
 	var patchPipelineInputDatafile string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineInputDatafile, "input-datafile", "", "The input data file that represents the pipeline.")
+
+	var patchPipelineLabels string
+	patchPipelineCmd.Flags().StringVar(&patchPipelineLabels, "labels", "", "Optional labels in associated with the pipeline. A label is represented by a key and a value.")
 
 	var patchPipelineName string
 	patchPipelineCmd.Flags().StringVar(&patchPipelineName, "name", "", "The name of the pipeline.")
@@ -697,6 +730,16 @@ func init() {
 	var reactivatePipelineSkipRestoreState string
 	reactivatePipelineCmd.Flags().StringVar(&reactivatePipelineSkipRestoreState, "skip-restore-state", "false", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
 
+	streamsCmd.AddCommand(reactivationStatusCmd)
+
+	var reactivationStatusId string
+	reactivationStatusCmd.Flags().StringVar(&reactivationStatusId, "id", "", "This is a required parameter. Pipeline ID")
+	reactivationStatusCmd.MarkFlagRequired("id")
+
+	var reactivationStatusUpgradeId string
+	reactivationStatusCmd.Flags().StringVar(&reactivationStatusUpgradeId, "upgrade-id", "", "This is a required parameter. Pipeline Upgrade ID")
+	reactivationStatusCmd.MarkFlagRequired("upgrade-id")
+
 	streamsCmd.AddCommand(startPreviewCmd)
 
 	var startPreviewInputDatafile string
@@ -751,6 +794,9 @@ func init() {
 	var updatePipelineInputDatafile string
 	updatePipelineCmd.Flags().StringVar(&updatePipelineInputDatafile, "input-datafile", "", "This is a required parameter. The input data file that represents the pipeline.")
 
+	var updatePipelineLabels string
+	updatePipelineCmd.Flags().StringVar(&updatePipelineLabels, "labels", "", "Optional labels in associated with the pipeline. A label is represented by a key and a value.")
+
 	streamsCmd.AddCommand(updateTemplateCmd)
 
 	var updateTemplateTemplateId string
@@ -766,6 +812,21 @@ func init() {
 	var updateTemplateName string
 	updateTemplateCmd.Flags().StringVar(&updateTemplateName, "name", "", "Template name")
 
+	streamsCmd.AddCommand(upgradePipelineCmd)
+
+	var upgradePipelineId string
+	upgradePipelineCmd.Flags().StringVar(&upgradePipelineId, "id", "", "This is a required parameter. Pipeline ID")
+	upgradePipelineCmd.MarkFlagRequired("id")
+
+	var upgradePipelineAllowNonRestoredState string
+	upgradePipelineCmd.Flags().StringVar(&upgradePipelineAllowNonRestoredState, "allow-non-restored-state", "false", "Set to true to allow the pipeline to ignore any unused progress states. In some cases, when a data pipeline is changed, the progress state will be stored for functions that no longer exist, so this must be set to reactivate a pipeline in this state. Defaults to false.")
+
+	var upgradePipelineCancelWithSavePoint string
+	upgradePipelineCmd.Flags().StringVar(&upgradePipelineCancelWithSavePoint, "cancel-with-save-point", "false", "Set to true to deactivate a pipeline with a savepoint. Defaults to false.")
+
+	var upgradePipelineSkipRestoreState string
+	upgradePipelineCmd.Flags().StringVar(&upgradePipelineSkipRestoreState, "skip-restore-state", "false", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
+
 	streamsCmd.AddCommand(uploadFileCmd)
 
 	var uploadFileFileName string
@@ -774,7 +835,17 @@ func init() {
 	streamsCmd.AddCommand(uploadLookupFileCmd)
 
 	var uploadLookupFileFileName string
-	uploadLookupFileCmd.Flags().StringVar(&uploadLookupFileFileName, "lookup-file-name", "", "Lookup File to upload.")
+	uploadLookupFileCmd.Flags().StringVar(&uploadLookupFileFileName, "file-name", "", "File to upload.")
+
+	streamsCmd.AddCommand(validateConnectionCmd)
+
+	var validateConnectionConnectorId string
+	validateConnectionCmd.Flags().StringVar(&validateConnectionConnectorId, "connector-id", "", "This is a required parameter. The ID of the parent connector.")
+	validateConnectionCmd.MarkFlagRequired("connector-id")
+
+	var validateConnectionData string
+	validateConnectionCmd.Flags().StringVar(&validateConnectionData, "data", "", "This is a required parameter. The key-value pairs of connection configurations to be validated. Connectors may have some configurations that are required, which all connections must provide values for. For configuration values of type BYTES, the provided values must be Base64 encoded.")
+	validateConnectionCmd.MarkFlagRequired("data")
 
 	streamsCmd.AddCommand(validatePipelineCmd)
 

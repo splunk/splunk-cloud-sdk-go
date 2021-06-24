@@ -43,9 +43,10 @@ type ServicerGenerated interface {
 		CreateConnection - Create a new DSP connection.
 		Parameters:
 			connectionRequest: Request JSON
+			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateConnection(connectionRequest ConnectionRequest, resp ...*http.Response) (*ConnectionSaveResponse, error)
+	CreateConnection(connectionRequest ConnectionRequest, query *CreateConnectionQueryParams, resp ...*http.Response) (*ConnectionSaveResponse, error)
 	/*
 		CreatePipeline - Creates a pipeline.
 		Parameters:
@@ -276,6 +277,14 @@ type ServicerGenerated interface {
 	*/
 	ReactivatePipeline(id string, reactivatePipelineRequest ReactivatePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponse, error)
 	/*
+		ReactivationStatus - Get pipeline reactivation status
+		Parameters:
+			id: Pipeline ID
+			upgradeId: Pipeline Upgrade ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ReactivationStatus(id string, upgradeId string, resp ...*http.Response) (*PipelineReactivationStatus, error)
+	/*
 		StartPreview - Creates a preview session for a pipeline.
 		Parameters:
 			previewSessionStartRequest: Parameters to start a new Preview session
@@ -314,6 +323,14 @@ type ServicerGenerated interface {
 	*/
 	UpdateTemplate(templateId string, templatePatchRequest TemplatePatchRequest, resp ...*http.Response) (*TemplateResponse, error)
 	/*
+		UpgradePipeline - Upgrades a pipeline async
+		Parameters:
+			id: Pipeline ID
+			upgradePipelineRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpgradePipeline(id string, upgradePipelineRequest UpgradePipelineRequest, resp ...*http.Response) (*PipelineReactivateResponseAsync, error)
+	/*
 	   UploadFile - Upload new file.
 	   Parameters:
 	       filename
@@ -327,6 +344,13 @@ type ServicerGenerated interface {
 	       resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UploadLookupFile(filename string, resp ...*http.Response) error
+	/*
+		ValidateConnection - Validates the configuration of a DSP connection.
+		Parameters:
+			validateConnectionRequest: Request JSON
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ValidateConnection(validateConnectionRequest ValidateConnectionRequest, resp ...*http.Response) error
 	/*
 		ValidatePipeline - Verifies whether the Streams JSON is valid.
 		Parameters:

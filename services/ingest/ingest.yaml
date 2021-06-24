@@ -34,6 +34,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: The operation is unauthorized.
+    hecAckResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectorAckResponse'
+      description: The Acks were returned successfully.
     hecBadRequestError:
       content:
         application/json:
@@ -58,6 +64,12 @@ components:
         The operation is unauthorized.
 
         Possible causes are the provided token is invalid or disabled.
+    hecHealthyResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HECResponse'
+      description: HEC collector endpoint is healthy.
     hecInternalError:
       content:
         application/json:
@@ -96,6 +108,12 @@ components:
               $ref: '#/components/schemas/HECTokenAccessResponse'
             type: array
       description: The list of dsphec token metadata was returned successfully.
+    hecTokenSyncSuccessResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TokenSyncResponse'
+      description: The tokens were synced successfully.
     hecUnauthorizedError:
       content:
         application/json:
@@ -154,6 +172,17 @@ components:
             $ref: '#/components/schemas/Error'
       description: Unprocessable entity in request.
   schemas:
+    CollectorAckResponse:
+      description: POST /collector/ack
+      properties:
+        acks:
+          additionalProperties:
+            type: boolean
+          type: object
+          x-go-name: Acks
+      title: 'CollectorAckResponse defines the response body returned from the HTTP
+        Event Collector ack endpoint:'
+      type: object
     Error:
       properties:
         code:
@@ -221,6 +250,10 @@ components:
       type: object
     HECResponse:
       properties:
+        ackId:
+          format: int64
+          type: integer
+          x-go-name: AckID
         code:
           description: code defines the status of the response. For a complete list
             of the possible error codes, see https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/TroubleshootHTTPEventCollector#Possible_error_codes
@@ -616,6 +649,7 @@ components:
         Event Collector token update endpoint:'
       type: object
     HTTPResponse:
+      description: HTTPResponse implements the Error interface
       properties:
         code:
           type: string
@@ -723,6 +757,113 @@ components:
       required:
       - body
       type: object
+    TokenSyncRequest:
+      description: POST /collector/tokens/sync
+      properties:
+        allowQueryStringAuth:
+          description: |-
+            true if this token is allowed to be passed as a query parameter to event ingest endpoints
+
+            type: *bool
+          type: boolean
+          x-go-name: AllowQueryStringAuth
+        description:
+          description: |-
+            description is an optional description of the token.
+
+            type: *string
+          type: string
+          x-go-name: Description
+        disabled:
+          description: |-
+            true if the token is disabled
+
+            type: *bool
+          type: boolean
+          x-go-name: Disabled
+        index:
+          description: |-
+            index is the default value of the index field for records collected using this token.
+
+            type: string
+          type: string
+          x-go-name: Index
+        indexes:
+          description: |-
+            a list of index names that this token has access to
+
+            type: []string
+          items:
+            type: string
+          type: array
+          x-go-name: Indexes
+        name:
+          description: |-
+            name is the name of the token (unique within the tenant that it belongs to).
+
+            type: string
+          type: string
+          x-go-name: Name
+        source:
+          description: |-
+            source is the default value of the source field for records collected using this token
+
+            type: *string
+          type: string
+          x-go-name: Source
+        sourcetype:
+          description: |-
+            sourcetype is the default value of the sourcetype field for records collected using this token
+
+            type: *string
+          type: string
+          x-go-name: Sourcetype
+        tokenValue:
+          description: |-
+            the value of the token. This will be hashed then stored in DSP
+
+            type: string
+          type: string
+          x-go-name: TokenValue
+        useAck:
+          description: |-
+            true if indexer acknowledgement is enabled for this token
+
+            type: bool
+          type: boolean
+          x-go-name: UseAck
+      required:
+      - index
+      - name
+      - tokenValue
+      - useAck
+      title: 'TokenSyncRequest defines the request body accepted by the HTTP Event
+        Collector tokens sync endpoint:'
+      type: object
+    TokenSyncResponse:
+      properties:
+        NumTokensDeleted:
+          description: |-
+            the number of tokens deleted from store
+
+            type: integer
+          format: int64
+          type: integer
+        NumTokensInStore:
+          description: |-
+            the total number of tokens in store
+
+            type: integer
+          format: int64
+          type: integer
+        NumTokensUpserted:
+          description: |-
+            the number of tokens upserted to store
+
+            type: integer
+          format: int64
+          type: integer
+      type: object
     UploadSuccessResponse:
       properties:
         code:
@@ -738,7 +879,7 @@ info:
   description: Use the Ingest service in Splunk Cloud Services to send event and metrics
     data, or upload a static file, to Splunk Cloud Services.
   title: Ingest API
-  version: v1beta2.17
+  version: v1beta2.32
 openapi: 3.0.0
 paths:
   /{tenant}/ingest/v1beta2/collector/tokens:
@@ -782,7 +923,6 @@ paths:
         name: tenant
         required: true
         schema:
-          pattern: '''[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*"'''
           type: string
         x-go-name: Tenant
       - in: query
@@ -808,8 +948,6 @@ paths:
           $ref: '#/components/responses/forbiddenError'
         "500":
           $ref: '#/components/responses/internalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
         default:
           $ref: '#/components/responses/internalError'
       summary: List dsphec tokens for a tenant.
@@ -854,8 +992,6 @@ paths:
           $ref: '#/components/responses/resourceConflictError'
         "500":
           $ref: '#/components/responses/internalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
         default:
           $ref: '#/components/responses/internalError'
       summary: Creates dsphec tokens.
@@ -899,8 +1035,6 @@ paths:
           $ref: '#/components/responses/forbiddenError'
         "500":
           $ref: '#/components/responses/internalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
         default:
           $ref: '#/components/responses/internalError'
       summary: Delete dsphec token by name.
@@ -934,8 +1068,6 @@ paths:
           $ref: '#/components/responses/notFoundError'
         "500":
           $ref: '#/components/responses/internalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
         default:
           $ref: '#/components/responses/internalError'
       summary: Get the metadata of a dsphec token by name.
@@ -985,8 +1117,6 @@ paths:
           $ref: '#/components/responses/notFoundError'
         "500":
           $ref: '#/components/responses/internalError'
-        "503":
-          $ref: '#/components/responses/serverBusyError'
         default:
           $ref: '#/components/responses/internalError'
       summary: Update the metadata of a dsphec token by name.
@@ -1139,4 +1269,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 3e10ab186559df6d0a5211cf734514cd53d79779 path: ingest/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: ingest/v1beta2/openapi.yaml

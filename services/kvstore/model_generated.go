@@ -51,11 +51,6 @@ type IndexFieldDefinition struct {
 	Field string `json:"field"`
 }
 
-type Key struct {
-	// Key of the inserted document.
-	Key string `json:"_key"`
-}
-
 type PingResponse struct {
 	// Database status.
 	Status PingResponseStatus `json:"status"`
@@ -72,3 +67,10 @@ const (
 	PingResponseStatusUnhealthy PingResponseStatus = "unhealthy"
 	PingResponseStatusUnknown   PingResponseStatus = "unknown"
 )
+
+type Record struct {
+	// Key of the resulting record.
+	Key string `json:"_key"`
+	// User of the resulting record.
+	User string `json:"_user"`
+}
