@@ -1,5 +1,44 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.4
+#### Breaking Changes
+* Ingest Service (v1beta2):
+    - Model `HECResponse` and `InlineObject` have been removed
+
+* KVStore Service (v1beta1):
+    - Model `Key` renamed to `Record` and has an additional required field `User`
+    - Endpoints `InsertRecord` and `PutRecord` have returnType Record (earlier it was `Key`)
+
+#### Non-Breaking Changes
+* Identity Service (v3):
+    - Models `ResetPasswordBody`, `UpdateGroupBody`, `UpdatePasswordBody` and `UpdateRoleBody` have been added
+    - Endpoints `ResetPassword`, `UpdatePassword`, `UpdateGroup` and `UpdateRole` have been added
+    - Parameters `Description` and `DisplayName` have been added to models `CreateGroupBody`, `CreateRoleBody`, `Role`, and `Group`.
+
+* Streams Service (v3beta1):
+    - Models `PipelineReactivateResponseAsync`, `PipelineReactivationStatus`, `UpgradePipelineRequest` and `ValidateConnectionRequest` have been added. 
+    - Parameter `SkipValidation` has been added to `CreateConnection` endpoint
+    - Parameter `CreateUserId` has been added to `ListTemplates` endpoint
+    - Endpoints `ReactivationStatus`, `ValidateConnection`, and `UpgradePipeline` have been added
+    - Parameter `Metadata`  has been added to `ConnectorResponse`
+    - Parameter `Labels` has been added to `PipelinePatchRequest`, `PipelineRequest` and `PipelineResponse` models
+    - Parameter `UberJarSha256` has been added to `PipelineResponse` model
+    - `ACTIVATING` and `DEACTIVATING` added to model `PipelineResponse` status enum
+    - Model `Source` has changed with properties `Node` and `PipelineVersion` deleted and 18 new properties added
+    - Parameter `LearnMoreLocation` has been added to model `TemplateResponse` 
+
+## SCloud v8.0.0-beta.4
+
+#### Non-Breaking Changes
+* Identity command: 
+    - New commands `reset-password`, `update-group`, `update-password` and `update-role` were added 
+    - New flags `description` and `display-name` added for `create-group`, `create-role`, `update-group` and `update-role` commands
+* Streams command: 
+    - New commands `reactivation-status`, `upgrade-pipeline` and `validate-connection` were added
+    - New flag `skip-validation` added for `create-connection` command
+    - New flag `labels` added for `create-pipeline`, `patch-pipeline` and `update-pipeline` commands
+    - New flag `create-user-id` added for `list-templates` command
+
 ## Version 1.12.0-beta.3
 
 #### Non-Breaking Changes
