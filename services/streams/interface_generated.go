@@ -105,6 +105,13 @@ type ServicerGenerated interface {
 	*/
 	DeletePipeline(id string, resp ...*http.Response) error
 	/*
+		DeleteSource - Delete a source.
+		Parameters:
+			id: Source ID
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteSource(id string, resp ...*http.Response) error
+	/*
 		DeleteTemplate - Removes a template with a specific ID.
 		Parameters:
 			templateId: Template ID

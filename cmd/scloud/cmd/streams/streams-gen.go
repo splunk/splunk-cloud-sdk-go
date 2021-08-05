@@ -85,6 +85,13 @@ var deletePipelineCmd = &cobra.Command{
 	RunE:  impl.DeletePipeline,
 }
 
+// deleteSource -- Delete a source.
+var deleteSourceCmd = &cobra.Command{
+	Use:   "delete-source",
+	Short: "Delete a source.",
+	RunE:  impl.DeleteSource,
+}
+
 // deleteTemplate -- Removes a template with a specific ID.
 var deleteTemplateCmd = &cobra.Command{
 	Use:   "delete-template",
@@ -445,6 +452,12 @@ func init() {
 	deletePipelineCmd.Flags().StringVar(&deletePipelineId, "id", "", "This is a required parameter. Pipeline ID")
 	deletePipelineCmd.MarkFlagRequired("id")
 
+	streamsCmd.AddCommand(deleteSourceCmd)
+
+	var deleteSourceId string
+	deleteSourceCmd.Flags().StringVar(&deleteSourceId, "id", "", "This is a required parameter. Source ID")
+	deleteSourceCmd.MarkFlagRequired("id")
+
 	streamsCmd.AddCommand(deleteTemplateCmd)
 
 	var deleteTemplateTemplateId string
@@ -619,6 +632,9 @@ func init() {
 
 	var listPipelinesIncludeData string
 	listPipelinesCmd.Flags().StringVar(&listPipelinesIncludeData, "include-data", "false", "includeData")
+
+	var listPipelinesIncludeStatus string
+	listPipelinesCmd.Flags().StringVar(&listPipelinesIncludeStatus, "include-status", "true", "includeStatus")
 
 	var listPipelinesName string
 	listPipelinesCmd.Flags().StringVar(&listPipelinesName, "name", "", "name")

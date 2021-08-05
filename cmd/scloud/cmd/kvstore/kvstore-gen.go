@@ -140,6 +140,9 @@ func init() {
 	deleteRecordsCmd.Flags().StringVar(&deleteRecordsCollection, "collection", "", "This is a required parameter. The name of the collection.")
 	deleteRecordsCmd.MarkFlagRequired("collection")
 
+	var deleteRecordsEnableMvl string
+	deleteRecordsCmd.Flags().StringVar(&deleteRecordsEnableMvl, "enable-mvl", "false", "Determines if the query needs to include results in multi valued fields")
+
 	var deleteRecordsQuery string
 	deleteRecordsCmd.Flags().StringVar(&deleteRecordsQuery, "query", "", "Query JSON expression.")
 
@@ -228,6 +231,9 @@ func init() {
 	var queryRecordsCount int32
 	queryRecordsCmd.Flags().Int32Var(&queryRecordsCount, "count", 0, "Maximum number of records to return.")
 
+	var queryRecordsEnableMvl string
+	queryRecordsCmd.Flags().StringVar(&queryRecordsEnableMvl, "enable-mvl", "false", "Determines if the query needs to include results in multi valued fields")
+
 	var queryRecordsFields []string
 	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
 
@@ -239,6 +245,9 @@ func init() {
 
 	var queryRecordsQuery string
 	queryRecordsCmd.Flags().StringVar(&queryRecordsQuery, "query", "", "Query JSON expression.")
+
+	var queryRecordsShared string
+	queryRecordsCmd.Flags().StringVar(&queryRecordsShared, "shared", "false", "Indicates whether to return records only for the user specified in the Splunk-User-Id header or for the default user as well. Only valid if Splunk-User-Id is specified")
 
 	kvstoreCmd.AddCommand(truncateRecordsCmd)
 

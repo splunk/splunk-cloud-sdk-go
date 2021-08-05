@@ -223,9 +223,10 @@ type PipelineEdge struct {
 }
 
 type PipelineJobStatus struct {
-	JobId      *string `json:"jobId,omitempty"`
-	JobStatus  *string `json:"jobStatus,omitempty"`
-	PipelineId *string `json:"pipelineId,omitempty"`
+	JobId      *string           `json:"jobId,omitempty"`
+	JobStatus  *string           `json:"jobStatus,omitempty"`
+	PipelineId *string           `json:"pipelineId,omitempty"`
+	TaskStatus map[string]string `json:"taskStatus,omitempty"`
 }
 
 type PipelineMigrationInfo struct {
