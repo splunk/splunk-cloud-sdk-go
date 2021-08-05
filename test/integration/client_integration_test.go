@@ -120,8 +120,6 @@ func (rh *rHandlerErr) HandleResponse(client *services.BaseClient, request *serv
 	return nil, fmt.Errorf(rHandlerErrMsg)
 }
 
-// This is the legacy client initialization
-// Deprecated: please use sdk.NewClient()
 func TestClientMultipleResponseHandlers(t *testing.T) {
 	var handler1 = &noOpHandler{}
 	var handler2 = &rHandlerErr{}
