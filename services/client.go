@@ -97,22 +97,6 @@ type Request struct {
 	NumErrorsByType map[string]uint
 }
 
-//ConfigurableRetryConfig that will accept a user configurable RetryNumber and Interval between retries
-type ConfigurableRetryConfig struct {
-	RetryNum uint
-	Interval int
-}
-
-//DefaultRetryConfig that will use a default RetryNumber and a default Interval between retries
-type DefaultRetryConfig struct {
-}
-
-//RetryStrategyConfig to be specified while creating a NewClient
-type RetryStrategyConfig struct {
-	DefaultRetryConfig      *DefaultRetryConfig
-	ConfigurableRetryConfig *ConfigurableRetryConfig
-}
-
 // GetNumErrorsByResponseCode returns number of attempts for a given response code >= 400
 func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 	code := fmt.Sprintf("%d", respCode)
@@ -120,6 +104,16 @@ func (r *Request) GetNumErrorsByResponseCode(respCode int) uint {
 		return val
 	}
 	return 0
+}
+
+// Increment the number of recorded errors for any previous request attempts, this is used
+// for retrying requests
+func (r *Request) IncrementErrorsByType(errType string) {
+	if _, ok := r.NumErrorsByType[errType]; ok {
+		r.NumErrorsByType[errType]++
+	} else {
+		r.NumErrorsByType[errType] = 1
+	}
 }
 
 // UpdateToken replaces the access token in the `Authorization: Bearer` header
@@ -145,11 +139,13 @@ type Config struct {
 	Scheme string
 	// Timeout is the (optional) default request-level timeout to use, 5 seconds by default
 	Timeout time.Duration
-	// ResponseHandlers is an (optional) slice of handlers to call after a response has been received in the client
+	// ResponseHandlers is an (optional) slice of handlers to call after a response has been
+	// received in the client - handlers can optionally implement the ResponseOrErrorHandler
+	// interface as well for handling request errors as well as responses
 	ResponseHandlers []ResponseHandler
-	//RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 429 TooManyRequests Error
+	// RetryRequests Knob that will turn on and off retrying incoming service requests when they result in the service returning a 429 TooManyRequests Error or a connection reset error
 	RetryRequests bool
-	//RetryStrategyConfig
+	// RetryStrategyConfig
 	RetryConfig RetryStrategyConfig
 	// RoundTripper
 	RoundTripper http.RoundTripper
@@ -157,9 +153,9 @@ type Config struct {
 	TokenExpireWindow time.Duration
 	// ClientVersion contains the client name and its current version in string format
 	ClientVersion string
-	//TenantScoped is bool True if the hostnames are scoped to a specific tenant/region
+	// TenantScoped is bool True if the hostnames are scoped to a specific tenant/region
 	TenantScoped bool
-	//Region is the name of the region that the tenant is contained in
+	// Region is the name of the region that the tenant is contained in
 	Region string
 }
 
@@ -284,24 +280,37 @@ func (c *BaseClient) BuildURLFromPathParams(queryValues url.Values, serviceClust
 func (c *BaseClient) Do(req *Request) (*http.Response, error) {
 	req.NumAttempts++
 	response, err := c.httpClient.Do(req.Request)
-	if err != nil {
-		return nil, err
+	if len(c.responseHandlers) == 0 {
+		// Return immediately if no error/response handling provided
+		return response, err
 	}
-	// If error response found, record number of errors by response code
-	if response.StatusCode >= 400 {
+	// If >= 400 status response found, record number of errors by response code
+	if err == nil && response.StatusCode >= 400 {
 		// TODO: This could be extended to include specific Splunk Cloud error fields in
 		// addition to response code
 		code := fmt.Sprintf("%d", response.StatusCode)
-		if _, ok := req.NumErrorsByType[code]; ok {
-			req.NumErrorsByType[code]++
-		} else {
-			req.NumErrorsByType[code] = 1
-		}
+		req.IncrementErrorsByType(code)
 	}
 	for _, hr := range c.responseHandlers {
-		response, err = hr.HandleResponse(c, req, response)
-		if err != nil {
-			return response, err
+		if err != nil { // handle request error
+			// Loop over error handlers if/when no errors are returned, break at that point
+			// Any error handlers that call c.Do as part of retry will have responses handled
+			// by the response handlers below before returning
+			if her, ok := hr.(ResponseOrErrorHandler); ok {
+				response, err = her.HandleRequestError(c, req, err)
+			}
+			if err == nil {
+				return response, err
+			}
+		} else { // handle response
+			// Loop over response handlers unless err is found, return error if so
+			// Note that response handlers that call c.Do() as part of retry
+			// will have errors handled by HandleRequestError implementations above
+			// before returning here
+			response, err = hr.HandleResponse(c, req, response)
+			if err != nil {
+				return response, err
+			}
 		}
 	}
 	return response, err
@@ -513,7 +522,7 @@ func NewClient(config *Config) (*BaseClient, error) {
 			defaultStrategyHandler := DefaultRetryResponseHandler{DefaultRetryConfig{}}
 			handlers = append([]ResponseHandler{ResponseHandler(defaultStrategyHandler)}, config.ResponseHandlers...)
 		} else {
-			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval}}
+			configStrategyHandler := ConfigurableRetryResponseHandler{ConfigurableRetryConfig{config.RetryConfig.ConfigurableRetryConfig.RetryNum, config.RetryConfig.ConfigurableRetryConfig.Interval, config.RetryConfig.ConfigurableRetryConfig.ShouldRetryFn}}
 			handlers = append([]ResponseHandler{ResponseHandler(configStrategyHandler)}, config.ResponseHandlers...)
 		}
 	}

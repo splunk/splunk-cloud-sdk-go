@@ -21,8 +21,6 @@ debug
 *.iml
 .vscode/
 
-# codeship encrypted files, used by codecov
-codeship.aes
 vendor
 .vendor-new
 *.env
@@ -41,8 +39,3 @@ docs/
 bin
 default.yaml
 cmd/scloud/cmd/scloud/version/version.go
-
-# TODO: remove python testing for scloud
-*.pyc
-venv
-.python-version
