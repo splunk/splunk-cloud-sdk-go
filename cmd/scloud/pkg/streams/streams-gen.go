@@ -465,6 +465,32 @@ func DeletePipeline(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// DeleteSource Delete a source.
+func DeleteSource(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var id string
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.StreamsService.DeleteSource(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // DeleteTemplate Removes a template with a specific ID.
 func DeleteTemplate(cmd *cobra.Command, args []string) error {
 
@@ -1132,6 +1158,12 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "include-data": ` + err.Error())
 	}
+	var includeStatusDefault bool
+	includeStatus := &includeStatusDefault
+	err = flags.ParseFlag(cmd.Flags(), "include-status", &includeStatus)
+	if err != nil {
+		return fmt.Errorf(`error parsing "include-status": ` + err.Error())
+	}
 	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
@@ -1164,6 +1196,7 @@ func ListPipelines(cmd *cobra.Command, args []string) error {
 	generated_query.Activated = activated
 	generated_query.CreateUserId = createUserId
 	generated_query.IncludeData = includeData
+	generated_query.IncludeStatus = includeStatus
 	generated_query.Name = name
 	generated_query.Offset = offset
 	generated_query.PageSize = pageSize

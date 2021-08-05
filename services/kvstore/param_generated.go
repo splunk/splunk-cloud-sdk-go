@@ -25,10 +25,17 @@ package kvstore
 
 // DeleteRecordsQueryParams represents valid query parameters for the DeleteRecords operation
 // For convenience DeleteRecordsQueryParams can be formed in a single statement, for example:
-//     `v := DeleteRecordsQueryParams{}.SetQuery(...)`
+//     `v := DeleteRecordsQueryParams{}.SetEnableMvl(...).SetQuery(...)`
 type DeleteRecordsQueryParams struct {
+	// EnableMvl : Determines if the query needs to include results in multi valued fields
+	EnableMvl *bool `key:"enable_mvl"`
 	// Query : Query JSON expression.
 	Query string `key:"query"`
+}
+
+func (q DeleteRecordsQueryParams) SetEnableMvl(v bool) DeleteRecordsQueryParams {
+	q.EnableMvl = &v
+	return q
 }
 
 func (q DeleteRecordsQueryParams) SetQuery(v string) DeleteRecordsQueryParams {
@@ -91,10 +98,12 @@ func (q ListRecordsQueryParams) SetOrderby(v []string) ListRecordsQueryParams {
 
 // QueryRecordsQueryParams represents valid query parameters for the QueryRecords operation
 // For convenience QueryRecordsQueryParams can be formed in a single statement, for example:
-//     `v := QueryRecordsQueryParams{}.SetCount(...).SetFields(...).SetOffset(...).SetOrderby(...).SetQuery(...)`
+//     `v := QueryRecordsQueryParams{}.SetCount(...).SetEnableMvl(...).SetFields(...).SetOffset(...).SetOrderby(...).SetQuery(...).SetShared(...)`
 type QueryRecordsQueryParams struct {
 	// Count : Maximum number of records to return.
 	Count *int32 `key:"count"`
+	// EnableMvl : Determines if the query needs to include results in multi valued fields
+	EnableMvl *bool `key:"enable_mvl"`
 	// Fields : Comma-separated list of fields to include or exclude.
 	Fields []string `key:"fields"`
 	// Offset : Number of records to skip from the start.
@@ -103,10 +112,17 @@ type QueryRecordsQueryParams struct {
 	Orderby []string `key:"orderby"`
 	// Query : Query JSON expression.
 	Query string `key:"query"`
+	// Shared : Indicates whether to return records only for the user specified in the Splunk-User-Id header or for the default user as well. Only valid if Splunk-User-Id is specified
+	Shared *bool `key:"shared"`
 }
 
 func (q QueryRecordsQueryParams) SetCount(v int32) QueryRecordsQueryParams {
 	q.Count = &v
+	return q
+}
+
+func (q QueryRecordsQueryParams) SetEnableMvl(v bool) QueryRecordsQueryParams {
+	q.EnableMvl = &v
 	return q
 }
 
@@ -127,5 +143,10 @@ func (q QueryRecordsQueryParams) SetOrderby(v []string) QueryRecordsQueryParams 
 
 func (q QueryRecordsQueryParams) SetQuery(v string) QueryRecordsQueryParams {
 	q.Query = v
+	return q
+}
+
+func (q QueryRecordsQueryParams) SetShared(v bool) QueryRecordsQueryParams {
+	q.Shared = &v
 	return q
 }

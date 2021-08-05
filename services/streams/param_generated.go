@@ -219,7 +219,7 @@ func (q ListConnectionsQueryParams) SetSortField(v string) ListConnectionsQueryP
 
 // ListPipelinesQueryParams represents valid query parameters for the ListPipelines operation
 // For convenience ListPipelinesQueryParams can be formed in a single statement, for example:
-//     `v := ListPipelinesQueryParams{}.SetActivated(...).SetCreateUserId(...).SetIncludeData(...).SetName(...).SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
+//     `v := ListPipelinesQueryParams{}.SetActivated(...).SetCreateUserId(...).SetIncludeData(...).SetIncludeStatus(...).SetName(...).SetOffset(...).SetPageSize(...).SetSortDir(...).SetSortField(...)`
 type ListPipelinesQueryParams struct {
 	// Activated : activated
 	Activated *bool `key:"activated"`
@@ -227,6 +227,8 @@ type ListPipelinesQueryParams struct {
 	CreateUserId string `key:"createUserId"`
 	// IncludeData : includeData
 	IncludeData *bool `key:"includeData"`
+	// IncludeStatus : includeStatus
+	IncludeStatus *bool `key:"includeStatus"`
 	// Name : name
 	Name string `key:"name"`
 	// Offset : offset
@@ -251,6 +253,11 @@ func (q ListPipelinesQueryParams) SetCreateUserId(v string) ListPipelinesQueryPa
 
 func (q ListPipelinesQueryParams) SetIncludeData(v bool) ListPipelinesQueryParams {
 	q.IncludeData = &v
+	return q
+}
+
+func (q ListPipelinesQueryParams) SetIncludeStatus(v bool) ListPipelinesQueryParams {
+	q.IncludeStatus = &v
 	return q
 }
 

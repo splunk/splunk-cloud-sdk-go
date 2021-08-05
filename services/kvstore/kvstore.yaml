@@ -68,6 +68,15 @@ components:
       required: true
       schema:
         type: string
+    MVLEnableParam:
+      description: Determines if the query needs to include results in multi valued
+        fields
+      in: query
+      name: enable_mvl
+      required: false
+      schema:
+        default: false
+        type: boolean
     OffsetParam:
       description: Number of records to skip from the start.
       in: query
@@ -99,6 +108,15 @@ components:
       required: false
       schema:
         type: string
+    SharedParam:
+      description: Indicates whether to return records only for the user specified
+        in the Splunk-User-Id header or for the default user as well. Only valid if
+        Splunk-User-Id is specified
+      in: query
+      name: shared
+      required: false
+      schema:
+        type: boolean
     TenantParam:
       description: The tenant id.
       in: path
@@ -241,6 +259,9 @@ components:
         size:
           description: Size in bytes of collection, not including indexes.
           type: integer
+        storageSize:
+          description: Size in bytes of collection, not including indexes.
+          type: integer
         totalIndexSize:
           description: Total size of indexes.
           type: integer
@@ -248,6 +269,7 @@ components:
       - collection
       - count
       - size
+      - storageSize
       - lastModifiedTime
       - nindexes
       - totalIndexSize
@@ -708,6 +730,7 @@ paths:
       - $ref: '#/components/parameters/CountParam'
       - $ref: '#/components/parameters/OffsetParam'
       - $ref: '#/components/parameters/OrderByParam'
+      - $ref: '#/components/parameters/SharedParam'
       responses:
         "200":
           content:
@@ -746,6 +769,7 @@ paths:
     - $ref: '#/components/parameters/CollectionParam'
     - $ref: '#/components/parameters/QueryParam'
     - $ref: '#/components/parameters/UserHeaderParam'
+    - $ref: '#/components/parameters/MVLEnableParam'
   /{tenant}/kvstore/v1beta1/collections/{collection}/records/{key}:
     delete:
       operationId: deleteRecordByKey
@@ -906,4 +930,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: kvstore/v1beta1/openapi.yaml

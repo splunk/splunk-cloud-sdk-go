@@ -380,6 +380,11 @@ components:
         principal:
           nullable: true
           type: string
+        redirectUris:
+          items:
+            type: string
+          nullable: true
+          type: array
         tenant:
           nullable: true
           type: string
@@ -460,6 +465,13 @@ components:
           minLength: 2
           type: string
           x-case-insensitive: true
+        redirectUris:
+          items:
+            maxItems: 100
+            maxLength: 256
+            minLength: 8
+            type: string
+          type: array
       required:
       - name
       - principal
@@ -1733,6 +1745,16 @@ components:
           description: Must be Bearer type
           type: string
       type: object
+    UpdateAppBody:
+      properties:
+        redirectUris:
+          items:
+            maxItems: 100
+            maxLength: 256
+            minLength: 8
+            type: string
+          type: array
+      type: object
     UpdateGroupBody:
       properties:
         description:
@@ -1878,7 +1900,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v3.3
+  version: v3.4
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v3/groups:
@@ -3078,4 +3100,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: identity/v3/openapi.yaml
+# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: identity/v3/openapi.yaml

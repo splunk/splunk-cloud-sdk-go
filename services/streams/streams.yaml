@@ -658,6 +658,10 @@ components:
           type: string
         pipelineId:
           type: string
+        taskStatus:
+          additionalProperties:
+            type: string
+          type: object
       type: object
     PipelineMigrationInfo:
       description: ""
@@ -2782,6 +2786,12 @@ paths:
         schema:
           default: false
           type: boolean
+      - description: includeStatus
+        in: query
+        name: includeStatus
+        schema:
+          default: true
+          type: boolean
       responses:
         "200":
           content:
@@ -4681,6 +4691,79 @@ paths:
       tags:
       - preview
       x-authz-scope: streams.pipelines.preview
+  /{tenantId}/streams/v3beta1/sources/{id}:
+    delete:
+      deprecated: false
+      operationId: deleteSource
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: tenantId
+        required: true
+        schema:
+          type: string
+      - description: Source ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          content: {}
+          description: The source was deleted successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request isn't well-formed or is incorrect.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The user isn?t authenticated.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The operation isn?t authorized.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The source did not exist or was deleted by a preceding request.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: There is a conflict with the existing state of your resource.
+        "415":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The media type isn't supported.
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The provided fields aren't valid
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: An internal service error has occurred.
+      summary: Delete a source.
+      tags:
+      - sources
+      x-authz-scope: streams.sources.delete
   /{tenantId}/streams/v3beta1/templates:
     get:
       deprecated: false
@@ -5210,4 +5293,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 17cef8cca256319b596db67514c7277b1576baf5 path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: streams/v3beta1/openapi.yaml

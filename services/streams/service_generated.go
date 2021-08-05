@@ -364,6 +364,34 @@ func (s *Service) DeletePipeline(id string, resp ...*http.Response) error {
 }
 
 /*
+	DeleteSource - Delete a source.
+	Parameters:
+		id: Source ID
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteSource(id string, resp ...*http.Response) error {
+	pp := struct {
+		Id string
+	}{
+		Id: id,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/streams/v3beta1/sources/{{.Id}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
 	DeleteTemplate - Removes a template with a specific ID.
 	Parameters:
 		templateId: Template ID

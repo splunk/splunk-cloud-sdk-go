@@ -131,6 +131,12 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "collection": ` + err.Error())
 	}
+	var enable_mvlDefault bool
+	enable_mvl := &enable_mvlDefault
+	err = flags.ParseFlag(cmd.Flags(), "enable-mvl", &enable_mvl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enable-mvl": ` + err.Error())
+	}
 	var query string
 	err = flags.ParseFlag(cmd.Flags(), "query", &query)
 	if err != nil {
@@ -138,6 +144,7 @@ func DeleteRecords(cmd *cobra.Command, args []string) error {
 	}
 	// Form query params
 	generated_query := model.DeleteRecordsQueryParams{}
+	generated_query.EnableMvl = enable_mvl
 	generated_query.Query = query
 
 	// Silence Usage
@@ -414,6 +421,12 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
+	var enable_mvlDefault bool
+	enable_mvl := &enable_mvlDefault
+	err = flags.ParseFlag(cmd.Flags(), "enable-mvl", &enable_mvl)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enable-mvl": ` + err.Error())
+	}
 	var fields []string
 	err = flags.ParseFlag(cmd.Flags(), "fields", &fields)
 	if err != nil {
@@ -435,13 +448,21 @@ func QueryRecords(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "query": ` + err.Error())
 	}
+	var sharedDefault bool
+	shared := &sharedDefault
+	err = flags.ParseFlag(cmd.Flags(), "shared", &shared)
+	if err != nil {
+		return fmt.Errorf(`error parsing "shared": ` + err.Error())
+	}
 	// Form query params
 	generated_query := model.QueryRecordsQueryParams{}
 	generated_query.Count = count
+	generated_query.EnableMvl = enable_mvl
 	generated_query.Fields = fields
 	generated_query.Offset = offset
 	generated_query.Orderby = orderby
 	generated_query.Query = query
+	generated_query.Shared = shared
 
 	// Silence Usage
 	cmd.SilenceUsage = true
