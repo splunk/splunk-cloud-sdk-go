@@ -70,7 +70,8 @@ git fetch --all && git pull --all
 # Tag master branch in Gitlab
 ####################################################################################################
 echo "Running git tag/push for v${NEW_VERSION} on ${BRANCH_NAME} ..."
-git tag -a -s "v${NEW_VERSION}" -m "${RELEASE_NOTES}"
+#git tag -a -s "v${NEW_VERSION}" -m "${RELEASE_NOTES}"
+git tag -a "v${NEW_VERSION}" -m "${RELEASE_NOTES}"
 git push origin "v${NEW_VERSION}"
 SPLUNK_SHA=$(git rev-parse HEAD)
 
