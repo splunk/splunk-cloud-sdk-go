@@ -2,7 +2,17 @@
 
 ## Version 1.12.0-beta.5
 
-Merge branch 'develop' into regenerate-2021-08-05.11.38.33
+
+#### Non-Breaking Changes 
+
+* KVstore service :  `DeleteRecordsQueryParams` struct has added a new  parameter of `EnableMvl` 
+
+
+* Streams service: new api of `DeleteSource()` is added
+
+#### Features
+* Add connection timeouts to default retry functionality in GO sdk client
+
 
 ## Version 1.12.0-beta.4
 #### Breaking Changes
