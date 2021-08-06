@@ -1,5 +1,9 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.5
+
+Merge branch 'develop' into regenerate-2021-08-05.11.38.33
+
 ## Version 1.12.0-beta.4
 #### Breaking Changes
 * Ingest Service (v1beta2):
