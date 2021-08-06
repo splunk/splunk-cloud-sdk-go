@@ -5,13 +5,21 @@
 
 #### Non-Breaking Changes 
 
-* KVstore service :  `DeleteRecordsQueryParams` struct has added a new  parameter of `EnableMvl` 
+* KVstore service :  `DeleteRecordsQueryParams` struct has added a new  parameter of `EnableMvl`;   `QueryRecordsQueryParams` struc has  added  new optional input parameters of `EnableMvl` and `Shared`
 
 
 * Streams service: new api of `DeleteSource()` is added
 
 #### Features
 * Add connection timeouts to default retry functionality in GO sdk client
+
+## SCloud v8.0.0-beta.5
+
+#### Non-Breaking Changes
+* KVstore command: 
+    - New flag `enable-mvl` is added to `delete-records` command;   New flags `enable-mvl` and `shared` is added to `query-records` command
+
+* Streams command: New command of `delete-source` is added
 
 
 ## Version 1.12.0-beta.4
