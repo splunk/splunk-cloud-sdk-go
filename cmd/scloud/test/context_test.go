@@ -10,13 +10,12 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
-
 	utils "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/test/utils"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestContextCmdWithoutSubCmd(t *testing.T) {
-	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	loginCmd := "login --use-pkce --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
 	_, err, _ := utils.ExecuteCmd(loginCmd, t)
 	assert.Equal(t, nil, err)
 
@@ -27,7 +26,7 @@ func TestContextCmdWithoutSubCmd(t *testing.T) {
 }
 
 func TestContextListCmd(t *testing.T) {
-	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	loginCmd := "login --use-pkce --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
 	_, err, _ := utils.ExecuteCmd(loginCmd, t)
 	assert.Equal(t, nil, err)
 
@@ -38,7 +37,7 @@ func TestContextListCmd(t *testing.T) {
 }
 
 func TestContextListCmdWithTenant(t *testing.T) {
-	loginCmd := "login --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
+	loginCmd := "login --use-pkce --tenant " + utils.TestTenant + " --env " + utils.Env1 + " --uid " + utils.Username + " --pwd " + utils.Password
 	_, err, _ := utils.ExecuteCmd(loginCmd, t)
 	assert.Equal(t, nil, err)
 

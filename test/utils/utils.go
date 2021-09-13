@@ -46,27 +46,18 @@ func init() {
 	}
 
 	TestAuthenticationToken = os.Getenv("BEARER_TOKEN")
-	TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
+	TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST_TENANT_SCOPED")
 
-	TestSplunkCloudHostTenantScoped = os.Getenv("SPLUNK_CLOUD_HOST_TENANT_SCOPED")
-
-	TestTenant = os.Getenv("TENANT_ID")
-
-	TestTenantScoped = os.Getenv("TEST_TENANT_SCOPED")
+	TestTenant = os.Getenv("TEST_TENANT_SCOPED")
 
 	TestRegion = os.Getenv("REGION")
 
-	TestMLTenant = os.Getenv("ML_TENANT_ID")
-
-	TestProvisionerTenant = os.Getenv("TENANT_PROVISIONER_ID")
-
-	TestUsername = os.Getenv("BACKEND_CLIENT_ID")
+	TestUsername = os.Getenv("BACKEND_CLIENT_ID_TENANT_SCOPED")
 	ExpiredAuthenticationToken = os.Getenv("EXPIRED_BEARER_TOKEN")
-	TenantCreationOn = os.Getenv("TENANT_CREATION") == "1"
 	PkceClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 	Username = os.Getenv("TEST_USERNAME")
 	Password = os.Getenv("TEST_PASSWORD")
-	IdpHost = os.Getenv("IDP_HOST")
+	IdpHost = os.Getenv("IDP_HOST_TENANT_SCOPED")
 }
 
 // RunSuffix - run instance identifier suffix based on timestamp
@@ -75,23 +66,11 @@ var RunSuffix = time.Now().Unix()
 // TestSplunkCloudHost - the url for the test api to be used
 var TestSplunkCloudHost string
 
-// TestSplunkCloudHost - the url for the tenantscoped api to be used
-var TestSplunkCloudHostTenantScoped string
-
 // TestAuthenticationToken - the authentication that gives permission to make requests against the api
 var TestAuthenticationToken string
 
 // TestTenant - the tenant to be used for the API
 var TestTenant string
-
-// TestTenant - the tenantscoped tenant to be used for the API
-var TestTenantScoped string
-
-// TestMLTenant - the tenant to be used for the API
-var TestMLTenant string
-
-// TestProvisionerTenant - the tenant to be used for the API
-var TestProvisionerTenant string
 
 // TestUsername - the user running tests on behalf of
 var TestUsername string
@@ -119,9 +98,6 @@ var TestTimeOut = time.Second * 30
 
 // TestTimeOut - the timeout to be used for requests to the api in search tests
 var LongTestTimeout = time.Second * 600
-
-// TenantCreationOn specifies whether tenants should be created on the fly for identity service /tenant CRUD testing
-var TenantCreationOn bool
 
 //Region which correlates to the tenant, used to formulate tenant scoped hostnames
 var TestRegion string

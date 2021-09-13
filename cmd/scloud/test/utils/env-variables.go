@@ -19,26 +19,18 @@ package test_engine
 import "os"
 
 // TestSplunkCloudHost - the url for the test api to be used
-var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST")
+var TestSplunkCloudHost = os.Getenv("SPLUNK_CLOUD_HOST_TENANT_SCOPED")
 
 //Invalid Host Url
 var InvalidHostUrl = "https://InvalidHostUrl:443"
 
 // TestTenant - the tenant to be used for the API
-var TestTenant = os.Getenv("TENANT_ID")
-
-// TestTenant - the tenant to be used for the KC IDP flow
-var TestTenant2 = os.Getenv("TENANT_ID_2")
+var TestTenant = os.Getenv("TEST_TENANT_SCOPED")
 
 //Username to be used in scloud login flow
 var Username = os.Getenv("TEST_USERNAME")
 
 var Password = os.Getenv("TEST_PASSWORD")
-
-//Another set of User credentials to be used in scloud login flow
-var Username2 = os.Getenv("TEST_USERNAME_2")
-
-var Password2 = os.Getenv("TEST_PASSWORD_2")
 
 //Auth url to provide token for request validation
 var IdpHost = os.Getenv("IDP_HOST")
@@ -51,6 +43,3 @@ var Env1 = os.Getenv("TEST_ENVIRONMENT_1")
 
 //Valid test env2
 var Env2 = os.Getenv("TEST_ENVIRONMENT_2")
-
-//Valid test env3
-var Env3 = os.Getenv("TEST_ENVIRONMENT_3")

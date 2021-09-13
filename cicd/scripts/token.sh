@@ -5,13 +5,13 @@ sedi () {
 
 # If any of the required env variables are unset, fail fast
 
-if [[ -z "$BASE64_ENCODED_BASIC_AUTH" ]]; then
-    echo "BASE64_ENCODED_BASIC_AUTH was not set"
+if [[ -z "$BASE64_ENCODED_BASIC_AUTH_TENANT_SCOPED" ]]; then
+    echo "BASE64_ENCODED_BASIC_AUTH_TENANT_SCOPED was not set"
     exit 1
 fi
 
-if [[ -z "$IDP_HOST" ]]; then
-    echo "IDP_HOST was not set"
+if [[ -z "$IDP_HOST_TENANT_SCOPED" ]]; then
+    echo "IDP_HOST_TENANT_SCOPED was not set"
     exit 1
 fi
 
@@ -19,9 +19,9 @@ fi
 IDP_TOKEN_BODY="grant_type=client_credentials"
 
 echo "Fetching access token..."
-CURL_RESPONSE=$(curl --request POST --url $IDP_HOST/token \
+CURL_RESPONSE=$(curl --request POST --url $IDP_HOST_TENANT_SCOPED/token \
  --header 'accept: application/json' \
- --header "Authorization: Basic $BASE64_ENCODED_BASIC_AUTH" \
+ --header "Authorization: Basic $BASE64_ENCODED_BASIC_AUTH_TENANT_SCOPED" \
  --header 'content-type: application/x-www-form-urlencoded' --data "$IDP_TOKEN_BODY")
 
 ACCESS_TOKEN=$(printf "$CURL_RESPONSE" | jq -r ".access_token")

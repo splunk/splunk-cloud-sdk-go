@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/auth"
+	cf "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/cmd/config"
 	utils "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/test/utils"
 	"github.com/splunk/splunk-cloud-sdk-go/idp"
 	"github.com/stretchr/testify/assert"
@@ -46,12 +47,12 @@ func TestLoginWithNoUsername(t *testing.T) {
 
 func TestKCLoginFlow(t *testing.T) {
 	//set config of the user enabled with Keycloak
-	setConfig("username", utils.Username2, t)
-	setConfig("env", utils.Env3, t)
-	setConfig("tenant", utils.TestTenant2, t)
+	setConfig("username", utils.Username, t)
+	setConfig("env", utils.Env1, t)
+	setConfig("tenant", utils.TestTenant, t)
 
 	//validate login
-	loginCommand := "login  --pwd " + utils.Password2
+	loginCommand := "login --use-pkce --pwd " + utils.Password
 	results, err, std := utils.ExecuteCmd(loginCommand, t)
 	assert.Equal(t, "", results)
 	assert.Equal(t, nil, err)
@@ -63,7 +64,7 @@ func TestKCLoginFlow(t *testing.T) {
 	setConfig("tenant", utils.TestTenant, t)
 
 	//reset login
-	loginCommand = "login  --pwd " + utils.Password
+	loginCommand = "login --use-pkce --pwd " + utils.Password
 	results, err, std = utils.ExecuteCmd(loginCommand, t)
 
 	assert.Equal(t, "", results)
@@ -75,7 +76,7 @@ func TestDefaultLoginFlow(t *testing.T) {
 	setConfig("env", utils.Env1, t)
 	setConfig("tenant", utils.TestTenant, t)
 
-	loginCommand := "login --pwd " + utils.Password
+	loginCommand := "login --use-pkce --pwd " + utils.Password
 	results, err, std := utils.ExecuteCmd(loginCommand, t)
 
 	assert.Equal(t, "", results)
@@ -91,11 +92,12 @@ func TestDefaultLoginFlow(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
+
 func TestRefreshLoginFlow(t *testing.T) {
 	setConfig("env", utils.Env1, t)
 	setConfig("tenant", utils.TestTenant, t)
 
-	refreshLoginCommand := "login  --pwd " + utils.Password + " --use-refresh-token"
+	refreshLoginCommand := "login --use-pkce --pwd " + utils.Password + " --use-refresh-token"
 	results, err, std := utils.ExecuteCmd(refreshLoginCommand, t)
 
 	assert.Equal(t, "", results)
@@ -110,6 +112,7 @@ func TestRefreshLoginFlow(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "", std)
 }
+
 func TestRefreshLoginFlowWithVerbose(t *testing.T) {
 	setConfig("env", utils.Env1, t)
 	setConfig("tenant", utils.TestTenant, t)
@@ -130,7 +133,7 @@ func TestDefaultLoginFlowWithVerbose(t *testing.T) {
 	setConfig("env", utils.Env1, t)
 	setConfig("tenant", utils.TestTenant, t)
 
-	command := "login --pwd " + utils.Password + " --verbose"
+	command := "login --use-pkce --pwd " + utils.Password + " --verbose"
 	results, err, std := utils.ExecuteCmd(command, t)
 
 	assert.True(t, strings.Contains(results, "access_token"))
@@ -146,7 +149,7 @@ func TestLoginWithUidShouldNotRequireUsername(t *testing.T) {
 	setConfig("env", utils.Env1, t)
 	setConfig("tenant", utils.TestTenant, t)
 
-	command := "login --uid " + utils.Username + " --pwd " + utils.Password + " --verbose"
+	command := "login --use-pkce --uid " + utils.Username + " --pwd " + utils.Password + " --verbose"
 	searchString := "username"
 	resultsContainSearchString := utils.Execute_cmd_with_global_flags(command, searchString, t, false)
 	assert.Equal(t, false, resultsContainSearchString)
@@ -154,7 +157,11 @@ func TestLoginWithUidShouldNotRequireUsername(t *testing.T) {
 
 func TestAuthLogin(t *testing.T) {
 	setUp(t)
-	auth.LoginSetUp()
+	// need to override tenant so that when reading context the
+	// user is not prompted to enter it during test, resulting in timeout
+	cf.GlobalFlags["tenant"] = "testtenant"
+	err := auth.LoginSetUp()
+	assert.Nil(t, err)
 	context, err := auth.Login(nil, mockedAuthFlow)
 
 	assert.Nil(t, err)

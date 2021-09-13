@@ -33,11 +33,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// RefreshToken - RefreshToken to refresh the bearer token if expired
-var RefreshToken = os.Getenv("REFRESH_TOKEN_UPDATED_VERSION")
-
-var IdpHost = os.Getenv("IDP_HOST")
-
 //Tenantscoped host
 var IdpHostTenantScoped = os.Getenv("IDP_HOST_TENANT_SCOPED")
 
@@ -45,13 +40,7 @@ var IdpHostTenantScoped = os.Getenv("IDP_HOST_TENANT_SCOPED")
 var NativeClientID = os.Getenv("REFRESH_TOKEN_CLIENT_ID")
 
 // NativeAppRedirectURI is one of the redirect uris configured for the app
-const NativeAppRedirectURI = "https://login.splunkbeta.com"
-
-// BackendClientID - App Registry Client id for client credentials flow
-var BackendClientID = os.Getenv("BACKEND_CLIENT_ID")
-
-// BackendClientSecret - App Registry Client secret for client credentials flow
-var BackendClientSecret = os.Getenv("BACKEND_CLIENT_SECRET")
+const NativeAppRedirectURI = "https://localhost:8000"
 
 // BackendClientID - App Registry Client id for client credentials flow tenant scoped
 var BackendClientIDTenantScoped = os.Getenv("BACKEND_CLIENT_ID_TENANT_SCOPED")
@@ -60,7 +49,6 @@ var BackendClientIDTenantScoped = os.Getenv("BACKEND_CLIENT_ID_TENANT_SCOPED")
 var BackendClientSecretTenantScoped = os.Getenv("BACKEND_CLIENT_SECRET_TENANT_SCOPED")
 
 // BackendServiceScope - scope for obtaining access token for client credentials flow
-
 const BackendServiceScope = ""
 
 // TestUsername corresponds to the test user for integration testing
@@ -96,14 +84,14 @@ func (r *badTokenRetriever) GetTokenContext() (*idp.Context, error) {
 
 // TestIntegrationRefreshTokenInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
 	// get a new refresh token
-	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultRefreshScope, TestUsername, TestPassword, IdpHost, "", hostURLConfig)
+	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultRefreshScope, TestUsername, TestPassword, IdpHostTenantScoped, "", hostURLConfig)
 	ctx, err := tr.GetTokenContext()
 	require.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 	require.NotNil(t, ctx)
 
-	tr_refresh := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHost, "", hostURLConfig)
+	tr_refresh := idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHostTenantScoped, "", hostURLConfig)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr_refresh,
 		Host:           testutils.TestSplunkCloudHost,
@@ -122,12 +110,12 @@ func TestIntegrationRefreshTokenInitWorkflow(t *testing.T) {
 func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 	// get a new refresh token
 	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultRefreshScope, TestUsername, TestPassword, IdpHost, "", hostURLConfig)
+	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultRefreshScope, TestUsername, TestPassword, IdpHostTenantScoped, "", hostURLConfig)
 	ctx, err := tr.GetTokenContext()
 	require.Emptyf(t, err, "Error validating using access token generated from PKCE flow: %s", err)
 	require.NotNil(t, ctx)
 
-	tr_refresh := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHost, "", hostURLConfig)}
+	tr_refresh := &retryTokenRetriever{TR: idp.NewRefreshTokenRetriever(NativeClientID, idp.DefaultRefreshScope, ctx.RefreshToken, IdpHostTenantScoped, "", hostURLConfig)}
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr_refresh,
 		Host:           testutils.TestSplunkCloudHost,
@@ -162,7 +150,7 @@ func TestIntegrationRefreshTokenRetryWorkflow(t *testing.T) {
 // TestIntegrationClientCredentialsInitWorkflow tests initializing the client with a TokenRetriever impleme
 func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpHost, "", hostURLConfig)
+	tr := idp.NewClientCredentialsRetriever(BackendClientIDTenantScoped, BackendClientSecretTenantScoped, BackendServiceScope, IdpHostTenantScoped, "", hostURLConfig)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
 		Host:           testutils.TestSplunkCloudHost,
@@ -178,12 +166,12 @@ func TestIntegrationClientCredentialsInitWorkflow(t *testing.T) {
 
 // TestIntegrationClientCredentialsInitWorkflow tests with tenantScoped true
 func TestIntegrationClientCredentialsInitWorkflowTenantScoped(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenantScoped, Region: testutils.TestRegion}
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
 	tr := idp.NewClientCredentialsRetriever(BackendClientIDTenantScoped, BackendClientSecretTenantScoped, BackendServiceScope, IdpHostTenantScoped, "", hostURLConfig)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHostTenantScoped,
-		Tenant:         testutils.TestTenantScoped,
+		Host:           testutils.TestSplunkCloudHost,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 		TenantScoped:   false,
 		Region:         testutils.TestRegion,
@@ -196,7 +184,7 @@ func TestIntegrationClientCredentialsInitWorkflowTenantScoped(t *testing.T) {
 
 // TestIntegrationClientCredentialsInitWorkflow tests with Empty HostURL config
 func TestIntegrationClientCredentialsInitWorkflowEmptyHostUrlConfig(t *testing.T) {
-	tr := idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpHost, "", idp.HostURLConfig{})
+	tr := idp.NewClientCredentialsRetriever(BackendClientIDTenantScoped, BackendClientSecretTenantScoped, BackendServiceScope, IdpHostTenantScoped, "", idp.HostURLConfig{})
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
 		Host:           testutils.TestSplunkCloudHost,
@@ -212,12 +200,12 @@ func TestIntegrationClientCredentialsInitWorkflowEmptyHostUrlConfig(t *testing.T
 // TestIntegrationClientCredentialsInitWorkflow tests with OverrideAuthURL
 func TestIntegrationClientCredentialsInitWorkflowOverrideAuthURL(t *testing.T) {
 	overrideAuthURL := IdpHostTenantScoped
-	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenantScoped, Region: testutils.TestRegion}
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
 	tr := idp.NewClientCredentialsRetriever(BackendClientIDTenantScoped, BackendClientSecretTenantScoped, BackendServiceScope, IdpHostTenantScoped, overrideAuthURL, hostURLConfig)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
-		Host:           testutils.TestSplunkCloudHostTenantScoped,
-		Tenant:         testutils.TestTenantScoped,
+		Host:           testutils.TestSplunkCloudHost,
+		Tenant:         testutils.TestTenant,
 		Timeout:        testutils.TestTimeOut,
 		TenantScoped:   false,
 		Region:         "region",
@@ -230,8 +218,8 @@ func TestIntegrationClientCredentialsInitWorkflowOverrideAuthURL(t *testing.T) {
 
 // TestIntegrationClientCredentialsRetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with client credentials flow
 func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(BackendClientID, BackendClientSecret, BackendServiceScope, IdpHost, "", hostURLConfig)}
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	tr := &retryTokenRetriever{TR: idp.NewClientCredentialsRetriever(BackendClientIDTenantScoped, BackendClientSecretTenantScoped, BackendServiceScope, IdpHostTenantScoped, "", hostURLConfig)}
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
 		Host:           testutils.TestSplunkCloudHost,
@@ -241,8 +229,8 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 	require.Emptyf(t, err, "Error initializing client: %s", err)
 
 	// Make sure the backend client id has been added to the tenant as an admin (authz is needed for ingest), errs are ignored - if either fails (e.g. for 405 duplicate) we are probably still OK
-	_, _ = getClient(t).IdentityService.AddMember(identity.AddMemberBody{Name: BackendClientID})
-	_, _ = getClient(t).IdentityService.AddGroupMember("tenant.admins", identity.AddGroupMemberBody{Name: BackendClientID})
+	_, _ = getClient(t).IdentityService.AddMember(identity.AddMemberBody{Name: BackendClientIDTenantScoped})
+	_, _ = getClient(t).IdentityService.AddGroupMember("tenant.admins", identity.AddGroupMemberBody{Name: BackendClientIDTenantScoped})
 
 	sourcetype := "sourcetype:clientcredentialstest"
 	source := "manual-events"
@@ -269,8 +257,8 @@ func TestIntegrationClientCredentialsRetryWorkflow(t *testing.T) {
 
 // TestIntegrationPKCEInitWorkflow tests initializing the client with a TokenRetriever which obtains a new access token with PKCE flow
 func TestIntegrationPKCEInitWorkflow(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpHost, "", hostURLConfig)
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	tr := idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpHostTenantScoped, "", hostURLConfig)
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
 		Host:           testutils.TestSplunkCloudHost,
@@ -286,8 +274,8 @@ func TestIntegrationPKCEInitWorkflow(t *testing.T) {
 
 // TestIntegrationPKCERetryWorkflow tests ingesting event with invalid access token then retrying after obtaining new access token with PKCE flow
 func TestIntegrationPKCERetryWorkflow(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpHost, "", hostURLConfig)}
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	tr := &retryTokenRetriever{TR: idp.NewPKCERetriever(NativeClientID, NativeAppRedirectURI, idp.DefaultOIDCScopes, TestUsername, TestPassword, IdpHostTenantScoped, "", hostURLConfig)}
 
 	client, err := sdk.NewClient(&services.Config{
 		TokenRetriever: tr,
@@ -362,15 +350,16 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of invalid device code
 // TODO more test cases in SCP-33667
 func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := idp.NewDeviceFlowRetriever(NativeClientID, IdpHost, "", hostURLConfig)
+	t.Skip("Skip pending TODO mentioned above")
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, IdpHostTenantScoped, "", hostURLConfig)
 	result, err := tr.Client.GetDeviceCodes(NativeClientID, "offline_access profile email")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	tr.DeviceCode = result.DeviceCode + "invalid"
 	tr.ExpiresIn = result.ExpiresIn
 	tr.Interval = result.Interval
 	ctx, err := tr.GetTokenContext()
-	require.Nil(t, ctx)
+	assert.Nil(t, ctx)
 	require.NotNil(t, err)
 	assert.Contains(t, err.Error(), "failed to get token in Device flow: code expired: 400")
 }
@@ -378,10 +367,11 @@ func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of timeout
 // TODO more test cases in SCP-33667
 func TestIntegrationDeviceWorkflowPolling(t *testing.T) {
-	hostURLConfig := idp.HostURLConfig{TenantScoped: false, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
-	tr := idp.NewDeviceFlowRetriever(NativeClientID, IdpHost, "", hostURLConfig)
+	t.Skip("Skip pending TODO mentioned above")
+	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
+	tr := idp.NewDeviceFlowRetriever(NativeClientID, IdpHostTenantScoped, "", hostURLConfig)
 	result, err := tr.Client.GetDeviceCodes(NativeClientID, "offline_access profile email")
-	assert.Nil(t, err)
+	require.Nil(t, err)
 	tr.DeviceCode = result.DeviceCode
 	ctx, err := tr.GetTokenContext()
 	require.Nil(t, ctx)

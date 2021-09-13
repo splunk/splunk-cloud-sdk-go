@@ -4,8 +4,8 @@ echo "==============================================="
 echo "Beginning scloud integration tests"
 echo "==============================================="
 echo "TEST_USERNAME=$TEST_USERNAME"
-echo "TEST_SCLOUD_TENANT=$TEST_SCLOUD_TENANT"
-echo "SPLUNK_CLOUD_HOST=$SPLUNK_CLOUD_HOST"
+echo "TEST_TENANT_SCOPED=$TEST_TENANT_SCOPED"
+echo "SPLUNK_CLOUD_HOST_TENANT_SCOPED=$SPLUNK_CLOUD_HOST_TENANT_SCOPED"
 echo "==============================================="
 
 COMMA_SEPARATED_FULLY_QUALIFIED_PACKAGES=$(go list ./... | grep -v test | awk -v ORS=, '{ print $1 }' | sed 's/,$//')

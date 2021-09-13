@@ -140,12 +140,10 @@ func initConfig() {
 
 	if testhookDryrun {
 		config.GlobalFlags["testhookdryrun"] = true
-		fmt.Println("enable testhook-dryrun")
 	}
 
 	if testhook {
 		config.GlobalFlags["testhook"] = true
-		fmt.Println("enable testhook")
 	}
 
 	// If flag 'log_dir' is provided, create log directory at the given location

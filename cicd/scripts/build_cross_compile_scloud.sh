@@ -36,6 +36,11 @@ do
         else
             program_name='scloud'
         fi
+        if [[ 'darwin' == ${os} ]] && [[ '386' == ${arch} ]]
+        then
+            echo "Skipping darwin/386, no longer supported in go 1.15+"
+            continue
+        fi
         target_dir=${TARGET_ROOT_DIR}/${os}_${arch}
         mkdir -p ${target_dir}
         target_file=${target_dir}/${program_name}

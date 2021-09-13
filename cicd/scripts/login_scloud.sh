@@ -1,9 +1,15 @@
 #!/bin/bash -e
 
+# login to system
 ./bin/scloud config set --key env --value $TEST_ENVIRONMENT_1
 ./bin/scloud config set --key username --value $TEST_USERNAME
-./bin/scloud config set --key tenant --value $TEST_SCLOUD_TENANT
-./bin/scloud login --pwd $TEST_PASSWORD_1
+./bin/scloud config set --key tenant --value system
+./bin/scloud config set --key tenant-scoped --value "true"
+./bin/scloud config set --key region --value $REGION
+./bin/scloud login --use-pkce --pwd $TEST_PASSWORD
+# also login to test tenant
+./bin/scloud config set --key tenant --value $TEST_TENANT_SCOPED
+./bin/scloud login --use-pkce --pwd $TEST_PASSWORD
 
 # Cross-platform sed -i: https://stackoverflow.com/a/38595160
 sedi () {

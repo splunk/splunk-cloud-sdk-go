@@ -1,45 +1,45 @@
-#testcase: streams compile --input-datafile testcases/test_stream_compile.json
+#testcase: streams compile --input-datafile testcases/test_stream_compile.spl
 REQUEST URL:streams/v3beta1/pipelines/compile
-REQUEST BODY:{{"spl":"| from read_splunk_firehose() | into write_index(\"index\", \"main\");"}}
+REQUEST BODY:{{"spl":"| from splunk_firehose() | into index(\"index\", \"main\");"}}
 
-#testcase: streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
+#testcase: streams create-pipeline --name test-passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 REQUEST URL:streams/v3beta1/pipelines
-REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"passthrough","bypassValidation":true,"description":"A passthrough pipeline"}}
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"c0edd974-1190-3f73-923a-4330a5bc2a7c","sourcePort":"output","targetNode":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","targetPort":"input"}],"nodes":[{"id":"c0edd974-1190-3f73-923a-4330a5bc2a7c","op":"from_splunk_firehose","resolvedId":"from_splunk_firehose"},{"id":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","op":"into_index","arguments":{"dataset":"\"main\"","module":"\"index\""},"resolvedId":"into_index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"test-passthrough","bypassValidation":true,"description":"A passthrough pipeline"}}
 
 #testcase: streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.json
 REQUEST URL:streams/v3beta1/pipelines/validate
-REQUEST BODY:{{"upl":{"edges":[{"sourceNode":"00ba387b-a219-4f68-b3a8-8b99df379dd6","sourcePort":"output","targetNode":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","targetPort":"input"}],"nodes":[{"id":"00ba387b-a219-4f68-b3a8-8b99df379dd6","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"fbe6269f-30d3-4922-be6c-84a9f2b84bb3","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]}}}
+REQUEST BODY:{{"upl":{"edges":[{"sourceNode":"c0edd974-1190-3f73-923a-4330a5bc2a7c","sourcePort":"output","targetNode":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","targetPort":"input"}],"nodes":[{"id":"c0edd974-1190-3f73-923a-4330a5bc2a7c","op":"from_splunk_firehose","resolvedId":"from_splunk_firehose"},{"id":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","op":"into_index","arguments":{"dataset":"\"main\"","module":"\"index\""},"resolvedId":"into_index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]}}}
 
-#testcase: streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --input-datafile testcases/test_stream_patch_pipeline.json --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
-REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
-REQUEST BODY:{{"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"updatedtestPipelinfe1582068339","description":"Updated Integration Test Pipeline testPipelinfe1582068339"}}
+#testcase: streams update-pipeline  --id 57cc9796-bb08-48dd-9f0e-f269fc762eda  --input-datafile testcases/test_stream_patch_pipeline.json --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"c0edd974-1190-3f73-923a-4330a5bc2a7c","sourcePort":"output","targetNode":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","targetPort":"input"}],"nodes":[{"id":"c0edd974-1190-3f73-923a-4330a5bc2a7c","op":"from_splunk_firehose","resolvedId":"from_splunk_firehose"},{"id":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","op":"into_index","arguments":{"dataset":"\"main\"","module":"\"index\""},"resolvedId":"into_index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"name":"updatedtestPipelinfe1582068339","description":"Updated Integration Test Pipeline testPipelinfe1582068339"}}
 
-#testcase: streams patch-pipeline --id 417fb4ad-d264-4920-8028-7d4cba20528f --name passthrough --input-datafile testcases/test_stream_patch_pipeline.json --bypass-validation true --description "Patched pipeline"
-REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f
-REQUEST BODY:{{"bypassValidation":true,"data":{"edges":[{"sourceNode":"e3f9eb13-a847-4717-9f83-89c815b03d01","sourcePort":"output","targetNode":"6f14bd4d-e299-4677-b5db-441b40acd501","targetPort":"input"}],"nodes":[{"id":"e3f9eb13-a847-4717-9f83-89c815b03d01","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6f14bd4d-e299-4677-b5db-441b40acd501","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"description":"Patched pipeline","name":"passthrough"}}
+#testcase: streams patch-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda --name passthrough --input-datafile testcases/test_stream_patch_pipeline.json --bypass-validation true --description "Patched pipeline"
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST BODY:{{"bypassValidation":true,"data":{"edges":[{"sourceNode":"c0edd974-1190-3f73-923a-4330a5bc2a7c","sourcePort":"output","targetNode":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","targetPort":"input"}],"nodes":[{"id":"c0edd974-1190-3f73-923a-4330a5bc2a7c","op":"from_splunk_firehose","resolvedId":"from_splunk_firehose"},{"id":"6defeeb3-a0d1-386f-897b-7cff5fe2ce34","op":"into_index","arguments":{"dataset":"\"main\"","module":"\"index\""},"resolvedId":"into_index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"description":"Patched pipeline","name":"passthrough"}}
 
-#testcase: streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
-REQUEST URL:streams/v3beta1/pipelines/417fb4ad-d264-4920-8028-7d4cba20528f/reactivate
+#testcase: streams reactivate-pipeline  --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda/reactivate
 REQUEST BODY:{{}}
 
 #testcase: streams list-pipelines
 REQUEST URL:streams/v3beta1/pipelines
 REQUEST BODY:<nil>
 
-#testcase: streams get-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
-REQUEST URL:streams/v3beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075
+#testcase: streams get-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda
 REQUEST BODY:<nil>
 
 #testcase: streams get-pipelines-status
 REQUEST URL:streams/v3beta1/pipelines/status
 REQUEST BODY:<nil>
 
-#testcase: streams activate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
-REQUEST URL:streams/v3beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075/activate
+#testcase: streams activate-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda/activate
 REQUEST BODY:{{}}
 
-#testcase: streams deactivate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
-REQUEST URL:streams/v3beta1/pipelines/280afcdd-cca1-4cff-b643-9d3295a70075/deactivate
+#testcase: streams deactivate-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
+REQUEST URL:streams/v3beta1/pipelines/57cc9796-bb08-48dd-9f0e-f269fc762eda/deactivate
 REQUEST BODY:{{}}
 
 #testcase: streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
@@ -76,14 +76,14 @@ REQUEST BODY:<nil>
 
 #testcase: streams create-template --input-datafile testcases/test_stream_create_template.json --name testTemplate1582068227 --description "integration test template"
 REQUEST URL:streams/v3beta1/templates
-REQUEST BODY:{{"data":{"edges":[{"sourceNode":"fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4","sourcePort":"output","targetNode":"6854c231-23ea-49ae-8471-ba84d4e3548f","targetPort":"input"}],"nodes":[{"id":"fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4","op":"read-splunk-firehose","resolvedId":"read-splunk-firehose"},{"id":"6854c231-23ea-49ae-8471-ba84d4e3548f","op":"write-index","resolvedId":"write-index:collection\u003crecord\u003cR\u003e\u003e:expression\u003cstring\u003e:expression\u003cstring\u003e"}]},"description":"integration test template","name":"testTemplate1582068227"}}
+REQUEST BODY:{{"data":{"edges":[{"sourceNode":"2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84","sourcePort":"output","targetNode":"ba342517-84db-302e-8fb7-545b49752cc3","targetPort":"input"},{"sourceNode":"ba342517-84db-302e-8fb7-545b49752cc3","sourcePort":"output","targetNode":"8a9a491b-ed6d-3ced-8ad5-9eb966d3c226","targetPort":"input"},{"sourceNode":"8a9a491b-ed6d-3ced-8ad5-9eb966d3c226","sourcePort":"output","targetNode":"2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370","targetPort":"input"},{"sourceNode":"2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370","sourcePort":"output","targetNode":"3ab66bd5-c6f4-3192-9123-54467d7feabf","targetPort":"input"}],"nodes":[{"id":"2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84","op":"from_generate_events","arguments":{"interval":1000,"type":"timestamp"},"attributes":{"user":{"name":"Generate Events: Generate Sample Data","notes":""}},"resolvedId":"from_generate_events:string:long"},{"id":"ba342517-84db-302e-8fb7-545b49752cc3","op":"eval","arguments":{"function":["body=concat(\"0XGFSod1vIoyZeTdldL2vR4wbWZFRTo25,qVbCl1Yn2XYhp7wQVzBE0ik7kI2pAsUI,Credit Card,1615.65,\", strftime(now()-5000, \"%Y-%m-%d %H:%M:%S\", null), \",\", strftime(now(), \"%Y-%m-%d %H:%M:%S\", null), \",-73.953948,40.771702,2475601523770875\")"]},"attributes":{"user":{"name":"Eval: Format Sample Events","notes":""}},"resolvedId":"eval:collection\u003crecord\u003cR\u003e\u003e:collection\u003cexpression\u003cany\u003e\u003e"},{"id":"8a9a491b-ed6d-3ced-8ad5-9eb966d3c226","op":"eval","arguments":{"function":["body=extract_regex(body, /(?\u003ctid\u003e[^,]+),(?\u003ccid\u003e[^,]+),(?\u003cType\u003e[^,]+),(?\u003cAmount\u003e[^,]+),(?\u003csdate\u003e\\S+)\\s(?\u003cstime\u003e\\S+),(?\u003cedate\u003e\\S+)\\s(?\u003cetime\u003e\\S+?),(?\u003cLongitude\u003e\\S+?),(?\u003cLatitude\u003e\\S+?),(?\u003cCard\u003e\\d*)/)","body=map_set(body, \"Card\", \"\u003credacted\u003e\")","source_type=\"cc_transactions:json\"","timestamp=strptime(concat(body.sdate, \" \", body.stime), \"%Y-%m-%d %H:%M:%S\", \"UTC\")"]},"attributes":{"user":{"name":"Eval: Redact Credit Card Numbers","notes":""}},"resolvedId":"eval:collection\u003crecord\u003cR\u003e\u003e:collection\u003cexpression\u003cany\u003e\u003e"},{"id":"2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370","op":"fields","arguments":{"field_list":["timestamp","body","source_type"],"operator":"+"},"attributes":{"user":{"name":"Fields: Keep Specific Fields","notes":""}},"resolvedId":"fields:collection\u003crecord\u003cR\u003e\u003e:collection\u003cfield\u003e"},{"id":"3ab66bd5-c6f4-3192-9123-54467d7feabf","op":"into_dev_null","attributes":{"user":{"name":"Send to Null: Placeholder for Destination","notes":""}},"resolvedId":"into_dev_null:collection\u003crecord\u003cR\u003e\u003e"}],"attributes":{"activeNodeId":"2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84"}},"description":"integration test template","name":"testTemplate1582068227"}}
 
 #testcase: streams list-templates
 REQUEST URL:streams/v3beta1/templates
 REQUEST BODY:<nil>
 
-#testcase: streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
-REQUEST URL:streams/v3beta1/templates/a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
+#testcase: streams get-template --template-id 680db4a4-d733-428a-a0a0-9eac9f3e8252
+REQUEST URL:streams/v3beta1/templates/680db4a4-d733-428a-a0a0-9eac9f3e8252
 REQUEST BODY:<nil>
 
 #testcase: streams create-group --input-datafile testcases/test_stream_create_group.json

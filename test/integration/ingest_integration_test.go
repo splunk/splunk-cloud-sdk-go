@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
@@ -104,7 +105,9 @@ func TestIntegrationIngestEventsFailureDetails(t *testing.T) {
 	failedEvent, ok := failedEvents[0].(map[string]interface{})
 	require.True(t, ok)
 	assert.Equal(t, float64(1), failedEvent["index"])
-	assert.Equal(t, "Event body cannot be empty", failedEvent["message"])
+	msg, ok := failedEvent["message"].(string)
+	require.True(t, ok)
+	assert.Equal(t, "event body cannot be null", strings.ToLower(msg))
 }
 
 func TestIntegrationIngestEventBadRequest(t *testing.T) {

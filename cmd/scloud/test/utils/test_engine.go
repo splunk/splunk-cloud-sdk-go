@@ -265,7 +265,7 @@ func SetConfigurationAndLogin() (string, error) {
 	confArgs := []string{"config set --key username --value " + Username,
 		"config set --key env --value " + Env1,
 		"config set --key tenant --value " + TestTenant,
-		"login --pwd " + Password,
+		"login --use-pkce --pwd " + Password,
 	}
 
 	for _, arg := range confArgs {
@@ -287,6 +287,7 @@ func RunTest(filepath string, t *testing.T) {
 	arg := "--testhook-dryrun"
 
 	// read in testcases line by line
+	t.Logf("Running testcase %s", filepath)
 	testfile, err := os.Open(filepath)
 	assert.Nil(t, err)
 
@@ -321,6 +322,7 @@ func RunTest(filepath string, t *testing.T) {
 	var totalFailedCases = 0
 	for {
 		rawLine, line, stdinFileName, err := getNextTestcase(testreader)
+		t.Logf("  >>> Testing command: %s", line)
 		if err == io.EOF {
 			break
 		}

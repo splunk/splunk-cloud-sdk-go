@@ -2,4 +2,3 @@ forwarders add-certificate --input-datafile testcases/test_forwarders_pem.pem
 forwarders list-certificates
 forwarders delete-certificate --slot 1
 forwarders delete-certificates
-

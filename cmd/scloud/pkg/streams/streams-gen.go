@@ -94,7 +94,9 @@ func Compile(cmd *cobra.Command, args []string) error {
 	}
 	err = json.Unmarshal(bytes, &spl)
 	if err != nil {
-		return err
+		// TODO: Manual fix (do not delete) - to be added to scloud codegen
+		// If failed to parse as JSON, try reading as simple string
+		spl = string(bytes)
 	}
 	// Form the request body
 	generated_request_body := model.SplCompileRequest{

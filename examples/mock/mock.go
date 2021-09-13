@@ -83,7 +83,7 @@ func (m mockTransport) RoundTrip(request *http.Request) (*http.Response, error) 
 	switch request.URL.EscapedPath() {
 	// Define our mocked responses here, for request URLs that we haven't
 	// mocked, return a 404 (http.StatusNotFound) response
-	case "/foo/identity/v2beta1/validate":
+	case "/foo/identity/v3/validate":
 		info := identity.ValidateInfo{
 			Name: "someone@domain.com",
 		}

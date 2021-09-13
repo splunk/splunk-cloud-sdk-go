@@ -1,29 +1,113 @@
 {
   "edges": [
     {
-      "sourceNode": "fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4",
+      "sourceNode": "2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84",
       "sourcePort": "output",
-      "targetNode": "6854c231-23ea-49ae-8471-ba84d4e3548f",
+      "targetNode": "ba342517-84db-302e-8fb7-545b49752cc3",
+      "targetPort": "input"
+    },
+    {
+      "sourceNode": "ba342517-84db-302e-8fb7-545b49752cc3",
+      "sourcePort": "output",
+      "targetNode": "8a9a491b-ed6d-3ced-8ad5-9eb966d3c226",
+      "targetPort": "input"
+    },
+    {
+      "sourceNode": "8a9a491b-ed6d-3ced-8ad5-9eb966d3c226",
+      "sourcePort": "output",
+      "targetNode": "2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370",
+      "targetPort": "input"
+    },
+    {
+      "sourceNode": "2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370",
+      "sourcePort": "output",
+      "targetNode": "3ab66bd5-c6f4-3192-9123-54467d7feabf",
       "targetPort": "input"
     }
   ],
   "nodes": [
     {
-      "attributes": {},
-      "id": "fd60e488-a9d0-4049-8ba7-c3f3a7e9ddd4",
-      "op": "read-splunk-firehose",
-      "resolvedId": "read-splunk-firehose"
+      "id": "2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84",
+      "op": "from_generate_events",
+      "arguments": {
+        "interval": 1000,
+        "type": "timestamp"
+      },
+      "attributes": {
+        "user": {
+          "name": "Generate Events: Generate Sample Data",
+          "notes": ""
+        }
+      },
+      "resolvedId": "from_generate_events:string:long"
     },
     {
-      "attributes": {},
-      "dataset": "dataset:main",
-      "id": "6854c231-23ea-49ae-8471-ba84d4e3548f",
-      "module": "module:index",
-      "op": "write-index",
-      "resolvedId": "write-index:collection<record<R>>:expression<string>:expression<string>"
+      "id": "ba342517-84db-302e-8fb7-545b49752cc3",
+      "op": "eval",
+      "arguments": {
+        "function": [
+          "body=concat(\"0XGFSod1vIoyZeTdldL2vR4wbWZFRTo25,qVbCl1Yn2XYhp7wQVzBE0ik7kI2pAsUI,Credit Card,1615.65,\", strftime(now()-5000, \"%Y-%m-%d %H:%M:%S\", null), \",\", strftime(now(), \"%Y-%m-%d %H:%M:%S\", null), \",-73.953948,40.771702,2475601523770875\")"
+        ]
+      },
+      "attributes": {
+        "user": {
+          "name": "Eval: Format Sample Events",
+          "notes": ""
+        }
+      },
+      "resolvedId": "eval:collection<record<R>>:collection<expression<any>>"
+    },
+    {
+      "id": "8a9a491b-ed6d-3ced-8ad5-9eb966d3c226",
+      "op": "eval",
+      "arguments": {
+        "function": [
+          "body=extract_regex(body, /(?<tid>[^,]+),(?<cid>[^,]+),(?<Type>[^,]+),(?<Amount>[^,]+),(?<sdate>\\S+)\\s(?<stime>\\S+),(?<edate>\\S+)\\s(?<etime>\\S+?),(?<Longitude>\\S+?),(?<Latitude>\\S+?),(?<Card>\\d*)/)",
+          "body=map_set(body, \"Card\", \"<redacted>\")",
+          "source_type=\"cc_transactions:json\"",
+          "timestamp=strptime(concat(body.sdate, \" \", body.stime), \"%Y-%m-%d %H:%M:%S\", \"UTC\")"
+        ]
+      },
+      "attributes": {
+        "user": {
+          "name": "Eval: Redact Credit Card Numbers",
+          "notes": ""
+        }
+      },
+      "resolvedId": "eval:collection<record<R>>:collection<expression<any>>"
+    },
+    {
+      "id": "2c43f86e-ad69-3ce1-8fdb-8f1b59ba5370",
+      "op": "fields",
+      "arguments": {
+        "field_list": [
+          "timestamp",
+          "body",
+          "source_type"
+        ],
+        "operator": "+"
+      },
+      "attributes": {
+        "user": {
+          "name": "Fields: Keep Specific Fields",
+          "notes": ""
+        }
+      },
+      "resolvedId": "fields:collection<record<R>>:collection<field>"
+    },
+    {
+      "id": "3ab66bd5-c6f4-3192-9123-54467d7feabf",
+      "op": "into_dev_null",
+      "attributes": {
+        "user": {
+          "name": "Send to Null: Placeholder for Destination",
+          "notes": ""
+        }
+      },
+      "resolvedId": "into_dev_null:collection<record<R>>"
     }
   ],
-  "rootNode": [
-    "6854c231-23ea-49ae-8471-ba84d4e3548f"
-  ]
+  "attributes": {
+    "activeNodeId": "2c5aa0e6-ccc5-3577-9f12-5d8c466c4e84"
+  }
 }

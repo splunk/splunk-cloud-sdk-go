@@ -111,9 +111,6 @@ test_integration_scloud: login_scloud build
 test_integration_examples: build
 	GO111MODULE=on sh ./cicd/integration/runexamples.sh
 
-test_ml_integration_tests: build
-	GO111MODULE=on sh ./cicd/integration/run_ml_tests.sh
-
 test_specific:
 	sh ./cicd/scripts/test_specific.sh
 

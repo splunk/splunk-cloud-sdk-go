@@ -30,7 +30,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const DefaultSearchQuery = "| from index:main | head 5"
+const DefaultSearchQuery = `
+from [
+        {"name": "event1"},
+        {"name": "event2"},
+        {"name": "event3"},
+        {"name": "event4"},
+        {"name": "event5"}
+    ]
+` // use 5 dummy events (similar to makeresults in SPL1) to guarantee events being returned
 
 var (
 	PostJobsRequest             = search.SearchJob{Query: DefaultSearchQuery}
@@ -139,12 +147,14 @@ func TestGetJobResults(t *testing.T) {
 	require.NotNil(t, client)
 	job := createSearchJob(client, PostJobsRequest, t)
 
-	query := search.ListResultsQueryParams{}.SetCount(5).SetOffset(0)
+	query := search.ListResultsQueryParams{}.SetCount(5).SetOffset(0).SetField("name")
 	response, err := client.SearchService.ListResults(*job.Sid, &query)
 
 	assert.NoError(t, err)
 	require.NotEmpty(t, response)
 	assert.Equal(t, 5, len((*response).Results))
+	assert.Equal(t, 1, len((*response).Fields))
+	assert.Equal(t, "name", (*response).Fields[0].Name)
 }
 
 //TestIntegrationNewSearchJobBadRequest asynchronously
