@@ -1,3 +1,0 @@
-{
-  "spl": "| from read_splunk_firehose() | into write_index(\"index\", \"main\");"
-}

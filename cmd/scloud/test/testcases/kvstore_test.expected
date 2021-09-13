@@ -34,9 +34,9 @@ REQUEST BODY:{{"capacity_gb":8}}
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/query
 REQUEST BODY:<nil>
 
-#testcase: kvstore get-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --k
-enable testhook-dryrun
-required flag(s) "key" not set
+#testcase: kvstore get-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"
+REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/records/5e58525673875400011ffb13
+REQUEST BODY:<nil>
 
 #testcase: kvstore delete-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"
 REQUEST URL:kvstore/v1beta1/collections/gomod1582754557.gointegdskvidx_1582754557/records/5e58525673875400011ffb13

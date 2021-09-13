@@ -19,6 +19,7 @@ package integration
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 
 	"time"
@@ -62,14 +63,14 @@ func TestCRUDGroups(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteGroup(groupName)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultgroup.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultgroup.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultgroup.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultgroup1, err := client.IdentityService.GetGroup(groupName)
 	require.NoError(t, err)
 	assert.Equal(t, groupName, resultgroup1.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultgroup1.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultgroup1.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultgroup1.Tenant))
 
 	resultgroup2, err := client.IdentityService.ListGroups(nil)
@@ -86,7 +87,7 @@ func TestCRUDGroups(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultrole.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	time.Sleep(2 * time.Second)
@@ -110,7 +111,7 @@ func TestCRUDGroups(t *testing.T) {
 	assert.Contains(t, string(items), groupName)
 
 	//group-members
-	memberName := "test1@splunk.com"
+	memberName := "0oabp299js4d0z0dj357" // a test service app
 	_, err = client.IdentityService.ListGroupMembers(groupName, nil)
 	require.NoError(t, err)
 
@@ -163,14 +164,14 @@ func TestCRUDRoles(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultrole.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	time.Sleep(2 * time.Second)
 	resultrole1, err := client.IdentityService.GetRole(roleName)
 	require.NoError(t, err)
 	assert.Equal(t, roleName, resultrole1.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultrole1.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultrole1.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultrole1.Tenant))
 
 	resultrole2, err := client.IdentityService.ListRoles(nil)
@@ -188,7 +189,7 @@ func TestCRUDRoles(t *testing.T) {
 	defer client.IdentityService.RemoveRolePermission(roleName, permissionName)
 	assert.Equal(t, roleName, *(resultroleperm.Role))
 	assert.Equal(t, permissionName, resultroleperm.Permission)
-	assert.Equal(t, testutils.TestUsername, *(resultroleperm.AddedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultroleperm.AddedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultroleperm.Tenant))
 
 	time.Sleep(2 * time.Second)
@@ -196,7 +197,7 @@ func TestCRUDRoles(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, roleName, *(resultroleperm1.Role))
 	assert.Equal(t, permissionName, resultroleperm1.Permission)
-	assert.Equal(t, testutils.TestUsername, *(resultroleperm1.AddedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultroleperm1.AddedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultroleperm1.Tenant))
 
 	resultroleperm2, err := client.IdentityService.ListRolePermissions(roleName, nil)
@@ -217,7 +218,7 @@ func TestCRUDMembers(t *testing.T) {
 	_, err := client.IdentityService.ListMembers(nil)
 	require.NoError(t, err)
 
-	memberName := "test1@splunk.com"
+	memberName := "0oabp299js4d0z0dj357" // a test service app
 
 	// create/get/delete member and members
 	result, err := client.IdentityService.AddMember(identity.AddMemberBody{Name: memberName})
@@ -244,7 +245,7 @@ func TestCRUDMembers(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteGroup(groupName)
 	assert.Equal(t, groupName, resultgroup.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultgroup.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultgroup.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultgroup.Tenant))
 
 	// add member to group
@@ -267,7 +268,7 @@ func TestCRUDMembers(t *testing.T) {
 	require.NoError(t, err)
 	defer client.IdentityService.DeleteRole(roleName)
 	assert.Equal(t, roleName, resultrole.Name)
-	assert.Equal(t, testutils.TestUsername, *(resultrole.CreatedBy))
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), *(resultrole.CreatedBy))
 	assert.Equal(t, testutils.TestTenant, *(resultrole.Tenant))
 
 	// add role to group
@@ -324,11 +325,11 @@ func TestPrincipals(t *testing.T) {
 	principals, err := client.IdentityService.ListPrincipals(nil)
 	require.NoError(t, err)
 	items, _ := json.Marshal(principals.Items)
-	assert.Contains(t, string(items), testutils.TestUsername)
+	assert.Contains(t, string(items), strings.ToLower(testutils.TestUsername))
 
 	principal, err := client.IdentityService.GetPrincipal(testutils.TestUsername)
 	require.NoError(t, err)
-	assert.Equal(t, principal.Name, testutils.TestUsername)
+	assert.Equal(t, principal.Name, strings.ToLower(testutils.TestUsername))
 }
 
 func TestValidate(t *testing.T) {
@@ -336,5 +337,5 @@ func TestValidate(t *testing.T) {
 	input := identity.ValidateTokenQueryParams{Include: []identity.ValidateTokenincludeEnum{"principal", "tenant"}}
 	res, err := client.IdentityService.ValidateToken(&input)
 	require.NoError(t, err)
-	assert.Equal(t, testutils.TestUsername, res.Name)
+	assert.Equal(t, strings.ToLower(testutils.TestUsername), res.Name)
 }

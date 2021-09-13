@@ -50,7 +50,7 @@ REQUEST BODY:{{"name":"test1@splunk.com"}}
 REQUEST URL:identity/v3/groups/scloud_test_identity_group/roles
 REQUEST BODY:{{"name":"scloud_test_identity_role"}}
 
-#testcase: identity add-role-permission --role scloud_test_identity_role --body testsdks:*:identity.groups.read
+#testcase: identity add-role-permission --role scloud_test_identity_role --body gtestsdks:*:identity.groups.read
 unknown flag: --body
 
 #testcase: identity get-role --role scloud_test_identity_role
@@ -61,8 +61,8 @@ REQUEST BODY:<nil>
 REQUEST URL:identity/v3/principals/srv-ssc-mt32intg@splunkcorp.com
 REQUEST BODY:<nil>
 
-#testcase: identity get-role-permission --role scloud_test_identity_role --permission testsdks:*:identity.groups.read
-REQUEST URL:identity/v3/roles/scloud_test_identity_role/permissions/testsdks:%2A:identity.groups.read
+#testcase: identity get-role-permission --role scloud_test_identity_role --permission gtestsdks:*:identity.groups.read
+REQUEST URL:identity/v3/roles/scloud_test_identity_role/permissions/gtestsdks:%2A:identity.groups.read
 REQUEST BODY:<nil>
 
 #testcase: identity get-group-role --group scloud_test_identity_group --role scloud_test_identity_role
@@ -97,8 +97,8 @@ REQUEST BODY:<nil>
 REQUEST URL:identity/v3/validate?include=tenant%2Cprincipal
 REQUEST BODY:<nil>
 
-#testcase: identity remove-role-permission --role scloud_test_identity_role --permission testsdks:*:identity.groups.read
-REQUEST URL:identity/v3/roles/scloud_test_identity_role/permissions/testsdks:%2A:identity.groups.read
+#testcase: identity remove-role-permission --role scloud_test_identity_role --permission gtestsdks:*:identity.groups.read
+REQUEST URL:identity/v3/roles/scloud_test_identity_role/permissions/gtestsdks:%2A:identity.groups.read
 REQUEST BODY:<nil>
 
 #testcase: identity remove-group-member --group scloud_test_identity_group --member test1@splunk.com

@@ -7,7 +7,7 @@ kvstore list-records --collection gomod1582754557.gointegdskvidx_1582754557
 kvstore insert-records --collection gomod1582754557.gointegdskvidx_1582754557 --body "[{\"capacity_gb\": 8},{\"capacity_gb\": 7}]"
 kvstore put-record --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"  --body "{\"capacity_gb\": 8}"
 kvstore query-records --collection gomod1582754557.gointegdskvidx_1582754557
-kvstore get-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --k
+kvstore get-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"
 kvstore delete-record-by-key --collection gomod1582754557.gointegdskvidx_1582754557 --key "5e58525673875400011ffb13"
 kvstore delete-records --collection gomod1582754557.gointegdskvidx_1582754557
 

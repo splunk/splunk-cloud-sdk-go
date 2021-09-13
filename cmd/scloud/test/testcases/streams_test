@@ -1,17 +1,17 @@
-streams compile --input-datafile testcases/test_stream_compile.json
+streams compile --input-datafile testcases/test_stream_compile.spl
 
-streams create-pipeline --name passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
+streams create-pipeline --name test-passthrough --input-datafile testcases/test_stream_create_pipeline.json --bypass-validation true --description "A passthrough pipeline"
 streams validate-pipeline --input-datafile testcases/test_stream_validate_pipeline.json
-streams update-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f  --input-datafile testcases/test_stream_patch_pipeline.json --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
-streams patch-pipeline --id 417fb4ad-d264-4920-8028-7d4cba20528f --name passthrough --input-datafile testcases/test_stream_patch_pipeline.json --bypass-validation true --description "Patched pipeline"
+streams update-pipeline  --id 57cc9796-bb08-48dd-9f0e-f269fc762eda  --input-datafile testcases/test_stream_patch_pipeline.json --description "Updated Integration Test Pipeline testPipelinfe1582068339" --name "updatedtestPipelinfe1582068339"
+streams patch-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda --name passthrough --input-datafile testcases/test_stream_patch_pipeline.json --bypass-validation true --description "Patched pipeline"
 
-streams reactivate-pipeline  --id 417fb4ad-d264-4920-8028-7d4cba20528f
+streams reactivate-pipeline  --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
 
 streams list-pipelines
-streams get-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+streams get-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
 streams get-pipelines-status
-streams activate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
-streams deactivate-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
+streams activate-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
+streams deactivate-pipeline --id 57cc9796-bb08-48dd-9f0e-f269fc762eda
 streams delete-pipeline --id 280afcdd-cca1-4cff-b643-9d3295a70075
 
 streams list-connectors
@@ -27,7 +27,7 @@ streams get-registry --local false
 
 streams create-template --input-datafile testcases/test_stream_create_template.json --name testTemplate1582068227 --description "integration test template"
 streams list-templates
-streams get-template --template-id a9b0496e-ef7c-11e9-81b4-2a2ae2dbcce4
+streams get-template --template-id 680db4a4-d733-428a-a0a0-9eac9f3e8252
 
 #Deprecated in v3beta1
 streams create-group --input-datafile testcases/test_stream_create_group.json

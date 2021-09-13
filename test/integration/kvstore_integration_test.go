@@ -194,14 +194,20 @@ func TestGetRecordByKey(t *testing.T) {
 
 	keys := createTestRecord(t, kvCollection)
 
-	result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, keys[0])
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-	assert.NotNil(t, (*result)["_key"])
-	assert.Equal(t, (*result)["capacity_gb"], float64(8))
-	assert.Equal(t, (*result)["description"], "This is a tiny amount of GB")
-	assert.Equal(t, (*result)["size"], "tiny")
+	found := false
+	// Look for a particular entry for tiny size, order of records is not guaranteed
+	for _, k := range keys {
+		result, err := getClient(t).KVStoreService.GetRecordByKey(kvCollection, k)
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		assert.NotNil(t, (*result)["_key"])
+		if (*result)["size"] == "tiny" {
+			found = true
+			assert.Equal(t, (*result)["capacity_gb"], float64(8))
+			assert.Equal(t, (*result)["description"], "This is a tiny amount of GB")
+		}
+	}
+	require.True(t, found, "No record for tiny entry was found")
 }
 
 // Test DeleteRecords() kvstore service endpoint based on a key

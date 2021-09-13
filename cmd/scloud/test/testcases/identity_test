@@ -15,12 +15,12 @@ identity list-group-roles --group scloud_test_identity_group
 
 identity add-group-member --group scloud_test_identity_group --name test1@splunk.com
 identity add-group-role --group scloud_test_identity_group --name scloud_test_identity_role
-identity add-role-permission --role scloud_test_identity_role --body testsdks:*:identity.groups.read
+identity add-role-permission --role scloud_test_identity_role --body gtestsdks:*:identity.groups.read
 
 identity get-role --role scloud_test_identity_role
 identity get-principal --principal srv-ssc-mt32intg@splunkcorp.com
 
-identity get-role-permission --role scloud_test_identity_role --permission testsdks:*:identity.groups.read
+identity get-role-permission --role scloud_test_identity_role --permission gtestsdks:*:identity.groups.read
 identity get-group-role --group scloud_test_identity_group --role scloud_test_identity_role
 
 identity get-group-member --group scloud_test_identity_group --member test1@splunk.com
@@ -33,7 +33,7 @@ identity list-members
 
 identity validate-token --include tenant,principal
 
-identity remove-role-permission --role scloud_test_identity_role --permission testsdks:*:identity.groups.read
+identity remove-role-permission --role scloud_test_identity_role --permission gtestsdks:*:identity.groups.read
 
 identity remove-group-member --group scloud_test_identity_group --member test1@splunk.com
 identity remove-group-role --group scloud_test_identity_group --role scloud_test_identity_role

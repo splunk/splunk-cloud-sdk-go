@@ -93,21 +93,6 @@ func TestIntegrationCreatePipeline(t *testing.T) {
 	assert.NotEmpty(t, pipeline.Data.Edges[0].TargetNode)
 
 	require.NotEmpty(t, pipeline.Data.Nodes)
-	//require.Equal(t, 2, len(pipeline.Data.Nodes))
-
-	op := pipeline.Data.Nodes[0].Op
-	resolvedId := pipeline.Data.Nodes[0].ResolvedId
-	assert.NotEmpty(t, op)
-	assert.NotEmpty(t, resolvedId)
-	assert.Equal(t, "read_splunk_firehose", op)
-	assert.Equal(t, "read_splunk_firehose", *resolvedId)
-
-	op = pipeline.Data.Nodes[1].Op
-	assert.NotEmpty(t, op)
-	assert.Equal(t, "write_index", op)
-	assert.Empty(t, pipeline.Data.Nodes[1].Attributes)
-	assert.Equal(t, nil, pipeline.Data.Nodes[1].Attributes["module"])
-	assert.Equal(t, nil, pipeline.Data.Nodes[1].Attributes["dataset"])
 }
 
 // Test ActivatePipeline streams endpoint
@@ -139,7 +124,9 @@ func TestIntegrationActivatePipeline(t *testing.T) {
 	pipeline, err = getSdkClient(t).StreamsService.GetPipeline(*pipeline.Id, nil)
 	require.Empty(t, err)
 	require.NotEmpty(t, pipeline)
-	assert.Equal(t, streams.PipelineResponseStatusActivated, *pipeline.Status)
+	activeOrActivating := (*pipeline.Status == streams.PipelineResponseStatusActivated) ||
+		(*pipeline.Status == streams.PipelineResponseStatusActivating)
+	assert.True(t, activeOrActivating, "Pipeline status not "+streams.PipelineResponseStatusActivated+" nor "+streams.PipelineResponseStatusActivating+" status found:"+*pipeline.Status)
 	assert.Equal(t, pipelineName, *pipeline.Name)
 	assert.Equal(t, testPipelineDescription, *pipeline.Description)
 }
@@ -284,38 +271,6 @@ func TestIntegrationGetPipelinesStatus(t *testing.T) {
 	assert.Equal(t, int64(1), *result.Total)
 	require.NotEmpty(t, result.Items)
 }
-
-// MergePipelines endpoint is deprecated in v3beta1
-// Test MergePipelines streams endpoint
-//func TestIntegrationMergePipelines(t *testing.T) {
-//
-//	// Create two test upl pipelines
-//	pipeline1 := createTestUplPipeline(t)
-//	require.NotEmpty(t, pipeline1)
-//
-//	pipeline2 := createTestUplPipeline(t)
-//	require.NotEmpty(t, pipeline2)
-//	require.NotEmpty(t, pipeline2.Edges)
-//	require.Equal(t, 1, len(pipeline2.Edges))
-//	assert.NotEmpty(t, pipeline2.Edges[0].TargetPort)
-//	assert.NotEmpty(t, pipeline2.Edges[0].TargetNode)
-//
-//	mergeRequest := streams.PipelinesMergeRequest{
-//		InputTree:  pipeline1,
-//		MainTree:   pipeline2,
-//		TargetPort: pipeline2.Edges[0].TargetPort,
-//		TargetNode: pipeline2.Edges[0].TargetNode,
-//	}
-//
-//	// Merge and verify the status of the merged UPL pipelines
-//	result, err := getSdkClient(t).StreamsService.MergePipelines(mergeRequest)
-//	require.NoError(t, err)
-//	require.NotEmpty(t, result)
-//	require.NotEmpty(t, result.Edges)
-//	require.Equal(t, 3, len(result.Edges))
-//	require.NotEmpty(t, result.Nodes)
-//	require.Equal(t, 4, len(result.Nodes))
-//}
 
 // Test UpdatePipeline streams endpoint
 func TestIntegrationUpdatePipeline(t *testing.T) {
@@ -462,11 +417,6 @@ func TestIntegrationGetOutputSchema(t *testing.T) {
 	//Get output schema
 	_, err1 := getClient(t).StreamsService.GetOutputSchema(streams.GetOutputSchemaRequest{NodeUuid: nodeUID, SourcePortName: port, UplJson: uplPipeline})
 	require.Empty(t, err1)
-	//TODO(shilpa) Follow up when INGEST-8089 is investigated. Currently the output from this call could be empty sometimes
-	//require.NotEmpty(t, result1)
-	//assert.Equal(t, *result1.Parameters[0].Type, "field")
-	//assert.Equal(t, *result1.Parameters[0].FieldName, "timestamp")
-	//assert.Equal(t, *result1.Parameters[0].Parameters[0].Type, "long")
 }
 
 // Test Get Registry endpoint
@@ -551,24 +501,6 @@ func TestIntegrationGetLatestPreviewSessionMetrics(t *testing.T) {
 	// Returns 204 and no response
 	err = getSdkClient(t).StreamsService.StopPreview(*response.PreviewId)
 	require.NoError(t, err)
-
-	////Get latest preview session metrics
-	////Validation of the metrics output is not reliable since its real-time data, no guarantees if metric data will be populated at that instant of time
-	////Attempt the call to get metrics 5 times and validate if there is data returned.
-	//cnt := 0
-	//for cnt < 5 {
-	//	result1, err1 := getClient(t).StreamsService.GetPipelineLatestMetrics(strconv.FormatInt(*response.PreviewId, 10))
-	//	require.Empty(t, err1)
-	//	require.NotEmpty(t, result1)
-	//	if len(result1.Nodes) > 0 {
-	//		for key, element := range result1.Nodes {
-	//			assert.NotEmpty(t, key)
-	//			assert.NotEmpty(t, element.Metrics)
-	//		}
-	//	}
-	//	time.Sleep(20 * time.Second)
-	//	cnt++
-	//}
 }
 
 // Test Get Connectors
@@ -579,7 +511,7 @@ func TestIntegrationListConnectors(t *testing.T) {
 }
 
 // Test CRUD Connections
-func TestIntegrationCRUEConnections(t *testing.T) {
+func TestIntegrationCRUDConnections(t *testing.T) {
 	connectorId := "879837b0-cabf-4bc2-8589-fcc4dad753e7" //Splunk Enterprise Connector
 	data := make(map[string]interface{})
 	data["splunk-url"] = "https://hostname.port"
@@ -710,17 +642,6 @@ func TestIntegrationCreateTemplate(t *testing.T) {
 	require.Equal(t, 1, len(template.Data.Edges))
 	assert.NotEmpty(t, template.Data.Edges[0].SourceNode)
 	assert.NotEmpty(t, template.Data.Edges[0].TargetNode)
-
-	require.NotEmpty(t, template.Data.Nodes)
-	require.Equal(t, 2, len(template.Data.Nodes))
-
-	assert.NotEmpty(t, template.Data.Nodes[0].Id)
-	assert.Equal(t, "read_splunk_firehose", template.Data.Nodes[0].Op)
-
-	dataNode2 := (*template.Data).Nodes[1]
-	assert.NotEmpty(t, dataNode2.Id)
-	assert.Equal(t, "write_index", dataNode2.Op)
-	assert.Empty(t, dataNode2.Attributes)
 }
 
 // Test GetTemplates streams endpoint
@@ -822,123 +743,6 @@ func TestIntegrationDeleteTemplate(t *testing.T) {
 	assert.Equal(t, "template-id-not-found", httpErr.Code)
 }
 
-//Get Groups Endpoint is deprecated in v3beta1
-
-// Test Get Groups endpoint
-//func TestIntegrationGetGroups(t *testing.T) {
-//	request := streams.GetRegistryQueryParams{}.SetLocal(false)
-//	result, err := getSdkClient(t).StreamsService.GetRegistry(&request)
-//	require.Empty(t, err)
-//	require.NotEmpty(t, result)
-//	//assert.NotEmpty(t, (result.Functions)[0].Id)
-//	//assert.NotEmpty(t, (result.Categories)[0].Id)
-//	//assert.NotEmpty(t, (result.Types)[0].Type)
-//
-//	pipelineName := fmt.Sprintf("testPipelineef%d", testutils.RunSuffix)
-//	pipeline, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, pipelineName, testPipelineDescription))
-//	require.NoError(t, err)
-//	defer cleanupPipeline(getSdkClient(t), *pipeline.Id, *pipeline.Name)
-//
-//	group, err := getSdkClient(t).StreamsService.CreateGroup(streams.GroupRequest{
-//		Arguments: []streams.GroupArgumentsNode{{GroupArg: "time", Type: "long", Position: 0}},
-//		Name:      "test-fn",
-//		Ast:       *pipeline.Data,
-//	})
-//	require.NoError(t, err)
-//
-//	//cnt := 0
-//	//temp := 0
-//	//for cnt < len(result.Functions) {
-//	//	if result.Functions[cnt].ResolvedId != nil && strings.Contains(*result.Functions[cnt].ResolvedId, "receive-from-ingest-rest-api") {
-//	//		temp = cnt
-//	//		break
-//	//
-//	//	}
-//	//	cnt++
-//	//}
-//
-//	//assert.True(t, cnt < len(result.Functions))
-//
-//	//applicationData := ((result.Functions)[temp].Attributes)["application"]
-//	//application, ok := ((result.Functions)[temp].Attributes)["application"].(map[string]interface{})
-//	//assert.NotEmpty(t, applicationData)
-//	//require.True(t, ok)
-//	//groupId, ok := application["groupId"].(string)
-//	//require.True(t, ok)
-//
-//	test, err := getSdkClient(t).StreamsService.GetGroup(*group.GroupId)
-//	require.Empty(t, err)
-//	require.NotEmpty(t, test)
-//	assert.NotEmpty(t, *test.Name)
-//	assert.NotEmpty(t, *test.OutputType)
-//}
-
-// Expand Groups Endpoint is deprecated in v3beta1
-////Test the Create Expanded version of the group Endpoint
-//func TestIntegrationCreateExpandedGroup(t *testing.T) {
-//	local := make(url.Values)
-//	local.Add("local", `true`)
-//	//GetRegistry to retrieve the groupID
-//	pipeline1, err := getSdkClient(t).StreamsService.CreatePipeline(makePipelineRequest(t, "mypipeline", testPipelineDescription))
-//	require.NoError(t, err)
-//	defer cleanupPipeline(getSdkClient(t), *pipeline1.Id, *pipeline1.Name)
-//
-//	result, err := getSdkClient(t).StreamsService.GetUPLRegistry((&streams.GetUPLRegistryQueryParams{}.SetLocal(true))
-//	require.Empty(t, err)
-//	require.NotEmpty(t, result)
-//	assert.NotEmpty(t, (result.Functions)[0].Categories)
-//	assert.NotEmpty(t, (result.Categories)[0].Id)
-//	assert.NotEmpty(t, (result.Types)[0].Type)
-//
-//	cnt := 0
-//	temp := 0
-//	for cnt < len(result.Functions) {
-//		fmt.Println(*result.Functions[cnt].ResolvedId)
-//		if result.Functions[cnt].ResolvedId != nil && strings.Contains(*result.Functions[cnt].ResolvedId, "read-splunk-firehose()") {
-//			temp = cnt
-//			break
-//
-//		}
-//		cnt++
-//	}
-//
-//	assert.True(t, cnt < len(result.Functions))
-//	application, ok := ((result.Functions)[temp].Attributes)["application"].(map[string]interface{})
-//	require.True(t, ok)
-//	groupId, ok := application["groupId"].(string)
-//	require.True(t, ok)
-//
-//	assert.NotEmpty(t, groupId)
-//
-//	//GetGroupID to get the Group Function ID
-//
-//	result1, err := getSdkClient(t).StreamsService.GetGroupById(groupId)
-//	require.Empty(t, err)
-//	require.NotEmpty(t, result1)
-//	assert.NotEmpty(t, *result1.Name)
-//	assert.NotEmpty(t, *result1.CreateUserId)
-//	assert.NotEmpty(t, *result1.OutputType)
-//
-//	//functionID := (result1.Mappings)[0].FunctionId
-//	//
-//	//type argumentsMap map[string]interface{}
-//	//arguments := argumentsMap{"group_arg": "connection", "function_arg": "right"}
-//
-//	//result2, err := getClient(t).StreamsService.CreateExpandedGroup(groupId, arguments, functionID)
-//	//require.Empty(t, err)
-//	//require.NotEmpty(t, result2)
-//	//assert.NotEmpty(t, result2.Version)
-//	//assert.NotEmpty(t, result2.RootNode)
-//	//
-//	//assert.NotEmpty(t, (result2.Nodes)[0].Id)
-//	//
-//	//assert.NotEmpty(t, (result2.Nodes)[0].Id)
-//	//
-//	//assert.Empty(t, (result2.Nodes)[0].Attributes)
-//	//assert.NotEmpty(t, result2.Edges[0].SourceNode)
-//	//assert.NotEmpty(t, result2.Edges[0].TargetNode)
-//}
-
 //makePipelineRequest is a helper function to make a PipelineRequest model
 func makePipelineRequest(t *testing.T, name string, description string) streams.PipelineRequest {
 	result := createTestSplPipeline(t)
@@ -955,7 +759,7 @@ func makePipelineRequest(t *testing.T, name string, description string) streams.
 // createTestUplPipeline is a helper function to create a test UPL JSON from a test DSL.
 func createTestSplPipeline(t *testing.T) streams.Pipeline {
 	var indexName = "main"
-	var spl = "| from read_splunk_firehose() | into write_index(\"\", \"" + indexName + "\");"
+	var spl = `| from splunk_firehose() | into index("index", "` + indexName + `");`
 	result, err := getSdkClient(t).StreamsService.Compile(streams.SplCompileRequest{Spl: spl})
 	require.Empty(t, err)
 	require.NotEmpty(t, result)
