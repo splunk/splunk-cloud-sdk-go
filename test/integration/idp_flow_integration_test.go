@@ -17,7 +17,9 @@
 package integration
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/splunk/splunk-cloud-sdk-go/sdk"
 	"github.com/splunk/splunk-cloud-sdk-go/services"
@@ -350,7 +352,6 @@ func TestBadTokenRetryWorkflow(t *testing.T) {
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of invalid device code
 // TODO more test cases in SCP-33667
 func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
-	t.Skip("Skip pending TODO mentioned above")
 	hostURLConfig := idp.HostURLConfig{TenantScoped: true, Tenant: testutils.TestTenant, Region: testutils.TestRegion}
 	tr := idp.NewDeviceFlowRetriever(NativeClientID, IdpHostTenantScoped, "", hostURLConfig)
 	result, err := tr.Client.GetDeviceCodes(NativeClientID, "offline_access profile email")
@@ -361,7 +362,10 @@ func TestIntegrationDeviceWorkflowInvalidCode(t *testing.T) {
 	ctx, err := tr.GetTokenContext()
 	assert.Nil(t, ctx)
 	require.NotNil(t, err)
-	assert.Contains(t, err.Error(), "failed to get token in Device flow: code expired: 400")
+	assert.Contains(t, err.Error(), "failed to get token in Device flow: failed to get successful response from tenant token endpoint")
+	domain := strings.TrimPrefix(IdpHostTenantScoped, "https://")
+	assert.Contains(t, err.Error(), fmt.Sprintf("https://%s.%s/%s/token", testutils.TestTenant, domain, testutils.TestTenant))
+	assert.Contains(t, err.Error(), "request id:")
 }
 
 // TestIntegrationDeviceWorkflow tests getting an access token with device flow and failing because of timeout

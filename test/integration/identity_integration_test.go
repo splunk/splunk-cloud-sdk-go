@@ -320,7 +320,7 @@ func TestCRUDMembers(t *testing.T) {
 }
 
 func TestPrincipals(t *testing.T) {
-	client := getClient(t)
+	client := getClientWithTimeout(t, testutils.LongTestTimeout)
 
 	principals, err := client.IdentityService.ListPrincipals(nil)
 	require.NoError(t, err)

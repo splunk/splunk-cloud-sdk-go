@@ -24,6 +24,7 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/splunk/splunk-cloud-sdk-go/services/search"
 
@@ -78,11 +79,15 @@ func TestSDKClientInit(t *testing.T) {
 }
 
 func getClient(t *testing.T) *sdk.Client {
+	return getClientWithTimeout(t, testutils.TestTimeOut)
+}
+
+func getClientWithTimeout(t *testing.T, timeout time.Duration) *sdk.Client {
 	client, err := sdk.NewClient(&services.Config{
 		Token:   testutils.TestAuthenticationToken,
 		Host:    testutils.TestSplunkCloudHost,
 		Tenant:  testutils.TestTenant,
-		Timeout: testutils.TestTimeOut,
+		Timeout: timeout,
 	})
 	require.Emptyf(t, err, "error calling service.NewClient(): %s", err)
 	return client
