@@ -70,6 +70,8 @@ const (
 	ScopePhone OIDCScope = "phone"
 	// ScopeOffline - This scope value requests that an OAuth 2.0 Refresh Token be issued that can be used to obtain an Access Token that grants access to the End-User's UserInfo Endpoint even when the End-User is not present (not logged in).
 	ScopeOffline OIDCScope = "offline_access"
+	// RequestIDHeader uniquely identifies a request in the platform, found in response headers
+	RequestIDHeader string = "X-Request-Id"
 )
 
 var (
@@ -370,6 +372,18 @@ func getRegionScopedHost(tenantScoped bool, region string, hostURL string) (stri
 	return hostURL, err
 }
 
+// getRequestID retrieves request id from response header if exists
+func getRequestID(response *http.Response) string {
+	requestID := "00000000-0000-0000-0000-000000000000"
+	if response == nil {
+		return requestID
+	}
+	if rid := response.Header.Get(RequestIDHeader); rid != "" {
+		requestID = rid
+	}
+	return requestID
+}
+
 // ClientFlow will authenticate using the "client credentials" flow.
 func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, error) {
 	form := url.Values{
@@ -383,7 +397,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 		hostURL = c.OverrideAuthURL
 	}
 	//Tenant scoped or region scoped hostname based on non-system or system tenant
-	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+	if c.hostURLConfig.TenantScoped && c.OverrideAuthURL == "" {
 		if c.hostURLConfig.Tenant != "system" {
 			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
 			if err != nil {
@@ -399,20 +413,22 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 		}
 	}
 
-	request, err := newFormPost(c.makeURL(hostURL, c.TokenPath), form)
+	tokenURL := c.makeURL(hostURL, c.TokenPath)
+	request, err := newFormPost(tokenURL, form)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create request to token endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to create request to token endpoint url: %s", tokenURL))
 	}
 	request.SetBasicAuth(clientID, clientSecret)
 	response, err := newHTTPClient(c.Insecure).Do(request)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get response from token endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to get response from token endpoint url: %s", tokenURL))
 	}
+	requestID := getRequestID(response)
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		data, err := load(response.Body)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
+			return nil, errors.Wrap(err, fmt.Sprintf("failed to parse response body from token endpoint url: %s request id: %s", tokenURL, requestID))
 		}
 		msg := response.Status
 		if data != nil {
@@ -421,7 +437,7 @@ func (c *Client) ClientFlow(clientID, clientSecret, scope string) (*Context, err
 				msg += fmt.Sprintf("%s:%s \n", k, v)
 			}
 		}
-		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
+		return nil, errors.Wrap(errors.New(msg), fmt.Sprintf("failed to get a successful response from token endpoint url: %s request id: %s", tokenURL, requestID))
 	}
 	return decode(response)
 }
@@ -434,26 +450,28 @@ func (c *Client) GetCsrfToken() (string, []*http.Cookie, error) {
 		hostURL = c.OverrideAuthURL
 	}
 
-	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+	if c.hostURLConfig.TenantScoped && c.OverrideAuthURL == "" {
 		hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
 		if err != nil {
 			return "", nil, errors.Wrap(err, "error in creating region scoped url")
 		}
 	}
 
-	response, err := get(c.makeURL(hostURL, c.CsrfTokenPath), nil, nil, c.Insecure)
+	tokenURL := c.makeURL(hostURL, c.CsrfTokenPath)
+	response, err := get(tokenURL, nil, nil, c.Insecure)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "failed to get valid response from csrfToken endpoint")
+		return "", nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from csrfToken endpoint url: %s", tokenURL))
 	}
+	requestID := getRequestID(response)
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return "", nil, errors.Wrap(errors.New(response.Status), "unexpected status response from csrfToken endpoint")
+		return "", nil, errors.Wrap(errors.New(response.Status), fmt.Sprintf("unexpected status response from csrfToken endpoint url: %s request id: %s", tokenURL, requestID))
 	}
 
 	csrfTokenCookie := getCookie(response.Cookies(), "csrf")
 	if csrfTokenCookie == nil {
-		return "", nil, errors.Wrap(errors.New("missing cookies"), "failed to get successful response from csrfToken endpoint")
+		return "", nil, errors.Wrap(errors.New("missing cookies"), fmt.Sprintf("failed to get successful response from csrfToken endpoint url: %s request id: %s", tokenURL, requestID))
 	}
 
 	return csrfTokenCookie.Value, response.Cookies(), nil
@@ -478,21 +496,23 @@ func (c *Client) GetSessionToken(username, password string) (string, []*http.Coo
 		hostURL = c.OverrideAuthURL
 	}
 
-	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+	if c.hostURLConfig.TenantScoped && c.OverrideAuthURL == "" {
 		hostURL, err = getRegionScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Region, c.ProviderHost)
 		if err != nil {
 			return "", nil, errors.Wrap(err, "error in creating region scoped url")
 		}
 	}
 
-	response, err := post(c.makeURL(hostURL, c.AuthnPath), body, c.Insecure, cookies...)
+	authnURL := c.makeURL(hostURL, c.AuthnPath)
+	response, err := post(authnURL, body, c.Insecure, cookies...)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "failed to get valid response from authn endpoint")
+		return "", nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from authn endpoint url: %s", authnURL))
 	}
+	requestID := getRequestID(response)
 	defer response.Body.Close()
 	data, err := load(response.Body)
 	if err != nil {
-		return "", nil, errors.Wrap(err, "failed to parse response body from authn endpoint")
+		return "", nil, errors.Wrap(err, fmt.Sprintf("failed to parse response body from authn endpoint url: %s request id: %s", authnURL, requestID))
 	}
 	if response.StatusCode != http.StatusOK {
 		msg := response.Status
@@ -502,14 +522,14 @@ func (c *Client) GetSessionToken(username, password string) (string, []*http.Coo
 				msg += fmt.Sprintf("%s:%s \n", k, v)
 			}
 		}
-		return "", nil, errors.Wrap(errors.New(msg), "unexpected status response from authn endpoint")
+		return "", nil, errors.Wrap(errors.New(msg), fmt.Sprintf("unexpected status response from authn endpoint url: %s request id: %s", authnURL, requestID))
 	}
 	status, err := gets(data, "status")
 	if err != nil {
-		return "", nil, errors.Wrap(err, "unable to get status data from authn endpoint")
+		return "", nil, errors.Wrap(err, fmt.Sprintf("unable to get status data from authn endpoint url: %s request id: %s", authnURL, requestID))
 	}
 	if status != "SUCCESS" { // eg: LOCKED_OUT
-		return "", nil, errors.Wrap(errors.New(status), "unexpected status data from authn endpoint")
+		return "", nil, errors.Wrap(errors.New(status), fmt.Sprintf("unexpected status data from authn endpoint url: %s request id: %s", authnURL, requestID))
 	}
 	// get session token from the cookies (Keycloak session tokens are passed as cookies)
 	var sessionToken string
@@ -524,7 +544,7 @@ func (c *Client) GetSessionToken(username, password string) (string, []*http.Coo
 		// try data (OKTA session token)
 		sessionToken, err = gets(data, "sessionToken")
 		if err != nil {
-			return "", nil, errors.Wrap(err, "failed to parse session token data from authn endpoint response")
+			return "", nil, errors.Wrap(err, fmt.Sprintf("failed to parse session token data from authn endpoint response url: %s request id: %s", authnURL, requestID))
 		}
 	}
 	return sessionToken, sessionCookies, nil
@@ -583,7 +603,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		hostURL = c.OverrideAuthURL
 	}
 
-	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+	if c.hostURLConfig.TenantScoped && c.OverrideAuthURL == "" {
 		if c.hostURLConfig.Tenant != "system" {
 			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
 			if err != nil {
@@ -597,24 +617,26 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		}
 	}
 
-	response, err := get(c.makeURL(hostURL, c.AuthorizePath), params, sessionCookies, c.Insecure)
+	authzURL := c.makeURL(hostURL, c.AuthorizePath)
+	response, err := get(authzURL, params, sessionCookies, c.Insecure)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get valid response from authorize endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from authorize endpoint url: %s", authzURL))
 	}
+	requestID := getRequestID(response)
 	if response.StatusCode != http.StatusFound {
-		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from authorize endpoint")
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("failed to get successful response from authorize endpoint url: %s request id: %s", authzURL, requestID))
 	}
 
 	// retrieve the authorization code from the redirect url query string
 	location := response.Header.Get("Location")
 	locationURL, err := url.Parse(location)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse location header")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to parse location header: '%s' url: %s request id: %s", location, authzURL, requestID))
 	}
 	code := locationURL.Query().Get("code")
 	if code == "" {
 		err := errors.New("")
-		return nil, errors.Wrap(err, "failed to retrieve valid authorization code from the redirect url")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to retrieve valid authorization code from the redirect url: %s request url: %s request id: %s", locationURL, authzURL, requestID))
 	}
 
 	// exchange authorization code for token(s)
@@ -630,7 +652,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 	if c.OverrideAuthURL != "" {
 		hostURL = c.OverrideAuthURL
 	}
-	if c.hostURLConfig.TenantScoped == true && c.OverrideAuthURL == "" {
+	if c.hostURLConfig.TenantScoped && c.OverrideAuthURL == "" {
 		if c.hostURLConfig.Tenant != "system" {
 			hostURL, err = getTenantScopedHost(c.hostURLConfig.TenantScoped, c.hostURLConfig.Tenant, c.ProviderHost)
 			if err != nil {
@@ -646,15 +668,17 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 		}
 	}
 
-	response, err = formPost(c.makeURL(hostURL, c.TokenPath), form, c.Insecure)
+	tokenURL := c.makeURL(hostURL, c.TokenPath)
+	response, err = formPost(tokenURL, form, c.Insecure)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from token endpoint url: %s", tokenURL))
 	}
+	requestID = getRequestID(response)
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		data, err := load(response.Body)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to parse response body from token endpoint")
+			return nil, errors.Wrap(err, fmt.Sprintf("failed to parse response body from token endpoint url: %s request id: %s", tokenURL, requestID))
 		}
 		msg := response.Status
 		if data != nil {
@@ -663,7 +687,7 @@ func (c *Client) PKCEFlow(clientID, redirectURI, scope, username, password strin
 				msg += fmt.Sprintf("%s:%s \n", k, v)
 			}
 		}
-		return nil, errors.Wrap(errors.New(msg), "failed to get a successful response from token endpoint")
+		return nil, errors.Wrap(errors.New(msg), fmt.Sprintf("failed to get a successful response from token endpoint url: %s request id: %s", tokenURL, requestID))
 
 	}
 	return decode(response)
@@ -703,13 +727,15 @@ func (c *Client) Refresh(clientID, scope, refreshToken string) (*Context, error)
 	} else if c.hostURLConfig.Tenant == "system" {
 		c.TokenPath = defaultTenantTokenPath
 	}
-	response, err := formPost(c.makeURL(hostURL, c.TokenPath), form, c.Insecure)
+	tokenURL := c.makeURL(hostURL, c.TokenPath)
+	response, err := formPost(tokenURL, form, c.Insecure)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get valid response from token endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from token endpoint url: %s", tokenURL))
 	}
+	requestID := getRequestID(response)
 	if response.StatusCode != http.StatusOK {
-		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from token endpoint")
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("failed to get successful response from token endpoint url: %s request id: %s", tokenURL, requestID))
 	}
 	return decode(response)
 }
@@ -748,17 +774,19 @@ func (c *Client) GetDeviceCodes(clientID, scope string) (*DeviceCodeInfo, error)
 		c.DevicePath = defaultDevicePath
 	}
 
-	response, err := formPost(c.makeURL(hostURL, c.DevicePath), form, c.Insecure)
+	deviceURL := c.makeURL(hostURL, c.DevicePath)
+	response, err := formPost(deviceURL, form, c.Insecure)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get valid response from device endpoint")
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from device endpoint url: %s", deviceURL))
 	}
+	requestID := getRequestID(response)
 	if response.StatusCode != http.StatusOK {
-		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from device endpoint")
+		return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("failed to get successful response from device endpoint url: %s request id: %s", deviceURL, requestID))
 	}
 
 	var info DeviceCodeInfo
 	if err := json.NewDecoder(response.Body).Decode(&info); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to decode response from device endpoint url: %s request id: %s", deviceURL, requestID))
 	}
 	return &info, nil
 }
@@ -801,15 +829,17 @@ func (c *Client) DeviceFlow(clientID, deviceCode string, expiresIn, interval int
 		c.TenantTokenPath = defaultTenantTokenPath
 	}
 	for time.Now().Before(codeExpiration) {
-		response, err = formPost(c.makeURL(hostURL, c.TenantTokenPath), form, c.Insecure)
+		tokenURL := c.makeURL(hostURL, c.TenantTokenPath)
+		response, err = formPost(tokenURL, form, c.Insecure)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to get valid response from tenant token endpoint")
+			return nil, errors.Wrap(err, fmt.Sprintf("failed to get valid response from tenant token endpoint url: %s", tokenURL))
 		}
+		requestID := getRequestID(response)
 		if response.StatusCode == http.StatusBadRequest {
 			defer response.Body.Close()
 			data, err := load(response.Body)
 			if err != nil {
-				return nil, errors.Wrap(err, "failed to parse response body from tenant token endpoint")
+				return nil, errors.Wrap(err, fmt.Sprintf("failed to parse response body from tenant token endpoint url: %s request id: %s", tokenURL, requestID))
 			}
 			switch data["error_description"] {
 			case "authorization_pending":
@@ -821,14 +851,14 @@ func (c *Client) DeviceFlow(clientID, deviceCode string, expiresIn, interval int
 				time.Sleep(pollingInterval)
 				continue
 			case "expired_token":
-				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "code expired")
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("code expired %s url: request id: %s", tokenURL, requestID))
 			case "access_denied":
-				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "access denied")
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("access denied %s url: request id: %s", tokenURL, requestID))
 			default:
-				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from tenant token endpoint")
+				return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("failed to get successful response from tenant token endpoint %s url: request id: %s", tokenURL, requestID))
 			}
 		} else if response.StatusCode != http.StatusOK {
-			return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), "failed to get successful response from tenant token endpoint")
+			return nil, errors.Wrap(errors.New(fmt.Sprintf("%v", response.StatusCode)), fmt.Sprintf("failed to get successful response from tenant token endpoint %s url: request id: %s", tokenURL, requestID))
 		} else {
 			// return decoded response if response.StatusCode = 200
 			return decode(response)
