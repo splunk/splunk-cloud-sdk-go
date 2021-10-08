@@ -310,6 +310,12 @@ func CreateIdentityProvider(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "enabled": ` + err.Error())
 	}
+	var enabledJitDefault bool
+	enabledJit := &enabledJitDefault
+	err = flags.ParseFlag(cmd.Flags(), "enabled-jit", &enabledJit)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enabled-jit": ` + err.Error())
+	}
 	var entity_descriptorDefault string
 	entity_descriptor := &entity_descriptorDefault
 	err = flags.ParseFlag(cmd.Flags(), "entity-descriptor", &entity_descriptor)
@@ -322,15 +328,15 @@ func CreateIdentityProvider(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "first-name-attribute": ` + err.Error())
 	}
+	var groups []string
+	err = flags.ParseFlag(cmd.Flags(), "groups", &groups)
+	if err != nil {
+		return fmt.Errorf(`error parsing "groups": ` + err.Error())
+	}
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
 		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.IdentityProviderConfigBodyKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
 	var last_name_attributeDefault string
 	last_name_attribute := &last_name_attributeDefault
@@ -371,8 +377,11 @@ func CreateIdentityProvider(cmd *cobra.Command, args []string) error {
 		Description: description,
 		Enabled:     enabled,
 		Id:          id,
-		Kind:        kind,
-		Title:       title,
+		Jit: &model.IdentityProviderConfigBodyJit{
+			Enabled: enabledJit,
+			Groups:  groups,
+		},
+		Title: title,
 	}
 
 	// Silence Usage
@@ -571,6 +580,71 @@ func CreateRole(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// CreateSamlClient Create a SAML client.
+func CreateSamlClient(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var allowedReplyUris []string
+	err = flags.ParseFlag(cmd.Flags(), "allowed-reply-uris", &allowedReplyUris)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allowed-reply-uris": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
+	var logoDefault string
+	logo := &logoDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo", &logo)
+	if err != nil {
+		return fmt.Errorf(`error parsing "logo": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var signOnUriDefault string
+	signOnUri := &signOnUriDefault
+	err = flags.ParseFlag(cmd.Flags(), "sign-on-uri", &signOnUri)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sign-on-uri": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.CreateSamlClientBody{
+
+		AllowedReplyUris: allowedReplyUris,
+		Description:      description,
+		DisplayName:      displayName,
+		Logo:             logo,
+		Name:             name,
+		SignOnUri:        signOnUri,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.CreateSamlClient(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // DeleteGroup Deletes a group in a given tenant.
 func DeleteGroup(cmd *cobra.Command, args []string) error {
 
@@ -674,6 +748,32 @@ func DeleteRole(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	err = client.IdentityService.DeleteRole(role)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteSamlClient Deletes the SAML client.
+func DeleteSamlClient(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var samlClient string
+	err = flags.ParseFlag(cmd.Flags(), "saml-client", &samlClient)
+	if err != nil {
+		return fmt.Errorf(`error parsing "saml-client": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.IdentityService.DeleteSamlClient(samlClient)
 	if err != nil {
 		return err
 	}
@@ -822,7 +922,6 @@ func GetMember(cmd *cobra.Command, args []string) error {
 }
 
 // GetPrincipal Returns the details of a principal, including its tenant membership and any relevant profile information.
-
 func GetPrincipal(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
@@ -958,6 +1057,32 @@ func GetRolePermission(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.IdentityService.GetRolePermission(role, permission)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetSamlClient Returns the SAML client.
+func GetSamlClient(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var samlClient string
+	err = flags.ParseFlag(cmd.Flags(), "saml-client", &samlClient)
+	if err != nil {
+		return fmt.Errorf(`error parsing "saml-client": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.GetSamlClient(samlClient)
 	if err != nil {
 		return err
 	}
@@ -1174,7 +1299,6 @@ func ListMemberGroups(cmd *cobra.Command, args []string) error {
 }
 
 // ListMemberPermissions Returns a set of permissions granted to the member within the tenant.
-
 func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1228,7 +1352,6 @@ func ListMemberPermissions(cmd *cobra.Command, args []string) error {
 }
 
 // ListMemberRoles Returns a set of roles that a given member holds within the tenant.
-
 func ListMemberRoles(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1324,7 +1447,6 @@ func ListMembers(cmd *cobra.Command, args []string) error {
 }
 
 // ListPrincipals Returns the list of principals that the Identity service knows about.
-
 func ListPrincipals(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
@@ -1503,6 +1625,25 @@ func ListRoles(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// ListSamlClients List SAML clients.
+func ListSamlClients(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.ListSamlClients()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // RemoveGroupMember Removes the member from a given group.
 func RemoveGroupMember(cmd *cobra.Command, args []string) error {
 
@@ -1655,7 +1796,6 @@ func ResetPassword(cmd *cobra.Command, args []string) error {
 }
 
 // RevokePrincipalAuthTokens Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
-
 func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClientSystemTenant()
@@ -1759,6 +1899,12 @@ func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "enabled": ` + err.Error())
 	}
+	var enabledJitDefault bool
+	enabledJit := &enabledJitDefault
+	err = flags.ParseFlag(cmd.Flags(), "enabled-jit", &enabledJit)
+	if err != nil {
+		return fmt.Errorf(`error parsing "enabled-jit": ` + err.Error())
+	}
 	var entity_descriptorDefault string
 	entity_descriptor := &entity_descriptorDefault
 	err = flags.ParseFlag(cmd.Flags(), "entity-descriptor", &entity_descriptor)
@@ -1771,6 +1917,11 @@ func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "first-name-attribute": ` + err.Error())
 	}
+	var groups []string
+	err = flags.ParseFlag(cmd.Flags(), "groups", &groups)
+	if err != nil {
+		return fmt.Errorf(`error parsing "groups": ` + err.Error())
+	}
 	var id string
 	err = flags.ParseFlag(cmd.Flags(), "id", &id)
 	if err != nil {
@@ -1780,11 +1931,6 @@ func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
 	err = flags.ParseFlag(cmd.Flags(), "idp", &idp)
 	if err != nil {
 		return fmt.Errorf(`error parsing "idp": ` + err.Error())
-	}
-	var kind model.IdentityProviderConfigBodyKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
 	}
 	var last_name_attributeDefault string
 	last_name_attribute := &last_name_attributeDefault
@@ -1825,8 +1971,11 @@ func UpdateIdentityProvider(cmd *cobra.Command, args []string) error {
 		Description: description,
 		Enabled:     enabled,
 		Id:          id,
-		Kind:        kind,
-		Title:       title,
+		Jit: &model.IdentityProviderConfigBodyJit{
+			Enabled: enabledJit,
+			Groups:  groups,
+		},
+		Title: title,
 	}
 
 	// Silence Usage
@@ -1977,8 +2126,71 @@ func UpdateRole(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ValidateToken Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
+// UpdateSamlClient Update the SAML client.
+func UpdateSamlClient(cmd *cobra.Command, args []string) error {
 
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var allowedReplyUris []string
+	err = flags.ParseFlag(cmd.Flags(), "allowed-reply-uris", &allowedReplyUris)
+	if err != nil {
+		return fmt.Errorf(`error parsing "allowed-reply-uris": ` + err.Error())
+	}
+	var descriptionDefault string
+	description := &descriptionDefault
+	err = flags.ParseFlag(cmd.Flags(), "description", &description)
+	if err != nil {
+		return fmt.Errorf(`error parsing "description": ` + err.Error())
+	}
+	var displayNameDefault string
+	displayName := &displayNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "display-name", &displayName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "display-name": ` + err.Error())
+	}
+	var logoDefault string
+	logo := &logoDefault
+	err = flags.ParseFlag(cmd.Flags(), "logo", &logo)
+	if err != nil {
+		return fmt.Errorf(`error parsing "logo": ` + err.Error())
+	}
+	var samlClient string
+	err = flags.ParseFlag(cmd.Flags(), "saml-client", &samlClient)
+	if err != nil {
+		return fmt.Errorf(`error parsing "saml-client": ` + err.Error())
+	}
+	var signOnUriDefault string
+	signOnUri := &signOnUriDefault
+	err = flags.ParseFlag(cmd.Flags(), "sign-on-uri", &signOnUri)
+	if err != nil {
+		return fmt.Errorf(`error parsing "sign-on-uri": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.UpdateSamlClientBody{
+
+		AllowedReplyUris: allowedReplyUris,
+		Description:      description,
+		DisplayName:      displayName,
+		Logo:             logo,
+		SignOnUri:        signOnUri,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.UpdateSamlClient(samlClient, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ValidateToken Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 func ValidateToken(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

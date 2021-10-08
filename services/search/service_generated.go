@@ -40,6 +40,35 @@ func NewService(iClient services.IClient) *Service {
 }
 
 /*
+	CreateFederatedConnection - search service endpoint
+	Creates a new federated connection with information about how to connect to a remote index.
+	Parameters:
+		federatedConnectionInput
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateFederatedConnection(federatedConnectionInput FederatedConnectionInput, resp ...*http.Response) (*FederatedConnection, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: federatedConnectionInput})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb FederatedConnection
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	CreateJob - search service endpoint
 	Creates a search job.
 	Parameters:
@@ -66,6 +95,35 @@ func (s *Service) CreateJob(searchJob SearchJob, resp ...*http.Response) (*Searc
 	var rb SearchJob
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
+}
+
+/*
+	DeleteFederatedConnection - search service endpoint
+	Deletes a federated connection with the specified name (connectionName)
+	Parameters:
+		connectionName: The name of the federated connection.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteFederatedConnection(connectionName string, resp ...*http.Response) error {
+	pp := struct {
+		ConnectionName string
+	}{
+		ConnectionName: connectionName,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections/{{.ConnectionName}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
 }
 
 /*
@@ -129,6 +187,40 @@ func (s *Service) ExportResults(sid string, query *ExportResultsQueryParams, res
 		return nil, err
 	}
 	var rb map[string]interface{}
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetFederatedConnectionByName - search service endpoint
+	Returns the federated connection with the specified name (connectionName).
+	Parameters:
+		connectionName: The name of the federated connection.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetFederatedConnectionByName(connectionName string, resp ...*http.Response) (*FederatedConnection, error) {
+	pp := struct {
+		ConnectionName string
+	}{
+		ConnectionName: connectionName,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections/{{.ConnectionName}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb FederatedConnection
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -373,6 +465,101 @@ func (s *Service) ListTimeBuckets(sid string, resp ...*http.Response) (*TimeBuck
 	var rb TimeBucketsSummary
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
+}
+
+/*
+	PutFederatedConnectionByName - search service endpoint
+	Creates or updates a federated connection with a specified name (connectionName).
+	Parameters:
+		connectionName: The name of the federated connection.
+		federatedConnectionInput
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) PutFederatedConnectionByName(connectionName string, federatedConnectionInput FederatedConnectionInput, resp ...*http.Response) (*FederatedConnection, error) {
+	pp := struct {
+		ConnectionName string
+	}{
+		ConnectionName: connectionName,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections/{{.ConnectionName}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Put(services.RequestParams{URL: u, Body: federatedConnectionInput})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb FederatedConnection
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	RefreshFederatedConnection - search service endpoint
+	Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
+	Parameters:
+		connectionName: The name of the federated connection.
+		body
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) RefreshFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error {
+	pp := struct {
+		ConnectionName string
+	}{
+		ConnectionName: connectionName,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections/{{.ConnectionName}}/refresh`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
+}
+
+/*
+	TestFederatedConnection - search service endpoint
+	Test connection with remote EC instance using federated connection parameters.
+	Parameters:
+		connectionName: The name of the federated connection.
+		body
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) TestFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error {
+	pp := struct {
+		ConnectionName string
+	}{
+		ConnectionName: connectionName,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections/{{.ConnectionName}}/test`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
 }
 
 /*

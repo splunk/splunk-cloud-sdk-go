@@ -37,7 +37,6 @@ func AddCertificate(cmd *cobra.Command, args []string) error {
 	}
 	err = json.Unmarshal(bytes, &pem)
 	if err != nil {
-		// TODO: Manual fix (do not delete) - to be added to scloud codegen
 		// If failed to parse as JSON, try reading as simple string
 		pem = string(bytes)
 	}

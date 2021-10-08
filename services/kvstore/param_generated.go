@@ -47,7 +47,7 @@ func (q DeleteRecordsQueryParams) SetQuery(v string) DeleteRecordsQueryParams {
 // For convenience InsertRecordsQueryParams can be formed in a single statement, for example:
 //     `v := InsertRecordsQueryParams{}.SetAllowUpdates(...)`
 type InsertRecordsQueryParams struct {
-	// AllowUpdates : Allow records with keys included to update their respective records in the database
+	// AllowUpdates : If allow_updates is false (default), the writes will be performed as a single INSERT. If any record already exists, the entire INSERT will fail and no records will be inserted. If allow_updates is true, the writes will be performed as a single INSERT ON CONFLICT. If one or more records already exists, said records will be updated and their _version&#39;s will be incremented. New records will be inserted with a _version of 0.
 	AllowUpdates *bool `key:"allow_updates"`
 }
 
@@ -62,7 +62,7 @@ func (q InsertRecordsQueryParams) SetAllowUpdates(v bool) InsertRecordsQueryPara
 type ListRecordsQueryParams struct {
 	// Count : Maximum number of records to return.
 	Count *int32 `key:"count"`
-	// Fields : Comma-separated list of fields to include or exclude.
+	// Fields : Comma-separated list of fields to include or exclude. Format is &#x60;&lt;field&gt;:&lt;include value&gt;&#x60;. Valid include values are 1 for include, 0 for exclude with default being 1.
 	Fields  []string               `key:"fields"`
 	Filters map[string]interface{} `key:"filters"`
 	// Offset : Number of records to skip from the start.
@@ -104,7 +104,7 @@ type QueryRecordsQueryParams struct {
 	Count *int32 `key:"count"`
 	// EnableMvl : Determines if the query needs to include results in multi valued fields
 	EnableMvl *bool `key:"enable_mvl"`
-	// Fields : Comma-separated list of fields to include or exclude.
+	// Fields : Comma-separated list of fields to include or exclude. Format is &#x60;&lt;field&gt;:&lt;include value&gt;&#x60;. Valid include values are 1 for include, 0 for exclude with default being 1.
 	Fields []string `key:"fields"`
 	// Offset : Number of records to skip from the start.
 	Offset *int32 `key:"offset"`

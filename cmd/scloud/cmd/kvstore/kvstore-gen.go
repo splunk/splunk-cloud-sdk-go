@@ -50,10 +50,10 @@ var insertRecordCmd = &cobra.Command{
 	RunE:  impl.InsertRecord,
 }
 
-// insertRecords -- Inserts multiple records in a single request.
+// insertRecords -- Writes multiple records in a single request. If records have duplicate primary keys, only the last duplicate record will be written. If no errors occur, the response array will contain the keys of the written records, in no particular order.
 var insertRecordsCmd = &cobra.Command{
 	Use:   "insert-records",
-	Short: "Inserts multiple records in a single request.",
+	Short: "Writes multiple records in a single request. If records have duplicate primary keys, only the last duplicate record will be written. If no errors occur, the response array will contain the keys of the written records, in no particular order.",
 	RunE:  impl.InsertRecords,
 }
 
@@ -177,7 +177,7 @@ func init() {
 	insertRecordsCmd.MarkFlagRequired("collection")
 
 	var insertRecordsAllowUpdates string
-	insertRecordsCmd.Flags().StringVar(&insertRecordsAllowUpdates, "allow-updates", "false", "Allow records with keys included to update their respective records in the database")
+	insertRecordsCmd.Flags().StringVar(&insertRecordsAllowUpdates, "allow-updates", "false", "If allow_updates is false (default), the writes will be performed as a single INSERT. If any record already exists, the entire INSERT will fail and no records will be inserted. If allow_updates is true, the writes will be performed as a single INSERT ON CONFLICT. If one or more records already exists, said records will be updated and their _version's will be incremented. New records will be inserted with a _version of 0.")
 
 	kvstoreCmd.AddCommand(listIndexesCmd)
 
@@ -195,7 +195,7 @@ func init() {
 	listRecordsCmd.Flags().Int32Var(&listRecordsCount, "count", 0, "Maximum number of records to return.")
 
 	var listRecordsFields []string
-	listRecordsCmd.Flags().StringSliceVar(&listRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+	listRecordsCmd.Flags().StringSliceVar(&listRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude. Format is `<field>:<include value>`. Valid include values are 1 for include, 0 for exclude with default being 1.")
 
 	var listRecordsFilters string
 	listRecordsCmd.Flags().StringVar(&listRecordsFilters, "filters", "", "")
@@ -235,7 +235,7 @@ func init() {
 	queryRecordsCmd.Flags().StringVar(&queryRecordsEnableMvl, "enable-mvl", "false", "Determines if the query needs to include results in multi valued fields")
 
 	var queryRecordsFields []string
-	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude.")
+	queryRecordsCmd.Flags().StringSliceVar(&queryRecordsFields, "fields", nil, "Comma-separated list of fields to include or exclude. Format is `<field>:<include value>`. Valid include values are 1 for include, 0 for exclude with default being 1.")
 
 	var queryRecordsOffset int32
 	queryRecordsCmd.Flags().Int32Var(&queryRecordsOffset, "offset", 0, "Number of records to skip from the start.")

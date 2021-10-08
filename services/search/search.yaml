@@ -32,7 +32,7 @@ components:
         type: string
     SidFilter:
       description: |
-        Filter the list of jobs by 'sid'. Valid format is  `sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})`. A maximum of 50 SIDs can be specified in one query.
+        Filter the list of jobs by 'sid'. Valid format is  `sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})`. A maximum of 30 SIDs can be specified in one query.
       in: query
       name: filter
       schema:
@@ -44,6 +44,13 @@ components:
       name: status
       schema:
         $ref: '#/components/schemas/SearchStatus'
+    connectionName:
+      description: The name of the federated connection.
+      in: path
+      name: connectionName
+      required: true
+      schema:
+        type: string
     count:
       description: |
         The maximum number of jobs that you want to return the status entries for.
@@ -239,6 +246,77 @@ components:
           type: array
         message:
           type: string
+      type: object
+    FederatedConnection:
+      description: A fully constructed federated connection object.
+      properties:
+        created:
+          description: The timestamp when the federated connection was created.
+          example: 2021-06-01 23:08:51.888000Z
+          type: string
+        createdby:
+          description: The user who created the federated connection.
+          example: user@example.com
+          type: string
+        hostnameip:
+          description: The remote hostname to connect yo.
+          example: ec-botsv2.portal.io
+          maxLength: 100
+          type: string
+        modified:
+          description: The timestamp when the federated connection was modified.
+          example: 2021-06-01 23:08:51.888000Z
+          type: string
+        modifiedby:
+          description: The user who last modified the federated connection.
+          example: user@example.com
+          type: string
+        name:
+          description: The name of the federated connection.
+          example: connectionobject
+          maxLength: 100
+          type: string
+        port:
+          description: The remote port number.
+          example: 8080
+          type: number
+        serviceaccountuser:
+          description: The username on the service account.
+          example: username
+          maxLength: 100
+          type: string
+      type: object
+    FederatedConnectionInput:
+      description: |
+        The property values for creating a new federated connection using a PUT or POST request.
+      properties:
+        hostnameip:
+          description: The remote hostname to connect to.
+          example: ec-botsv2.portal.io
+          maxLength: 100
+          type: string
+        name:
+          description: The name of the federated connection.
+          example: connectionobject
+          maxLength: 100
+          type: string
+        port:
+          description: The remote port number.
+          example: 8080
+          type: number
+        serviceaccountuser:
+          description: The username on the service account.
+          example: username
+          maxLength: 100
+          type: string
+      type: object
+    FederatedConnectionRefresh:
+      description: |
+        The refresh of the federated connection was successful. For any new indexes, federated datasets were created to enable running searches on them.
+      type: object
+    FederatedConnectionTest:
+      description: |
+        Successfully able to connect to the EC stack with the given parameters in the federated connection.
       type: object
     FieldsSummary:
       description: A  statistical summary of the fields in the events to date, for
@@ -662,6 +740,150 @@ info:
   version: v2
 openapi: 3.0.0
 paths:
+  /{tenant}/search/v2/connections:
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    post:
+      description: |
+        Creates a new federated connection with information about how to connect to a remote index.
+      operationId: createFederatedConnection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FederatedConnectionInput'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FederatedConnection'
+          description: |
+            The federated connection was created successfully.
+        "400":
+          description: The request payload isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/connections/{connectionName}:
+    delete:
+      description: |
+        Deletes a federated connection with the specified name (connectionName)
+      operationId: deleteFederatedConnection
+      responses:
+        "204":
+          description: |
+            The federated connection with the specified name (connectionName) was deleted successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
+    get:
+      description: |
+        Returns the federated connection with the specified name (connectionName).
+      operationId: getFederatedConnectionByName
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FederatedConnection'
+          description: |
+            The federated connection for the specified name (connectionName) was returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/connectionName'
+    put:
+      description: |
+        Creates or updates a federated connection with a specified name (connectionName).
+      operationId: putFederatedConnectionByName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FederatedConnectionInput'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FederatedConnection'
+          description: The federated connection was created or updated successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/connections/{connectionName}/refresh:
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/connectionName'
+    post:
+      description: |
+        Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
+      operationId: refreshFederatedConnection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FederatedConnectionRefresh'
+      responses:
+        "201":
+          description: |
+            The federated connection refresh was successful.
+        "400":
+          description: The request payload isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/connections/{connectionName}/test:
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/connectionName'
+    post:
+      description: |
+        Test connection with remote EC instance using federated connection parameters.
+      operationId: testFederatedConnection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FederatedConnectionTest'
+      responses:
+        "200":
+          description: |
+            Successfully able to contact EC stack with given federated connection parameters.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
   /{tenant}/search/v2/jobs:
     get:
       description: Returns the matching list of search jobs.
@@ -985,4 +1207,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: search/v2/openapi.yaml
+# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: search/v2/openapi.yaml

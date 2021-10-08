@@ -528,6 +528,8 @@ type UpgradePipelineRequest struct {
 	CancelWithSavePoint *bool `json:"cancelWithSavePoint,omitempty"`
 	// Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.
 	SkipRestoreState *bool `json:"skipRestoreState,omitempty"`
+	// Set to true to validate a savepoint before stopping the pipeline.
+	ValidateSavePoint *bool `json:"validateSavePoint,omitempty"`
 }
 
 type UplType struct {

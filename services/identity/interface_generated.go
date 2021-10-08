@@ -102,6 +102,14 @@ type ServicerGenerated interface {
 	*/
 	CreateRole(createRoleBody CreateRoleBody, resp ...*http.Response) (*Role, error)
 	/*
+		CreateSamlClient - identity service endpoint
+		Create a SAML client.
+		Parameters:
+			createSamlClientBody
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateSamlClient(createSamlClientBody CreateSamlClientBody, resp ...*http.Response) (*SamlClient, error)
+	/*
 		DeleteGroup - identity service endpoint
 		Deletes a group in a given tenant.
 		Parameters:
@@ -134,6 +142,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	DeleteRole(role string, resp ...*http.Response) error
+	/*
+		DeleteSamlClient - identity service endpoint
+		Deletes the SAML client.
+		Parameters:
+			samlClient: The saml client name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteSamlClient(samlClient string, resp ...*http.Response) error
 	/*
 		GetGroup - identity service endpoint
 		Returns information about a given group within a tenant.
@@ -218,6 +234,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetRolePermission(role string, permission string, resp ...*http.Response) (*RolePermission, error)
+	/*
+		GetSamlClient - identity service endpoint
+		Returns the SAML client.
+		Parameters:
+			samlClient: The saml client name.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetSamlClient(samlClient string, resp ...*http.Response) (*SamlClient, error)
 	/*
 		ListGroupMembers - identity service endpoint
 		Returns a list of the members within a given group.
@@ -321,6 +345,13 @@ type ServicerGenerated interface {
 	*/
 	ListRoles(query *ListRolesQueryParams, resp ...*http.Response) (*RoleList, error)
 	/*
+		ListSamlClients - identity service endpoint
+		List SAML clients.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListSamlClients(resp ...*http.Response) (*SamlClientsList, error)
+	/*
 		RemoveGroupMember - identity service endpoint
 		Removes the member from a given group.
 		Parameters:
@@ -417,6 +448,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	UpdateRole(role string, updateRoleBody UpdateRoleBody, resp ...*http.Response) (*Role, error)
+	/*
+		UpdateSamlClient - identity service endpoint
+		Update the SAML client.
+		Parameters:
+			samlClient: The saml client name.
+			updateSamlClientBody
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateSamlClient(samlClient string, updateSamlClientBody UpdateSamlClientBody, resp ...*http.Response) (*SamlClient, error)
 	/*
 		ValidateToken - identity service endpoint
 		Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.

@@ -73,7 +73,7 @@ type ServicerGenerated interface {
 	*/
 	InsertRecord(collection string, body map[string]interface{}, resp ...*http.Response) (*Record, error)
 	/*
-		InsertRecords - Inserts multiple records in a single request.
+		InsertRecords - Writes multiple records in a single request. If records have duplicate primary keys, only the last duplicate record will be written. If no errors occur, the response array will contain the keys of the written records, in no particular order.
 		Parameters:
 			collection: The name of the collection.
 			requestBody: Array of records to insert.

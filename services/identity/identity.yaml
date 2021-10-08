@@ -225,6 +225,15 @@ components:
         minLength: 4
         type: string
       x-case-insensitive: true
+    samlClient:
+      description: The saml client name.
+      in: path
+      name: samlClient
+      required: true
+      schema:
+        maxLength: 32
+        minLength: 4
+        type: string
     scope:
       description: Scope of the authorization request
       in: query
@@ -467,10 +476,10 @@ components:
           x-case-insensitive: true
         redirectUris:
           items:
-            maxItems: 100
             maxLength: 256
             minLength: 8
             type: string
+          maxItems: 100
           type: array
       required:
       - name
@@ -601,6 +610,38 @@ components:
           maxLength: 128
           minLength: 4
           pattern: ^[_a-z]([.]?[_a-z0-9])*$
+          type: string
+      required:
+      - name
+      type: object
+    CreateSamlClientBody:
+      properties:
+        allowedReplyUris:
+          items:
+            maxLength: 256
+            minLength: 8
+            type: string
+          maxItems: 512
+          type: array
+        description:
+          maxLength: 256
+          minLength: 2
+          type: string
+        displayName:
+          maxLength: 32
+          minLength: 4
+          type: string
+        logo:
+          maxLength: 256
+          minLength: 8
+          type: string
+        name:
+          maxLength: 32
+          minLength: 2
+          type: string
+        signOnUri:
+          maxLength: 256
+          minLength: 8
           type: string
       required:
       - name
@@ -763,6 +804,7 @@ components:
         keys:
           items:
             $ref: '#/components/schemas/ECJwk'
+          maxItems: 10
           type: array
       type: object
     Group:
@@ -938,8 +980,18 @@ components:
           type: boolean
         id:
           type: string
+        jit:
+          properties:
+            enabled:
+              type: boolean
+            groups:
+              items:
+                $ref: '#/components/schemas/Group'
+              type: array
+          type: object
         kind:
           enum:
+          - keycloak
           - saml
           type: string
         title:
@@ -983,16 +1035,23 @@ components:
           minLength: 4
           pattern: ^[_a-z]([.]?[_a-z0-9])*$
           type: string
-        kind:
-          enum:
-          - saml
-          type: string
+        jit:
+          properties:
+            enabled:
+              type: boolean
+            groups:
+              items:
+                maxLength: 128
+                minLength: 4
+                type: string
+              maxItems: 50
+              type: array
+          type: object
         title:
           maxLength: 256
           type: string
       required:
       - id
-      - kind
       - config
       type: object
     IdentityProviderList:
@@ -1064,6 +1123,7 @@ components:
         keys:
           items:
             $ref: '#/components/schemas/Jwk'
+          maxItems: 10
           type: array
       type: object
     Key:
@@ -1487,6 +1547,42 @@ components:
       - items
       - nextLink
       type: object
+    SamlClient:
+      properties:
+        allowedReplyUris:
+          items:
+            type: string
+          type: array
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        description:
+          type: string
+        displayName:
+          type: string
+        logo:
+          type: string
+        name:
+          type: string
+        signOnUri:
+          type: string
+        tenant:
+          type: string
+        updatedAt:
+          format: date-time
+          nullable: true
+          type: string
+        updatedBy:
+          nullable: true
+          type: string
+      type: object
+    SamlClientsList:
+      description: A list of SAML clients.
+      items:
+        type: string
+      type: array
     SensitiveTenants:
       items:
         type: string
@@ -1749,10 +1845,10 @@ components:
       properties:
         redirectUris:
           items:
-            maxItems: 100
             maxLength: 256
             minLength: 8
             type: string
+          maxItems: 100
           type: array
       type: object
     UpdateGroupBody:
@@ -1817,6 +1913,32 @@ components:
           type: array
       required:
       - permissions
+      type: object
+    UpdateSamlClientBody:
+      properties:
+        allowedReplyUris:
+          items:
+            maxLength: 256
+            minLength: 8
+            type: string
+          maxItems: 512
+          type: array
+        description:
+          maxLength: 256
+          minLength: 2
+          type: string
+        displayName:
+          maxLength: 32
+          minLength: 4
+          type: string
+        logo:
+          maxLength: 256
+          minLength: 8
+          type: string
+        signOnUri:
+          maxLength: 256
+          minLength: 8
+          type: string
       type: object
     UpdateTenantAsAdminBody:
       properties:
@@ -1900,9 +2022,115 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v3.4
+  version: v3.5
 openapi: 3.0.0
 paths:
+  /{tenant}/identity/v3/clients/saml:
+    get:
+      description: List SAML clients.
+      operationId: listSamlClients
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SamlClientsList'
+          description: The list of SAML clients has been successfully returned.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+      x-authz-scope: identity.samlclients.read
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    post:
+      description: Create a SAML client.
+      operationId: createSamlClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSamlClientBody'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SamlClient'
+          description: The SAML client has been successfully created.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "409":
+          description: The client already exists.
+      x-authz-scope: identity.samlclients.write
+  /{tenant}/identity/v3/clients/saml/{samlClient}:
+    delete:
+      description: Deletes the SAML client.
+      operationId: deleteSamlClient
+      responses:
+        "204":
+          description: The SAML client has been successfully deleted.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The client not found.
+      x-authz-scope: identity.samlclients.write
+    get:
+      description: Returns the SAML client.
+      operationId: getSamlClient
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SamlClient'
+          description: The SAML client has been successfully returned.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The client not found.
+      x-authz-scope: identity.samlclients.read
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/samlClient'
+    put:
+      description: Update the SAML client.
+      operationId: updateSamlClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSamlClientBody'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SamlClient'
+          description: The SAML client has been successfully updated.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The client not found.
+      x-authz-scope: identity.samlclients.write
   /{tenant}/identity/v3/groups:
     get:
       description: List the groups that exist in a given tenant.
@@ -3100,4 +3328,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: identity/v3/openapi.yaml
+# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: identity/v3/openapi.yaml

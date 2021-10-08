@@ -16,6 +16,13 @@ components:
       required: false
       schema:
         type: integer
+    ChunkIndexParam:
+      description: Index of one chunk of collection in S3 bucket.
+      in: query
+      name: chunkIndex
+      required: true
+      schema:
+        type: integer
     CollectionParam:
       description: The name of the collection.
       in: path
@@ -31,7 +38,9 @@ components:
       schema:
         type: integer
     FieldsParam:
-      description: Comma-separated list of fields to include or exclude.
+      description: Comma-separated list of fields to include or exclude. Format is
+        `<field>:<include value>`. Valid include values are 1 for include, 0 for exclude
+        with default being 1.
       in: query
       name: fields
       required: false
@@ -65,6 +74,13 @@ components:
       description: The key of the record.
       in: path
       name: key
+      required: true
+      schema:
+        type: string
+    LatestBucketTimeParam:
+      description: Latest bucket time of collection
+      in: query
+      name: latestBucketTime
       required: true
       schema:
         type: string
@@ -108,6 +124,15 @@ components:
       required: false
       schema:
         type: string
+    ReadLatestParam:
+      description: Determines if the read needs to be time sensitive to match the
+        latest
+      in: query
+      name: latest
+      required: false
+      schema:
+        default: false
+        type: boolean
     SharedParam:
       description: Indicates whether to return records only for the user specified
         in the Splunk-User-Id header or for the default user as well. Only valid if
@@ -409,27 +434,30 @@ components:
       type: object
     QueryDefinition:
       properties:
-        count:
+        fields:
+          description: Comma-separated list of fields to include or exclude. Format
+            is `["<field>:<include value>",...]`. Valid include values are 1 for include,
+            0 for exclude with default being 1.
+          items:
+            type: string
+          type: array
+        limit:
           default: -1
           description: Maximum number of records to return.
           type: integer
-        fields:
-          description: Comma-separated list of fields to include or exclude.
-          items:
-            type: string
-          type: array
-        offset:
-          default: -1
-          description: Number of records to skip from the start.
-          type: integer
-        orderby:
-          description: Sort order.
-          items:
-            type: string
-          type: array
         query:
           description: Query JSON expression.
           type: object
+        skip:
+          default: -1
+          description: Number of records to skip from the start.
+          type: integer
+        sort:
+          description: Sort order. Format is `[{<field>:<sort order>},...]`. Valid
+            sort orders are 1 for ascending, -1 for descending.
+          items:
+            type: object
+          type: array
       type: object
     Record:
       properties:
@@ -442,6 +470,22 @@ components:
       required:
       - _user
       - _key
+      type: object
+    SnapshotInfo:
+      properties:
+        chunkCount:
+          description: Number of chunks in the bucket
+          type: integer
+        collection:
+          description: The collection name.
+          type: string
+        latestBucketTime:
+          description: Timestamp of latest bucket
+          type: string
+      required:
+      - collection
+      - latestBucketTime
+      - chunkCount
       type: object
     TenantDescription:
       properties:
@@ -553,8 +597,11 @@ paths:
     post:
       operationId: insertRecords
       parameters:
-      - description: Allow records with keys included to update their respective records
-          in the database
+      - description: |-
+          If allow_updates is false (default), the writes will be performed as a single INSERT. If any record already
+          exists, the entire INSERT will fail and no records will be inserted. If allow_updates is true, the writes
+          will be performed as a single INSERT ON CONFLICT. If one or more records already exists, said records will
+          be updated and their _version's will be incremented. New records will be inserted with a _version of 0.
         in: query
         name: allow_updates
         required: false
@@ -599,7 +646,10 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/DefaultError'
-      summary: Inserts multiple records in a single request.
+      summary: |-
+        Writes multiple records in a single request. If records have duplicate primary keys, only the last duplicate
+        record will be written. If no errors occur, the response array will contain the keys of the written records,
+        in no particular order.
       x-authz-scope: kvstore.records.create
   /{tenant}/kvstore/v1beta1/collections/{collection}/indexes:
     get:
@@ -930,4 +980,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: kvstore/v1beta1/openapi.yaml

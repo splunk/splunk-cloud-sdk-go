@@ -71,6 +71,13 @@ var createRoleCmd = &cobra.Command{
 	RunE:  impl.CreateRole,
 }
 
+// createSamlClient -- Create a SAML client.
+var createSamlClientCmd = &cobra.Command{
+	Use:   "create-saml-client",
+	Short: "Create a SAML client.",
+	RunE:  impl.CreateSamlClient,
+}
+
 // deleteGroup -- Deletes a group in a given tenant.
 var deleteGroupCmd = &cobra.Command{
 	Use:   "delete-group",
@@ -97,6 +104,13 @@ var deleteRoleCmd = &cobra.Command{
 	Use:   "delete-role",
 	Short: "Deletes a defined role for a given tenant.",
 	RunE:  impl.DeleteRole,
+}
+
+// deleteSamlClient -- Deletes the SAML client.
+var deleteSamlClientCmd = &cobra.Command{
+	Use:   "delete-saml-client",
+	Short: "Deletes the SAML client.",
+	RunE:  impl.DeleteSamlClient,
 }
 
 // getGroup -- Returns information about a given group within a tenant.
@@ -135,7 +149,6 @@ var getMemberCmd = &cobra.Command{
 }
 
 // getPrincipal -- Returns the details of a principal, including its tenant membership and any relevant profile information.
-
 var getPrincipalCmd = &cobra.Command{
 	Use:   "get-principal",
 	Short: "Returns the details of a principal, including its tenant membership and any relevant profile information.",
@@ -168,6 +181,13 @@ var getRolePermissionCmd = &cobra.Command{
 	Use:   "get-role-permission",
 	Short: "Gets a permission for the specified role.",
 	RunE:  impl.GetRolePermission,
+}
+
+// getSamlClient -- Returns the SAML client.
+var getSamlClientCmd = &cobra.Command{
+	Use:   "get-saml-client",
+	Short: "Returns the SAML client.",
+	RunE:  impl.GetSamlClient,
 }
 
 // listGroupMembers -- Returns a list of the members within a given group.
@@ -206,7 +226,6 @@ var listMemberGroupsCmd = &cobra.Command{
 }
 
 // listMemberPermissions -- Returns a set of permissions granted to the member within the tenant.
-
 var listMemberPermissionsCmd = &cobra.Command{
 	Use:   "list-member-permissions",
 	Short: "Returns a set of permissions granted to the member within the tenant.",
@@ -214,7 +233,6 @@ var listMemberPermissionsCmd = &cobra.Command{
 }
 
 // listMemberRoles -- Returns a set of roles that a given member holds within the tenant.
-
 var listMemberRolesCmd = &cobra.Command{
 	Use:   "list-member-roles",
 	Short: "Returns a set of roles that a given member holds within the tenant.",
@@ -229,7 +247,6 @@ var listMembersCmd = &cobra.Command{
 }
 
 // listPrincipals -- Returns the list of principals that the Identity service knows about.
-
 var listPrincipalsCmd = &cobra.Command{
 	Use:   "list-principals",
 	Short: "Returns the list of principals that the Identity service knows about.",
@@ -255,6 +272,13 @@ var listRolesCmd = &cobra.Command{
 	Use:   "list-roles",
 	Short: "Returns all roles for a given tenant.",
 	RunE:  impl.ListRoles,
+}
+
+// listSamlClients -- List SAML clients.
+var listSamlClientsCmd = &cobra.Command{
+	Use:   "list-saml-clients",
+	Short: "List SAML clients.",
+	RunE:  impl.ListSamlClients,
 }
 
 // removeGroupMember -- Removes the member from a given group.
@@ -293,7 +317,6 @@ var resetPasswordCmd = &cobra.Command{
 }
 
 // revokePrincipalAuthTokens -- Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password
-
 var revokePrincipalAuthTokensCmd = &cobra.Command{
 	Use:   "revoke-principal-auth-tokens",
 	Short: "Revoke all existing access tokens issued to a principal. Principals can reset their password by visiting https://login.splunk.com/en_us/page/lost_password",
@@ -335,8 +358,14 @@ var updateRoleCmd = &cobra.Command{
 	RunE:  impl.UpdateRole,
 }
 
-// validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
+// updateSamlClient -- Update the SAML client.
+var updateSamlClientCmd = &cobra.Command{
+	Use:   "update-saml-client",
+	Short: "Update the SAML client.",
+	RunE:  impl.UpdateSamlClient,
+}
 
+// validateToken -- Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.
 var validateTokenCmd = &cobra.Command{
 	Use:   "validate-token",
 	Short: "Validates the access token obtained from the authorization header and returns the principal name and tenant memberships.",
@@ -425,10 +454,6 @@ func init() {
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderId, "id", "", "This is a required parameter. ")
 	createIdentityProviderCmd.MarkFlagRequired("id")
 
-	var createIdentityProviderKind string
-	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderKind, "kind", "", "This is a required parameter.  can accept values saml")
-	createIdentityProviderCmd.MarkFlagRequired("kind")
-
 	var createIdentityProviderCertificate string
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderCertificate, "certificate", "", "")
 
@@ -441,11 +466,17 @@ func init() {
 	var createIdentityProviderEnabled string
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEnabled, "enabled", "false", "")
 
+	var createIdentityProviderEnabledJit string
+	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEnabledJit, "enabled-jit", "false", "")
+
 	var createIdentityProviderEntityDescriptor string
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderEntityDescriptor, "entity-descriptor", "", "")
 
 	var createIdentityProviderFirstNameAttribute string
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderFirstNameAttribute, "first-name-attribute", "", "")
+
+	var createIdentityProviderGroups []string
+	createIdentityProviderCmd.Flags().StringSliceVar(&createIdentityProviderGroups, "groups", nil, "")
 
 	var createIdentityProviderLastNameAttribute string
 	createIdentityProviderCmd.Flags().StringVar(&createIdentityProviderLastNameAttribute, "last-name-attribute", "", "")
@@ -525,6 +556,27 @@ func init() {
 	var createRoleDisplayName string
 	createRoleCmd.Flags().StringVar(&createRoleDisplayName, "display-name", "", "Represents a display name for a role.")
 
+	identityCmd.AddCommand(createSamlClientCmd)
+
+	var createSamlClientName string
+	createSamlClientCmd.Flags().StringVar(&createSamlClientName, "name", "", "This is a required parameter. ")
+	createSamlClientCmd.MarkFlagRequired("name")
+
+	var createSamlClientAllowedReplyUris []string
+	createSamlClientCmd.Flags().StringSliceVar(&createSamlClientAllowedReplyUris, "allowed-reply-uris", nil, "")
+
+	var createSamlClientDescription string
+	createSamlClientCmd.Flags().StringVar(&createSamlClientDescription, "description", "", "")
+
+	var createSamlClientDisplayName string
+	createSamlClientCmd.Flags().StringVar(&createSamlClientDisplayName, "display-name", "", "")
+
+	var createSamlClientLogo string
+	createSamlClientCmd.Flags().StringVar(&createSamlClientLogo, "logo", "", "")
+
+	var createSamlClientSignOnUri string
+	createSamlClientCmd.Flags().StringVar(&createSamlClientSignOnUri, "sign-on-uri", "", "")
+
 	identityCmd.AddCommand(deleteGroupCmd)
 
 	var deleteGroupGroup string
@@ -552,6 +604,12 @@ func init() {
 	var deleteRoleRole string
 	deleteRoleCmd.Flags().StringVar(&deleteRoleRole, "role", "", "This is a required parameter. The role name.")
 	deleteRoleCmd.MarkFlagRequired("role")
+
+	identityCmd.AddCommand(deleteSamlClientCmd)
+
+	var deleteSamlClientSamlClient string
+	deleteSamlClientCmd.Flags().StringVar(&deleteSamlClientSamlClient, "saml-client", "", "This is a required parameter. The saml client name.")
+	deleteSamlClientCmd.MarkFlagRequired("saml-client")
 
 	identityCmd.AddCommand(getGroupCmd)
 
@@ -628,6 +686,12 @@ func init() {
 	var getRolePermissionRole string
 	getRolePermissionCmd.Flags().StringVar(&getRolePermissionRole, "role", "", "This is a required parameter. The role name.")
 	getRolePermissionCmd.MarkFlagRequired("role")
+
+	identityCmd.AddCommand(getSamlClientCmd)
+
+	var getSamlClientSamlClient string
+	getSamlClientCmd.Flags().StringVar(&getSamlClientSamlClient, "saml-client", "", "This is a required parameter. The saml client name.")
+	getSamlClientCmd.MarkFlagRequired("saml-client")
 
 	identityCmd.AddCommand(listGroupMembersCmd)
 
@@ -789,6 +853,8 @@ func init() {
 	var listRolesPageToken string
 	listRolesCmd.Flags().StringVar(&listRolesPageToken, "page-token", "", "The cursor to then next page.")
 
+	identityCmd.AddCommand(listSamlClientsCmd)
+
 	identityCmd.AddCommand(removeGroupMemberCmd)
 
 	var removeGroupMemberGroup string
@@ -859,10 +925,6 @@ func init() {
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderIdp, "idp", "", "This is a required parameter. The Identity Provider name.")
 	updateIdentityProviderCmd.MarkFlagRequired("idp")
 
-	var updateIdentityProviderKind string
-	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderKind, "kind", "", "This is a required parameter.  can accept values saml")
-	updateIdentityProviderCmd.MarkFlagRequired("kind")
-
 	var updateIdentityProviderCertificate string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderCertificate, "certificate", "", "")
 
@@ -875,11 +937,17 @@ func init() {
 	var updateIdentityProviderEnabled string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEnabled, "enabled", "false", "")
 
+	var updateIdentityProviderEnabledJit string
+	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEnabledJit, "enabled-jit", "false", "")
+
 	var updateIdentityProviderEntityDescriptor string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderEntityDescriptor, "entity-descriptor", "", "")
 
 	var updateIdentityProviderFirstNameAttribute string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderFirstNameAttribute, "first-name-attribute", "", "")
+
+	var updateIdentityProviderGroups []string
+	updateIdentityProviderCmd.Flags().StringSliceVar(&updateIdentityProviderGroups, "groups", nil, "")
 
 	var updateIdentityProviderLastNameAttribute string
 	updateIdentityProviderCmd.Flags().StringVar(&updateIdentityProviderLastNameAttribute, "last-name-attribute", "", "")
@@ -934,6 +1002,27 @@ func init() {
 
 	var updateRoleDisplayName string
 	updateRoleCmd.Flags().StringVar(&updateRoleDisplayName, "display-name", "", "Represents a display name for a role")
+
+	identityCmd.AddCommand(updateSamlClientCmd)
+
+	var updateSamlClientSamlClient string
+	updateSamlClientCmd.Flags().StringVar(&updateSamlClientSamlClient, "saml-client", "", "This is a required parameter. The saml client name.")
+	updateSamlClientCmd.MarkFlagRequired("saml-client")
+
+	var updateSamlClientAllowedReplyUris []string
+	updateSamlClientCmd.Flags().StringSliceVar(&updateSamlClientAllowedReplyUris, "allowed-reply-uris", nil, "")
+
+	var updateSamlClientDescription string
+	updateSamlClientCmd.Flags().StringVar(&updateSamlClientDescription, "description", "", "")
+
+	var updateSamlClientDisplayName string
+	updateSamlClientCmd.Flags().StringVar(&updateSamlClientDisplayName, "display-name", "", "")
+
+	var updateSamlClientLogo string
+	updateSamlClientCmd.Flags().StringVar(&updateSamlClientLogo, "logo", "", "")
+
+	var updateSamlClientSignOnUri string
+	updateSamlClientCmd.Flags().StringVar(&updateSamlClientSignOnUri, "sign-on-uri", "", "")
 
 	identityCmd.AddCommand(validateTokenCmd)
 

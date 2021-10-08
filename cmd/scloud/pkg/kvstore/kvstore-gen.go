@@ -220,7 +220,7 @@ func InsertRecord(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// InsertRecords Inserts multiple records in a single request.
+// InsertRecords Writes multiple records in a single request. If records have duplicate primary keys, only the last duplicate record will be written. If no errors occur, the response array will contain the keys of the written records, in no particular order.
 func InsertRecords(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()

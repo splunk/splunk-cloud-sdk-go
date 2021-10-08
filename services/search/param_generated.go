@@ -126,7 +126,7 @@ func (q ListFieldsSummaryQueryParams) SetLatest(v string) ListFieldsSummaryQuery
 type ListJobsQueryParams struct {
 	// Count : The maximum number of jobs that you want to return the status entries for.
 	Count *int32 `key:"count"`
-	// Filter : Filter the list of jobs by &#39;sid&#39;. Valid format is  &#x60;sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})&#x60;. A maximum of 50 SIDs can be specified in one query.
+	// Filter : Filter the list of jobs by &#39;sid&#39;. Valid format is  &#x60;sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})&#x60;. A maximum of 30 SIDs can be specified in one query.
 	Filter string `key:"filter"`
 	// Status : Filter the list of jobs by status. Valid status values are &#39;running&#39;, &#39;done&#39;, &#39;canceled&#39;, or &#39;failed&#39;.
 	Status SearchStatus `key:"status"`

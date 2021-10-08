@@ -915,28 +915,6 @@ components:
           format: int64
           type: integer
       type: object
-    PipelineUpgradeResponse:
-      description: ""
-      properties:
-        flinkVersion:
-          type: string
-        pipelineId:
-          type: string
-        pipelineUpgradeError:
-          type: string
-        pipelineUpgradeStatus:
-          enum:
-          - upgraded
-          - not upgraded, restored back on old cluster
-          - not upgraded because it's not active
-          - not upgraded, couldn't restore back on old cluster, send help
-          - already upgraded
-          - not upgraded, pipeline version is not supported
-          - Couldn't be stopped on old cluster
-          type: string
-        tenantId:
-          type: string
-      type: object
     PreviewData:
       description: ""
       properties:
@@ -1373,6 +1351,9 @@ components:
           description: Set to true to start reading from the latest input rather than
             from where the pipeline's previous run left off, which can cause data
             loss. Defaults to false.
+          type: boolean
+        validateSavePoint:
+          description: Set to true to validate a savepoint before stopping the pipeline.
           type: boolean
       type: object
     UplType:
@@ -5293,4 +5274,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 5bcc18023c79088bf6bdbcad5d85d1bbdfda268b path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: streams/v3beta1/openapi.yaml
