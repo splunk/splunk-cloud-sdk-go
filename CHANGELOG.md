@@ -1,5 +1,32 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.6
+#### Breaking Changes
+* Identity `IdentityProviderConfigBody` model removed field: `Kind`
+
+#### Non-Breaking Changes 
+* Identity new APIs: `CreateSamlClient`, `DeleteSamlClient`, `GetSamlClient`, `ListSamlClients`, `UpdateSamlClient`
+* Search new APIs: `CreateFederatedConnection`, `DeleteFederatedConnection`, `GetFederatedConnectionByName`, `PutFederatedConnectionByName`, `RefreshFederatedConnection`, `TestFederatedConnection`
+
+#### Features
+* `idp` package error messaging improved to provide url and requestId information for improved debugging.
+
+## SCloud v8.0.0-beta.6
+
+#### Breaking Changes
+* Identity `create-identity-provider` removed param: `kind`
+
+#### Non-Breaking Changes
+* New identity commands: `create-saml-client`, `delete-saml-client`, `get-saml-client`, `list-saml-clients`, `update-saml-client`
+* Identity `create-identity-provider` command new params: `enabled-jit`, `groups`
+* New search commands: `create-federated-connection`, `delete-federated-connection`, `get-federated-connection-by-name`, `put-federated-connection-by-name`, `refresh-federated-connection`, `test-federated-connection`
+* Streams `upgrade-pipeline` command new param: `validate-save-point`
+* Streams `compile` command now accepts standard SPL format for file input, fix earlier issue where quotes and newlines were required for JSON formatting
+* Forwarders `add-certificate` command now accepts standard PEM file format, fix earlier issue where quotes and newlines were required for JSON formatting
+
+#### Features
+* scloud login command improved to provide url and requestId information for improved debugging. Use `scloud login --logtostderr` for more detailed debugging information.
+
 ## Version 1.12.0-beta.5
 
 
