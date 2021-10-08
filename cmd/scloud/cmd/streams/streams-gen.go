@@ -843,6 +843,9 @@ func init() {
 	var upgradePipelineSkipRestoreState string
 	upgradePipelineCmd.Flags().StringVar(&upgradePipelineSkipRestoreState, "skip-restore-state", "false", "Set to true to start reading from the latest input rather than from where the pipeline's previous run left off, which can cause data loss. Defaults to false.")
 
+	var upgradePipelineValidateSavePoint string
+	upgradePipelineCmd.Flags().StringVar(&upgradePipelineValidateSavePoint, "validate-save-point", "false", "Set to true to validate a savepoint before stopping the pipeline.")
+
 	streamsCmd.AddCommand(uploadFileCmd)
 
 	var uploadFileFileName string

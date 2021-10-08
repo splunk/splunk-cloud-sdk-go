@@ -8,6 +8,13 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/search"
 )
 
+// createFederatedConnection -- Creates a new federated connection with information about how to connect to a remote index.
+var createFederatedConnectionCmd = &cobra.Command{
+	Use:   "create-federated-connection",
+	Short: "Creates a new federated connection with information about how to connect to a remote index.",
+	RunE:  impl.CreateFederatedConnection,
+}
+
 // createJob -- Creates a search job.
 var createJobCmd = &cobra.Command{
 	Use:   "create-job",
@@ -15,8 +22,14 @@ var createJobCmd = &cobra.Command{
 	RunE:  impl.CreateJob,
 }
 
-// deleteJob -- Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+// deleteFederatedConnection -- Deletes a federated connection with the specified name (connectionName)
+var deleteFederatedConnectionCmd = &cobra.Command{
+	Use:   "delete-federated-connection",
+	Short: "Deletes a federated connection with the specified name (connectionName)",
+	RunE:  impl.DeleteFederatedConnection,
+}
 
+// deleteJob -- Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
 var deleteJobCmd = &cobra.Command{
 	Use:   "delete-job",
 	Short: "Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.",
@@ -28,6 +41,13 @@ var exportResultsCmd = &cobra.Command{
 	Use:   "export-results",
 	Short: "Exports the search results for the job with the specified search ID (SID). Export the results as a CSV file or JSON file.",
 	RunE:  impl.ExportResults,
+}
+
+// getFederatedConnectionByName -- Returns the federated connection with the specified name (connectionName).
+var getFederatedConnectionByNameCmd = &cobra.Command{
+	Use:   "get-federated-connection-by-name",
+	Short: "Returns the federated connection with the specified name (connectionName).",
+	RunE:  impl.GetFederatedConnectionByName,
 }
 
 // getJob -- Returns the search job with the specified search ID (SID).
@@ -79,6 +99,27 @@ var listTimeBucketsCmd = &cobra.Command{
 	RunE:  impl.ListTimeBuckets,
 }
 
+// putFederatedConnectionByName -- Creates or updates a federated connection with a specified name (connectionName).
+var putFederatedConnectionByNameCmd = &cobra.Command{
+	Use:   "put-federated-connection-by-name",
+	Short: "Creates or updates a federated connection with a specified name (connectionName).",
+	RunE:  impl.PutFederatedConnectionByName,
+}
+
+// refreshFederatedConnection -- Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
+var refreshFederatedConnectionCmd = &cobra.Command{
+	Use:   "refresh-federated-connection",
+	Short: "Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.",
+	RunE:  impl.RefreshFederatedConnection,
+}
+
+// testFederatedConnection -- Test connection with remote EC instance using federated connection parameters.
+var testFederatedConnectionCmd = &cobra.Command{
+	Use:   "test-federated-connection",
+	Short: "Test connection with remote EC instance using federated connection parameters.",
+	RunE:  impl.TestFederatedConnection,
+}
+
 // updateJob -- Updates the search job with the specified search ID (SID) with an action.
 var updateJobCmd = &cobra.Command{
 	Use:   "update-job",
@@ -87,6 +128,20 @@ var updateJobCmd = &cobra.Command{
 }
 
 func init() {
+	searchCmd.AddCommand(createFederatedConnectionCmd)
+
+	var createFederatedConnectionHostnameip string
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionHostnameip, "hostnameip", "", "The remote hostname to connect to.")
+
+	var createFederatedConnectionName string
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionName, "name", "", "The name of the federated connection.")
+
+	var createFederatedConnectionPort float32
+	createFederatedConnectionCmd.Flags().Float32Var(&createFederatedConnectionPort, "port", 0.0, "The remote port number.")
+
+	var createFederatedConnectionServiceaccountuser string
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")
+
 	searchCmd.AddCommand(createJobCmd)
 
 	var createJobQuery string
@@ -141,6 +196,12 @@ func init() {
 	var createJobTimezone string
 	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time modifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
 
+	searchCmd.AddCommand(deleteFederatedConnectionCmd)
+
+	var deleteFederatedConnectionConnectionName string
+	deleteFederatedConnectionCmd.Flags().StringVar(&deleteFederatedConnectionConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
+	deleteFederatedConnectionCmd.MarkFlagRequired("connection-name")
+
 	searchCmd.AddCommand(deleteJobCmd)
 
 	var deleteJobIndex string
@@ -194,6 +255,12 @@ func init() {
 	var exportResultsOutputMode string
 	exportResultsCmd.Flags().StringVar(&exportResultsOutputMode, "output-mode", "", "Specifies the format for the returned output.")
 
+	searchCmd.AddCommand(getFederatedConnectionByNameCmd)
+
+	var getFederatedConnectionByNameConnectionName string
+	getFederatedConnectionByNameCmd.Flags().StringVar(&getFederatedConnectionByNameConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
+	getFederatedConnectionByNameCmd.MarkFlagRequired("connection-name")
+
 	searchCmd.AddCommand(getJobCmd)
 
 	var getJobSid string
@@ -239,7 +306,7 @@ func init() {
 	listJobsCmd.Flags().Int32Var(&listJobsCount, "count", 0, "The maximum number of jobs that you want to return the status entries for.")
 
 	var listJobsFilter string
-	listJobsCmd.Flags().StringVar(&listJobsFilter, "filter", "", "Filter the list of jobs by 'sid'. Valid format is  `sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})`. A maximum of 50 SIDs can be specified in one query.")
+	listJobsCmd.Flags().StringVar(&listJobsFilter, "filter", "", "Filter the list of jobs by 'sid'. Valid format is  `sid IN ({comma-separated list of SIDs. Each SID must be enclosed in double quotation marks.})`. A maximum of 30 SIDs can be specified in one query.")
 
 	var listJobsStatus string
 	listJobsCmd.Flags().StringVar(&listJobsStatus, "status", "", "Filter the list of jobs by status. Valid status values are 'running', 'done', 'canceled', or 'failed'.")
@@ -276,6 +343,44 @@ func init() {
 	var listTimeBucketsSid string
 	listTimeBucketsCmd.Flags().StringVar(&listTimeBucketsSid, "sid", "", "This is a required parameter. The search ID.")
 	listTimeBucketsCmd.MarkFlagRequired("sid")
+
+	searchCmd.AddCommand(putFederatedConnectionByNameCmd)
+
+	var putFederatedConnectionByNameConnectionName string
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("connection-name")
+
+	var putFederatedConnectionByNameHostnameip string
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameHostnameip, "hostnameip", "", "The remote hostname to connect to.")
+
+	var putFederatedConnectionByNameName string
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameName, "name", "", "The name of the federated connection.")
+
+	var putFederatedConnectionByNamePort float32
+	putFederatedConnectionByNameCmd.Flags().Float32Var(&putFederatedConnectionByNamePort, "port", 0.0, "The remote port number.")
+
+	var putFederatedConnectionByNameServiceaccountuser string
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")
+
+	searchCmd.AddCommand(refreshFederatedConnectionCmd)
+
+	var refreshFederatedConnectionBody string
+	refreshFederatedConnectionCmd.Flags().StringVar(&refreshFederatedConnectionBody, "body", "", "The request body")
+	refreshFederatedConnectionCmd.MarkFlagRequired("body")
+
+	var refreshFederatedConnectionConnectionName string
+	refreshFederatedConnectionCmd.Flags().StringVar(&refreshFederatedConnectionConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
+	refreshFederatedConnectionCmd.MarkFlagRequired("connection-name")
+
+	searchCmd.AddCommand(testFederatedConnectionCmd)
+
+	var testFederatedConnectionBody string
+	testFederatedConnectionCmd.Flags().StringVar(&testFederatedConnectionBody, "body", "", "The request body")
+	testFederatedConnectionCmd.MarkFlagRequired("body")
+
+	var testFederatedConnectionConnectionName string
+	testFederatedConnectionCmd.Flags().StringVar(&testFederatedConnectionConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
+	testFederatedConnectionCmd.MarkFlagRequired("connection-name")
 
 	searchCmd.AddCommand(updateJobCmd)
 

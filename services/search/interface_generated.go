@@ -25,6 +25,14 @@ import (
 // ServicerGenerated represents the interface for implementing all endpoints for this service
 type ServicerGenerated interface {
 	/*
+		CreateFederatedConnection - search service endpoint
+		Creates a new federated connection with information about how to connect to a remote index.
+		Parameters:
+			federatedConnectionInput
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateFederatedConnection(federatedConnectionInput FederatedConnectionInput, resp ...*http.Response) (*FederatedConnection, error)
+	/*
 		CreateJob - search service endpoint
 		Creates a search job.
 		Parameters:
@@ -32,6 +40,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateJob(searchJob SearchJob, resp ...*http.Response) (*SearchJob, error)
+	/*
+		DeleteFederatedConnection - search service endpoint
+		Deletes a federated connection with the specified name (connectionName)
+		Parameters:
+			connectionName: The name of the federated connection.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteFederatedConnection(connectionName string, resp ...*http.Response) error
 	/*
 		DeleteJob - search service endpoint
 		Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
@@ -49,6 +65,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ExportResults(sid string, query *ExportResultsQueryParams, resp ...*http.Response) (*map[string]interface{}, error)
+	/*
+		GetFederatedConnectionByName - search service endpoint
+		Returns the federated connection with the specified name (connectionName).
+		Parameters:
+			connectionName: The name of the federated connection.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetFederatedConnectionByName(connectionName string, resp ...*http.Response) (*FederatedConnection, error)
 	/*
 		GetJob - search service endpoint
 		Returns the search job with the specified search ID (SID).
@@ -109,6 +133,33 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	ListTimeBuckets(sid string, resp ...*http.Response) (*TimeBucketsSummary, error)
+	/*
+		PutFederatedConnectionByName - search service endpoint
+		Creates or updates a federated connection with a specified name (connectionName).
+		Parameters:
+			connectionName: The name of the federated connection.
+			federatedConnectionInput
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	PutFederatedConnectionByName(connectionName string, federatedConnectionInput FederatedConnectionInput, resp ...*http.Response) (*FederatedConnection, error)
+	/*
+		RefreshFederatedConnection - search service endpoint
+		Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
+		Parameters:
+			connectionName: The name of the federated connection.
+			body
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	RefreshFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error
+	/*
+		TestFederatedConnection - search service endpoint
+		Test connection with remote EC instance using federated connection parameters.
+		Parameters:
+			connectionName: The name of the federated connection.
+			body
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	TestFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error
 	/*
 		UpdateJob - search service endpoint
 		Updates the search job with the specified search ID (SID) with an action.

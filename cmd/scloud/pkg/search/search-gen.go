@@ -13,6 +13,59 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
+// CreateFederatedConnection Creates a new federated connection with information about how to connect to a remote index.
+func CreateFederatedConnection(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var hostnameipDefault string
+	hostnameip := &hostnameipDefault
+	err = flags.ParseFlag(cmd.Flags(), "hostnameip", &hostnameip)
+	if err != nil {
+		return fmt.Errorf(`error parsing "hostnameip": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var portDefault float32
+	port := &portDefault
+	err = flags.ParseFlag(cmd.Flags(), "port", &port)
+	if err != nil {
+		return fmt.Errorf(`error parsing "port": ` + err.Error())
+	}
+	var serviceaccountuserDefault string
+	serviceaccountuser := &serviceaccountuserDefault
+	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
+	if err != nil {
+		return fmt.Errorf(`error parsing "serviceaccountuser": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.FederatedConnectionInput{
+
+		Hostnameip:         hostnameip,
+		Name:               name,
+		Port:               port,
+		Serviceaccountuser: serviceaccountuser,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.CreateFederatedConnection(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreateJob Creates a search job.
 func CreateJob(cmd *cobra.Command, args []string) error {
 
@@ -156,8 +209,33 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteJob Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
+// DeleteFederatedConnection Deletes a federated connection with the specified name (connectionName)
+func DeleteFederatedConnection(cmd *cobra.Command, args []string) error {
 
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectionName string
+	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.SearchService.DeleteFederatedConnection(connectionName)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteJob Creates a search job that deletes events from an index. The events are deleted from the index in the specified module, based on the search criteria as specified by the predicate.
 func DeleteJob(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -296,6 +374,32 @@ func ExportResults(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.ExportResults(sid, &generated_query)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetFederatedConnectionByName Returns the federated connection with the specified name (connectionName).
+func GetFederatedConnectionByName(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectionName string
+	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.GetFederatedConnectionByName(connectionName)
 	if err != nil {
 		return err
 	}
@@ -584,6 +688,126 @@ func ListTimeBuckets(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// PutFederatedConnectionByName Creates or updates a federated connection with a specified name (connectionName).
+func PutFederatedConnectionByName(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var connectionName string
+	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
+	}
+	var hostnameipDefault string
+	hostnameip := &hostnameipDefault
+	err = flags.ParseFlag(cmd.Flags(), "hostnameip", &hostnameip)
+	if err != nil {
+		return fmt.Errorf(`error parsing "hostnameip": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var portDefault float32
+	port := &portDefault
+	err = flags.ParseFlag(cmd.Flags(), "port", &port)
+	if err != nil {
+		return fmt.Errorf(`error parsing "port": ` + err.Error())
+	}
+	var serviceaccountuserDefault string
+	serviceaccountuser := &serviceaccountuserDefault
+	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
+	if err != nil {
+		return fmt.Errorf(`error parsing "serviceaccountuser": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.FederatedConnectionInput{
+
+		Hostnameip:         hostnameip,
+		Name:               name,
+		Port:               port,
+		Serviceaccountuser: serviceaccountuser,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.PutFederatedConnectionByName(connectionName, generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// RefreshFederatedConnection Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
+func RefreshFederatedConnection(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var body map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "body", &body)
+	if err != nil {
+		return fmt.Errorf(`error parsing "body": ` + err.Error())
+	}
+	var connectionName string
+	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.SearchService.RefreshFederatedConnection(connectionName, &body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// TestFederatedConnection Test connection with remote EC instance using federated connection parameters.
+func TestFederatedConnection(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var body map[string]interface{}
+	err = flags.ParseFlag(cmd.Flags(), "body", &body)
+	if err != nil {
+		return fmt.Errorf(`error parsing "body": ` + err.Error())
+	}
+	var connectionName string
+	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.SearchService.TestFederatedConnection(connectionName, &body)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

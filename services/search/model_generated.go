@@ -75,6 +75,44 @@ type DeleteSearchJob struct {
 	Status *SearchStatus `json:"status,omitempty"`
 }
 
+// A fully constructed federated connection object.
+type FederatedConnection struct {
+	// The timestamp when the federated connection was created.
+	Created *string `json:"created,omitempty"`
+	// The user who created the federated connection.
+	Createdby *string `json:"createdby,omitempty"`
+	// The remote hostname to connect yo.
+	Hostnameip *string `json:"hostnameip,omitempty"`
+	// The timestamp when the federated connection was modified.
+	Modified *string `json:"modified,omitempty"`
+	// The user who last modified the federated connection.
+	Modifiedby *string `json:"modifiedby,omitempty"`
+	// The name of the federated connection.
+	Name *string `json:"name,omitempty"`
+	// The remote port number.
+	Port *float32 `json:"port,omitempty"`
+	// The username on the service account.
+	Serviceaccountuser *string `json:"serviceaccountuser,omitempty"`
+}
+
+// The property values for creating a new federated connection using a PUT or POST request.
+type FederatedConnectionInput struct {
+	// The remote hostname to connect to.
+	Hostnameip *string `json:"hostnameip,omitempty"`
+	// The name of the federated connection.
+	Name *string `json:"name,omitempty"`
+	// The remote port number.
+	Port *float32 `json:"port,omitempty"`
+	// The username on the service account.
+	Serviceaccountuser *string `json:"serviceaccountuser,omitempty"`
+}
+
+// The refresh of the federated connection was successful. For any new indexes, federated datasets were created to enable running searches on them.
+type FederatedConnectionRefresh map[string]interface{}
+
+// Successfully able to connect to the EC stack with the given parameters in the federated connection.
+type FederatedConnectionTest map[string]interface{}
+
 // A  statistical summary of the fields in the events to date, for the search ID (SID).
 type FieldsSummary struct {
 	// The amount of time, in seconds, that a time bucket spans from the earliest to the latest time.

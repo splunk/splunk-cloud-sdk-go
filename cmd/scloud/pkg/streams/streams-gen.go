@@ -94,7 +94,6 @@ func Compile(cmd *cobra.Command, args []string) error {
 	}
 	err = json.Unmarshal(bytes, &spl)
 	if err != nil {
-		// TODO: Manual fix (do not delete) - to be added to scloud codegen
 		// If failed to parse as JSON, try reading as simple string
 		spl = string(bytes)
 	}
@@ -1790,12 +1789,19 @@ func UpgradePipeline(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "skip-restore-state": ` + err.Error())
 	}
+	var validateSavePointDefault bool
+	validateSavePoint := &validateSavePointDefault
+	err = flags.ParseFlag(cmd.Flags(), "validate-save-point", &validateSavePoint)
+	if err != nil {
+		return fmt.Errorf(`error parsing "validate-save-point": ` + err.Error())
+	}
 	// Form the request body
 	generated_request_body := model.UpgradePipelineRequest{
 
 		AllowNonRestoredState: allowNonRestoredState,
 		CancelWithSavePoint:   cancelWithSavePoint,
 		SkipRestoreState:      skipRestoreState,
+		ValidateSavePoint:     validateSavePoint,
 	}
 
 	// Silence Usage
