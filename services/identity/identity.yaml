@@ -674,6 +674,8 @@ components:
       properties:
         createdBy:
           type: string
+        ecMetadata:
+          $ref: '#/components/schemas/EcMetadata'
         name:
           $ref: '#/components/schemas/TenantName'
       required:
@@ -806,6 +808,18 @@ components:
             $ref: '#/components/schemas/ECJwk'
           maxItems: 10
           type: array
+      type: object
+    EcMetadata:
+      properties:
+        stacks:
+          items:
+            $ref: '#/components/schemas/EcMetadataStack'
+          type: array
+      type: object
+    EcMetadataStack:
+      properties:
+        name:
+          type: string
       type: object
     Group:
       properties:
@@ -1737,6 +1751,8 @@ components:
         createdBy:
           nullable: true
           type: string
+        ecMetadata:
+          $ref: '#/components/schemas/EcMetadata'
         name:
           $ref: '#/components/schemas/TenantName'
         status:
@@ -1952,6 +1968,8 @@ components:
       type: object
     UpdateTenantBody:
       properties:
+        ecMetadata:
+          $ref: '#/components/schemas/EcMetadata'
         isLightweight:
           default: false
           type: boolean
@@ -3328,4 +3346,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: identity/v3/openapi.yaml
+# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: identity/v3/openapi.yaml

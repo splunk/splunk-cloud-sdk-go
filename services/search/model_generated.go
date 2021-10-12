@@ -103,6 +103,8 @@ type FederatedConnectionInput struct {
 	Name *string `json:"name,omitempty"`
 	// The remote port number.
 	Port *float32 `json:"port,omitempty"`
+	// The password of the service account.
+	Serviceaccountpassword *string `json:"serviceaccountpassword,omitempty"`
 	// The username on the service account.
 	Serviceaccountuser *string `json:"serviceaccountuser,omitempty"`
 }
