@@ -139,6 +139,9 @@ func init() {
 	var createFederatedConnectionPort float32
 	createFederatedConnectionCmd.Flags().Float32Var(&createFederatedConnectionPort, "port", 0.0, "The remote port number.")
 
+	var createFederatedConnectionServiceaccountpassword string
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountpassword, "serviceaccountpassword", "", "The password of the service account.")
+
 	var createFederatedConnectionServiceaccountuser string
 	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")
 
@@ -358,6 +361,9 @@ func init() {
 
 	var putFederatedConnectionByNamePort float32
 	putFederatedConnectionByNameCmd.Flags().Float32Var(&putFederatedConnectionByNamePort, "port", 0.0, "The remote port number.")
+
+	var putFederatedConnectionByNameServiceaccountpassword string
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountpassword, "serviceaccountpassword", "", "The password of the service account.")
 
 	var putFederatedConnectionByNameServiceaccountuser string
 	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")

@@ -304,6 +304,11 @@ components:
           description: The remote port number.
           example: 8080
           type: number
+        serviceaccountpassword:
+          description: The password of the service account.
+          example: password
+          maxLength: 100
+          type: string
         serviceaccountuser:
           description: The username on the service account.
           example: username
@@ -1207,4 +1212,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 4d0ee43d7c82c211669e2ba2785ce8d50fdb0fe6 path: search/v2/openapi.yaml
+# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: search/v2/openapi.yaml
