@@ -124,6 +124,14 @@ const (
 	EcJwkKtyEc EcJwkKty = "EC"
 )
 
+type EcMetadata struct {
+	Stacks []EcMetadataStack `json:"stacks,omitempty"`
+}
+
+type EcMetadataStack struct {
+	Name *string `json:"name,omitempty"`
+}
+
 type Group struct {
 	Name        string  `json:"name"`
 	CreatedAt   *string `json:"createdAt,omitempty"`
@@ -392,10 +400,11 @@ type SamlClient struct {
 type SamlClientsList []string
 
 type Tenant struct {
-	Name      string        `json:"name"`
-	CreatedAt *string       `json:"createdAt,omitempty"`
-	CreatedBy *string       `json:"createdBy,omitempty"`
-	Status    *TenantStatus `json:"status,omitempty"`
+	Name       string        `json:"name"`
+	CreatedAt  *string       `json:"createdAt,omitempty"`
+	CreatedBy  *string       `json:"createdBy,omitempty"`
+	EcMetadata *EcMetadata   `json:"ecMetadata,omitempty"`
+	Status     *TenantStatus `json:"status,omitempty"`
 }
 
 type TenantName string

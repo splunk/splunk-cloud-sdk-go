@@ -40,6 +40,12 @@ func CreateFederatedConnection(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "port": ` + err.Error())
 	}
+	var serviceaccountpasswordDefault string
+	serviceaccountpassword := &serviceaccountpasswordDefault
+	err = flags.ParseFlag(cmd.Flags(), "serviceaccountpassword", &serviceaccountpassword)
+	if err != nil {
+		return fmt.Errorf(`error parsing "serviceaccountpassword": ` + err.Error())
+	}
 	var serviceaccountuserDefault string
 	serviceaccountuser := &serviceaccountuserDefault
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
@@ -49,10 +55,11 @@ func CreateFederatedConnection(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.FederatedConnectionInput{
 
-		Hostnameip:         hostnameip,
-		Name:               name,
-		Port:               port,
-		Serviceaccountuser: serviceaccountuser,
+		Hostnameip:             hostnameip,
+		Name:                   name,
+		Port:                   port,
+		Serviceaccountpassword: serviceaccountpassword,
+		Serviceaccountuser:     serviceaccountuser,
 	}
 
 	// Silence Usage
@@ -723,6 +730,12 @@ func PutFederatedConnectionByName(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "port": ` + err.Error())
 	}
+	var serviceaccountpasswordDefault string
+	serviceaccountpassword := &serviceaccountpasswordDefault
+	err = flags.ParseFlag(cmd.Flags(), "serviceaccountpassword", &serviceaccountpassword)
+	if err != nil {
+		return fmt.Errorf(`error parsing "serviceaccountpassword": ` + err.Error())
+	}
 	var serviceaccountuserDefault string
 	serviceaccountuser := &serviceaccountuserDefault
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
@@ -732,10 +745,11 @@ func PutFederatedConnectionByName(cmd *cobra.Command, args []string) error {
 	// Form the request body
 	generated_request_body := model.FederatedConnectionInput{
 
-		Hostnameip:         hostnameip,
-		Name:               name,
-		Port:               port,
-		Serviceaccountuser: serviceaccountuser,
+		Hostnameip:             hostnameip,
+		Name:                   name,
+		Port:                   port,
+		Serviceaccountpassword: serviceaccountpassword,
+		Serviceaccountuser:     serviceaccountuser,
 	}
 
 	// Silence Usage
