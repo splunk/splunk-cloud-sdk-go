@@ -535,7 +535,7 @@ func (c *Client) GetSessionToken(username, password string) (string, []*http.Coo
 	var sessionToken string
 	var sessionCookies []*http.Cookie
 	for _, cookie := range response.Cookies() {
-		if cookie.Name == "sessionToken" {
+		if cookie.Name == "sessionToken" || cookie.Name == "authn" {
 			sessionCookies = []*http.Cookie{cookie}
 			break
 		}
