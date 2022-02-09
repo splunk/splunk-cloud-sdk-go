@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Splunk, Inc.
+ * Copyright © 2022 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -240,6 +240,8 @@ type PipelineNode struct {
 	Id string `json:"id"`
 	// The operation name.
 	Op string `json:"op"`
+	// For internal use only.
+	Annotations map[string]interface{} `json:"annotations,omitempty"`
 	// Function arguments keyed by argument name.
 	Arguments map[string]interface{} `json:"arguments,omitempty"`
 	// For internal use only. This field is ignored.

@@ -13,6 +13,57 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/search"
 )
 
+// CreateDataset Creates a dataset.
+func CreateDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var fields []model.FieldPost
+	err = flags.ParseFlag(cmd.Flags(), "fields", &fields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "fields": ` + err.Error())
+	}
+	var idDefault string
+	id := &idDefault
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DatasetPost{
+
+		Fields: fields,
+		Id:     id,
+		Module: module,
+		Name:   name,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.CreateDataset(generated_request_body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // CreateFederatedConnection Creates a new federated connection with information about how to connect to a remote index.
 func CreateFederatedConnection(cmd *cobra.Command, args []string) error {
 
@@ -22,32 +73,27 @@ func CreateFederatedConnection(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var hostnameipDefault string
-	hostnameip := &hostnameipDefault
+	var hostnameip string
 	err = flags.ParseFlag(cmd.Flags(), "hostnameip", &hostnameip)
 	if err != nil {
 		return fmt.Errorf(`error parsing "hostnameip": ` + err.Error())
 	}
-	var nameDefault string
-	name := &nameDefault
+	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-	var portDefault float32
-	port := &portDefault
+	var port float32
 	err = flags.ParseFlag(cmd.Flags(), "port", &port)
 	if err != nil {
 		return fmt.Errorf(`error parsing "port": ` + err.Error())
 	}
-	var serviceaccountpasswordDefault string
-	serviceaccountpassword := &serviceaccountpasswordDefault
+	var serviceaccountpassword string
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountpassword", &serviceaccountpassword)
 	if err != nil {
 		return fmt.Errorf(`error parsing "serviceaccountpassword": ` + err.Error())
 	}
-	var serviceaccountuserDefault string
-	serviceaccountuser := &serviceaccountuserDefault
+	var serviceaccountuser string
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
 	if err != nil {
 		return fmt.Errorf(`error parsing "serviceaccountuser": ` + err.Error())
@@ -213,6 +259,32 @@ func CreateJob(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// DeleteDatasetById Deletes a dataset with a specified dataset ID (datasetid).
+func DeleteDatasetById(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	err = client.SearchService.DeleteDatasetById(datasetid)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -388,6 +460,51 @@ func ExportResults(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// GetAllFederatedConnections Returns all federated connections.
+func GetAllFederatedConnections(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.GetAllFederatedConnections()
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// GetDatasetById Returns a dataset with a specified dataset ID (datasetid).
+func GetDatasetById(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.GetDatasetById(datasetid)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
 // GetFederatedConnectionByName Returns the federated connection with the specified name (connectionName).
 func GetFederatedConnectionByName(cmd *cobra.Command, args []string) error {
 
@@ -433,6 +550,25 @@ func GetJob(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.SearchService.GetJob(sid)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// ListDatasets Returns a list of all datasets.
+func ListDatasets(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.ListDatasets()
 	if err != nil {
 		return err
 	}
@@ -712,32 +848,27 @@ func PutFederatedConnectionByName(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "connection-name": ` + err.Error())
 	}
-	var hostnameipDefault string
-	hostnameip := &hostnameipDefault
+	var hostnameip string
 	err = flags.ParseFlag(cmd.Flags(), "hostnameip", &hostnameip)
 	if err != nil {
 		return fmt.Errorf(`error parsing "hostnameip": ` + err.Error())
 	}
-	var nameDefault string
-	name := &nameDefault
+	var name string
 	err = flags.ParseFlag(cmd.Flags(), "name", &name)
 	if err != nil {
 		return fmt.Errorf(`error parsing "name": ` + err.Error())
 	}
-	var portDefault float32
-	port := &portDefault
+	var port float32
 	err = flags.ParseFlag(cmd.Flags(), "port", &port)
 	if err != nil {
 		return fmt.Errorf(`error parsing "port": ` + err.Error())
 	}
-	var serviceaccountpasswordDefault string
-	serviceaccountpassword := &serviceaccountpasswordDefault
+	var serviceaccountpassword string
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountpassword", &serviceaccountpassword)
 	if err != nil {
 		return fmt.Errorf(`error parsing "serviceaccountpassword": ` + err.Error())
 	}
-	var serviceaccountuserDefault string
-	serviceaccountuser := &serviceaccountuserDefault
+	var serviceaccountuser string
 	err = flags.ParseFlag(cmd.Flags(), "serviceaccountuser", &serviceaccountuser)
 	if err != nil {
 		return fmt.Errorf(`error parsing "serviceaccountuser": ` + err.Error())
@@ -772,11 +903,6 @@ func RefreshFederatedConnection(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var body map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
-	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
-	}
 	var connectionName string
 	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
 	if err != nil {
@@ -786,7 +912,7 @@ func RefreshFederatedConnection(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.SearchService.RefreshFederatedConnection(connectionName, &body)
+	err = client.SearchService.RefreshFederatedConnection(connectionName)
 	if err != nil {
 		return err
 	}
@@ -803,11 +929,6 @@ func TestFederatedConnection(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var body map[string]interface{}
-	err = flags.ParseFlag(cmd.Flags(), "body", &body)
-	if err != nil {
-		return fmt.Errorf(`error parsing "body": ` + err.Error())
-	}
 	var connectionName string
 	err = flags.ParseFlag(cmd.Flags(), "connection-name", &connectionName)
 	if err != nil {
@@ -817,11 +938,378 @@ func TestFederatedConnection(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.SearchService.TestFederatedConnection(connectionName, &body)
+	err = client.SearchService.TestFederatedConnection(connectionName)
 	if err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// UpdateDatasetByIdFederatedDataset Modifies a dataset with a specified dataset ID (datasetid).
+func UpdateDatasetByIdFederatedDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+	var federatedConnectionDefault string
+	federatedConnection := &federatedConnectionDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-connection", &federatedConnection)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-connection": ` + err.Error())
+	}
+	var federatedDatasetDefault string
+	federatedDataset := &federatedDatasetDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset", &federatedDataset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-dataset": ` + err.Error())
+	}
+	var federatedDatasetKindDefault string
+	federatedDatasetKind := &federatedDatasetKindDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset-kind", &federatedDatasetKind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-dataset-kind": ` + err.Error())
+	}
+	var kindDefault model.FederatedDatasetKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var ownerDefault string
+	owner := &ownerDefault
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.FederatedDatasetPatch{
+
+		FederatedConnection:  federatedConnection,
+		FederatedDataset:     federatedDataset,
+		FederatedDatasetKind: federatedDatasetKind,
+		Kind:                 kind,
+		Module:               module,
+		Name:                 name,
+		Owner:                owner,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromFederatedDatasetPatch(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateDatasetByIdIndexDataset Modifies a dataset with a specified dataset ID (datasetid).
+func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+	var disabledDefault bool
+	disabled := &disabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
+	}
+	var frozenTimePeriodInSecsDefault int32
+	frozenTimePeriodInSecs := &frozenTimePeriodInSecsDefault
+	err = flags.ParseFlag(cmd.Flags(), "frozen-time-period-in-secs", &frozenTimePeriodInSecs)
+	if err != nil {
+		return fmt.Errorf(`error parsing "frozen-time-period-in-secs": ` + err.Error())
+	}
+	var kindDefault model.IndexDatasetKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var ownerDefault string
+	owner := &ownerDefault
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.IndexDatasetPatch{
+
+		Disabled:               disabled,
+		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
+		Kind:                   kind,
+		Module:                 module,
+		Name:                   name,
+		Owner:                  owner,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateDatasetByIdKvCollectionDataset Modifies a dataset with a specified dataset ID (datasetid).
+func UpdateDatasetByIdKvCollectionDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+	var kindDefault model.KvCollectionDatasetKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var ownerDefault string
+	owner := &ownerDefault
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.KvCollectionDatasetPatch{
+
+		Kind:   kind,
+		Module: module,
+		Name:   name,
+		Owner:  owner,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateDatasetByIdLookupDataset Modifies a dataset with a specified dataset ID (datasetid).
+func UpdateDatasetByIdLookupDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var caseSensitiveMatchDefault bool
+	caseSensitiveMatch := &caseSensitiveMatchDefault
+	err = flags.ParseFlag(cmd.Flags(), "case-sensitive-match", &caseSensitiveMatch)
+	if err != nil {
+		return fmt.Errorf(`error parsing "case-sensitive-match": ` + err.Error())
+	}
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+	var externalKindDefault model.LookupDatasetExternalKind
+	externalKind := &externalKindDefault
+	err = flags.ParseFlag(cmd.Flags(), "external-kind", &externalKind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-kind": ` + err.Error())
+	}
+	var externalNameDefault string
+	externalName := &externalNameDefault
+	err = flags.ParseFlag(cmd.Flags(), "external-name", &externalName)
+	if err != nil {
+		return fmt.Errorf(`error parsing "external-name": ` + err.Error())
+	}
+	var filterDefault string
+	filter := &filterDefault
+	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
+	if err != nil {
+		return fmt.Errorf(`error parsing "filter": ` + err.Error())
+	}
+	var kindDefault model.LookupDatasetKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var ownerDefault string
+	owner := &ownerDefault
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.LookupDatasetPatch{
+
+		CaseSensitiveMatch: caseSensitiveMatch,
+		ExternalKind:       externalKind,
+		ExternalName:       externalName,
+		Filter:             filter,
+		Kind:               kind,
+		Module:             module,
+		Name:               name,
+		Owner:              owner,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// UpdateDatasetByIdMetricDataset Modifies a dataset with a specified dataset ID (datasetid).
+func UpdateDatasetByIdMetricDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var datasetid string
+	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	if err != nil {
+		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+	}
+	var disabledDefault bool
+	disabled := &disabledDefault
+	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
+	if err != nil {
+		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
+	}
+	var frozenTimePeriodInSecsDefault int32
+	frozenTimePeriodInSecs := &frozenTimePeriodInSecsDefault
+	err = flags.ParseFlag(cmd.Flags(), "frozen-time-period-in-secs", &frozenTimePeriodInSecs)
+	if err != nil {
+		return fmt.Errorf(`error parsing "frozen-time-period-in-secs": ` + err.Error())
+	}
+	var kindDefault model.MetricDatasetKind
+	kind := &kindDefault
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var ownerDefault string
+	owner := &ownerDefault
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.MetricDatasetPatch{
+
+		Disabled:               disabled,
+		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
+		Kind:                   kind,
+		Module:                 module,
+		Name:                   name,
+		Owner:                  owner,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.SearchService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 

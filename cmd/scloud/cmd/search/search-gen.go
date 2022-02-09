@@ -8,6 +8,13 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/search"
 )
 
+// createDataset -- Creates a dataset.
+var createDatasetCmd = &cobra.Command{
+	Use:   "create-dataset",
+	Short: "Creates a dataset.",
+	RunE:  impl.CreateDataset,
+}
+
 // createFederatedConnection -- Creates a new federated connection with information about how to connect to a remote index.
 var createFederatedConnectionCmd = &cobra.Command{
 	Use:   "create-federated-connection",
@@ -20,6 +27,13 @@ var createJobCmd = &cobra.Command{
 	Use:   "create-job",
 	Short: "Creates a search job.",
 	RunE:  impl.CreateJob,
+}
+
+// deleteDatasetById -- Deletes a dataset with a specified dataset ID (datasetid).
+var deleteDatasetByIdCmd = &cobra.Command{
+	Use:   "delete-dataset-by-id",
+	Short: "Deletes a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.DeleteDatasetById,
 }
 
 // deleteFederatedConnection -- Deletes a federated connection with the specified name (connectionName)
@@ -43,6 +57,20 @@ var exportResultsCmd = &cobra.Command{
 	RunE:  impl.ExportResults,
 }
 
+// getAllFederatedConnections -- Returns all federated connections.
+var getAllFederatedConnectionsCmd = &cobra.Command{
+	Use:   "get-all-federated-connections",
+	Short: "Returns all federated connections.",
+	RunE:  impl.GetAllFederatedConnections,
+}
+
+// getDatasetById -- Returns a dataset with a specified dataset ID (datasetid).
+var getDatasetByIdCmd = &cobra.Command{
+	Use:   "get-dataset-by-id",
+	Short: "Returns a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.GetDatasetById,
+}
+
 // getFederatedConnectionByName -- Returns the federated connection with the specified name (connectionName).
 var getFederatedConnectionByNameCmd = &cobra.Command{
 	Use:   "get-federated-connection-by-name",
@@ -55,6 +83,13 @@ var getJobCmd = &cobra.Command{
 	Use:   "get-job",
 	Short: "Returns the search job with the specified search ID (SID).",
 	RunE:  impl.GetJob,
+}
+
+// listDatasets -- Returns a list of all datasets.
+var listDatasetsCmd = &cobra.Command{
+	Use:   "list-datasets",
+	Short: "Returns a list of all datasets.",
+	RunE:  impl.ListDatasets,
 }
 
 // listEventsSummary -- Returns an events summary for search ID (SID) search.
@@ -120,6 +155,41 @@ var testFederatedConnectionCmd = &cobra.Command{
 	RunE:  impl.TestFederatedConnection,
 }
 
+// updateDatasetByIdFederatedDataset -- Modifies a dataset with a specified dataset ID (datasetid).
+var updateDatasetByIdFederatedDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-by-id-federated",
+	Short: "Modifies a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.UpdateDatasetByIdFederatedDataset,
+}
+
+// updateDatasetByIdIndexDataset -- Modifies a dataset with a specified dataset ID (datasetid).
+var updateDatasetByIdIndexDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-by-id-index",
+	Short: "Modifies a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.UpdateDatasetByIdIndexDataset,
+}
+
+// updateDatasetByIdKvCollectionDataset -- Modifies a dataset with a specified dataset ID (datasetid).
+var updateDatasetByIdKvCollectionDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-by-id-kv-collection",
+	Short: "Modifies a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.UpdateDatasetByIdKvCollectionDataset,
+}
+
+// updateDatasetByIdLookupDataset -- Modifies a dataset with a specified dataset ID (datasetid).
+var updateDatasetByIdLookupDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-by-id-lookup",
+	Short: "Modifies a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.UpdateDatasetByIdLookupDataset,
+}
+
+// updateDatasetByIdMetricDataset -- Modifies a dataset with a specified dataset ID (datasetid).
+var updateDatasetByIdMetricDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-by-id-metric",
+	Short: "Modifies a dataset with a specified dataset ID (datasetid).",
+	RunE:  impl.UpdateDatasetByIdMetricDataset,
+}
+
 // updateJob -- Updates the search job with the specified search ID (SID) with an action.
 var updateJobCmd = &cobra.Command{
 	Use:   "update-job",
@@ -128,22 +198,42 @@ var updateJobCmd = &cobra.Command{
 }
 
 func init() {
+	searchCmd.AddCommand(createDatasetCmd)
+
+	var createDatasetName string
+	createDatasetCmd.Flags().StringVar(&createDatasetName, "name", "", "This is a required parameter. The dataset name. Dataset names must be unique within each module.")
+	createDatasetCmd.MarkFlagRequired("name")
+
+	var createDatasetFields string
+	createDatasetCmd.Flags().StringVar(&createDatasetFields, "fields", "", "The fields to be associated with this dataset.")
+
+	var createDatasetId string
+	createDatasetCmd.Flags().StringVar(&createDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
+
+	var createDatasetModule string
+	createDatasetCmd.Flags().StringVar(&createDatasetModule, "module", "", "The name of the module to create the new dataset in.")
+
 	searchCmd.AddCommand(createFederatedConnectionCmd)
 
 	var createFederatedConnectionHostnameip string
-	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionHostnameip, "hostnameip", "", "The remote hostname to connect to.")
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionHostnameip, "hostnameip", "", "This is a required parameter. The remote hostname to connect to.")
+	createFederatedConnectionCmd.MarkFlagRequired("hostnameip")
 
 	var createFederatedConnectionName string
-	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionName, "name", "", "The name of the federated connection.")
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionName, "name", "", "This is a required parameter. The name of the federated connection.")
+	createFederatedConnectionCmd.MarkFlagRequired("name")
 
 	var createFederatedConnectionPort float32
-	createFederatedConnectionCmd.Flags().Float32Var(&createFederatedConnectionPort, "port", 0.0, "The remote port number.")
+	createFederatedConnectionCmd.Flags().Float32Var(&createFederatedConnectionPort, "port", 0.0, "This is a required parameter. The remote port number.")
+	createFederatedConnectionCmd.MarkFlagRequired("port")
 
 	var createFederatedConnectionServiceaccountpassword string
-	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountpassword, "serviceaccountpassword", "", "The password of the service account.")
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountpassword, "serviceaccountpassword", "", "This is a required parameter. The password of the service account.")
+	createFederatedConnectionCmd.MarkFlagRequired("serviceaccountpassword")
 
 	var createFederatedConnectionServiceaccountuser string
-	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")
+	createFederatedConnectionCmd.Flags().StringVar(&createFederatedConnectionServiceaccountuser, "serviceaccountuser", "", "This is a required parameter. The username on the service account.")
+	createFederatedConnectionCmd.MarkFlagRequired("serviceaccountuser")
 
 	searchCmd.AddCommand(createJobCmd)
 
@@ -164,7 +254,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobCollectTimeBuckets, "collect-time-buckets", "false", "Specifies whether a search is allowed to collect timeline bucket summary information during the run time.")
 
 	var createJobEarliest string
-	createJobCmd.Flags().StringVar(&createJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	createJobCmd.Flags().StringVar(&createJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	var createJobEnablePreview string
 	createJobCmd.Flags().StringVar(&createJobEnablePreview, "enable-preview", "false", "Specifies whether a search is allowed to collect preview results during the run time.")
@@ -176,7 +266,7 @@ func init() {
 	createJobCmd.Flags().StringVar(&createJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'.  Use 'all' to extract all fields. Use 'indexed' to extract only indexed fields. Use 'none' to extract only the default fields.")
 
 	var createJobLatest string
-	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	createJobCmd.Flags().StringVar(&createJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	var createJobMaxTime int32
 	createJobCmd.Flags().Int32Var(&createJobMaxTime, "max-time", 0, "The number of seconds to run the search before finalizing the search. The maximum value is 3600 seconds (1 hour).")
@@ -194,10 +284,16 @@ func init() {
 	createJobCmd.Flags().Int32Var(&createJobRequiredFreshness, "required-freshness", 0, "Specifies a maximum time interval, in seconds, between identical existing searches. The 'requiredFreshness' parameter is used to determine if an existing search with the same query and the same time boundaries can be reused, instead of running the same search again. Freshness is applied to the 'resolvedEarliest' and 'resolvedLatest' parameters. If an existing search has the same exact criteria as this search and the 'resolvedEarliest' and 'resolvedLatest' values are within the freshness interval, the existing search metadata is returned instead of initiating a new search job. By default, the 'requiredFreshness' parameter is set to 0 which means that the platform does not attempt to use an existing search. The maximum value for the 'requiredFreshness' parameter is 259200 seconds (72 hours).")
 
 	var createJobStatus string
-	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
+	createJobCmd.Flags().StringVar(&createJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', 'finalized' and 'failed'. can accept values running, done, canceled, failed, finalized")
 
 	var createJobTimezone string
 	createJobCmd.Flags().StringVar(&createJobTimezone, "timezone", "", "The timezone that relative time modifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
+
+	searchCmd.AddCommand(deleteDatasetByIdCmd)
+
+	var deleteDatasetByIdDatasetid string
+	deleteDatasetByIdCmd.Flags().StringVar(&deleteDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	deleteDatasetByIdCmd.MarkFlagRequired("datasetid")
 
 	searchCmd.AddCommand(deleteFederatedConnectionCmd)
 
@@ -220,13 +316,13 @@ func init() {
 	deleteJobCmd.MarkFlagRequired("predicate")
 
 	var deleteJobEarliest string
-	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	deleteJobCmd.Flags().StringVar(&deleteJobEarliest, "earliest", "", "The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	var deleteJobExtractFields string
 	deleteJobCmd.Flags().StringVar(&deleteJobExtractFields, "extract-fields", "", "Specifies how the Search service should extract fields. Valid values include 'all', 'none', or 'indexed'. 'all' will extract all fields, 'indexed' will extract only indexed fields, and 'none' will extract only the default fields. This parameter overwrites the value of the 'extractAllFields' parameter. Set to 'none' for better search performance.")
 
 	var deleteJobLatest string
-	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	deleteJobCmd.Flags().StringVar(&deleteJobLatest, "latest", "", "The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	var deleteJobMaxTime int32
 	deleteJobCmd.Flags().Int32Var(&deleteJobMaxTime, "max-time", 0, "The amount of time, in seconds, to run the delete search job before finalizing the search. The maximum value is 3600 seconds (1 hour).")
@@ -238,7 +334,7 @@ func init() {
 	deleteJobCmd.Flags().StringVar(&deleteJobRelativeTimeAnchor, "relative-time-anchor", "", "Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time. You can specify a relative time modifier ('earliest' or 'latest') for this parameter.  For example, if 'earliest' is set to -d and  the 'relativeTimeAnchor' is set to '2021-01-05T13:15:30Z' then 'resolvedEarliest' is '2021-01-04T13:15:30Z'.")
 
 	var deleteJobStatus string
-	deleteJobCmd.Flags().StringVar(&deleteJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'. can accept values running, done, canceled, failed")
+	deleteJobCmd.Flags().StringVar(&deleteJobStatus, "status", "", "The current status of the search job. The valid status values are 'running', 'done', 'canceled', 'finalized' and 'failed'. can accept values running, done, canceled, failed, finalized")
 
 	var deleteJobTimezone string
 	deleteJobCmd.Flags().StringVar(&deleteJobTimezone, "timezone", "", "The timezone that relative time modifiers are based off of. Timezone only applies to relative time literals for 'earliest' and 'latest'. If UNIX time or UTC format is used for 'earliest' and 'latest', this field is ignored. For the list of supported timezone formats, see https://docs.splunk.com/Documentation/Splunk/latest/Data/Applytimezoneoffsetstotimestamps#zoneinfo_.28TZ.29_database type: string default: GMT")
@@ -258,6 +354,14 @@ func init() {
 	var exportResultsOutputMode string
 	exportResultsCmd.Flags().StringVar(&exportResultsOutputMode, "output-mode", "", "Specifies the format for the returned output.")
 
+	searchCmd.AddCommand(getAllFederatedConnectionsCmd)
+
+	searchCmd.AddCommand(getDatasetByIdCmd)
+
+	var getDatasetByIdDatasetid string
+	getDatasetByIdCmd.Flags().StringVar(&getDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	getDatasetByIdCmd.MarkFlagRequired("datasetid")
+
 	searchCmd.AddCommand(getFederatedConnectionByNameCmd)
 
 	var getFederatedConnectionByNameConnectionName string
@@ -269,6 +373,8 @@ func init() {
 	var getJobSid string
 	getJobCmd.Flags().StringVar(&getJobSid, "sid", "", "This is a required parameter. The search ID.")
 	getJobCmd.MarkFlagRequired("sid")
+
+	searchCmd.AddCommand(listDatasetsCmd)
 
 	searchCmd.AddCommand(listEventsSummaryCmd)
 
@@ -286,7 +392,7 @@ func init() {
 	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryField, "field", "", "One or more fields to return for the result set. Use a comma-separated list of field names to specify multiple fields.")
 
 	var listEventsSummaryLatest string
-	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listEventsSummaryCmd.Flags().StringVar(&listEventsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	var listEventsSummaryOffset int32
 	listEventsSummaryCmd.Flags().Int32Var(&listEventsSummaryOffset, "offset", 0, "Index number identifying the location of the first item to return.")
@@ -301,7 +407,7 @@ func init() {
 	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryEarliest, "earliest", "", "The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
 
 	var listFieldsSummaryLatest string
-	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.")
+	listFieldsSummaryCmd.Flags().StringVar(&listFieldsSummaryLatest, "latest", "", "The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%!F(MISSING)T%!T(MISSING).%!Q(MISSING)) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.")
 
 	searchCmd.AddCommand(listJobsCmd)
 
@@ -354,25 +460,26 @@ func init() {
 	putFederatedConnectionByNameCmd.MarkFlagRequired("connection-name")
 
 	var putFederatedConnectionByNameHostnameip string
-	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameHostnameip, "hostnameip", "", "The remote hostname to connect to.")
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameHostnameip, "hostnameip", "", "This is a required parameter. The remote hostname to connect to.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("hostnameip")
 
 	var putFederatedConnectionByNameName string
-	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameName, "name", "", "The name of the federated connection.")
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameName, "name", "", "This is a required parameter. The name of the federated connection.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("name")
 
 	var putFederatedConnectionByNamePort float32
-	putFederatedConnectionByNameCmd.Flags().Float32Var(&putFederatedConnectionByNamePort, "port", 0.0, "The remote port number.")
+	putFederatedConnectionByNameCmd.Flags().Float32Var(&putFederatedConnectionByNamePort, "port", 0.0, "This is a required parameter. The remote port number.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("port")
 
 	var putFederatedConnectionByNameServiceaccountpassword string
-	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountpassword, "serviceaccountpassword", "", "The password of the service account.")
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountpassword, "serviceaccountpassword", "", "This is a required parameter. The password of the service account.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("serviceaccountpassword")
 
 	var putFederatedConnectionByNameServiceaccountuser string
-	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountuser, "serviceaccountuser", "", "The username on the service account.")
+	putFederatedConnectionByNameCmd.Flags().StringVar(&putFederatedConnectionByNameServiceaccountuser, "serviceaccountuser", "", "This is a required parameter. The username on the service account.")
+	putFederatedConnectionByNameCmd.MarkFlagRequired("serviceaccountuser")
 
 	searchCmd.AddCommand(refreshFederatedConnectionCmd)
-
-	var refreshFederatedConnectionBody string
-	refreshFederatedConnectionCmd.Flags().StringVar(&refreshFederatedConnectionBody, "body", "", "The request body")
-	refreshFederatedConnectionCmd.MarkFlagRequired("body")
 
 	var refreshFederatedConnectionConnectionName string
 	refreshFederatedConnectionCmd.Flags().StringVar(&refreshFederatedConnectionConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
@@ -380,13 +487,127 @@ func init() {
 
 	searchCmd.AddCommand(testFederatedConnectionCmd)
 
-	var testFederatedConnectionBody string
-	testFederatedConnectionCmd.Flags().StringVar(&testFederatedConnectionBody, "body", "", "The request body")
-	testFederatedConnectionCmd.MarkFlagRequired("body")
-
 	var testFederatedConnectionConnectionName string
 	testFederatedConnectionCmd.Flags().StringVar(&testFederatedConnectionConnectionName, "connection-name", "", "This is a required parameter. The name of the federated connection.")
 	testFederatedConnectionCmd.MarkFlagRequired("connection-name")
+
+	searchCmd.AddCommand(updateDatasetByIdFederatedDatasetCmd)
+	var updateDatasetByIdFederatedDatasetFederatedConnection string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetFederatedConnection, "federated-connection", "", "Connection information to connect to remote federated connection.")
+
+	var updateDatasetByIdFederatedDatasetFederatedDataset string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetFederatedDataset, "federated-dataset", "", "Dataset information in the remote instance.")
+
+	var updateDatasetByIdFederatedDatasetFederatedDatasetKind string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetFederatedDatasetKind, "federated-dataset-kind", "", "Dataset kind information in the remote instance.")
+
+	var updateDatasetByIdFederatedDatasetKind string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetKind, "kind", "", "The dataset kind. can accept values federated")
+
+	var updateDatasetByIdFederatedDatasetModule string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetModule, "module", "", "The name of module to reassign dataset into.")
+
+	var updateDatasetByIdFederatedDatasetName string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+
+	var updateDatasetByIdFederatedDatasetOwner string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+
+	searchCmd.AddCommand(updateDatasetByIdIndexDatasetCmd)
+	var updateDatasetByIdIndexDatasetDisabled string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
+
+	var updateDatasetByIdIndexDatasetFrozenTimePeriodInSecs int32
+	updateDatasetByIdIndexDatasetCmd.Flags().Int32Var(&updateDatasetByIdIndexDatasetFrozenTimePeriodInSecs, "frozen-time-period-in-secs", 0, "The frozenTimePeriodInSecs to use for the index")
+
+	var updateDatasetByIdIndexDatasetKind string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetKind, "kind", "", "The dataset kind. can accept values index")
+
+	var updateDatasetByIdIndexDatasetModule string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetModule, "module", "", "The name of module to reassign dataset into.")
+
+	var updateDatasetByIdIndexDatasetName string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+
+	var updateDatasetByIdIndexDatasetOwner string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+
+	searchCmd.AddCommand(updateDatasetByIdKvCollectionDatasetCmd)
+	var updateDatasetByIdKvCollectionDatasetKind string
+	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetKind, "kind", "", "The dataset kind. can accept values kvcollection")
+
+	var updateDatasetByIdKvCollectionDatasetModule string
+	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetModule, "module", "", "The name of module to reassign dataset into.")
+
+	var updateDatasetByIdKvCollectionDatasetName string
+	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+
+	var updateDatasetByIdKvCollectionDatasetOwner string
+	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+
+	searchCmd.AddCommand(updateDatasetByIdLookupDatasetCmd)
+	var updateDatasetByIdLookupDatasetCaseSensitiveMatch string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
+
+	var updateDatasetByIdLookupDatasetExternalKind string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
+
+	var updateDatasetByIdLookupDatasetExternalName string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalName, "external-name", "", "The name of the external lookup.")
+
+	var updateDatasetByIdLookupDatasetFilter string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetFilter, "filter", "", "A query that filters results out of the lookup before those results are returned.")
+
+	var updateDatasetByIdLookupDatasetKind string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetKind, "kind", "", "The dataset kind. can accept values lookup")
+
+	var updateDatasetByIdLookupDatasetModule string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetModule, "module", "", "The name of module to reassign dataset into.")
+
+	var updateDatasetByIdLookupDatasetName string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+
+	var updateDatasetByIdLookupDatasetOwner string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+
+	searchCmd.AddCommand(updateDatasetByIdMetricDatasetCmd)
+	var updateDatasetByIdMetricDatasetDisabled string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
+
+	var updateDatasetByIdMetricDatasetFrozenTimePeriodInSecs int32
+	updateDatasetByIdMetricDatasetCmd.Flags().Int32Var(&updateDatasetByIdMetricDatasetFrozenTimePeriodInSecs, "frozen-time-period-in-secs", 0, "The frozenTimePeriodInSecs to use for the index")
+
+	var updateDatasetByIdMetricDatasetKind string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetKind, "kind", "", "The dataset kind. can accept values metric")
+
+	var updateDatasetByIdMetricDatasetModule string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetModule, "module", "", "The name of module to reassign dataset into.")
+
+	var updateDatasetByIdMetricDatasetName string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+
+	var updateDatasetByIdMetricDatasetOwner string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+
+	var updateDatasetByIdFederatedDatasetDatasetid string
+	updateDatasetByIdFederatedDatasetCmd.Flags().StringVar(&updateDatasetByIdFederatedDatasetDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	updateDatasetByIdFederatedDatasetCmd.MarkFlagRequired("datasetid")
+
+	var updateDatasetByIdIndexDatasetDatasetid string
+	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	updateDatasetByIdIndexDatasetCmd.MarkFlagRequired("datasetid")
+
+	var updateDatasetByIdKvCollectionDatasetDatasetid string
+	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	updateDatasetByIdKvCollectionDatasetCmd.MarkFlagRequired("datasetid")
+
+	var updateDatasetByIdLookupDatasetDatasetid string
+	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	updateDatasetByIdLookupDatasetCmd.MarkFlagRequired("datasetid")
+
+	var updateDatasetByIdMetricDatasetDatasetid string
+	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetDatasetid, "datasetid", "", "This is a required parameter. The dataset ID.")
+	updateDatasetByIdMetricDatasetCmd.MarkFlagRequired("datasetid")
 
 	searchCmd.AddCommand(updateJobCmd)
 

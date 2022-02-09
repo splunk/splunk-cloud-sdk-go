@@ -151,6 +151,14 @@ type ServicerGenerated interface {
 	*/
 	DeleteSamlClient(samlClient string, resp ...*http.Response) error
 	/*
+		GetEntitlements - identity service endpoint
+		Returns the entitlements for the given tenant and client id
+		Parameters:
+			entitlementClientId: ID of the client for commerce entitlements
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetEntitlements(entitlementClientId string, resp ...*http.Response) (*EntitlementList, error)
+	/*
 		GetGroup - identity service endpoint
 		Returns information about a given group within a tenant.
 		Parameters:
@@ -402,6 +410,15 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	RevokePrincipalAuthTokens(principal string, resp ...*http.Response) error
+	/*
+		UpdateEntitlements - identity service endpoint
+		Update the entitlements for the given tenant and client id
+		Parameters:
+			entitlementClientId: ID of the client for commerce entitlements
+			setEntitlement: The desired entitlements to be set
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateEntitlements(entitlementClientId string, setEntitlement []SetEntitlement, resp ...*http.Response) (*EntitlementList, error)
 	/*
 		UpdateGroup - identity service endpoint
 		Updates a group&#39;s display name or description.

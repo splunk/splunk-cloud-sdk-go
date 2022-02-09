@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Splunk, Inc.
+ * Copyright © 2022 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -37,6 +37,35 @@ type Service services.BaseService
 // NewService creates a new search service client from the given Config
 func NewService(iClient services.IClient) *Service {
 	return &Service{Client: iClient}
+}
+
+/*
+	CreateDataset - search service endpoint
+	Creates a dataset.
+	Parameters:
+		datasetPost
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) CreateDataset(datasetPost DatasetPost, resp ...*http.Response) (*Dataset, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/datasets`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Post(services.RequestParams{URL: u, Body: datasetPost})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Dataset
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
 }
 
 /*
@@ -95,6 +124,35 @@ func (s *Service) CreateJob(searchJob SearchJob, resp ...*http.Response) (*Searc
 	var rb SearchJob
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
+}
+
+/*
+	DeleteDatasetById - search service endpoint
+	Deletes a dataset with a specified dataset ID (datasetid).
+	Parameters:
+		datasetid: The dataset ID.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) DeleteDatasetById(datasetid string, resp ...*http.Response) error {
+	pp := struct {
+		Datasetid string
+	}{
+		Datasetid: datasetid,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/datasets/{{.Datasetid}}`, pp)
+	if err != nil {
+		return err
+	}
+	response, err := s.Client.Delete(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	return err
 }
 
 /*
@@ -192,6 +250,68 @@ func (s *Service) ExportResults(sid string, query *ExportResultsQueryParams, res
 }
 
 /*
+	GetAllFederatedConnections - search service endpoint
+	Returns all federated connections.
+	Parameters:
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetAllFederatedConnections(resp ...*http.Response) (*ListFederatedConnections, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/connections`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb ListFederatedConnections
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	GetDatasetById - search service endpoint
+	Returns a dataset with a specified dataset ID (datasetid).
+	Parameters:
+		datasetid: The dataset ID.
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) GetDatasetById(datasetid string, resp ...*http.Response) (*Dataset, error) {
+	pp := struct {
+		Datasetid string
+	}{
+		Datasetid: datasetid,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/datasets/{{.Datasetid}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Dataset
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
 	GetFederatedConnectionByName - search service endpoint
 	Returns the federated connection with the specified name (connectionName).
 	Parameters:
@@ -255,6 +375,34 @@ func (s *Service) GetJob(sid string, resp ...*http.Response) (*SearchJob, error)
 		return nil, err
 	}
 	var rb SearchJob
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
+}
+
+/*
+	ListDatasets - search service endpoint
+	Returns a list of all datasets.
+	Parameters:
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) ListDatasets(resp ...*http.Response) (*ListDatasets, error) {
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/datasets`, nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Get(services.RequestParams{URL: u})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb ListDatasets
 	err = util.ParseResponse(&rb, response)
 	return &rb, err
 }
@@ -507,10 +655,9 @@ func (s *Service) PutFederatedConnectionByName(connectionName string, federatedC
 	Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
 	Parameters:
 		connectionName: The name of the federated connection.
-		body
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) RefreshFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error {
+func (s *Service) RefreshFederatedConnection(connectionName string, resp ...*http.Response) error {
 	pp := struct {
 		ConnectionName string
 	}{
@@ -520,7 +667,7 @@ func (s *Service) RefreshFederatedConnection(connectionName string, body *map[st
 	if err != nil {
 		return err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	response, err := s.Client.Post(services.RequestParams{URL: u})
 	if response != nil {
 		defer response.Body.Close()
 
@@ -537,10 +684,9 @@ func (s *Service) RefreshFederatedConnection(connectionName string, body *map[st
 	Test connection with remote EC instance using federated connection parameters.
 	Parameters:
 		connectionName: The name of the federated connection.
-		body
 		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 */
-func (s *Service) TestFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error {
+func (s *Service) TestFederatedConnection(connectionName string, resp ...*http.Response) error {
 	pp := struct {
 		ConnectionName string
 	}{
@@ -550,7 +696,7 @@ func (s *Service) TestFederatedConnection(connectionName string, body *map[strin
 	if err != nil {
 		return err
 	}
-	response, err := s.Client.Post(services.RequestParams{URL: u, Body: body})
+	response, err := s.Client.Post(services.RequestParams{URL: u})
 	if response != nil {
 		defer response.Body.Close()
 
@@ -560,6 +706,41 @@ func (s *Service) TestFederatedConnection(connectionName string, body *map[strin
 		}
 	}
 	return err
+}
+
+/*
+	UpdateDatasetById - search service endpoint
+	Modifies a dataset with a specified dataset ID (datasetid).
+	Parameters:
+		datasetid: The dataset ID.
+		datasetPatch
+		resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+*/
+func (s *Service) UpdateDatasetById(datasetid string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error) {
+	pp := struct {
+		Datasetid string
+	}{
+		Datasetid: datasetid,
+	}
+	u, err := s.Client.BuildURLFromPathParams(nil, serviceCluster, `/search/v2/datasets/{{.Datasetid}}`, pp)
+	if err != nil {
+		return nil, err
+	}
+	response, err := s.Client.Patch(services.RequestParams{URL: u, Body: datasetPatch})
+	if response != nil {
+		defer response.Body.Close()
+
+		// populate input *http.Response if provided
+		if len(resp) > 0 && resp[0] != nil {
+			*resp[0] = *response
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	var rb Dataset
+	err = util.ParseResponse(&rb, response)
+	return &rb, err
 }
 
 /*

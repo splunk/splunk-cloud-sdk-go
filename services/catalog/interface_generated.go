@@ -26,58 +26,31 @@ import (
 type ServicerGenerated interface {
 	/*
 		CreateActionForRule - catalog service endpoint
-		Creates a new action for a rule with the specified resource name.
+		Creates a new action for the specified rule by rule id or resource name.
 		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionPost: The JSON representation of the action to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateActionForRule(ruleresourcename string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
+	CreateActionForRule(ruleresource string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
 	/*
-		CreateActionForRuleById - catalog service endpoint
-		Creates a new action for the specified rule.
-		Parameters:
-			ruleid: ID of a Field.
-			actionPost: The JSON representation of the action to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateActionForRuleById(ruleid string, actionPost ActionPost, resp ...*http.Response) (*Action, error)
-	/*
-		CreateAnnotationForDashboardbyId - catalog service endpoint
+		CreateAnnotationForDashboard - catalog service endpoint
 		Creates a new annotation for the specified dashboard.
 		Parameters:
-			dashboardid: ID of a dashboard.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDashboardbyId(dashboardid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDashboard(dashboardresource string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
-		CreateAnnotationForDashboardsByResourceName - catalog service endpoint
-		Creates a new annotation for the specified dataset resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			requestBody: The JSON representation of the annotation to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateAnnotationForDashboardsByResourceName(dashboardresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
-	/*
-		CreateAnnotationForDatasetById - catalog service endpoint
+		CreateAnnotationForDataset - catalog service endpoint
 		Creates a new annotation for the specified dataset.
 		Parameters:
-			datasetid: ID of a Dataset.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			requestBody: The JSON representation of the annotation to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateAnnotationForDatasetById(datasetid string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
-	/*
-		CreateAnnotationForDatasetByResourceName - catalog service endpoint
-		Creates a new annotation for the specified dataset.
-		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			requestBody: The JSON representation of the annotation to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateAnnotationForDatasetByResourceName(datasetresourcename string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
+	CreateAnnotationForDataset(datasetresource string, requestBody map[string]string, resp ...*http.Response) (*Annotation, error)
 	/*
 		CreateDashboard - catalog service endpoint
 		Creates a new dashboard.
@@ -96,58 +69,22 @@ type ServicerGenerated interface {
 	CreateDataset(datasetPost DatasetPost, resp ...*http.Response) (*Dataset, error)
 	/*
 		CreateDatasetImport - catalog service endpoint
-		Creates a new dataset import using the resource name of the imported dataset.
+		Creates a new dataset import using the ID or resource name of the imported dataset.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			datasetImportedBy
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateDatasetImport(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error)
-	/*
-		CreateDatasetImportById - catalog service endpoint
-		Creates a new dataset import using the ID of the imported dataset.
-		Parameters:
-			datasetid: ID of a Dataset.
-			datasetImportedBy
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateDatasetImportById(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
-	/*
-		CreateDatasetImportByIdv1 - catalog service endpoint
-		Creates a new dataset import using the ID of the imported dataset.
-		Parameters:
-			datasetid: ID of a Dataset.
-			datasetImportedBy
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateDatasetImportByIdv1(datasetid string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
-	/*
-		CreateDatasetImportv1 - catalog service endpoint
-		Creates a new dataset import using the resource name of the imported dataset.
-		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			datasetImportedBy
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateDatasetImportv1(datasetresourcename string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*Dataset, error)
+	CreateDatasetImport(datasetresource string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
 	/*
 		CreateFieldForDataset - catalog service endpoint
-		Creates a new field in the dataset with the specified resource name.
+		Adds a new field to the dataset with the specified ID or resource name.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldPost: The JSON representation of the field to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	CreateFieldForDataset(datasetresourcename string, fieldPost FieldPost, resp ...*http.Response) (*Field, error)
-	/*
-		CreateFieldForDatasetById - catalog service endpoint
-		Adds a new field to the dataset with the specified ID.
-		Parameters:
-			datasetid: ID of a Dataset.
-			fieldPost: The JSON representation of the field to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateFieldForDatasetById(datasetid string, fieldPost FieldPost, resp ...*http.Response) (*Field, error)
+	CreateFieldForDataset(datasetresource string, fieldPost FieldPost, resp ...*http.Response) (*Field, error)
 	/*
 		CreateRelationship - catalog service endpoint
 		Creates a new relationship.
@@ -165,136 +102,57 @@ type ServicerGenerated interface {
 	*/
 	CreateRule(rulePost RulePost, resp ...*http.Response) (*Rule, error)
 	/*
-		CreateWorkflow - catalog service endpoint
-		Creates a new workflow configuration.
-		Parameters:
-			workflowPost: The JSON representation of the workflow to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateWorkflow(workflowPost WorkflowPost, resp ...*http.Response) (*Workflow, error)
-	/*
-		CreateWorkflowBuild - catalog service endpoint
-		Creates a new workflow build.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowBuildPost: The JSON representation of the workflow build to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateWorkflowBuild(workflowid string, workflowBuildPost WorkflowBuildPost, resp ...*http.Response) (*WorkflowBuild, error)
-	/*
-		CreateWorkflowRun - catalog service endpoint
-		Creates a new workflow run for the specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			workflowRunPost: The JSON representation of the workflow run to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	CreateWorkflowRun(workflowid string, workflowbuildid string, workflowRunPost WorkflowRunPost, resp ...*http.Response) (*WorkflowRun, error)
-	/*
 		DeleteActionByIdForRule - catalog service endpoint
-		Deletes the action with the specified ID that is associated with the specified rule resource name.
-		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
-			actionid: ID of an Action.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteActionByIdForRule(ruleresourcename string, actionid string, resp ...*http.Response) error
-	/*
-		DeleteActionByIdForRuleById - catalog service endpoint
 		Deletes the action with the specified ID that is associated with the specified rule.
 		Parameters:
-			ruleid: ID of a Field.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) error
+	DeleteActionByIdForRule(ruleresource string, actionid string, resp ...*http.Response) error
 	/*
-		DeleteAnnotationOfDashboardById - catalog service endpoint
+		DeleteAnnotationOfDashboard - catalog service endpoint
 		Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
 		Parameters:
-			dashboardid: ID of a dashboard.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			annotationid: ID of a annotation.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteAnnotationOfDashboardById(dashboardid string, annotationid string, resp ...*http.Response) error
+	DeleteAnnotationOfDashboard(dashboardresource string, annotationid string, resp ...*http.Response) error
 	/*
-		DeleteAnnotationOfDashboardByResourceName - catalog service endpoint
-		Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			annotationid: ID of a annotation.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteAnnotationOfDashboardByResourceName(dashboardresourcename string, annotationid string, resp ...*http.Response) error
-	/*
-		DeleteAnnotationOfDatasetById - catalog service endpoint
+		DeleteAnnotationOfDataset - catalog service endpoint
 		Deletes the annotation with the specified ID that is associated with the specified dataset.
 		Parameters:
-			datasetid: ID of a Dataset.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			annotationid: ID of a annotation.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteAnnotationOfDatasetById(datasetid string, annotationid string, resp ...*http.Response) error
+	DeleteAnnotationOfDataset(datasetresource string, annotationid string, resp ...*http.Response) error
 	/*
-		DeleteAnnotationOfDatasetByResourceName - catalog service endpoint
-		Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
+		DeleteDashboard - catalog service endpoint
+		Deletes the dashboard with the specified ID or resource name.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			annotationid: ID of a annotation.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteAnnotationOfDatasetByResourceName(datasetresourcename string, annotationid string, resp ...*http.Response) error
-	/*
-		DeleteDashboardById - catalog service endpoint
-		Deletes the dashboard with the specified ID.
-		Parameters:
-			dashboardid: ID of a dashboard.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteDashboardById(dashboardid string, resp ...*http.Response) error
-	/*
-		DeleteDashboardByResourceName - catalog service endpoint
-		Deletes the dashboard with the specified resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteDashboardByResourceName(dashboardresourcename string, resp ...*http.Response) error
+	DeleteDashboard(dashboardresource string, resp ...*http.Response) error
 	/*
 		DeleteDataset - catalog service endpoint
-		Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Deletes the dataset with the specified ID or resource name. Deleting a dataset also deletes its dependent objects, such as fields.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteDataset(datasetresourcename string, resp ...*http.Response) error
-	/*
-		DeleteDatasetById - catalog service endpoint
-		Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
-		Parameters:
-			datasetid: ID of a Dataset.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteDatasetById(datasetid string, resp ...*http.Response) error
+	DeleteDataset(datasetresource string, resp ...*http.Response) error
 	/*
 		DeleteFieldByIdForDataset - catalog service endpoint
 		Deletes the field with the specified ID that is part of the specified dataset.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteFieldByIdForDataset(datasetresourcename string, fieldid string, resp ...*http.Response) error
-	/*
-		DeleteFieldByIdForDatasetById - catalog service endpoint
-		Deletes the field with the specified ID that is part of the specified dataset.
-		Parameters:
-			datasetid: ID of a Dataset.
-			fieldid: ID of a Field.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteFieldByIdForDatasetById(datasetid string, fieldid string, resp ...*http.Response) error
+	DeleteFieldByIdForDataset(datasetresource string, fieldid string, resp ...*http.Response) error
 	/*
 		DeleteRelationshipById - catalog service endpoint
 		Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
@@ -305,99 +163,38 @@ type ServicerGenerated interface {
 	DeleteRelationshipById(relationshipid string, resp ...*http.Response) error
 	/*
 		DeleteRule - catalog service endpoint
-		Deletes the rule with the specified resource name and its dependencies.
+		Deletes the rule with the specfied ID or resource name. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	DeleteRule(ruleresourcename string, resp ...*http.Response) error
-	/*
-		DeleteRuleById - catalog service endpoint
-		Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
-		Parameters:
-			ruleid: ID of a Field.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteRuleById(ruleid string, resp ...*http.Response) error
-	/*
-		DeleteWorkflowBuildById - catalog service endpoint
-		Deletes the workflow build with the specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteWorkflowBuildById(workflowid string, workflowbuildid string, resp ...*http.Response) error
-	/*
-		DeleteWorkflowById - catalog service endpoint
-		Deletes the workflow with the specified workflow ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteWorkflowById(workflowid string, resp ...*http.Response) error
-	/*
-		DeleteWorkflowRunById - catalog service endpoint
-		Deletes the workflow run with the specified workflow run ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			workflowrunid: ID of a workflow run.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	DeleteWorkflowRunById(workflowid string, workflowbuildid string, workflowrunid string, resp ...*http.Response) error
+	DeleteRule(ruleresource string, resp ...*http.Response) error
 	/*
 		GetActionByIdForRule - catalog service endpoint
-		Returns the action with the specified ID that is associated with the specified rule resource name.
-		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
-			actionid: ID of an Action.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetActionByIdForRule(ruleresourcename string, actionid string, resp ...*http.Response) (*Action, error)
-	/*
-		GetActionByIdForRuleById - catalog service endpoint
 		Returns information about the action with the specified ID that is associated with the specified rule.
 		Parameters:
-			ruleid: ID of a Field.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetActionByIdForRuleById(ruleid string, actionid string, resp ...*http.Response) (*Action, error)
+	GetActionByIdForRule(ruleresource string, actionid string, resp ...*http.Response) (*Action, error)
 	/*
-		GetDashboardById - catalog service endpoint
-		Returns information about the dashboard with the specified ID.
+		GetDashboard - catalog service endpoint
+		Returns information about the dashboard with the specified ID or resource name.
 		Parameters:
-			dashboardid: ID of a dashboard.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDashboardById(dashboardid string, resp ...*http.Response) (*Dashboard, error)
-	/*
-		GetDashboardByResourceName - catalog service endpoint
-		Returns information about the dashboard with the specified resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetDashboardByResourceName(dashboardresourcename string, resp ...*http.Response) (*Dashboard, error)
+	GetDashboard(dashboardresource string, resp ...*http.Response) (*Dashboard, error)
 	/*
 		GetDataset - catalog service endpoint
-		Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Returns information about the dataset with the specified ID or resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetDataset(datasetresourcename string, query *GetDatasetQueryParams, resp ...*http.Response) (*DatasetGet, error)
-	/*
-		GetDatasetById - catalog service endpoint
-		Returns information about the dataset with the specified ID.
-		Parameters:
-			datasetid: ID of a Dataset.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetDatasetById(datasetid string, query *GetDatasetByIdQueryParams, resp ...*http.Response) (*DatasetGet, error)
+	GetDataset(datasetresource string, query *GetDatasetQueryParams, resp ...*http.Response) (*DatasetGet, error)
 	/*
 		GetFieldById - catalog service endpoint
 		Returns the field with the specified ID.
@@ -410,20 +207,11 @@ type ServicerGenerated interface {
 		GetFieldByIdForDataset - catalog service endpoint
 		Returns the field with the specified ID that is part of the specified dataset.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetFieldByIdForDataset(datasetresourcename string, fieldid string, resp ...*http.Response) (*Field, error)
-	/*
-		GetFieldByIdForDatasetById - catalog service endpoint
-		Returns the field with the specified ID that is part of the specified dataset.
-		Parameters:
-			datasetid: ID of a Dataset.
-			fieldid: ID of a Field.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetFieldByIdForDatasetById(datasetid string, fieldid string, resp ...*http.Response) (*Field, error)
+	GetFieldByIdForDataset(datasetresource string, fieldid string, resp ...*http.Response) (*Field, error)
 	/*
 		GetRelationshipById - catalog service endpoint
 		Returns the relationship with the specified relationship ID.
@@ -434,65 +222,30 @@ type ServicerGenerated interface {
 	GetRelationshipById(relationshipid string, resp ...*http.Response) (*Relationship, error)
 	/*
 		GetRule - catalog service endpoint
-		Returrns the rule with the specified resource name.
+		Returns information about rule with the specified rule ID or resource name.
 		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetRule(ruleresourcename string, resp ...*http.Response) (*Rule, error)
+	GetRule(ruleresource string, resp ...*http.Response) (*Rule, error)
 	/*
-		GetRuleById - catalog service endpoint
-		Returns information about rule with the specified rule ID.
+		ImportDataset - catalog service endpoint
+		Creates a new dataset import using the ID or resource name of the imported dataset.
 		Parameters:
-			ruleid: ID of a Field.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetImportedBy
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	GetRuleById(ruleid string, resp ...*http.Response) (*Rule, error)
-	/*
-		GetWorkflowBuildById - catalog service endpoint
-		Returns information about the workflow build with the specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetWorkflowBuildById(workflowid string, workflowbuildid string, resp ...*http.Response) (*WorkflowBuild, error)
-	/*
-		GetWorkflowById - catalog service endpoint
-		Returns information about the workflow with the specified workflow ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetWorkflowById(workflowid string, resp ...*http.Response) (*Workflow, error)
-	/*
-		GetWorkflowRunById - catalog service endpoint
-		Returns information about the workflow run with the specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			workflowrunid: ID of a workflow run.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	GetWorkflowRunById(workflowid string, workflowbuildid string, workflowrunid string, resp ...*http.Response) (*WorkflowRun, error)
+	ImportDataset(datasetresource string, datasetImportedBy DatasetImportedBy, resp ...*http.Response) (*DatasetImportedBy, error)
 	/*
 		ListActionsForRule - catalog service endpoint
-		Returns the list of actions that are associated with the specified rule.
-		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListActionsForRule(ruleresourcename string, query *ListActionsForRuleQueryParams, resp ...*http.Response) ([]Action, error)
-	/*
-		ListActionsForRuleById - catalog service endpoint
 		Returns the set of actions that are part of the specified rule.
 		Parameters:
-			ruleid: ID of a Field.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListActionsForRuleById(ruleid string, query *ListActionsForRuleByIdQueryParams, resp ...*http.Response) ([]Action, error)
+	ListActionsForRule(ruleresource string, query *ListActionsForRuleQueryParams, resp ...*http.Response) ([]Action, error)
 	/*
 		ListAnnotations - catalog service endpoint
 		Returns the set of annotations across all objects.
@@ -502,41 +255,23 @@ type ServicerGenerated interface {
 	*/
 	ListAnnotations(query *ListAnnotationsQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
-		ListAnnotationsForDashboardById - catalog service endpoint
+		ListAnnotationsForDashboard - catalog service endpoint
 		Returns the set of annotations that are associated with the specified dashboard.
 		Parameters:
-			dashboardid: ID of a dashboard.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListAnnotationsForDashboardById(dashboardid string, query *ListAnnotationsForDashboardByIdQueryParams, resp ...*http.Response) ([]Annotation, error)
+	ListAnnotationsForDashboard(dashboardresource string, query *ListAnnotationsForDashboardQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
-		ListAnnotationsForDashboardByResourceName - catalog service endpoint
-		Returns the set of annotations that are associated with the specified dashboard resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListAnnotationsForDashboardByResourceName(dashboardresourcename string, query *ListAnnotationsForDashboardByResourceNameQueryParams, resp ...*http.Response) ([]Annotation, error)
-	/*
-		ListAnnotationsForDatasetById - catalog service endpoint
+		ListAnnotationsForDataset - catalog service endpoint
 		Returns the set of annotations that are associated with the specified dataset.
 		Parameters:
-			datasetid: ID of a Dataset.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListAnnotationsForDatasetById(datasetid string, query *ListAnnotationsForDatasetByIdQueryParams, resp ...*http.Response) ([]Annotation, error)
-	/*
-		ListAnnotationsForDatasetByResourceName - catalog service endpoint
-		Returns the set of annotations that are associated with the specified dataset resource name.
-		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListAnnotationsForDatasetByResourceName(datasetresourcename string, query *ListAnnotationsForDatasetByResourceNameQueryParams, resp ...*http.Response) ([]Annotation, error)
+	ListAnnotationsForDataset(datasetresource string, query *ListAnnotationsForDatasetQueryParams, resp ...*http.Response) ([]Annotation, error)
 	/*
 		ListDashboards - catalog service endpoint
 		Returns a list of dashboards.
@@ -563,22 +298,13 @@ type ServicerGenerated interface {
 	ListFields(query *ListFieldsQueryParams, resp ...*http.Response) ([]Field, error)
 	/*
 		ListFieldsForDataset - catalog service endpoint
-		Returns the list of fields in the specified dataset.
+		Returns the set of fields for the dataset with the specified ID or resource name.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	ListFieldsForDataset(datasetresourcename string, query *ListFieldsForDatasetQueryParams, resp ...*http.Response) ([]Field, error)
-	/*
-		ListFieldsForDatasetById - catalog service endpoint
-		Returns the set of fields for the dataset with the specified ID.
-		Parameters:
-			datasetid: ID of a Dataset.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListFieldsForDatasetById(datasetid string, query *ListFieldsForDatasetByIdQueryParams, resp ...*http.Response) ([]Field, error)
+	ListFieldsForDataset(datasetresource string, query *ListFieldsForDatasetQueryParams, resp ...*http.Response) ([]Field, error)
 	/*
 		ListModules - catalog service endpoint
 		Returns a list of all modules. Use a filter to return a specific list of modules.
@@ -604,108 +330,43 @@ type ServicerGenerated interface {
 	*/
 	ListRules(query *ListRulesQueryParams, resp ...*http.Response) ([]Rule, error)
 	/*
-		ListWorkflowBuilds - catalog service endpoint
-		Returns a list of Machine Learning workflow builds.
-		Parameters:
-			workflowid: ID of a workflow.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListWorkflowBuilds(workflowid string, query *ListWorkflowBuildsQueryParams, resp ...*http.Response) ([]WorkflowBuild, error)
-	/*
-		ListWorkflowRuns - catalog service endpoint
-		Returns a list of Machine Learning workflow runs for specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListWorkflowRuns(workflowid string, workflowbuildid string, query *ListWorkflowRunsQueryParams, resp ...*http.Response) ([]WorkflowRun, error)
-	/*
-		ListWorkflows - catalog service endpoint
-		Return a list of Machine Learning workflow configurations.
-		Parameters:
-			query: a struct pointer of valid query parameters for the endpoint, nil to send no query parameters
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	ListWorkflows(query *ListWorkflowsQueryParams, resp ...*http.Response) ([]Workflow, error)
-	/*
 		UpdateActionByIdForRule - catalog service endpoint
-		Modifies the action with the specified ID that is associated with the specified rule resource name.
-		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
-			actionid: ID of an Action.
-			actionPatch: The fields to update in the specified action.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateActionByIdForRule(ruleresourcename string, actionid string, actionPatch ActionPatch, resp ...*http.Response) (*Action, error)
-	/*
-		UpdateActionByIdForRuleById - catalog service endpoint
 		Modifies the action with the specified ID that is associated with the specified rule.
 		Parameters:
-			ruleid: ID of a Field.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			actionid: ID of an Action.
 			actionPatch: The properties to update in the specified action.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateActionByIdForRuleById(ruleid string, actionid string, actionPatch ActionPatch, resp ...*http.Response) (*Action, error)
+	UpdateActionByIdForRule(ruleresource string, actionid string, actionPatch ActionPatch, resp ...*http.Response) (*Action, error)
 	/*
-		UpdateDashboardById - catalog service endpoint
-		Modifies the dashboard with the specified ID.
+		UpdateDashboard - catalog service endpoint
+		Modifies the dashboard with the specified ID or resource name.
 		Parameters:
-			dashboardid: ID of a dashboard.
+			dashboardresource: ID or the resource name of a dashvboard. The resource name format is module.dashboardname.
 			dashboardPatch: An updated representation of the dashboard to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateDashboardById(dashboardid string, dashboardPatch DashboardPatch, resp ...*http.Response) (*Dashboard, error)
-	/*
-		UpdateDashboardByResourceName - catalog service endpoint
-		Modifies the dashboard with the specified resource name.
-		Parameters:
-			dashboardresourcename: The resource name of a dashvboard. The resource name format is module.dashboardname.
-			dashboardPatch: An updated representation of the dashboard to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateDashboardByResourceName(dashboardresourcename string, dashboardPatch DashboardPatch, resp ...*http.Response) error
+	UpdateDashboard(dashboardresource string, dashboardPatch DashboardPatch, resp ...*http.Response) (*Dashboard, error)
 	/*
 		UpdateDataset - catalog service endpoint
-		Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+		Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			datasetPatch: An updated representation of the dataset to be persisted.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateDataset(datasetresourcename string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
-	/*
-		UpdateDatasetById - catalog service endpoint
-		Modifies the dataset with the specified ID.
-		Parameters:
-			datasetid: ID of a Dataset.
-			datasetPatch: An updated representation of the dataset to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateDatasetById(datasetid string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
+	UpdateDataset(datasetresource string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
 	/*
 		UpdateFieldByIdForDataset - catalog service endpoint
 		Modifies the field with the specified ID that is part of the specified dataset.
 		Parameters:
-			datasetresourcename: The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
-			fieldid: ID of a Field.
-			fieldPatch: The properties to update in the specified field.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateFieldByIdForDataset(datasetresourcename string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error)
-	/*
-		UpdateFieldByIdForDatasetById - catalog service endpoint
-		Modifies the field with the specified ID that is part of the specified dataset.
-		Parameters:
-			datasetid: ID of a Dataset.
+			datasetresource: ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 			fieldid: ID of a Field.
 			fieldPatch: The properties to update in the specified field, or the requesting user lacks catalog.datasets.read permission for them.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateFieldByIdForDatasetById(datasetid string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error)
+	UpdateFieldByIdForDataset(datasetresource string, fieldid string, fieldPatch FieldPatch, resp ...*http.Response) (*Field, error)
 	/*
 		UpdateRelationshipById - catalog service endpoint
 		Modifies the relationship with the specified relationship ID.
@@ -717,50 +378,11 @@ type ServicerGenerated interface {
 	UpdateRelationshipById(relationshipid string, relationshipPatch RelationshipPatch, resp ...*http.Response) (*Relationship, error)
 	/*
 		UpdateRule - catalog service endpoint
-		Modifies the rule with the specified resource name.
+		Modifies the rule with the specified rule ID or resource name.
 		Parameters:
-			ruleresourcename: The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
+			ruleresource: The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.
 			rulePatch: The properties to update in the specified rule.
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	UpdateRule(ruleresourcename string, rulePatch RulePatch, resp ...*http.Response) (*Rule, error)
-	/*
-		UpdateRuleById - catalog service endpoint
-		Modifies the rule with the specified rule ID.
-		Parameters:
-			ruleid: ID of a Field.
-			rulePatch: The properties to update in the specified rule.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateRuleById(ruleid string, rulePatch RulePatch, resp ...*http.Response) (*Rule, error)
-	/*
-		UpdateWorkflowBuildById - catalog service endpoint
-		Modifies the workflow build with the specified workflow build ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			workflowBuildPatch: An updated representation of the workflow build to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateWorkflowBuildById(workflowid string, workflowbuildid string, workflowBuildPatch WorkflowBuildPatch, resp ...*http.Response) error
-	/*
-		UpdateWorkflowById - catalog service endpoint
-		Modifies the workflow with the specified workflow ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowPatch: An updated representation of the workflow to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateWorkflowById(workflowid string, workflowPatch WorkflowPatch, resp ...*http.Response) error
-	/*
-		UpdateWorkflowRunById - catalog service endpoint
-		Modifies the workflow run with the specified workflow run ID.
-		Parameters:
-			workflowid: ID of a workflow.
-			workflowbuildid: ID of a workflow build.
-			workflowrunid: ID of a workflow run.
-			workflowRunPatch: An updated representation of the workflow run to be persisted.
-			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
-	*/
-	UpdateWorkflowRunById(workflowid string, workflowbuildid string, workflowrunid string, workflowRunPatch WorkflowRunPatch, resp ...*http.Response) error
+	UpdateRule(ruleresource string, rulePatch RulePatch, resp ...*http.Response) (*Rule, error)
 }

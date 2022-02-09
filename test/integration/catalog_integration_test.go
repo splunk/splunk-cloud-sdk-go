@@ -67,7 +67,7 @@ func makeRuleName(ctx string) string {
 
 func cleanupDataset(t *testing.T, id string) {
 	client := getSdkClient(t)
-	err := client.CatalogService.DeleteDatasetById(id)
+	err := client.CatalogService.DeleteDataset(id)
 	assert.Emptyf(t, err, "Error deleting dataset: %s", err)
 }
 
@@ -80,9 +80,9 @@ func cleanupRule(t *testing.T, id string) {
 func cleanupRuleAction(t *testing.T, ruleID, actionID string) {
 	client := getSdkClient(t)
 
-	action, _ := client.CatalogService.GetActionByIdForRuleById(ruleID, actionID)
+	action, _ := client.CatalogService.GetActionByIdForRule(ruleID, actionID)
 	if action != nil {
-		err := client.CatalogService.DeleteActionByIdForRuleById(ruleID, actionID)
+		err := client.CatalogService.DeleteActionByIdForRule(ruleID, actionID)
 		assert.Emptyf(t, err, "Error deleting rule action: %s", err)
 	}
 }
@@ -429,7 +429,7 @@ func TestGetDatasetByID(t *testing.T) {
 	require.NotNil(t, ds.LookupDataset())
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
-	ds1, err := getSdkClient(t).CatalogService.GetDatasetById(ds.LookupDataset().Id, nil)
+	ds1, err := getSdkClient(t).CatalogService.GetDataset(ds.LookupDataset().Id, nil)
 	require.NoError(t, err)
 	require.NotNil(t, ds1.LookupDataset())
 	assert.Equal(t, ds.LookupDataset().Name, ds1.LookupDataset().Name)
@@ -472,7 +472,7 @@ func TestUpdateIndexDataset(t *testing.T) {
 		Disabled:               &disabled,
 		FrozenTimePeriodInSecs: &frozenTimePeriodInSecs,
 	}
-	newindexds1, err := client.CatalogService.UpdateDatasetById(
+	newindexds1, err := client.CatalogService.UpdateDataset(
 		indexds.IndexDataset().Id,
 		catalog.MakeDatasetPatchFromIndexDatasetPatch(uidx1))
 	require.NoError(t, err)
@@ -682,7 +682,7 @@ func TestUpdateRuleById(t *testing.T) {
 	defer cleanupRule(t, rule.Id)
 
 	mat := `sourcetype::new_sourcetype`
-	urule, err := client.CatalogService.UpdateRuleById(rule.Id, catalog.RulePatch{Match: &mat})
+	urule, err := client.CatalogService.UpdateRule(rule.Id, catalog.RulePatch{Match: &mat})
 	assert.Equal(t, ruleName, urule.Name)
 	assert.Equal(t, mat, urule.Match)
 }
@@ -769,11 +769,11 @@ func TestDeleteRuleById(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, rule.Id)
 
-	err = client.CatalogService.DeleteRuleById(rule.Id)
+	err = client.CatalogService.DeleteRule(rule.Id)
 	assert.NoError(t, err)
 
 	var resp http.Response
-	r, err := client.CatalogService.GetRuleById(rule.Id, &resp)
+	r, err := client.CatalogService.GetRule(rule.Id, &resp)
 	assert.Nil(t, r)
 	assert.NotNil(t, err)
 	assert.Equal(t, 404, resp.StatusCode)
@@ -793,7 +793,7 @@ func TestDeleteRule(t *testing.T) {
 	assert.NoError(t, err)
 
 	var resp http.Response
-	r, err := client.CatalogService.GetRuleById(rule.Id, &resp)
+	r, err := client.CatalogService.GetRule(rule.Id, &resp)
 	assert.Nil(t, r)
 	assert.NotNil(t, err)
 	assert.Equal(t, 404, resp.StatusCode)
@@ -850,11 +850,11 @@ func TestDatasetFieldGetList(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, res2)
 	assert.Equal(t, testField2.Name, res2.Name)
-	fdid1, err := client.CatalogService.GetFieldByIdForDatasetById(ds.Id, f1.Id)
+	fdid1, err := client.CatalogService.GetFieldByIdForDataset(ds.Id, f1.Id)
 	require.NoError(t, err)
 	assert.NotNil(t, fdid1)
 	assert.Equal(t, testField1.Name, fdid1.Name)
-	fdid2, err := client.CatalogService.GetFieldByIdForDatasetById(ds.Id, f2.Id)
+	fdid2, err := client.CatalogService.GetFieldByIdForDataset(ds.Id, f2.Id)
 	require.NoError(t, err)
 	assert.NotNil(t, fdid2)
 	assert.Equal(t, testField2.Name, fdid2.Name)
@@ -873,7 +873,7 @@ func TestDatasetFieldGetList(t *testing.T) {
 	fs, err = client.CatalogService.ListFieldsForDataset(ds.Module+"."+ds.Name, nil)
 	require.NoError(t, err)
 	assert.True(t, len(fs) > 0)
-	fs, err = client.CatalogService.ListFieldsForDatasetById(ds.Id, nil)
+	fs, err = client.CatalogService.ListFieldsForDataset(ds.Id, nil)
 	require.NoError(t, err)
 	assert.True(t, len(fs) > 0)
 }
@@ -935,7 +935,7 @@ func TestPatchDatasetField(t *testing.T) {
 	assert.Equal(t, catalog.FieldPrevalenceAll, resultField.Prevalence)
 
 	dataType = catalog.FieldDataTypeNumber
-	resultField, err = client.CatalogService.UpdateFieldByIdForDatasetById(ds.LookupDataset().Id, resultField.Id, catalog.FieldPatch{Datatype: &dataType})
+	resultField, err = client.CatalogService.UpdateFieldByIdForDataset(ds.LookupDataset().Id, resultField.Id, catalog.FieldPatch{Datatype: &dataType})
 	require.NoError(t, err)
 	require.NotNil(t, resultField)
 	assert.Equal(t, "integ_test_field", resultField.Name)
@@ -987,7 +987,7 @@ func TestCreateDatasetFieldUnauthorizedOperationError(t *testing.T) {
 
 	// Create a new dataset field
 	testField := catalog.FieldPost{Name: fieldName, Datatype: &dataType, Fieldtype: &fieldType, Prevalence: &prevalenceType}
-	_, err = invalidClient.CatalogService.CreateFieldForDatasetById(ds.LookupDataset().Id, testField)
+	_, err = invalidClient.CatalogService.CreateFieldForDataset(ds.LookupDataset().Id, testField)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -1015,7 +1015,7 @@ func TestCreateDatasetFieldDataAlreadyPresent(t *testing.T) {
 	// Post an already created dataset field
 	duplicateTestField := catalog.FieldPost{Name: fieldName, Datatype: &dataType, Fieldtype: &fieldType, Prevalence: &prevalenceType}
 	fmt.Println(&duplicateTestField.Name)
-	_, err = client.CatalogService.CreateFieldForDatasetById(ds.LookupDataset().Id, duplicateTestField)
+	_, err = client.CatalogService.CreateFieldForDataset(ds.LookupDataset().Id, duplicateTestField)
 	fmt.Println(err)
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
@@ -1037,7 +1037,7 @@ func TestCreateDatasetFieldInvalidDataFormat(t *testing.T) {
 
 	// Create a new dataset field but with no data
 	testField := catalog.FieldPost{}
-	_, err = client.CatalogService.CreateFieldForDatasetById(ds.LookupDataset().Id, testField)
+	_, err = client.CatalogService.CreateFieldForDataset(ds.LookupDataset().Id, testField)
 	require.Error(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -1074,7 +1074,7 @@ func TestDeleteDatasetFieldDataNotFound(t *testing.T) {
 	defer cleanupDataset(t, ds.LookupDataset().Id)
 
 	// Delete dataset field
-	err = client.CatalogService.DeleteFieldByIdForDatasetById(ds.LookupDataset().Id, "idonotexist")
+	err = client.CatalogService.DeleteFieldByIdForDataset(ds.LookupDataset().Id, "idonotexist")
 	require.NotNil(t, err)
 	httpErr, ok := err.(*util.HTTPError)
 	require.True(t, ok)
@@ -1109,7 +1109,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action by id
 	tmpstr := "newaliasi"
-	updateact1, err := client.CatalogService.UpdateActionByIdForRuleById(rule.Id, action1.AliasAction().Id,
+	updateact1, err := client.CatalogService.UpdateActionByIdForRule(rule.Id, action1.AliasAction().Id,
 		catalog.MakeActionPatchFromAliasActionPatch(catalog.AliasActionPatch{Alias: &tmpstr}))
 	require.NotNil(t, updateact1)
 	assert.Equal(t, tmpstr, updateact1.AliasAction().Alias)
@@ -1131,7 +1131,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr = "json"
-	updateact2, err := client.CatalogService.UpdateActionByIdForRuleById(rule.Id, action2.AutoKvAction().Id,
+	updateact2, err := client.CatalogService.UpdateActionByIdForRule(rule.Id, action2.AutoKvAction().Id,
 		catalog.MakeActionPatchFromAutoKvActionPatch(catalog.AutoKvActionPatch{Mode: &tmpstr}))
 	require.NotNil(t, updateact2)
 	assert.Equal(t, tmpstr, updateact2.AutoKvAction().Mode)
@@ -1145,7 +1145,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule eval action
 	tmpstr = "newField"
-	updateact3, err := client.CatalogService.UpdateActionByIdForRuleById(rule.Id, action3.EvalAction().Id,
+	updateact3, err := client.CatalogService.UpdateActionByIdForRule(rule.Id, action3.EvalAction().Id,
 		catalog.MakeActionPatchFromEvalActionPatch(catalog.EvalActionPatch{Field: &tmpstr}))
 	require.NotNil(t, updateact3)
 	assert.Equal(t, tmpstr, updateact3.EvalAction().Field)
@@ -1159,7 +1159,7 @@ func TestRuleActions(t *testing.T) {
 
 	//update rule action
 	tmpstr = "newexpr"
-	updateact4, err := client.CatalogService.UpdateActionByIdForRuleById(rule.Id, action4.LookupAction().Id,
+	updateact4, err := client.CatalogService.UpdateActionByIdForRule(rule.Id, action4.LookupAction().Id,
 		catalog.MakeActionPatchFromLookupActionPatch(catalog.LookupActionPatch{Expression: &tmpstr}))
 	require.NotNil(t, updateact4)
 	assert.Equal(t, tmpstr, updateact4.LookupAction().Expression)
@@ -1182,14 +1182,14 @@ func TestRuleActions(t *testing.T) {
 	//update rule action
 	tmpstr = `field=myotherfield "To: (?<to>.*) From: (?<from>.*)"`
 	fieldnew := "something"
-	updateact5, err := client.CatalogService.UpdateActionByIdForRuleById(rule.Id, action5.RegexAction().Id,
+	updateact5, err := client.CatalogService.UpdateActionByIdForRule(rule.Id, action5.RegexAction().Id,
 		catalog.MakeActionPatchFromRegexActionPatch(catalog.RegexActionPatch{Pattern: &tmpstr, Field: &fieldnew}))
 	require.NotNil(t, updateact5)
 	assert.Equal(t, tmpstr, updateact5.RegexAction().Pattern)
 	assert.Equal(t, fieldnew, updateact5.RegexAction().Field)
 
 	//Get rule actions
-	actions, err := client.CatalogService.ListActionsForRuleById(rule.Id, nil)
+	actions, err := client.CatalogService.ListActionsForRule(rule.Id, nil)
 	require.NotNil(t, actions)
 	assert.Equal(t, 6, len(actions))
 
@@ -1198,7 +1198,7 @@ func TestRuleActions(t *testing.T) {
 	require.NotNil(t, actions1)
 	assert.Equal(t, 6, len(actions1))
 
-	action7, err := client.CatalogService.GetActionByIdForRuleById(rule.Id, action1.AliasAction().Id)
+	action7, err := client.CatalogService.GetActionByIdForRule(rule.Id, action1.AliasAction().Id)
 	require.NotNil(t, action7)
 	require.NotNil(t, action7.AliasAction())
 
@@ -1235,7 +1235,7 @@ func TestCreateActionForRuleById(t *testing.T) {
 	// Create rule action - alias
 	alias := "myfieldalias2"
 	aap := catalog.AliasActionPost{Field: field.Name, Alias: alias, Kind: catalog.AliasActionKindAlias}
-	action1, err := client.CatalogService.CreateActionForRuleById(rule.Id, catalog.MakeActionPostFromAliasActionPost(aap))
+	action1, err := client.CatalogService.CreateActionForRule(rule.Id, catalog.MakeActionPostFromAliasActionPost(aap))
 	require.NoError(t, err)
 	defer cleanupRuleAction(t, rule.Id, action1.AliasAction().Id)
 }
@@ -1270,17 +1270,17 @@ func TestCRUDDashboard(t *testing.T) {
 		Module:     module,
 		Definition: "{\"title\":\"this is my test dashboard\"}"})
 
-	defer client.CatalogService.DeleteDashboardById(db.Id)
+	defer client.CatalogService.DeleteDashboard(db.Id)
 	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 	assert.Equal(t, module, db.Module)
 
 	//List
-	db, err = client.CatalogService.GetDashboardById(db.Id)
+	db, err = client.CatalogService.GetDashboard(db.Id)
 	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 
-	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + dashboardName)
+	db, err = client.CatalogService.GetDashboard(module + "." + dashboardName)
 	require.NoError(t, err)
 	assert.Equal(t, dashboardName, db.Name)
 
@@ -1292,15 +1292,15 @@ func TestCRUDDashboard(t *testing.T) {
 
 	//Update
 	name_new := dashboardName + "_updated"
-	dashboard, err := client.CatalogService.UpdateDashboardById(db.Id, catalog.DashboardPatch{Name: &name_new})
+	dashboard, err := client.CatalogService.UpdateDashboard(db.Id, catalog.DashboardPatch{Name: &name_new})
 	require.NoError(t, err)
 	assert.Equal(t, name_new, dashboard.Name)
 
-	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + name_new)
+	db, err = client.CatalogService.GetDashboard(module + "." + name_new)
 	assert.Equal(t, name_new, db.Name)
 
 	//Delete
-	err = client.CatalogService.DeleteDashboardById(db.Id)
+	err = client.CatalogService.DeleteDashboard(db.Id)
 	require.NoError(t, err)
 
 	// Create
@@ -1310,146 +1310,17 @@ func TestCRUDDashboard(t *testing.T) {
 		Module:     module,
 		Definition: "{\"title\":\"this is my other test dashboard\"}"})
 
-	defer client.CatalogService.DeleteDashboardById(db.Id)
+	defer client.CatalogService.DeleteDashboard(db.Id)
 
 	// Update by name
 	name_new1 := name1 + "_updated"
-	err = client.CatalogService.UpdateDashboardByResourceName(module+"."+name1, catalog.DashboardPatch{Name: &name_new1})
+	_, err = client.CatalogService.UpdateDashboard(module+"."+name1, catalog.DashboardPatch{Name: &name_new1})
 	require.NoError(t, err)
-	db, err = client.CatalogService.GetDashboardByResourceName(module + "." + name_new1)
+	db, err = client.CatalogService.GetDashboard(module + "." + name_new1)
 	assert.Equal(t, name_new, db.Name)
 
 	// Delete by name
-	err = client.CatalogService.DeleteDashboardByResourceName(module + "." + name_new1)
-	require.NoError(t, err)
-}
-
-func createWorkflow(client *sdk.Client) (*catalog.Workflow, error) {
-	name := makeDSName("workflow")
-
-	return client.CatalogService.CreateWorkflow(catalog.WorkflowPost{
-		Name:  &name,
-		Tasks: []catalog.TaskPost{}})
-}
-
-func createWorkflowBuild(client *sdk.Client, wf *catalog.Workflow) (*catalog.WorkflowBuild, error) {
-
-	return client.CatalogService.CreateWorkflowBuild(
-		wf.Id,
-		catalog.WorkflowBuildPost{
-			Outputdata:  []string{},
-			Inputdata:   []string{},
-			Timeoutsecs: 10})
-}
-
-// Test workflow
-func TestCRUDWorkflow(t *testing.T) {
-	client := getSdkClient(t)
-
-	wf, err := createWorkflow(client)
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowById(wf.Id)
-
-	//List
-	wfg, err := client.CatalogService.GetWorkflowById(wf.Id)
-	require.NoError(t, err)
-	assert.Equal(t, wf.Id, wfg.Id)
-
-	//ListAll
-	dbs, err := client.CatalogService.ListWorkflows(nil)
-	require.NoError(t, err)
-	assert.True(t, len(dbs) > 0)
-
-	//Update
-	name_new := "newname"
-	err = client.CatalogService.UpdateWorkflowById(wf.Id, catalog.WorkflowPatch{Name: &name_new})
-	require.NoError(t, err)
-	wf, err = client.CatalogService.GetWorkflowById(wf.Id)
-	assert.Equal(t, name_new, wf.Name)
-
-	//Delete
-	err = client.CatalogService.DeleteWorkflowById(wf.Id)
-	require.NoError(t, err)
-}
-
-// Test workflowBuild
-func TestCRUDWorkflowBuild(t *testing.T) {
-	t.Skip("Skip until 500 responses are investigated")
-	client := getSdkClient(t)
-
-	wf, err := createWorkflow(client)
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowById(wf.Id)
-
-	wfb, err := createWorkflowBuild(client, wf)
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
-
-	//List
-	wfg, err := client.CatalogService.GetWorkflowBuildById(wf.Id, wfb.Id)
-	require.NoError(t, err)
-	assert.Equal(t, wfb.Id, wfg.Id)
-
-	//ListAll
-	dbs, err := client.CatalogService.ListWorkflowBuilds(wf.Id, nil)
-	require.NoError(t, err)
-	assert.True(t, len(dbs) > 0)
-
-	//Update
-	name_new := "newname"
-	err = client.CatalogService.UpdateWorkflowBuildById(wf.Id, wfb.Id, catalog.WorkflowBuildPatch{Name: &name_new})
-	require.NoError(t, err)
-	wfb, err = client.CatalogService.GetWorkflowBuildById(wf.Id, wfb.Id)
-	assert.Equal(t, name_new, *wfb.Name)
-
-	//Delete
-	err = client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
-	require.NoError(t, err)
-}
-
-// Test workflowRun
-func TestCRUDWorkflowRun(t *testing.T) {
-	t.Skip("Skip until 500 responses are investigated")
-	client := getSdkClient(t)
-
-	wf, err := createWorkflow(client)
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowById(wf.Id)
-
-	wfb, err := createWorkflowBuild(client, wf)
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowBuildById(wf.Id, wfb.Id)
-
-	wfr, err := client.CatalogService.CreateWorkflowRun(
-		wf.Id,
-		wfb.Id,
-		catalog.WorkflowRunPost{
-			Outputdata:  []string{},
-			Inputdata:   []string{},
-			Timeoutsecs: 10})
-
-	require.NoError(t, err)
-	defer client.CatalogService.DeleteWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
-
-	//List
-	wfg, err := client.CatalogService.GetWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
-	require.NoError(t, err)
-	assert.Equal(t, wfr.Id, wfg.Id)
-
-	//ListAll
-	dbs, err := client.CatalogService.ListWorkflowRuns(wf.Id, wfb.Id, nil)
-	require.NoError(t, err)
-	assert.True(t, len(dbs) > 0)
-
-	//Update
-	name_new := "newname"
-	err = client.CatalogService.UpdateWorkflowRunById(wf.Id, wfb.Id, wfr.Id, catalog.WorkflowRunPatch{Name: &name_new})
-	require.NoError(t, err)
-	wfr, err = client.CatalogService.GetWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
-	assert.Equal(t, name_new, *wfr.Name)
-
-	//Delete
-	err = client.CatalogService.DeleteWorkflowRunById(wf.Id, wfb.Id, wfr.Id)
+	err = client.CatalogService.DeleteDashboard(module + "." + name_new1)
 	require.NoError(t, err)
 }
 
@@ -1514,7 +1385,7 @@ func TestCRUDAnnotations(t *testing.T) {
 	// Create
 
 	m := map[string]string{"annotationtypeid": DefaultAnnotationTypeId}
-	an1, err := client.CatalogService.CreateAnnotationForDatasetById(lds.Id, m)
+	an1, err := client.CatalogService.CreateAnnotationForDataset(lds.Id, m)
 
 	var annotationId string
 	for k, p := range *an1 {
@@ -1526,10 +1397,10 @@ func TestCRUDAnnotations(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, annotationId)
 
-	defer client.CatalogService.DeleteAnnotationOfDatasetById(lds.Id, annotationId)
+	defer client.CatalogService.DeleteAnnotationOfDataset(lds.Id, annotationId)
 	require.Equal(t, DefaultAnnotationTypeId, annotationId)
 	// Create
-	an2, err := client.CatalogService.CreateAnnotationForDatasetByResourceName(lds.Module+"."+lds.Name, m)
+	an2, err := client.CatalogService.CreateAnnotationForDataset(lds.Module+"."+lds.Name, m)
 	require.NoError(t, err)
 	for k, p := range *an2 {
 		if k == "annotationtypeid" {
@@ -1537,15 +1408,15 @@ func TestCRUDAnnotations(t *testing.T) {
 		}
 	}
 	require.NotNil(t, annotationId)
-	defer client.CatalogService.DeleteAnnotationOfDatasetById(lds.Id, annotationId)
+	defer client.CatalogService.DeleteAnnotationOfDataset(lds.Id, annotationId)
 	require.Equal(t, DefaultAnnotationTypeId, annotationId)
 
 	// List
-	ans1, err := client.CatalogService.ListAnnotationsForDatasetById(lds.Id, nil)
+	ans1, err := client.CatalogService.ListAnnotationsForDataset(lds.Id, nil)
 	require.NoError(t, err)
 	require.True(t, len(ans1) > 0)
 
-	ans2, err := client.CatalogService.ListAnnotationsForDatasetByResourceName(lds.Module+"."+lds.Name, nil)
+	ans2, err := client.CatalogService.ListAnnotationsForDataset(lds.Module+"."+lds.Name, nil)
 	require.NoError(t, err)
 	require.True(t, len(ans2) > 0)
 

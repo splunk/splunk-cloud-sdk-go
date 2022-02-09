@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Splunk, Inc.
+ * Copyright © 2022 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -22,6 +22,396 @@
  */
 
 package search
+
+import (
+	"bytes"
+	"encoding/json"
+)
+
+// Dataset : A complete dataset as rendered in POST, PATCH responses.
+type Dataset struct {
+	federatedDataset    *FederatedDataset
+	indexDataset        *IndexDataset
+	kvCollectionDataset *KvCollectionDataset
+	lookupDataset       *LookupDataset
+	metricDataset       *MetricDataset
+	raw                 interface{}
+}
+
+// MakeDatasetFromFederatedDataset creates a new Dataset from an instance of FederatedDataset
+func MakeDatasetFromFederatedDataset(f FederatedDataset) Dataset {
+	return Dataset{federatedDataset: &f}
+}
+
+// IsFederatedDataset checks if the Dataset is a FederatedDataset
+func (m Dataset) IsFederatedDataset() bool {
+	return m.federatedDataset != nil
+}
+
+// FederatedDataset returns FederatedDataset if IsFederatedDataset() is true, nil otherwise
+func (m Dataset) FederatedDataset() *FederatedDataset {
+	return m.federatedDataset
+}
+
+// MakeDatasetFromIndexDataset creates a new Dataset from an instance of IndexDataset
+func MakeDatasetFromIndexDataset(f IndexDataset) Dataset {
+	return Dataset{indexDataset: &f}
+}
+
+// IsIndexDataset checks if the Dataset is a IndexDataset
+func (m Dataset) IsIndexDataset() bool {
+	return m.indexDataset != nil
+}
+
+// IndexDataset returns IndexDataset if IsIndexDataset() is true, nil otherwise
+func (m Dataset) IndexDataset() *IndexDataset {
+	return m.indexDataset
+}
+
+// MakeDatasetFromKvCollectionDataset creates a new Dataset from an instance of KvCollectionDataset
+func MakeDatasetFromKvCollectionDataset(f KvCollectionDataset) Dataset {
+	return Dataset{kvCollectionDataset: &f}
+}
+
+// IsKvCollectionDataset checks if the Dataset is a KvCollectionDataset
+func (m Dataset) IsKvCollectionDataset() bool {
+	return m.kvCollectionDataset != nil
+}
+
+// KvCollectionDataset returns KvCollectionDataset if IsKvCollectionDataset() is true, nil otherwise
+func (m Dataset) KvCollectionDataset() *KvCollectionDataset {
+	return m.kvCollectionDataset
+}
+
+// MakeDatasetFromLookupDataset creates a new Dataset from an instance of LookupDataset
+func MakeDatasetFromLookupDataset(f LookupDataset) Dataset {
+	return Dataset{lookupDataset: &f}
+}
+
+// IsLookupDataset checks if the Dataset is a LookupDataset
+func (m Dataset) IsLookupDataset() bool {
+	return m.lookupDataset != nil
+}
+
+// LookupDataset returns LookupDataset if IsLookupDataset() is true, nil otherwise
+func (m Dataset) LookupDataset() *LookupDataset {
+	return m.lookupDataset
+}
+
+// MakeDatasetFromMetricDataset creates a new Dataset from an instance of MetricDataset
+func MakeDatasetFromMetricDataset(f MetricDataset) Dataset {
+	return Dataset{metricDataset: &f}
+}
+
+// IsMetricDataset checks if the Dataset is a MetricDataset
+func (m Dataset) IsMetricDataset() bool {
+	return m.metricDataset != nil
+}
+
+// MetricDataset returns MetricDataset if IsMetricDataset() is true, nil otherwise
+func (m Dataset) MetricDataset() *MetricDataset {
+	return m.metricDataset
+}
+
+// MakeDatasetFromRawInterface creates a new Dataset from a raw interface{}
+func MakeDatasetFromRawInterface(f interface{}) Dataset {
+	return Dataset{raw: f}
+}
+
+// IsRawInterface checks if the Dataset is an interface{} (unknown type)
+func (m Dataset) IsRawInterface() bool {
+	return m.raw != nil
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m Dataset) RawInterface() interface{} {
+	return m.raw
+}
+
+// UnmarshalJSON unmarshals Dataset using the "kind" property
+func (m *Dataset) UnmarshalJSON(b []byte) (err error) {
+	type discriminator struct {
+		Kind string `json:"kind"`
+	}
+	var d discriminator
+	err = json.Unmarshal(b, &d)
+	if err != nil {
+		return err
+	}
+	// Resolve into respective struct based on the discriminator value
+	switch d.Kind {
+	case "federated":
+		m.federatedDataset = &FederatedDataset{}
+		return json.Unmarshal(b, m.federatedDataset)
+	case "index":
+		m.indexDataset = &IndexDataset{}
+		return json.Unmarshal(b, m.indexDataset)
+	case "kvcollection":
+		m.kvCollectionDataset = &KvCollectionDataset{}
+		return json.Unmarshal(b, m.kvCollectionDataset)
+	case "lookup":
+		m.lookupDataset = &LookupDataset{}
+		return json.Unmarshal(b, m.lookupDataset)
+	case "metric":
+		m.metricDataset = &MetricDataset{}
+		return json.Unmarshal(b, m.metricDataset)
+	}
+	// Unknown discriminator value (this type may not yet be supported)
+	// unmarhsal to raw interface
+	var raw interface{}
+	err = json.Unmarshal(b, &raw)
+	if err != nil {
+		return err
+	}
+	m.raw = raw
+	return nil
+}
+
+// MarshalJSON marshals Dataset using the appropriate struct field
+func (m Dataset) MarshalJSON() ([]byte, error) {
+	if m.IsFederatedDataset() {
+		return json.Marshal(m.federatedDataset)
+	} else if m.IsIndexDataset() {
+		return json.Marshal(m.indexDataset)
+	} else if m.IsKvCollectionDataset() {
+		return json.Marshal(m.kvCollectionDataset)
+	} else if m.IsLookupDataset() {
+		return json.Marshal(m.lookupDataset)
+	} else if m.IsMetricDataset() {
+		return json.Marshal(m.metricDataset)
+	}
+	// None of the structs are populated, send raw
+	return json.Marshal(m.raw)
+}
+
+// Properties that are common across all Dataset kinds rendered in POST, PATCH, and GET responses.
+type DatasetCommon struct {
+	// A unique dataset ID.
+	Id string `json:"id"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+}
+
+// DatasetPatch : Property values to be set in an existing dataset using a PATCH request.
+// DatasetPatch is FederatedDatasetPatch, IndexDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, (or interface{} if no matches are found)
+type DatasetPatch struct {
+	datasetPatch interface{}
+	isRaw        bool
+}
+
+// UnmarshalJSON unmarshals DatasetPatch into FederatedDatasetPatch, IndexDatasetPatch, KvCollectionDatasetPatch, LookupDatasetPatch, MetricDatasetPatch, or interface{} if no matches are found
+func (m *DatasetPatch) UnmarshalJSON(b []byte) (err error) {
+	reader := bytes.NewReader(b)
+	d := json.NewDecoder(reader)
+	d.DisallowUnknownFields()
+	// Attempt to unmarshal to each oneOf, if unknown fields then move to next
+	attempt := func(m interface{}) error {
+		_, err = reader.Seek(0, 0)
+		if err != nil {
+			return err
+		}
+		return d.Decode(m)
+	}
+	var testFederatedDatasetPatch FederatedDatasetPatch
+	if err = attempt(&testFederatedDatasetPatch); err == nil {
+		m.datasetPatch = testFederatedDatasetPatch
+		return nil
+	}
+	var testIndexDatasetPatch IndexDatasetPatch
+	if err = attempt(&testIndexDatasetPatch); err == nil {
+		m.datasetPatch = testIndexDatasetPatch
+		return nil
+	}
+	var testKvCollectionDatasetPatch KvCollectionDatasetPatch
+	if err = attempt(&testKvCollectionDatasetPatch); err == nil {
+		m.datasetPatch = testKvCollectionDatasetPatch
+		return nil
+	}
+	var testLookupDatasetPatch LookupDatasetPatch
+	if err = attempt(&testLookupDatasetPatch); err == nil {
+		m.datasetPatch = testLookupDatasetPatch
+		return nil
+	}
+	var testMetricDatasetPatch MetricDatasetPatch
+	if err = attempt(&testMetricDatasetPatch); err == nil {
+		m.datasetPatch = testMetricDatasetPatch
+		return nil
+	}
+	// If no matches, decode model to raw interface
+	var raw interface{}
+	err = attempt(&raw)
+	if err != nil {
+		return err
+	}
+	m.isRaw = true
+	m.datasetPatch = raw
+	return nil
+}
+
+// MarshalJSON marshals DatasetPatch using DatasetPatch.DatasetPatch
+func (m DatasetPatch) MarshalJSON() ([]byte, error) {
+	return json.Marshal(m.datasetPatch)
+}
+
+// MakeDatasetPatchFromFederatedDatasetPatch creates a new DatasetPatch from an instance of FederatedDatasetPatch
+func MakeDatasetPatchFromFederatedDatasetPatch(f FederatedDatasetPatch) DatasetPatch {
+	return DatasetPatch{datasetPatch: f}
+}
+
+// IsFederatedDatasetPatch checks if the DatasetPatch is a FederatedDatasetPatch
+func (m DatasetPatch) IsFederatedDatasetPatch() bool {
+	_, ok := m.datasetPatch.(FederatedDatasetPatch)
+	return ok
+}
+
+// FederatedDatasetPatch returns FederatedDatasetPatch if IsFederatedDatasetPatch() is true, nil otherwise
+func (m DatasetPatch) FederatedDatasetPatch() *FederatedDatasetPatch {
+	if v, ok := m.datasetPatch.(FederatedDatasetPatch); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeDatasetPatchFromIndexDatasetPatch creates a new DatasetPatch from an instance of IndexDatasetPatch
+func MakeDatasetPatchFromIndexDatasetPatch(f IndexDatasetPatch) DatasetPatch {
+	return DatasetPatch{datasetPatch: f}
+}
+
+// IsIndexDatasetPatch checks if the DatasetPatch is a IndexDatasetPatch
+func (m DatasetPatch) IsIndexDatasetPatch() bool {
+	_, ok := m.datasetPatch.(IndexDatasetPatch)
+	return ok
+}
+
+// IndexDatasetPatch returns IndexDatasetPatch if IsIndexDatasetPatch() is true, nil otherwise
+func (m DatasetPatch) IndexDatasetPatch() *IndexDatasetPatch {
+	if v, ok := m.datasetPatch.(IndexDatasetPatch); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeDatasetPatchFromKvCollectionDatasetPatch creates a new DatasetPatch from an instance of KvCollectionDatasetPatch
+func MakeDatasetPatchFromKvCollectionDatasetPatch(f KvCollectionDatasetPatch) DatasetPatch {
+	return DatasetPatch{datasetPatch: f}
+}
+
+// IsKvCollectionDatasetPatch checks if the DatasetPatch is a KvCollectionDatasetPatch
+func (m DatasetPatch) IsKvCollectionDatasetPatch() bool {
+	_, ok := m.datasetPatch.(KvCollectionDatasetPatch)
+	return ok
+}
+
+// KvCollectionDatasetPatch returns KvCollectionDatasetPatch if IsKvCollectionDatasetPatch() is true, nil otherwise
+func (m DatasetPatch) KvCollectionDatasetPatch() *KvCollectionDatasetPatch {
+	if v, ok := m.datasetPatch.(KvCollectionDatasetPatch); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeDatasetPatchFromLookupDatasetPatch creates a new DatasetPatch from an instance of LookupDatasetPatch
+func MakeDatasetPatchFromLookupDatasetPatch(f LookupDatasetPatch) DatasetPatch {
+	return DatasetPatch{datasetPatch: f}
+}
+
+// IsLookupDatasetPatch checks if the DatasetPatch is a LookupDatasetPatch
+func (m DatasetPatch) IsLookupDatasetPatch() bool {
+	_, ok := m.datasetPatch.(LookupDatasetPatch)
+	return ok
+}
+
+// LookupDatasetPatch returns LookupDatasetPatch if IsLookupDatasetPatch() is true, nil otherwise
+func (m DatasetPatch) LookupDatasetPatch() *LookupDatasetPatch {
+	if v, ok := m.datasetPatch.(LookupDatasetPatch); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeDatasetPatchFromMetricDatasetPatch creates a new DatasetPatch from an instance of MetricDatasetPatch
+func MakeDatasetPatchFromMetricDatasetPatch(f MetricDatasetPatch) DatasetPatch {
+	return DatasetPatch{datasetPatch: f}
+}
+
+// IsMetricDatasetPatch checks if the DatasetPatch is a MetricDatasetPatch
+func (m DatasetPatch) IsMetricDatasetPatch() bool {
+	_, ok := m.datasetPatch.(MetricDatasetPatch)
+	return ok
+}
+
+// MetricDatasetPatch returns MetricDatasetPatch if IsMetricDatasetPatch() is true, nil otherwise
+func (m DatasetPatch) MetricDatasetPatch() *MetricDatasetPatch {
+	if v, ok := m.datasetPatch.(MetricDatasetPatch); ok {
+		return &v
+	}
+	return nil
+}
+
+// MakeDatasetPatchFromRawInterface creates a new DatasetPatch from a raw interface{}
+func MakeDatasetPatchFromRawInterface(f interface{}) DatasetPatch {
+	return DatasetPatch{
+		datasetPatch: f,
+		isRaw:        true,
+	}
+}
+
+// IsRawInterface checks if the DatasetPatch is an interface{} (unknown type)
+func (m DatasetPatch) IsRawInterface() bool {
+	return m.isRaw
+}
+
+// RawInterface returns interface{} if IsRawInterface() is true (unknown type), nil otherwise
+func (m DatasetPatch) RawInterface() interface{} {
+	if !m.IsRawInterface() {
+		return nil
+	}
+	return m.datasetPatch
+}
+
+// Properties that are common across all Dataset kinds to be set in an existing dataset using a PATCH request.
+type DatasetPatchCommon struct {
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties that are common across all Dataset kinds for creating a new dataset using a POST request.
+type DatasetPost struct {
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The fields to be associated with this dataset.
+	Fields []FieldPost `json:"fields,omitempty"`
+	// A unique dataset ID. Random ID used if not provided.
+	Id *string `json:"id,omitempty"`
+	// The name of the module to create the new dataset in.
+	Module *string `json:"module,omitempty"`
+}
+
+// Created and Modified date-time properties for inclusion in other objects.
+type DateMetadataProperties struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+}
 
 // A delete search job, including read-only fields that includes the required properties.
 type DeleteSearchJob struct {
@@ -98,22 +488,157 @@ type FederatedConnection struct {
 // The property values for creating a new federated connection using a PUT or POST request.
 type FederatedConnectionInput struct {
 	// The remote hostname to connect to.
-	Hostnameip *string `json:"hostnameip,omitempty"`
+	Hostnameip string `json:"hostnameip"`
 	// The name of the federated connection.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// The remote port number.
-	Port *float32 `json:"port,omitempty"`
+	Port float32 `json:"port"`
 	// The password of the service account.
-	Serviceaccountpassword *string `json:"serviceaccountpassword,omitempty"`
+	Serviceaccountpassword string `json:"serviceaccountpassword"`
 	// The username on the service account.
-	Serviceaccountuser *string `json:"serviceaccountuser,omitempty"`
+	Serviceaccountuser string `json:"serviceaccountuser"`
 }
 
-// The refresh of the federated connection was successful. For any new indexes, federated datasets were created to enable running searches on them.
-type FederatedConnectionRefresh map[string]interface{}
+// A complete federated dataset as rendered in POST, PATCH, and GET responses.
+type FederatedDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// Connection information to connect to remote federated connection.
+	FederatedConnection string `json:"federatedConnection"`
+	// Dataset information in the remote instance.
+	FederatedDataset string `json:"federatedDataset"`
+	// Dataset kind information in the remote instance.
+	FederatedDatasetKind string `json:"federatedDatasetKind"`
+	// A unique dataset ID.
+	Id   string               `json:"id"`
+	Kind FederatedDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+}
 
-// Successfully able to connect to the EC stack with the given parameters in the federated connection.
-type FederatedConnectionTest map[string]interface{}
+// FederatedDatasetKind : The dataset kind.
+type FederatedDatasetKind string
+
+// List of FederatedDatasetKind
+const (
+	FederatedDatasetKindFederated FederatedDatasetKind = "federated"
+)
+
+// Property values to be set in an existing federated dataset using a PATCH request.
+type FederatedDatasetPatch struct {
+	// Connection information to connect to remote federated connection.
+	FederatedConnection *string `json:"federatedConnection,omitempty"`
+	// Dataset information in the remote instance.
+	FederatedDataset *string `json:"federatedDataset,omitempty"`
+	// Dataset kind information in the remote instance.
+	FederatedDatasetKind *string               `json:"federatedDatasetKind,omitempty"`
+	Kind                 *FederatedDatasetKind `json:"kind,omitempty"`
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
+type FederatedDatasetProperties struct {
+	// Connection information to connect to remote federated connection.
+	FederatedConnection *string `json:"federatedConnection,omitempty"`
+	// Dataset information in the remote instance.
+	FederatedDataset *string `json:"federatedDataset,omitempty"`
+	// Dataset kind information in the remote instance.
+	FederatedDatasetKind *string               `json:"federatedDatasetKind,omitempty"`
+	Kind                 *FederatedDatasetKind `json:"kind,omitempty"`
+}
+
+// FieldDataType : The type of data in the field. Must be one of the valid values.
+type FieldDataType string
+
+// List of FieldDataType
+const (
+	FieldDataTypeDate     FieldDataType = "DATE"
+	FieldDataTypeNumber   FieldDataType = "NUMBER"
+	FieldDataTypeObjectId FieldDataType = "OBJECT_ID"
+	FieldDataTypeString   FieldDataType = "STRING"
+	FieldDataTypeUnknown  FieldDataType = "UNKNOWN"
+)
+
+// Initial property values for creating a new field using a POST request.
+type FieldPost struct {
+	// The field name.
+	Name     string         `json:"name"`
+	Datatype *FieldDataType `json:"datatype,omitempty"`
+	// The field description.
+	Description *string    `json:"description,omitempty"`
+	Fieldtype   *FieldType `json:"fieldtype,omitempty"`
+	// Whether or not the field has been indexed.
+	Indexed    *bool            `json:"indexed,omitempty"`
+	Prevalence *FieldPrevalence `json:"prevalence,omitempty"`
+	// The field summary.
+	Summary *string `json:"summary,omitempty"`
+	// The field title.
+	Title *string `json:"title,omitempty"`
+}
+
+// FieldPrevalence : How frequent the field appears in the dataset. Must be one of the valid values.
+type FieldPrevalence string
+
+// List of FieldPrevalence
+const (
+	FieldPrevalenceAll     FieldPrevalence = "ALL"
+	FieldPrevalenceSome    FieldPrevalence = "SOME"
+	FieldPrevalenceUnknown FieldPrevalence = "UNKNOWN"
+)
+
+// Properties of fields which can be read, set, and changed through the API. Implementation detail of FieldPOST, FieldPATCH, and Field, do not use directly.
+type FieldProperties struct {
+	Datatype *FieldDataType `json:"datatype,omitempty"`
+	// The field description.
+	Description *string    `json:"description,omitempty"`
+	Fieldtype   *FieldType `json:"fieldtype,omitempty"`
+	// Whether or not the field has been indexed.
+	Indexed *bool `json:"indexed,omitempty"`
+	// The field name.
+	Name       *string          `json:"name,omitempty"`
+	Prevalence *FieldPrevalence `json:"prevalence,omitempty"`
+	// The field summary.
+	Summary *string `json:"summary,omitempty"`
+	// The field title.
+	Title *string `json:"title,omitempty"`
+}
+
+// FieldType : The type of field. Must be one of the valid values.
+type FieldType string
+
+// List of FieldType
+const (
+	FieldTypeDimension FieldType = "DIMENSION"
+	FieldTypeMeasure   FieldType = "MEASURE"
+	FieldTypeUnknown   FieldType = "UNKNOWN"
+)
 
 // A  statistical summary of the fields in the events to date, for the search ID (SID).
 type FieldsSummary struct {
@@ -128,6 +653,174 @@ type FieldsSummary struct {
 	// The latest timestamp, in UTC format, of the events to process.
 	LatestTime *string `json:"latestTime,omitempty"`
 }
+
+// A complete index dataset as rendered in POST, PATCH, and GET responses.
+type IndexDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled bool `json:"disabled"`
+	// A unique dataset ID.
+	Id   string           `json:"id"`
+	Kind IndexDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the events in this index.
+	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The latest index time for any of the events in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+	// The number of events in the index.
+	TotalEventCount *int64 `json:"totalEventCount,omitempty"`
+	// The raw size, in bytes, of the uncompressed data in the indexers.
+	TotalSize *int64 `json:"totalSize,omitempty"`
+}
+
+// IndexDatasetKind : The dataset kind.
+type IndexDatasetKind string
+
+// List of IndexDatasetKind
+const (
+	IndexDatasetKindIndex IndexDatasetKind = "index"
+)
+
+// Property values to be set in an existing index dataset using a PATCH request.
+type IndexDatasetPatch struct {
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32            `json:"frozenTimePeriodInSecs,omitempty"`
+	Kind                   *IndexDatasetKind `json:"kind,omitempty"`
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties of job datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
+type IndexDatasetProperties struct {
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32            `json:"frozenTimePeriodInSecs,omitempty"`
+	Kind                   *IndexDatasetKind `json:"kind,omitempty"`
+}
+
+// Properties of index datasets which can only be read through the API.
+type IndexDatasetReadOnlyProperties struct {
+	// The timestamp, in seconds, of the earliest event. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the events in this index.
+	EarliestIngestTime *string           `json:"earliestIngestTime,omitempty"`
+	Kind               *IndexDatasetKind `json:"kind,omitempty"`
+	// The timestamp, in seconds, of the latest event. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The latest index time for any of the events in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// The number of events in the index.
+	TotalEventCount *int64 `json:"totalEventCount,omitempty"`
+	// The raw size, in bytes, of the uncompressed data in the indexers.
+	TotalSize *int64 `json:"totalSize,omitempty"`
+}
+
+// A complete kvcollection dataset as rendered in POST, PATCH, and GET responses.
+type KvCollectionDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// A unique dataset ID.
+	Id   string                  `json:"id"`
+	Kind KvCollectionDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+}
+
+// KvCollectionDatasetKind : The dataset kind.
+type KvCollectionDatasetKind string
+
+// List of KVCollectionDatasetKind
+const (
+	KvCollectionDatasetKindKvcollection KvCollectionDatasetKind = "kvcollection"
+)
+
+// Property values to be set in an existing kvcollection dataset using a PATCH request.
+type KvCollectionDatasetPatch struct {
+	Kind *KvCollectionDatasetKind `json:"kind,omitempty"`
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties of kvcollection datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
+type KvCollectionDatasetProperties struct {
+	Kind *KvCollectionDatasetKind `json:"kind,omitempty"`
+}
+
+// A list of fully constructed datasets
+type ListDatasets struct {
+	// List of all datasets
+	Results []Dataset `json:"results,omitempty"`
+}
+
+// A list of federated connections
+type ListFederatedConnections []FederatedConnection
 
 // The structure of the response body for the preview search results that is returned for the job with the specified search ID (SID). When search is running, it might return incomplete or truncated search results. The isPreviewStable property indicates whether the returned preview results stucture is stable or not. Truncated preview results occur because the number of requested results exceeds the page limit. Use the 'nextLink' URL to retrieve the next page of results.
 type ListPreviewResultsResponse struct {
@@ -158,6 +851,92 @@ type ListSearchResultsResponse struct {
 	Wait     *string                            `json:"wait,omitempty"`
 }
 
+// A complete lookup dataset as rendered in POST, PATCH, and GET responses.
+type LookupDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby    string                    `json:"createdby"`
+	ExternalKind LookupDatasetExternalKind `json:"externalKind"`
+	// The name of the external lookup.
+	ExternalName string `json:"externalName"`
+	// A unique dataset ID.
+	Id   string            `json:"id"`
+	Kind LookupDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool `json:"caseSensitiveMatch,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string `json:"filter,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+}
+
+// LookupDatasetExternalKind : The type of the external lookup.
+type LookupDatasetExternalKind string
+
+// List of LookupDatasetExternalKind
+const (
+	LookupDatasetExternalKindKvcollection LookupDatasetExternalKind = "kvcollection"
+)
+
+// LookupDatasetKind : The dataset kind.
+type LookupDatasetKind string
+
+// List of LookupDatasetKind
+const (
+	LookupDatasetKindLookup LookupDatasetKind = "lookup"
+)
+
+// Property values to be set in an existing lookup dataset using a PATCH request.
+type LookupDatasetPatch struct {
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool                      `json:"caseSensitiveMatch,omitempty"`
+	ExternalKind       *LookupDatasetExternalKind `json:"externalKind,omitempty"`
+	// The name of the external lookup.
+	ExternalName *string `json:"externalName,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string            `json:"filter,omitempty"`
+	Kind   *LookupDatasetKind `json:"kind,omitempty"`
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties of lookup datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
+type LookupDatasetProperties struct {
+	// Match case-sensitively against the lookup.
+	CaseSensitiveMatch *bool                      `json:"caseSensitiveMatch,omitempty"`
+	ExternalKind       *LookupDatasetExternalKind `json:"externalKind,omitempty"`
+	// The name of the external lookup.
+	ExternalName *string `json:"externalName,omitempty"`
+	// A query that filters results out of the lookup before those results are returned.
+	Filter *string            `json:"filter,omitempty"`
+	Kind   *LookupDatasetKind `json:"kind,omitempty"`
+}
+
 // The message field in search results or search jobs. The types of messages are INFO, DEBUG, FATAL, and ERROR.
 type Message struct {
 	Text *string      `json:"text,omitempty"`
@@ -174,11 +953,127 @@ const (
 	MessageTypeError MessageType = "ERROR"
 )
 
+// Created, createdby, modified, modifiedby, and owner properties for inclusion in other objects.
+type MetadataProperties struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+}
+
+// A complete metric dataset as rendered in POST, PATCH, and GET responses.
+type MetricDataset struct {
+	// The date and time object was created.
+	Created string `json:"created"`
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled bool `json:"disabled"`
+	// A unique dataset ID.
+	Id   string            `json:"id"`
+	Kind MetricDatasetKind `json:"kind"`
+	// The date and time object was modified.
+	Modified string `json:"modified"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name string `json:"name"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+	// The dataset name qualified by the module name.
+	Resourcename string `json:"resourcename"`
+	// AppClinetId of the creator app of the dataset.
+	Appclientidcreatedby *string `json:"appclientidcreatedby,omitempty"`
+	// AppClinetId of the modifier app of the dataset.
+	Appclientidmodifiedby *string `json:"appclientidmodifiedby,omitempty"`
+	// Detailed description of the dataset.
+	Description *string `json:"description,omitempty"`
+	// The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	EarliestIngestTime *string `json:"earliestIngestTime,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32 `json:"frozenTimePeriodInSecs,omitempty"`
+	// The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the metric index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// The name of the namespace that contains the dataset.
+	Namespace *string `json:"namespace,omitempty"`
+	// Summary of the dataset's purpose.
+	Summary *string `json:"summary,omitempty"`
+	// The title of the dataset.  Does not have to be unique.
+	Title *string `json:"title,omitempty"`
+	// THe number of measures in the metric index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// For metrics indexes, the totalSize is set to 0.
+	TotalSize *int32 `json:"totalSize,omitempty"`
+}
+
+// MetricDatasetKind : The dataset kind.
+type MetricDatasetKind string
+
+// List of MetricDatasetKind
+const (
+	MetricDatasetKindMetric MetricDatasetKind = "metric"
+)
+
+// Property values to be set in an existing metric dataset using a PATCH request.
+type MetricDatasetPatch struct {
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32             `json:"frozenTimePeriodInSecs,omitempty"`
+	Kind                   *MetricDatasetKind `json:"kind,omitempty"`
+	// The name of module to reassign dataset into.
+	Module *string `json:"module,omitempty"`
+	// The dataset name. Dataset names must be unique within each module.
+	Name *string `json:"name,omitempty"`
+	// The name of the dataset owner. This value is obtained from the bearer token.
+	Owner *string `json:"owner,omitempty"`
+}
+
+// Properties of metric datasets which may be read, set, and changed through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset, do not use directly.
+type MetricDatasetProperties struct {
+	// Specifies whether or not the Splunk index is disabled.
+	Disabled *bool `json:"disabled,omitempty"`
+	// The frozenTimePeriodInSecs to use for the index
+	FrozenTimePeriodInSecs *int32             `json:"frozenTimePeriodInSecs,omitempty"`
+	Kind                   *MetricDatasetKind `json:"kind,omitempty"`
+}
+
+// Properties of metric datasets which can only be read through the API.
+type MetricDatasetReadOnlyProperties struct {
+	// The timestamp, in seconds, of the earliest measure. The timestamp is in UNIX time.
+	EarliestEventTime *string `json:"earliestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	EarliestIngestTime *string            `json:"earliestIngestTime,omitempty"`
+	Kind               *MetricDatasetKind `json:"kind,omitempty"`
+	// The timestamp, in seconds, of the latest measure. The timestamp is in UNIX time.
+	LatestEventTime *string `json:"latestEventTime,omitempty"`
+	// The earliest index time for any of the measures in this index.
+	LatestIngestTime *string `json:"latestIngestTime,omitempty"`
+	// The latest time that the metric index metadata was refreshed.
+	LatestMetadataUpdateTime *string `json:"latestMetadataUpdateTime,omitempty"`
+	// THe number of measures in the metric index.
+	TotalEventCount *int32 `json:"totalEventCount,omitempty"`
+	// For metrics indexes, the totalSize is set to 0.
+	TotalSize *int32 `json:"totalSize,omitempty"`
+}
+
 // Represents parameters on the search job such as 'earliest' and 'latest'.
 type QueryParameters struct {
-	// The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
 	Earliest *string `json:"earliest,omitempty"`
-	// The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
 	Latest *string `json:"latest,omitempty"`
 	// Specify a time string to set the absolute time used for any relative time specifier in the search. Defaults to the current system time. You can specify a relative time modifier ('earliest' or 'latest') for this parameter.  For example, if 'earliest' is set to -d and  the 'relativeTimeAnchor' is set to '2021-01-05T13:15:30Z' then 'resolvedEarliest' is '2021-01-04T13:15:30Z'.
 	RelativeTimeAnchor *string `json:"relativeTimeAnchor,omitempty"`
@@ -236,15 +1131,16 @@ type SearchJob struct {
 	Status *SearchStatus `json:"status,omitempty"`
 }
 
-// SearchStatus : The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.
+// SearchStatus : The current status of the search job. The valid status values are 'running', 'done', 'canceled', 'finalized' and 'failed'.
 type SearchStatus string
 
 // List of SearchStatus
 const (
-	SearchStatusRunning  SearchStatus = "running"
-	SearchStatusDone     SearchStatus = "done"
-	SearchStatusCanceled SearchStatus = "canceled"
-	SearchStatusFailed   SearchStatus = "failed"
+	SearchStatusRunning   SearchStatus = "running"
+	SearchStatusDone      SearchStatus = "done"
+	SearchStatusCanceled  SearchStatus = "canceled"
+	SearchStatusFailed    SearchStatus = "failed"
+	SearchStatusFinalized SearchStatus = "finalized"
 )
 
 // Summary of each field.
@@ -321,3 +1217,13 @@ const (
 	UpdateJobStatusCanceled  UpdateJobStatus = "canceled"
 	UpdateJobStatusFinalized UpdateJobStatus = "finalized"
 )
+
+// Owner, createdby, and modifiedby user name properties for inclusion in other objects.
+type UserMetadataProperties struct {
+	// The name of the user who created the object. This value is obtained from the bearer token and may not be changed.
+	Createdby string `json:"createdby"`
+	// The name of the user who most recently modified the object.
+	Modifiedby string `json:"modifiedby"`
+	// The name of the object's owner.
+	Owner string `json:"owner"`
+}

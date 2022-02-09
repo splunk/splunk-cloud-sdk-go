@@ -113,6 +113,13 @@ var deleteSamlClientCmd = &cobra.Command{
 	RunE:  impl.DeleteSamlClient,
 }
 
+// getEntitlements -- Returns the entitlements for the given tenant and client id
+var getEntitlementsCmd = &cobra.Command{
+	Use:   "get-entitlements",
+	Short: "Returns the entitlements for the given tenant and client id",
+	RunE:  impl.GetEntitlements,
+}
+
 // getGroup -- Returns information about a given group within a tenant.
 var getGroupCmd = &cobra.Command{
 	Use:   "get-group",
@@ -323,6 +330,13 @@ var revokePrincipalAuthTokensCmd = &cobra.Command{
 	RunE:  impl.RevokePrincipalAuthTokens,
 }
 
+// updateEntitlements -- Update the entitlements for the given tenant and client id
+var updateEntitlementsCmd = &cobra.Command{
+	Use:   "update-entitlements",
+	Short: "Update the entitlements for the given tenant and client id",
+	RunE:  impl.UpdateEntitlements,
+}
+
 // updateGroup -- Updates a group's display name or description.
 var updateGroupCmd = &cobra.Command{
 	Use:   "update-group",
@@ -410,9 +424,6 @@ func init() {
 
 	var addPrincipalPublicKeyCrv string
 	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyCrv, "crv", "", "")
-
-	var addPrincipalPublicKeyD string
-	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyD, "d", "", "")
 
 	var addPrincipalPublicKeyKid string
 	addPrincipalPublicKeyCmd.Flags().StringVar(&addPrincipalPublicKeyKid, "kid", "", "")
@@ -520,9 +531,6 @@ func init() {
 	var createPrincipalCrv string
 	createPrincipalCmd.Flags().StringVar(&createPrincipalCrv, "crv", "", "")
 
-	var createPrincipalD string
-	createPrincipalCmd.Flags().StringVar(&createPrincipalD, "d", "", "")
-
 	var createPrincipalEnabled string
 	createPrincipalCmd.Flags().StringVar(&createPrincipalEnabled, "enabled", "false", "")
 
@@ -610,6 +618,12 @@ func init() {
 	var deleteSamlClientSamlClient string
 	deleteSamlClientCmd.Flags().StringVar(&deleteSamlClientSamlClient, "saml-client", "", "This is a required parameter. The saml client name.")
 	deleteSamlClientCmd.MarkFlagRequired("saml-client")
+
+	identityCmd.AddCommand(getEntitlementsCmd)
+
+	var getEntitlementsEntitlementClientId string
+	getEntitlementsCmd.Flags().StringVar(&getEntitlementsEntitlementClientId, "entitlement-client-id", "", "This is a required parameter. ID of the client for commerce entitlements")
+	getEntitlementsCmd.MarkFlagRequired("entitlement-client-id")
 
 	identityCmd.AddCommand(getGroupCmd)
 
@@ -902,6 +916,16 @@ func init() {
 	var revokePrincipalAuthTokensPrincipal string
 	revokePrincipalAuthTokensCmd.Flags().StringVar(&revokePrincipalAuthTokensPrincipal, "principal", "", "This is a required parameter. The principal name.")
 	revokePrincipalAuthTokensCmd.MarkFlagRequired("principal")
+
+	identityCmd.AddCommand(updateEntitlementsCmd)
+
+	var updateEntitlementsBody string
+	updateEntitlementsCmd.Flags().StringVar(&updateEntitlementsBody, "body", "", "The request body")
+	updateEntitlementsCmd.MarkFlagRequired("body")
+
+	var updateEntitlementsEntitlementClientId string
+	updateEntitlementsCmd.Flags().StringVar(&updateEntitlementsEntitlementClientId, "entitlement-client-id", "", "This is a required parameter. ID of the client for commerce entitlements")
+	updateEntitlementsCmd.MarkFlagRequired("entitlement-client-id")
 
 	identityCmd.AddCommand(updateGroupCmd)
 

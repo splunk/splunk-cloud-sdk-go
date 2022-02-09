@@ -25,6 +25,14 @@ import (
 // ServicerGenerated represents the interface for implementing all endpoints for this service
 type ServicerGenerated interface {
 	/*
+		CreateDataset - search service endpoint
+		Creates a dataset.
+		Parameters:
+			datasetPost
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	CreateDataset(datasetPost DatasetPost, resp ...*http.Response) (*Dataset, error)
+	/*
 		CreateFederatedConnection - search service endpoint
 		Creates a new federated connection with information about how to connect to a remote index.
 		Parameters:
@@ -40,6 +48,14 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	CreateJob(searchJob SearchJob, resp ...*http.Response) (*SearchJob, error)
+	/*
+		DeleteDatasetById - search service endpoint
+		Deletes a dataset with a specified dataset ID (datasetid).
+		Parameters:
+			datasetid: The dataset ID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	DeleteDatasetById(datasetid string, resp ...*http.Response) error
 	/*
 		DeleteFederatedConnection - search service endpoint
 		Deletes a federated connection with the specified name (connectionName)
@@ -66,6 +82,21 @@ type ServicerGenerated interface {
 	*/
 	ExportResults(sid string, query *ExportResultsQueryParams, resp ...*http.Response) (*map[string]interface{}, error)
 	/*
+		GetAllFederatedConnections - search service endpoint
+		Returns all federated connections.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetAllFederatedConnections(resp ...*http.Response) (*ListFederatedConnections, error)
+	/*
+		GetDatasetById - search service endpoint
+		Returns a dataset with a specified dataset ID (datasetid).
+		Parameters:
+			datasetid: The dataset ID.
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	GetDatasetById(datasetid string, resp ...*http.Response) (*Dataset, error)
+	/*
 		GetFederatedConnectionByName - search service endpoint
 		Returns the federated connection with the specified name (connectionName).
 		Parameters:
@@ -81,6 +112,13 @@ type ServicerGenerated interface {
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
 	GetJob(sid string, resp ...*http.Response) (*SearchJob, error)
+	/*
+		ListDatasets - search service endpoint
+		Returns a list of all datasets.
+		Parameters:
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	ListDatasets(resp ...*http.Response) (*ListDatasets, error)
 	/*
 		ListEventsSummary - search service endpoint
 		Returns an events summary for search ID (SID) search.
@@ -147,19 +185,26 @@ type ServicerGenerated interface {
 		Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
 		Parameters:
 			connectionName: The name of the federated connection.
-			body
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	RefreshFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error
+	RefreshFederatedConnection(connectionName string, resp ...*http.Response) error
 	/*
 		TestFederatedConnection - search service endpoint
 		Test connection with remote EC instance using federated connection parameters.
 		Parameters:
 			connectionName: The name of the federated connection.
-			body
 			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
 	*/
-	TestFederatedConnection(connectionName string, body *map[string]interface{}, resp ...*http.Response) error
+	TestFederatedConnection(connectionName string, resp ...*http.Response) error
+	/*
+		UpdateDatasetById - search service endpoint
+		Modifies a dataset with a specified dataset ID (datasetid).
+		Parameters:
+			datasetid: The dataset ID.
+			datasetPatch
+			resp: an optional pointer to a http.Response to be populated by this method. NOTE: only the first resp pointer will be used if multiple are provided
+	*/
+	UpdateDatasetById(datasetid string, datasetPatch DatasetPatch, resp ...*http.Response) (*Dataset, error)
 	/*
 		UpdateJob - search service endpoint
 		Updates the search job with the specified search ID (SID) with an action.
