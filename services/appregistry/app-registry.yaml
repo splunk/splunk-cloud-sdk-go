@@ -903,4 +903,4 @@ paths:
 security:
 - BearerToken: []
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: app-registry/v1beta2/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: app-registry/v1beta2/openapi.yaml

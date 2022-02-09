@@ -82,6 +82,13 @@ components:
       schema:
         maxLength: 5
         type: string
+    entitlementClientId:
+      description: ID of the client for commerce entitlements
+      in: path
+      name: entitlementClientId
+      required: true
+      schema:
+        type: string
     group:
       description: The group name.
       in: path
@@ -233,6 +240,15 @@ components:
       schema:
         maxLength: 32
         minLength: 4
+        type: string
+    samlStateId:
+      description: The saml specific state identifier carried through authentication
+        flow
+      in: query
+      name: samlStateId
+      required: false
+      schema:
+        maxLength: 128
         type: string
     scope:
       description: Scope of the authorization request
@@ -781,9 +797,6 @@ components:
         crv:
           maxLength: 64
           type: string
-        d:
-          maxLength: 4096
-          type: string
         kid:
           maxLength: 64
           minLength: 3
@@ -821,6 +834,26 @@ components:
         name:
           type: string
       type: object
+    Entitlement:
+      properties:
+        appClientId:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        value:
+          type: object
+      required:
+      - name
+      - appClientId
+      - value
+      - status
+      type: object
+    EntitlementList:
+      items:
+        $ref: '#/components/schemas/Entitlement'
+      type: array
     Group:
       properties:
         createdAt:
@@ -1198,6 +1231,13 @@ components:
           type: string
         profile:
           $ref: '#/components/schemas/PrincipalProfile'
+        revokedAt:
+          format: date-time
+          nullable: true
+          type: string
+        revokedBy:
+          nullable: true
+          type: string
         tenant:
           nullable: true
           type: string
@@ -1323,6 +1363,13 @@ components:
           type: string
         profile:
           $ref: '#/components/schemas/PrincipalProfile'
+        revokedAt:
+          format: date-time
+          nullable: true
+          type: string
+        revokedBy:
+          nullable: true
+          type: string
         tenants:
           items:
             $ref: '#/components/schemas/TenantName'
@@ -1661,6 +1708,20 @@ components:
     ServiceAccounts:
       items:
         $ref: '#/components/schemas/ServiceAccount'
+      type: array
+    SetEntitlement:
+      properties:
+        name:
+          type: string
+        value:
+          type: object
+      required:
+      - name
+      - value
+      type: object
+    SetEntitlementBody:
+      items:
+        $ref: '#/components/schemas/SetEntitlement'
       type: array
     Subscription:
       description: Represents an app subscribed to a tenant
@@ -2040,7 +2101,7 @@ info:
   description: With the Identity service in Splunk Cloud Services, you can authenticate
     and authorize Splunk Cloud Services users.
   title: Identity
-  version: v3.5
+  version: v3.6
 openapi: 3.0.0
 paths:
   /{tenant}/identity/v3/clients/saml:
@@ -2149,6 +2210,60 @@ paths:
         "404":
           description: The client not found.
       x-authz-scope: identity.samlclients.write
+  /{tenant}/identity/v3/commerce/subscribed-apps/{entitlementClientId}/entitlements:
+    get:
+      description: Returns the entitlements for the given tenant and client id
+      operationId: getEntitlements
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementList'
+          description: The list of entitlements
+        "400":
+          description: Malformed request
+        "401":
+          description: Unauthenticated user
+        "403":
+          description: Unauthorized operation
+        "404":
+          description: Resource not found
+        "500":
+          description: Internal server error
+      x-authz-scope: identity.entitlements.read
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/entitlementClientId'
+    put:
+      description: Update the entitlements for the given tenant and client id
+      operationId: updateEntitlements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetEntitlementBody'
+        description: The desired entitlements to be set
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementList'
+          description: The entitlements operation was completed (check body for per-entitlement
+            status)
+        "400":
+          description: Malformed request
+        "401":
+          description: Unauthenticated user
+        "403":
+          description: Unauthorized operation
+        "404":
+          description: Resource not found
+        "500":
+          description: Internal server error
+      x-authz-scope: identity.entitlements.write
   /{tenant}/identity/v3/groups:
     get:
       description: List the groups that exist in a given tenant.
@@ -2654,6 +2769,8 @@ paths:
           description: The operation isn't authorized.
         "404":
           description: The resource wasn't found.
+        "409":
+          description: The member already exists.
         "423":
           description: The resource is locked.
       x-authz-scope: identity.members.write
@@ -3346,4 +3463,4 @@ security:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: identity/v3/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: identity/v3/openapi.yaml

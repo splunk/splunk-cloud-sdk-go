@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Splunk, Inc.
+ * Copyright © 2022 Splunk, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"): you may
  * not use this file except in compliance with the License. You may obtain
@@ -69,7 +69,7 @@ type ListEventsSummaryQueryParams struct {
 	Earliest string `key:"earliest"`
 	// Field : One or more fields to return for the result set. Use a comma-separated list of field names to specify multiple fields.
 	Field string `key:"field"`
-	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
 	Latest string `key:"latest"`
 	// Offset : Index number identifying the location of the first item to return.
 	Offset *int32 `key:"offset"`
@@ -106,7 +106,7 @@ func (q ListEventsSummaryQueryParams) SetOffset(v int32) ListEventsSummaryQueryP
 type ListFieldsSummaryQueryParams struct {
 	// Earliest : The earliest time filter, in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
 	Earliest string `key:"earliest"`
-	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+	// Latest : The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
 	Latest string `key:"latest"`
 }
 

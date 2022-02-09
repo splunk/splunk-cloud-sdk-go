@@ -25,7 +25,7 @@ components:
         type: string
     Latest:
       description: |
-        The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+        The latest time filter in absolute time. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
       in: query
       name: latest
       schema:
@@ -59,6 +59,13 @@ components:
       schema:
         default: 1000
         type: integer
+    datasetid:
+      description: The dataset ID.
+      in: path
+      name: datasetid
+      required: true
+      schema:
+        type: string
     filename:
       description: |
         The export results filename. Default: exportResults
@@ -98,6 +105,187 @@ components:
       schema:
         type: string
   schemas:
+    Dataset:
+      description: A complete dataset as rendered in POST, PATCH responses.
+      discriminator:
+        mapping:
+          federated: '#/components/schemas/FederatedDataset'
+          index: '#/components/schemas/IndexDataset'
+          kvcollection: '#/components/schemas/KVCollectionDataset'
+          lookup: '#/components/schemas/LookupDataset'
+          metric: '#/components/schemas/MetricDataset'
+        propertyName: kind
+      oneOf:
+      - $ref: '#/components/schemas/LookupDataset'
+      - $ref: '#/components/schemas/IndexDataset'
+      - $ref: '#/components/schemas/FederatedDataset'
+      - $ref: '#/components/schemas/MetricDataset'
+      - $ref: '#/components/schemas/KVCollectionDataset'
+    DatasetCommon:
+      description: Properties that are common across all Dataset kinds rendered in
+        POST, PATCH, and GET responses.
+      properties:
+        appclientidcreatedby:
+          description: AppClinetId of the creator app of the dataset.
+          type: string
+        appclientidmodifiedby:
+          description: AppClinetId of the modifier app of the dataset.
+          type: string
+        description:
+          description: Detailed description of the dataset.
+          type: string
+        id:
+          description: A unique dataset ID.
+          example: 5bbf6d876d059d0b9ea8da3e
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+        namespace:
+          description: The name of the namespace that contains the dataset.
+          example: nameOfNamespace
+          maxLength: 100
+          type: string
+        resourcename:
+          description: The dataset name qualified by the module name.
+          example: nameOfModule.nameOfDataset
+          maxLength: 201
+          type: string
+        summary:
+          description: Summary of the dataset's purpose.
+          type: string
+        title:
+          description: The title of the dataset.  Does not have to be unique.
+          example: titleOfDataset
+          type: string
+      required:
+      - id
+      - module
+      - name
+      - resourcename
+      type: object
+    DatasetPATCH:
+      description: Property values to be set in an existing dataset using a PATCH
+        request.
+      oneOf:
+      - $ref: '#/components/schemas/LookupDatasetPATCH'
+      - $ref: '#/components/schemas/IndexDatasetPATCH'
+      - $ref: '#/components/schemas/FederatedDatasetPATCH'
+      - $ref: '#/components/schemas/MetricDatasetPATCH'
+      - $ref: '#/components/schemas/KVCollectionDatasetPATCH'
+    DatasetPATCHCommon:
+      description: Properties that are common across all Dataset kinds to be set in
+        an existing dataset using a PATCH request.
+      properties:
+        module:
+          description: The name of module to reassign dataset into.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+        owner:
+          description: The name of the dataset owner. This value is obtained from
+            the bearer token.
+          example: johndoe
+          maxLength: 24
+          type: string
+      type: object
+    DatasetPOST:
+      description: Properties that are common across all Dataset kinds for creating
+        a new dataset using a POST request.
+      properties:
+        fields:
+          description: The fields to be associated with this dataset.
+          items:
+            $ref: '#/components/schemas/FieldPOST'
+          type: array
+        id:
+          description: A unique dataset ID. Random ID used if not provided.
+          example: 5bc3c0cdfee0d854a4188132
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        module:
+          description: The name of the module to create the new dataset in.
+          example: nameOfModule
+          maxLength: 100
+          type: string
+        name:
+          description: The dataset name. Dataset names must be unique within each
+            module.
+          example: nameOfDataset
+          maxLength: 100
+          type: string
+      required:
+      - name
+      type: object
+    DatasetReadOnlyProperties:
+      description: Properties of metric datasets which can only be read through the
+        API.
+      properties:
+        earliestEventTime:
+          description: The timestamp, in seconds, of the earliest measure. The timestamp
+            is in UNIX time.
+          readOnly: true
+          type: string
+        earliestIngestTime:
+          description: The earliest index time for any of the measures in this index.
+          readOnly: true
+          type: string
+        latestEventTime:
+          description: The timestamp, in seconds, of the latest measure. The timestamp
+            is in UNIX time.
+          readOnly: true
+          type: string
+        latestIngestTime:
+          description: The earliest index time for any of the measures in this index.
+          readOnly: true
+          type: string
+        latestMetadataUpdateTime:
+          description: The latest time that the metric index metadata was refreshed.
+          readOnly: true
+          type: string
+        totalEventCount:
+          description: THe number of measures in the metric index.
+          readOnly: true
+          type: integer
+        totalSize:
+          description: For metrics indexes, the totalSize is set to 0.
+          readOnly: true
+          type: integer
+      type: object
+    DateMetadataProperties:
+      description: Created and Modified date-time properties for inclusion in other
+        objects.
+      properties:
+        created:
+          description: The date and time object was created.
+          example: "2018-10-14 10:18:53.000417"
+          pattern: '[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]{6}'
+          readOnly: true
+          type: string
+        modified:
+          description: The date and time object was modified.
+          example: "2018-10-11 07:56:35.000770"
+          pattern: '[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].[0-9]{6}'
+          readOnly: true
+          type: string
+      required:
+      - created
+      - modified
+      type: object
     DeleteSearchJob:
       description: A delete search job, including read-only fields that includes the
         required properties.
@@ -314,15 +502,162 @@ components:
           example: username
           maxLength: 100
           type: string
+      required:
+      - name
+      - hostnameip
+      - port
+      - serviceaccountuser
+      - serviceaccountpassword
       type: object
-    FederatedConnectionRefresh:
-      description: |
-        The refresh of the federated connection was successful. For any new indexes, federated datasets were created to enable running searches on them.
+    FederatedDataset:
+      allOf:
+      - $ref: '#/components/schemas/FederatedDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete federated dataset as rendered in POST, PATCH, and GET
+        responses.
+      required:
+      - kind
+      - federatedConnection
+      - federatedDataset
+      - federatedDatasetKind
       type: object
-    FederatedConnectionTest:
-      description: |
-        Successfully able to connect to the EC stack with the given parameters in the federated connection.
+    FederatedDatasetKind:
+      description: The dataset kind.
+      enum:
+      - federated
+      type: string
+    FederatedDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/FederatedDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing federated dataset using
+        a PATCH request.
+    FederatedDatasetProperties:
+      description: Properties of job datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        federatedConnection:
+          description: Connection information to connect to remote federated connection.
+          type: string
+        federatedDataset:
+          description: Dataset information in the remote instance.
+          type: string
+        federatedDatasetKind:
+          description: Dataset kind information in the remote instance.
+          type: string
+        kind:
+          $ref: '#/components/schemas/FederatedDatasetKind'
       type: object
+    Field:
+      description: Initial property values for creating a new field using a POST request.
+      properties:
+        datasetid:
+          description: The dataset that the field is part of.
+          example: 5bc1a6fefee0d854a4188125
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        datatype:
+          $ref: '#/components/schemas/FieldDataType'
+        description:
+          description: The field description.
+          example: Count of all the users in the request
+          type: string
+        fieldtype:
+          $ref: '#/components/schemas/FieldType'
+        id:
+          description: The unique ID of this field.
+          example: 5bc1a7a0fee0d854a418812e
+          format: mongo-object-id
+          maxLength: 24
+          minLength: 24
+          type: string
+        indexed:
+          description: Whether or not the field has been indexed.
+          type: boolean
+        name:
+          description: The field name.
+          example: nameOfField
+          maxLength: 100
+          type: string
+        prevalence:
+          $ref: '#/components/schemas/FieldPrevalence'
+        summary:
+          description: The field summary.
+          example: Count of the users
+          type: string
+        title:
+          description: The field title.
+          example: User Count
+          type: string
+      required:
+      - name
+      type: object
+    FieldDataType:
+      description: The type of data in the field. Must be one of the valid values.
+      enum:
+      - DATE
+      - NUMBER
+      - OBJECT_ID
+      - STRING
+      - UNKNOWN
+      type: string
+    FieldPOST:
+      allOf:
+      - $ref: '#/components/schemas/FieldProperties'
+      description: Initial property values for creating a new field using a POST request.
+      required:
+      - name
+      type: object
+    FieldPrevalence:
+      description: How frequent the field appears in the dataset. Must be one of the
+        valid values.
+      enum:
+      - ALL
+      - SOME
+      - UNKNOWN
+      type: string
+    FieldProperties:
+      description: Properties of fields which can be read, set, and changed through
+        the API. Implementation detail of FieldPOST, FieldPATCH, and Field, do not
+        use directly.
+      properties:
+        datatype:
+          $ref: '#/components/schemas/FieldDataType'
+        description:
+          description: The field description.
+          example: Count of all the users in the request
+          type: string
+        fieldtype:
+          $ref: '#/components/schemas/FieldType'
+        indexed:
+          description: Whether or not the field has been indexed.
+          type: boolean
+        name:
+          description: The field name.
+          example: nameOfField
+          maxLength: 100
+          type: string
+        prevalence:
+          $ref: '#/components/schemas/FieldPrevalence'
+        summary:
+          description: The field summary.
+          example: Count of the users
+          type: string
+        title:
+          description: The field title.
+          example: User Count
+          type: string
+    FieldType:
+      description: The type of field. Must be one of the valid values.
+      enum:
+      - DIMENSION
+      - MEASURE
+      - UNKNOWN
+      type: string
     FieldsSummary:
       description: A  statistical summary of the fields in the events to date, for
         the search ID (SID).
@@ -348,6 +683,117 @@ components:
           description: The latest timestamp, in UTC format, of the events to process.
           type: string
       type: object
+    IndexDataset:
+      allOf:
+      - $ref: '#/components/schemas/IndexDatasetProperties'
+      - $ref: '#/components/schemas/IndexDatasetReadOnlyProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete index dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - disabled
+      type: object
+    IndexDatasetKind:
+      description: The dataset kind.
+      enum:
+      - index
+      type: string
+    IndexDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/IndexDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing index dataset using a
+        PATCH request.
+    IndexDatasetProperties:
+      description: Properties of job datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        disabled:
+          description: Specifies whether or not the Splunk index is disabled.
+          type: boolean
+        frozenTimePeriodInSecs:
+          description: The frozenTimePeriodInSecs to use for the index
+          type: integer
+        kind:
+          $ref: '#/components/schemas/IndexDatasetKind'
+      type: object
+    IndexDatasetReadOnlyProperties:
+      description: Properties of index datasets which can only be read through the
+        API.
+      properties:
+        earliestEventTime:
+          description: The timestamp, in seconds, of the earliest event. The timestamp
+            is in UNIX time.
+          type: string
+        earliestIngestTime:
+          description: The earliest index time for any of the events in this index.
+          type: string
+        kind:
+          $ref: '#/components/schemas/IndexDatasetKind'
+        latestEventTime:
+          description: The timestamp, in seconds, of the latest event. The timestamp
+            is in UNIX time.
+          type: string
+        latestIngestTime:
+          description: The latest index time for any of the events in this index.
+          type: string
+        latestMetadataUpdateTime:
+          description: The latest time that the index metadata was refreshed.
+          type: string
+        totalEventCount:
+          description: The number of events in the index.
+          format: int64
+          type: integer
+        totalSize:
+          description: The raw size, in bytes, of the uncompressed data in the indexers.
+          format: int64
+          type: integer
+      type: object
+    KVCollectionDataset:
+      allOf:
+      - $ref: '#/components/schemas/KVCollectionDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete kvcollection dataset as rendered in POST, PATCH, and
+        GET responses.
+      required:
+      - kind
+      type: object
+    KVCollectionDatasetKind:
+      description: The dataset kind.
+      enum:
+      - kvcollection
+      type: string
+    KVCollectionDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/KVCollectionDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing kvcollection dataset using
+        a PATCH request.
+    KVCollectionDatasetProperties:
+      description: Properties of kvcollection datasets which may be read, set, and
+        changed through the API. Implementation detail of DatasetPOST, DatasetPATCH,
+        and Dataset, do not use directly.
+      properties:
+        kind:
+          $ref: '#/components/schemas/KVCollectionDatasetKind'
+      type: object
+    ListDatasets:
+      description: A list of fully constructed datasets
+      properties:
+        results:
+          description: List of all datasets
+          items:
+            $ref: '#/components/schemas/Dataset'
+          type: array
+      type: object
+    ListFederatedConnections:
+      description: A list of federated connections
+      items:
+        $ref: '#/components/schemas/FederatedConnection'
+      type: array
     ListPreviewResultsResponse:
       description: The structure of the response body for the preview search results
         that is returned for the job with the specified search ID (SID). When search
@@ -436,6 +882,54 @@ components:
       required:
       - results
       type: object
+    LookupDataset:
+      allOf:
+      - $ref: '#/components/schemas/LookupDatasetProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete lookup dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - externalKind
+      - externalName
+      type: object
+    LookupDatasetExternalKind:
+      description: The type of the external lookup.
+      enum:
+      - kvcollection
+      type: string
+    LookupDatasetKind:
+      description: The dataset kind.
+      enum:
+      - lookup
+      type: string
+    LookupDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/LookupDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing lookup dataset using a
+        PATCH request.
+    LookupDatasetProperties:
+      description: Properties of lookup datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        caseSensitiveMatch:
+          default: true
+          description: Match case-sensitively against the lookup.
+          type: boolean
+        externalKind:
+          $ref: '#/components/schemas/LookupDatasetExternalKind'
+        externalName:
+          description: The name of the external lookup.
+          example: nameOfKvCollection
+          type: string
+        filter:
+          description: A query that filters results out of the lookup before those
+            results are returned.
+          type: string
+        kind:
+          $ref: '#/components/schemas/LookupDatasetKind'
     Message:
       description: The message field in search results or search jobs. The types of
         messages are INFO, DEBUG, FATAL, and ERROR.
@@ -449,6 +943,78 @@ components:
           - FATAL
           - ERROR
           type: string
+    MetadataProperties:
+      allOf:
+      - $ref: '#/components/schemas/DateMetadataProperties'
+      - $ref: '#/components/schemas/UserMetadataProperties'
+      description: Created, createdby, modified, modifiedby, and owner properties
+        for inclusion in other objects.
+    MetricDataset:
+      allOf:
+      - $ref: '#/components/schemas/MetricDatasetProperties'
+      - $ref: '#/components/schemas/MetricDatasetReadOnlyProperties'
+      - $ref: '#/components/schemas/MetadataProperties'
+      - $ref: '#/components/schemas/DatasetCommon'
+      description: A complete metric dataset as rendered in POST, PATCH, and GET responses.
+      required:
+      - kind
+      - disabled
+      type: object
+    MetricDatasetKind:
+      description: The dataset kind.
+      enum:
+      - metric
+      type: string
+    MetricDatasetPATCH:
+      allOf:
+      - $ref: '#/components/schemas/MetricDatasetProperties'
+      - $ref: '#/components/schemas/DatasetPATCHCommon'
+      description: Property values to be set in an existing metric dataset using a
+        PATCH request.
+    MetricDatasetProperties:
+      description: Properties of metric datasets which may be read, set, and changed
+        through the API. Implementation detail of DatasetPOST, DatasetPATCH, and Dataset,
+        do not use directly.
+      properties:
+        disabled:
+          description: Specifies whether or not the Splunk index is disabled.
+          type: boolean
+        frozenTimePeriodInSecs:
+          description: The frozenTimePeriodInSecs to use for the index
+          type: integer
+        kind:
+          $ref: '#/components/schemas/MetricDatasetKind'
+      type: object
+    MetricDatasetReadOnlyProperties:
+      description: Properties of metric datasets which can only be read through the
+        API.
+      properties:
+        earliestEventTime:
+          description: The timestamp, in seconds, of the earliest measure. The timestamp
+            is in UNIX time.
+          type: string
+        earliestIngestTime:
+          description: The earliest index time for any of the measures in this index.
+          type: string
+        kind:
+          $ref: '#/components/schemas/MetricDatasetKind'
+        latestEventTime:
+          description: The timestamp, in seconds, of the latest measure. The timestamp
+            is in UNIX time.
+          type: string
+        latestIngestTime:
+          description: The earliest index time for any of the measures in this index.
+          type: string
+        latestMetadataUpdateTime:
+          description: The latest time that the metric index metadata was refreshed.
+          type: string
+        totalEventCount:
+          description: THe number of measures in the metric index.
+          type: integer
+        totalSize:
+          description: For metrics indexes, the totalSize is set to 0.
+          type: integer
+      type: object
     QueryParameters:
       description: Represents parameters on the search job such as 'earliest' and
         'latest'.
@@ -456,12 +1022,12 @@ components:
         earliest:
           default: -24h@h
           description: |
-            The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+            The earliest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
           type: string
         latest:
           default: now
           description: |
-            The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored.
+            The latest time, in absolute or relative format, to retrieve events. When specifying an absolute time specify either UNIX time, or UTC in seconds using the ISO-8601 (%FT%T.%Q) format. For example 2021-01-25T13:15:30Z. GMT is the default timezone. You must specify GMT when you specify UTC. Any offset specified is ignored. Latest time must be after Earliest time.
           type: string
         relativeTimeAnchor:
           default: The system time when the search job is created.
@@ -605,12 +1171,13 @@ components:
       type: object
     SearchStatus:
       description: |
-        The current status of the search job. The valid status values are 'running', 'done', 'canceled', and 'failed'.
+        The current status of the search job. The valid status values are 'running', 'done', 'canceled', 'finalized' and 'failed'.
       enum:
       - running
       - done
       - canceled
       - failed
+      - finalized
       type: string
     SingleFieldSummary:
       description: Summary of each field.
@@ -732,6 +1299,31 @@ components:
       required:
       - status
       type: object
+    UserMetadataProperties:
+      description: Owner, createdby, and modifiedby user name properties for inclusion
+        in other objects.
+      properties:
+        createdby:
+          description: The name of the user who created the object. This value is
+            obtained from the bearer token and may not be changed.
+          example: janedoe
+          readOnly: true
+          type: string
+        modifiedby:
+          description: The name of the user who most recently modified the object.
+          example: suedoe
+          readOnly: true
+          type: string
+        owner:
+          description: The name of the object's owner.
+          example: johndoe
+          readOnly: true
+          type: string
+      required:
+      - owner
+      - createdby
+      - modifiedby
+      type: object
   securitySchemes:
     BasicAuth:
       scheme: basic
@@ -746,6 +1338,25 @@ info:
 openapi: 3.0.0
 paths:
   /{tenant}/search/v2/connections:
+    get:
+      description: Returns all federated connections.
+      operationId: getAllFederatedConnections
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFederatedConnections'
+          description: |
+            All federated connections were returned successfully.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
     parameters:
     - $ref: '#/components/parameters/tenant'
     - $ref: '#/components/parameters/AuthorizationHeader'
@@ -848,11 +1459,6 @@ paths:
       description: |
         Refresh a federated connection to fetch new remote indexes and add/delete corresponding federated datasets.
       operationId: refreshFederatedConnection
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FederatedConnectionRefresh'
       responses:
         "201":
           description: |
@@ -874,11 +1480,6 @@ paths:
       description: |
         Test connection with remote EC instance using federated connection parameters.
       operationId: testFederatedConnection
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FederatedConnectionTest'
       responses:
         "200":
           description: |
@@ -887,6 +1488,122 @@ paths:
           description: The user isn't authenticated.
         "403":
           description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/datasets:
+    get:
+      description: Returns a list of all datasets.
+      operationId: listDatasets
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDatasets'
+          description: The datasets were returned successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+    parameters:
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    post:
+      description: Creates a dataset.
+      operationId: createDataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetPOST'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: The dataset was created successfully.
+        "400":
+          description: The request isn’t valid.
+        "401":
+          description: The user isn’t authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "500":
+          description: An internal service error occurred.
+  /{tenant}/search/v2/datasets/{datasetid}:
+    delete:
+      description: |
+        Deletes a dataset with a specified dataset ID (datasetid).
+      operationId: deleteDatasetById
+      responses:
+        "204":
+          description: |
+            The dataset with the specified dataset ID (datasetid) was deleted successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
+    get:
+      description: |
+        Returns a dataset with a specified dataset ID (datasetid).
+      operationId: getDatasetById
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: |
+            The search job information for the specified datatset ID (datasetid) was returned successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
+        "500":
+          description: An internal service error occurred.
+    parameters:
+    - $ref: '#/components/parameters/AuthorizationHeader'
+    - $ref: '#/components/parameters/tenant'
+    - $ref: '#/components/parameters/datasetid'
+    patch:
+      description: |
+        Modifies a dataset with a specified dataset ID (datasetid).
+      operationId: updateDatasetById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetPATCH'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: The dataset was modified successfully.
+        "400":
+          description: The request isn't valid.
+        "401":
+          description: The user isn't authenticated.
+        "403":
+          description: The operation isn't authorized.
+        "404":
+          description: The resource wasn't found.
         "500":
           description: An internal service error occurred.
   /{tenant}/search/v2/jobs:
@@ -1212,4 +1929,4 @@ paths:
         "500":
           description: An internal service error occurred.
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: search/v2/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: search/v2/openapi.yaml

@@ -8,102 +8,53 @@ import (
 	impl "github.com/splunk/splunk-cloud-sdk-go/cmd/scloud/pkg/catalog"
 )
 
-// createActionForRuleAliasAction -- Creates a new action for a rule with the specified resource name.
+// createActionForRuleAliasAction -- Creates a new action for the specified rule by rule id or resource name.
 var createActionForRuleAliasActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-alias",
-	Short: "Creates a new action for a rule with the specified resource name.",
+	Short: "Creates a new action for the specified rule by rule id or resource name.",
 	RunE:  impl.CreateActionForRuleAliasAction,
 }
 
-// createActionForRuleAutoKvAction -- Creates a new action for a rule with the specified resource name.
+// createActionForRuleAutoKvAction -- Creates a new action for the specified rule by rule id or resource name.
 var createActionForRuleAutoKvActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-auto-kv",
-	Short: "Creates a new action for a rule with the specified resource name.",
+	Short: "Creates a new action for the specified rule by rule id or resource name.",
 	RunE:  impl.CreateActionForRuleAutoKvAction,
 }
 
-// createActionForRuleByIdAliasAction -- Creates a new action for the specified rule.
-var createActionForRuleByIdAliasActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-alias",
-	Short: "Creates a new action for the specified rule.",
-	RunE:  impl.CreateActionForRuleByIdAliasAction,
-}
-
-// createActionForRuleByIdAutoKvAction -- Creates a new action for the specified rule.
-var createActionForRuleByIdAutoKvActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-auto-kv",
-	Short: "Creates a new action for the specified rule.",
-	RunE:  impl.CreateActionForRuleByIdAutoKvAction,
-}
-
-// createActionForRuleByIdEvalAction -- Creates a new action for the specified rule.
-var createActionForRuleByIdEvalActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-eval",
-	Short: "Creates a new action for the specified rule.",
-	RunE:  impl.CreateActionForRuleByIdEvalAction,
-}
-
-// createActionForRuleByIdLookupAction -- Creates a new action for the specified rule.
-var createActionForRuleByIdLookupActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-lookup",
-	Short: "Creates a new action for the specified rule.",
-	RunE:  impl.CreateActionForRuleByIdLookupAction,
-}
-
-// createActionForRuleByIdRegexAction -- Creates a new action for the specified rule.
-var createActionForRuleByIdRegexActionCmd = &cobra.Command{
-	Use:   "create-action-for-rule-by-id-regex",
-	Short: "Creates a new action for the specified rule.",
-	RunE:  impl.CreateActionForRuleByIdRegexAction,
-}
-
-// createActionForRuleEvalAction -- Creates a new action for a rule with the specified resource name.
+// createActionForRuleEvalAction -- Creates a new action for the specified rule by rule id or resource name.
 var createActionForRuleEvalActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-eval",
-	Short: "Creates a new action for a rule with the specified resource name.",
+	Short: "Creates a new action for the specified rule by rule id or resource name.",
 	RunE:  impl.CreateActionForRuleEvalAction,
 }
 
-// createActionForRuleLookupAction -- Creates a new action for a rule with the specified resource name.
+// createActionForRuleLookupAction -- Creates a new action for the specified rule by rule id or resource name.
 var createActionForRuleLookupActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-lookup",
-	Short: "Creates a new action for a rule with the specified resource name.",
+	Short: "Creates a new action for the specified rule by rule id or resource name.",
 	RunE:  impl.CreateActionForRuleLookupAction,
 }
 
-// createActionForRuleRegexAction -- Creates a new action for a rule with the specified resource name.
+// createActionForRuleRegexAction -- Creates a new action for the specified rule by rule id or resource name.
 var createActionForRuleRegexActionCmd = &cobra.Command{
 	Use:   "create-action-for-rule-regex",
-	Short: "Creates a new action for a rule with the specified resource name.",
+	Short: "Creates a new action for the specified rule by rule id or resource name.",
 	RunE:  impl.CreateActionForRuleRegexAction,
 }
 
-// createAnnotationForDashboardbyId -- Creates a new annotation for the specified dashboard.
-var createAnnotationForDashboardbyIdCmd = &cobra.Command{
-	Use:   "create-annotation-for-dashboardby-id",
+// createAnnotationForDashboard -- Creates a new annotation for the specified dashboard.
+var createAnnotationForDashboardCmd = &cobra.Command{
+	Use:   "create-annotation-for-dashboard",
 	Short: "[not implemented] Creates a new annotation for the specified dashboard.",
-	RunE:  impl.CreateAnnotationForDashboardbyId,
+	RunE:  impl.CreateAnnotationForDashboard,
 }
 
-// createAnnotationForDashboardsByResourceName -- Creates a new annotation for the specified dataset resource name.
-var createAnnotationForDashboardsByResourceNameCmd = &cobra.Command{
-	Use:   "create-annotation-for-dashboards-by-resource-name",
-	Short: "[not implemented] Creates a new annotation for the specified dataset resource name.",
-	RunE:  impl.CreateAnnotationForDashboardsByResourceName,
-}
-
-// createAnnotationForDatasetById -- Creates a new annotation for the specified dataset.
-var createAnnotationForDatasetByIdCmd = &cobra.Command{
-	Use:   "create-annotation-for-dataset-by-id",
+// createAnnotationForDataset -- Creates a new annotation for the specified dataset.
+var createAnnotationForDatasetCmd = &cobra.Command{
+	Use:   "create-annotation-for-dataset",
 	Short: "[not implemented] Creates a new annotation for the specified dataset.",
-	RunE:  impl.CreateAnnotationForDatasetById,
-}
-
-// createAnnotationForDatasetByResourceName -- Creates a new annotation for the specified dataset.
-var createAnnotationForDatasetByResourceNameCmd = &cobra.Command{
-	Use:   "create-annotation-for-dataset-by-resource-name",
-	Short: "[not implemented] Creates a new annotation for the specified dataset.",
-	RunE:  impl.CreateAnnotationForDatasetByResourceName,
+	RunE:  impl.CreateAnnotationForDataset,
 }
 
 // createDashboard -- Creates a new dashboard.
@@ -113,25 +64,18 @@ var createDashboardCmd = &cobra.Command{
 	RunE:  impl.CreateDashboard,
 }
 
-// createDatasetImport -- Creates a new dataset import using the resource name of the imported dataset.
+// createDatasetFederatedDataset -- Creates a new dataset.
+var createDatasetFederatedDatasetCmd = &cobra.Command{
+	Use:   "create-dataset-federated",
+	Short: "Creates a new dataset.",
+	RunE:  impl.CreateDatasetFederatedDataset,
+}
+
+// createDatasetImport -- Creates a new dataset import using the ID or resource name of the imported dataset.
 var createDatasetImportCmd = &cobra.Command{
 	Use:   "create-dataset-import",
-	Short: "Creates a new dataset import using the resource name of the imported dataset.",
+	Short: "Creates a new dataset import using the ID or resource name of the imported dataset.",
 	RunE:  impl.CreateDatasetImport,
-}
-
-// createDatasetImportById -- Creates a new dataset import using the ID of the imported dataset.
-var createDatasetImportByIdCmd = &cobra.Command{
-	Use:   "create-dataset-import-by-id",
-	Short: "Creates a new dataset import using the ID of the imported dataset.",
-	RunE:  impl.CreateDatasetImportById,
-}
-
-// createDatasetImportByIdv1 -- Creates a new dataset import using the ID of the imported dataset.
-var createDatasetImportByIdv1Cmd = &cobra.Command{
-	Use:   "create-dataset-import-by-idv-1",
-	Short: "Creates a new dataset import using the ID of the imported dataset.",
-	RunE:  impl.CreateDatasetImportByIdv1,
 }
 
 // createDatasetImportDataset -- Creates a new dataset.
@@ -139,13 +83,6 @@ var createDatasetImportDatasetCmd = &cobra.Command{
 	Use:   "create-dataset-import",
 	Short: "Creates a new dataset.",
 	RunE:  impl.CreateDatasetImportDataset,
-}
-
-// createDatasetImportv1 -- Creates a new dataset import using the resource name of the imported dataset.
-var createDatasetImportv1Cmd = &cobra.Command{
-	Use:   "create-dataset-importv-1",
-	Short: "Creates a new dataset import using the resource name of the imported dataset.",
-	RunE:  impl.CreateDatasetImportv1,
 }
 
 // createDatasetIndexDataset -- Creates a new dataset.
@@ -183,18 +120,11 @@ var createDatasetViewDatasetCmd = &cobra.Command{
 	RunE:  impl.CreateDatasetViewDataset,
 }
 
-// createFieldForDataset -- Creates a new field in the dataset with the specified resource name.
+// createFieldForDataset -- Adds a new field to the dataset with the specified ID or resource name.
 var createFieldForDatasetCmd = &cobra.Command{
 	Use:   "create-field-for-dataset",
-	Short: "Creates a new field in the dataset with the specified resource name.",
+	Short: "Adds a new field to the dataset with the specified ID or resource name.",
 	RunE:  impl.CreateFieldForDataset,
-}
-
-// createFieldForDatasetById -- Adds a new field to the dataset with the specified ID.
-var createFieldForDatasetByIdCmd = &cobra.Command{
-	Use:   "create-field-for-dataset-by-id",
-	Short: "Adds a new field to the dataset with the specified ID.",
-	RunE:  impl.CreateFieldForDatasetById,
 }
 
 // createRelationship -- Creates a new relationship.
@@ -211,95 +141,39 @@ var createRuleCmd = &cobra.Command{
 	RunE:  impl.CreateRule,
 }
 
-// createWorkflow -- Creates a new workflow configuration.
-var createWorkflowCmd = &cobra.Command{
-	Use:   "create-workflow",
-	Short: "Creates a new workflow configuration.",
-	RunE:  impl.CreateWorkflow,
-}
-
-// createWorkflowBuild -- Creates a new workflow build.
-var createWorkflowBuildCmd = &cobra.Command{
-	Use:   "create-workflow-build",
-	Short: "Creates a new workflow build.",
-	RunE:  impl.CreateWorkflowBuild,
-}
-
-// createWorkflowRun -- Creates a new workflow run for the specified workflow build ID.
-var createWorkflowRunCmd = &cobra.Command{
-	Use:   "create-workflow-run",
-	Short: "Creates a new workflow run for the specified workflow build ID.",
-	RunE:  impl.CreateWorkflowRun,
-}
-
-// deleteActionByIdForRule -- Deletes the action with the specified ID that is associated with the specified rule resource name.
+// deleteActionByIdForRule -- Deletes the action with the specified ID that is associated with the specified rule.
 var deleteActionByIdForRuleCmd = &cobra.Command{
 	Use:   "delete-action-by-id-for-rule",
-	Short: "Deletes the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Deletes the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.DeleteActionByIdForRule,
 }
 
-// deleteActionByIdForRuleById -- Deletes the action with the specified ID that is associated with the specified rule.
-var deleteActionByIdForRuleByIdCmd = &cobra.Command{
-	Use:   "delete-action-by-id-for-rule-by-id",
-	Short: "Deletes the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.DeleteActionByIdForRuleById,
-}
-
-// deleteAnnotationOfDashboardById -- Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
-var deleteAnnotationOfDashboardByIdCmd = &cobra.Command{
-	Use:   "delete-annotation-of-dashboard-by-id",
+// deleteAnnotationOfDashboard -- Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
+var deleteAnnotationOfDashboardCmd = &cobra.Command{
+	Use:   "delete-annotation-of-dashboard",
 	Short: "Deletes the annotation with the speciifed ID that is associted with the specified dashboard.",
-	RunE:  impl.DeleteAnnotationOfDashboardById,
+	RunE:  impl.DeleteAnnotationOfDashboard,
 }
 
-// deleteAnnotationOfDashboardByResourceName -- Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
-var deleteAnnotationOfDashboardByResourceNameCmd = &cobra.Command{
-	Use:   "delete-annotation-of-dashboard-by-resource-name",
-	Short: "Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.",
-	RunE:  impl.DeleteAnnotationOfDashboardByResourceName,
-}
-
-// deleteAnnotationOfDatasetById -- Deletes the annotation with the specified ID that is associated with the specified dataset.
-var deleteAnnotationOfDatasetByIdCmd = &cobra.Command{
-	Use:   "delete-annotation-of-dataset-by-id",
+// deleteAnnotationOfDataset -- Deletes the annotation with the specified ID that is associated with the specified dataset.
+var deleteAnnotationOfDatasetCmd = &cobra.Command{
+	Use:   "delete-annotation-of-dataset",
 	Short: "Deletes the annotation with the specified ID that is associated with the specified dataset.",
-	RunE:  impl.DeleteAnnotationOfDatasetById,
+	RunE:  impl.DeleteAnnotationOfDataset,
 }
 
-// deleteAnnotationOfDatasetByResourceName -- Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
-var deleteAnnotationOfDatasetByResourceNameCmd = &cobra.Command{
-	Use:   "delete-annotation-of-dataset-by-resource-name",
-	Short: "Deletes the annotation with the specified iD that is associated with the specified dataset resource name.",
-	RunE:  impl.DeleteAnnotationOfDatasetByResourceName,
+// deleteDashboard -- Deletes the dashboard with the specified ID or resource name.
+var deleteDashboardCmd = &cobra.Command{
+	Use:   "delete-dashboard",
+	Short: "Deletes the dashboard with the specified ID or resource name.",
+	RunE:  impl.DeleteDashboard,
 }
 
-// deleteDashboardById -- Deletes the dashboard with the specified ID.
-var deleteDashboardByIdCmd = &cobra.Command{
-	Use:   "delete-dashboard-by-id",
-	Short: "Deletes the dashboard with the specified ID.",
-	RunE:  impl.DeleteDashboardById,
-}
-
-// deleteDashboardByResourceName -- Deletes the dashboard with the specified resource name.
-var deleteDashboardByResourceNameCmd = &cobra.Command{
-	Use:   "delete-dashboard-by-resource-name",
-	Short: "Deletes the dashboard with the specified resource name.",
-	RunE:  impl.DeleteDashboardByResourceName,
-}
-
-// deleteDataset -- Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// deleteDataset -- Deletes the dataset with the specified ID or resource name. Deleting a dataset also deletes its dependent objects, such as fields.
 var deleteDatasetCmd = &cobra.Command{
 	Use:   "delete-dataset",
-	Short: "Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Deletes the dataset with the specified ID or resource name. Deleting a dataset also deletes its dependent objects, such as fields.",
 	RunE:  impl.DeleteDataset,
-}
-
-// deleteDatasetById -- Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
-var deleteDatasetByIdCmd = &cobra.Command{
-	Use:   "delete-dataset-by-id",
-	Short: "Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.",
-	RunE:  impl.DeleteDatasetById,
 }
 
 // deleteFieldByIdForDataset -- Deletes the field with the specified ID that is part of the specified dataset.
@@ -309,13 +183,6 @@ var deleteFieldByIdForDatasetCmd = &cobra.Command{
 	RunE:  impl.DeleteFieldByIdForDataset,
 }
 
-// deleteFieldByIdForDatasetById -- Deletes the field with the specified ID that is part of the specified dataset.
-var deleteFieldByIdForDatasetByIdCmd = &cobra.Command{
-	Use:   "delete-field-by-id-for-dataset-by-id",
-	Short: "Deletes the field with the specified ID that is part of the specified dataset.",
-	RunE:  impl.DeleteFieldByIdForDatasetById,
-}
-
 // deleteRelationshipById -- Deletes the relationship with the specified relationship ID. Deleting a relationship also deletes any objects that are dependents of that relationship, such as relationship fields.
 var deleteRelationshipByIdCmd = &cobra.Command{
 	Use:   "delete-relationship-by-id",
@@ -323,81 +190,32 @@ var deleteRelationshipByIdCmd = &cobra.Command{
 	RunE:  impl.DeleteRelationshipById,
 }
 
-// deleteRule -- Deletes the rule with the specified resource name and its dependencies.
+// deleteRule -- Deletes the rule with the specfied ID or resource name. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 var deleteRuleCmd = &cobra.Command{
 	Use:   "delete-rule",
-	Short: "Deletes the rule with the specified resource name and its dependencies.",
+	Short: "Deletes the rule with the specfied ID or resource name. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.",
 	RunE:  impl.DeleteRule,
 }
 
-// deleteRuleById -- Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
-var deleteRuleByIdCmd = &cobra.Command{
-	Use:   "delete-rule-by-id",
-	Short: "Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.",
-	RunE:  impl.DeleteRuleById,
-}
-
-// deleteWorkflowBuildById -- Deletes the workflow build with the specified workflow build ID.
-var deleteWorkflowBuildByIdCmd = &cobra.Command{
-	Use:   "delete-workflow-build-by-id",
-	Short: "Deletes the workflow build with the specified workflow build ID.",
-	RunE:  impl.DeleteWorkflowBuildById,
-}
-
-// deleteWorkflowById -- Deletes the workflow with the specified workflow ID.
-var deleteWorkflowByIdCmd = &cobra.Command{
-	Use:   "delete-workflow-by-id",
-	Short: "Deletes the workflow with the specified workflow ID.",
-	RunE:  impl.DeleteWorkflowById,
-}
-
-// deleteWorkflowRunById -- Deletes the workflow run with the specified workflow run ID.
-var deleteWorkflowRunByIdCmd = &cobra.Command{
-	Use:   "delete-workflow-run-by-id",
-	Short: "Deletes the workflow run with the specified workflow run ID.",
-	RunE:  impl.DeleteWorkflowRunById,
-}
-
-// getActionByIdForRule -- Returns the action with the specified ID that is associated with the specified rule resource name.
+// getActionByIdForRule -- Returns information about the action with the specified ID that is associated with the specified rule.
 var getActionByIdForRuleCmd = &cobra.Command{
 	Use:   "get-action-by-id-for-rule",
-	Short: "Returns the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Returns information about the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.GetActionByIdForRule,
 }
 
-// getActionByIdForRuleById -- Returns information about the action with the specified ID that is associated with the specified rule.
-var getActionByIdForRuleByIdCmd = &cobra.Command{
-	Use:   "get-action-by-id-for-rule-by-id",
-	Short: "Returns information about the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.GetActionByIdForRuleById,
+// getDashboard -- Returns information about the dashboard with the specified ID or resource name.
+var getDashboardCmd = &cobra.Command{
+	Use:   "get-dashboard",
+	Short: "Returns information about the dashboard with the specified ID or resource name.",
+	RunE:  impl.GetDashboard,
 }
 
-// getDashboardById -- Returns information about the dashboard with the specified ID.
-var getDashboardByIdCmd = &cobra.Command{
-	Use:   "get-dashboard-by-id",
-	Short: "Returns information about the dashboard with the specified ID.",
-	RunE:  impl.GetDashboardById,
-}
-
-// getDashboardByResourceName -- Returns information about the dashboard with the specified resource name.
-var getDashboardByResourceNameCmd = &cobra.Command{
-	Use:   "get-dashboard-by-resource-name",
-	Short: "Returns information about the dashboard with the specified resource name.",
-	RunE:  impl.GetDashboardByResourceName,
-}
-
-// getDataset -- Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// getDataset -- Returns information about the dataset with the specified ID or resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 var getDatasetCmd = &cobra.Command{
 	Use:   "get-dataset",
-	Short: "Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Returns information about the dataset with the specified ID or resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.GetDataset,
-}
-
-// getDatasetById -- Returns information about the dataset with the specified ID.
-var getDatasetByIdCmd = &cobra.Command{
-	Use:   "get-dataset-by-id",
-	Short: "Returns information about the dataset with the specified ID.",
-	RunE:  impl.GetDatasetById,
 }
 
 // getFieldById -- Returns the field with the specified ID.
@@ -414,13 +232,6 @@ var getFieldByIdForDatasetCmd = &cobra.Command{
 	RunE:  impl.GetFieldByIdForDataset,
 }
 
-// getFieldByIdForDatasetById -- Returns the field with the specified ID that is part of the specified dataset.
-var getFieldByIdForDatasetByIdCmd = &cobra.Command{
-	Use:   "get-field-by-id-for-dataset-by-id",
-	Short: "Returns the field with the specified ID that is part of the specified dataset.",
-	RunE:  impl.GetFieldByIdForDatasetById,
-}
-
 // getRelationshipById -- Returns the relationship with the specified relationship ID.
 var getRelationshipByIdCmd = &cobra.Command{
 	Use:   "get-relationship-by-id",
@@ -428,53 +239,25 @@ var getRelationshipByIdCmd = &cobra.Command{
 	RunE:  impl.GetRelationshipById,
 }
 
-// getRule -- Returrns the rule with the specified resource name.
+// getRule -- Returns information about rule with the specified rule ID or resource name.
 var getRuleCmd = &cobra.Command{
 	Use:   "get-rule",
-	Short: "Returrns the rule with the specified resource name.",
+	Short: "Returns information about rule with the specified rule ID or resource name.",
 	RunE:  impl.GetRule,
 }
 
-// getRuleById -- Returns information about rule with the specified rule ID.
-var getRuleByIdCmd = &cobra.Command{
-	Use:   "get-rule-by-id",
-	Short: "Returns information about rule with the specified rule ID.",
-	RunE:  impl.GetRuleById,
+// importDataset -- Creates a new dataset import using the ID or resource name of the imported dataset.
+var importDatasetCmd = &cobra.Command{
+	Use:   "import-dataset",
+	Short: "Creates a new dataset import using the ID or resource name of the imported dataset.",
+	RunE:  impl.ImportDataset,
 }
 
-// getWorkflowBuildById -- Returns information about the workflow build with the specified workflow build ID.
-var getWorkflowBuildByIdCmd = &cobra.Command{
-	Use:   "get-workflow-build-by-id",
-	Short: "Returns information about the workflow build with the specified workflow build ID.",
-	RunE:  impl.GetWorkflowBuildById,
-}
-
-// getWorkflowById -- Returns information about the workflow with the specified workflow ID.
-var getWorkflowByIdCmd = &cobra.Command{
-	Use:   "get-workflow-by-id",
-	Short: "Returns information about the workflow with the specified workflow ID.",
-	RunE:  impl.GetWorkflowById,
-}
-
-// getWorkflowRunById -- Returns information about the workflow run with the specified workflow build ID.
-var getWorkflowRunByIdCmd = &cobra.Command{
-	Use:   "get-workflow-run-by-id",
-	Short: "Returns information about the workflow run with the specified workflow build ID.",
-	RunE:  impl.GetWorkflowRunById,
-}
-
-// listActionsForRule -- Returns the list of actions that are associated with the specified rule.
+// listActionsForRule -- Returns the set of actions that are part of the specified rule.
 var listActionsForRuleCmd = &cobra.Command{
 	Use:   "list-actions-for-rule",
-	Short: "Returns the list of actions that are associated with the specified rule.",
-	RunE:  impl.ListActionsForRule,
-}
-
-// listActionsForRuleById -- Returns the set of actions that are part of the specified rule.
-var listActionsForRuleByIdCmd = &cobra.Command{
-	Use:   "list-actions-for-rule-by-id",
 	Short: "Returns the set of actions that are part of the specified rule.",
-	RunE:  impl.ListActionsForRuleById,
+	RunE:  impl.ListActionsForRule,
 }
 
 // listAnnotations -- Returns the set of annotations across all objects.
@@ -484,32 +267,18 @@ var listAnnotationsCmd = &cobra.Command{
 	RunE:  impl.ListAnnotations,
 }
 
-// listAnnotationsForDashboardById -- Returns the set of annotations that are associated with the specified dashboard.
-var listAnnotationsForDashboardByIdCmd = &cobra.Command{
-	Use:   "list-annotations-for-dashboard-by-id",
+// listAnnotationsForDashboard -- Returns the set of annotations that are associated with the specified dashboard.
+var listAnnotationsForDashboardCmd = &cobra.Command{
+	Use:   "list-annotations-for-dashboard",
 	Short: "Returns the set of annotations that are associated with the specified dashboard.",
-	RunE:  impl.ListAnnotationsForDashboardById,
+	RunE:  impl.ListAnnotationsForDashboard,
 }
 
-// listAnnotationsForDashboardByResourceName -- Returns the set of annotations that are associated with the specified dashboard resource name.
-var listAnnotationsForDashboardByResourceNameCmd = &cobra.Command{
-	Use:   "list-annotations-for-dashboard-by-resource-name",
-	Short: "Returns the set of annotations that are associated with the specified dashboard resource name.",
-	RunE:  impl.ListAnnotationsForDashboardByResourceName,
-}
-
-// listAnnotationsForDatasetById -- Returns the set of annotations that are associated with the specified dataset.
-var listAnnotationsForDatasetByIdCmd = &cobra.Command{
-	Use:   "list-annotations-for-dataset-by-id",
+// listAnnotationsForDataset -- Returns the set of annotations that are associated with the specified dataset.
+var listAnnotationsForDatasetCmd = &cobra.Command{
+	Use:   "list-annotations-for-dataset",
 	Short: "Returns the set of annotations that are associated with the specified dataset.",
-	RunE:  impl.ListAnnotationsForDatasetById,
-}
-
-// listAnnotationsForDatasetByResourceName -- Returns the set of annotations that are associated with the specified dataset resource name.
-var listAnnotationsForDatasetByResourceNameCmd = &cobra.Command{
-	Use:   "list-annotations-for-dataset-by-resource-name",
-	Short: "Returns the set of annotations that are associated with the specified dataset resource name.",
-	RunE:  impl.ListAnnotationsForDatasetByResourceName,
+	RunE:  impl.ListAnnotationsForDataset,
 }
 
 // listDashboards -- Returns a list of dashboards.
@@ -533,18 +302,11 @@ var listFieldsCmd = &cobra.Command{
 	RunE:  impl.ListFields,
 }
 
-// listFieldsForDataset -- Returns the list of fields in the specified dataset.
+// listFieldsForDataset -- Returns the set of fields for the dataset with the specified ID or resource name.
 var listFieldsForDatasetCmd = &cobra.Command{
 	Use:   "list-fields-for-dataset",
-	Short: "Returns the list of fields in the specified dataset.",
+	Short: "Returns the set of fields for the dataset with the specified ID or resource name.",
 	RunE:  impl.ListFieldsForDataset,
-}
-
-// listFieldsForDatasetById -- Returns the set of fields for the dataset with the specified ID.
-var listFieldsForDatasetByIdCmd = &cobra.Command{
-	Use:   "list-fields-for-dataset-by-id",
-	Short: "Returns the set of fields for the dataset with the specified ID.",
-	RunE:  impl.ListFieldsForDatasetById,
 }
 
 // listModules -- Returns a list of all modules. Use a filter to return a specific list of modules.
@@ -568,192 +330,94 @@ var listRulesCmd = &cobra.Command{
 	RunE:  impl.ListRules,
 }
 
-// listWorkflowBuilds -- Returns a list of Machine Learning workflow builds.
-var listWorkflowBuildsCmd = &cobra.Command{
-	Use:   "list-workflow-builds",
-	Short: "Returns a list of Machine Learning workflow builds.",
-	RunE:  impl.ListWorkflowBuilds,
-}
-
-// listWorkflowRuns -- Returns a list of Machine Learning workflow runs for specified workflow build ID.
-var listWorkflowRunsCmd = &cobra.Command{
-	Use:   "list-workflow-runs",
-	Short: "Returns a list of Machine Learning workflow runs for specified workflow build ID.",
-	RunE:  impl.ListWorkflowRuns,
-}
-
-// listWorkflows -- Return a list of Machine Learning workflow configurations.
-var listWorkflowsCmd = &cobra.Command{
-	Use:   "list-workflows",
-	Short: "Return a list of Machine Learning workflow configurations.",
-	RunE:  impl.ListWorkflows,
-}
-
-// updateActionByIdForRuleAliasAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
+// updateActionByIdForRuleAliasAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleAliasActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-alias",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleAliasAction,
 }
 
-// updateActionByIdForRuleAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
+// updateActionByIdForRuleAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleAutoKvActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-auto-kv",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleAutoKvAction,
 }
 
-// updateActionByIdForRuleByIdAliasAction -- Modifies the action with the specified ID that is associated with the specified rule.
-var updateActionByIdForRuleByIdAliasActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-alias",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.UpdateActionByIdForRuleByIdAliasAction,
-}
-
-// updateActionByIdForRuleByIdAutoKvAction -- Modifies the action with the specified ID that is associated with the specified rule.
-var updateActionByIdForRuleByIdAutoKvActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-auto-kv",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.UpdateActionByIdForRuleByIdAutoKvAction,
-}
-
-// updateActionByIdForRuleByIdEvalAction -- Modifies the action with the specified ID that is associated with the specified rule.
-var updateActionByIdForRuleByIdEvalActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-eval",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.UpdateActionByIdForRuleByIdEvalAction,
-}
-
-// updateActionByIdForRuleByIdLookupAction -- Modifies the action with the specified ID that is associated with the specified rule.
-var updateActionByIdForRuleByIdLookupActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-lookup",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.UpdateActionByIdForRuleByIdLookupAction,
-}
-
-// updateActionByIdForRuleByIdRegexAction -- Modifies the action with the specified ID that is associated with the specified rule.
-var updateActionByIdForRuleByIdRegexActionCmd = &cobra.Command{
-	Use:   "update-action-by-id-for-rule-by-id-regex",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
-	RunE:  impl.UpdateActionByIdForRuleByIdRegexAction,
-}
-
-// updateActionByIdForRuleEvalAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
+// updateActionByIdForRuleEvalAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleEvalActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-eval",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleEvalAction,
 }
 
-// updateActionByIdForRuleLookupAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
+// updateActionByIdForRuleLookupAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleLookupActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-lookup",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleLookupAction,
 }
 
-// updateActionByIdForRuleRegexAction -- Modifies the action with the specified ID that is associated with the specified rule resource name.
+// updateActionByIdForRuleRegexAction -- Modifies the action with the specified ID that is associated with the specified rule.
 var updateActionByIdForRuleRegexActionCmd = &cobra.Command{
 	Use:   "update-action-by-id-for-rule-regex",
-	Short: "Modifies the action with the specified ID that is associated with the specified rule resource name.",
+	Short: "Modifies the action with the specified ID that is associated with the specified rule.",
 	RunE:  impl.UpdateActionByIdForRuleRegexAction,
 }
 
-// updateDashboardById -- Modifies the dashboard with the specified ID.
-var updateDashboardByIdCmd = &cobra.Command{
-	Use:   "update-dashboard-by-id",
-	Short: "Modifies the dashboard with the specified ID.",
-	RunE:  impl.UpdateDashboardById,
+// updateDashboard -- Modifies the dashboard with the specified ID or resource name.
+var updateDashboardCmd = &cobra.Command{
+	Use:   "update-dashboard",
+	Short: "Modifies the dashboard with the specified ID or resource name.",
+	RunE:  impl.UpdateDashboard,
 }
 
-// updateDashboardByResourceName -- Modifies the dashboard with the specified resource name.
-var updateDashboardByResourceNameCmd = &cobra.Command{
-	Use:   "update-dashboard-by-resource-name",
-	Short: "Modifies the dashboard with the specified resource name.",
-	RunE:  impl.UpdateDashboardByResourceName,
+// updateDatasetFederatedDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
+var updateDatasetFederatedDatasetCmd = &cobra.Command{
+	Use:   "update-dataset-federated",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
+	RunE:  impl.UpdateDatasetFederatedDataset,
 }
 
-// updateDatasetByIdImportDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdImportDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-import",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdImportDataset,
-}
-
-// updateDatasetByIdIndexDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdIndexDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-index",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdIndexDataset,
-}
-
-// updateDatasetByIdKvCollectionDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdKvCollectionDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-kv-collection",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdKvCollectionDataset,
-}
-
-// updateDatasetByIdLookupDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdLookupDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-lookup",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdLookupDataset,
-}
-
-// updateDatasetByIdMetricDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdMetricDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-metric",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdMetricDataset,
-}
-
-// updateDatasetByIdViewDataset -- Modifies the dataset with the specified ID.
-var updateDatasetByIdViewDatasetCmd = &cobra.Command{
-	Use:   "update-dataset-by-id-view",
-	Short: "Modifies the dataset with the specified ID.",
-	RunE:  impl.UpdateDatasetByIdViewDataset,
-}
-
-// updateDatasetImportDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetImportDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetImportDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-import",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetImportDataset,
 }
 
-// updateDatasetIndexDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetIndexDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetIndexDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-index",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetIndexDataset,
 }
 
-// updateDatasetKvCollectionDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetKvCollectionDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetKvCollectionDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-kv-collection",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetKvCollectionDataset,
 }
 
-// updateDatasetLookupDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetLookupDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetLookupDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-lookup",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetLookupDataset,
 }
 
-// updateDatasetMetricDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetMetricDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetMetricDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-metric",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetMetricDataset,
 }
 
-// updateDatasetViewDataset -- Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// updateDatasetViewDataset -- Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 var updateDatasetViewDatasetCmd = &cobra.Command{
 	Use:   "update-dataset-view",
-	Short: "Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.",
+	Short: "Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.",
 	RunE:  impl.UpdateDatasetViewDataset,
 }
 
@@ -764,13 +428,6 @@ var updateFieldByIdForDatasetCmd = &cobra.Command{
 	RunE:  impl.UpdateFieldByIdForDataset,
 }
 
-// updateFieldByIdForDatasetById -- Modifies the field with the specified ID that is part of the specified dataset.
-var updateFieldByIdForDatasetByIdCmd = &cobra.Command{
-	Use:   "update-field-by-id-for-dataset-by-id",
-	Short: "Modifies the field with the specified ID that is part of the specified dataset.",
-	RunE:  impl.UpdateFieldByIdForDatasetById,
-}
-
 // updateRelationshipById -- Modifies the relationship with the specified relationship ID.
 var updateRelationshipByIdCmd = &cobra.Command{
 	Use:   "update-relationship-by-id",
@@ -778,39 +435,11 @@ var updateRelationshipByIdCmd = &cobra.Command{
 	RunE:  impl.UpdateRelationshipById,
 }
 
-// updateRule -- Modifies the rule with the specified resource name.
+// updateRule -- Modifies the rule with the specified rule ID or resource name.
 var updateRuleCmd = &cobra.Command{
 	Use:   "update-rule",
-	Short: "Modifies the rule with the specified resource name.",
+	Short: "Modifies the rule with the specified rule ID or resource name.",
 	RunE:  impl.UpdateRule,
-}
-
-// updateRuleById -- Modifies the rule with the specified rule ID.
-var updateRuleByIdCmd = &cobra.Command{
-	Use:   "update-rule-by-id",
-	Short: "Modifies the rule with the specified rule ID.",
-	RunE:  impl.UpdateRuleById,
-}
-
-// updateWorkflowBuildById -- Modifies the workflow build with the specified workflow build ID.
-var updateWorkflowBuildByIdCmd = &cobra.Command{
-	Use:   "update-workflow-build-by-id",
-	Short: "Modifies the workflow build with the specified workflow build ID.",
-	RunE:  impl.UpdateWorkflowBuildById,
-}
-
-// updateWorkflowById -- Modifies the workflow with the specified workflow ID.
-var updateWorkflowByIdCmd = &cobra.Command{
-	Use:   "update-workflow-by-id",
-	Short: "Modifies the workflow with the specified workflow ID.",
-	RunE:  impl.UpdateWorkflowById,
-}
-
-// updateWorkflowRunById -- Modifies the workflow run with the specified workflow run ID.
-var updateWorkflowRunByIdCmd = &cobra.Command{
-	Use:   "update-workflow-run-by-id",
-	Short: "Modifies the workflow run with the specified workflow run ID.",
-	RunE:  impl.UpdateWorkflowRunById,
 }
 
 func init() {
@@ -915,257 +544,81 @@ func init() {
 	var createActionForRuleRegexActionVersion int32
 	createActionForRuleRegexActionCmd.Flags().Int32Var(&createActionForRuleRegexActionVersion, "version", 0, "The catalog version.")
 
-	var createActionForRuleAliasActionRuleresourcename string
-	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	createActionForRuleAliasActionCmd.MarkFlagRequired("ruleresourcename")
+	var createActionForRuleAliasActionRuleresource string
+	createActionForRuleAliasActionCmd.Flags().StringVar(&createActionForRuleAliasActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	createActionForRuleAliasActionCmd.MarkFlagRequired("ruleresource")
 
-	var createActionForRuleAutoKvActionRuleresourcename string
-	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	createActionForRuleAutoKvActionCmd.MarkFlagRequired("ruleresourcename")
+	var createActionForRuleAutoKvActionRuleresource string
+	createActionForRuleAutoKvActionCmd.Flags().StringVar(&createActionForRuleAutoKvActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	createActionForRuleAutoKvActionCmd.MarkFlagRequired("ruleresource")
 
-	catalogCmd.AddCommand(createActionForRuleByIdAliasActionCmd)
-	var createActionForRuleByIdAliasActionAlias string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionAlias, "alias", "", "This is a required parameter. The alias name.")
-	createActionForRuleByIdAliasActionCmd.MarkFlagRequired("alias")
+	var createActionForRuleEvalActionRuleresource string
+	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	createActionForRuleEvalActionCmd.MarkFlagRequired("ruleresource")
 
-	var createActionForRuleByIdAliasActionField string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionField, "field", "", "This is a required parameter. The name of the field to be aliased.")
-	createActionForRuleByIdAliasActionCmd.MarkFlagRequired("field")
+	var createActionForRuleLookupActionRuleresource string
+	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	createActionForRuleLookupActionCmd.MarkFlagRequired("ruleresource")
 
-	var createActionForRuleByIdAliasActionId string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionId, "id", "", "A unique action ID.")
+	var createActionForRuleRegexActionRuleresource string
+	createActionForRuleRegexActionCmd.Flags().StringVar(&createActionForRuleRegexActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	createActionForRuleRegexActionCmd.MarkFlagRequired("ruleresource")
 
-	var createActionForRuleByIdAliasActionKind string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionKind, "kind", "ALIAS", "The alias action kind. can accept values ALIAS")
+	catalogCmd.AddCommand(createAnnotationForDashboardCmd)
 
-	var createActionForRuleByIdAliasActionRuleidBody string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
+	var createAnnotationForDashboardAnnotationtypeid string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDashboardCmd.MarkFlagRequired("annotationtypeid")
 
-	var createActionForRuleByIdAliasActionVersion int32
-	createActionForRuleByIdAliasActionCmd.Flags().Int32Var(&createActionForRuleByIdAliasActionVersion, "version", 0, "The catalog version.")
+	var createAnnotationForDashboardDashboardresource string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	createAnnotationForDashboardCmd.MarkFlagRequired("dashboardresource")
 
-	catalogCmd.AddCommand(createActionForRuleByIdAutoKvActionCmd)
-	var createActionForRuleByIdAutoKvActionId string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionId, "id", "", "A unique action ID.")
+	var createAnnotationForDashboardAnnotationtyperesourcename string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 
-	var createActionForRuleByIdAutoKvActionKind string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionKind, "kind", "AUTOKV", "The autokv action kind. can accept values AUTOKV")
+	var createAnnotationForDashboardDashboardid string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardDashboardid, "dashboardid", "", "The dashboard ID.")
 
-	var createActionForRuleByIdAutoKvActionMode string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionMode, "mode", "", "This is a required parameter. The autokv action mode.")
-	createActionForRuleByIdAutoKvActionCmd.MarkFlagRequired("mode")
+	var createAnnotationForDashboardDatasetid string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardDatasetid, "datasetid", "", "The dataset ID. Null if not annotating a dataset.")
 
-	var createActionForRuleByIdAutoKvActionRuleidBody string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
+	var createAnnotationForDashboardFieldid string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
 
-	var createActionForRuleByIdAutoKvActionVersion int32
-	createActionForRuleByIdAutoKvActionCmd.Flags().Int32Var(&createActionForRuleByIdAutoKvActionVersion, "version", 0, "The catalog version.")
+	var createAnnotationForDashboardId string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
 
-	catalogCmd.AddCommand(createActionForRuleByIdEvalActionCmd)
-	var createActionForRuleByIdEvalActionExpression string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionExpression, "expression", "", "This is a required parameter. The EVAL expression that calculates the field.")
-	createActionForRuleByIdEvalActionCmd.MarkFlagRequired("expression")
+	var createAnnotationForDashboardRelationshipid string
+	createAnnotationForDashboardCmd.Flags().StringVar(&createAnnotationForDashboardRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
 
-	var createActionForRuleByIdEvalActionField string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionField, "field", "", "This is a required parameter. The name of the field that is added or modified by the EVAL expression.")
-	createActionForRuleByIdEvalActionCmd.MarkFlagRequired("field")
+	catalogCmd.AddCommand(createAnnotationForDatasetCmd)
 
-	var createActionForRuleByIdEvalActionId string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionId, "id", "", "A unique action ID.")
+	var createAnnotationForDatasetAnnotationtypeid string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
+	createAnnotationForDatasetCmd.MarkFlagRequired("annotationtypeid")
 
-	var createActionForRuleByIdEvalActionKind string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionKind, "kind", "EVAL", "The eval action kind. can accept values EVAL")
+	var createAnnotationForDatasetDatasetresource string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	createAnnotationForDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var createActionForRuleByIdEvalActionRuleidBody string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
+	var createAnnotationForDatasetAnnotationtyperesourcename string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
 
-	var createActionForRuleByIdEvalActionVersion int32
-	createActionForRuleByIdEvalActionCmd.Flags().Int32Var(&createActionForRuleByIdEvalActionVersion, "version", 0, "The catalog version.")
+	var createAnnotationForDatasetDashboardid string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetDashboardid, "dashboardid", "", "The dashboard ID.")
 
-	catalogCmd.AddCommand(createActionForRuleByIdLookupActionCmd)
-	var createActionForRuleByIdLookupActionExpression string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionExpression, "expression", "", "This is a required parameter. The lookup body.")
-	createActionForRuleByIdLookupActionCmd.MarkFlagRequired("expression")
+	var createAnnotationForDatasetDatasetid string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetDatasetid, "datasetid", "", "The dataset ID. Null if not annotating a dataset.")
 
-	var createActionForRuleByIdLookupActionId string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionId, "id", "", "A unique action ID.")
+	var createAnnotationForDatasetFieldid string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
 
-	var createActionForRuleByIdLookupActionKind string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionKind, "kind", "LOOKUP", "The lookup action kind. can accept values LOOKUP")
+	var createAnnotationForDatasetId string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
 
-	var createActionForRuleByIdLookupActionRuleidBody string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
-
-	var createActionForRuleByIdLookupActionVersion int32
-	createActionForRuleByIdLookupActionCmd.Flags().Int32Var(&createActionForRuleByIdLookupActionVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(createActionForRuleByIdRegexActionCmd)
-	var createActionForRuleByIdRegexActionField string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionField, "field", "", "This is a required parameter. Name of the field that is matched against the regular expression.")
-	createActionForRuleByIdRegexActionCmd.MarkFlagRequired("field")
-
-	var createActionForRuleByIdRegexActionId string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionId, "id", "", "A unique action ID.")
-
-	var createActionForRuleByIdRegexActionKind string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionKind, "kind", "REGEX", "The regex action kind. can accept values REGEX")
-
-	var createActionForRuleByIdRegexActionLimit int32
-	createActionForRuleByIdRegexActionCmd.Flags().Int32Var(&createActionForRuleByIdRegexActionLimit, "limit", 0, "The maximum number of times per event to attempt to match fields with the regular expression.")
-
-	var createActionForRuleByIdRegexActionPattern string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionPattern, "pattern", "", "This is a required parameter. A regular expression that includes named capture groups for the purpose of field extraction.")
-	createActionForRuleByIdRegexActionCmd.MarkFlagRequired("pattern")
-
-	var createActionForRuleByIdRegexActionRuleidBody string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionRuleidBody, "ruleid-body", "", "The rule that this action is part of.")
-
-	var createActionForRuleByIdRegexActionVersion int32
-	createActionForRuleByIdRegexActionCmd.Flags().Int32Var(&createActionForRuleByIdRegexActionVersion, "version", 0, "The catalog version.")
-
-	var createActionForRuleByIdAliasActionRuleid string
-	createActionForRuleByIdAliasActionCmd.Flags().StringVar(&createActionForRuleByIdAliasActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	createActionForRuleByIdAliasActionCmd.MarkFlagRequired("ruleid")
-
-	var createActionForRuleByIdAutoKvActionRuleid string
-	createActionForRuleByIdAutoKvActionCmd.Flags().StringVar(&createActionForRuleByIdAutoKvActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	createActionForRuleByIdAutoKvActionCmd.MarkFlagRequired("ruleid")
-
-	var createActionForRuleByIdEvalActionRuleid string
-	createActionForRuleByIdEvalActionCmd.Flags().StringVar(&createActionForRuleByIdEvalActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	createActionForRuleByIdEvalActionCmd.MarkFlagRequired("ruleid")
-
-	var createActionForRuleByIdLookupActionRuleid string
-	createActionForRuleByIdLookupActionCmd.Flags().StringVar(&createActionForRuleByIdLookupActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	createActionForRuleByIdLookupActionCmd.MarkFlagRequired("ruleid")
-
-	var createActionForRuleByIdRegexActionRuleid string
-	createActionForRuleByIdRegexActionCmd.Flags().StringVar(&createActionForRuleByIdRegexActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	createActionForRuleByIdRegexActionCmd.MarkFlagRequired("ruleid")
-
-	var createActionForRuleEvalActionRuleresourcename string
-	createActionForRuleEvalActionCmd.Flags().StringVar(&createActionForRuleEvalActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	createActionForRuleEvalActionCmd.MarkFlagRequired("ruleresourcename")
-
-	var createActionForRuleLookupActionRuleresourcename string
-	createActionForRuleLookupActionCmd.Flags().StringVar(&createActionForRuleLookupActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	createActionForRuleLookupActionCmd.MarkFlagRequired("ruleresourcename")
-
-	var createActionForRuleRegexActionRuleresourcename string
-	createActionForRuleRegexActionCmd.Flags().StringVar(&createActionForRuleRegexActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	createActionForRuleRegexActionCmd.MarkFlagRequired("ruleresourcename")
-
-	catalogCmd.AddCommand(createAnnotationForDashboardbyIdCmd)
-
-	var createAnnotationForDashboardbyIdAnnotationtypeid string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
-	createAnnotationForDashboardbyIdCmd.MarkFlagRequired("annotationtypeid")
-
-	var createAnnotationForDashboardbyIdDashboardid string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	createAnnotationForDashboardbyIdCmd.MarkFlagRequired("dashboardid")
-
-	var createAnnotationForDashboardbyIdAnnotationtyperesourcename string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
-
-	var createAnnotationForDashboardbyIdDashboardidBody string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdDashboardidBody, "dashboardid-body", "", "The dashboard ID.")
-
-	var createAnnotationForDashboardbyIdDatasetid string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdDatasetid, "datasetid", "", "The dataset ID. Null if not annotating a dataset.")
-
-	var createAnnotationForDashboardbyIdFieldid string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
-
-	var createAnnotationForDashboardbyIdId string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
-
-	var createAnnotationForDashboardbyIdRelationshipid string
-	createAnnotationForDashboardbyIdCmd.Flags().StringVar(&createAnnotationForDashboardbyIdRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
-
-	catalogCmd.AddCommand(createAnnotationForDashboardsByResourceNameCmd)
-
-	var createAnnotationForDashboardsByResourceNameAnnotationtypeid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
-	createAnnotationForDashboardsByResourceNameCmd.MarkFlagRequired("annotationtypeid")
-
-	var createAnnotationForDashboardsByResourceNameDashboardresourcename string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	createAnnotationForDashboardsByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
-
-	var createAnnotationForDashboardsByResourceNameAnnotationtyperesourcename string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
-
-	var createAnnotationForDashboardsByResourceNameDashboardid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameDashboardid, "dashboardid", "", "The dashboard ID.")
-
-	var createAnnotationForDashboardsByResourceNameDatasetid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameDatasetid, "datasetid", "", "The dataset ID. Null if not annotating a dataset.")
-
-	var createAnnotationForDashboardsByResourceNameFieldid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
-
-	var createAnnotationForDashboardsByResourceNameId string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
-
-	var createAnnotationForDashboardsByResourceNameRelationshipid string
-	createAnnotationForDashboardsByResourceNameCmd.Flags().StringVar(&createAnnotationForDashboardsByResourceNameRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
-
-	catalogCmd.AddCommand(createAnnotationForDatasetByIdCmd)
-
-	var createAnnotationForDatasetByIdAnnotationtypeid string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
-	createAnnotationForDatasetByIdCmd.MarkFlagRequired("annotationtypeid")
-
-	var createAnnotationForDatasetByIdDatasetid string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	createAnnotationForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var createAnnotationForDatasetByIdAnnotationtyperesourcename string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
-
-	var createAnnotationForDatasetByIdDashboardid string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdDashboardid, "dashboardid", "", "The dashboard ID.")
-
-	var createAnnotationForDatasetByIdDatasetidBody string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdDatasetidBody, "datasetid-body", "", "The dataset ID. Null if not annotating a dataset.")
-
-	var createAnnotationForDatasetByIdFieldid string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
-
-	var createAnnotationForDatasetByIdId string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
-
-	var createAnnotationForDatasetByIdRelationshipid string
-	createAnnotationForDatasetByIdCmd.Flags().StringVar(&createAnnotationForDatasetByIdRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
-
-	catalogCmd.AddCommand(createAnnotationForDatasetByResourceNameCmd)
-
-	var createAnnotationForDatasetByResourceNameAnnotationtypeid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameAnnotationtypeid, "annotationtypeid", "", "The annotation type ID.")
-	createAnnotationForDatasetByResourceNameCmd.MarkFlagRequired("annotationtypeid")
-
-	var createAnnotationForDatasetByResourceNameDatasetresourcename string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	createAnnotationForDatasetByResourceNameCmd.MarkFlagRequired("datasetresourcename")
-
-	var createAnnotationForDatasetByResourceNameAnnotationtyperesourcename string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameAnnotationtyperesourcename, "annotationtyperesourcename", "", "Resource name of the annotation type")
-
-	var createAnnotationForDatasetByResourceNameDashboardid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameDashboardid, "dashboardid", "", "The dashboard ID.")
-
-	var createAnnotationForDatasetByResourceNameDatasetid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameDatasetid, "datasetid", "", "The dataset ID. Null if not annotating a dataset.")
-
-	var createAnnotationForDatasetByResourceNameFieldid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameFieldid, "fieldid", "", "The field ID. Null if not annotating a field.")
-
-	var createAnnotationForDatasetByResourceNameId string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameId, "id", "", "A unique annotation ID. If not specified, an auto generated ID is created.")
-
-	var createAnnotationForDatasetByResourceNameRelationshipid string
-	createAnnotationForDatasetByResourceNameCmd.Flags().StringVar(&createAnnotationForDatasetByResourceNameRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
+	var createAnnotationForDatasetRelationshipid string
+	createAnnotationForDatasetCmd.Flags().StringVar(&createAnnotationForDatasetRelationshipid, "relationshipid", "", "The relationship ID. Null if not annotating a relationship.")
 
 	catalogCmd.AddCommand(createDashboardCmd)
 
@@ -1189,6 +642,35 @@ func init() {
 
 	var createDashboardVersion int32
 	createDashboardCmd.Flags().Int32Var(&createDashboardVersion, "version", 0, "The version of the dashboard.")
+
+	catalogCmd.AddCommand(createDatasetFederatedDatasetCmd)
+	var createDatasetFederatedDatasetFederatedConnection string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetFederatedConnection, "federated-connection", "", "This is a required parameter. Connection information to connect to remote federated connection.")
+	createDatasetFederatedDatasetCmd.MarkFlagRequired("federatedConnection")
+
+	var createDatasetFederatedDatasetFederatedDataset string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetFederatedDataset, "federated-dataset", "", "This is a required parameter. Dataset information in the remote instance.")
+	createDatasetFederatedDatasetCmd.MarkFlagRequired("federatedDataset")
+
+	var createDatasetFederatedDatasetFederatedDatasetKind string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetFederatedDatasetKind, "federated-dataset-kind", "", "This is a required parameter. Dataset kind information in the remote instance.")
+	createDatasetFederatedDatasetCmd.MarkFlagRequired("federatedDatasetKind")
+
+	var createDatasetFederatedDatasetFields string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetFields, "fields", "", "The fields to be associated with this dataset.")
+
+	var createDatasetFederatedDatasetId string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetId, "id", "", "A unique dataset ID. Random ID used if not provided.")
+
+	var createDatasetFederatedDatasetKind string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetKind, "kind", "federated", "The dataset kind. can accept values federated")
+
+	var createDatasetFederatedDatasetModule string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetModule, "module", "", "The name of the module to create the new dataset in.")
+
+	var createDatasetFederatedDatasetName string
+	createDatasetFederatedDatasetCmd.Flags().StringVar(&createDatasetFederatedDatasetName, "name", "", "This is a required parameter. The dataset name. Dataset names must be unique within each module.")
+	createDatasetFederatedDatasetCmd.MarkFlagRequired("name")
 
 	catalogCmd.AddCommand(createDatasetImportDatasetCmd)
 
@@ -1309,9 +791,9 @@ func init() {
 
 	catalogCmd.AddCommand(createDatasetImportCmd)
 
-	var createDatasetImportDatasetresourcename string
-	createDatasetImportCmd.Flags().StringVar(&createDatasetImportDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	createDatasetImportCmd.MarkFlagRequired("datasetresourcename")
+	var createDatasetImportDatasetresource string
+	createDatasetImportCmd.Flags().StringVar(&createDatasetImportDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	createDatasetImportCmd.MarkFlagRequired("datasetresource")
 
 	var createDatasetImportModule string
 	createDatasetImportCmd.Flags().StringVar(&createDatasetImportModule, "module", "", "This is a required parameter. The module that is importing the dataset.")
@@ -1324,62 +806,11 @@ func init() {
 	var createDatasetImportName string
 	createDatasetImportCmd.Flags().StringVar(&createDatasetImportName, "name", "", "The dataset name.")
 
-	catalogCmd.AddCommand(createDatasetImportByIdCmd)
-
-	var createDatasetImportByIdDatasetid string
-	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	createDatasetImportByIdCmd.MarkFlagRequired("datasetid")
-
-	var createDatasetImportByIdModule string
-	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdModule, "module", "", "This is a required parameter. The module that is importing the dataset.")
-	createDatasetImportByIdCmd.MarkFlagRequired("module")
-
-	var createDatasetImportByIdOwner string
-	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdOwner, "owner", "", "This is a required parameter. The dataset owner.")
-	createDatasetImportByIdCmd.MarkFlagRequired("owner")
-
-	var createDatasetImportByIdName string
-	createDatasetImportByIdCmd.Flags().StringVar(&createDatasetImportByIdName, "name", "", "The dataset name.")
-
-	catalogCmd.AddCommand(createDatasetImportByIdv1Cmd)
-
-	var createDatasetImportByIdv1Datasetid string
-	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Datasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	createDatasetImportByIdv1Cmd.MarkFlagRequired("datasetid")
-
-	var createDatasetImportByIdv1Module string
-	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Module, "module", "", "This is a required parameter. The module that is importing the dataset.")
-	createDatasetImportByIdv1Cmd.MarkFlagRequired("module")
-
-	var createDatasetImportByIdv1Owner string
-	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Owner, "owner", "", "This is a required parameter. The dataset owner.")
-	createDatasetImportByIdv1Cmd.MarkFlagRequired("owner")
-
-	var createDatasetImportByIdv1Name string
-	createDatasetImportByIdv1Cmd.Flags().StringVar(&createDatasetImportByIdv1Name, "name", "", "The dataset name.")
-
-	catalogCmd.AddCommand(createDatasetImportv1Cmd)
-
-	var createDatasetImportv1Datasetresourcename string
-	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Datasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	createDatasetImportv1Cmd.MarkFlagRequired("datasetresourcename")
-
-	var createDatasetImportv1Module string
-	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Module, "module", "", "This is a required parameter. The module that is importing the dataset.")
-	createDatasetImportv1Cmd.MarkFlagRequired("module")
-
-	var createDatasetImportv1Owner string
-	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Owner, "owner", "", "This is a required parameter. The dataset owner.")
-	createDatasetImportv1Cmd.MarkFlagRequired("owner")
-
-	var createDatasetImportv1Name string
-	createDatasetImportv1Cmd.Flags().StringVar(&createDatasetImportv1Name, "name", "", "The dataset name.")
-
 	catalogCmd.AddCommand(createFieldForDatasetCmd)
 
-	var createFieldForDatasetDatasetresourcename string
-	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	createFieldForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var createFieldForDatasetDatasetresource string
+	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	createFieldForDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var createFieldForDatasetName string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetName, "name", "", "The field name.")
@@ -1405,37 +836,6 @@ func init() {
 
 	var createFieldForDatasetTitle string
 	createFieldForDatasetCmd.Flags().StringVar(&createFieldForDatasetTitle, "title", "", "The field title.")
-
-	catalogCmd.AddCommand(createFieldForDatasetByIdCmd)
-
-	var createFieldForDatasetByIdDatasetid string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	createFieldForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var createFieldForDatasetByIdName string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdName, "name", "", "The field name.")
-	createFieldForDatasetByIdCmd.MarkFlagRequired("name")
-
-	var createFieldForDatasetByIdDatatype string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values. can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN")
-
-	var createFieldForDatasetByIdDescription string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdDescription, "description", "", "The field description.")
-
-	var createFieldForDatasetByIdFieldtype string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values. can accept values DIMENSION, MEASURE, UNKNOWN")
-
-	var createFieldForDatasetByIdIndexed string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdIndexed, "indexed", "false", "Whether or not the field has been indexed.")
-
-	var createFieldForDatasetByIdPrevalence string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values. can accept values ALL, SOME, UNKNOWN")
-
-	var createFieldForDatasetByIdSummary string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdSummary, "summary", "", "The field summary.")
-
-	var createFieldForDatasetByIdTitle string
-	createFieldForDatasetByIdCmd.Flags().StringVar(&createFieldForDatasetByIdTitle, "title", "", "The field title.")
 
 	catalogCmd.AddCommand(createRelationshipCmd)
 
@@ -1493,235 +893,57 @@ func init() {
 	var createRuleVersion int32
 	createRuleCmd.Flags().Int32Var(&createRuleVersion, "version", 0, "The catalog version.")
 
-	catalogCmd.AddCommand(createWorkflowCmd)
-
-	var createWorkflowTasks string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowTasks, "tasks", "", "This is a required parameter. ")
-	createWorkflowCmd.MarkFlagRequired("tasks")
-
-	var createWorkflowDescription string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowDescription, "description", "", "The workflow description.")
-
-	var createWorkflowExperimentid string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowExperimentid, "experimentid", "", "A unique experiment ID that is associate with the workflow.")
-
-	var createWorkflowId string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowId, "id", "", "A unique workflow ID. Random ID used if not provided.")
-
-	var createWorkflowName string
-	createWorkflowCmd.Flags().StringVar(&createWorkflowName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var createWorkflowVersion int32
-	createWorkflowCmd.Flags().Int32Var(&createWorkflowVersion, "version", 0, "The version of the workflow.")
-
-	catalogCmd.AddCommand(createWorkflowBuildCmd)
-
-	var createWorkflowBuildInputdata []string
-	createWorkflowBuildCmd.Flags().StringSliceVar(&createWorkflowBuildInputdata, "inputdata", nil, "This is a required parameter. The input data of the workflow build.")
-	createWorkflowBuildCmd.MarkFlagRequired("inputdata")
-
-	var createWorkflowBuildTimeoutsecs int32
-	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildTimeoutsecs, "timeoutsecs", 0, "This is a required parameter. The timeout in seconds of the workflow.")
-	createWorkflowBuildCmd.MarkFlagRequired("timeoutsecs")
-
-	var createWorkflowBuildWorkflowid string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	createWorkflowBuildCmd.MarkFlagRequired("workflowid")
-
-	var createWorkflowBuildDescription string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildDescription, "description", "", "The description of the workflow build.")
-
-	var createWorkflowBuildEnded string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildEnded, "ended", "", "The date and time the workflow build ended.")
-
-	var createWorkflowBuildEvaluationresults []string
-	createWorkflowBuildCmd.Flags().StringSliceVar(&createWorkflowBuildEvaluationresults, "evaluationresults", nil, "The evaluation results of the workflow build.")
-
-	var createWorkflowBuildFailuremessage string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildFailuremessage, "failuremessage", "", "The failure message of the workflow build.")
-
-	var createWorkflowBuildId string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildId, "id", "", "A unique workflow build ID.")
-
-	var createWorkflowBuildName string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildName, "name", "", "The workflow build name.")
-
-	var createWorkflowBuildOutputdata []string
-	createWorkflowBuildCmd.Flags().StringSliceVar(&createWorkflowBuildOutputdata, "outputdata", nil, "The output data of the workflow build.")
-
-	var createWorkflowBuildRandomstate int32
-	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildRandomstate, "randomstate", 0, "The random state of the workflow build.")
-
-	var createWorkflowBuildStarted string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildStarted, "started", "", "The date and time the workflow build started.")
-
-	var createWorkflowBuildStatus string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildStatus, "status", "", "The status of the workflow build.")
-
-	var createWorkflowBuildTraintestsplit float32
-	createWorkflowBuildCmd.Flags().Float32Var(&createWorkflowBuildTraintestsplit, "traintestsplit", 0.0, "The train test split of the workflow build.")
-
-	var createWorkflowBuildVersion int32
-	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildVersion, "version", 0, "The version of the workflow.")
-
-	var createWorkflowBuildWorkflowidBody string
-	createWorkflowBuildCmd.Flags().StringVar(&createWorkflowBuildWorkflowidBody, "workflowid-body", "", "A unique workflow ID that is associated with the workflow build.")
-
-	var createWorkflowBuildWorkflowversion int32
-	createWorkflowBuildCmd.Flags().Int32Var(&createWorkflowBuildWorkflowversion, "workflowversion", 0, "The version of the workflow that is associated with the workflow build.")
-
-	catalogCmd.AddCommand(createWorkflowRunCmd)
-
-	var createWorkflowRunInputdata []string
-	createWorkflowRunCmd.Flags().StringSliceVar(&createWorkflowRunInputdata, "inputdata", nil, "This is a required parameter. The input data of the workflow run for specified workflow build ID.")
-	createWorkflowRunCmd.MarkFlagRequired("inputdata")
-
-	var createWorkflowRunOutputdata []string
-	createWorkflowRunCmd.Flags().StringSliceVar(&createWorkflowRunOutputdata, "outputdata", nil, "This is a required parameter. The output data of the workflow run for specified workflow build ID.")
-	createWorkflowRunCmd.MarkFlagRequired("outputdata")
-
-	var createWorkflowRunTimeoutsecs int32
-	createWorkflowRunCmd.Flags().Int32Var(&createWorkflowRunTimeoutsecs, "timeoutsecs", 0, "This is a required parameter. The timeout in seconds of the workflow run for specified workflow build ID.")
-	createWorkflowRunCmd.MarkFlagRequired("timeoutsecs")
-
-	var createWorkflowRunWorkflowbuildid string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	createWorkflowRunCmd.MarkFlagRequired("workflowbuildid")
-
-	var createWorkflowRunWorkflowid string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	createWorkflowRunCmd.MarkFlagRequired("workflowid")
-
-	var createWorkflowRunDescription string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunDescription, "description", "", "The description of the workflow run.")
-
-	var createWorkflowRunEnded string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunEnded, "ended", "", "The date and time the workflow run ended for specified workflow build ID.")
-
-	var createWorkflowRunFailuremessage string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunFailuremessage, "failuremessage", "", "The failure message of the workflow run for specified workflow build ID.")
-
-	var createWorkflowRunId string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunId, "id", "", "A unique workflow Run ID.")
-
-	var createWorkflowRunName string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunName, "name", "", "The workflow run name.")
-
-	var createWorkflowRunStarted string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStarted, "started", "", "The date and time the workflow run started for specified workflow build ID.")
-
-	var createWorkflowRunStatus string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunStatus, "status", "", "The status of the workflow run for specified workflow build ID.")
-
-	var createWorkflowRunWorkflowbuildidBody string
-	createWorkflowRunCmd.Flags().StringVar(&createWorkflowRunWorkflowbuildidBody, "workflowbuildid-body", "", "A unique workflow build ID that is associated with the workflow run.")
-
-	var createWorkflowRunWorkflowbuildversion int32
-	createWorkflowRunCmd.Flags().Int32Var(&createWorkflowRunWorkflowbuildversion, "workflowbuildversion", 0, "The version of the workflow build that is assocaited with the workflow run.")
-
 	catalogCmd.AddCommand(deleteActionByIdForRuleCmd)
 
 	var deleteActionByIdForRuleActionid string
 	deleteActionByIdForRuleCmd.Flags().StringVar(&deleteActionByIdForRuleActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	deleteActionByIdForRuleCmd.MarkFlagRequired("actionid")
 
-	var deleteActionByIdForRuleRuleresourcename string
-	deleteActionByIdForRuleCmd.Flags().StringVar(&deleteActionByIdForRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	deleteActionByIdForRuleCmd.MarkFlagRequired("ruleresourcename")
+	var deleteActionByIdForRuleRuleresource string
+	deleteActionByIdForRuleCmd.Flags().StringVar(&deleteActionByIdForRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	deleteActionByIdForRuleCmd.MarkFlagRequired("ruleresource")
 
-	catalogCmd.AddCommand(deleteActionByIdForRuleByIdCmd)
+	catalogCmd.AddCommand(deleteAnnotationOfDashboardCmd)
 
-	var deleteActionByIdForRuleByIdActionid string
-	deleteActionByIdForRuleByIdCmd.Flags().StringVar(&deleteActionByIdForRuleByIdActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	deleteActionByIdForRuleByIdCmd.MarkFlagRequired("actionid")
+	var deleteAnnotationOfDashboardAnnotationid string
+	deleteAnnotationOfDashboardCmd.Flags().StringVar(&deleteAnnotationOfDashboardAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
+	deleteAnnotationOfDashboardCmd.MarkFlagRequired("annotationid")
 
-	var deleteActionByIdForRuleByIdRuleid string
-	deleteActionByIdForRuleByIdCmd.Flags().StringVar(&deleteActionByIdForRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	deleteActionByIdForRuleByIdCmd.MarkFlagRequired("ruleid")
+	var deleteAnnotationOfDashboardDashboardresource string
+	deleteAnnotationOfDashboardCmd.Flags().StringVar(&deleteAnnotationOfDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	deleteAnnotationOfDashboardCmd.MarkFlagRequired("dashboardresource")
 
-	catalogCmd.AddCommand(deleteAnnotationOfDashboardByIdCmd)
+	catalogCmd.AddCommand(deleteAnnotationOfDatasetCmd)
 
-	var deleteAnnotationOfDashboardByIdAnnotationid string
-	deleteAnnotationOfDashboardByIdCmd.Flags().StringVar(&deleteAnnotationOfDashboardByIdAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
-	deleteAnnotationOfDashboardByIdCmd.MarkFlagRequired("annotationid")
+	var deleteAnnotationOfDatasetAnnotationid string
+	deleteAnnotationOfDatasetCmd.Flags().StringVar(&deleteAnnotationOfDatasetAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
+	deleteAnnotationOfDatasetCmd.MarkFlagRequired("annotationid")
 
-	var deleteAnnotationOfDashboardByIdDashboardid string
-	deleteAnnotationOfDashboardByIdCmd.Flags().StringVar(&deleteAnnotationOfDashboardByIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	deleteAnnotationOfDashboardByIdCmd.MarkFlagRequired("dashboardid")
+	var deleteAnnotationOfDatasetDatasetresource string
+	deleteAnnotationOfDatasetCmd.Flags().StringVar(&deleteAnnotationOfDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	deleteAnnotationOfDatasetCmd.MarkFlagRequired("datasetresource")
 
-	catalogCmd.AddCommand(deleteAnnotationOfDashboardByResourceNameCmd)
+	catalogCmd.AddCommand(deleteDashboardCmd)
 
-	var deleteAnnotationOfDashboardByResourceNameAnnotationid string
-	deleteAnnotationOfDashboardByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDashboardByResourceNameAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
-	deleteAnnotationOfDashboardByResourceNameCmd.MarkFlagRequired("annotationid")
-
-	var deleteAnnotationOfDashboardByResourceNameDashboardresourcename string
-	deleteAnnotationOfDashboardByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	deleteAnnotationOfDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
-
-	catalogCmd.AddCommand(deleteAnnotationOfDatasetByIdCmd)
-
-	var deleteAnnotationOfDatasetByIdAnnotationid string
-	deleteAnnotationOfDatasetByIdCmd.Flags().StringVar(&deleteAnnotationOfDatasetByIdAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
-	deleteAnnotationOfDatasetByIdCmd.MarkFlagRequired("annotationid")
-
-	var deleteAnnotationOfDatasetByIdDatasetid string
-	deleteAnnotationOfDatasetByIdCmd.Flags().StringVar(&deleteAnnotationOfDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	deleteAnnotationOfDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	catalogCmd.AddCommand(deleteAnnotationOfDatasetByResourceNameCmd)
-
-	var deleteAnnotationOfDatasetByResourceNameAnnotationid string
-	deleteAnnotationOfDatasetByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDatasetByResourceNameAnnotationid, "annotationid", "", "This is a required parameter. ID of a annotation.")
-	deleteAnnotationOfDatasetByResourceNameCmd.MarkFlagRequired("annotationid")
-
-	var deleteAnnotationOfDatasetByResourceNameDatasetresourcename string
-	deleteAnnotationOfDatasetByResourceNameCmd.Flags().StringVar(&deleteAnnotationOfDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	deleteAnnotationOfDatasetByResourceNameCmd.MarkFlagRequired("datasetresourcename")
-
-	catalogCmd.AddCommand(deleteDashboardByIdCmd)
-
-	var deleteDashboardByIdDashboardid string
-	deleteDashboardByIdCmd.Flags().StringVar(&deleteDashboardByIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	deleteDashboardByIdCmd.MarkFlagRequired("dashboardid")
-
-	catalogCmd.AddCommand(deleteDashboardByResourceNameCmd)
-
-	var deleteDashboardByResourceNameDashboardresourcename string
-	deleteDashboardByResourceNameCmd.Flags().StringVar(&deleteDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	deleteDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
+	var deleteDashboardDashboardresource string
+	deleteDashboardCmd.Flags().StringVar(&deleteDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	deleteDashboardCmd.MarkFlagRequired("dashboardresource")
 
 	catalogCmd.AddCommand(deleteDatasetCmd)
 
-	var deleteDatasetDatasetresourcename string
-	deleteDatasetCmd.Flags().StringVar(&deleteDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	deleteDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	catalogCmd.AddCommand(deleteDatasetByIdCmd)
-
-	var deleteDatasetByIdDatasetid string
-	deleteDatasetByIdCmd.Flags().StringVar(&deleteDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	deleteDatasetByIdCmd.MarkFlagRequired("datasetid")
+	var deleteDatasetDatasetresource string
+	deleteDatasetCmd.Flags().StringVar(&deleteDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	deleteDatasetCmd.MarkFlagRequired("datasetresource")
 
 	catalogCmd.AddCommand(deleteFieldByIdForDatasetCmd)
 
-	var deleteFieldByIdForDatasetDatasetresourcename string
-	deleteFieldByIdForDatasetCmd.Flags().StringVar(&deleteFieldByIdForDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	deleteFieldByIdForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var deleteFieldByIdForDatasetDatasetresource string
+	deleteFieldByIdForDatasetCmd.Flags().StringVar(&deleteFieldByIdForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	deleteFieldByIdForDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var deleteFieldByIdForDatasetFieldid string
 	deleteFieldByIdForDatasetCmd.Flags().StringVar(&deleteFieldByIdForDatasetFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
 	deleteFieldByIdForDatasetCmd.MarkFlagRequired("fieldid")
-
-	catalogCmd.AddCommand(deleteFieldByIdForDatasetByIdCmd)
-
-	var deleteFieldByIdForDatasetByIdDatasetid string
-	deleteFieldByIdForDatasetByIdCmd.Flags().StringVar(&deleteFieldByIdForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	deleteFieldByIdForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var deleteFieldByIdForDatasetByIdFieldid string
-	deleteFieldByIdForDatasetByIdCmd.Flags().StringVar(&deleteFieldByIdForDatasetByIdFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
-	deleteFieldByIdForDatasetByIdCmd.MarkFlagRequired("fieldid")
 
 	catalogCmd.AddCommand(deleteRelationshipByIdCmd)
 
@@ -1731,45 +953,9 @@ func init() {
 
 	catalogCmd.AddCommand(deleteRuleCmd)
 
-	var deleteRuleRuleresourcename string
-	deleteRuleCmd.Flags().StringVar(&deleteRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	deleteRuleCmd.MarkFlagRequired("ruleresourcename")
-
-	catalogCmd.AddCommand(deleteRuleByIdCmd)
-
-	var deleteRuleByIdRuleid string
-	deleteRuleByIdCmd.Flags().StringVar(&deleteRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	deleteRuleByIdCmd.MarkFlagRequired("ruleid")
-
-	catalogCmd.AddCommand(deleteWorkflowBuildByIdCmd)
-
-	var deleteWorkflowBuildByIdWorkflowbuildid string
-	deleteWorkflowBuildByIdCmd.Flags().StringVar(&deleteWorkflowBuildByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	deleteWorkflowBuildByIdCmd.MarkFlagRequired("workflowbuildid")
-
-	var deleteWorkflowBuildByIdWorkflowid string
-	deleteWorkflowBuildByIdCmd.Flags().StringVar(&deleteWorkflowBuildByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	deleteWorkflowBuildByIdCmd.MarkFlagRequired("workflowid")
-
-	catalogCmd.AddCommand(deleteWorkflowByIdCmd)
-
-	var deleteWorkflowByIdWorkflowid string
-	deleteWorkflowByIdCmd.Flags().StringVar(&deleteWorkflowByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	deleteWorkflowByIdCmd.MarkFlagRequired("workflowid")
-
-	catalogCmd.AddCommand(deleteWorkflowRunByIdCmd)
-
-	var deleteWorkflowRunByIdWorkflowbuildid string
-	deleteWorkflowRunByIdCmd.Flags().StringVar(&deleteWorkflowRunByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	deleteWorkflowRunByIdCmd.MarkFlagRequired("workflowbuildid")
-
-	var deleteWorkflowRunByIdWorkflowid string
-	deleteWorkflowRunByIdCmd.Flags().StringVar(&deleteWorkflowRunByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	deleteWorkflowRunByIdCmd.MarkFlagRequired("workflowid")
-
-	var deleteWorkflowRunByIdWorkflowrunid string
-	deleteWorkflowRunByIdCmd.Flags().StringVar(&deleteWorkflowRunByIdWorkflowrunid, "workflowrunid", "", "This is a required parameter. ID of a workflow run.")
-	deleteWorkflowRunByIdCmd.MarkFlagRequired("workflowrunid")
+	var deleteRuleRuleresource string
+	deleteRuleCmd.Flags().StringVar(&deleteRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	deleteRuleCmd.MarkFlagRequired("ruleresource")
 
 	catalogCmd.AddCommand(getActionByIdForRuleCmd)
 
@@ -1777,49 +963,24 @@ func init() {
 	getActionByIdForRuleCmd.Flags().StringVar(&getActionByIdForRuleActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	getActionByIdForRuleCmd.MarkFlagRequired("actionid")
 
-	var getActionByIdForRuleRuleresourcename string
-	getActionByIdForRuleCmd.Flags().StringVar(&getActionByIdForRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	getActionByIdForRuleCmd.MarkFlagRequired("ruleresourcename")
+	var getActionByIdForRuleRuleresource string
+	getActionByIdForRuleCmd.Flags().StringVar(&getActionByIdForRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	getActionByIdForRuleCmd.MarkFlagRequired("ruleresource")
 
-	catalogCmd.AddCommand(getActionByIdForRuleByIdCmd)
+	catalogCmd.AddCommand(getDashboardCmd)
 
-	var getActionByIdForRuleByIdActionid string
-	getActionByIdForRuleByIdCmd.Flags().StringVar(&getActionByIdForRuleByIdActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	getActionByIdForRuleByIdCmd.MarkFlagRequired("actionid")
-
-	var getActionByIdForRuleByIdRuleid string
-	getActionByIdForRuleByIdCmd.Flags().StringVar(&getActionByIdForRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	getActionByIdForRuleByIdCmd.MarkFlagRequired("ruleid")
-
-	catalogCmd.AddCommand(getDashboardByIdCmd)
-
-	var getDashboardByIdDashboardid string
-	getDashboardByIdCmd.Flags().StringVar(&getDashboardByIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	getDashboardByIdCmd.MarkFlagRequired("dashboardid")
-
-	catalogCmd.AddCommand(getDashboardByResourceNameCmd)
-
-	var getDashboardByResourceNameDashboardresourcename string
-	getDashboardByResourceNameCmd.Flags().StringVar(&getDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	getDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
+	var getDashboardDashboardresource string
+	getDashboardCmd.Flags().StringVar(&getDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	getDashboardCmd.MarkFlagRequired("dashboardresource")
 
 	catalogCmd.AddCommand(getDatasetCmd)
 
-	var getDatasetDatasetresourcename string
-	getDatasetCmd.Flags().StringVar(&getDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	getDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var getDatasetDatasetresource string
+	getDatasetCmd.Flags().StringVar(&getDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	getDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var getDatasetMaxstale int32
 	getDatasetCmd.Flags().Int32Var(&getDatasetMaxstale, "maxstale", 0, "The number of seconds beyond which we will refresh index metadata.")
-
-	catalogCmd.AddCommand(getDatasetByIdCmd)
-
-	var getDatasetByIdDatasetid string
-	getDatasetByIdCmd.Flags().StringVar(&getDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	getDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var getDatasetByIdMaxstale int32
-	getDatasetByIdCmd.Flags().Int32Var(&getDatasetByIdMaxstale, "maxstale", 0, "The number of seconds beyond which we will refresh index metadata.")
 
 	catalogCmd.AddCommand(getFieldByIdCmd)
 
@@ -1829,23 +990,13 @@ func init() {
 
 	catalogCmd.AddCommand(getFieldByIdForDatasetCmd)
 
-	var getFieldByIdForDatasetDatasetresourcename string
-	getFieldByIdForDatasetCmd.Flags().StringVar(&getFieldByIdForDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	getFieldByIdForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var getFieldByIdForDatasetDatasetresource string
+	getFieldByIdForDatasetCmd.Flags().StringVar(&getFieldByIdForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	getFieldByIdForDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var getFieldByIdForDatasetFieldid string
 	getFieldByIdForDatasetCmd.Flags().StringVar(&getFieldByIdForDatasetFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
 	getFieldByIdForDatasetCmd.MarkFlagRequired("fieldid")
-
-	catalogCmd.AddCommand(getFieldByIdForDatasetByIdCmd)
-
-	var getFieldByIdForDatasetByIdDatasetid string
-	getFieldByIdForDatasetByIdCmd.Flags().StringVar(&getFieldByIdForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	getFieldByIdForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var getFieldByIdForDatasetByIdFieldid string
-	getFieldByIdForDatasetByIdCmd.Flags().StringVar(&getFieldByIdForDatasetByIdFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
-	getFieldByIdForDatasetByIdCmd.MarkFlagRequired("fieldid")
 
 	catalogCmd.AddCommand(getRelationshipByIdCmd)
 
@@ -1855,51 +1006,32 @@ func init() {
 
 	catalogCmd.AddCommand(getRuleCmd)
 
-	var getRuleRuleresourcename string
-	getRuleCmd.Flags().StringVar(&getRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	getRuleCmd.MarkFlagRequired("ruleresourcename")
+	var getRuleRuleresource string
+	getRuleCmd.Flags().StringVar(&getRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	getRuleCmd.MarkFlagRequired("ruleresource")
 
-	catalogCmd.AddCommand(getRuleByIdCmd)
+	catalogCmd.AddCommand(importDatasetCmd)
 
-	var getRuleByIdRuleid string
-	getRuleByIdCmd.Flags().StringVar(&getRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	getRuleByIdCmd.MarkFlagRequired("ruleid")
+	var importDatasetDatasetresource string
+	importDatasetCmd.Flags().StringVar(&importDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	importDatasetCmd.MarkFlagRequired("datasetresource")
 
-	catalogCmd.AddCommand(getWorkflowBuildByIdCmd)
+	var importDatasetModule string
+	importDatasetCmd.Flags().StringVar(&importDatasetModule, "module", "", "This is a required parameter. The module that is importing the dataset.")
+	importDatasetCmd.MarkFlagRequired("module")
 
-	var getWorkflowBuildByIdWorkflowbuildid string
-	getWorkflowBuildByIdCmd.Flags().StringVar(&getWorkflowBuildByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	getWorkflowBuildByIdCmd.MarkFlagRequired("workflowbuildid")
+	var importDatasetOwner string
+	importDatasetCmd.Flags().StringVar(&importDatasetOwner, "owner", "", "This is a required parameter. The dataset owner.")
+	importDatasetCmd.MarkFlagRequired("owner")
 
-	var getWorkflowBuildByIdWorkflowid string
-	getWorkflowBuildByIdCmd.Flags().StringVar(&getWorkflowBuildByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	getWorkflowBuildByIdCmd.MarkFlagRequired("workflowid")
-
-	catalogCmd.AddCommand(getWorkflowByIdCmd)
-
-	var getWorkflowByIdWorkflowid string
-	getWorkflowByIdCmd.Flags().StringVar(&getWorkflowByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	getWorkflowByIdCmd.MarkFlagRequired("workflowid")
-
-	catalogCmd.AddCommand(getWorkflowRunByIdCmd)
-
-	var getWorkflowRunByIdWorkflowbuildid string
-	getWorkflowRunByIdCmd.Flags().StringVar(&getWorkflowRunByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	getWorkflowRunByIdCmd.MarkFlagRequired("workflowbuildid")
-
-	var getWorkflowRunByIdWorkflowid string
-	getWorkflowRunByIdCmd.Flags().StringVar(&getWorkflowRunByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	getWorkflowRunByIdCmd.MarkFlagRequired("workflowid")
-
-	var getWorkflowRunByIdWorkflowrunid string
-	getWorkflowRunByIdCmd.Flags().StringVar(&getWorkflowRunByIdWorkflowrunid, "workflowrunid", "", "This is a required parameter. ID of a workflow run.")
-	getWorkflowRunByIdCmd.MarkFlagRequired("workflowrunid")
+	var importDatasetName string
+	importDatasetCmd.Flags().StringVar(&importDatasetName, "name", "", "The dataset name.")
 
 	catalogCmd.AddCommand(listActionsForRuleCmd)
 
-	var listActionsForRuleRuleresourcename string
-	listActionsForRuleCmd.Flags().StringVar(&listActionsForRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	listActionsForRuleCmd.MarkFlagRequired("ruleresourcename")
+	var listActionsForRuleRuleresource string
+	listActionsForRuleCmd.Flags().StringVar(&listActionsForRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	listActionsForRuleCmd.MarkFlagRequired("ruleresource")
 
 	var listActionsForRuleCount int32
 	listActionsForRuleCmd.Flags().Int32Var(&listActionsForRuleCount, "count", 0, "The maximum number of results to return.")
@@ -1912,24 +1044,6 @@ func init() {
 
 	var listActionsForRuleOrderby []string
 	listActionsForRuleCmd.Flags().StringSliceVar(&listActionsForRuleOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listActionsForRuleByIdCmd)
-
-	var listActionsForRuleByIdRuleid string
-	listActionsForRuleByIdCmd.Flags().StringVar(&listActionsForRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	listActionsForRuleByIdCmd.MarkFlagRequired("ruleid")
-
-	var listActionsForRuleByIdCount int32
-	listActionsForRuleByIdCmd.Flags().Int32Var(&listActionsForRuleByIdCount, "count", 0, "The maximum number of results to return.")
-
-	var listActionsForRuleByIdFilter string
-	listActionsForRuleByIdCmd.Flags().StringVar(&listActionsForRuleByIdFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listActionsForRuleByIdOffset int32
-	listActionsForRuleByIdCmd.Flags().Int32Var(&listActionsForRuleByIdOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listActionsForRuleByIdOrderby []string
-	listActionsForRuleByIdCmd.Flags().StringSliceVar(&listActionsForRuleByIdOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(listAnnotationsCmd)
 
@@ -1945,59 +1059,32 @@ func init() {
 	var listAnnotationsOrderby []string
 	listAnnotationsCmd.Flags().StringSliceVar(&listAnnotationsOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
-	catalogCmd.AddCommand(listAnnotationsForDashboardByIdCmd)
+	catalogCmd.AddCommand(listAnnotationsForDashboardCmd)
 
-	var listAnnotationsForDashboardByIdDashboardid string
-	listAnnotationsForDashboardByIdCmd.Flags().StringVar(&listAnnotationsForDashboardByIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	listAnnotationsForDashboardByIdCmd.MarkFlagRequired("dashboardid")
+	var listAnnotationsForDashboardDashboardresource string
+	listAnnotationsForDashboardCmd.Flags().StringVar(&listAnnotationsForDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	listAnnotationsForDashboardCmd.MarkFlagRequired("dashboardresource")
 
-	var listAnnotationsForDashboardByIdFilter string
-	listAnnotationsForDashboardByIdCmd.Flags().StringVar(&listAnnotationsForDashboardByIdFilter, "filter", "", "A filter query to apply to the annotations.")
+	var listAnnotationsForDashboardFilter string
+	listAnnotationsForDashboardCmd.Flags().StringVar(&listAnnotationsForDashboardFilter, "filter", "", "A filter query to apply to the annotations.")
 
-	catalogCmd.AddCommand(listAnnotationsForDashboardByResourceNameCmd)
+	catalogCmd.AddCommand(listAnnotationsForDatasetCmd)
 
-	var listAnnotationsForDashboardByResourceNameDashboardresourcename string
-	listAnnotationsForDashboardByResourceNameCmd.Flags().StringVar(&listAnnotationsForDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	listAnnotationsForDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
+	var listAnnotationsForDatasetDatasetresource string
+	listAnnotationsForDatasetCmd.Flags().StringVar(&listAnnotationsForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	listAnnotationsForDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var listAnnotationsForDashboardByResourceNameFilter string
-	listAnnotationsForDashboardByResourceNameCmd.Flags().StringVar(&listAnnotationsForDashboardByResourceNameFilter, "filter", "", "A filter query to apply to the annotations.")
+	var listAnnotationsForDatasetCount int32
+	listAnnotationsForDatasetCmd.Flags().Int32Var(&listAnnotationsForDatasetCount, "count", 0, "The maximum number of results to return.")
 
-	catalogCmd.AddCommand(listAnnotationsForDatasetByIdCmd)
+	var listAnnotationsForDatasetFilter string
+	listAnnotationsForDatasetCmd.Flags().StringVar(&listAnnotationsForDatasetFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
 
-	var listAnnotationsForDatasetByIdDatasetid string
-	listAnnotationsForDatasetByIdCmd.Flags().StringVar(&listAnnotationsForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	listAnnotationsForDatasetByIdCmd.MarkFlagRequired("datasetid")
+	var listAnnotationsForDatasetOffset int32
+	listAnnotationsForDatasetCmd.Flags().Int32Var(&listAnnotationsForDatasetOffset, "offset", 0, "The number of results to skip before the first one returned.")
 
-	var listAnnotationsForDatasetByIdCount int32
-	listAnnotationsForDatasetByIdCmd.Flags().Int32Var(&listAnnotationsForDatasetByIdCount, "count", 0, "The maximum number of results to return.")
-
-	var listAnnotationsForDatasetByIdFilter string
-	listAnnotationsForDatasetByIdCmd.Flags().StringVar(&listAnnotationsForDatasetByIdFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listAnnotationsForDatasetByIdOffset int32
-	listAnnotationsForDatasetByIdCmd.Flags().Int32Var(&listAnnotationsForDatasetByIdOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listAnnotationsForDatasetByIdOrderby []string
-	listAnnotationsForDatasetByIdCmd.Flags().StringSliceVar(&listAnnotationsForDatasetByIdOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listAnnotationsForDatasetByResourceNameCmd)
-
-	var listAnnotationsForDatasetByResourceNameDatasetresourcename string
-	listAnnotationsForDatasetByResourceNameCmd.Flags().StringVar(&listAnnotationsForDatasetByResourceNameDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	listAnnotationsForDatasetByResourceNameCmd.MarkFlagRequired("datasetresourcename")
-
-	var listAnnotationsForDatasetByResourceNameCount int32
-	listAnnotationsForDatasetByResourceNameCmd.Flags().Int32Var(&listAnnotationsForDatasetByResourceNameCount, "count", 0, "The maximum number of results to return.")
-
-	var listAnnotationsForDatasetByResourceNameFilter string
-	listAnnotationsForDatasetByResourceNameCmd.Flags().StringVar(&listAnnotationsForDatasetByResourceNameFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listAnnotationsForDatasetByResourceNameOffset int32
-	listAnnotationsForDatasetByResourceNameCmd.Flags().Int32Var(&listAnnotationsForDatasetByResourceNameOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listAnnotationsForDatasetByResourceNameOrderby []string
-	listAnnotationsForDatasetByResourceNameCmd.Flags().StringSliceVar(&listAnnotationsForDatasetByResourceNameOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
+	var listAnnotationsForDatasetOrderby []string
+	listAnnotationsForDatasetCmd.Flags().StringSliceVar(&listAnnotationsForDatasetOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(listDashboardsCmd)
 
@@ -2046,9 +1133,9 @@ func init() {
 
 	catalogCmd.AddCommand(listFieldsForDatasetCmd)
 
-	var listFieldsForDatasetDatasetresourcename string
-	listFieldsForDatasetCmd.Flags().StringVar(&listFieldsForDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	listFieldsForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var listFieldsForDatasetDatasetresource string
+	listFieldsForDatasetCmd.Flags().StringVar(&listFieldsForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	listFieldsForDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var listFieldsForDatasetCount int32
 	listFieldsForDatasetCmd.Flags().Int32Var(&listFieldsForDatasetCount, "count", 0, "The maximum number of results to return.")
@@ -2061,24 +1148,6 @@ func init() {
 
 	var listFieldsForDatasetOrderby []string
 	listFieldsForDatasetCmd.Flags().StringSliceVar(&listFieldsForDatasetOrderby, "orderby", nil, "A list of fields to order the results by. You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listFieldsForDatasetByIdCmd)
-
-	var listFieldsForDatasetByIdDatasetid string
-	listFieldsForDatasetByIdCmd.Flags().StringVar(&listFieldsForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	listFieldsForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var listFieldsForDatasetByIdCount int32
-	listFieldsForDatasetByIdCmd.Flags().Int32Var(&listFieldsForDatasetByIdCount, "count", 0, "The maximum number of results to return.")
-
-	var listFieldsForDatasetByIdFilter string
-	listFieldsForDatasetByIdCmd.Flags().StringVar(&listFieldsForDatasetByIdFilter, "filter", "", "A filter to apply to the dataset list. The filter must be a SPL predicate expression.")
-
-	var listFieldsForDatasetByIdOffset int32
-	listFieldsForDatasetByIdCmd.Flags().Int32Var(&listFieldsForDatasetByIdOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listFieldsForDatasetByIdOrderby []string
-	listFieldsForDatasetByIdCmd.Flags().StringSliceVar(&listFieldsForDatasetByIdOrderby, "orderby", nil, "A list of fields to order the results by. You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(listModulesCmd)
 
@@ -2112,60 +1181,6 @@ func init() {
 
 	var listRulesOrderby []string
 	listRulesCmd.Flags().StringSliceVar(&listRulesOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listWorkflowBuildsCmd)
-
-	var listWorkflowBuildsWorkflowid string
-	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	listWorkflowBuildsCmd.MarkFlagRequired("workflowid")
-
-	var listWorkflowBuildsCount int32
-	listWorkflowBuildsCmd.Flags().Int32Var(&listWorkflowBuildsCount, "count", 0, "The maximum number of results to return.")
-
-	var listWorkflowBuildsFilter string
-	listWorkflowBuildsCmd.Flags().StringVar(&listWorkflowBuildsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listWorkflowBuildsOffset int32
-	listWorkflowBuildsCmd.Flags().Int32Var(&listWorkflowBuildsOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listWorkflowBuildsOrderby []string
-	listWorkflowBuildsCmd.Flags().StringSliceVar(&listWorkflowBuildsOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listWorkflowRunsCmd)
-
-	var listWorkflowRunsWorkflowbuildid string
-	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	listWorkflowRunsCmd.MarkFlagRequired("workflowbuildid")
-
-	var listWorkflowRunsWorkflowid string
-	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	listWorkflowRunsCmd.MarkFlagRequired("workflowid")
-
-	var listWorkflowRunsCount int32
-	listWorkflowRunsCmd.Flags().Int32Var(&listWorkflowRunsCount, "count", 0, "The maximum number of results to return.")
-
-	var listWorkflowRunsFilter string
-	listWorkflowRunsCmd.Flags().StringVar(&listWorkflowRunsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listWorkflowRunsOffset int32
-	listWorkflowRunsCmd.Flags().Int32Var(&listWorkflowRunsOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listWorkflowRunsOrderby []string
-	listWorkflowRunsCmd.Flags().StringSliceVar(&listWorkflowRunsOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
-
-	catalogCmd.AddCommand(listWorkflowsCmd)
-
-	var listWorkflowsCount int32
-	listWorkflowsCmd.Flags().Int32Var(&listWorkflowsCount, "count", 0, "The maximum number of results to return.")
-
-	var listWorkflowsFilter string
-	listWorkflowsCmd.Flags().StringVar(&listWorkflowsFilter, "filter", "", "A filter to apply to the results list. The filter must be a SPL predicate expression.")
-
-	var listWorkflowsOffset int32
-	listWorkflowsCmd.Flags().Int32Var(&listWorkflowsOffset, "offset", 0, "The number of results to skip before the first one returned.")
-
-	var listWorkflowsOrderby []string
-	listWorkflowsCmd.Flags().StringSliceVar(&listWorkflowsOrderby, "orderby", nil, "A list of fields to order the results by.  You can specify either ascending or descending order using <field> asc or <field> desc.  Ascending order is the default.")
 
 	catalogCmd.AddCommand(updateActionByIdForRuleAliasActionCmd)
 	var updateActionByIdForRuleAliasActionAlias string
@@ -2248,200 +1263,84 @@ func init() {
 	updateActionByIdForRuleAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleAliasActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	updateActionByIdForRuleAliasActionCmd.MarkFlagRequired("actionid")
 
-	var updateActionByIdForRuleAliasActionRuleresourcename string
-	updateActionByIdForRuleAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleAliasActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateActionByIdForRuleAliasActionCmd.MarkFlagRequired("ruleresourcename")
+	var updateActionByIdForRuleAliasActionRuleresource string
+	updateActionByIdForRuleAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleAliasActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateActionByIdForRuleAliasActionCmd.MarkFlagRequired("ruleresource")
 
 	var updateActionByIdForRuleAutoKvActionActionid string
 	updateActionByIdForRuleAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleAutoKvActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	updateActionByIdForRuleAutoKvActionCmd.MarkFlagRequired("actionid")
 
-	var updateActionByIdForRuleAutoKvActionRuleresourcename string
-	updateActionByIdForRuleAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleAutoKvActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateActionByIdForRuleAutoKvActionCmd.MarkFlagRequired("ruleresourcename")
-
-	catalogCmd.AddCommand(updateActionByIdForRuleByIdAliasActionCmd)
-	var updateActionByIdForRuleByIdAliasActionAlias string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionAlias, "alias", "", "The alias name.")
-
-	var updateActionByIdForRuleByIdAliasActionField string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionField, "field", "", "The name of the field to be aliased.")
-
-	var updateActionByIdForRuleByIdAliasActionKind string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionKind, "kind", "", "The alias action kind. can accept values ALIAS")
-
-	var updateActionByIdForRuleByIdAliasActionOwner string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionOwner, "owner", "", "The name of the user who owns this action. This value is obtained from the bearer token if not present.")
-
-	var updateActionByIdForRuleByIdAliasActionVersion int32
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdAliasActionVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateActionByIdForRuleByIdAutoKvActionCmd)
-	var updateActionByIdForRuleByIdAutoKvActionKind string
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAutoKvActionKind, "kind", "", "The autokv action kind. can accept values AUTOKV")
-
-	var updateActionByIdForRuleByIdAutoKvActionMode string
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAutoKvActionMode, "mode", "", "The autokv action mode.")
-
-	var updateActionByIdForRuleByIdAutoKvActionOwner string
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAutoKvActionOwner, "owner", "", "The name of the user who owns this action. This value is obtained from the bearer token if not present.")
-
-	var updateActionByIdForRuleByIdAutoKvActionVersion int32
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdAutoKvActionVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateActionByIdForRuleByIdEvalActionCmd)
-	var updateActionByIdForRuleByIdEvalActionExpression string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionExpression, "expression", "", "The EVAL expression that calculates the field.")
-
-	var updateActionByIdForRuleByIdEvalActionField string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionField, "field", "", "The name of the field that is added or modified by the EVAL expression.")
-
-	var updateActionByIdForRuleByIdEvalActionKind string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionKind, "kind", "", "The eval action kind. can accept values EVAL")
-
-	var updateActionByIdForRuleByIdEvalActionOwner string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionOwner, "owner", "", "The name of the user who owns this action. This value is obtained from the bearer token if not present.")
-
-	var updateActionByIdForRuleByIdEvalActionVersion int32
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdEvalActionVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateActionByIdForRuleByIdLookupActionCmd)
-	var updateActionByIdForRuleByIdLookupActionExpression string
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdLookupActionExpression, "expression", "", "The lookup body.")
-
-	var updateActionByIdForRuleByIdLookupActionKind string
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdLookupActionKind, "kind", "", "The lookup action kind. can accept values LOOKUP")
-
-	var updateActionByIdForRuleByIdLookupActionOwner string
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdLookupActionOwner, "owner", "", "The name of the user who owns this action. This value is obtained from the bearer token if not present.")
-
-	var updateActionByIdForRuleByIdLookupActionVersion int32
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdLookupActionVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateActionByIdForRuleByIdRegexActionCmd)
-	var updateActionByIdForRuleByIdRegexActionField string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionField, "field", "", "Name of the field that is matched against the regular expression.")
-
-	var updateActionByIdForRuleByIdRegexActionKind string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionKind, "kind", "", "The regex action kind. can accept values REGEX")
-
-	var updateActionByIdForRuleByIdRegexActionLimit int32
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdRegexActionLimit, "limit", 0, "The maximum number of times per event to attempt to match fields with the regular expression.")
-
-	var updateActionByIdForRuleByIdRegexActionOwner string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionOwner, "owner", "", "The name of the user who owns this action. This value is obtained from the bearer token if not present.")
-
-	var updateActionByIdForRuleByIdRegexActionPattern string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionPattern, "pattern", "", "A regular expression that includes named capture groups for the purpose of field extraction.")
-
-	var updateActionByIdForRuleByIdRegexActionVersion int32
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().Int32Var(&updateActionByIdForRuleByIdRegexActionVersion, "version", 0, "The catalog version.")
-
-	var updateActionByIdForRuleByIdAliasActionActionid string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	updateActionByIdForRuleByIdAliasActionCmd.MarkFlagRequired("actionid")
-
-	var updateActionByIdForRuleByIdAliasActionRuleid string
-	updateActionByIdForRuleByIdAliasActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAliasActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateActionByIdForRuleByIdAliasActionCmd.MarkFlagRequired("ruleid")
-
-	var updateActionByIdForRuleByIdAutoKvActionActionid string
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAutoKvActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	updateActionByIdForRuleByIdAutoKvActionCmd.MarkFlagRequired("actionid")
-
-	var updateActionByIdForRuleByIdAutoKvActionRuleid string
-	updateActionByIdForRuleByIdAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdAutoKvActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateActionByIdForRuleByIdAutoKvActionCmd.MarkFlagRequired("ruleid")
-
-	var updateActionByIdForRuleByIdEvalActionActionid string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	updateActionByIdForRuleByIdEvalActionCmd.MarkFlagRequired("actionid")
-
-	var updateActionByIdForRuleByIdEvalActionRuleid string
-	updateActionByIdForRuleByIdEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdEvalActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateActionByIdForRuleByIdEvalActionCmd.MarkFlagRequired("ruleid")
-
-	var updateActionByIdForRuleByIdLookupActionActionid string
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdLookupActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	updateActionByIdForRuleByIdLookupActionCmd.MarkFlagRequired("actionid")
-
-	var updateActionByIdForRuleByIdLookupActionRuleid string
-	updateActionByIdForRuleByIdLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdLookupActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateActionByIdForRuleByIdLookupActionCmd.MarkFlagRequired("ruleid")
-
-	var updateActionByIdForRuleByIdRegexActionActionid string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
-	updateActionByIdForRuleByIdRegexActionCmd.MarkFlagRequired("actionid")
-
-	var updateActionByIdForRuleByIdRegexActionRuleid string
-	updateActionByIdForRuleByIdRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleByIdRegexActionRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateActionByIdForRuleByIdRegexActionCmd.MarkFlagRequired("ruleid")
+	var updateActionByIdForRuleAutoKvActionRuleresource string
+	updateActionByIdForRuleAutoKvActionCmd.Flags().StringVar(&updateActionByIdForRuleAutoKvActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateActionByIdForRuleAutoKvActionCmd.MarkFlagRequired("ruleresource")
 
 	var updateActionByIdForRuleEvalActionActionid string
 	updateActionByIdForRuleEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleEvalActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	updateActionByIdForRuleEvalActionCmd.MarkFlagRequired("actionid")
 
-	var updateActionByIdForRuleEvalActionRuleresourcename string
-	updateActionByIdForRuleEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleEvalActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateActionByIdForRuleEvalActionCmd.MarkFlagRequired("ruleresourcename")
+	var updateActionByIdForRuleEvalActionRuleresource string
+	updateActionByIdForRuleEvalActionCmd.Flags().StringVar(&updateActionByIdForRuleEvalActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateActionByIdForRuleEvalActionCmd.MarkFlagRequired("ruleresource")
 
 	var updateActionByIdForRuleLookupActionActionid string
 	updateActionByIdForRuleLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleLookupActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	updateActionByIdForRuleLookupActionCmd.MarkFlagRequired("actionid")
 
-	var updateActionByIdForRuleLookupActionRuleresourcename string
-	updateActionByIdForRuleLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleLookupActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateActionByIdForRuleLookupActionCmd.MarkFlagRequired("ruleresourcename")
+	var updateActionByIdForRuleLookupActionRuleresource string
+	updateActionByIdForRuleLookupActionCmd.Flags().StringVar(&updateActionByIdForRuleLookupActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateActionByIdForRuleLookupActionCmd.MarkFlagRequired("ruleresource")
 
 	var updateActionByIdForRuleRegexActionActionid string
 	updateActionByIdForRuleRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleRegexActionActionid, "actionid", "", "This is a required parameter. ID of an Action.")
 	updateActionByIdForRuleRegexActionCmd.MarkFlagRequired("actionid")
 
-	var updateActionByIdForRuleRegexActionRuleresourcename string
-	updateActionByIdForRuleRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleRegexActionRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateActionByIdForRuleRegexActionCmd.MarkFlagRequired("ruleresourcename")
+	var updateActionByIdForRuleRegexActionRuleresource string
+	updateActionByIdForRuleRegexActionCmd.Flags().StringVar(&updateActionByIdForRuleRegexActionRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateActionByIdForRuleRegexActionCmd.MarkFlagRequired("ruleresource")
 
-	catalogCmd.AddCommand(updateDashboardByIdCmd)
+	catalogCmd.AddCommand(updateDashboardCmd)
 
-	var updateDashboardByIdDashboardid string
-	updateDashboardByIdCmd.Flags().StringVar(&updateDashboardByIdDashboardid, "dashboardid", "", "This is a required parameter. ID of a dashboard.")
-	updateDashboardByIdCmd.MarkFlagRequired("dashboardid")
+	var updateDashboardDashboardresource string
+	updateDashboardCmd.Flags().StringVar(&updateDashboardDashboardresource, "dashboardresource", "", "This is a required parameter. ID or the resource name of a dashvboard. The resource name format is module.dashboardname.")
+	updateDashboardCmd.MarkFlagRequired("dashboardresource")
 
-	var updateDashboardByIdDefinition string
-	updateDashboardByIdCmd.Flags().StringVar(&updateDashboardByIdDefinition, "definition", "", "The JSON dashboard definition.")
+	var updateDashboardDefinition string
+	updateDashboardCmd.Flags().StringVar(&updateDashboardDefinition, "definition", "", "The JSON dashboard definition.")
 
-	var updateDashboardByIdIsactive string
-	updateDashboardByIdCmd.Flags().StringVar(&updateDashboardByIdIsactive, "isactive", "false", "Whether the dashboard is active or not.")
+	var updateDashboardIsactive string
+	updateDashboardCmd.Flags().StringVar(&updateDashboardIsactive, "isactive", "false", "Whether the dashboard is active or not.")
 
-	var updateDashboardByIdModule string
-	updateDashboardByIdCmd.Flags().StringVar(&updateDashboardByIdModule, "module", "", "The module that contains the dashboard.")
+	var updateDashboardModule string
+	updateDashboardCmd.Flags().StringVar(&updateDashboardModule, "module", "", "The module that contains the dashboard.")
 
-	var updateDashboardByIdName string
-	updateDashboardByIdCmd.Flags().StringVar(&updateDashboardByIdName, "name", "", "The dashboard name. Dashboard names must be unique within each tenant.")
+	var updateDashboardName string
+	updateDashboardCmd.Flags().StringVar(&updateDashboardName, "name", "", "The dashboard name. Dashboard names must be unique within each tenant.")
 
-	var updateDashboardByIdVersion int32
-	updateDashboardByIdCmd.Flags().Int32Var(&updateDashboardByIdVersion, "version", 0, "The version of the dashboard.")
+	var updateDashboardVersion int32
+	updateDashboardCmd.Flags().Int32Var(&updateDashboardVersion, "version", 0, "The version of the dashboard.")
 
-	catalogCmd.AddCommand(updateDashboardByResourceNameCmd)
+	catalogCmd.AddCommand(updateDatasetFederatedDatasetCmd)
+	var updateDatasetFederatedDatasetFederatedConnection string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetFederatedConnection, "federated-connection", "", "Connection information to connect to remote federated connection.")
 
-	var updateDashboardByResourceNameDashboardresourcename string
-	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameDashboardresourcename, "dashboardresourcename", "", "This is a required parameter. The resource name of a dashvboard. The resource name format is module.dashboardname.")
-	updateDashboardByResourceNameCmd.MarkFlagRequired("dashboardresourcename")
+	var updateDatasetFederatedDatasetFederatedDataset string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetFederatedDataset, "federated-dataset", "", "Dataset information in the remote instance.")
 
-	var updateDashboardByResourceNameDefinition string
-	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameDefinition, "definition", "", "The JSON dashboard definition.")
+	var updateDatasetFederatedDatasetFederatedDatasetKind string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetFederatedDatasetKind, "federated-dataset-kind", "", "Dataset kind information in the remote instance.")
 
-	var updateDashboardByResourceNameIsactive string
-	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameIsactive, "isactive", "false", "Whether the dashboard is active or not.")
+	var updateDatasetFederatedDatasetKind string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetKind, "kind", "", "The dataset kind. can accept values federated")
 
-	var updateDashboardByResourceNameModule string
-	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameModule, "module", "", "The module that contains the dashboard.")
+	var updateDatasetFederatedDatasetModule string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetModule, "module", "", "The name of module to reassign dataset into.")
 
-	var updateDashboardByResourceNameName string
-	updateDashboardByResourceNameCmd.Flags().StringVar(&updateDashboardByResourceNameName, "name", "", "The dashboard name. Dashboard names must be unique within each tenant.")
+	var updateDatasetFederatedDatasetName string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
 
-	var updateDashboardByResourceNameVersion int32
-	updateDashboardByResourceNameCmd.Flags().Int32Var(&updateDashboardByResourceNameVersion, "version", 0, "The version of the dashboard.")
+	var updateDatasetFederatedDatasetOwner string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
 
 	catalogCmd.AddCommand(updateDatasetImportDatasetCmd)
 	var updateDatasetImportDatasetModule string
@@ -2545,161 +1444,39 @@ func init() {
 	var updateDatasetViewDatasetSearch string
 	updateDatasetViewDatasetCmd.Flags().StringVar(&updateDatasetViewDatasetSearch, "search", "", "A valid SPL-defined search.")
 
-	catalogCmd.AddCommand(updateDatasetByIdImportDatasetCmd)
-	var updateDatasetByIdImportDatasetModule string
-	updateDatasetByIdImportDatasetCmd.Flags().StringVar(&updateDatasetByIdImportDatasetModule, "module", "", "The name of module to reassign dataset into.")
+	var updateDatasetFederatedDatasetDatasetresource string
+	updateDatasetFederatedDatasetCmd.Flags().StringVar(&updateDatasetFederatedDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetFederatedDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var updateDatasetByIdImportDatasetName string
-	updateDatasetByIdImportDatasetCmd.Flags().StringVar(&updateDatasetByIdImportDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
+	var updateDatasetImportDatasetDatasetresource string
+	updateDatasetImportDatasetCmd.Flags().StringVar(&updateDatasetImportDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetImportDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var updateDatasetByIdImportDatasetOwner string
-	updateDatasetByIdImportDatasetCmd.Flags().StringVar(&updateDatasetByIdImportDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
+	var updateDatasetIndexDatasetDatasetresource string
+	updateDatasetIndexDatasetCmd.Flags().StringVar(&updateDatasetIndexDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetIndexDatasetCmd.MarkFlagRequired("datasetresource")
 
-	catalogCmd.AddCommand(updateDatasetByIdIndexDatasetCmd)
-	var updateDatasetByIdIndexDatasetDisabled string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
+	var updateDatasetKvCollectionDatasetDatasetresource string
+	updateDatasetKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetKvCollectionDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetKvCollectionDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var updateDatasetByIdIndexDatasetFrozenTimePeriodInSecs int32
-	updateDatasetByIdIndexDatasetCmd.Flags().Int32Var(&updateDatasetByIdIndexDatasetFrozenTimePeriodInSecs, "frozen-time-period-in-secs", 0, "The frozenTimePeriodInSecs to use for the index")
+	var updateDatasetLookupDatasetDatasetresource string
+	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetLookupDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var updateDatasetByIdIndexDatasetKind string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetKind, "kind", "", "The dataset kind. can accept values index")
+	var updateDatasetMetricDatasetDatasetresource string
+	updateDatasetMetricDatasetCmd.Flags().StringVar(&updateDatasetMetricDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetMetricDatasetCmd.MarkFlagRequired("datasetresource")
 
-	var updateDatasetByIdIndexDatasetModule string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdIndexDatasetName string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdIndexDatasetOwner string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	catalogCmd.AddCommand(updateDatasetByIdKvCollectionDatasetCmd)
-	var updateDatasetByIdKvCollectionDatasetKind string
-	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetKind, "kind", "", "The dataset kind. can accept values kvcollection")
-
-	var updateDatasetByIdKvCollectionDatasetModule string
-	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdKvCollectionDatasetName string
-	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdKvCollectionDatasetOwner string
-	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	catalogCmd.AddCommand(updateDatasetByIdLookupDatasetCmd)
-	var updateDatasetByIdLookupDatasetCaseSensitiveMatch string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetCaseSensitiveMatch, "case-sensitive-match", "true", "Match case-sensitively against the lookup.")
-
-	var updateDatasetByIdLookupDatasetExternalKind string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalKind, "external-kind", "", "The type of the external lookup. can accept values kvcollection")
-
-	var updateDatasetByIdLookupDatasetExternalName string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetExternalName, "external-name", "", "The name of the external lookup.")
-
-	var updateDatasetByIdLookupDatasetFilter string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetFilter, "filter", "", "A query that filters results out of the lookup before those results are returned.")
-
-	var updateDatasetByIdLookupDatasetKind string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetKind, "kind", "", "The dataset kind. can accept values lookup")
-
-	var updateDatasetByIdLookupDatasetModule string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdLookupDatasetName string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdLookupDatasetOwner string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	catalogCmd.AddCommand(updateDatasetByIdMetricDatasetCmd)
-	var updateDatasetByIdMetricDatasetDisabled string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetDisabled, "disabled", "false", "Specifies whether or not the Splunk index is disabled.")
-
-	var updateDatasetByIdMetricDatasetFrozenTimePeriodInSecs int32
-	updateDatasetByIdMetricDatasetCmd.Flags().Int32Var(&updateDatasetByIdMetricDatasetFrozenTimePeriodInSecs, "frozen-time-period-in-secs", 0, "The frozenTimePeriodInSecs to use for the index")
-
-	var updateDatasetByIdMetricDatasetKind string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetKind, "kind", "", "The dataset kind. can accept values metric")
-
-	var updateDatasetByIdMetricDatasetModule string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdMetricDatasetName string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdMetricDatasetOwner string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	catalogCmd.AddCommand(updateDatasetByIdViewDatasetCmd)
-	var updateDatasetByIdViewDatasetKind string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetKind, "kind", "", "The dataset kind. can accept values view")
-
-	var updateDatasetByIdViewDatasetModule string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetModule, "module", "", "The name of module to reassign dataset into.")
-
-	var updateDatasetByIdViewDatasetName string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetName, "name", "", "The dataset name. Dataset names must be unique within each module.")
-
-	var updateDatasetByIdViewDatasetOwner string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetOwner, "owner", "", "The name of the dataset owner. This value is obtained from the bearer token.")
-
-	var updateDatasetByIdViewDatasetSearch string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetSearch, "search", "", "A valid SPL-defined search.")
-
-	var updateDatasetByIdImportDatasetDatasetid string
-	updateDatasetByIdImportDatasetCmd.Flags().StringVar(&updateDatasetByIdImportDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdImportDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetByIdIndexDatasetDatasetid string
-	updateDatasetByIdIndexDatasetCmd.Flags().StringVar(&updateDatasetByIdIndexDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdIndexDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetByIdKvCollectionDatasetDatasetid string
-	updateDatasetByIdKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetByIdKvCollectionDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdKvCollectionDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetByIdLookupDatasetDatasetid string
-	updateDatasetByIdLookupDatasetCmd.Flags().StringVar(&updateDatasetByIdLookupDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdLookupDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetByIdMetricDatasetDatasetid string
-	updateDatasetByIdMetricDatasetCmd.Flags().StringVar(&updateDatasetByIdMetricDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdMetricDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetByIdViewDatasetDatasetid string
-	updateDatasetByIdViewDatasetCmd.Flags().StringVar(&updateDatasetByIdViewDatasetDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateDatasetByIdViewDatasetCmd.MarkFlagRequired("datasetid")
-
-	var updateDatasetImportDatasetDatasetresourcename string
-	updateDatasetImportDatasetCmd.Flags().StringVar(&updateDatasetImportDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetImportDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetIndexDatasetDatasetresourcename string
-	updateDatasetIndexDatasetCmd.Flags().StringVar(&updateDatasetIndexDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetIndexDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetKvCollectionDatasetDatasetresourcename string
-	updateDatasetKvCollectionDatasetCmd.Flags().StringVar(&updateDatasetKvCollectionDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetKvCollectionDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetLookupDatasetDatasetresourcename string
-	updateDatasetLookupDatasetCmd.Flags().StringVar(&updateDatasetLookupDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetLookupDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetMetricDatasetDatasetresourcename string
-	updateDatasetMetricDatasetCmd.Flags().StringVar(&updateDatasetMetricDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetMetricDatasetCmd.MarkFlagRequired("datasetresourcename")
-
-	var updateDatasetViewDatasetDatasetresourcename string
-	updateDatasetViewDatasetCmd.Flags().StringVar(&updateDatasetViewDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateDatasetViewDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var updateDatasetViewDatasetDatasetresource string
+	updateDatasetViewDatasetCmd.Flags().StringVar(&updateDatasetViewDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateDatasetViewDatasetCmd.MarkFlagRequired("datasetresource")
 
 	catalogCmd.AddCommand(updateFieldByIdForDatasetCmd)
 
-	var updateFieldByIdForDatasetDatasetresourcename string
-	updateFieldByIdForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetDatasetresourcename, "datasetresourcename", "", "This is a required parameter. The resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
-	updateFieldByIdForDatasetCmd.MarkFlagRequired("datasetresourcename")
+	var updateFieldByIdForDatasetDatasetresource string
+	updateFieldByIdForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetDatasetresource, "datasetresource", "", "This is a required parameter. ID of a Dataset or the resource name of a dataset. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.")
+	updateFieldByIdForDatasetCmd.MarkFlagRequired("datasetresource")
 
 	var updateFieldByIdForDatasetFieldid string
 	updateFieldByIdForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
@@ -2729,40 +1506,6 @@ func init() {
 	var updateFieldByIdForDatasetTitle string
 	updateFieldByIdForDatasetCmd.Flags().StringVar(&updateFieldByIdForDatasetTitle, "title", "", "The field title.")
 
-	catalogCmd.AddCommand(updateFieldByIdForDatasetByIdCmd)
-
-	var updateFieldByIdForDatasetByIdDatasetid string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDatasetid, "datasetid", "", "This is a required parameter. ID of a Dataset.")
-	updateFieldByIdForDatasetByIdCmd.MarkFlagRequired("datasetid")
-
-	var updateFieldByIdForDatasetByIdFieldid string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdFieldid, "fieldid", "", "This is a required parameter. ID of a Field.")
-	updateFieldByIdForDatasetByIdCmd.MarkFlagRequired("fieldid")
-
-	var updateFieldByIdForDatasetByIdDatatype string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDatatype, "datatype", "", "The type of data in the field. Must be one of the valid values. can accept values DATE, NUMBER, OBJECT_ID, STRING, UNKNOWN")
-
-	var updateFieldByIdForDatasetByIdDescription string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdDescription, "description", "", "The field description.")
-
-	var updateFieldByIdForDatasetByIdFieldtype string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdFieldtype, "fieldtype", "", "The type of field. Must be one of the valid values. can accept values DIMENSION, MEASURE, UNKNOWN")
-
-	var updateFieldByIdForDatasetByIdIndexed string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdIndexed, "indexed", "false", "Whether or not the field has been indexed.")
-
-	var updateFieldByIdForDatasetByIdName string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdName, "name", "", "The field name.")
-
-	var updateFieldByIdForDatasetByIdPrevalence string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdPrevalence, "prevalence", "", "How frequent the field appears in the dataset. Must be one of the valid values. can accept values ALL, SOME, UNKNOWN")
-
-	var updateFieldByIdForDatasetByIdSummary string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdSummary, "summary", "", "The field summary.")
-
-	var updateFieldByIdForDatasetByIdTitle string
-	updateFieldByIdForDatasetByIdCmd.Flags().StringVar(&updateFieldByIdForDatasetByIdTitle, "title", "", "The field title.")
-
 	catalogCmd.AddCommand(updateRelationshipByIdCmd)
 
 	var updateRelationshipByIdRelationshipid string
@@ -2777,9 +1520,9 @@ func init() {
 
 	catalogCmd.AddCommand(updateRuleCmd)
 
-	var updateRuleRuleresourcename string
-	updateRuleCmd.Flags().StringVar(&updateRuleRuleresourcename, "ruleresourcename", "", "This is a required parameter. The resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
-	updateRuleCmd.MarkFlagRequired("ruleresourcename")
+	var updateRuleRuleresource string
+	updateRuleCmd.Flags().StringVar(&updateRuleRuleresource, "ruleresource", "", "This is a required parameter. The ID or resource name of a rule. For the default module, the resource name format is ruleName. Otherwise, the resource name format is module.ruleName.")
+	updateRuleCmd.MarkFlagRequired("ruleresource")
 
 	var updateRuleMatch string
 	updateRuleCmd.Flags().StringVar(&updateRuleMatch, "match", "", "The rule match type.")
@@ -2795,80 +1538,5 @@ func init() {
 
 	var updateRuleVersion int32
 	updateRuleCmd.Flags().Int32Var(&updateRuleVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateRuleByIdCmd)
-
-	var updateRuleByIdRuleid string
-	updateRuleByIdCmd.Flags().StringVar(&updateRuleByIdRuleid, "ruleid", "", "This is a required parameter. ID of a Field.")
-	updateRuleByIdCmd.MarkFlagRequired("ruleid")
-
-	var updateRuleByIdMatch string
-	updateRuleByIdCmd.Flags().StringVar(&updateRuleByIdMatch, "match", "", "The rule match type.")
-
-	var updateRuleByIdModule string
-	updateRuleByIdCmd.Flags().StringVar(&updateRuleByIdModule, "module", "", "The module containing the rule.")
-
-	var updateRuleByIdName string
-	updateRuleByIdCmd.Flags().StringVar(&updateRuleByIdName, "name", "", "The rule name.")
-
-	var updateRuleByIdOwner string
-	updateRuleByIdCmd.Flags().StringVar(&updateRuleByIdOwner, "owner", "", "The name of the user who owns the rule.")
-
-	var updateRuleByIdVersion int32
-	updateRuleByIdCmd.Flags().Int32Var(&updateRuleByIdVersion, "version", 0, "The catalog version.")
-
-	catalogCmd.AddCommand(updateWorkflowBuildByIdCmd)
-
-	var updateWorkflowBuildByIdWorkflowbuildid string
-	updateWorkflowBuildByIdCmd.Flags().StringVar(&updateWorkflowBuildByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	updateWorkflowBuildByIdCmd.MarkFlagRequired("workflowbuildid")
-
-	var updateWorkflowBuildByIdWorkflowid string
-	updateWorkflowBuildByIdCmd.Flags().StringVar(&updateWorkflowBuildByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	updateWorkflowBuildByIdCmd.MarkFlagRequired("workflowid")
-
-	var updateWorkflowBuildByIdDescription string
-	updateWorkflowBuildByIdCmd.Flags().StringVar(&updateWorkflowBuildByIdDescription, "description", "", "The workflow build description.")
-
-	var updateWorkflowBuildByIdName string
-	updateWorkflowBuildByIdCmd.Flags().StringVar(&updateWorkflowBuildByIdName, "name", "", "The workflow build name.")
-
-	var updateWorkflowBuildByIdStatus string
-	updateWorkflowBuildByIdCmd.Flags().StringVar(&updateWorkflowBuildByIdStatus, "status", "", "The status of the workflow build.")
-
-	catalogCmd.AddCommand(updateWorkflowByIdCmd)
-
-	var updateWorkflowByIdWorkflowid string
-	updateWorkflowByIdCmd.Flags().StringVar(&updateWorkflowByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	updateWorkflowByIdCmd.MarkFlagRequired("workflowid")
-
-	var updateWorkflowByIdDescription string
-	updateWorkflowByIdCmd.Flags().StringVar(&updateWorkflowByIdDescription, "description", "", "The workflow description.")
-
-	var updateWorkflowByIdName string
-	updateWorkflowByIdCmd.Flags().StringVar(&updateWorkflowByIdName, "name", "", "The workflow name.")
-
-	catalogCmd.AddCommand(updateWorkflowRunByIdCmd)
-
-	var updateWorkflowRunByIdWorkflowbuildid string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdWorkflowbuildid, "workflowbuildid", "", "This is a required parameter. ID of a workflow build.")
-	updateWorkflowRunByIdCmd.MarkFlagRequired("workflowbuildid")
-
-	var updateWorkflowRunByIdWorkflowid string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdWorkflowid, "workflowid", "", "This is a required parameter. ID of a workflow.")
-	updateWorkflowRunByIdCmd.MarkFlagRequired("workflowid")
-
-	var updateWorkflowRunByIdWorkflowrunid string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdWorkflowrunid, "workflowrunid", "", "This is a required parameter. ID of a workflow run.")
-	updateWorkflowRunByIdCmd.MarkFlagRequired("workflowrunid")
-
-	var updateWorkflowRunByIdDescription string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdDescription, "description", "", "The workflow run description.")
-
-	var updateWorkflowRunByIdName string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdName, "name", "", "The workflow run name.")
-
-	var updateWorkflowRunByIdStatus string
-	updateWorkflowRunByIdCmd.Flags().StringVar(&updateWorkflowRunByIdStatus, "status", "", "The status of the workflow run.")
 
 }

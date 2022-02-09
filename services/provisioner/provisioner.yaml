@@ -24,13 +24,6 @@ components:
         maxLength: 100
         minLength: 4
         type: string
-    InstanceId:
-      description: The ID of the instance.
-      in: path
-      name: instanceId
-      required: true
-      schema:
-        type: string
     InviteId:
       in: path
       name: inviteId
@@ -74,24 +67,6 @@ components:
       required: true
   schemas:
     AnyValue: {}
-    Configuration:
-      properties:
-        configurationId:
-          description: configuration id
-          type: string
-        packages:
-          items:
-            $ref: '#/components/schemas/Package'
-          type: array
-        timestamp:
-          description: the time of creation of the configuration
-          format: date-time
-          type: string
-      required:
-      - configurationId
-      - timestamp
-      - packages
-      type: object
     CreateEntitlementsJobBody:
       properties:
         appClientID:
@@ -281,48 +256,6 @@ components:
       - code
       - message
       type: object
-    HeartbeatBody:
-      properties:
-        configId:
-          description: ID of the instance current configuration.
-          type: string
-        labels:
-          additionalProperties:
-            type: string
-          type: object
-        metrics:
-          additionalProperties:
-            type: string
-          type: object
-      required:
-      - configId
-      type: object
-    Instance:
-      properties:
-        configId:
-          description: ID of the config for the instance.
-          type: string
-        id:
-          description: ID of the instance.
-          type: string
-        labels:
-          additionalProperties:
-            type: string
-          type: object
-        packages:
-          items:
-            $ref: '#/components/schemas/Package'
-          type: array
-      required:
-      - id
-      - configId
-      - labels
-      - packages
-      type: object
-    InstanceList:
-      items:
-        $ref: '#/components/schemas/Instance'
-      type: array
     InviteBody:
       properties:
         comment:
@@ -430,27 +363,6 @@ components:
       items:
         $ref: '#/components/schemas/JobEntitlement'
       type: array
-    Package:
-      properties:
-        name:
-          description: name of the package
-          type: string
-        signature:
-          description: The package signature which can be used to validate the integrity
-            of the package download.
-          type: string
-        url:
-          description: URL to download the package
-          type: string
-        version:
-          description: version of the package
-          type: string
-      required:
-      - name
-      - version
-      - url
-      - signature
-      type: object
     ProvisionJobInfo:
       properties:
         apps:
@@ -817,4 +729,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: provisioner/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: provisioner/v1beta1/openapi.yaml

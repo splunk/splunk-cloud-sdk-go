@@ -138,12 +138,6 @@ func AddPrincipalPublicKey(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "crv": ` + err.Error())
 	}
-	var dDefault string
-	d := &dDefault
-	err = flags.ParseFlag(cmd.Flags(), "d", &d)
-	if err != nil {
-		return fmt.Errorf(`error parsing "d": ` + err.Error())
-	}
 	var kidDefault string
 	kid := &kidDefault
 	err = flags.ParseFlag(cmd.Flags(), "kid", &kid)
@@ -178,7 +172,6 @@ func AddPrincipalPublicKey(cmd *cobra.Command, args []string) error {
 
 		Alg: alg,
 		Crv: crv,
-		D:   d,
 		Kid: kid,
 		Kty: kty,
 		X:   x,
@@ -429,12 +422,6 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "crv": ` + err.Error())
 	}
-	var dDefault string
-	d := &dDefault
-	err = flags.ParseFlag(cmd.Flags(), "d", &d)
-	if err != nil {
-		return fmt.Errorf(`error parsing "d": ` + err.Error())
-	}
 	var email string
 	err = flags.ParseFlag(cmd.Flags(), "email", &email)
 	if err != nil {
@@ -509,7 +496,6 @@ func CreatePrincipal(cmd *cobra.Command, args []string) error {
 		Key: &model.EcJwk{
 			Alg: alg,
 			Crv: crv,
-			D:   d,
 			Kid: kid,
 			Kty: kty,
 			X:   x,
@@ -778,6 +764,32 @@ func DeleteSamlClient(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// GetEntitlements Returns the entitlements for the given tenant and client id
+func GetEntitlements(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var entitlementClientId string
+	err = flags.ParseFlag(cmd.Flags(), "entitlement-client-id", &entitlementClientId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "entitlement-client-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.GetEntitlements(entitlementClientId)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 
@@ -1819,6 +1831,37 @@ func RevokePrincipalAuthTokens(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	return nil
+}
+
+// UpdateEntitlements Update the entitlements for the given tenant and client id
+func UpdateEntitlements(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var body model.SetEntitlementBody
+	err = flags.ParseFlag(cmd.Flags(), "body", &body)
+	if err != nil {
+		return fmt.Errorf(`error parsing "body": ` + err.Error())
+	}
+	var entitlementClientId string
+	err = flags.ParseFlag(cmd.Flags(), "entitlement-client-id", &entitlementClientId)
+	if err != nil {
+		return fmt.Errorf(`error parsing "entitlement-client-id": ` + err.Error())
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.IdentityService.UpdateEntitlements(entitlementClientId, body)
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
 	return nil
 }
 

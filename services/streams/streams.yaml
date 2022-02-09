@@ -678,6 +678,11 @@ components:
     PipelineNode:
       description: ""
       properties:
+        annotations:
+          description: For internal use only.
+          example: ""
+          properties: {}
+          type: object
         arguments:
           description: Function arguments keyed by argument name.
           example: ""
@@ -5274,4 +5279,4 @@ tags:
 - description: V3Beta1 Preview API Endpoints
   name: preview
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: streams/v3beta1/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: streams/v3beta1/openapi.yaml

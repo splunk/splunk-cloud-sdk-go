@@ -13,7 +13,7 @@ import (
 	model "github.com/splunk/splunk-cloud-sdk-go/services/catalog"
 )
 
-// CreateActionForRuleAliasAction Creates a new action for a rule with the specified resource name.
+// CreateActionForRuleAliasAction Creates a new action for the specified rule by rule id or resource name.
 func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -49,10 +49,10 @@ func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -74,7 +74,7 @@ func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromAliasActionPost(generated_request_body))
+	resp, err := client.CatalogService.CreateActionForRule(ruleresource, model.MakeActionPostFromAliasActionPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func CreateActionForRuleAliasAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleAutoKvAction Creates a new action for a rule with the specified resource name.
+// CreateActionForRuleAutoKvAction Creates a new action for the specified rule by rule id or resource name.
 func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -113,10 +113,10 @@ func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -137,7 +137,7 @@ func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromAutoKvActionPost(generated_request_body))
+	resp, err := client.CatalogService.CreateActionForRule(ruleresource, model.MakeActionPostFromAutoKvActionPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -145,347 +145,7 @@ func CreateActionForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleByIdAliasAction Creates a new action for the specified rule.
-func CreateActionForRuleByIdAliasAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var alias string
-	err = flags.ParseFlag(cmd.Flags(), "alias", &alias)
-	if err != nil {
-		return fmt.Errorf(`error parsing "alias": ` + err.Error())
-	}
-	var field string
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.AliasActionKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var ruleidBodyDefault string
-	ruleidBody := &ruleidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "ruleid-body", &ruleidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid-body": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.AliasActionPost{
-
-		Alias:   alias,
-		Field:   field,
-		Id:      id,
-		Kind:    kind,
-		Ruleid:  ruleidBody,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromAliasActionPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateActionForRuleByIdAutoKvAction Creates a new action for the specified rule.
-func CreateActionForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.AutoKvActionKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var mode string
-	err = flags.ParseFlag(cmd.Flags(), "mode", &mode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "mode": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var ruleidBodyDefault string
-	ruleidBody := &ruleidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "ruleid-body", &ruleidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid-body": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.AutoKvActionPost{
-
-		Id:      id,
-		Kind:    kind,
-		Mode:    mode,
-		Ruleid:  ruleidBody,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromAutoKvActionPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateActionForRuleByIdEvalAction Creates a new action for the specified rule.
-func CreateActionForRuleByIdEvalAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var expression string
-	err = flags.ParseFlag(cmd.Flags(), "expression", &expression)
-	if err != nil {
-		return fmt.Errorf(`error parsing "expression": ` + err.Error())
-	}
-	var field string
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.EvalActionKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var ruleidBodyDefault string
-	ruleidBody := &ruleidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "ruleid-body", &ruleidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid-body": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.EvalActionPost{
-
-		Expression: expression,
-		Field:      field,
-		Id:         id,
-		Kind:       kind,
-		Ruleid:     ruleidBody,
-		Version:    version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromEvalActionPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateActionForRuleByIdLookupAction Creates a new action for the specified rule.
-func CreateActionForRuleByIdLookupAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var expression string
-	err = flags.ParseFlag(cmd.Flags(), "expression", &expression)
-	if err != nil {
-		return fmt.Errorf(`error parsing "expression": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.LookupActionKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var ruleidBodyDefault string
-	ruleidBody := &ruleidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "ruleid-body", &ruleidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid-body": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.LookupActionPost{
-
-		Expression: expression,
-		Id:         id,
-		Kind:       kind,
-		Ruleid:     ruleidBody,
-		Version:    version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromLookupActionPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateActionForRuleByIdRegexAction Creates a new action for the specified rule.
-func CreateActionForRuleByIdRegexAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var field string
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var kind model.RegexActionKind
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var limitDefault int32
-	limit := &limitDefault
-	err = flags.ParseFlag(cmd.Flags(), "limit", &limit)
-	if err != nil {
-		return fmt.Errorf(`error parsing "limit": ` + err.Error())
-	}
-	var pattern string
-	err = flags.ParseFlag(cmd.Flags(), "pattern", &pattern)
-	if err != nil {
-		return fmt.Errorf(`error parsing "pattern": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var ruleidBodyDefault string
-	ruleidBody := &ruleidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "ruleid-body", &ruleidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid-body": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.RegexActionPost{
-
-		Field:   field,
-		Id:      id,
-		Kind:    kind,
-		Limit:   limit,
-		Pattern: pattern,
-		Ruleid:  ruleidBody,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateActionForRuleById(ruleid, model.MakeActionPostFromRegexActionPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateActionForRuleEvalAction Creates a new action for a rule with the specified resource name.
+// CreateActionForRuleEvalAction Creates a new action for the specified rule by rule id or resource name.
 func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -521,10 +181,10 @@ func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -546,7 +206,7 @@ func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromEvalActionPost(generated_request_body))
+	resp, err := client.CatalogService.CreateActionForRule(ruleresource, model.MakeActionPostFromEvalActionPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -554,7 +214,7 @@ func CreateActionForRuleEvalAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleLookupAction Creates a new action for a rule with the specified resource name.
+// CreateActionForRuleLookupAction Creates a new action for the specified rule by rule id or resource name.
 func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -585,10 +245,10 @@ func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -609,7 +269,7 @@ func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromLookupActionPost(generated_request_body))
+	resp, err := client.CatalogService.CreateActionForRule(ruleresource, model.MakeActionPostFromLookupActionPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -617,7 +277,7 @@ func CreateActionForRuleLookupAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateActionForRuleRegexAction Creates a new action for a rule with the specified resource name.
+// CreateActionForRuleRegexAction Creates a new action for the specified rule by rule id or resource name.
 func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -659,10 +319,10 @@ func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -685,7 +345,7 @@ func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateActionForRule(ruleresourcename, model.MakeActionPostFromRegexActionPost(generated_request_body))
+	resp, err := client.CatalogService.CreateActionForRule(ruleresource, model.MakeActionPostFromRegexActionPost(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -693,23 +353,13 @@ func CreateActionForRuleRegexAction(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateAnnotationForDashboardbyId Creates a new annotation for the specified dashboard.
-func CreateAnnotationForDashboardbyId(cmd *cobra.Command, args []string) error {
+// CreateAnnotationForDashboard Creates a new annotation for the specified dashboard.
+func CreateAnnotationForDashboard(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
-// CreateAnnotationForDashboardsByResourceName Creates a new annotation for the specified dataset resource name.
-func CreateAnnotationForDashboardsByResourceName(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
-}
-
-// CreateAnnotationForDatasetById Creates a new annotation for the specified dataset.
-func CreateAnnotationForDatasetById(cmd *cobra.Command, args []string) error {
-	return fmt.Errorf("this command has not yet been implemented")
-}
-
-// CreateAnnotationForDatasetByResourceName Creates a new annotation for the specified dataset.
-func CreateAnnotationForDatasetByResourceName(cmd *cobra.Command, args []string) error {
+// CreateAnnotationForDataset Creates a new annotation for the specified dataset.
+func CreateAnnotationForDataset(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("this command has not yet been implemented")
 }
 
@@ -777,7 +427,82 @@ func CreateDashboard(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateDatasetImport Creates a new dataset import using the resource name of the imported dataset.
+// CreateDatasetFederatedDataset Creates a new dataset.
+func CreateDatasetFederatedDataset(cmd *cobra.Command, args []string) error {
+
+	client, err := auth.GetClient()
+	if err != nil {
+		return err
+	}
+	// Parse all flags
+
+	var federatedConnection string
+	err = flags.ParseFlag(cmd.Flags(), "federated-connection", &federatedConnection)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-connection": ` + err.Error())
+	}
+	var federatedDataset string
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset", &federatedDataset)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-dataset": ` + err.Error())
+	}
+	var federatedDatasetKind string
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset-kind", &federatedDatasetKind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "federated-dataset-kind": ` + err.Error())
+	}
+	var fields []model.FieldPost
+	err = flags.ParseFlag(cmd.Flags(), "fields", &fields)
+	if err != nil {
+		return fmt.Errorf(`error parsing "fields": ` + err.Error())
+	}
+	var idDefault string
+	id := &idDefault
+	err = flags.ParseFlag(cmd.Flags(), "id", &id)
+	if err != nil {
+		return fmt.Errorf(`error parsing "id": ` + err.Error())
+	}
+	var kind model.FederatedDatasetKind
+	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
+	if err != nil {
+		return fmt.Errorf(`error parsing "kind": ` + err.Error())
+	}
+	var moduleDefault string
+	module := &moduleDefault
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var name string
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.FederatedDatasetPost{
+
+		FederatedConnection:  federatedConnection,
+		FederatedDataset:     federatedDataset,
+		FederatedDatasetKind: federatedDatasetKind,
+		Fields:               fields,
+		Id:                   id,
+		Kind:                 kind,
+		Module:               module,
+		Name:                 name,
+	}
+
+	// Silence Usage
+	cmd.SilenceUsage = true
+
+	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromFederatedDatasetPost(generated_request_body))
+	if err != nil {
+		return err
+	}
+	jsonx.Pprint(cmd, resp)
+	return nil
+}
+
+// CreateDatasetImport Creates a new dataset import using the ID or resource name of the imported dataset.
 func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -786,10 +511,10 @@ func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var module string
 	err = flags.ParseFlag(cmd.Flags(), "module", &module)
@@ -818,105 +543,7 @@ func CreateDatasetImport(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateDatasetImport(datasetresourcename, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateDatasetImportById Creates a new dataset import using the ID of the imported dataset.
-func CreateDatasetImportById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var module string
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var owner string
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DatasetImportedBy{
-
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateDatasetImportById(datasetid, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateDatasetImportByIdv1 Creates a new dataset import using the ID of the imported dataset.
-func CreateDatasetImportByIdv1(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var module string
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var owner string
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DatasetImportedBy{
-
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateDatasetImportByIdv1(datasetid, generated_request_body)
+	resp, err := client.CatalogService.CreateDatasetImport(datasetresource, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -939,55 +566,6 @@ func CreateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	cmd.SilenceUsage = true
 
 	resp, err := client.CatalogService.CreateDataset(model.MakeDatasetPostFromImportDatasetPost(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateDatasetImportv1 Creates a new dataset import using the resource name of the imported dataset.
-func CreateDatasetImportv1(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
-	}
-	var module string
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var owner string
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DatasetImportedBy{
-
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateDatasetImportv1(datasetresourcename, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1338,7 +916,7 @@ func CreateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateFieldForDataset Creates a new field in the dataset with the specified resource name.
+// CreateFieldForDataset Adds a new field to the dataset with the specified ID or resource name.
 func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1347,10 +925,10 @@ func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var datatypeDefault model.FieldDataType
 	datatype := &datatypeDefault
@@ -1415,92 +993,7 @@ func CreateFieldForDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.CreateFieldForDataset(datasetresourcename, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateFieldForDatasetById Adds a new field to the dataset with the specified ID.
-func CreateFieldForDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var datatypeDefault model.FieldDataType
-	datatype := &datatypeDefault
-	err = flags.ParseFlag(cmd.Flags(), "datatype", &datatype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datatype": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var fieldtypeDefault model.FieldType
-	fieldtype := &fieldtypeDefault
-	err = flags.ParseFlag(cmd.Flags(), "fieldtype", &fieldtype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "fieldtype": ` + err.Error())
-	}
-	var indexedDefault bool
-	indexed := &indexedDefault
-	err = flags.ParseFlag(cmd.Flags(), "indexed", &indexed)
-	if err != nil {
-		return fmt.Errorf(`error parsing "indexed": ` + err.Error())
-	}
-	var name string
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var prevalenceDefault model.FieldPrevalence
-	prevalence := &prevalenceDefault
-	err = flags.ParseFlag(cmd.Flags(), "prevalence", &prevalence)
-	if err != nil {
-		return fmt.Errorf(`error parsing "prevalence": ` + err.Error())
-	}
-	var summaryDefault string
-	summary := &summaryDefault
-	err = flags.ParseFlag(cmd.Flags(), "summary", &summary)
-	if err != nil {
-		return fmt.Errorf(`error parsing "summary": ` + err.Error())
-	}
-	var titleDefault string
-	title := &titleDefault
-	err = flags.ParseFlag(cmd.Flags(), "title", &title)
-	if err != nil {
-		return fmt.Errorf(`error parsing "title": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.FieldPost{
-
-		Datatype:    datatype,
-		Description: description,
-		Fieldtype:   fieldtype,
-		Indexed:     indexed,
-		Name:        name,
-		Prevalence:  prevalence,
-		Summary:     summary,
-		Title:       title,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateFieldForDatasetById(datasetid, generated_request_body)
+	resp, err := client.CatalogService.CreateFieldForDataset(datasetresource, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -1664,327 +1157,7 @@ func CreateRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// CreateWorkflow Creates a new workflow configuration.
-func CreateWorkflow(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var experimentidDefault string
-	experimentid := &experimentidDefault
-	err = flags.ParseFlag(cmd.Flags(), "experimentid", &experimentid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "experimentid": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var tasks []model.TaskPost
-	err = flags.ParseFlag(cmd.Flags(), "tasks", &tasks)
-	if err != nil {
-		return fmt.Errorf(`error parsing "tasks": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowPost{
-
-		Description:  description,
-		Experimentid: experimentid,
-		Id:           id,
-		Name:         name,
-		Tasks:        tasks,
-		Version:      version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateWorkflow(generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateWorkflowBuild Creates a new workflow build.
-func CreateWorkflowBuild(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var endedDefault string
-	ended := &endedDefault
-	err = flags.ParseFlag(cmd.Flags(), "ended", &ended)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ended": ` + err.Error())
-	}
-	var evaluationresults []string
-	err = flags.ParseFlag(cmd.Flags(), "evaluationresults", &evaluationresults)
-	if err != nil {
-		return fmt.Errorf(`error parsing "evaluationresults": ` + err.Error())
-	}
-	var failuremessageDefault string
-	failuremessage := &failuremessageDefault
-	err = flags.ParseFlag(cmd.Flags(), "failuremessage", &failuremessage)
-	if err != nil {
-		return fmt.Errorf(`error parsing "failuremessage": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var inputdata []string
-	err = flags.ParseFlag(cmd.Flags(), "inputdata", &inputdata)
-	if err != nil {
-		return fmt.Errorf(`error parsing "inputdata": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var outputdata []string
-	err = flags.ParseFlag(cmd.Flags(), "outputdata", &outputdata)
-	if err != nil {
-		return fmt.Errorf(`error parsing "outputdata": ` + err.Error())
-	}
-	var randomstateDefault int32
-	randomstate := &randomstateDefault
-	err = flags.ParseFlag(cmd.Flags(), "randomstate", &randomstate)
-	if err != nil {
-		return fmt.Errorf(`error parsing "randomstate": ` + err.Error())
-	}
-	var startedDefault string
-	started := &startedDefault
-	err = flags.ParseFlag(cmd.Flags(), "started", &started)
-	if err != nil {
-		return fmt.Errorf(`error parsing "started": ` + err.Error())
-	}
-	var statusDefault string
-	status := &statusDefault
-	err = flags.ParseFlag(cmd.Flags(), "status", &status)
-	if err != nil {
-		return fmt.Errorf(`error parsing "status": ` + err.Error())
-	}
-	var timeoutsecs int32
-	err = flags.ParseFlag(cmd.Flags(), "timeoutsecs", &timeoutsecs)
-	if err != nil {
-		return fmt.Errorf(`error parsing "timeoutsecs": ` + err.Error())
-	}
-	var traintestsplitDefault float32
-	traintestsplit := &traintestsplitDefault
-	err = flags.ParseFlag(cmd.Flags(), "traintestsplit", &traintestsplit)
-	if err != nil {
-		return fmt.Errorf(`error parsing "traintestsplit": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	var workflowidBodyDefault string
-	workflowidBody := &workflowidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "workflowid-body", &workflowidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid-body": ` + err.Error())
-	}
-	var workflowversionDefault int32
-	workflowversion := &workflowversionDefault
-	err = flags.ParseFlag(cmd.Flags(), "workflowversion", &workflowversion)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowversion": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowBuildPost{
-
-		Description:       description,
-		Ended:             ended,
-		Evaluationresults: evaluationresults,
-		Failuremessage:    failuremessage,
-		Id:                id,
-		Inputdata:         inputdata,
-		Name:              name,
-		Outputdata:        outputdata,
-		Randomstate:       randomstate,
-		Started:           started,
-		Status:            status,
-		Timeoutsecs:       timeoutsecs,
-		Traintestsplit:    traintestsplit,
-		Version:           version,
-		Workflowid:        workflowidBody,
-		Workflowversion:   workflowversion,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateWorkflowBuild(workflowid, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// CreateWorkflowRun Creates a new workflow run for the specified workflow build ID.
-func CreateWorkflowRun(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var endedDefault string
-	ended := &endedDefault
-	err = flags.ParseFlag(cmd.Flags(), "ended", &ended)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ended": ` + err.Error())
-	}
-	var failuremessageDefault string
-	failuremessage := &failuremessageDefault
-	err = flags.ParseFlag(cmd.Flags(), "failuremessage", &failuremessage)
-	if err != nil {
-		return fmt.Errorf(`error parsing "failuremessage": ` + err.Error())
-	}
-	var idDefault string
-	id := &idDefault
-	err = flags.ParseFlag(cmd.Flags(), "id", &id)
-	if err != nil {
-		return fmt.Errorf(`error parsing "id": ` + err.Error())
-	}
-	var inputdata []string
-	err = flags.ParseFlag(cmd.Flags(), "inputdata", &inputdata)
-	if err != nil {
-		return fmt.Errorf(`error parsing "inputdata": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var outputdata []string
-	err = flags.ParseFlag(cmd.Flags(), "outputdata", &outputdata)
-	if err != nil {
-		return fmt.Errorf(`error parsing "outputdata": ` + err.Error())
-	}
-	var startedDefault string
-	started := &startedDefault
-	err = flags.ParseFlag(cmd.Flags(), "started", &started)
-	if err != nil {
-		return fmt.Errorf(`error parsing "started": ` + err.Error())
-	}
-	var statusDefault string
-	status := &statusDefault
-	err = flags.ParseFlag(cmd.Flags(), "status", &status)
-	if err != nil {
-		return fmt.Errorf(`error parsing "status": ` + err.Error())
-	}
-	var timeoutsecs int32
-	err = flags.ParseFlag(cmd.Flags(), "timeoutsecs", &timeoutsecs)
-	if err != nil {
-		return fmt.Errorf(`error parsing "timeoutsecs": ` + err.Error())
-	}
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowbuildidBodyDefault string
-	workflowbuildidBody := &workflowbuildidBodyDefault
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid-body", &workflowbuildidBody)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid-body": ` + err.Error())
-	}
-	var workflowbuildversionDefault int32
-	workflowbuildversion := &workflowbuildversionDefault
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildversion", &workflowbuildversion)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildversion": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowRunPost{
-
-		Description:          description,
-		Ended:                ended,
-		Failuremessage:       failuremessage,
-		Id:                   id,
-		Inputdata:            inputdata,
-		Name:                 name,
-		Outputdata:           outputdata,
-		Started:              started,
-		Status:               status,
-		Timeoutsecs:          timeoutsecs,
-		Workflowbuildid:      workflowbuildidBody,
-		Workflowbuildversion: workflowbuildversion,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.CreateWorkflowRun(workflowid, workflowbuildid, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// DeleteActionByIdForRule Deletes the action with the specified ID that is associated with the specified rule resource name.
+// DeleteActionByIdForRule Deletes the action with the specified ID that is associated with the specified rule.
 func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -1998,16 +1171,16 @@ func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteActionByIdForRule(ruleresourcename, actionid)
+	err = client.CatalogService.DeleteActionByIdForRule(ruleresource, actionid)
 	if err != nil {
 		return err
 	}
@@ -2015,39 +1188,8 @@ func DeleteActionByIdForRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteActionByIdForRuleById Deletes the action with the specified ID that is associated with the specified rule.
-func DeleteActionByIdForRuleById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteActionByIdForRuleById(ruleid, actionid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteAnnotationOfDashboardById Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
-func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
+// DeleteAnnotationOfDashboard Deletes the annotation with the speciifed ID that is associted with the specified dashboard.
+func DeleteAnnotationOfDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -2060,16 +1202,16 @@ func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "annotationid": ` + err.Error())
 	}
-	var dashboardid string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardid", &dashboardid)
+	var dashboardresource string
+	err = flags.ParseFlag(cmd.Flags(), "dashboardresource", &dashboardresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
+		return fmt.Errorf(`error parsing "dashboardresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteAnnotationOfDashboardById(dashboardid, annotationid)
+	err = client.CatalogService.DeleteAnnotationOfDashboard(dashboardresource, annotationid)
 	if err != nil {
 		return err
 	}
@@ -2077,8 +1219,8 @@ func DeleteAnnotationOfDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteAnnotationOfDashboardByResourceName Deletes the annotation with the specified ID that is associated with the specified dashboard resource name.
-func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string) error {
+// DeleteAnnotationOfDataset Deletes the annotation with the specified ID that is associated with the specified dataset.
+func DeleteAnnotationOfDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -2091,16 +1233,16 @@ func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string
 	if err != nil {
 		return fmt.Errorf(`error parsing "annotationid": ` + err.Error())
 	}
-	var dashboardresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardresourcename", &dashboardresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteAnnotationOfDashboardByResourceName(dashboardresourcename, annotationid)
+	err = client.CatalogService.DeleteAnnotationOfDataset(datasetresource, annotationid)
 	if err != nil {
 		return err
 	}
@@ -2108,8 +1250,8 @@ func DeleteAnnotationOfDashboardByResourceName(cmd *cobra.Command, args []string
 	return nil
 }
 
-// DeleteAnnotationOfDatasetById Deletes the annotation with the specified ID that is associated with the specified dataset.
-func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
+// DeleteDashboard Deletes the dashboard with the specified ID or resource name.
+func DeleteDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -2117,21 +1259,16 @@ func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var annotationid string
-	err = flags.ParseFlag(cmd.Flags(), "annotationid", &annotationid)
+	var dashboardresource string
+	err = flags.ParseFlag(cmd.Flags(), "dashboardresource", &dashboardresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "annotationid": ` + err.Error())
-	}
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+		return fmt.Errorf(`error parsing "dashboardresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteAnnotationOfDatasetById(datasetid, annotationid)
+	err = client.CatalogService.DeleteDashboard(dashboardresource)
 	if err != nil {
 		return err
 	}
@@ -2139,90 +1276,7 @@ func DeleteAnnotationOfDatasetById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteAnnotationOfDatasetByResourceName Deletes the annotation with the specified iD that is associated with the specified dataset resource name.
-func DeleteAnnotationOfDatasetByResourceName(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var annotationid string
-	err = flags.ParseFlag(cmd.Flags(), "annotationid", &annotationid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "annotationid": ` + err.Error())
-	}
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteAnnotationOfDatasetByResourceName(datasetresourcename, annotationid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteDashboardById Deletes the dashboard with the specified ID.
-func DeleteDashboardById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var dashboardid string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardid", &dashboardid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteDashboardById(dashboardid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteDashboardByResourceName Deletes the dashboard with the specified resource name.
-func DeleteDashboardByResourceName(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var dashboardresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardresourcename", &dashboardresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteDashboardByResourceName(dashboardresourcename)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteDataset Deletes the dataset with the specified resource name, along with its dependencies. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// DeleteDataset Deletes the dataset with the specified ID or resource name. Deleting a dataset also deletes its dependent objects, such as fields.
 func DeleteDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2231,42 +1285,16 @@ func DeleteDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteDataset(datasetresourcename)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteDatasetById Deletes the dataset with the specified ID. Deleting a dataset also deletes its dependent objects, such as fields.
-func DeleteDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteDatasetById(datasetid)
+	err = client.CatalogService.DeleteDataset(datasetresource)
 	if err != nil {
 		return err
 	}
@@ -2283,10 +1311,10 @@ func DeleteFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var fieldid string
 	err = flags.ParseFlag(cmd.Flags(), "fieldid", &fieldid)
@@ -2297,38 +1325,7 @@ func DeleteFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteFieldByIdForDataset(datasetresourcename, fieldid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteFieldByIdForDatasetById Deletes the field with the specified ID that is part of the specified dataset.
-func DeleteFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var fieldid string
-	err = flags.ParseFlag(cmd.Flags(), "fieldid", &fieldid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteFieldByIdForDatasetById(datasetid, fieldid)
+	err = client.CatalogService.DeleteFieldByIdForDataset(datasetresource, fieldid)
 	if err != nil {
 		return err
 	}
@@ -2362,7 +1359,7 @@ func DeleteRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteRule Deletes the rule with the specified resource name and its dependencies.
+// DeleteRule Deletes the rule with the specfied ID or resource name. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
 func DeleteRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2371,16 +1368,16 @@ func DeleteRule(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	err = client.CatalogService.DeleteRule(ruleresourcename)
+	err = client.CatalogService.DeleteRule(ruleresource)
 	if err != nil {
 		return err
 	}
@@ -2388,126 +1385,7 @@ func DeleteRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// DeleteRuleById Deletes the rule with the specfied ID. Deleting a rule also deleletes any objects that are dependents of that rule, such as rule actions.
-func DeleteRuleById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteRuleById(ruleid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteWorkflowBuildById Deletes the workflow build with the specified workflow build ID.
-func DeleteWorkflowBuildById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteWorkflowBuildById(workflowid, workflowbuildid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteWorkflowById Deletes the workflow with the specified workflow ID.
-func DeleteWorkflowById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteWorkflowById(workflowid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// DeleteWorkflowRunById Deletes the workflow run with the specified workflow run ID.
-func DeleteWorkflowRunById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	var workflowrunid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowrunid", &workflowrunid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowrunid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.DeleteWorkflowRunById(workflowid, workflowbuildid, workflowrunid)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetActionByIdForRule Returns the action with the specified ID that is associated with the specified rule resource name.
+// GetActionByIdForRule Returns information about the action with the specified ID that is associated with the specified rule.
 func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2521,16 +1399,16 @@ func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetActionByIdForRule(ruleresourcename, actionid)
+	resp, err := client.CatalogService.GetActionByIdForRule(ruleresource, actionid)
 	if err != nil {
 		return err
 	}
@@ -2538,8 +1416,8 @@ func GetActionByIdForRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetActionByIdForRuleById Returns information about the action with the specified ID that is associated with the specified rule.
-func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
+// GetDashboard Returns information about the dashboard with the specified ID or resource name.
+func GetDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -2547,21 +1425,16 @@ func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
+	var dashboardresource string
+	err = flags.ParseFlag(cmd.Flags(), "dashboardresource", &dashboardresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
+		return fmt.Errorf(`error parsing "dashboardresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetActionByIdForRuleById(ruleid, actionid)
+	resp, err := client.CatalogService.GetDashboard(dashboardresource)
 	if err != nil {
 		return err
 	}
@@ -2569,59 +1442,7 @@ func GetActionByIdForRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetDashboardById Returns information about the dashboard with the specified ID.
-func GetDashboardById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var dashboardid string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardid", &dashboardid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetDashboardById(dashboardid)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetDashboardByResourceName Returns information about the dashboard with the specified resource name.
-func GetDashboardByResourceName(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var dashboardresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardresourcename", &dashboardresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetDashboardByResourceName(dashboardresourcename)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetDataset Returns the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// GetDataset Returns information about the dataset with the specified ID or resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
 func GetDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2630,10 +1451,10 @@ func GetDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var maxstaleDefault int32
 	maxstale := &maxstaleDefault
@@ -2648,42 +1469,7 @@ func GetDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetDataset(datasetresourcename, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetDatasetById Returns information about the dataset with the specified ID.
-func GetDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var maxstaleDefault int32
-	maxstale := &maxstaleDefault
-	err = flags.ParseFlag(cmd.Flags(), "maxstale", &maxstale)
-	if err != nil {
-		return fmt.Errorf(`error parsing "maxstale": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.GetDatasetByIdQueryParams{}
-	generated_query.Maxstale = maxstale
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetDatasetById(datasetid, &generated_query)
+	resp, err := client.CatalogService.GetDataset(datasetresource, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -2726,10 +1512,10 @@ func GetFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var fieldid string
 	err = flags.ParseFlag(cmd.Flags(), "fieldid", &fieldid)
@@ -2740,38 +1526,7 @@ func GetFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetFieldByIdForDataset(datasetresourcename, fieldid)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetFieldByIdForDatasetById Returns the field with the specified ID that is part of the specified dataset.
-func GetFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var fieldid string
-	err = flags.ParseFlag(cmd.Flags(), "fieldid", &fieldid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetFieldByIdForDatasetById(datasetid, fieldid)
+	resp, err := client.CatalogService.GetFieldByIdForDataset(datasetresource, fieldid)
 	if err != nil {
 		return err
 	}
@@ -2805,7 +1560,7 @@ func GetRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRule Returrns the rule with the specified resource name.
+// GetRule Returns information about rule with the specified rule ID or resource name.
 func GetRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2814,16 +1569,16 @@ func GetRule(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetRule(ruleresourcename)
+	resp, err := client.CatalogService.GetRule(ruleresource)
 	if err != nil {
 		return err
 	}
@@ -2831,8 +1586,8 @@ func GetRule(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetRuleById Returns information about rule with the specified rule ID.
-func GetRuleById(cmd *cobra.Command, args []string) error {
+// ImportDataset Creates a new dataset import using the ID or resource name of the imported dataset.
+func ImportDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -2840,16 +1595,39 @@ func GetRuleById(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
+	}
+	var module string
+	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	if err != nil {
+		return fmt.Errorf(`error parsing "module": ` + err.Error())
+	}
+	var nameDefault string
+	name := &nameDefault
+	err = flags.ParseFlag(cmd.Flags(), "name", &name)
+	if err != nil {
+		return fmt.Errorf(`error parsing "name": ` + err.Error())
+	}
+	var owner string
+	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
+	if err != nil {
+		return fmt.Errorf(`error parsing "owner": ` + err.Error())
+	}
+	// Form the request body
+	generated_request_body := model.DatasetImportedBy{
+
+		Module: module,
+		Name:   name,
+		Owner:  owner,
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.GetRuleById(ruleid)
+	resp, err := client.CatalogService.ImportDataset(datasetresource, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -2857,100 +1635,7 @@ func GetRuleById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// GetWorkflowBuildById Returns information about the workflow build with the specified workflow build ID.
-func GetWorkflowBuildById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetWorkflowBuildById(workflowid, workflowbuildid)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetWorkflowById Returns information about the workflow with the specified workflow ID.
-func GetWorkflowById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetWorkflowById(workflowid)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// GetWorkflowRunById Returns information about the workflow run with the specified workflow build ID.
-func GetWorkflowRunById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	var workflowrunid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowrunid", &workflowrunid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowrunid": ` + err.Error())
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.GetWorkflowRunById(workflowid, workflowbuildid, workflowrunid)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListActionsForRule Returns the list of actions that are associated with the specified rule.
+// ListActionsForRule Returns the set of actions that are part of the specified rule.
 func ListActionsForRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -2981,10 +1666,10 @@ func ListActionsForRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	// Form query params
 	generated_query := model.ListActionsForRuleQueryParams{}
@@ -2996,61 +1681,7 @@ func ListActionsForRule(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.ListActionsForRule(ruleresourcename, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListActionsForRuleById Returns the set of actions that are part of the specified rule.
-func ListActionsForRuleById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListActionsForRuleByIdQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListActionsForRuleById(ruleid, &generated_query)
+	resp, err := client.CatalogService.ListActionsForRule(ruleresource, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -3107,8 +1738,8 @@ func ListAnnotations(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotationsForDashboardById Returns the set of annotations that are associated with the specified dashboard.
-func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
+// ListAnnotationsForDashboard Returns the set of annotations that are associated with the specified dashboard.
+func ListAnnotationsForDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -3116,10 +1747,10 @@ func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var dashboardid string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardid", &dashboardid)
+	var dashboardresource string
+	err = flags.ParseFlag(cmd.Flags(), "dashboardresource", &dashboardresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
+		return fmt.Errorf(`error parsing "dashboardresource": ` + err.Error())
 	}
 	var filter string
 	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
@@ -3127,13 +1758,13 @@ func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "filter": ` + err.Error())
 	}
 	// Form query params
-	generated_query := model.ListAnnotationsForDashboardByIdQueryParams{}
+	generated_query := model.ListAnnotationsForDashboardQueryParams{}
 	generated_query.Filter = filter
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.ListAnnotationsForDashboardById(dashboardid, &generated_query)
+	resp, err := client.CatalogService.ListAnnotationsForDashboard(dashboardresource, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -3141,42 +1772,8 @@ func ListAnnotationsForDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListAnnotationsForDashboardByResourceName Returns the set of annotations that are associated with the specified dashboard resource name.
-func ListAnnotationsForDashboardByResourceName(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var dashboardresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardresourcename", &dashboardresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListAnnotationsForDashboardByResourceNameQueryParams{}
-	generated_query.Filter = filter
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListAnnotationsForDashboardByResourceName(dashboardresourcename, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListAnnotationsForDatasetById Returns the set of annotations that are associated with the specified dataset.
-func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
+// ListAnnotationsForDataset Returns the set of annotations that are associated with the specified dataset.
+func ListAnnotationsForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -3190,10 +1787,10 @@ func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var filter string
 	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
@@ -3212,7 +1809,7 @@ func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
 	}
 	// Form query params
-	generated_query := model.ListAnnotationsForDatasetByIdQueryParams{}
+	generated_query := model.ListAnnotationsForDatasetQueryParams{}
 	generated_query.Count = count
 	generated_query.Filter = filter
 	generated_query.Offset = offset
@@ -3221,61 +1818,7 @@ func ListAnnotationsForDatasetById(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.ListAnnotationsForDatasetById(datasetid, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListAnnotationsForDatasetByResourceName Returns the set of annotations that are associated with the specified dataset resource name.
-func ListAnnotationsForDatasetByResourceName(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListAnnotationsForDatasetByResourceNameQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListAnnotationsForDatasetByResourceName(datasetresourcename, &generated_query)
+	resp, err := client.CatalogService.ListAnnotationsForDataset(datasetresource, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -3437,7 +1980,7 @@ func ListFields(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListFieldsForDataset Returns the list of fields in the specified dataset.
+// ListFieldsForDataset Returns the set of fields for the dataset with the specified ID or resource name.
 func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3452,10 +1995,10 @@ func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "count": ` + err.Error())
 	}
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var filter string
 	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
@@ -3483,61 +2026,7 @@ func ListFieldsForDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.ListFieldsForDataset(datasetresourcename, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListFieldsForDatasetById Returns the set of fields for the dataset with the specified ID.
-func ListFieldsForDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListFieldsForDatasetByIdQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListFieldsForDatasetById(datasetid, &generated_query)
+	resp, err := client.CatalogService.ListFieldsForDataset(datasetresource, &generated_query)
 	if err != nil {
 		return err
 	}
@@ -3672,169 +2161,7 @@ func ListRules(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// ListWorkflowBuilds Returns a list of Machine Learning workflow builds.
-func ListWorkflowBuilds(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListWorkflowBuildsQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListWorkflowBuilds(workflowid, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListWorkflowRuns Returns a list of Machine Learning workflow runs for specified workflow build ID.
-func ListWorkflowRuns(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListWorkflowRunsQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListWorkflowRuns(workflowid, workflowbuildid, &generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// ListWorkflows Return a list of Machine Learning workflow configurations.
-func ListWorkflows(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var countDefault int32
-	count := &countDefault
-	err = flags.ParseFlag(cmd.Flags(), "count", &count)
-	if err != nil {
-		return fmt.Errorf(`error parsing "count": ` + err.Error())
-	}
-	var filter string
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var offsetDefault int32
-	offset := &offsetDefault
-	err = flags.ParseFlag(cmd.Flags(), "offset", &offset)
-	if err != nil {
-		return fmt.Errorf(`error parsing "offset": ` + err.Error())
-	}
-	var orderby []string
-	err = flags.ParseFlag(cmd.Flags(), "orderby", &orderby)
-	if err != nil {
-		return fmt.Errorf(`error parsing "orderby": ` + err.Error())
-	}
-	// Form query params
-	generated_query := model.ListWorkflowsQueryParams{}
-	generated_query.Count = count
-	generated_query.Filter = filter
-	generated_query.Offset = offset
-	generated_query.Orderby = orderby
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.ListWorkflows(&generated_query)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleAliasAction Modifies the action with the specified ID that is associated with the specified rule resource name.
+// UpdateActionByIdForRuleAliasAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3872,10 +2199,10 @@ func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error
 	if err != nil {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -3896,7 +2223,7 @@ func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromAliasActionPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresource, actionid, model.MakeActionPatchFromAliasActionPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -3904,7 +2231,7 @@ func UpdateActionByIdForRuleAliasAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// UpdateActionByIdForRuleAutoKvAction Modifies the action with the specified ID that is associated with the specified rule resource name.
+// UpdateActionByIdForRuleAutoKvAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -3936,10 +2263,10 @@ func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) erro
 	if err != nil {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -3959,7 +2286,7 @@ func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) erro
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromAutoKvActionPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresource, actionid, model.MakeActionPatchFromAutoKvActionPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -3967,350 +2294,7 @@ func UpdateActionByIdForRuleAutoKvAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// UpdateActionByIdForRuleByIdAliasAction Modifies the action with the specified ID that is associated with the specified rule.
-func UpdateActionByIdForRuleByIdAliasAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var aliasDefault string
-	alias := &aliasDefault
-	err = flags.ParseFlag(cmd.Flags(), "alias", &alias)
-	if err != nil {
-		return fmt.Errorf(`error parsing "alias": ` + err.Error())
-	}
-	var fieldDefault string
-	field := &fieldDefault
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var kindDefault model.AliasActionKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.AliasActionPatch{
-
-		Alias:   alias,
-		Field:   field,
-		Kind:    kind,
-		Owner:   owner,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromAliasActionPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleByIdAutoKvAction Modifies the action with the specified ID that is associated with the specified rule.
-func UpdateActionByIdForRuleByIdAutoKvAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var kindDefault model.AutoKvActionKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var modeDefault string
-	mode := &modeDefault
-	err = flags.ParseFlag(cmd.Flags(), "mode", &mode)
-	if err != nil {
-		return fmt.Errorf(`error parsing "mode": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.AutoKvActionPatch{
-
-		Kind:    kind,
-		Mode:    mode,
-		Owner:   owner,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromAutoKvActionPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleByIdEvalAction Modifies the action with the specified ID that is associated with the specified rule.
-func UpdateActionByIdForRuleByIdEvalAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var expressionDefault string
-	expression := &expressionDefault
-	err = flags.ParseFlag(cmd.Flags(), "expression", &expression)
-	if err != nil {
-		return fmt.Errorf(`error parsing "expression": ` + err.Error())
-	}
-	var fieldDefault string
-	field := &fieldDefault
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var kindDefault model.EvalActionKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.EvalActionPatch{
-
-		Expression: expression,
-		Field:      field,
-		Kind:       kind,
-		Owner:      owner,
-		Version:    version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromEvalActionPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleByIdLookupAction Modifies the action with the specified ID that is associated with the specified rule.
-func UpdateActionByIdForRuleByIdLookupAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var expressionDefault string
-	expression := &expressionDefault
-	err = flags.ParseFlag(cmd.Flags(), "expression", &expression)
-	if err != nil {
-		return fmt.Errorf(`error parsing "expression": ` + err.Error())
-	}
-	var kindDefault model.LookupActionKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.LookupActionPatch{
-
-		Expression: expression,
-		Kind:       kind,
-		Owner:      owner,
-		Version:    version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromLookupActionPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleByIdRegexAction Modifies the action with the specified ID that is associated with the specified rule.
-func UpdateActionByIdForRuleByIdRegexAction(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var actionid string
-	err = flags.ParseFlag(cmd.Flags(), "actionid", &actionid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "actionid": ` + err.Error())
-	}
-	var fieldDefault string
-	field := &fieldDefault
-	err = flags.ParseFlag(cmd.Flags(), "field", &field)
-	if err != nil {
-		return fmt.Errorf(`error parsing "field": ` + err.Error())
-	}
-	var kindDefault model.RegexActionKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var limitDefault int32
-	limit := &limitDefault
-	err = flags.ParseFlag(cmd.Flags(), "limit", &limit)
-	if err != nil {
-		return fmt.Errorf(`error parsing "limit": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var patternDefault string
-	pattern := &patternDefault
-	err = flags.ParseFlag(cmd.Flags(), "pattern", &pattern)
-	if err != nil {
-		return fmt.Errorf(`error parsing "pattern": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.RegexActionPatch{
-
-		Field:   field,
-		Kind:    kind,
-		Limit:   limit,
-		Owner:   owner,
-		Pattern: pattern,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateActionByIdForRuleById(ruleid, actionid, model.MakeActionPatchFromRegexActionPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateActionByIdForRuleEvalAction Modifies the action with the specified ID that is associated with the specified rule resource name.
+// UpdateActionByIdForRuleEvalAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4348,10 +2332,10 @@ func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error 
 	if err != nil {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -4372,7 +2356,7 @@ func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromEvalActionPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresource, actionid, model.MakeActionPatchFromEvalActionPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -4380,7 +2364,7 @@ func UpdateActionByIdForRuleEvalAction(cmd *cobra.Command, args []string) error 
 	return nil
 }
 
-// UpdateActionByIdForRuleLookupAction Modifies the action with the specified ID that is associated with the specified rule resource name.
+// UpdateActionByIdForRuleLookupAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4412,10 +2396,10 @@ func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) erro
 	if err != nil {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -4435,7 +2419,7 @@ func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) erro
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromLookupActionPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresource, actionid, model.MakeActionPatchFromLookupActionPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -4443,7 +2427,7 @@ func UpdateActionByIdForRuleLookupAction(cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-// UpdateActionByIdForRuleRegexAction Modifies the action with the specified ID that is associated with the specified rule resource name.
+// UpdateActionByIdForRuleRegexAction Modifies the action with the specified ID that is associated with the specified rule.
 func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -4487,10 +2471,10 @@ func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error
 	if err != nil {
 		return fmt.Errorf(`error parsing "pattern": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -4512,7 +2496,7 @@ func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresourcename, actionid, model.MakeActionPatchFromRegexActionPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateActionByIdForRule(ruleresource, actionid, model.MakeActionPatchFromRegexActionPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -4520,8 +2504,8 @@ func UpdateActionByIdForRuleRegexAction(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// UpdateDashboardById Modifies the dashboard with the specified ID.
-func UpdateDashboardById(cmd *cobra.Command, args []string) error {
+// UpdateDashboard Modifies the dashboard with the specified ID or resource name.
+func UpdateDashboard(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -4529,10 +2513,10 @@ func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var dashboardid string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardid", &dashboardid)
+	var dashboardresource string
+	err = flags.ParseFlag(cmd.Flags(), "dashboardresource", &dashboardresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardid": ` + err.Error())
+		return fmt.Errorf(`error parsing "dashboardresource": ` + err.Error())
 	}
 	var definitionDefault string
 	definition := &definitionDefault
@@ -4577,7 +2561,7 @@ func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDashboardById(dashboardid, generated_request_body)
+	resp, err := client.CatalogService.UpdateDashboard(dashboardresource, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -4585,8 +2569,8 @@ func UpdateDashboardById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDashboardByResourceName Modifies the dashboard with the specified resource name.
-func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
+// UpdateDatasetFederatedDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
+func UpdateDatasetFederatedDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
 	if err != nil {
@@ -4594,140 +2578,30 @@ func UpdateDashboardByResourceName(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var dashboardresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "dashboardresourcename", &dashboardresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "dashboardresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
-	var definitionDefault string
-	definition := &definitionDefault
-	err = flags.ParseFlag(cmd.Flags(), "definition", &definition)
+	var federatedConnectionDefault string
+	federatedConnection := &federatedConnectionDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-connection", &federatedConnection)
 	if err != nil {
-		return fmt.Errorf(`error parsing "definition": ` + err.Error())
+		return fmt.Errorf(`error parsing "federated-connection": ` + err.Error())
 	}
-	var isactiveDefault bool
-	isactive := &isactiveDefault
-	err = flags.ParseFlag(cmd.Flags(), "isactive", &isactive)
+	var federatedDatasetDefault string
+	federatedDataset := &federatedDatasetDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset", &federatedDataset)
 	if err != nil {
-		return fmt.Errorf(`error parsing "isactive": ` + err.Error())
+		return fmt.Errorf(`error parsing "federated-dataset": ` + err.Error())
 	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
+	var federatedDatasetKindDefault string
+	federatedDatasetKind := &federatedDatasetKindDefault
+	err = flags.ParseFlag(cmd.Flags(), "federated-dataset-kind", &federatedDatasetKind)
 	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
+		return fmt.Errorf(`error parsing "federated-dataset-kind": ` + err.Error())
 	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.DashboardPatch{
-
-		Definition: definition,
-		Isactive:   isactive,
-		Module:     module,
-		Name:       name,
-		Version:    version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.UpdateDashboardByResourceName(dashboardresourcename, generated_request_body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// UpdateDatasetByIdImportDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdImportDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.ImportDatasetPatch{
-
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromImportDatasetPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateDatasetByIdIndexDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var disabledDefault bool
-	disabled := &disabledDefault
-	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
-	if err != nil {
-		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
-	}
-	var frozenTimePeriodInSecsDefault int32
-	frozenTimePeriodInSecs := &frozenTimePeriodInSecsDefault
-	err = flags.ParseFlag(cmd.Flags(), "frozen-time-period-in-secs", &frozenTimePeriodInSecs)
-	if err != nil {
-		return fmt.Errorf(`error parsing "frozen-time-period-in-secs": ` + err.Error())
-	}
-	var kindDefault model.IndexDatasetKind
+	var kindDefault model.FederatedDatasetKind
 	kind := &kindDefault
 	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
 	if err != nil {
@@ -4752,20 +2626,21 @@ func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
 	// Form the request body
-	generated_request_body := model.IndexDatasetPatch{
+	generated_request_body := model.FederatedDatasetPatch{
 
-		Disabled:               disabled,
-		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
-		Kind:                   kind,
-		Module:                 module,
-		Name:                   name,
-		Owner:                  owner,
+		FederatedConnection:  federatedConnection,
+		FederatedDataset:     federatedDataset,
+		FederatedDatasetKind: federatedDatasetKind,
+		Kind:                 kind,
+		Module:               module,
+		Name:                 name,
+		Owner:                owner,
 	}
 
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromFederatedDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -4773,288 +2648,7 @@ func UpdateDatasetByIdIndexDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetByIdKvCollectionDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdKvCollectionDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var kindDefault model.KvCollectionDatasetKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.KvCollectionDatasetPatch{
-
-		Kind:   kind,
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateDatasetByIdLookupDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdLookupDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var caseSensitiveMatchDefault bool
-	caseSensitiveMatch := &caseSensitiveMatchDefault
-	err = flags.ParseFlag(cmd.Flags(), "case-sensitive-match", &caseSensitiveMatch)
-	if err != nil {
-		return fmt.Errorf(`error parsing "case-sensitive-match": ` + err.Error())
-	}
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var externalKindDefault model.LookupDatasetExternalKind
-	externalKind := &externalKindDefault
-	err = flags.ParseFlag(cmd.Flags(), "external-kind", &externalKind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-kind": ` + err.Error())
-	}
-	var externalNameDefault string
-	externalName := &externalNameDefault
-	err = flags.ParseFlag(cmd.Flags(), "external-name", &externalName)
-	if err != nil {
-		return fmt.Errorf(`error parsing "external-name": ` + err.Error())
-	}
-	var filterDefault string
-	filter := &filterDefault
-	err = flags.ParseFlag(cmd.Flags(), "filter", &filter)
-	if err != nil {
-		return fmt.Errorf(`error parsing "filter": ` + err.Error())
-	}
-	var kindDefault model.LookupDatasetKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.LookupDatasetPatch{
-
-		CaseSensitiveMatch: caseSensitiveMatch,
-		ExternalKind:       externalKind,
-		ExternalName:       externalName,
-		Filter:             filter,
-		Kind:               kind,
-		Module:             module,
-		Name:               name,
-		Owner:              owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateDatasetByIdMetricDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdMetricDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var disabledDefault bool
-	disabled := &disabledDefault
-	err = flags.ParseFlag(cmd.Flags(), "disabled", &disabled)
-	if err != nil {
-		return fmt.Errorf(`error parsing "disabled": ` + err.Error())
-	}
-	var frozenTimePeriodInSecsDefault int32
-	frozenTimePeriodInSecs := &frozenTimePeriodInSecsDefault
-	err = flags.ParseFlag(cmd.Flags(), "frozen-time-period-in-secs", &frozenTimePeriodInSecs)
-	if err != nil {
-		return fmt.Errorf(`error parsing "frozen-time-period-in-secs": ` + err.Error())
-	}
-	var kindDefault model.MetricDatasetKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.MetricDatasetPatch{
-
-		Disabled:               disabled,
-		FrozenTimePeriodInSecs: frozenTimePeriodInSecs,
-		Kind:                   kind,
-		Module:                 module,
-		Name:                   name,
-		Owner:                  owner,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateDatasetByIdViewDataset Modifies the dataset with the specified ID.
-func UpdateDatasetByIdViewDataset(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var kindDefault model.ViewDatasetKind
-	kind := &kindDefault
-	err = flags.ParseFlag(cmd.Flags(), "kind", &kind)
-	if err != nil {
-		return fmt.Errorf(`error parsing "kind": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var searchDefault string
-	search := &searchDefault
-	err = flags.ParseFlag(cmd.Flags(), "search", &search)
-	if err != nil {
-		return fmt.Errorf(`error parsing "search": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.ViewDatasetPatch{
-
-		Kind:   kind,
-		Module: module,
-		Name:   name,
-		Owner:  owner,
-		Search: search,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateDatasetById(datasetid, model.MakeDatasetPatchFromViewDatasetPatch(generated_request_body))
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateDatasetImportDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetImportDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5063,10 +2657,10 @@ func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var moduleDefault string
 	module := &moduleDefault
@@ -5097,7 +2691,7 @@ func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromImportDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromImportDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5105,7 +2699,7 @@ func UpdateDatasetImportDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetIndexDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetIndexDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5114,10 +2708,10 @@ func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var disabledDefault bool
 	disabled := &disabledDefault
@@ -5169,7 +2763,7 @@ func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromIndexDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5177,7 +2771,7 @@ func UpdateDatasetIndexDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetKvCollectionDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetKvCollectionDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5186,10 +2780,10 @@ func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var kindDefault model.KvCollectionDatasetKind
 	kind := &kindDefault
@@ -5227,7 +2821,7 @@ func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromKvCollectionDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5235,7 +2829,7 @@ func UpdateDatasetKvCollectionDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetLookupDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetLookupDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5250,10 +2844,10 @@ func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "case-sensitive-match": ` + err.Error())
 	}
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var externalKindDefault model.LookupDatasetExternalKind
 	externalKind := &externalKindDefault
@@ -5313,7 +2907,7 @@ func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromLookupDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5321,7 +2915,7 @@ func UpdateDatasetLookupDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetMetricDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetMetricDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5330,10 +2924,10 @@ func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var disabledDefault bool
 	disabled := &disabledDefault
@@ -5385,7 +2979,7 @@ func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromMetricDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5393,7 +2987,7 @@ func UpdateDatasetMetricDataset(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateDatasetViewDataset Modifies the dataset with the specified resource name. For the default module, the resource name format is datasetName. Otherwise, the resource name format is module.datasetName.
+// UpdateDatasetViewDataset Modifies the dataset with the specified Dataset ID or Resource Name. For the default module, the resource name format is datasetName, otherwise, the resource name format is module.datasetName.
 func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5402,10 +2996,10 @@ func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var kindDefault model.ViewDatasetKind
 	kind := &kindDefault
@@ -5450,7 +3044,7 @@ func UpdateDatasetViewDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateDataset(datasetresourcename, model.MakeDatasetPatchFromViewDatasetPatch(generated_request_body))
+	resp, err := client.CatalogService.UpdateDataset(datasetresource, model.MakeDatasetPatchFromViewDatasetPatch(generated_request_body))
 	if err != nil {
 		return err
 	}
@@ -5467,10 +3061,10 @@ func UpdateFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	}
 	// Parse all flags
 
-	var datasetresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "datasetresourcename", &datasetresourcename)
+	var datasetresource string
+	err = flags.ParseFlag(cmd.Flags(), "datasetresource", &datasetresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "datasetresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "datasetresource": ` + err.Error())
 	}
 	var datatypeDefault model.FieldDataType
 	datatype := &datatypeDefault
@@ -5541,98 +3135,7 @@ func UpdateFieldByIdForDataset(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateFieldByIdForDataset(datasetresourcename, fieldid, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateFieldByIdForDatasetById Modifies the field with the specified ID that is part of the specified dataset.
-func UpdateFieldByIdForDatasetById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var datasetid string
-	err = flags.ParseFlag(cmd.Flags(), "datasetid", &datasetid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datasetid": ` + err.Error())
-	}
-	var datatypeDefault model.FieldDataType
-	datatype := &datatypeDefault
-	err = flags.ParseFlag(cmd.Flags(), "datatype", &datatype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "datatype": ` + err.Error())
-	}
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var fieldid string
-	err = flags.ParseFlag(cmd.Flags(), "fieldid", &fieldid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "fieldid": ` + err.Error())
-	}
-	var fieldtypeDefault model.FieldType
-	fieldtype := &fieldtypeDefault
-	err = flags.ParseFlag(cmd.Flags(), "fieldtype", &fieldtype)
-	if err != nil {
-		return fmt.Errorf(`error parsing "fieldtype": ` + err.Error())
-	}
-	var indexedDefault bool
-	indexed := &indexedDefault
-	err = flags.ParseFlag(cmd.Flags(), "indexed", &indexed)
-	if err != nil {
-		return fmt.Errorf(`error parsing "indexed": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var prevalenceDefault model.FieldPrevalence
-	prevalence := &prevalenceDefault
-	err = flags.ParseFlag(cmd.Flags(), "prevalence", &prevalence)
-	if err != nil {
-		return fmt.Errorf(`error parsing "prevalence": ` + err.Error())
-	}
-	var summaryDefault string
-	summary := &summaryDefault
-	err = flags.ParseFlag(cmd.Flags(), "summary", &summary)
-	if err != nil {
-		return fmt.Errorf(`error parsing "summary": ` + err.Error())
-	}
-	var titleDefault string
-	title := &titleDefault
-	err = flags.ParseFlag(cmd.Flags(), "title", &title)
-	if err != nil {
-		return fmt.Errorf(`error parsing "title": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.FieldPatch{
-
-		Datatype:    datatype,
-		Description: description,
-		Fieldtype:   fieldtype,
-		Indexed:     indexed,
-		Name:        name,
-		Prevalence:  prevalence,
-		Summary:     summary,
-		Title:       title,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateFieldByIdForDatasetById(datasetid, fieldid, generated_request_body)
+	resp, err := client.CatalogService.UpdateFieldByIdForDataset(datasetresource, fieldid, generated_request_body)
 	if err != nil {
 		return err
 	}
@@ -5684,7 +3187,7 @@ func UpdateRelationshipById(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// UpdateRule Modifies the rule with the specified resource name.
+// UpdateRule Modifies the rule with the specified rule ID or resource name.
 func UpdateRule(cmd *cobra.Command, args []string) error {
 
 	client, err := auth.GetClient()
@@ -5717,10 +3220,10 @@ func UpdateRule(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf(`error parsing "owner": ` + err.Error())
 	}
-	var ruleresourcename string
-	err = flags.ParseFlag(cmd.Flags(), "ruleresourcename", &ruleresourcename)
+	var ruleresource string
+	err = flags.ParseFlag(cmd.Flags(), "ruleresource", &ruleresource)
 	if err != nil {
-		return fmt.Errorf(`error parsing "ruleresourcename": ` + err.Error())
+		return fmt.Errorf(`error parsing "ruleresource": ` + err.Error())
 	}
 	var versionDefault int32
 	version := &versionDefault
@@ -5741,236 +3244,10 @@ func UpdateRule(cmd *cobra.Command, args []string) error {
 	// Silence Usage
 	cmd.SilenceUsage = true
 
-	resp, err := client.CatalogService.UpdateRule(ruleresourcename, generated_request_body)
+	resp, err := client.CatalogService.UpdateRule(ruleresource, generated_request_body)
 	if err != nil {
 		return err
 	}
 	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateRuleById Modifies the rule with the specified rule ID.
-func UpdateRuleById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var matchDefault string
-	match := &matchDefault
-	err = flags.ParseFlag(cmd.Flags(), "match", &match)
-	if err != nil {
-		return fmt.Errorf(`error parsing "match": ` + err.Error())
-	}
-	var moduleDefault string
-	module := &moduleDefault
-	err = flags.ParseFlag(cmd.Flags(), "module", &module)
-	if err != nil {
-		return fmt.Errorf(`error parsing "module": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var ownerDefault string
-	owner := &ownerDefault
-	err = flags.ParseFlag(cmd.Flags(), "owner", &owner)
-	if err != nil {
-		return fmt.Errorf(`error parsing "owner": ` + err.Error())
-	}
-	var ruleid string
-	err = flags.ParseFlag(cmd.Flags(), "ruleid", &ruleid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "ruleid": ` + err.Error())
-	}
-	var versionDefault int32
-	version := &versionDefault
-	err = flags.ParseFlag(cmd.Flags(), "version", &version)
-	if err != nil {
-		return fmt.Errorf(`error parsing "version": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.RulePatch{
-
-		Match:   match,
-		Module:  module,
-		Name:    name,
-		Owner:   owner,
-		Version: version,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	resp, err := client.CatalogService.UpdateRuleById(ruleid, generated_request_body)
-	if err != nil {
-		return err
-	}
-	jsonx.Pprint(cmd, resp)
-	return nil
-}
-
-// UpdateWorkflowBuildById Modifies the workflow build with the specified workflow build ID.
-func UpdateWorkflowBuildById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var statusDefault string
-	status := &statusDefault
-	err = flags.ParseFlag(cmd.Flags(), "status", &status)
-	if err != nil {
-		return fmt.Errorf(`error parsing "status": ` + err.Error())
-	}
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowBuildPatch{
-
-		Description: description,
-		Name:        name,
-		Status:      status,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.UpdateWorkflowBuildById(workflowid, workflowbuildid, generated_request_body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// UpdateWorkflowById Modifies the workflow with the specified workflow ID.
-func UpdateWorkflowById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowPatch{
-
-		Description: description,
-		Name:        name,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.UpdateWorkflowById(workflowid, generated_request_body)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// UpdateWorkflowRunById Modifies the workflow run with the specified workflow run ID.
-func UpdateWorkflowRunById(cmd *cobra.Command, args []string) error {
-
-	client, err := auth.GetClient()
-	if err != nil {
-		return err
-	}
-	// Parse all flags
-
-	var descriptionDefault string
-	description := &descriptionDefault
-	err = flags.ParseFlag(cmd.Flags(), "description", &description)
-	if err != nil {
-		return fmt.Errorf(`error parsing "description": ` + err.Error())
-	}
-	var nameDefault string
-	name := &nameDefault
-	err = flags.ParseFlag(cmd.Flags(), "name", &name)
-	if err != nil {
-		return fmt.Errorf(`error parsing "name": ` + err.Error())
-	}
-	var statusDefault string
-	status := &statusDefault
-	err = flags.ParseFlag(cmd.Flags(), "status", &status)
-	if err != nil {
-		return fmt.Errorf(`error parsing "status": ` + err.Error())
-	}
-	var workflowbuildid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowbuildid", &workflowbuildid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowbuildid": ` + err.Error())
-	}
-	var workflowid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowid", &workflowid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowid": ` + err.Error())
-	}
-	var workflowrunid string
-	err = flags.ParseFlag(cmd.Flags(), "workflowrunid", &workflowrunid)
-	if err != nil {
-		return fmt.Errorf(`error parsing "workflowrunid": ` + err.Error())
-	}
-	// Form the request body
-	generated_request_body := model.WorkflowRunPatch{
-
-		Description: description,
-		Name:        name,
-		Status:      status,
-	}
-
-	// Silence Usage
-	cmd.SilenceUsage = true
-
-	err = client.CatalogService.UpdateWorkflowRunById(workflowid, workflowbuildid, workflowrunid, generated_request_body)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

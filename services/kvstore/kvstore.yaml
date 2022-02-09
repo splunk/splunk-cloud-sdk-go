@@ -17,7 +17,7 @@ components:
       schema:
         type: integer
     ChunkIndexParam:
-      description: Index of one chunk of collection in S3 bucket.
+      description: Index of one chunk of collection in snapshot.
       in: query
       name: chunkIndex
       required: true
@@ -77,10 +77,10 @@ components:
       required: true
       schema:
         type: string
-    LatestBucketTimeParam:
-      description: Latest bucket time of collection
+    LatestSnapshotTimeParam:
+      description: Latest snapshot time of collection
       in: query
-      name: latestBucketTime
+      name: latestSnapshotTime
       required: true
       schema:
         type: string
@@ -328,6 +328,24 @@ components:
       - code
       - message
       type: object
+    ExportConfiguration:
+      properties:
+        exportFields:
+          description: List of fields to export
+          items:
+            type: string
+          type: array
+      required:
+      - exportFields
+      type: object
+    ExportSnapshotResponse:
+      properties:
+        payloadBase64:
+          description: The binary value of chunk data
+          type: string
+      required:
+      - payloadBase64
+      type: object
     IndexDefinition:
       properties:
         fields:
@@ -474,17 +492,17 @@ components:
     SnapshotInfo:
       properties:
         chunkCount:
-          description: Number of chunks in the bucket
+          description: Number of chunks in the snapshot
           type: integer
         collection:
           description: The collection name.
           type: string
-        latestBucketTime:
-          description: Timestamp of latest bucket
+        latestSnapshotTime:
+          description: Timestamp of latest snapshot
           type: string
       required:
       - collection
-      - latestBucketTime
+      - latestSnapshotTime
       - chunkCount
       type: object
     TenantDescription:
@@ -980,4 +998,4 @@ paths:
 servers:
 - url: /
 
-# Retrieved from scp-openapi commit 790daec8c2c4866ae9ec2b7398e11e3d44d917b6 path: kvstore/v1beta1/openapi.yaml
+# Retrieved from scp-openapi commit 820564ba8a17697d087ff171b14cbad60a716ee3 path: kvstore/v1beta1/openapi.yaml
