@@ -1,5 +1,59 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.7
+#### Breaking Changes
+* `Catalog service`: 
+    * Apis whose name ends with `ById` have changed by removing `ById` in the name , and  apis whose name ends with `ByResourceName` have changed by removing `ByResourceName` in the name. In details, the following apis' names have changed: 
+	    * CreateActionForRuleById ->  CreateActionForRule
+	    * CreateAnnotationForDashboardbyId -> CreateAnnotationForDashboard
+	    * CreateAnnotationForDatasetById -> CreateAnnotationForDataset
+	    * CreateDatasetImportById -> CreateDatasetImport
+	    * CreateFieldForDatasetById -> CreateFieldForDataset
+	    * DeleteActionByIdForRuleById -> DeleteActionByIdForRule
+	    * DeleteAnnotationOfDashboardById -> DeleteAnnotationOfDashboard
+	    * DeleteAnnotationOfDatasetByResourceName -> DeleteAnnotationOfDataset
+	    * DeleteDashboardByResourceName -> DeleteDashboard
+	    * DeleteDatasetById -> DeleteDataset
+	    * DeleteFieldByIdForDatasetById -> DeleteFieldByIdForDataset
+	    * DeleteRuleById -> DeleteRule
+	    * GetActionByIdForRuleById -> GetActionByIdForRule
+	    * GetDashboardByResourceName -> GetDashboard
+	    * GetDatasetById -> GetDataset
+	    * GetFieldByIdForDatasetById -> GetFieldByIdForDataset
+	    * GetRuleById -> GetRule
+	    * ListActionsForRuleById -> ListActionsForRule
+	    * ListAnnotationsForDashboardById -> ListAnnotationsForDashboard
+	    * ListAnnotationsForDatasetByResourceName -> ListAnnotationsForDataset
+	    * ListFieldsForDatasetById -> ListFieldsForDataset
+	    * UpdateActionByIdForRuleById -> UpdateActionByIdForRule
+	    * UpdateDashboardByResourceName -> UpdateDashboard
+	    * UpdateDatasetById -> UpdateDataset
+	    * UpdateRuleById -> UpdateRule
+
+
+
+    * Apis of `CreateAnnotationForDashboardsByResourceName`, `CreateDatasetImportByIdv1`, `CreateWorkflow`, `CreateWorkflowBuild`, `CreateWorkflowRun`, `DeleteWorkflowBuildById`, `DeleteWorkflowById`, `GetWorkflowBuildById`, `GetWorkflowRunById`, `ListWorkflows`, `UpdateWorkflowBuildById` were removed
+
+* `Seach service`: `RefreshFederatedConnection()` and `TestFederatedConnection()` removed input parameter of `body` 
+
+#### Non-Breaking Changes 
+* New apis in `identity service`: `GetEntitlements`, `UpdateEntitlements`
+* New apis in `search sevice`: `CreateDataset`,`DeleteDatasetById`, `GetDatasetById`, `ListDatasets`, `GetAllFederatedConnections`
+
+#### Features
+
+## SCloud v8.0.0-beta.6
+
+#### Breaking Changes
+* Catalog: 
+    * Commands end with `by-id` has been changed by removing the `by-id` postfix
+    * Commands end with `by-resource-name` has been changed by removing the `by-resource-name` postfix
+    * Comands on workflow have been removed
+
+#### Non-Breaking Changes
+* New identity commands: `get-entitlements`, `update-entitlements`
+* New search commands: `create-dataset`,`delete-dataset-by-id`, `get-all-federated-connections`, `get-dataset-by-id`, `list-datasets`
+
 ## Version 1.12.0-beta.6
 #### Breaking Changes
 * Identity `IdentityProviderConfigBody` model removed field: `Kind`
