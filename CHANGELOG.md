@@ -42,7 +42,7 @@
 
 #### Features
 
-## SCloud v8.0.0-beta.6
+## SCloud v8.0.0-beta.7
 
 #### Breaking Changes
 * Catalog: 
