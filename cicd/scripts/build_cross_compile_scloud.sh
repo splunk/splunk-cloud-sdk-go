@@ -17,7 +17,7 @@ else
 
 fi
 
-BUILD_TARGETS_ARCH=( 386 amd64 )
+BUILD_TARGETS_ARCH=( 386 amd64 arm64 )
 BUILD_TARGETS_OS=( darwin linux windows )
 TARGET_ROOT_DIR=bin/cross-compiled_scloud
 ARCHIVE_DIR=${TARGET_ROOT_DIR}/archive
@@ -39,6 +39,11 @@ do
         if [[ 'darwin' == ${os} ]] && [[ '386' == ${arch} ]]
         then
             echo "Skipping darwin/386, no longer supported in go 1.15+"
+            continue
+        fi
+	if [[ 'windows' == ${os} ]] && [[ "arm64" == ${arch} ]]
+        then
+            echo "Skipping windows/arm64"
             continue
         fi
         target_dir=${TARGET_ROOT_DIR}/${os}_${arch}
@@ -64,6 +69,8 @@ done
 
 if [[ "$(uname -m)" == "x86_64" ]] ; then
     myarch=amd64
+elif [[ "$(uname -m)" == "aarch64" ]] ; then
+    myarch=arm64
 else
     myarch=386
 fi
