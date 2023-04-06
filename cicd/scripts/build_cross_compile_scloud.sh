@@ -17,7 +17,7 @@ else
 
 fi
 
-BUILD_TARGETS_ARCH=( 386 amd64 )
+BUILD_TARGETS_ARCH=( 386 amd64 arm64)
 BUILD_TARGETS_OS=( darwin linux windows )
 TARGET_ROOT_DIR=bin/cross-compiled_scloud
 ARCHIVE_DIR=${TARGET_ROOT_DIR}/archive
