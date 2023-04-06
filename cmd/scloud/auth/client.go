@@ -246,7 +246,7 @@ func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, err
 
 	if out.cancelBeforeSend {
 		fmt.Println(ScloudTesExecCancledError{}.Error())
-		fmt.Println(ScloudTestDone)
+		fmt.Print(ScloudTestDone)
 		return nil, ScloudTesExecCancledError{}
 	}
 
@@ -262,7 +262,7 @@ func (out *testhookLogger) RoundTrip(request *http.Request) (*http.Response, err
 		return nil, err
 	}
 
-	fmt.Println(ScloudTestDone)
+	fmt.Print(ScloudTestDone)
 	return response, err
 }
 
