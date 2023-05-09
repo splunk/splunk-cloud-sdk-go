@@ -1,5 +1,12 @@
 # Splunk Cloud SDK for Go Changelog
 
+## Version 1.12.0-beta.8
+### Non-breaking Changes
+* Uses Go v1.20
+* Adds ARM64 build
+* Addresses vulnerabilities for in dependencies
+* Minor Fix to Print statement to allow building
+
 ## Version 1.12.0-beta.7
 #### Breaking Changes
 * `Catalog service`: 
